@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AuthProvider, useAuth } from './components/AuthProvider';
 import { ToastProvider } from './components/Toast.tsx';
+import { AlertProvider } from './components/Alert.tsx';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Layout from './components/Layout';
@@ -41,9 +42,11 @@ const App: React.FC = () => {
     <AuthProvider>
       <ThemeProvider>
         <ToastProvider>
-          <Layout>
-            <AppContent />
-          </Layout>
+          <AlertProvider>
+            <Layout>
+              <AppContent />
+            </Layout>
+          </AlertProvider>
         </ToastProvider>
       </ThemeProvider>
     </AuthProvider>

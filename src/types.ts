@@ -29,8 +29,16 @@ export interface TMDBMovieDetail {
   title?: string;
   name?: string;
   poster_path: string | null;
+  backdrop_path?: string | null;
   runtime?: number;
   episode_run_time?: number[];
+  overview?: string;
+  genres?: { id: number; name: string }[];
+  vote_average?: number;
+  release_date?: string;
+  first_air_date?: string;
+  tagline?: string;
+  status?: string;
 }
 
 export interface AuthContextType {

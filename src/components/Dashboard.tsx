@@ -6,9 +6,11 @@ import { LogOut, Film, Clock, Plus, Loader, AlertTriangle, Calendar, Type, Arrow
 import StatsCard from './StatsCard';
 import MovieCard from './MovieCard';
 import AddMovieModal from './AddMovieModal';
+import MovieDetailModal from './MovieDetailModal';
 import { TMDB_API_KEY } from '../constants';
 import { Timestamp } from 'firebase/firestore';
 import { useToast } from './Toast';
+import { useAlert } from './Alert';
 import { useTheme } from './ThemeProvider';
 
 type SortOption = 'date' | 'title' | 'runtime';
@@ -17,11 +19,14 @@ type SortOrder = 'asc' | 'desc';
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { showToast } = useToast();
+  const { showAlert } = useAlert();
   const { theme, setTheme } = useTheme();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   // Sorting & Filtering State
   const [sortBy, setSortBy] = useState<SortOption>('date');
@@ -87,14 +92,20 @@ const Dashboard: React.FC = () => {
   }, [movies, sortBy, sortOrder, searchQuery]);
 
   const handleDelete = async (docId: string) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa phim này khỏi lịch sử của mình không?")) {
-      try {
-        await deleteMovie(docId);
-        showToast("Đã xóa phim", "info");
-      } catch (e) {
-        showToast("Xóa phim thất bại", "error");
+    showAlert({
+      title: "Xóa phim",
+      message: "Bạn có chắc chắn muốn xóa phim này khỏi lịch sử của mình không? Hành động này không thể hoàn tác.",
+      type: "danger",
+      confirmText: "Xóa",
+      onConfirm: async () => {
+        try {
+          await deleteMovie(docId);
+          showToast("Đã xóa phim", "info");
+        } catch (e) {
+          showToast("Xóa phim thất bại", "error");
+        }
       }
-    }
+    });
   };
 
   const handleEdit = (movie: Movie) => {
@@ -109,6 +120,11 @@ const Dashboard: React.FC = () => {
 
   const toggleSortOrder = () => {
     setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
+  const handleMovieClick = (movie: Movie) => {
+    setSelectedMovie(movie);
+    setIsDetailModalOpen(true);
   };
 
   if (loading) {
@@ -298,6 +314,7 @@ const Dashboard: React.FC = () => {
                   movie={movie}
                   onDelete={handleDelete}
                   onEdit={handleEdit}
+                  onClick={handleMovieClick}
                 />
               ))}
             </div>
@@ -310,6 +327,11 @@ const Dashboard: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         movieToEdit={editingMovie}
+      />
+      <MovieDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        movie={selectedMovie}
       />
     </div>
   );

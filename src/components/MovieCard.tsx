@@ -8,9 +8,10 @@ interface MovieCardProps {
   movie: Movie;
   onDelete: (id: string) => void;
   onEdit: (movie: Movie) => void;
+  onClick: (movie: Movie) => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick }) => {
   const imageUrl = movie.poster_path
     ? (movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : movie.poster_path)
     : PLACEHOLDER_IMAGE;
@@ -23,7 +24,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit }) => {
   };
 
   return (
-    <div className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+    <div 
+      onClick={() => onClick(movie)}
+      className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
+    >
       {/* Image Container */}
       <div className="aspect-[2/3] w-full relative overflow-hidden">
         <img
@@ -37,14 +41,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit }) => {
         {/* Action Buttons (Visible on Hover) */}
         <div className="absolute top-2 right-2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <button
-            onClick={() => onEdit(movie)}
+            onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
             className="p-2 bg-blue-500/20 text-blue-400 rounded-full backdrop-blur-sm hover:bg-blue-500 hover:text-white transition-colors"
             title="Chỉnh sửa phim"
           >
             <Edit2 size={16} />
           </button>
           <button
-            onClick={() => movie.docId && onDelete(movie.docId)}
+            onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
             className="p-2 bg-red-500/20 text-red-400 rounded-full backdrop-blur-sm hover:bg-red-500 hover:text-white transition-colors"
             title="Xóa phim"
           >
