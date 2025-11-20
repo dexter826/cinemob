@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './components/AuthProvider';
 import { ToastProvider } from './components/Toast.tsx';
 import { AlertProvider } from './components/Alert.tsx';
+import { AddMovieProvider, useAddMovie } from './components/AddMovieContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import SearchPage from './components/SearchPage';
-import AddMoviePage from './components/AddMoviePage';
+import StatsPage from './components/StatsPage';
+import AddMovieModal from './components/AddMovieModal';
 import Layout from './components/Layout';
 import SplashScreen from './components/SplashScreen';
 import { ThemeProvider } from './components/ThemeProvider.tsx';
@@ -42,13 +44,15 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/search" element={<SearchPage />} />
-      <Route path="/add" element={<AddMoviePage />} />
-      <Route path="/add/:tmdbId" element={<AddMoviePage />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/stats" element={<StatsPage />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+      <AddMovieModal />
+    </>
   );
 };
 
@@ -59,9 +63,11 @@ const App: React.FC = () => {
         <ThemeProvider>
           <ToastProvider>
             <AlertProvider>
-              <Layout>
-                <AppContent />
-              </Layout>
+              <AddMovieProvider>
+                <Layout>
+                  <AppContent />
+                </Layout>
+              </AddMovieProvider>
             </AlertProvider>
           </ToastProvider>
         </ThemeProvider>

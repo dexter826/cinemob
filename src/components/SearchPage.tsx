@@ -5,9 +5,11 @@ import { TMDBMovieResult } from '../types';
 import { TMDB_IMAGE_BASE_URL } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+import { useAddMovie } from './AddMovieContext';
 
 const SearchPage: React.FC = () => {
   const navigate = useNavigate();
+  const { openAddModal } = useAddMovie();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -57,11 +59,9 @@ const SearchPage: React.FC = () => {
   });
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
-    navigate(`/add/${movie.id}`, { 
-      state: { 
-        movie: movie,
-        mediaType: movie.media_type || (filterType === 'tv' ? 'tv' : 'movie')
-      } 
+    openAddModal({
+      movie: movie,
+      mediaType: movie.media_type || (filterType === 'tv' ? 'tv' : 'movie')
     });
   };
 

@@ -13,6 +13,8 @@ import { Timestamp } from 'firebase/firestore';
 import { useToast } from './Toast';
 import { useAlert } from './Alert';
 
+import { useAddMovie } from './AddMovieContext';
+
 type SortOption = 'date' | 'title' | 'runtime';
 type SortOrder = 'asc' | 'desc';
 
@@ -20,6 +22,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
   const { showAlert } = useAlert();
+  const { openAddModal } = useAddMovie();
   const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,15 +141,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleEdit = (movie: Movie) => {
-    // Navigate to AddMoviePage with movie data for editing
-    // Note: AddMoviePage needs to handle editing logic, which we haven't fully implemented yet in this turn.
-    // For now, let's assume we pass the movie via state or URL.
-    // Since we removed the modal, we should probably route to /edit/:id or reuse /add with state.
-    // Let's use /add with state for now as a quick fix, or better, create an edit route later.
-    // For this specific request, I'll just comment out the modal logic and maybe log it.
-    // Actually, the user asked to remove the "Add Movie Modal". Editing is a different story.
-    // But to keep the app working, I should probably redirect to the Add Page with pre-filled data.
-    navigate('/add', { state: { movieToEdit: movie } });
+    openAddModal({ movieToEdit: movie });
   };
 
   const toggleSortOrder = () => {

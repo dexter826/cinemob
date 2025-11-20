@@ -1,13 +1,14 @@
 import React from 'react';
-import { LogOut, Sun, Moon } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { useTheme } from './ThemeProvider';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <nav className="border-b border-black/5 dark:border-white/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
@@ -21,6 +22,14 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
+          <button
+            onClick={() => navigate('/stats')}
+            className={`p-2 rounded-lg transition-colors ${location.pathname === '/stats' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+            title="Thống kê"
+          >
+            <BarChart2 size={20} />
+          </button>
+
           <div className="flex items-center space-x-3 px-3 py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
             {user?.photoURL ? (
               <img src={user.photoURL} alt="Avatar" className="w-6 h-6 rounded-full" />
