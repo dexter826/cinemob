@@ -16,16 +16,21 @@ export interface Movie {
 
 export interface TMDBMovieResult {
   id: number;
-  title: string;
+  title?: string;
+  name?: string;
   poster_path: string | null;
-  release_date: string;
+  release_date?: string;
+  first_air_date?: string;
+  media_type?: 'movie' | 'tv' | 'person';
 }
 
 export interface TMDBMovieDetail {
   id: number;
-  title: string;
+  title?: string;
+  name?: string;
   poster_path: string | null;
-  runtime: number;
+  runtime?: number;
+  episode_run_time?: number[];
 }
 
 export interface AuthContextType {

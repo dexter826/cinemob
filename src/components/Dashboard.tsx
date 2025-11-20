@@ -180,13 +180,7 @@ const Dashboard: React.FC = () => {
             colorClass="text-primary"
             subValue="Phim đã sưu tập"
           />
-          <StatsCard
-            label="Thời gian đã xem"
-            value={`${stats.days}d ${stats.hours}h ${stats.minutes}m`}
-            icon={Clock}
-            colorClass="text-secondary"
-            subValue={`${stats.totalMinutes.toLocaleString()} tổng số phút`}
-          />
+
           {/* Action Card */}
           <button
             onClick={() => setIsModalOpen(true)}

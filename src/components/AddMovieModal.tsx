@@ -125,15 +125,19 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
       }
       else if (activeTab === 'search' && selectedTMDBMovie) {
         // ADD FROM TMDB
-        const details = await getMovieDetails(selectedTMDBMovie.id);
+        const mediaType = selectedTMDBMovie.media_type === 'tv' ? 'tv' : 'movie';
+        const details = await getMovieDetails(selectedTMDBMovie.id, mediaType);
         if (!details) throw new Error("Không thể lấy thông tin chi tiết");
+
+        const title = details.title || details.name || 'Unknown Title';
+        const runtime = details.runtime || (details.episode_run_time && details.episode_run_time.length > 0 ? details.episode_run_time[0] : 0);
 
         await addMovie({
           uid: user.uid,
           id: details.id,
-          title: details.title,
+          title: title,
           poster_path: details.poster_path || '',
-          runtime: details.runtime || 0,
+          runtime: runtime,
           source: 'tmdb',
           watched_at: watchedDate,
           rating: formData.rating,
@@ -246,8 +250,10 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                         )}
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-text-main font-medium group-hover:text-primary transition-colors">{movie.title}</h4>
-                        <p className="text-sm text-text-muted">{movie.release_date?.split('-')[0] || 'Không rõ năm'}</p>
+                        <h4 className="text-text-main font-medium group-hover:text-primary transition-colors">{movie.title || movie.name}</h4>
+                        <p className="text-sm text-text-muted">
+                          {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'Không rõ năm'} • {movie.media_type === 'tv' ? 'TV Series' : 'Movie'}
+                        </p>
                       </div>
                       <Plus size={20} className="text-text-muted group-hover:text-primary" />
                     </button>
@@ -270,9 +276,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                   alt="poster"
                 />
                 <div>
-                  <h3 className="text-lg font-bold text-text-main">{selectedTMDBMovie.title}</h3>
+                  <h3 className="text-lg font-bold text-text-main">{selectedTMDBMovie.title || selectedTMDBMovie.name}</h3>
                   <p className="text-text-muted text-sm mt-1">
-                    {selectedTMDBMovie.release_date?.split('-')[0]}
+                    {(selectedTMDBMovie.release_date || selectedTMDBMovie.first_air_date)?.split('-')[0]}
                   </p>
                   <button
                     type="button"
