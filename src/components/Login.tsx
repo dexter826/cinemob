@@ -15,16 +15,16 @@ const Login: React.FC = () => {
 
       <div className="z-10 flex flex-col items-center space-y-8 p-8">
         <div className="bg-surface p-4 rounded-2xl shadow-2xl shadow-primary/20 border border-white/5">
-            <Film size={64} className="text-primary" />
+          <Film size={64} className="text-primary" />
         </div>
-        
+
         <div className="text-center space-y-2">
           <h1 className="text-5xl font-bold tracking-tighter text-white">
             Cinemetrics
           </h1>
           <p className="text-gray-400 text-lg max-w-md">
-            Track your cinematic journey. Visualize your watch history. 
-            Secure, personal, and beautiful.
+            Theo dõi hành trình điện ảnh của bạn. Trực quan hóa lịch sử xem phim.
+            An toàn, cá nhân và đẹp mắt.
           </p>
         </div>
 
@@ -33,12 +33,12 @@ const Login: React.FC = () => {
           className="group relative flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-semibold text-lg hover:scale-105 transition-all duration-200 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)]"
         >
           <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
-          <span>Sign in with Google</span>
+          <span>Đăng nhập bằng Google</span>
         </button>
       </div>
-      
+
       <footer className="absolute bottom-8 text-gray-600 text-sm z-10">
-        &copy; {new Date().getFullYear()} Cinemetrics. Built for movie lovers.
+        &copy; {new Date().getFullYear()} Cinemetrics. Dành cho những người yêu phim.
       </footer>
     </div>
   );

@@ -18,13 +18,13 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
   const { user } = useAuth();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'search' | 'manual'>('search');
-  
+
   // Search State
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<TMDBMovieResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedTMDBMovie, setSelectedTMDBMovie] = useState<TMDBMovieResult | null>(null);
-  
+
   // Form State (Used for both Manual, Search Details, and Edit)
   const [formData, setFormData] = useState({
     title: '',
@@ -34,7 +34,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
     rating: 0,
     review: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset or Populate on Open
@@ -42,10 +42,10 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
     if (isOpen) {
       if (movieToEdit) {
         // Edit Mode
-        const d = movieToEdit.watched_at instanceof Timestamp 
-          ? movieToEdit.watched_at.toDate() 
+        const d = movieToEdit.watched_at instanceof Timestamp
+          ? movieToEdit.watched_at.toDate()
           : (movieToEdit.watched_at as Date);
-        
+
         // Ensure we display the local date string correctly
         // Getting the year/month/day from the Date object directly
         const year = d.getFullYear();
@@ -114,19 +114,19 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
       if (movieToEdit && movieToEdit.docId) {
         // UPDATE EXISTING
         await updateMovie(movieToEdit.docId, {
-            title: formData.title, 
-            runtime: parseInt(formData.runtime) || 0,
-            poster_path: formData.poster,
-            watched_at: watchedDate,
-            rating: formData.rating,
-            review: formData.review,
+          title: formData.title,
+          runtime: parseInt(formData.runtime) || 0,
+          poster_path: formData.poster,
+          watched_at: watchedDate,
+          rating: formData.rating,
+          review: formData.review,
         });
-        showToast("Movie updated successfully!", 'success');
-      } 
+        showToast("Cập nhật phim thành công!", 'success');
+      }
       else if (activeTab === 'search' && selectedTMDBMovie) {
         // ADD FROM TMDB
         const details = await getMovieDetails(selectedTMDBMovie.id);
-        if (!details) throw new Error("Could not fetch details");
+        if (!details) throw new Error("Không thể lấy thông tin chi tiết");
 
         await addMovie({
           uid: user.uid,
@@ -139,8 +139,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           rating: formData.rating,
           review: formData.review
         });
-        showToast("Movie added successfully!", 'success');
-      } 
+        showToast("Thêm phim thành công!", 'success');
+      }
       else {
         // ADD MANUAL
         await addMovie({
@@ -154,12 +154,12 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           rating: formData.rating,
           review: formData.review
         });
-        showToast("Movie added successfully!", 'success');
+        showToast("Thêm phim thành công!", 'success');
       }
       onClose();
     } catch (error) {
       console.error(error);
-      showToast("Failed to save movie.", 'error');
+      showToast("Lưu phim thất bại.", 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -170,44 +170,44 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
     <div className="space-y-4 pt-4 border-t border-white/10">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Date Watched</label>
+          <label className="block text-sm text-gray-400 mb-1">Ngày xem</label>
           <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
             <input
               type="date"
               value={formData.date}
-              onChange={(e) => setFormData({...formData, date: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="w-full bg-black/20 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-primary/50 focus:outline-none"
             />
           </div>
         </div>
         <div>
-           <label className="block text-sm text-gray-400 mb-1">Rating</label>
-           <div className="flex space-x-2 items-center h-[46px] bg-black/20 border border-white/10 rounded-lg px-3">
-             {[1, 2, 3, 4, 5].map((star) => (
-               <button
-                 key={star}
-                 type="button"
-                 onClick={() => setFormData({...formData, rating: star})}
-                 className="focus:outline-none transition-transform hover:scale-110"
-               >
-                 <Star 
-                   size={20} 
-                   className={`${star <= formData.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600'}`} 
-                 />
-               </button>
-             ))}
-           </div>
+          <label className="block text-sm text-gray-400 mb-1">Đánh giá</label>
+          <div className="flex space-x-2 items-center h-[46px] bg-black/20 border border-white/10 rounded-lg px-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setFormData({ ...formData, rating: star })}
+                className="focus:outline-none transition-transform hover:scale-110"
+              >
+                <Star
+                  size={20}
+                  className={`${star <= formData.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600'}`}
+                />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Review / Notes</label>
+        <label className="block text-sm text-gray-400 mb-1">Đánh giá / Ghi chú</label>
         <textarea
           value={formData.review}
-          onChange={(e) => setFormData({...formData, review: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, review: e.target.value })}
           className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none min-h-[100px]"
-          placeholder="What did you think?"
+          placeholder="Bạn nghĩ gì về phim này?"
         />
       </div>
     </div>
@@ -218,11 +218,11 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-surface w-full max-w-2xl rounded-2xl border border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
-        
+
         {/* Header */}
         <div className="p-6 border-b border-white/10 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">
-            {movieToEdit ? 'Edit Movie' : 'Add New Movie'}
+            {movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X size={24} />
@@ -234,26 +234,24 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           <div className="flex border-b border-white/10">
             <button
               onClick={() => setActiveTab('search')}
-              className={`flex-1 py-4 text-sm font-medium transition-colors ${
-                activeTab === 'search' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
-              }`}
+              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'search' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
+                }`}
             >
-              Search TMDB
+              Tìm kiếm trên TMDB
             </button>
             <button
               onClick={() => setActiveTab('manual')}
-              className={`flex-1 py-4 text-sm font-medium transition-colors ${
-                activeTab === 'manual' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
-              }`}
+              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'manual' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
+                }`}
             >
-              Manual Entry
+              Nhập thủ công
             </button>
           </div>
         )}
 
         {/* Body */}
         <div className="p-6 overflow-y-auto custom-scrollbar">
-          
+
           {/* SEARCH MODE */}
           {!movieToEdit && activeTab === 'search' && !selectedTMDBMovie && (
             <div className="space-y-6">
@@ -261,7 +259,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search for a movie..."
+                  placeholder="Tìm kiếm phim..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
@@ -284,9 +282,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                     >
                       <div className="w-12 h-16 bg-gray-800 rounded overflow-hidden flex-shrink-0">
                         {movie.poster_path ? (
-                          <img 
-                            src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`} 
-                            alt={movie.title} 
+                          <img
+                            src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
+                            alt={movie.title}
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -297,13 +295,13 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                       </div>
                       <div className="flex-1">
                         <h4 className="text-white font-medium group-hover:text-primary transition-colors">{movie.title}</h4>
-                        <p className="text-sm text-gray-500">{movie.release_date?.split('-')[0] || 'Unknown Year'}</p>
+                        <p className="text-sm text-gray-500">{movie.release_date?.split('-')[0] || 'Không rõ năm'}</p>
                       </div>
                       <Plus size={20} className="text-gray-500 group-hover:text-primary" />
                     </button>
                   ))}
                   {query.length > 2 && searchResults.length === 0 && (
-                    <p className="text-center text-gray-500 py-8">No movies found.</p>
+                    <p className="text-center text-gray-500 py-8">Không tìm thấy phim.</p>
                   )}
                 </div>
               )}
@@ -312,80 +310,80 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
 
           {/* TMDB CONFIRMATION MODE */}
           {!movieToEdit && activeTab === 'search' && selectedTMDBMovie && (
-             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl">
-                   <img 
-                      src={selectedTMDBMovie.poster_path ? `${TMDB_IMAGE_BASE_URL}${selectedTMDBMovie.poster_path}` : ''} 
-                      className="w-20 rounded-lg"
-                      alt="poster"
-                   />
-                   <div>
-                      <h3 className="text-lg font-bold text-white">{selectedTMDBMovie.title}</h3>
-                      <p className="text-gray-400 text-sm mt-1">
-                         {selectedTMDBMovie.release_date?.split('-')[0]}
-                      </p>
-                      <button 
-                         type="button"
-                         onClick={() => setSelectedTMDBMovie(null)}
-                         className="text-xs text-primary mt-2 hover:underline"
-                      >
-                         Change Movie
-                      </button>
-                   </div>
-                </div>
-                <AdditionalFields />
-                <div className="pt-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl">
+                <img
+                  src={selectedTMDBMovie.poster_path ? `${TMDB_IMAGE_BASE_URL}${selectedTMDBMovie.poster_path}` : ''}
+                  className="w-20 rounded-lg"
+                  alt="poster"
+                />
+                <div>
+                  <h3 className="text-lg font-bold text-white">{selectedTMDBMovie.title}</h3>
+                  <p className="text-gray-400 text-sm mt-1">
+                    {selectedTMDBMovie.release_date?.split('-')[0]}
+                  </p>
                   <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center space-x-2"
+                    type="button"
+                    onClick={() => setSelectedTMDBMovie(null)}
+                    className="text-xs text-primary mt-2 hover:underline"
                   >
-                    {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                    <span>Save Movie</span>
+                    Đổi phim
                   </button>
                 </div>
-             </form>
+              </div>
+              <AdditionalFields />
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center space-x-2"
+                >
+                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+                  <span>Lưu phim</span>
+                </button>
+              </div>
+            </form>
           )}
 
           {/* MANUAL OR EDIT MODE */}
           {(activeTab === 'manual' || movieToEdit) && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Movie Title</label>
+                <label className="block text-sm text-gray-400 mb-1">Tiêu đề phim</label>
                 <input
                   required
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
-                  placeholder="e.g. Inception"
+                  placeholder="ví dụ: Inception"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Runtime (minutes)</label>
+                <label className="block text-sm text-gray-400 mb-1">Thời lượng (phút)</label>
                 <input
                   required
                   type="number"
                   value={formData.runtime}
-                  onChange={(e) => setFormData({...formData, runtime: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, runtime: e.target.value })}
                   className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
-                  placeholder="e.g. 148"
+                  placeholder="ví dụ: 148"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Poster URL (Optional)</label>
+                <label className="block text-sm text-gray-400 mb-1">URL Poster (Tùy chọn)</label>
                 <div className="relative">
                   <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
                   <input
                     type="url"
                     value={formData.poster}
-                    onChange={(e) => setFormData({...formData, poster: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
                     className="w-full bg-black/20 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-primary/50 focus:outline-none"
                     placeholder="https://..."
                   />
                 </div>
               </div>
-              
+
               <AdditionalFields />
 
               <div className="pt-4">
@@ -395,7 +393,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                   className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center space-x-2"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                  <span>{movieToEdit ? 'Update Movie' : 'Add Movie'}</span>
+                  <span>{movieToEdit ? 'Cập nhật phim' : 'Thêm phim'}</span>
                 </button>
               </div>
             </form>
