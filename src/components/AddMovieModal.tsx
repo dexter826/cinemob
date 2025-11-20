@@ -15,6 +15,7 @@ const AddMovieModal: React.FC = () => {
   const [formData, setFormData] = useState({
     title: '',
     runtime: '',
+    seasons: '',
     poster: '',
     date: new Date().toISOString().split('T')[0],
     rating: 0,
@@ -42,6 +43,7 @@ const AddMovieModal: React.FC = () => {
         setFormData({
           title: m.title,
           runtime: m.runtime.toString(),
+          seasons: m.seasons ? m.seasons.toString() : '',
           poster: m.poster_path,
           date: dateStr,
           rating: m.rating || 0,
@@ -60,11 +62,13 @@ const AddMovieModal: React.FC = () => {
               if (details) {
                 const title = details.title || details.name || '';
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
+                const seasons = details.number_of_seasons || 0;
                 
                 setFormData(prev => ({
                   ...prev,
                   title: title,
                   runtime: runtime.toString(),
+                  seasons: seasons ? seasons.toString() : '',
                   poster: details.poster_path || '',
                   date: new Date().toISOString().split('T')[0],
                   rating: 0,
@@ -85,6 +89,7 @@ const AddMovieModal: React.FC = () => {
         setFormData({
           title: '',
           runtime: '',
+          seasons: '',
           poster: '',
           date: new Date().toISOString().split('T')[0],
           rating: 0,
@@ -102,12 +107,14 @@ const AddMovieModal: React.FC = () => {
     try {
       const [y, m, d] = formData.date.split('-').map(Number);
       const watchedDate = new Date(y, m - 1, d, 12, 0, 0);
+      const isTv = initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || (initialData?.movieToEdit?.media_type === 'tv');
 
       if (initialData?.movieToEdit && initialData.movieToEdit.docId) {
         // Update Existing
         await updateMovie(initialData.movieToEdit.docId, {
           title: formData.title,
           runtime: parseInt(formData.runtime) || 0,
+          seasons: parseInt(formData.seasons) || 0,
           poster_path: formData.poster,
           watched_at: watchedDate,
           rating: Number(formData.rating),
@@ -122,6 +129,7 @@ const AddMovieModal: React.FC = () => {
           title: formData.title,
           poster_path: formData.poster,
           runtime: parseInt(formData.runtime) || 0,
+          seasons: parseInt(formData.seasons) || 0,
           watched_at: watchedDate,
           source: (initialData?.tmdbId || initialData?.movie) ? 'tmdb' : 'manual',
           media_type: initialData?.mediaType || 'movie',
@@ -196,16 +204,31 @@ const AddMovieModal: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Thời lượng (phút)</label>
-                      <input
-                        type="number"
-                        required
-                        value={formData.runtime}
-                        onChange={e => setFormData({...formData, runtime: e.target.value})}
-                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary/50 transition-colors"
-                      />
-                    </div>
+                    {(initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') ? (
+                      <div>
+                        <label className="block text-sm font-medium text-text-muted mb-1">Số phần</label>
+                        <input
+                          type="number"
+                          required
+                          disabled
+                          value={formData.seasons}
+                          onChange={e => setFormData({...formData, seasons: e.target.value})}
+                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary/50 transition-colors opacity-60 cursor-not-allowed"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-sm font-medium text-text-muted mb-1">Thời lượng (phút)</label>
+                        <input
+                          type="number"
+                          required
+                          disabled
+                          value={formData.runtime}
+                          onChange={e => setFormData({...formData, runtime: e.target.value})}
+                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary/50 transition-colors opacity-60 cursor-not-allowed"
+                        />
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-medium text-text-muted mb-1">Ngày xem</label>
                       <div className="relative">

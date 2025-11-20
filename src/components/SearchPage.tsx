@@ -155,12 +155,6 @@ const SearchPage: React.FC = () => {
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  
-                  <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="inline-block px-2 py-1 bg-primary text-white text-xs rounded-md font-medium">
-                      Thêm phim
-                    </span>
-                  </div>
                 </div>
                 <div className="p-3">
                   <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>

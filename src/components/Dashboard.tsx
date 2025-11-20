@@ -179,23 +179,15 @@ const Dashboard: React.FC = () => {
       <main className="max-w-screen-xl mx-auto px-4 md:px-8 py-8 space-y-8">
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <StatsCard
-            label="Đã xem"
-            value={stats.totalMovies}
-            icon={Film}
-            colorClass="text-primary"
-            subValue="Phim đã sưu tập"
-          />
-
+        <div className="w-full">
           {/* Action Card */}
           <button
             onClick={() => navigate('/search')}
-            className="bg-gradient-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20"
+            className="w-full bg-gradient-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20"
           >
             <div>
-              <p className="text-white/90 text-sm font-medium mb-1">Thêm vào bộ sưu tập</p>
-              <h3 className="text-2xl font-bold text-white">Ghi lại phim</h3>
+              <p className="text-white/90 text-sm font-medium mb-1 text-left">Thêm vào bộ sưu tập</p>
+              <h3 className="text-2xl font-bold text-white text-left">Ghi lại phim</h3>
             </div>
             <div className="bg-white/20 p-3 rounded-xl group-hover:rotate-90 transition-transform duration-300">
               <Plus size={24} className="text-white" />

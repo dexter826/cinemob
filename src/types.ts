@@ -8,6 +8,7 @@ export interface Movie {
   title: string;
   poster_path: string;
   runtime: number; // Minutes
+  seasons?: number; // Number of seasons for TV shows
   watched_at: Timestamp | Date;
   source: 'tmdb' | 'manual';
   media_type?: 'movie' | 'tv';
@@ -33,6 +34,7 @@ export interface TMDBMovieDetail {
   backdrop_path?: string | null;
   runtime?: number;
   episode_run_time?: number[];
+  number_of_seasons?: number;
   overview?: string;
   genres?: { id: number; name: string }[];
   vote_average?: number;
