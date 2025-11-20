@@ -169,31 +169,31 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-surface w-full max-w-2xl rounded-2xl border border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="bg-surface w-full max-w-2xl rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
 
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-white">
+        <div className="p-6 border-b border-black/10 dark:border-white/10 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-text-main">
             {movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-text-muted hover:text-text-main transition-colors">
             <X size={24} />
           </button>
         </div>
 
         {/* Tabs (Only if adding new) */}
         {!movieToEdit && !selectedTMDBMovie && (
-          <div className="flex border-b border-white/10">
+          <div className="flex border-b border-black/10 dark:border-white/10">
             <button
               onClick={() => setActiveTab('search')}
-              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'search' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
+              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'search' ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'
                 }`}
             >
               Tìm kiếm trên TMDB
             </button>
             <button
               onClick={() => setActiveTab('manual')}
-              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'manual' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-white'
+              className={`flex-1 py-4 text-sm font-medium transition-colors ${activeTab === 'manual' ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-text-main'
                 }`}
             >
               Nhập thủ công
@@ -208,13 +208,13 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           {!movieToEdit && activeTab === 'search' && !selectedTMDBMovie && (
             <div className="space-y-6">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
                 <input
                   type="text"
                   placeholder="Tìm kiếm phim..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors"
                   autoFocus
                 />
               </div>
@@ -230,9 +230,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                       key={movie.id}
                       onClick={() => handleSelectMovie(movie)}
                       disabled={isSubmitting}
-                      className="w-full flex items-center space-x-4 p-3 rounded-xl hover:bg-white/5 transition-colors text-left group"
+                      className="w-full flex items-center space-x-4 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group"
                     >
-                      <div className="w-12 h-16 bg-gray-800 rounded overflow-hidden flex-shrink-0">
+                      <div className="w-12 h-16 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden flex-shrink-0">
                         {movie.poster_path ? (
                           <img
                             src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
@@ -240,16 +240,16 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-600">
+                          <div className="w-full h-full flex items-center justify-center text-text-muted">
                             <Film size={16} />
                           </div>
                         )}
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-white font-medium group-hover:text-primary transition-colors">{movie.title}</h4>
-                        <p className="text-sm text-gray-500">{movie.release_date?.split('-')[0] || 'Không rõ năm'}</p>
+                        <h4 className="text-text-main font-medium group-hover:text-primary transition-colors">{movie.title}</h4>
+                        <p className="text-sm text-text-muted">{movie.release_date?.split('-')[0] || 'Không rõ năm'}</p>
                       </div>
-                      <Plus size={20} className="text-gray-500 group-hover:text-primary" />
+                      <Plus size={20} className="text-text-muted group-hover:text-primary" />
                     </button>
                   ))}
                   {query.length > 2 && searchResults.length === 0 && (
@@ -263,15 +263,15 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           {/* TMDB CONFIRMATION MODE */}
           {!movieToEdit && activeTab === 'search' && selectedTMDBMovie && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="flex items-start space-x-4 bg-white/5 p-4 rounded-xl">
+              <div className="flex items-start space-x-4 bg-black/5 dark:bg-white/5 p-4 rounded-xl">
                 <img
                   src={selectedTMDBMovie.poster_path ? `${TMDB_IMAGE_BASE_URL}${selectedTMDBMovie.poster_path}` : ''}
                   className="w-20 rounded-lg"
                   alt="poster"
                 />
                 <div>
-                  <h3 className="text-lg font-bold text-white">{selectedTMDBMovie.title}</h3>
-                  <p className="text-gray-400 text-sm mt-1">
+                  <h3 className="text-lg font-bold text-text-main">{selectedTMDBMovie.title}</h3>
+                  <p className="text-text-muted text-sm mt-1">
                     {selectedTMDBMovie.release_date?.split('-')[0]}
                   </p>
                   <button
@@ -301,36 +301,36 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ isOpen, onClose, movieToE
           {(activeTab === 'manual' || movieToEdit) && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Tiêu đề phim</label>
+                <label className="block text-sm text-text-muted mb-1">Tiêu đề phim</label>
                 <input
                   required
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
+                  className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg p-3 text-text-main focus:border-primary/50 focus:outline-none"
                   placeholder="ví dụ: Inception"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Thời lượng (phút)</label>
+                <label className="block text-sm text-text-muted mb-1">Thời lượng (phút)</label>
                 <input
                   required
                   type="number"
                   value={formData.runtime}
                   onChange={(e) => setFormData({ ...formData, runtime: e.target.value })}
-                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none"
+                  className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg p-3 text-text-main focus:border-primary/50 focus:outline-none"
                   placeholder="ví dụ: 148"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">URL Poster (Tùy chọn)</label>
+                <label className="block text-sm text-text-muted mb-1">URL Poster (Tùy chọn)</label>
                 <div className="relative">
-                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
                   <input
                     type="url"
                     value={formData.poster}
                     onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-primary/50 focus:outline-none"
+                    className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg p-3 pl-10 text-text-main focus:border-primary/50 focus:outline-none"
                     placeholder="https://..."
                   />
                 </div>
@@ -376,23 +376,23 @@ interface AdditionalFieldsProps {
 }
 
 const AdditionalFields: React.FC<AdditionalFieldsProps> = ({ formData, setFormData }) => (
-  <div className="space-y-4 pt-4 border-t border-white/10">
+  <div className="space-y-4 pt-4 border-t border-black/10 dark:border-white/10">
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Ngày xem</label>
+        <label className="block text-sm text-text-muted mb-1">Ngày xem</label>
         <div className="relative">
-          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
           <input
             type="date"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 pl-10 text-white focus:border-primary/50 focus:outline-none"
+            className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg p-3 pl-10 text-text-main focus:border-primary/50 focus:outline-none"
           />
         </div>
       </div>
       <div>
-        <label className="block text-sm text-gray-400 mb-1">Đánh giá</label>
-        <div className="flex space-x-2 items-center h-[46px] bg-black/20 border border-white/10 rounded-lg px-3">
+        <label className="block text-sm text-text-muted mb-1">Đánh giá</label>
+        <div className="flex space-x-2 items-center h-[46px] bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg px-3">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
@@ -402,7 +402,7 @@ const AdditionalFields: React.FC<AdditionalFieldsProps> = ({ formData, setFormDa
             >
               <Star
                 size={20}
-                className={`${star <= formData.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-600'}`}
+                className={`${star <= formData.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-400'}`}
               />
             </button>
           ))}
@@ -411,11 +411,11 @@ const AdditionalFields: React.FC<AdditionalFieldsProps> = ({ formData, setFormDa
     </div>
 
     <div>
-      <label className="block text-sm text-gray-400 mb-1">Đánh giá / Ghi chú</label>
+      <label className="block text-sm text-text-muted mb-1">Đánh giá / Ghi chú</label>
       <textarea
         value={formData.review}
         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-        className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary/50 focus:outline-none min-h-[100px]"
+        className="w-full bg-black/5 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-lg p-3 text-text-main focus:border-primary/50 focus:outline-none min-h-[100px]"
         placeholder="Bạn nghĩ gì về phim này?"
       />
     </div>

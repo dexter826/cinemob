@@ -2,13 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from './AuthProvider';
 import { subscribeToMovies, deleteMovie } from '../services/movieService';
 import { Movie, Stats } from '../types';
-import { LogOut, Film, Clock, Plus, Loader, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X } from 'lucide-react';
+import { LogOut, Film, Clock, Plus, Loader, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Sun, Moon } from 'lucide-react';
 import StatsCard from './StatsCard';
 import MovieCard from './MovieCard';
 import AddMovieModal from './AddMovieModal';
 import { TMDB_API_KEY } from '../constants';
 import { Timestamp } from 'firebase/firestore';
 import { useToast } from './Toast';
+import { useTheme } from './ThemeProvider';
 
 type SortOption = 'date' | 'title' | 'runtime';
 type SortOrder = 'asc' | 'desc';
@@ -16,6 +17,7 @@ type SortOrder = 'asc' | 'desc';
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { showToast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -118,10 +120,11 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-white pb-20">
+    <div className="min-h-screen bg-background text-text-main pb-20 transition-colors duration-300">
 
       {/* Navigation */}
-      <nav className="border-b border-white/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40">
+      {/* Navigation */}
+      <nav className="border-b border-white/5 dark:border-white/5 border-black/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-screen-xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="bg-primary/20 p-1.5 rounded-lg">
@@ -137,8 +140,15 @@ const Dashboard: React.FC = () => {
               ) : (
                 <div className="w-6 h-6 rounded-full bg-secondary"></div>
               )}
-              <span className="text-sm font-medium text-gray-300">{user?.displayName}</span>
+              <span className="text-sm font-medium text-text-main">{user?.displayName}</span>
             </div>
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors"
+              title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             <button
               onClick={logout}
               className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors"
@@ -183,7 +193,7 @@ const Dashboard: React.FC = () => {
             className="bg-gradient-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20"
           >
             <div>
-              <p className="text-white/80 text-sm font-medium mb-1">Thêm vào bộ sưu tập</p>
+              <p className="text-white/90 text-sm font-medium mb-1">Thêm vào bộ sưu tập</p>
               <h3 className="text-2xl font-bold text-white">Ghi lại phim</h3>
             </div>
             <div className="bg-white/20 p-3 rounded-xl group-hover:rotate-90 transition-transform duration-300">
@@ -196,8 +206,8 @@ const Dashboard: React.FC = () => {
         <div className="space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-xl font-semibold text-gray-200">Lịch sử xem</h2>
-              <span className="text-sm text-gray-500">{movies.length} mục</span>
+              <h2 className="text-xl font-semibold text-text-main">Lịch sử xem</h2>
+              <span className="text-sm text-text-muted">{movies.length} mục</span>
             </div>
 
             {/* Controls Toolbar */}
@@ -211,7 +221,7 @@ const Dashboard: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Lọc phim..."
-                    className="w-full sm:w-64 bg-surface border border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-all"
+                    className="w-full sm:w-64 bg-surface border border-black/5 dark:border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all"
                   />
                   {searchQuery && (
                     <button
@@ -227,7 +237,7 @@ const Dashboard: React.FC = () => {
                 <div className="flex items-center space-x-2 bg-surface p-1 rounded-xl border border-white/5 self-start sm:self-auto">
                   <button
                     onClick={() => setSortBy('date')}
-                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'date' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'date' ? 'bg-black/5 dark:bg-white/10 text-text-main' : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
                       }`}
                   >
                     <Calendar size={14} />
@@ -236,7 +246,7 @@ const Dashboard: React.FC = () => {
 
                   <button
                     onClick={() => setSortBy('title')}
-                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'title' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'title' ? 'bg-black/5 dark:bg-white/10 text-text-main' : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
                       }`}
                   >
                     <Type size={14} />
@@ -245,18 +255,18 @@ const Dashboard: React.FC = () => {
 
                   <button
                     onClick={() => setSortBy('runtime')}
-                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'runtime' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sortBy === 'runtime' ? 'bg-black/5 dark:bg-white/10 text-text-main' : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
                       }`}
                   >
                     <Clock size={14} />
                     <span className="hidden sm:inline">Thời lượng</span>
                   </button>
 
-                  <div className="w-px h-4 bg-white/10 mx-1" />
+                  <div className="w-px h-4 bg-black/10 dark:bg-white/10 mx-1" />
 
                   <button
                     onClick={toggleSortOrder}
-                    className="p-1.5 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    className="p-1.5 text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
                     title={`Sắp xếp ${sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}`}
                   >
                     {sortOrder === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
@@ -267,22 +277,22 @@ const Dashboard: React.FC = () => {
           </div>
 
           {processedMovies.length === 0 ? (
-            <div className="border-2 border-dashed border-white/10 rounded-3xl p-12 flex flex-col items-center justify-center text-center space-y-4">
-              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center">
+            <div className="border-2 border-dashed border-black/10 dark:border-white/10 rounded-3xl p-12 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center">
                 <Film className="text-gray-600" size={32} />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-white">
+                <h3 className="text-lg font-medium text-text-main">
                   {searchQuery ? "Không tìm thấy phim phù hợp" : "Chưa có phim nào"}
                 </h3>
-                <p className="text-gray-500 max-w-xs mx-auto">
+                <p className="text-text-muted max-w-xs mx-auto">
                   {searchQuery ? "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn." : "Bắt đầu xây dựng lịch sử điện ảnh cá nhân của bạn bằng cách thêm bộ phim đầu tiên."}
                 </p>
               </div>
               {!searchQuery && (
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full font-medium transition-colors"
+                  className="px-6 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-text-main rounded-full font-medium transition-colors"
                 >
                   Thêm phim
                 </button>

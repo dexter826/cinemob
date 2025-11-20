@@ -14,15 +14,15 @@ const Login: React.FC = () => {
       </div>
 
       <div className="z-10 flex flex-col items-center space-y-8 p-8">
-        <div className="bg-surface p-4 rounded-2xl shadow-2xl shadow-primary/20 border border-white/5">
+        <div className="bg-surface p-4 rounded-2xl shadow-2xl shadow-primary/20 border border-black/5 dark:border-white/5">
           <Film size={64} className="text-primary" />
         </div>
 
         <div className="text-center space-y-2">
-          <h1 className="text-5xl font-bold tracking-tighter text-white">
+          <h1 className="text-5xl font-bold tracking-tighter text-text-main">
             Cinemetrics
           </h1>
-          <p className="text-gray-400 text-lg max-w-md">
+          <p className="text-text-muted text-lg max-w-md">
             Theo dõi hành trình điện ảnh của bạn. Trực quan hóa lịch sử xem phim.
             An toàn, cá nhân và đẹp mắt.
           </p>
@@ -30,14 +30,14 @@ const Login: React.FC = () => {
 
         <button
           onClick={signInWithGoogle}
-          className="group relative flex items-center space-x-3 px-8 py-4 bg-white text-black rounded-full font-semibold text-lg hover:scale-105 transition-all duration-200 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)]"
+          className="group relative flex items-center space-x-3 px-8 py-4 bg-text-main text-background rounded-full font-semibold text-lg hover:scale-105 transition-all duration-200 hover:shadow-lg"
         >
           <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
           <span>Đăng nhập bằng Google</span>
         </button>
       </div>
 
-      <footer className="absolute bottom-8 text-gray-600 text-sm z-10">
+      <footer className="absolute bottom-8 text-text-muted text-sm z-10">
         &copy; {new Date().getFullYear()} Cinemetrics. Dành cho những người yêu phim.
       </footer>
     </div>

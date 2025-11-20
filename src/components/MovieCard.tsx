@@ -23,7 +23,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit }) => {
   };
 
   return (
-    <div className="group relative bg-surface rounded-xl overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+    <div className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
       {/* Image Container */}
       <div className="aspect-[2/3] w-full relative overflow-hidden">
         <img
@@ -70,11 +70,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit }) => {
 
       {/* Content */}
       <div className="p-4 absolute bottom-0 w-full">
-        <h3 className="font-semibold text-lg leading-tight text-white mb-2 line-clamp-1" title={movie.title}>
+        <h3 className="font-semibold text-lg leading-tight text-text-main mb-2 line-clamp-1" title={movie.title}>
           {movie.title}
         </h3>
 
-        <div className="flex items-center justify-between text-xs text-gray-400">
+        <div className="flex items-center justify-between text-xs text-text-muted">
           <div className="flex items-center space-x-1">
             <Clock size={12} className="text-primary" />
             <span>{movie.runtime}m</span>

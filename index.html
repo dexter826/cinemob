@@ -9,18 +9,52 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-background: 249 250 251;
+      /* gray-50 */
+      --color-surface: 255 255 255;
+      /* white */
+      --color-primary: 16 185 129;
+      /* emerald-500 */
+      --color-secondary: 139 92 246;
+      /* violet-500 */
+      --color-text-main: 17 24 39;
+      /* gray-900 */
+      --color-text-muted: 107 114 128;
+      /* gray-500 */
+    }
+
+    .dark {
+      --color-background: 11 12 21;
+      /* Dark Blue/Black */
+      --color-surface: 21 23 37;
+      /* Dark Surface */
+      --color-primary: 16 185 129;
+      /* emerald-500 */
+      --color-secondary: 168 85 247;
+      /* purple-500 */
+      --color-text-main: 255 255 255;
+      /* white */
+      --color-text-muted: 156 163 175;
+      /* gray-400 */
+    }
+  </style>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
           },
           colors: {
-            background: '#0B0C15',
-            surface: '#151725',
-            primary: '#6366F1',
-            secondary: '#A855F7',
+            background: 'rgb(var(--color-background))',
+            surface: 'rgb(var(--color-surface))',
+            primary: 'rgb(var(--color-primary))',
+            secondary: 'rgb(var(--color-secondary))',
+            'text-main': 'rgb(var(--color-text-main))',
+            'text-muted': 'rgb(var(--color-text-muted))',
           },
           animation: {
             'slide-in-right': 'slide-in-right 0.3s ease-out forwards',
