@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Star, Save, Loader2 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
-import { addMovie, updateMovie } from '../services/movieService';
+import { addMovie, updateMovie, checkMovieExists } from '../services/movieService';
 import { getMovieDetails } from '../services/tmdbService';
 import { useToast } from './Toast';
 import { TMDB_IMAGE_BASE_URL } from '../constants';
@@ -28,6 +28,7 @@ const AddMovieModal: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [manualMediaType, setManualMediaType] = useState<'movie' | 'tv'>('movie');
+  const [movieExists, setMovieExists] = useState(false);
 
   const isManualMode = !initialData?.tmdbId && !initialData?.movie && !initialData?.movieToEdit;
 
@@ -65,6 +66,12 @@ const AddMovieModal: React.FC = () => {
           try {
             const id = initialData.tmdbId || initialData.movie?.id;
             const type = initialData.mediaType || initialData.movie?.media_type || 'movie';
+            
+            // Check if movie already exists
+            if (user && id) {
+              const exists = await checkMovieExists(user.uid, id);
+              setMovieExists(exists);
+            }
             
             if (id) {
               const details = await getMovieDetails(Number(id), type);
@@ -114,9 +121,10 @@ const AddMovieModal: React.FC = () => {
           releaseDate: ''
         });
         setManualMediaType('movie');
+        setMovieExists(false);
       }
     }
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -257,6 +265,7 @@ const AddMovieModal: React.FC = () => {
                     <label className="block text-sm font-medium text-text-muted mb-1">Thể loại</label>
                     <input
                       type="text"
+                      required={isManualMode}
                       value={formData.genres}
                       onChange={e => setFormData({...formData, genres: e.target.value})}
                       placeholder="Hành động, Phiêu lưu, Khoa học viễn tưởng..."
@@ -270,6 +279,7 @@ const AddMovieModal: React.FC = () => {
                       <label className="block text-sm font-medium text-text-muted mb-1">Ngày phát hành</label>
                       <input
                         type="date"
+                        required={isManualMode}
                         value={formData.releaseDate}
                         onChange={e => setFormData({...formData, releaseDate: e.target.value})}
                         disabled={!isManualMode && !initialData?.movieToEdit}
@@ -306,7 +316,7 @@ const AddMovieModal: React.FC = () => {
                               seasons: ''
                             }));
                           }}
-                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors"
+                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
                         >
                           <option value="movie">Phim lẻ</option>
                           <option value="tv">TV Series</option>
@@ -386,15 +396,15 @@ const AddMovieModal: React.FC = () => {
                   onClick={closeAddModal}
                   className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors mr-3"
                 >
-                  Hủy
+                  {movieExists ? 'Đóng' : 'Hủy'}
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || movieExists}
                   className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                  {initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim'}
+                  {movieExists ? 'Phim đã lưu' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
                 </button>
               </div>
             </form>

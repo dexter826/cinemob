@@ -116,7 +116,7 @@ const SearchPage: React.FC = () => {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
-              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none"
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
             >
               <option value="all">Tất cả loại</option>
               <option value="movie">Phim lẻ</option>
@@ -126,7 +126,7 @@ const SearchPage: React.FC = () => {
             <select
               value={filterGenre}
               onChange={(e) => setFilterGenre(e.target.value)}
-              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px]"
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
             >
               <option value="">Tất cả thể loại</option>
               {genres.map(g => (

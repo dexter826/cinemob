@@ -9,7 +9,8 @@ import {
   orderBy, 
   onSnapshot,
   serverTimestamp,
-  Timestamp
+  Timestamp,
+  getDocs
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Movie } from '../types';
@@ -48,6 +49,21 @@ export const deleteMovie = async (docId: string) => {
   } catch (error) {
     console.error("Error deleting movie: ", error);
     throw error;
+  }
+};
+
+export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
+  try {
+    const q = query(
+      collection(db, COLLECTION_NAME),
+      where("uid", "==", uid),
+      where("id", "==", movieId)
+    );
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  } catch (error) {
+    console.error("Error checking movie existence: ", error);
+    return false;
   }
 };
 
