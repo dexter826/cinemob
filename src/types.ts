@@ -29,6 +29,7 @@ export interface TMDBMovieResult {
   first_air_date?: string;
   media_type?: 'movie' | 'tv' | 'person';
   genre_ids?: number[];
+  origin_country?: string[];
 }
 
 export interface TMDBMovieDetail {

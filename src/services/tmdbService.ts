@@ -73,3 +73,21 @@ export const getTrendingMovies = async (page: number = 1): Promise<{ results: TM
     return { results: [], totalPages: 0 };
   }
 };
+
+export const getCountries = async (): Promise<{ iso_3166_1: string; english_name: string; native_name: string }[]> => {
+  if (!TMDB_API_KEY) return [];
+
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/configuration/countries?api_key=${TMDB_API_KEY}`
+    );
+
+    if (!response.ok) throw new Error('TMDB API Error');
+
+    const data = await response.json();
+    return data || [];
+  } catch (error) {
+    console.error("Failed to get countries:", error);
+    return [];
+  }
+};

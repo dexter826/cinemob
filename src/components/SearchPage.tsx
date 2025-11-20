@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Loader2, Film, ArrowLeft, Filter } from 'lucide-react';
-import { searchMovies, getGenres, getTrendingMovies } from '../services/tmdbService';
+import { searchMovies, getGenres, getTrendingMovies, getCountries } from '../services/tmdbService';
 import { TMDBMovieResult } from '../types';
 import { TMDB_IMAGE_BASE_URL } from '../constants';
 import { useNavigate } from 'react-router-dom';
@@ -23,17 +23,21 @@ const SearchPage: React.FC = () => {
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
   const [filterYear, setFilterYear] = useState<string>('');
   const [filterGenre, setFilterGenre] = useState<string>('');
+  const [filterCountry, setFilterCountry] = useState<string>('');
   const [genres, setGenres] = useState<{id: number, name: string}[]>([]);
+  const [countries, setCountries] = useState<{iso_3166_1: string, english_name: string, native_name: string}[]>([]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       setInitialLoading(true);
       try {
-        const [genreList, trendingData] = await Promise.all([
+        const [genreList, countriesList, trendingData] = await Promise.all([
           getGenres(),
+          getCountries(),
           getTrendingMovies()
         ]);
         setGenres(genreList);
+        setCountries(countriesList);
         setTrendingMovies(trendingData.results);
       } finally {
         setInitialLoading(false);
@@ -74,6 +78,10 @@ const SearchPage: React.FC = () => {
     if (filterGenre) {
       // Note: search/multi results usually contain genre_ids array
       if (!movie.genre_ids || !movie.genre_ids.includes(Number(filterGenre))) return false;
+    }
+
+    if (filterCountry) {
+      if (!movie.origin_country || !movie.origin_country.includes(filterCountry)) return false;
     }
 
     return true;
@@ -141,6 +149,17 @@ const SearchPage: React.FC = () => {
               <option value="">Tất cả thể loại</option>
               {genres.map(g => (
                 <option key={g.id} value={g.id}>{g.name}</option>
+              ))}
+            </select>
+
+            <select
+              value={filterCountry}
+              onChange={(e) => setFilterCountry(e.target.value)}
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
+            >
+              <option value="">Tất cả quốc gia</option>
+              {countries.map(c => (
+                <option key={c.iso_3166_1} value={c.iso_3166_1}>{c.native_name}</option>
               ))}
             </select>
 
