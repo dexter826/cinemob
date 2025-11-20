@@ -14,6 +14,8 @@ const SearchPage: React.FC = () => {
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [trendingMovies, setTrendingMovies] = useState<TMDBMovieResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [totalSearchPages, setTotalSearchPages] = useState(1);
   
   // Filters
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
@@ -27,8 +29,8 @@ const SearchPage: React.FC = () => {
       setGenres(genreList);
     };
     const fetchTrending = async () => {
-      const trending = await getTrendingMovies();
-      setTrendingMovies(trending);
+      const { results } = await getTrendingMovies();
+      setTrendingMovies(results);
     };
     fetchGenres();
     fetchTrending();
@@ -38,14 +40,21 @@ const SearchPage: React.FC = () => {
     const timer = setTimeout(async () => {
       if (query.trim().length > 2) {
         setLoading(true);
-        const data = await searchMovies(query);
+        const { results: data, totalPages } = await searchMovies(query, searchPage);
         setResults(data);
+        setTotalSearchPages(totalPages);
         setLoading(false);
       } else {
         setResults([]);
+        setSearchPage(1);
       }
     }, 500);
     return () => clearTimeout(timer);
+  }, [query, searchPage]);
+
+  // Reset search page when query changes
+  useEffect(() => {
+    setSearchPage(1);
   }, [query]);
 
   const filteredResults = (query ? results : trendingMovies).filter(movie => {
@@ -190,6 +199,60 @@ const SearchPage: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Pagination Controls - Only for Search Results */}
+          {!loading && query && filteredResults.length > 0 && totalSearchPages > 1 && (
+            <div className="flex items-center justify-center gap-2 pt-6">
+              <button
+                onClick={() => setSearchPage(prev => Math.max(1, prev - 1))}
+                disabled={searchPage === 1}
+                className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Trước
+              </button>
+              
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(5, totalSearchPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalSearchPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (searchPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (searchPage >= totalSearchPages - 2) {
+                    pageNum = totalSearchPages - 4 + i;
+                  } else {
+                    pageNum = searchPage - 2 + i;
+                  }
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setSearchPage(pageNum)}
+                      className={`w-10 h-10 rounded-lg transition-colors ${
+                        searchPage === pageNum
+                          ? 'bg-primary text-white font-medium'
+                          : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={() => setSearchPage(prev => Math.min(totalSearchPages, prev + 1))}
+                disabled={searchPage === totalSearchPages}
+                className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                Tiếp
+              </button>
+              
+              <span className="ml-4 text-sm text-text-muted">
+                Trang {searchPage} / {totalSearchPages}
+              </span>
+            </div>
+          )}
           </>
         )}
       </div>

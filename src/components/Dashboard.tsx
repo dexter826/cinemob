@@ -38,6 +38,10 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [filterYear, setFilterYear] = useState<number | null>(null);
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [moviesPerPage] = useState(18);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -121,7 +125,20 @@ const Dashboard: React.FC = () => {
     });
 
     return result;
-  }, [movies, sortBy, sortOrder, searchQuery]);
+  }, [movies, sortBy, sortOrder, searchQuery, filterRating, filterYear]);
+
+  // Pagination Logic
+  const totalPages = Math.ceil(processedMovies.length / moviesPerPage);
+  const paginatedMovies = useMemo(() => {
+    const startIndex = (currentPage - 1) * moviesPerPage;
+    const endIndex = startIndex + moviesPerPage;
+    return processedMovies.slice(startIndex, endIndex);
+  }, [processedMovies, currentPage, moviesPerPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, filterRating, filterYear, sortBy, sortOrder]);
 
   const handleDelete = async (docId: string) => {
     showAlert({
@@ -375,17 +392,73 @@ const Dashboard: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-              {processedMovies.map(movie => (
-                <MovieCard
-                  key={movie.docId}
-                  movie={movie}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                  onClick={handleMovieClick}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                {paginatedMovies.map(movie => (
+                  <MovieCard
+                    key={movie.docId}
+                    movie={movie}
+                    onDelete={handleDelete}
+                    onEdit={handleEdit}
+                    onClick={handleMovieClick}
+                  />
+                ))}
+              </div>
+              
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 pt-4">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  >
+                    Trước
+                  </button>
+                  
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`w-10 h-10 rounded-lg transition-colors ${
+                            currentPage === pageNum
+                              ? 'bg-primary text-white font-medium'
+                              : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  >
+                    Tiếp
+                  </button>
+                  
+                  <span className="ml-4 text-sm text-text-muted">
+                    Trang {currentPage} / {totalPages}
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
