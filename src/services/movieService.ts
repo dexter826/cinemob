@@ -70,11 +70,15 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
         title: data.title,
         poster_path: data.poster_path,
         runtime: data.runtime,
+        seasons: data.seasons || 0,
         watched_at: data.watched_at,
         source: data.source,
         media_type: data.media_type || 'movie',
         rating: data.rating || 0,
-        review: data.review || ''
+        review: data.review || '',
+        tagline: data.tagline || '',
+        genres: data.genres || '',
+        release_date: data.release_date || ''
       } as Movie;
     });
     callback(movies);

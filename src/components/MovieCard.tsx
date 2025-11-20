@@ -1,7 +1,7 @@
 import React from 'react';
 import { Movie } from '../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
-import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle } from 'lucide-react';
+import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle, Film, Tv } from 'lucide-react';
 import { Timestamp } from 'firebase/firestore';
 
 interface MovieCardProps {
@@ -64,6 +64,21 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick 
           </div>
         )}
 
+        {/* Media Type Badge (Top Left, below rating or standalone) */}
+        <div className={`absolute left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10 ${movie.rating && movie.rating > 0 ? 'top-12' : 'top-2'}`}>
+          {movie.media_type === 'tv' ? (
+            <>
+              <Tv size={12} className="text-blue-400" />
+              <span className="text-xs font-bold text-white">TV</span>
+            </>
+          ) : (
+            <>
+              <Film size={12} className="text-green-400" />
+              <span className="text-xs font-bold text-white">Phim</span>
+            </>
+          )}
+        </div>
+
         {/* Review Indicator (Bottom Right of Image) */}
         {movie.review && (
           <div className="absolute bottom-2 right-2 p-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-gray-300 z-10" title="Có đánh giá">
@@ -80,8 +95,17 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick 
 
         <div className="flex items-center justify-between text-xs text-gray-300">
           <div className="flex items-center space-x-1">
-            <Clock size={12} className="text-primary" />
-            <span>{movie.runtime}m</span>
+            {movie.media_type === 'tv' ? (
+              <>
+                <Tv size={12} className="text-primary" />
+                <span>{movie.seasons || 0} phần</span>
+              </>
+            ) : (
+              <>
+                <Clock size={12} className="text-primary" />
+                <span>{movie.runtime || 0}m</span>
+              </>
+            )}
           </div>
           <div className="flex items-center space-x-1">
             <Calendar size={12} className="text-secondary" />

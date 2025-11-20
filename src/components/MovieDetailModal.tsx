@@ -103,7 +103,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                 )}
                 <div className="flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full">
                   <Clock size={16} className="text-blue-400" />
-                  <span>{movie.media_type === 'tv' ? `${movie.seasons || 0} phần` : `${movie.runtime} phút`}</span>
+                  <span>{movie.media_type === 'tv' ? `${details?.number_of_seasons || movie.seasons || 0} phần` : `${details?.runtime || movie.runtime} phút`}</span>
                 </div>
                 {rating && (
                   <div className="flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from './AuthProvider';
 import { subscribeToMovies } from '../services/movieService';
 import { Movie } from '../types';
-import { BarChart, Calendar, Clock, Film, Star, TrendingUp, PieChart } from 'lucide-react';
+import { Calendar, Film, Star, TrendingUp, Tv } from 'lucide-react';
 import Navbar from './Navbar';
 import StatsCard from './StatsCard';
 import { Timestamp } from 'firebase/firestore';
@@ -23,6 +23,8 @@ const StatsPage: React.FC = () => {
 
   const stats = useMemo(() => {
     const totalMovies = movies.length;
+    const movieCount = movies.filter(m => m.media_type === 'movie').length;
+    const tvCount = movies.filter(m => m.media_type === 'tv').length;
     const totalMinutes = movies.reduce((acc, curr) => acc + (curr.runtime || 0), 0);
     
     const days = Math.floor(totalMinutes / 1440);
@@ -50,6 +52,8 @@ const StatsPage: React.FC = () => {
 
     return {
       totalMovies,
+      movieCount,
+      tvCount,
       totalMinutes,
       days,
       hours,
@@ -87,11 +91,10 @@ const StatsPage: React.FC = () => {
             colorClass="text-blue-500"
           />
           <StatsCard
-            label="Tổng thời gian"
-            value={`${stats.days}d ${stats.hours}h ${stats.minutes}m`}
-            subValue={`${stats.totalMinutes} phút`}
-            icon={Clock}
-            colorClass="text-purple-500"
+            label="Phim / TV"
+            value={`${stats.movieCount}/${stats.tvCount}`}
+            icon={Tv}
+            colorClass="text-green-500"
           />
           <StatsCard
             label="Đánh giá trung bình"
