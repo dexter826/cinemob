@@ -17,6 +17,7 @@ export interface Movie {
   tagline?: string;
   genres?: string;
   release_date?: string;
+  country?: string; // Production country
 }
 
 export interface TMDBMovieResult {
@@ -27,6 +28,7 @@ export interface TMDBMovieResult {
   release_date?: string;
   first_air_date?: string;
   media_type?: 'movie' | 'tv' | 'person';
+  genre_ids?: number[];
 }
 
 export interface TMDBMovieDetail {
@@ -45,6 +47,7 @@ export interface TMDBMovieDetail {
   first_air_date?: string;
   tagline?: string;
   status?: string;
+  production_countries?: { iso_3166_1: string; name: string }[];
 }
 
 export interface AuthContextType {

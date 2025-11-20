@@ -6,6 +6,7 @@ import { TMDB_IMAGE_BASE_URL } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { useAddMovie } from './AddMovieContext';
+import Loading from './Loading';
 
 const SearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const SearchPage: React.FC = () => {
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [trendingMovies, setTrendingMovies] = useState<TMDBMovieResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [searchPage, setSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState(1);
   
@@ -24,16 +26,20 @@ const SearchPage: React.FC = () => {
   const [genres, setGenres] = useState<{id: number, name: string}[]>([]);
 
   useEffect(() => {
-    const fetchGenres = async () => {
-      const genreList = await getGenres();
-      setGenres(genreList);
+    const fetchInitialData = async () => {
+      setInitialLoading(true);
+      try {
+        const [genreList, trendingData] = await Promise.all([
+          getGenres(),
+          getTrendingMovies()
+        ]);
+        setGenres(genreList);
+        setTrendingMovies(trendingData.results);
+      } finally {
+        setInitialLoading(false);
+      }
     };
-    const fetchTrending = async () => {
-      const { results } = await getTrendingMovies();
-      setTrendingMovies(results);
-    };
-    fetchGenres();
-    fetchTrending();
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
@@ -79,6 +85,10 @@ const SearchPage: React.FC = () => {
       mediaType: movie.media_type || (filterType === 'tv' ? 'tv' : 'movie')
     });
   };
+
+  if (initialLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen bg-background text-text-main pb-20">

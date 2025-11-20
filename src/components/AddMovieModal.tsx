@@ -22,7 +22,8 @@ const AddMovieModal: React.FC = () => {
     review: '',
     tagline: '',
     genres: '',
-    releaseDate: ''
+    releaseDate: '',
+    country: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +58,8 @@ const AddMovieModal: React.FC = () => {
           review: m.review || '',
           tagline: m.tagline || '',
           genres: m.genres || '',
-          releaseDate: m.release_date || ''
+          releaseDate: m.release_date || '',
+          country: m.country || ''
         });
       } else if (initialData?.tmdbId || initialData?.movie) {
         // Add Mode from Search or ID
@@ -82,6 +84,7 @@ const AddMovieModal: React.FC = () => {
                 const tagline = details.tagline || '';
                 const genres = details.genres?.map(g => g.name).join(', ') || '';
                 const releaseDate = details.release_date || details.first_air_date || '';
+                const country = details.production_countries?.map(c => c.name).join(', ') || '';
                 
                 setFormData(prev => ({
                   ...prev,
@@ -94,7 +97,8 @@ const AddMovieModal: React.FC = () => {
                   review: '',
                   tagline: tagline,
                   genres: genres,
-                  releaseDate: releaseDate
+                  releaseDate: releaseDate,
+                  country: country
                 }));
               }
             }
@@ -118,7 +122,8 @@ const AddMovieModal: React.FC = () => {
           review: '',
           tagline: '',
           genres: '',
-          releaseDate: ''
+          releaseDate: '',
+          country: ''
         });
         setManualMediaType('movie');
         setMovieExists(false);
@@ -148,7 +153,8 @@ const AddMovieModal: React.FC = () => {
           review: formData.review,
           tagline: formData.tagline,
           genres: formData.genres,
-          release_date: formData.releaseDate
+          release_date: formData.releaseDate,
+          country: formData.country
         });
         showToast("Đã cập nhật phim", "success");
       } else {
@@ -167,7 +173,8 @@ const AddMovieModal: React.FC = () => {
           review: formData.review,
           tagline: formData.tagline,
           genres: formData.genres,
-          release_date: formData.releaseDate
+          release_date: formData.releaseDate,
+          country: formData.country
         });
         showToast("Đã thêm phim mới", "success");
       }
@@ -269,6 +276,19 @@ const AddMovieModal: React.FC = () => {
                       value={formData.genres}
                       onChange={e => setFormData({...formData, genres: e.target.value})}
                       placeholder="Hành động, Phiêu lưu, Khoa học viễn tưởng..."
+                      disabled={!isManualMode && !initialData?.movieToEdit}
+                      className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-muted mb-1">Quốc gia</label>
+                    <input
+                      type="text"
+                      required={isManualMode}
+                      value={formData.country}
+                      onChange={e => setFormData({...formData, country: e.target.value})}
+                      placeholder="Việt Nam, Mỹ, Hàn Quốc..."
                       disabled={!isManualMode && !initialData?.movieToEdit}
                       className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
                     />

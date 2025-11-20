@@ -6,6 +6,10 @@ import { Calendar, Film, Star, TrendingUp, Tv } from 'lucide-react';
 import Navbar from './Navbar';
 import StatsCard from './StatsCard';
 import { Timestamp } from 'firebase/firestore';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import Loading from './Loading';
+
+const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#f97316', '#84cc16', '#6366f1', '#14b8a6'];
 
 const StatsPage: React.FC = () => {
   const { user } = useAuth();
@@ -50,6 +54,17 @@ const StatsPage: React.FC = () => {
       if (m.rating) moviesByRating[m.rating] = (moviesByRating[m.rating] || 0) + 1;
     });
 
+    // Movies by Country
+    const moviesByCountry: Record<string, number> = {};
+    movies.forEach(m => {
+      if (m.country && m.country.trim().length > 0) {
+        const countries = m.country.split(',').map(c => c.trim()).filter(c => c.length > 0);
+        countries.forEach(country => {
+          moviesByCountry[country] = (moviesByCountry[country] || 0) + 1;
+        });
+      }
+    });
+
     return {
       totalMovies,
       movieCount,
@@ -60,16 +75,13 @@ const StatsPage: React.FC = () => {
       minutes,
       avgRating,
       moviesByYear,
-      moviesByRating
+      moviesByRating,
+      moviesByCountry
     };
   }, [movies]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-primary">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -162,6 +174,93 @@ const StatsPage: React.FC = () => {
           </div>
 
         </div>
+
+        {/* Movies by Country */}
+        {Object.keys(stats.moviesByCountry).length > 0 ? (
+          <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              Phân bố phim theo quốc gia
+            </h3>
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
+              {/* Pie Chart */}
+              <div className="w-full lg:w-1/2 h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(stats.moviesByCountry)
+                        .sort((a, b) => Number(b[1]) - Number(a[1]))
+                        .slice(0, 8)
+                        .map(([country, count]) => ({
+                          name: country,
+                          value: Number(count),
+                          percentage: ((Number(count) / stats.totalMovies) * 100).toFixed(1)
+                        }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {Object.entries(stats.moviesByCountry)
+                        .slice(0, 8)
+                        .map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => [`${value} phim`, 'Số lượng']}
+                      contentStyle={{ 
+                        backgroundColor: 'var(--color-surface)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* Legend List */}
+              <div className="w-full lg:w-1/2 space-y-3 max-h-80 overflow-y-auto custom-scrollbar">
+                {Object.entries(stats.moviesByCountry)
+                  .sort((a, b) => Number(b[1]) - Number(a[1]))
+                  .map(([country, count], index) => (
+                    <div key={country} className="flex items-center justify-between p-3 bg-black/5 dark:bg-white/5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-4 h-4 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        />
+                        <span className="font-medium text-text-main">{country}</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-text-main">{count} phim</div>
+                        <div className="text-xs text-text-muted">{((Number(count) / stats.totalMovies) * 100).toFixed(1)}%</div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-surface border border-black/5 dark:border-white/5 p-8 rounded-2xl text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4 text-text-muted opacity-50">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <h3 className="text-lg font-semibold text-text-main mb-2">Chưa có dữ liệu quốc gia</h3>
+            <p className="text-text-muted text-sm max-w-md mx-auto">
+              Thêm phim mới hoặc cập nhật thông tin quốc gia cho các phim hiện tại để xem thống kê này.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

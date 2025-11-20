@@ -14,6 +14,7 @@ import { useToast } from './Toast';
 import { useAlert } from './Alert';
 
 import { useAddMovie } from './AddMovieContext';
+import Loading from './Loading';
 
 type SortOption = 'date' | 'title' | 'runtime';
 type SortOrder = 'asc' | 'desc';
@@ -38,6 +39,7 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [filterYear, setFilterYear] = useState<number | null>(null);
+  const [filterCountry, setFilterCountry] = useState<string>('');
   
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,6 +103,10 @@ const Dashboard: React.FC = () => {
       });
     }
 
+    if (filterCountry) {
+      result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(filterCountry.toLowerCase()));
+    }
+
     // 2. Sort
     result.sort((a, b) => {
       let comparison = 0;
@@ -138,7 +144,7 @@ const Dashboard: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, filterRating, filterYear, sortBy, sortOrder]);
+  }, [searchQuery, filterRating, filterYear, filterCountry, sortBy, sortOrder]);
 
   const handleDelete = async (docId: string) => {
     showAlert({
@@ -171,11 +177,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-primary">
-        <Loader className="animate-spin" size={40} />
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -312,9 +314,9 @@ const Dashboard: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Lọc</div>
-                        {(filterRating !== null || filterYear !== null) && (
+                        {(filterRating !== null || filterYear !== null || filterCountry) && (
                           <button 
-                            onClick={() => { setFilterRating(null); setFilterYear(null); }}
+                            onClick={() => { setFilterRating(null); setFilterYear(null); setFilterCountry(''); }}
                             className="text-xs text-primary hover:underline"
                           >
                             Xóa lọc
@@ -355,6 +357,31 @@ const Dashboard: React.FC = () => {
                               return d ? d.getFullYear() : null;
                             }).filter(Boolean))).sort((a, b) => (b as number) - (a as number)).map(year => (
                               <option key={year} value={year as number} className="bg-surface text-text-main dark:bg-gray-800">{year}</option>
+                            ))}
+                          </select>
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">
+                            <ArrowDown size={12} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Country Filter */}
+                      <div>
+                        <label className="text-xs text-text-muted mb-1.5 block">Quốc gia</label>
+                        <div className="relative">
+                          <select
+                            value={filterCountry}
+                            onChange={(e) => setFilterCountry(e.target.value)}
+                            className="w-full bg-black/5 dark:bg-white/5 border-none rounded-lg text-sm text-text-main py-2 px-3 focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+                          >
+                            <option value="" className="bg-surface text-text-main dark:bg-gray-800">Tất cả quốc gia</option>
+                            {Array.from(new Set(
+                              movies
+                                .filter(m => m.country && m.country.trim().length > 0)
+                                .flatMap(m => m.country!.split(',').map(c => c.trim()))
+                                .filter(c => c.length > 0)
+                            )).sort().map(country => (
+                              <option key={country} value={country} className="bg-surface text-text-main dark:bg-gray-800">{country}</option>
                             ))}
                           </select>
                           <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">

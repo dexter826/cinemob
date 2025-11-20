@@ -94,7 +94,8 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
         review: data.review || '',
         tagline: data.tagline || '',
         genres: data.genres || '',
-        release_date: data.release_date || ''
+        release_date: data.release_date || '',
+        country: data.country || ''
       } as Movie;
     });
     callback(movies);

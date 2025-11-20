@@ -57,6 +57,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   const genres = details?.genres?.map(g => g.name).join(', ');
   const rating = details?.vote_average ? details.vote_average.toFixed(1) : null;
   const releaseDate = details?.release_date || details?.first_air_date;
+  const country = details?.production_countries?.map(c => c.name).join(', ') || movie.country;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
@@ -123,6 +124,17 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                 <div className="flex items-center gap-2 text-text-muted">
                   <Film size={16} />
                   <span>{genres}</span>
+                </div>
+              )}
+
+              {country && (
+                <div className="flex items-center gap-2 text-text-muted">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                  <span>{country}</span>
                 </div>
               )}
 
