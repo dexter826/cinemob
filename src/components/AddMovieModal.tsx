@@ -6,6 +6,7 @@ import { getMovieDetails } from '../services/tmdbService';
 import { useToast } from './Toast';
 import { TMDB_IMAGE_BASE_URL } from '../constants';
 import { useAddMovie } from './AddMovieContext';
+import Loading from './Loading';
 
 const AddMovieModal: React.FC = () => {
   const { isOpen, closeAddModal, initialData } = useAddMovie();
@@ -234,10 +235,7 @@ const AddMovieModal: React.FC = () => {
         {/* Body */}
         <div className="p-6">
           {isLoadingDetails ? (
-            <div className="flex flex-col items-center justify-center py-12 space-y-4">
-              <Loader2 className="animate-spin text-primary" size={40} />
-              <p className="text-text-muted">Đang tải thông tin...</p>
-            </div>
+            <Loading fullScreen={false} size={40} text="Đang tải thông tin..." className="py-12" />
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex flex-col md:flex-row gap-6">

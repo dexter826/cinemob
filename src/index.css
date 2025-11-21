@@ -35,12 +35,53 @@
     /* Remove tap highlight on mobile (iOS) */
     * {
         -webkit-tap-highlight-color: transparent;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        outline: none;
     }
 
-    /* Fix date input width on mobile Safari */
+    /* Fix animations and transitions flicker on iOS */
+    * {
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translate3d(0, 0, 0);
+        -webkit-perspective: 1000;
+    }
+
+    /* Reset for inputs and interactive elements */
+    input,
+    textarea,
+    select,
+    button,
+    a {
+        -webkit-user-select: auto;
+        user-select: auto;
+    }
+
+    /* Fix date input width and rendering on mobile Safari */
     input[type="date"] {
         max-width: 100%;
+        width: 100%;
         box-sizing: border-box;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        min-height: 42px;
+    }
+
+    /* Ensure button focus states don't show border on iOS */
+    button,
+    input[type="button"],
+    input[type="submit"] {
+        -webkit-appearance: button;
+        outline: none;
+        border: none;
+    }
+
+    button:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
     }
 }

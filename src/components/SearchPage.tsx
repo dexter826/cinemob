@@ -175,9 +175,7 @@ const SearchPage: React.FC = () => {
 
         {/* Results */}
         {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={40} />
-          </div>
+          <Loading fullScreen={false} size={40} className="py-20" />
         ) : (
           <>
             {!query && filteredResults.length > 0 && (

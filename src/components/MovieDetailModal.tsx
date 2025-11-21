@@ -3,6 +3,7 @@ import { X, Calendar, Clock, Star, Film, Info } from 'lucide-react';
 import { Movie, TMDBMovieDetail } from '../types';
 import { getMovieDetails } from '../services/tmdbService';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
+import Loading from './Loading';
 
 interface MovieDetailModalProps {
   isOpen: boolean;
@@ -97,9 +98,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
         {/* Content Section */}
         <div className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
           {loading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-            </div>
+            <Loading fullScreen={false} size={48} />
           ) : (
             <div className="space-y-6">
               <div>
