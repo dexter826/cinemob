@@ -40,6 +40,8 @@ const Dashboard: React.FC = () => {
   const [filterRating, setFilterRating] = useState<number | null>(null);
   const [filterYear, setFilterYear] = useState<number | null>(null);
   const [filterCountry, setFilterCountry] = useState<string>('');
+  const [filterContentType, setFilterContentType] = useState<'all' | 'movie' | 'tv'>('all');
+  const [filterVersion, setFilterVersion] = useState(0); 
   
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,6 +84,13 @@ const Dashboard: React.FC = () => {
     return { totalMovies, totalMinutes, days, hours, minutes };
   }, [movies]);
 
+  // Content type stats
+  const contentTypeStats = useMemo(() => {
+    const moviesCount = movies.filter(m => m.media_type === 'movie' || !m.media_type).length;
+    const tvCount = movies.filter(m => m.media_type === 'tv').length;
+    return { moviesCount, tvCount };
+  }, [movies]);
+
   // Sort & Filter Logic
   const processedMovies = useMemo(() => {
     // 1. Filter first
@@ -107,6 +116,16 @@ const Dashboard: React.FC = () => {
       result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(filterCountry.toLowerCase()));
     }
 
+    // Content type filter
+    if (filterContentType !== 'all') {
+      result = result.filter(movie => {
+        const mediaType = movie.media_type || 'movie'; // Default to movie if not specified
+        return mediaType === filterContentType;
+      });
+    }
+
+    
+
     // 2. Sort
     result.sort((a, b) => {
       let comparison = 0;
@@ -131,7 +150,7 @@ const Dashboard: React.FC = () => {
     });
 
     return result;
-  }, [movies, sortBy, sortOrder, searchQuery, filterRating, filterYear]);
+  }, [movies, sortBy, sortOrder, searchQuery, filterRating, filterYear, filterCountry, filterContentType, filterVersion]);
 
   // Pagination Logic
   const totalPages = Math.ceil(processedMovies.length / moviesPerPage);
@@ -144,7 +163,12 @@ const Dashboard: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, filterRating, filterYear, filterCountry, sortBy, sortOrder]);
+  }, [searchQuery, filterRating, filterYear, filterCountry, filterContentType, sortBy, sortOrder, filterVersion]);
+
+  // Monitor processedMovies changes
+  useEffect(() => {
+    console.log('Processed movies updated:', processedMovies.length);
+  }, [processedMovies]);
 
   const handleDelete = async (docId: string) => {
     showAlert({
@@ -195,14 +219,14 @@ const Dashboard: React.FC = () => {
         </div>
       )}
 
-      <main className="max-w-screen-xl mx-auto px-4 md:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           {/* Action Card: Search */}
           <button
             onClick={() => navigate('/search')}
-            className="w-full bg-gradient-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20"
+            className="w-full bg-linear-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20"
           >
             <div>
               <p className="text-white/90 text-sm font-medium mb-1 text-left">Thêm vào bộ sưu tập</p>
@@ -233,7 +257,10 @@ const Dashboard: React.FC = () => {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-xl font-semibold text-text-main">Lịch sử xem</h2>
-              <span className="text-sm text-text-muted">{movies.length} phim</span>
+              <span className="text-sm text-text-muted">
+                {movies.length} nội dung 
+                ({contentTypeStats.moviesCount} phim, {contentTypeStats.tvCount} series)
+              </span>
             </div>
 
             {/* Controls Toolbar */}
@@ -314,14 +341,42 @@ const Dashboard: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Lọc</div>
-                        {(filterRating !== null || filterYear !== null || filterCountry) && (
+                        {(filterRating !== null || filterYear !== null || filterCountry || filterContentType !== 'all') && (
                           <button 
-                            onClick={() => { setFilterRating(null); setFilterYear(null); setFilterCountry(''); }}
+                            onClick={() => { 
+                            setFilterRating(null); 
+                            setFilterYear(null); 
+                            setFilterCountry(''); 
+                            setFilterContentType('all');
+                            setFilterVersion(v => v + 1); // Force re-render
+                          }}
                             className="text-xs text-primary hover:underline"
                           >
                             Xóa lọc
                           </button>
                         )}
+                      </div>
+                      
+                      {/* Content Type Filter */}
+                      <div>
+                        <label className="text-xs text-text-muted mb-1.5 block">Loại nội dung</label>
+                        <div className="relative">
+                          <select
+                            value={filterContentType}
+                            onChange={(e) => {
+                    setFilterContentType(e.target.value as 'all' | 'movie' | 'tv');
+                    setFilterVersion(v => v + 1); // Force re-render
+                  }}
+                            className="w-full bg-black/5 dark:bg-white/5 border-none rounded-lg text-sm text-text-main py-2 px-3 focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+                          >
+                            <option value="all" className="bg-surface text-text-main dark:bg-gray-800">Tất cả</option>
+                            <option value="movie" className="bg-surface text-text-main dark:bg-gray-800">Phim</option>
+                            <option value="tv" className="bg-surface text-text-main dark:bg-gray-800">TV Series</option>
+                          </select>
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">
+                            <ArrowDown size={12} />
+                          </div>
+                        </div>
                       </div>
                       
                       {/* Rating Filter */}
@@ -371,7 +426,10 @@ const Dashboard: React.FC = () => {
                         <div className="relative">
                           <select
                             value={filterCountry}
-                            onChange={(e) => setFilterCountry(e.target.value)}
+                            onChange={(e) => {
+                    setFilterCountry(e.target.value);
+                    setFilterVersion(v => v + 1); // Force re-render
+                  }}
                             className="w-full bg-black/5 dark:bg-white/5 border-none rounded-lg text-sm text-text-main py-2 px-3 focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
                           >
                             <option value="" className="bg-surface text-text-main dark:bg-gray-800">Tất cả quốc gia</option>
@@ -403,10 +461,10 @@ const Dashboard: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-text-main">
-                  {searchQuery ? "Không tìm thấy phim phù hợp" : "Chưa có phim nào"}
+                  {searchQuery ? "Không tìm thấy nội dung phù hợp" : "Chưa có nội dung nào"}
                 </h3>
                 <p className="text-text-muted max-w-xs mx-auto">
-                  {searchQuery ? "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn." : "Bắt đầu xây dựng lịch sử điện ảnh cá nhân của bạn bằng cách thêm bộ phim đầu tiên."}
+                  {searchQuery ? "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn." : "Bắt đầu xây dựng lịch sử điện ảnh cá nhân của bạn bằng cách thêm bộ phim hoặc series đầu tiên."}
                 </p>
               </div>
               {!searchQuery && (
@@ -414,7 +472,7 @@ const Dashboard: React.FC = () => {
                   onClick={() => navigate('/search')}
                   className="px-6 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-text-main rounded-full font-medium transition-colors"
                 >
-                  Thêm phim
+                  Thêm nội dung
                 </button>
               )}
             </div>

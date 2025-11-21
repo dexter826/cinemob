@@ -102,7 +102,7 @@ const SearchPage: React.FC = () => {
     <div className="min-h-screen bg-background text-text-main pb-20">
       <Navbar />
       
-      <div className="max-w-screen-xl mx-auto p-4 md:p-8 space-y-6">
+      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <button onClick={() => navigate('/')} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
@@ -192,7 +192,7 @@ const SearchPage: React.FC = () => {
                 onClick={() => handleSelectMovie(movie)}
                 className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 cursor-pointer hover:shadow-lg transition-all"
               >
-                <div className="aspect-[2/3] w-full relative overflow-hidden">
+                <div className="aspect-2/3 w-full relative overflow-hidden">
                   {movie.poster_path ? (
                     <img
                       src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
@@ -204,7 +204,7 @@ const SearchPage: React.FC = () => {
                       <Film size={32} />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="p-3">
                   <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>

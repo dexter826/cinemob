@@ -46,7 +46,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <AlertContext.Provider value={{ showAlert }}>
       {children}
       {alert && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-surface w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-white/10 transform transition-all scale-100">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
