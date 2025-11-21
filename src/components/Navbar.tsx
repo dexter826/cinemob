@@ -27,13 +27,12 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className="border-b border-black/5 dark:border-white/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
-        <div className="max-w-screen-xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div 
-            className="flex items-center space-x-3 cursor-pointer" 
+            className="flex items-center cursor-pointer"
             onClick={() => navigate('/')}
           >
-            <img src="/logo192.png" alt="Cinemetrics Logo" className="w-8 h-8" />
-            <span className="font-bold text-lg tracking-tight text-text-main">Cinemetrics</span>
+            <img src="/logo_text.png" alt="Cinemetrics Logo" className="h-8 w-auto" />
           </div>
 
           {/* Desktop Menu */}

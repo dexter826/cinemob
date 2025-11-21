@@ -134,7 +134,7 @@ const StatsPage: React.FC = () => {
     <div className="min-h-screen bg-background text-text-main pb-20">
       <Navbar />
       
-      <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <TrendingUp className="text-primary" />
           Thống kê chi tiết

@@ -1,46 +1,83 @@
-# Getting Started with Create React App
+﻿<center>
+  <img src="public/logo_text.png" alt="Logo dự án">
+</center>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Chào mừng đến với **Cinemetrics**! Đây là một ứng dụng để theo dõi và quản lý danh sách phim đã xem, giúp bạn lưu giữ những khoảnh khắc điện ảnh đáng nhớ. 🍿✨
 
-## Available Scripts
+## 🚀 Giới thiệu
 
-In the project directory, you can run:
+Cinemetrics cho phép bạn tìm kiếm phim từ cơ sở dữ liệu khổng lồ (TMDB), thêm vào danh sách cá nhân, đánh giá, viết review và xem thống kê chi tiết về thói quen xem phim của mình.
 
-### `npm start`
+## ✨ Tính năng nổi bật
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **🔐 Đăng nhập/Đăng ký:** Bảo mật tài khoản với Firebase Authentication.
+- **🔍 Tìm kiếm phim:** Tìm kiếm phim và TV shows nhanh chóng thông qua TMDB API.
+- **📝 Quản lý danh sách:** Thêm phim đã xem, ghi chú ngày xem, đánh giá và review.
+- **📊 Thống kê (Stats):** Biểu đồ trực quan về số lượng phim đã xem, thể loại yêu thích.
+- **🌓 Giao diện Dark/Light:** Chế độ sáng tối linh hoạt.
+- **📱 Responsive:** Giao diện đẹp mắt, tương thích tốt trên cả máy tính và điện thoại.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🛠️ Công nghệ sử dụng
 
-### `npm test`
+- **Frontend:** [React](https://react.dev/) (v19), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v4), [Lucide React](https://lucide.dev/) (Icons)
+- **Backend & Database:** [Firebase](https://firebase.google.com/) (Firestore, Auth)
+- **API:** [The Movie Database (TMDB)](https://www.themoviedb.org/)
+- **Charts:** [Recharts](https://recharts.org/)
+- **Animation:** [Lottie React](https://lottiereact.com/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ⚙️ Cài đặt và chạy dự án
 
-### `npm run build`
+1.  **Clone repository:**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    git clone https://github.com/dexter826/cinemetrics.git
+    cd cinemetrics
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2.  **Cài đặt dependencies:**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```bash
+    npm install
+    ```
 
-### `npm run eject`
+3.  **Cấu hình môi trường:**
+    Tạo file `.env` ở thư mục gốc và thêm các key cần thiết (Firebase config, TMDB API Key). Ví dụ:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+    ```env
+    VITE_FIREBASE_API_KEY=...
+    VITE_FIREBASE_AUTH_DOMAIN=...
+    VITE_FIREBASE_PROJECT_ID=...
+    ...
+    VITE_TMDB_API_KEY=...
+    ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    _(Lưu ý: Cần tự tạo project trên Firebase và đăng ký tài khoản TMDB để lấy key nhé)_
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+4.  **Chạy dự án:**
+    ```bash
+    npm run dev
+    ```
+    Mở trình duyệt và truy cập đường link hiển thị trong terminal.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 📂 Cấu trúc thư mục
 
-## Learn More
+```
+cinemetrics/
+ public/              # File tĩnh (manifest, robots.txt,...)
+ src/
+    components/      # Các component React (Dashboard, Login, MovieCard,...)
+    services/        # Xử lý API (Firebase, TMDB)
+    App.tsx          # Component chính, routing
+    firebase.ts      # Cấu hình Firebase
+    types.ts         # Định nghĩa kiểu dữ liệu (TypeScript)
+    ...
+ index.html           # File HTML chính
+ package.json         # Khai báo dependencies
+ tailwind.config.js   # Cấu hình Tailwind
+ vite.config.ts       # Cấu hình Vite
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Made with ❤️ by [MOB](https://github.com/dexter826)
