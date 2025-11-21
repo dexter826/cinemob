@@ -19,6 +19,7 @@ const AddMovieModal: React.FC = () => {
     seasons: '',
     poster: '',
     date: new Date().toISOString().split('T')[0],
+    time: '12:00',
     rating: 0,
     review: '',
     tagline: '',
@@ -62,7 +63,10 @@ const AddMovieModal: React.FC = () => {
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
+        const timeStr = `${hours}:${minutes}`;
 
         setFormData({
           title: m.title,
@@ -70,6 +74,7 @@ const AddMovieModal: React.FC = () => {
           seasons: m.seasons ? m.seasons.toString() : '',
           poster: m.poster_path,
           date: dateStr,
+          time: timeStr,
           rating: m.rating || 0,
           review: m.review || '',
           tagline: m.tagline || '',
@@ -111,6 +116,7 @@ const AddMovieModal: React.FC = () => {
                   seasons: seasons ? seasons.toString() : '',
                   poster: details.poster_path || '',
                   date: new Date().toISOString().split('T')[0],
+                  time: '12:00',
                   rating: 0,
                   review: '',
                   tagline: tagline,
@@ -137,6 +143,7 @@ const AddMovieModal: React.FC = () => {
           seasons: '',
           poster: '',
           date: new Date().toISOString().split('T')[0],
+          time: '12:00',
           rating: 0,
           review: '',
           tagline: '',
@@ -165,7 +172,8 @@ const AddMovieModal: React.FC = () => {
 
     try {
       const [y, m, d] = formData.date.split('-').map(Number);
-      const watchedDate = new Date(y, m - 1, d, 12, 0, 0);
+      const [hours, minutes] = formData.time.split(':').map(Number);
+      const watchedDate = new Date(y, m - 1, d, hours, minutes, 0);
       const isTv = initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || (initialData?.movieToEdit?.media_type === 'tv') || (isManualMode && manualMediaType === 'tv');
 
       if (initialData?.movieToEdit && initialData.movieToEdit.docId) {
@@ -331,30 +339,35 @@ const AddMovieModal: React.FC = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Ngày phát hành</label>
+                  <div>
+                    <label className="block text-sm font-medium text-text-muted mb-1">Ngày phát hành</label>
+                    <input
+                      type="date"
+                      required={isManualMode}
+                      value={formData.releaseDate}
+                      onChange={e => setFormData({...formData, releaseDate: e.target.value})}
+                      disabled={!isManualMode && !initialData?.movieToEdit}
+                      className={`w-full max-w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-muted mb-1">Ngày xem</label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
                       <input
-                        type="date"
-                        required={isManualMode}
-                        value={formData.releaseDate}
-                        onChange={e => setFormData({...formData, releaseDate: e.target.value})}
-                        disabled={!isManualMode && !initialData?.movieToEdit}
-                        className={`w-full max-w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        type="datetime-local"
+                        required
+                        value={`${formData.date}T${formData.time}`}
+                        onChange={e => {
+                          const datetimeValue = e.target.value;
+                          if (datetimeValue) {
+                            const [datePart, timePart] = datetimeValue.split('T');
+                            setFormData({...formData, date: datePart, time: timePart});
+                          }
+                        }}
+                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
                       />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Ngày xem</label>
-                      <div className="relative w-full max-w-full">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
-                        <input
-                          type="date"
-                          required
-                          value={formData.date}
-                          onChange={e => setFormData({...formData, date: e.target.value})}
-                          className="w-full max-w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
-                        />
-                      </div>
                     </div>
                   </div>
 

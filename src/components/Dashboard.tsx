@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { subscribeToMovies, deleteMovie } from '../services/movieService';
 import { Movie, Stats } from '../types';
-import { Film, Clock, Plus, Loader, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Filter, Star } from 'lucide-react';
+import { Film, Plus, Loader, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Filter, Star } from 'lucide-react';
 import StatsCard from './StatsCard';
 import MovieCard from './MovieCard';
 import MovieDetailModal from './MovieDetailModal';
@@ -16,7 +16,7 @@ import { useAlert } from './Alert';
 import { useAddMovie } from './AddMovieContext';
 import Loading from './Loading';
 
-type SortOption = 'date' | 'title' | 'runtime';
+type SortOption = 'date' | 'title';
 type SortOrder = 'asc' | 'desc';
 
 const Dashboard: React.FC = () => {
@@ -132,8 +132,6 @@ const Dashboard: React.FC = () => {
 
       if (sortBy === 'title') {
         comparison = a.title.localeCompare(b.title);
-      } else if (sortBy === 'runtime') {
-        comparison = (a.runtime || 0) - (b.runtime || 0);
       } else {
         // Date Sort
         const getTime = (t: any) => {
@@ -300,7 +298,7 @@ const Dashboard: React.FC = () => {
                     {/* Sort Section */}
                     <div className="space-y-2">
                       <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Sắp xếp</div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="flex gap-2">
                         <button
                           onClick={() => setSortBy('date')}
                           className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${sortBy === 'date' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
@@ -314,13 +312,6 @@ const Dashboard: React.FC = () => {
                         >
                           <Type size={14} />
                           <span>Tên</span>
-                        </button>
-                        <button
-                          onClick={() => setSortBy('runtime')}
-                          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${sortBy === 'runtime' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
-                        >
-                          <Clock size={14} />
-                          <span>Thời lượng</span>
                         </button>
                         <button
                           onClick={toggleSortOrder}
