@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={() => navigate('/stats')}
-              className={`p-2 rounded-lg transition-colors ${location.pathname === '/stats' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+              className={`p-2 rounded-lg transition-colors cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
               title="Thống kê"
             >
               <BarChart2 size={20} />
@@ -55,14 +55,14 @@ const Navbar: React.FC = () => {
             </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors text-text-main"
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-lg transition-colors text-text-main cursor-pointer"
               title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button
               onClick={logout}
-              className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors text-text-main"
+              className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors text-text-main cursor-pointer"
               title="Đăng xuất"
             >
               <LogOut size={20} />
@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors text-text-main"
+              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors text-text-main cursor-pointer"
             >
               <Menu size={24} />
             </button>
@@ -96,7 +96,7 @@ const Navbar: React.FC = () => {
             <span className="font-bold text-lg text-text-main">Menu</span>
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors text-text-main"
+              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors text-text-main cursor-pointer"
             >
               <X size={24} />
             </button>
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => { navigate('/stats'); setIsMenuOpen(false); }}
-              className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${location.pathname === '/stats' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+              className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
             >
               <BarChart2 size={20} />
               <span>Thống kê</span>
@@ -126,7 +126,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setIsMenuOpen(false); }}
-              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-text-main transition-colors"
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-text-main transition-colors cursor-pointer"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               <span>{theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}</span>
@@ -136,7 +136,7 @@ const Navbar: React.FC = () => {
           <div className="p-4 border-t border-black/5 dark:border-white/5">
             <button
               onClick={() => { logout(); setIsMenuOpen(false); }}
-              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-500/10 text-red-500 transition-colors"
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-500/10 text-red-500 transition-colors cursor-pointer"
             >
               <LogOut size={20} />
               <span>Đăng xuất</span>

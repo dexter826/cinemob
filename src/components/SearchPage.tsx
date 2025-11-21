@@ -105,7 +105,7 @@ const SearchPage: React.FC = () => {
       <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/')} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
+          <button onClick={() => navigate('/')} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer">
             <ArrowLeft size={24} />
           </button>
           <h1 className="text-2xl font-bold">Tìm kiếm phim</h1>
@@ -134,7 +134,7 @@ const SearchPage: React.FC = () => {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
-              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800 cursor-pointer"
             >
               <option value="all">Tất cả loại</option>
               <option value="movie">Phim lẻ</option>
@@ -144,7 +144,7 @@ const SearchPage: React.FC = () => {
             <select
               value={filterGenre}
               onChange={(e) => setFilterGenre(e.target.value)}
-              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800 cursor-pointer"
             >
               <option value="">Tất cả thể loại</option>
               {genres.map(g => (
@@ -155,7 +155,7 @@ const SearchPage: React.FC = () => {
             <select
               value={filterCountry}
               onChange={(e) => setFilterCountry(e.target.value)}
-              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800"
+              className="bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none min-w-[140px] text-text-main [&>option]:bg-surface [&>option]:text-text-main dark:[&>option]:bg-gray-800 cursor-pointer"
             >
               <option value="">Tất cả quốc gia</option>
               {countries.map(c => (
@@ -233,7 +233,7 @@ const SearchPage: React.FC = () => {
               <button
                 onClick={() => setSearchPage(prev => Math.max(1, prev - 1))}
                 disabled={searchPage === 1}
-                className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="px-4 py-2 rounded-lg bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 Trước
               </button>
@@ -255,7 +255,7 @@ const SearchPage: React.FC = () => {
                     <button
                       key={pageNum}
                       onClick={() => setSearchPage(pageNum)}
-                      className={`w-10 h-10 rounded-lg transition-colors ${
+                      className={`w-10 h-10 rounded-lg transition-colors cursor-pointer ${
                         searchPage === pageNum
                           ? 'bg-primary text-white font-medium'
                           : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5'

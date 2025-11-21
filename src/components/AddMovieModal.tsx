@@ -235,7 +235,7 @@ const AddMovieModal: React.FC = () => {
           <h2 className="text-xl font-bold text-text-main">
             {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
-          <button onClick={closeAddModal} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors">
+          <button onClick={closeAddModal} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer">
             <X size={20} className="text-text-muted" />
           </button>
         </div>
