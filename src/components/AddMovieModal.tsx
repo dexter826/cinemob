@@ -342,7 +342,7 @@ const AddMovieModal: React.FC = () => {
                         value={formData.releaseDate}
                         onChange={e => setFormData({...formData, releaseDate: e.target.value})}
                         disabled={!isManualMode && !initialData?.movieToEdit}
-                        className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        className={`w-full min-w-0 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
                       />
                     </div>
                     <div>
@@ -354,7 +354,7 @@ const AddMovieModal: React.FC = () => {
                           required
                           value={formData.date}
                           onChange={e => setFormData({...formData, date: e.target.value})}
-                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
+                          className="w-full min-w-0 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
                         />
                       </div>
                     </div>

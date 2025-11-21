@@ -32,3 +32,13 @@
         /* gray-400 */
     }
 }
+
+@layer components {
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
