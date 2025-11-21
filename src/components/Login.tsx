@@ -30,7 +30,7 @@ const Login: React.FC = () => {
 
         <button
           onClick={signInWithGoogle}
-          className="group relative flex items-center space-x-3 px-8 py-4 bg-text-main text-background rounded-full font-semibold text-lg hover:scale-105 transition-all duration-200 hover:shadow-lg"
+          className="group relative flex items-center space-x-3 px-8 py-4 bg-text-main text-background rounded-full font-semibold text-lg hover:scale-105 transition-all duration-200 hover:shadow-lg cursor-pointer"
         >
           <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
           <span>Đăng nhập bằng Google</span>
