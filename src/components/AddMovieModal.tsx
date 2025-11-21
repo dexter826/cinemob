@@ -36,6 +36,20 @@ const AddMovieModal: React.FC = () => {
   // Reset form when modal opens with new data
   useEffect(() => {
     if (isOpen) {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore body scroll when modal is closed
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  // Reset form when modal opens with new data
+  useEffect(() => {
+    if (isOpen) {
       if (initialData?.movieToEdit) {
         // Edit Mode
         const m = initialData.movieToEdit;
@@ -215,7 +229,7 @@ const AddMovieModal: React.FC = () => {
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Poster Preview */}
                 <div className="w-full md:w-1/3 flex flex-col gap-4">
-                  <div className="aspect-[2/3] rounded-xl overflow-hidden bg-black/10 dark:bg-black/20 border border-black/10 dark:border-white/5 relative group">
+                  <div className="aspect-2/3 rounded-xl overflow-hidden bg-black/10 dark:bg-black/20 border border-black/10 dark:border-white/5 relative group">
                     {formData.poster ? (
                       <img 
                         src={formData.poster.startsWith('http') ? formData.poster : `${TMDB_IMAGE_BASE_URL}${formData.poster}`}
@@ -303,19 +317,19 @@ const AddMovieModal: React.FC = () => {
                         value={formData.releaseDate}
                         onChange={e => setFormData({...formData, releaseDate: e.target.value})}
                         disabled={!isManualMode && !initialData?.movieToEdit}
-                        className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors [color-scheme:light] dark:[color-scheme:dark] ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-text-muted mb-1">Ngày xem</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                      <div className="relative w-full">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
                         <input
                           type="date"
                           required
                           value={formData.date}
                           onChange={e => setFormData({...formData, date: e.target.value})}
-                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
                         />
                       </div>
                     </div>
