@@ -294,7 +294,7 @@ const AddMovieModal: React.FC = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-text-muted mb-1">Ngày phát hành</label>
                       <input

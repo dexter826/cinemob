@@ -239,39 +239,41 @@ const StatsPage: React.FC = () => {
             {Object.keys(stats.moviesByCountry).length > 0 ? (
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={Object.entries(stats.moviesByCountry)
-                        .sort((a, b) => Number(b[1]) - Number(a[1]))
-                        .slice(0, 8)
-                        .map(([country, count]) => ({
-                          name: country,
-                          value: Number(count),
-                          percentage: ((Number(count) / stats.totalMovies) * 100).toFixed(1)
-                        }))}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percentage }) => `${name}: ${percentage}%`}
-                      outerRadius={90}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {Object.entries(stats.moviesByCountry)
-                        .slice(0, 8)
-                        .map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                    </Pie>
+                  <BarChart
+                    data={Object.entries(stats.moviesByCountry)
+                      .sort((a, b) => Number(b[1]) - Number(a[1]))
+                      .slice(0, 10)
+                      .map(([country, count]) => ({
+                        country: country.length > 12 ? country.substring(0, 12) + '...' : country,
+                        fullCountry: country,
+                        count: Number(count)
+                      }))}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-text-muted" opacity={0.1} />
+                    <XAxis 
+                      dataKey="country" 
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      tick={{ fill: 'currentColor', fontSize: 12 }}
+                      className="text-text-muted"
+                    />
+                    <YAxis 
+                      tick={{ fill: 'currentColor', fontSize: 12 }}
+                      className="text-text-muted"
+                    />
                     <Tooltip 
                       formatter={(value: number) => [`${value} phim`, 'Số lượng']}
+                      labelFormatter={(label, payload) => payload && payload[0] ? payload[0].payload.fullCountry : label}
                       contentStyle={{ 
                         backgroundColor: 'var(--color-surface)',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '8px'
                       }}
                     />
-                  </PieChart>
+                    <Bar dataKey="count" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
@@ -291,41 +293,39 @@ const StatsPage: React.FC = () => {
             {Object.keys(stats.moviesByGenre).length > 0 ? (
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={Object.entries(stats.moviesByGenre)
-                      .sort((a, b) => Number(b[1]) - Number(a[1]))
-                      .slice(0, 10)
-                      .map(([genre, count]) => ({
-                        genre: genre.length > 12 ? genre.substring(0, 12) + '...' : genre,
-                        fullGenre: genre,
-                        count: Number(count)
-                      }))}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-text-muted" opacity={0.1} />
-                    <XAxis 
-                      dataKey="genre" 
-                      angle={-45}
-                      textAnchor="end"
-                      height={80}
-                      tick={{ fill: 'currentColor', fontSize: 12 }}
-                      className="text-text-muted"
-                    />
-                    <YAxis 
-                      tick={{ fill: 'currentColor', fontSize: 12 }}
-                      className="text-text-muted"
-                    />
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(stats.moviesByGenre)
+                        .sort((a, b) => Number(b[1]) - Number(a[1]))
+                        .slice(0, 8)
+                        .map(([genre, count]) => ({
+                          name: genre,
+                          value: Number(count),
+                          percentage: ((Number(count) / stats.totalMovies) * 100).toFixed(1)
+                        }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                      outerRadius={90}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {Object.entries(stats.moviesByGenre)
+                        .slice(0, 8)
+                        .map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
                     <Tooltip 
                       formatter={(value: number) => [`${value} phim`, 'Số lượng']}
-                      labelFormatter={(label, payload) => payload && payload[0] ? payload[0].payload.fullGenre : label}
                       contentStyle={{ 
                         backgroundColor: 'var(--color-surface)',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '8px'
                       }}
                     />
-                    <Bar dataKey="count" fill="#14b8a6" radius={[8, 8, 0, 0]} />
-                  </BarChart>
+                  </PieChart>
                 </ResponsiveContainer>
               </div>
             ) : (
