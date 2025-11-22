@@ -58,6 +58,14 @@ const Navbar: React.FC = () => {
               <Folder size={20} />
             </button>
 
+            <button
+              onClick={() => setIsRandomOpen(true)}
+              className="p-2 rounded-lg transition-colors cursor-pointer hover:bg-primary/10 hover:text-primary text-text-main"
+              title="Chọn giúp tôi"
+            >
+              <Dice5 size={20} />
+            </button>
+
             {location.pathname === '/' && (
               <button
                 onClick={() => setIsExportModalOpen(true)}
@@ -67,14 +75,6 @@ const Navbar: React.FC = () => {
                 <Download size={20} />
               </button>
             )}
-
-            <button
-              onClick={() => setIsRandomOpen(true)}
-              className="p-2 rounded-lg transition-colors cursor-pointer hover:bg-primary/10 hover:text-primary text-text-main"
-              title="Chọn giúp tôi"
-            >
-              <Dice5 size={20} />
-            </button>
 
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -172,6 +172,14 @@ const Navbar: React.FC = () => {
               <span>Album phim</span>
             </button>
 
+            <button
+              onClick={() => { setIsRandomOpen(true); setIsMenuOpen(false); }}
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-primary/10 text-text-main transition-colors cursor-pointer"
+            >
+              <Dice5 size={20} />
+              <span>Chọn giúp tôi</span>
+            </button>
+
             {location.pathname === '/' && (
               <button
                 onClick={() => { setIsExportModalOpen(true); setIsMenuOpen(false); }}
@@ -181,14 +189,6 @@ const Navbar: React.FC = () => {
                 <span>Xuất dữ liệu</span>
               </button>
             )}
-
-            <button
-              onClick={() => { setIsRandomOpen(true); setIsMenuOpen(false); }}
-              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-primary/10 text-text-main transition-colors cursor-pointer"
-            >
-              <Dice5 size={20} />
-              <span>Chọn giúp tôi</span>
-            </button>
 
           </div>
 
