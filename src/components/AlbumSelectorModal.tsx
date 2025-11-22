@@ -4,7 +4,7 @@ import { Movie, Album } from '../types';
 import { subscribeToAlbums } from '../services/albumService';
 import { useAuth } from './AuthProvider';
 import { useToast } from './Toast';
-import { updateAlbum } from '../services/albumService';
+import { updateAlbum, addAlbum } from '../services/albumService';
 import Loading from './Loading';
 
 interface AlbumSelectorModalProps {
@@ -19,6 +19,9 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingToAlbum, setAddingToAlbum] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newAlbumName, setNewAlbumName] = useState('');
+  const [creatingAlbum, setCreatingAlbum] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -61,6 +64,27 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
     }
   };
 
+  const handleCreateAlbum = async () => {
+    if (!newAlbumName.trim() || !user || !movie?.docId) return;
+
+    try {
+      setCreatingAlbum(true);
+      const docId = await addAlbum({
+        uid: user.uid,
+        name: newAlbumName.trim(),
+        movieDocIds: [movie.docId],
+      });
+      showToast(`Đã tạo album "${newAlbumName}" và thêm phim "${movie.title}"`, 'success');
+      setNewAlbumName('');
+      setShowCreateForm(false);
+      onClose();
+    } catch (error) {
+      showToast('Tạo album thất bại', 'error');
+    } finally {
+      setCreatingAlbum(false);
+    }
+  };
+
   if (!isOpen || !movie) return null;
 
   const availableAlbums = albums.filter(album => 
@@ -97,6 +121,51 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
 
         {/* Content */}
         <div className="p-6 max-h-96 overflow-y-auto custom-scrollbar">
+          {showCreateForm ? (
+            <div className="mb-6 p-4 border border-primary/20 rounded-xl bg-primary/5">
+              <h3 className="text-lg font-medium text-text-main mb-3">Tạo album mới</h3>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Tên album"
+                  value={newAlbumName}
+                  onChange={(e) => setNewAlbumName(e.target.value)}
+                  className="w-full p-3 rounded-lg border border-black/10 dark:border-white/10 bg-surface text-text-main placeholder-text-muted focus:border-primary focus:outline-none"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCreateAlbum}
+                    disabled={creatingAlbum || !newAlbumName.trim()}
+                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {creatingAlbum ? 'Đang tạo...' : 'Tạo album'}
+                  </button>
+                  <button
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 border border-black/10 dark:border-white/10 text-text-main rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="w-full p-4 mb-4 rounded-xl border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/5 transition-all duration-200 text-left group cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                  <FolderPlus size={20} className="text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium text-primary">Tạo album mới</h3>
+                  <p className="text-sm text-text-muted">Tạo album và thêm phim này vào</p>
+                </div>
+              </div>
+            </button>
+          )}
+
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loading size={32} />
@@ -108,9 +177,9 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
               </div>
               <h3 className="text-lg font-medium text-text-main mb-2">Không có album phù hợp</h3>
               <p className="text-sm text-text-muted max-w-sm mx-auto">
-                {albums.length === 0 
-                  ? 'Bạn chưa tạo album nào. Hãy tạo album trước để thêm phim vào.'
-                  : 'Phim này đã có trong tất cả album của bạn.'
+                {albums.length === 0
+                  ? 'Bạn chưa tạo album nào. Sử dụng nút "Tạo album mới" ở trên để tạo album đầu tiên.'
+                  : 'Phim này đã có trong tất cả album của bạn. Tạo album mới nếu muốn.'
                 }
               </p>
             </div>

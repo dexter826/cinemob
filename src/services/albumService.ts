@@ -23,7 +23,8 @@ export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updat
     updatedAt: serverTimestamp(),
   };
 
-  await addDoc(collection(db, COLLECTION_NAME), payload);
+  const docRef = await addDoc(collection(db, COLLECTION_NAME), payload);
+  return docRef.id;
 };
 
 export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
