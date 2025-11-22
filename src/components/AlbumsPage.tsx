@@ -3,12 +3,12 @@ import { Plus, Folder, Film, Trash2 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import Navbar from './Navbar';
 import Loading from './Loading';
-import { Album } from '../types';
+import { Album, Movie } from '../types';
 import { addAlbum, deleteAlbum, subscribeToAlbums } from '../services/albumService';
 import { useToast } from './Toast';
 import { useAlert } from './Alert';
 import { useNavigate } from 'react-router-dom';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, collection, doc, getDoc, getFirestore } from 'firebase/firestore';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
@@ -20,6 +20,7 @@ const AlbumsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [albumCoverMovies, setAlbumCoverMovies] = useState<Record<string, Movie | null>>({});
 
   useEffect(() => {
     if (!user) return;
@@ -31,6 +32,65 @@ const AlbumsPage: React.FC = () => {
 
     return () => unsubscribe();
   }, [user]);
+
+  // Load 1 representative movie for each album to use as cover image
+  useEffect(() => {
+    const loadAlbumCovers = async () => {
+      const db = getFirestore();
+      const moviesCol = collection(db, 'movies');
+
+      const updates: Record<string, Movie | null> = {};
+
+      await Promise.all(
+        albums.map(async album => {
+          if (!album.docId || !album.movieDocIds || album.movieDocIds.length === 0) {
+            updates[album.docId || album.name] = null;
+            return;
+          }
+
+          const firstMovieDocId = album.movieDocIds[0];
+
+          try {
+            const movieRef = doc(moviesCol, firstMovieDocId);
+            const snapshot = await getDoc(movieRef);
+            if (!snapshot.exists()) {
+              updates[album.docId] = null;
+              return;
+            }
+            const data = snapshot.data() as any;
+            updates[album.docId] = {
+              docId: snapshot.id,
+              uid: data.uid,
+              id: data.id,
+              title: data.title,
+              poster_path: data.poster_path,
+              runtime: data.runtime,
+              seasons: data.seasons || 0,
+              watched_at: data.watched_at,
+              source: data.source,
+              media_type: data.media_type || 'movie',
+              status: data.status || 'history',
+              rating: data.rating || 0,
+              review: data.review || '',
+              tagline: data.tagline || '',
+              genres: data.genres || '',
+              release_date: data.release_date || '',
+              country: data.country || '',
+              content: data.content || '',
+            } as Movie;
+          } catch (error) {
+            updates[album.docId] = null;
+          }
+        })
+      );
+
+      setAlbumCoverMovies(prev => ({ ...prev, ...updates }));
+    };
+
+    if (albums.length > 0) {
+      loadAlbumCovers();
+    }
+  }, [albums]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,42 +196,63 @@ const AlbumsPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
             {albums.map(album => (
               <div
                 key={album.docId}
-                className="group relative bg-surface rounded-2xl border border-black/5 dark:border-white/10 hover:border-primary/50 transition-all cursor-pointer overflow-hidden"
+                className="group relative bg-surface rounded-2xl border border-black/5 dark:border-white/10 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 cursor-pointer overflow-hidden"
                 onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
               >
-                <div className="p-4 space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <Film size={18} className="text-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="font-semibold text-sm md:text-base truncate">{album.name}</h3>
-                        <p className="text-xs text-text-muted truncate">
-                          {album.description || 'Album phim đã xem'}
-                        </p>
+                {/* Cover image section */}
+                <div className="relative h-40 sm:h-44 md:h-48 w-full overflow-hidden">
+                  {albumCoverMovies[album.docId || '']?.poster_path ? (
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${albumCoverMovies[album.docId || '']!.poster_path}`}
+                      alt={albumCoverMovies[album.docId || '']!.title}
+                      className="h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-linear-to-br from-slate-800 via-slate-700 to-slate-900 flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-2 text-text-muted">
+                        <div className="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center">
+                          <Film size={22} className="text-primary" />
+                        </div>
+                        <span className="text-xs">Chưa có poster</span>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleDelete(album);
-                      }}
-                      className="p-1.5 rounded-full text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                  )}
 
-                  <div className="flex items-center justify-between text-xs text-text-muted">
-                    <span>{album.movieDocIds.length} phim</span>
-                    <span>{formatDate(album.createdAt)}</span>
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
+
+                  {/* Top-right delete button */}
+                  <button
+                    type="button"
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleDelete(album);
+                    }}
+                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black/40 text-white/80 hover:bg-black hover:text-red-400 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+
+                  {/* Album name overlay */}
+                  <div className="absolute bottom-2 left-2.5 right-2.5 sm:left-3 sm:right-3">
+                    <h3 className="font-semibold text-xs sm:text-sm md:text-base text-white truncate drop-shadow">
+                      {album.name}
+                    </h3>
                   </div>
+                </div>
+
+                {/* Info bar */}
+                <div className="px-2.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-1 text-[10px] sm:text-[11px] md:text-xs bg-surface/80 backdrop-blur border-t border-white/5">
+                  <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded-full bg-primary/10 text-primary font-medium whitespace-nowrap">
+                    <Film size={12} className="hidden xs:inline-block sm:inline-block" />
+                    <span>{album.movieDocIds.length} phim</span>
+                  </div>
+                  <span className="text-text-muted truncate text-right">Nhấn để xem chi tiết</span>
                 </div>
               </div>
             ))}
