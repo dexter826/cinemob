@@ -55,8 +55,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
       setAddingToAlbum(album.docId);
       const newIds = Array.from(new Set([...(album.movieDocIds || []), movie.docId]));
       await updateAlbum(album.docId, { movieDocIds: newIds });
-      showToast(`Đã thêm "${movie.title}" vào album "${album.name}"`, 'success');
-      onClose();
+      showToast('Đã thêm phim vào album thành công', 'success');
     } catch (error) {
       showToast('Thêm phim vào album thất bại', 'error');
     } finally {
@@ -65,19 +64,18 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
   };
 
   const handleCreateAlbum = async () => {
-    if (!newAlbumName.trim() || !user || !movie?.docId) return;
+    if (!newAlbumName.trim() || !user) return;
 
     try {
       setCreatingAlbum(true);
-      const docId = await addAlbum({
+      await addAlbum({
         uid: user.uid,
         name: newAlbumName.trim(),
-        movieDocIds: [movie.docId],
+        movieDocIds: [],
       });
-      showToast(`Đã tạo album "${newAlbumName}" và thêm phim "${movie.title}"`, 'success');
+      showToast(`Đã tạo album "${newAlbumName}"`, 'success');
       setNewAlbumName('');
       setShowCreateForm(false);
-      onClose();
     } catch (error) {
       showToast('Tạo album thất bại', 'error');
     } finally {
@@ -160,7 +158,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium text-primary">Tạo album mới</h3>
-                  <p className="text-sm text-text-muted">Tạo album và thêm phim này vào</p>
+                  <p className="text-sm text-text-muted">Tạo album để thêm phim</p>
                 </div>
               </div>
             </button>
