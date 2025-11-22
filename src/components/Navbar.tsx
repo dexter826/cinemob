@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5 } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { useTheme } from './ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -45,6 +45,14 @@ const Navbar: React.FC = () => {
               title="Thống kê"
             >
               <BarChart2 size={20} />
+            </button>
+
+            <button
+              onClick={() => navigate('/albums')}
+              className={`p-2 rounded-lg transition-colors cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+              title="Album phim"
+            >
+              <Folder size={20} />
             </button>
 
             <button
@@ -141,6 +149,14 @@ const Navbar: React.FC = () => {
             >
               <BarChart2 size={20} />
               <span>Thống kê</span>
+            </button>
+
+            <button
+              onClick={() => { navigate('/albums'); setIsMenuOpen(false); }}
+              className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+            >
+              <Folder size={20} />
+              <span>Album phim</span>
             </button>
 
             <button

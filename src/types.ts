@@ -22,6 +22,16 @@ export interface Movie {
   content?: string; // Movie content/overview
 }
 
+export interface Album {
+  docId?: string;
+  uid: string;
+  name: string;
+  description?: string;
+  movieDocIds: string[];
+  createdAt: Timestamp | Date;
+  updatedAt?: Timestamp | Date;
+}
+
 export interface TMDBMovieResult {
   id: number;
   title?: string;

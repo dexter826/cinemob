@@ -8,6 +8,8 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import SearchPage from './components/SearchPage';
 import StatsPage from './components/StatsPage';
+import AlbumsPage from './components/AlbumsPage';
+import AlbumDetailPage from './components/AlbumDetailPage';
 import AddMovieModal from './components/AddMovieModal';
 import Layout from './components/Layout';
 import SplashScreen from './components/SplashScreen';
@@ -49,6 +51,8 @@ const AppContent: React.FC = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/albums" element={<AlbumsPage />} />
+        <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <AddMovieModal />
