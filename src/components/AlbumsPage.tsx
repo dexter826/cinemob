@@ -19,7 +19,6 @@ const AlbumsPage: React.FC = () => {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -45,11 +44,9 @@ const AlbumsPage: React.FC = () => {
       await addAlbum({
         uid: user.uid,
         name: name.trim(),
-        description: description.trim() || undefined,
         movieDocIds: [],
       });
       setName('');
-      setDescription('');
       showToast('Đã tạo album mới', 'success');
     } catch (error) {
       showToast('Tạo album thất bại', 'error');
@@ -113,16 +110,6 @@ const AlbumsPage: React.FC = () => {
                 onChange={e => setName(e.target.value)}
                 className="w-full bg-background border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm"
                 placeholder="Ví dụ: Godfather Collection, Phim Mafia Ý, ..."
-              />
-            </div>
-            <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium text-text-muted">Mô tả (tuỳ chọn)</label>
-              <input
-                type="text"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                className="w-full bg-background border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm"
-                placeholder="Ghi chú ngắn về album này"
               />
             </div>
             <button
