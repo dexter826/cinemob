@@ -208,11 +208,11 @@ const AlbumDetailPage: React.FC = () => {
         {editing && (
           <form
             onSubmit={handleSaveInfo}
-            className="bg-surface border border-black/5 dark:border-white/10 rounded-2xl p-4 md:p-6 space-y-4"
+            className="bg-surface border border-black/10 dark:border-white/10 rounded-2xl p-4 md:p-5"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-muted">Tên album</label>
+            <div className="flex flex-col md:flex-row md:items-end gap-4">
+              <div className="flex-1 flex items-center gap-3">
+                <label className="text-sm font-medium text-text-muted whitespace-nowrap">Tên album</label>
                 <input
                   type="text"
                   value={name}
@@ -220,22 +220,23 @@ const AlbumDetailPage: React.FC = () => {
                   className="w-full bg-background border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm"
                 />
               </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setEditing(false)}
-                className="px-4 py-2 rounded-xl text-sm text-text-muted hover:bg-black/5 dark:hover:bg-white/5"
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 rounded-xl text-sm bg-primary text-white font-medium hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
-              </button>
+
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditing(false)}
+                  className="px-4 py-2 rounded-xl text-sm text-text-muted hover:bg-black/5 dark:hover:bg-white/5"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-4 py-2 rounded-xl text-sm bg-primary text-white font-medium hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+                </button>
+              </div>
             </div>
           </form>
         )}
