@@ -72,7 +72,7 @@ const AddMovieModal: React.FC = () => {
         const timeStr = `${hours}:${minutes}`;
 
         setFormData({
-          title: m.title,
+          title: m.title_vi || m.title,
           title_vi: m.title_vi || '',
           runtime: m.runtime.toString(),
           seasons: m.seasons ? m.seasons.toString() : '',
@@ -104,15 +104,23 @@ const AddMovieModal: React.FC = () => {
             
             if (id) {
               const details = await getMovieDetails(Number(id), type);
+              let displayTitle = '';
               let vietnameseTitle = '';
               if (details) {
-                // Fetch Vietnamese title
-                const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
-                if (viDetails) {
-                  vietnameseTitle = viDetails.title || viDetails.name || '';
+                const originalTitle = details.title || details.name || '';
+                // Fetch Vietnamese title only if from Vietnam
+                if (details.production_countries?.some(c => c.iso_3166_1 === 'VN')) {
+                  const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
+                  if (viDetails) {
+                    vietnameseTitle = viDetails.title || viDetails.name || '';
+                    displayTitle = vietnameseTitle;
+                  } else {
+                    displayTitle = originalTitle;
+                  }
+                } else {
+                  displayTitle = originalTitle;
                 }
 
-                const title = details.title || details.name || '';
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
                 const seasons = details.number_of_seasons || 0;
                 const tagline = details.tagline || '';
@@ -123,7 +131,7 @@ const AddMovieModal: React.FC = () => {
 
                 setFormData(prev => ({
                   ...prev,
-                  title: title,
+                  title: displayTitle,
                   title_vi: vietnameseTitle,
                   runtime: runtime.toString(),
                   seasons: seasons ? seasons.toString() : '',

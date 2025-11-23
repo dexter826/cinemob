@@ -12,7 +12,23 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
     if (!response.ok) throw new Error('TMDB API Error');
 
     const data = await response.json();
-    const results = (data.results || []).filter((item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv');
+    let results = (data.results || []).filter((item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv');
+
+    // Cập nhật tiêu đề tiếng Việt cho phim từ Việt Nam
+    for (let movie of results) {
+      const detail = await getMovieDetails(movie.id, movie.media_type as 'movie' | 'tv');
+      if (detail && detail.production_countries?.some(country => country.iso_3166_1 === 'VN')) {
+        const viDetail = await getMovieDetailsWithLanguage(movie.id, movie.media_type as 'movie' | 'tv', 'vi-VN');
+        if (viDetail) {
+          if (movie.media_type === 'movie') {
+            movie.title = viDetail.title || movie.title;
+          } else {
+            movie.name = viDetail.name || movie.name;
+          }
+        }
+      }
+    }
+
     return { results, totalPages: data.total_pages || 1 };
   } catch (error) {
     console.error("Failed to search movies:", error);
