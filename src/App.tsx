@@ -6,6 +6,7 @@ import { AlertProvider } from './components/contexts/Alert';
 import { AddMovieProvider, useAddMovie } from './components/contexts/AddMovieContext';
 import { ExportProvider } from './components/contexts/ExportContext';
 import { RecommendationsProvider } from './components/contexts/RecommendationsContext';
+import { AlbumProvider } from './components/contexts/AlbumContext';
 import Login from './components/auth/Login';
 const Dashboard = lazy(() => import('./components/pages/Dashboard'));
 const SearchPage = lazy(() => import('./components/pages/SearchPage'));
@@ -35,7 +36,7 @@ const AppContent: React.FC = () => {
 
   // If splash screen is active, show it.
   if (isSplashing) {
-    return <SplashScreen onAnimationFinish={() => {}} />;
+    return <SplashScreen onAnimationFinish={() => { }} />;
   }
 
   // After splash, if auth is still loading, show a blank screen to prevent flashing Login page.
@@ -75,9 +76,11 @@ const App: React.FC = () => {
               <AddMovieProvider>
                 <ExportProvider>
                   <RecommendationsProvider>
-                    <Layout>
-                      <AppContent />
-                    </Layout>
+                    <AlbumProvider>
+                      <Layout>
+                        <AppContent />
+                      </Layout>
+                    </AlbumProvider>
                   </RecommendationsProvider>
                 </ExportProvider>
               </AddMovieProvider>

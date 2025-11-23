@@ -1,96 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
-import { Album, Movie } from '../../types';
-import { addAlbum, deleteAlbum, subscribeToAlbums } from '../../services/albumService';
+import { Album } from '../../types';
+import { addAlbum, deleteAlbum } from '../../services/albumService';
 import { useToast } from '../contexts/Toast';
 import { useAlert } from '../contexts/Alert';
 import { useNavigate } from 'react-router-dom';
-import { Timestamp, collection, doc, getDoc, getFirestore } from 'firebase/firestore';
+import { useAlbum } from '../contexts/AlbumContext';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const { albums, loading, albumCoverMovies } = useAlbum();
 
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
-  const [albumCoverMovies, setAlbumCoverMovies] = useState<Record<string, Movie | null>>({});
-
-  useEffect(() => {
-    if (!user) return;
-
-    const unsubscribe = subscribeToAlbums(user.uid, data => {
-      setAlbums(data);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
-
-  // Load 1 representative movie for each album to use as cover image
-  useEffect(() => {
-    const loadAlbumCovers = async () => {
-      const db = getFirestore();
-      const moviesCol = collection(db, 'movies');
-
-      const updates: Record<string, Movie | null> = {};
-
-      await Promise.all(
-        albums.map(async album => {
-          if (!album.docId || !album.movieDocIds || album.movieDocIds.length === 0) {
-            updates[album.docId || album.name] = null;
-            return;
-          }
-
-          const firstMovieDocId = album.movieDocIds[0];
-
-          try {
-            const movieRef = doc(moviesCol, firstMovieDocId);
-            const snapshot = await getDoc(movieRef);
-            if (!snapshot.exists()) {
-              updates[album.docId] = null;
-              return;
-            }
-            const data = snapshot.data() as any;
-            updates[album.docId] = {
-              docId: snapshot.id,
-              uid: data.uid,
-              id: data.id,
-              title: data.title,
-              poster_path: data.poster_path,
-              runtime: data.runtime,
-              seasons: data.seasons || 0,
-              watched_at: data.watched_at,
-              source: data.source,
-              media_type: data.media_type || 'movie',
-              status: data.status || 'history',
-              rating: data.rating || 0,
-              review: data.review || '',
-              tagline: data.tagline || '',
-              genres: data.genres || '',
-              release_date: data.release_date || '',
-              country: data.country || '',
-              content: data.content || '',
-            } as Movie;
-          } catch (error) {
-            updates[album.docId] = null;
-          }
-        })
-      );
-
-      setAlbumCoverMovies(prev => ({ ...prev, ...updates }));
-    };
-
-    if (albums.length > 0) {
-      loadAlbumCovers();
-    }
-  }, [albums]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,12 +59,6 @@ const AlbumsPage: React.FC = () => {
         }
       },
     });
-  };
-
-  const formatDate = (value: Timestamp | Date | undefined) => {
-    if (!value) return '';
-    const d = value instanceof Timestamp ? value.toDate() : value;
-    return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
   };
 
   if (loading) {
