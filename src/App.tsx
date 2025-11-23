@@ -5,6 +5,7 @@ import { ToastProvider } from './components/contexts/Toast';
 import { AlertProvider } from './components/contexts/Alert';
 import { AddMovieProvider, useAddMovie } from './components/contexts/AddMovieContext';
 import { ExportProvider } from './components/contexts/ExportContext';
+import { RecommendationsProvider } from './components/contexts/RecommendationsContext';
 import Login from './components/auth/Login';
 const Dashboard = lazy(() => import('./components/pages/Dashboard'));
 const SearchPage = lazy(() => import('./components/pages/SearchPage'));
@@ -73,9 +74,11 @@ const App: React.FC = () => {
             <AlertProvider>
               <AddMovieProvider>
                 <ExportProvider>
-                  <Layout>
-                    <AppContent />
-                  </Layout>
+                  <RecommendationsProvider>
+                    <Layout>
+                      <AppContent />
+                    </Layout>
+                  </RecommendationsProvider>
                 </ExportProvider>
               </AddMovieProvider>
             </AlertProvider>

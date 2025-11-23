@@ -9,7 +9,7 @@ import { useAddMovie } from '../contexts/AddMovieContext';
 import Loading from '../ui/Loading';
 import { useAuth } from '../providers/AuthProvider';
 import { subscribeToMovies } from '../../services/movieService';
-import { getAIRecommendations } from '../../services/aiService';
+import { useRecommendations } from '../contexts/RecommendationsContext';
 import { Movie } from '../../types';
 import Lottie from 'lottie-react';
 import { Sparkles } from 'lucide-react';
@@ -19,18 +19,14 @@ const SearchPage: React.FC = () => {
   const { openAddModal } = useAddMovie();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
-  const [trendingMovies, setTrendingMovies] = useState<TMDBMovieResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [searchPage, setSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState(1);
 
   const { user } = useAuth();
-  const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
-  const [aiRecommendations, setAiRecommendations] = useState<TMDBMovieResult[]>([]);
-  const [isAiLoading, setIsAiLoading] = useState(false);
+  const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations } = useRecommendations();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
-  const [lastAiHistoryLength, setLastAiHistoryLength] = useState(0);
 
   useEffect(() => {
     fetch('/loading_suggest.json')
@@ -47,16 +43,7 @@ const SearchPage: React.FC = () => {
   const [genres, setGenres] = useState<{ id: number, name: string }[]>([]);
   const [countries, setCountries] = useState<{ iso_3166_1: string, english_name: string, native_name: string }[]>([]);
 
-  // 1. Lấy lịch sử xem phim của user
-  useEffect(() => {
-    if (!user) return;
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setHistoryMovies(data);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
-  // 2. Logic lấy dữ liệu ban đầu (Genres & Countries)
+  // Logic lấy dữ liệu ban đầu (Genres & Countries)
   useEffect(() => {
     const fetchStaticData = async () => {
       try {
@@ -75,62 +62,6 @@ const SearchPage: React.FC = () => {
 
     fetchStaticData();
   }, []);
-
-  // 3. Logic lấy AI Recommendations / Trending
-  const refreshRecommendations = async (forceRefresh = false) => {
-    if (!user) return;
-
-    const watchedHistory = historyMovies.filter(m => (m.status || 'history') === 'history');
-
-    // Nếu có lịch sử xem, gọi AI. Nếu không, gọi Trending
-    if (watchedHistory.length > 3) { // Chỉ gọi AI nếu đã xem ít nhất 3 phim
-      const cacheKey = user ? `ai_recs_${user.uid}` : '';
-      const cachedData = cacheKey ? sessionStorage.getItem(cacheKey) : null;
-
-      // Ưu tiên dùng cache nếu historyLength trùng và không force refresh
-      if (cachedData && !forceRefresh) {
-        const parsedCache = JSON.parse(cachedData);
-        if (parsedCache.historyLength === watchedHistory.length && parsedCache.data) {
-          setAiRecommendations(parsedCache.data);
-          setLastAiHistoryLength(watchedHistory.length);
-          return;
-        }
-      }
-
-      setIsAiLoading(true);
-      try {
-        const aiRecs = await getAIRecommendations(watchedHistory, historyMovies);
-        const tmdbPromises = aiRecs.map(async (rec) => {
-          const searchRes = await searchMovies(rec.title);
-          return searchRes.results.length > 0 ? searchRes.results[0] : null;
-        });
-
-        const tmdbResults = (await Promise.all(tmdbPromises)).filter(m => m !== null) as TMDBMovieResult[];
-        setAiRecommendations(tmdbResults);
-        setLastAiHistoryLength(watchedHistory.length);
-
-        sessionStorage.setItem(cacheKey, JSON.stringify({
-          historyLength: watchedHistory.length,
-          data: tmdbResults
-        }));
-      } catch (e) {
-        const trendingData = await getTrendingMovies();
-        setTrendingMovies(trendingData.results);
-      } finally {
-        setIsAiLoading(false);
-      }
-    } else {
-      const trendingData = await getTrendingMovies();
-      setTrendingMovies(trendingData.results);
-    }
-  };
-
-  // Lần đầu sau khi initialLoading xong, tự lấy gợi ý 1 lần
-  useEffect(() => {
-    if (!initialLoading && user) {
-      refreshRecommendations();
-    }
-  }, [initialLoading, user]);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -181,11 +112,6 @@ const SearchPage: React.FC = () => {
     openAddModal({
       movie: movie,
       mediaType: (movie.media_type === 'tv' || movie.media_type === 'movie') ? movie.media_type : (filterType === 'tv' ? 'tv' : 'movie'),
-      // Cập nhật gợi ý cục bộ sau khi thêm phim thành công
-      onMovieAdded: (tmdbId) => {
-        setAiRecommendations(prev => prev.filter(item => item.id !== tmdbId));
-        setTrendingMovies(prev => prev.filter(item => item.id !== tmdbId));
-      }
     });
   };
 
