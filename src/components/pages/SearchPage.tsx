@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Loader2, Film, ArrowLeft, Filter } from 'lucide-react';
+import { Search, RotateCcw, Film, ArrowLeft, Filter } from 'lucide-react';
 import { searchMovies, getGenres, getTrendingMovies, getCountries } from '../../services/tmdbService';
 import { TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
@@ -27,6 +27,7 @@ const SearchPage: React.FC = () => {
   const { user } = useAuth();
   const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations } = useRecommendations();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
+  const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
     fetch('/loading_suggest.json')
@@ -34,6 +35,18 @@ const SearchPage: React.FC = () => {
       .then(data => setSuggestAnimation(data))
       .catch(err => console.error('Error loading animation:', err));
   }, []);
+
+  // Subscribe to user's saved movies to check which ones are already saved
+  useEffect(() => {
+    if (!user) {
+      setSavedMovies([]);
+      return;
+    }
+    const unsubscribe = subscribeToMovies(user.uid, (movies) => {
+      setSavedMovies(movies);
+    });
+    return () => unsubscribe();
+  }, [user]);
 
   // Filters
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
@@ -113,6 +126,11 @@ const SearchPage: React.FC = () => {
       movie: movie,
       mediaType: (movie.media_type === 'tv' || movie.media_type === 'movie') ? movie.media_type : (filterType === 'tv' ? 'tv' : 'movie'),
     });
+  };
+
+  // Check if a movie is already saved
+  const isMovieSaved = (movieId: number) => {
+    return savedMovies.some(m => m.id === movieId);
   };
 
   if (initialLoading) {
@@ -226,7 +244,7 @@ const SearchPage: React.FC = () => {
                   onClick={() => refreshRecommendations(true)}
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-main"
                 >
-                  {isAiLoading && <Loader2 size={16} className="animate-spin" />}
+                  <RotateCcw size={16} />
                   <span>Làm mới</span>
                 </button>
               </div>
@@ -251,6 +269,16 @@ const SearchPage: React.FC = () => {
                       </div>
                     )}
                     <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    {/* Saved Badge */}
+                    {isMovieSaved(movie.id) && (
+                      <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-green-500/50 backdrop-blur-md rounded-lg border border-white/20 z-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+                        </svg>
+                        <span className="text-xs font-bold text-white">Đã lưu</span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>

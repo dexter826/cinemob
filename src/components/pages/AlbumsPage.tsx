@@ -148,6 +148,12 @@ const AlbumsPage: React.FC = () => {
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
 
+                  {/* Album Badge (Top Left) */}
+                  <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-yellow-500/50 backdrop-blur-md rounded-lg border border-white/20 z-10">
+                    <Folder size={12} className="text-white" />
+                    <span className="text-xs font-bold text-white">Album</span>
+                  </div>
+
                   {/* Top-right delete button */}
                   <button
                     type="button"
