@@ -37,6 +37,23 @@ export const getMovieDetails = async (id: number, mediaType: 'movie' | 'tv' = 'm
   }
 };
 
+export const getMovieDetailsWithLanguage = async (id: number, mediaType: 'movie' | 'tv' = 'movie', language: string = 'vi-VN'): Promise<TMDBMovieDetail | null> => {
+  if (!TMDB_API_KEY) return null;
+
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${mediaType}/${id}?api_key=${TMDB_API_KEY}&language=${language}`
+    );
+
+    if (!response.ok) throw new Error('TMDB API Error');
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to get movie details:", error);
+    return null;
+  }
+};
+
 export const getGenres = async (): Promise<{ id: number; name: string }[]> => {
   if (!TMDB_API_KEY) return [];
 

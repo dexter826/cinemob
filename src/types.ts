@@ -6,6 +6,7 @@ export interface Movie {
   uid: string;    // Owner ID
   id: string | number; // TMDB ID or Manual ID
   title: string;
+  title_vi?: string; // Vietnamese title
   poster_path: string;
   runtime: number; // Minutes
   seasons?: number; // Number of seasons for TV shows

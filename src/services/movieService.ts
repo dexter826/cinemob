@@ -84,6 +84,7 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
         uid: data.uid,
         id: data.id,
         title: data.title,
+        title_vi: data.title_vi || '',
         poster_path: data.poster_path,
         runtime: data.runtime,
         seasons: data.seasons || 0,

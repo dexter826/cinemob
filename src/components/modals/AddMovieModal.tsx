@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Calendar, Star, Save, Loader2 } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
-import { getMovieDetails } from '../../services/tmdbService';
+import { getMovieDetails, getMovieDetailsWithLanguage } from '../../services/tmdbService';
 import { useToast } from '../contexts/Toast';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
 import { useAddMovie } from '../contexts/AddMovieContext';
@@ -15,6 +15,7 @@ const AddMovieModal: React.FC = () => {
 
   const [formData, setFormData] = useState({
     title: '',
+    title_vi: '',
     runtime: '',
     seasons: '',
     poster: '',
@@ -72,6 +73,7 @@ const AddMovieModal: React.FC = () => {
 
         setFormData({
           title: m.title,
+          title_vi: m.title_vi || '',
           runtime: m.runtime.toString(),
           seasons: m.seasons ? m.seasons.toString() : '',
           poster: m.poster_path,
@@ -102,7 +104,14 @@ const AddMovieModal: React.FC = () => {
             
             if (id) {
               const details = await getMovieDetails(Number(id), type);
+              let vietnameseTitle = '';
               if (details) {
+                // Fetch Vietnamese title
+                const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
+                if (viDetails) {
+                  vietnameseTitle = viDetails.title || viDetails.name || '';
+                }
+
                 const title = details.title || details.name || '';
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
                 const seasons = details.number_of_seasons || 0;
@@ -111,10 +120,11 @@ const AddMovieModal: React.FC = () => {
                 const releaseDate = details.release_date || details.first_air_date || '';
                 const country = details.production_countries?.map(c => c.name).join(', ') || '';
                 const content = details.overview || '';
-                
+
                 setFormData(prev => ({
                   ...prev,
                   title: title,
+                  title_vi: vietnameseTitle,
                   runtime: runtime.toString(),
                   seasons: seasons ? seasons.toString() : '',
                   poster: details.poster_path || '',
@@ -142,6 +152,7 @@ const AddMovieModal: React.FC = () => {
         // Manual Add Mode (Reset)
         setFormData({
           title: '',
+          title_vi: '',
           runtime: '',
           seasons: '',
           poster: '',
@@ -202,6 +213,7 @@ const AddMovieModal: React.FC = () => {
         // Update Existing
         await updateMovie(initialData.movieToEdit.docId, {
           title: formData.title,
+          title_vi: formData.title_vi,
           runtime: parseInt(formData.runtime) || 0,
           seasons: parseInt(formData.seasons) || 0,
           poster_path: formData.poster,
@@ -223,6 +235,7 @@ const AddMovieModal: React.FC = () => {
           uid: user.uid,
           id: usedId, // Fallback ID
           title: formData.title,
+          title_vi: formData.title_vi,
           poster_path: formData.poster,
           runtime: parseInt(formData.runtime) || 0,
           seasons: parseInt(formData.seasons) || 0,

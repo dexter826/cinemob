@@ -106,7 +106,7 @@ const Dashboard: React.FC = () => {
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      result = result.filter(movie => movie.title.toLowerCase().includes(q));
+      result = result.filter(movie => movie.title.toLowerCase().includes(q) || (movie.title_vi && movie.title_vi.toLowerCase().includes(q)));
     }
 
     if (filterRating !== null) {
