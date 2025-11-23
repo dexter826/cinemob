@@ -29,6 +29,11 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
   const [lastAiHistoryLength, setLastAiHistoryLength] = useState(0);
+  const [previouslyRecommendedTitles, setPreviouslyRecommendedTitles] = useState<Set<string>>(() => {
+    if (!user) return new Set();
+    const stored = sessionStorage.getItem(`previously_recommended_${user.uid}`);
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  });
 
   // Subscribe to user's movies
   useEffect(() => {
@@ -37,12 +42,17 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
       setTrendingMovies([]);
       setHistoryMovies([]);
       setLastAiHistoryLength(0);
+      setPreviouslyRecommendedTitles(new Set());
       return;
     }
 
     const unsubscribe = subscribeToMovies(user.uid, (data) => {
       setHistoryMovies(data);
     });
+
+    // Load previously recommended titles for this user
+    const stored = sessionStorage.getItem(`previously_recommended_${user.uid}`);
+    setPreviouslyRecommendedTitles(stored ? new Set(JSON.parse(stored)) : new Set());
 
     return () => unsubscribe();
   }, [user]);
@@ -76,7 +86,7 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
 
       setIsAiLoading(true);
       try {
-        const aiRecs = await getAIRecommendations(watchedHistory, historyMovies);
+        const aiRecs = await getAIRecommendations(watchedHistory, historyMovies, Array.from(previouslyRecommendedTitles));
         const tmdbPromises = aiRecs.map(async (rec) => {
           const searchRes = await searchMovies(rec.title);
           return searchRes.results.length > 0 ? searchRes.results[0] : null;
@@ -85,6 +95,16 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
         const tmdbResults = (await Promise.all(tmdbPromises)).filter(m => m !== null) as TMDBMovieResult[];
         setAiRecommendations(tmdbResults);
         setLastAiHistoryLength(watchedHistory.length);
+
+        // Add new recommendations to previously recommended list
+        const newTitles = aiRecs.map(rec => rec.title);
+        const updatedPreviouslyRecommended = new Set([...previouslyRecommendedTitles, ...newTitles]);
+        setPreviouslyRecommendedTitles(updatedPreviouslyRecommended);
+
+        // Save to sessionStorage
+        if (user) {
+          sessionStorage.setItem(`previously_recommended_${user.uid}`, JSON.stringify([...updatedPreviouslyRecommended]));
+        }
 
         sessionStorage.setItem(cacheKey, JSON.stringify({
           historyLength: watchedHistory.length,
