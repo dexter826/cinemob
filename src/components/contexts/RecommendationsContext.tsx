@@ -57,12 +57,12 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
     return () => unsubscribe();
   }, [user]);
 
-  // Fetch recommendations when user logs in or history changes
+  // Fetch recommendations when user logs in (not on history changes)
   useEffect(() => {
     if (user && historyMovies.length >= 0) { // Allow even with 0 movies for trending
       refreshRecommendations();
     }
-  }, [user, historyMovies.length]);
+  }, [user]); // Removed historyMovies.length dependency to prevent auto-refresh
 
   const refreshRecommendations = async (forceRefresh = false) => {
     if (!user) return;

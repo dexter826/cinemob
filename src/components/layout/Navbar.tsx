@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
     <>
       <nav className="border-b border-black/5 dark:border-white/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <div 
+          <div
             className="flex items-center cursor-pointer"
             onClick={() => navigate('/')}
           >
@@ -106,15 +106,13 @@ const Navbar: React.FC = () => {
 
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-surface border border-black/5 dark:border-white/5 rounded-lg shadow-lg z-50">
-                  {location.pathname === '/' && (
-                    <button
-                      onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
-                      className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer rounded-t-lg"
-                    >
-                      <Download size={18} />
-                      <span>Xuất dữ liệu</span>
-                    </button>
-                  )}
+                  <button
+                    onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer rounded-t-lg"
+                  >
+                    <Download size={18} />
+                    <span>Xuất dữ liệu</span>
+                  </button>
                   <button
                     onClick={() => {
                       showAlert({
@@ -127,7 +125,7 @@ const Navbar: React.FC = () => {
                       });
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer ${location.pathname === '/' ? 'rounded-b-lg' : 'rounded-lg'}`}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer rounded-b-lg"
                   >
                     <LogOut size={18} />
                     <span>Đăng xuất</span>
@@ -158,7 +156,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu Sidebar Overlay */}
       {isMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden animate-in fade-in duration-200"
           onClick={() => setIsMenuOpen(false)}
         />
@@ -176,10 +174,10 @@ const Navbar: React.FC = () => {
               <X size={24} />
             </button>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-4 space-y-2">
-             {/* User Info */}
-             <div className="flex items-center space-x-3 p-3 mb-4 bg-black/5 dark:bg-white/5 rounded-xl">
+            {/* User Info */}
+            <div className="flex items-center space-x-3 p-3 mb-4 bg-black/5 dark:bg-white/5 rounded-xl">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt="Avatar" className="w-10 h-10 rounded-full" />
               ) : (
@@ -215,15 +213,13 @@ const Navbar: React.FC = () => {
               <span>Chọn giúp tôi</span>
             </button>
 
-            {location.pathname === '/' && (
-              <button
-                onClick={() => { setIsExportModalOpen(true); setIsMenuOpen(false); }}
-                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-primary/10 text-text-main transition-colors cursor-pointer"
-              >
-                <Download size={20} />
-                <span>Xuất dữ liệu</span>
-              </button>
-            )}
+            <button
+              onClick={() => { setIsExportModalOpen(true); setIsMenuOpen(false); }}
+              className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-primary/10 text-text-main transition-colors cursor-pointer"
+            >
+              <Download size={20} />
+              <span>Xuất dữ liệu</span>
+            </button>
 
           </div>
 
