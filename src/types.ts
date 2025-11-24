@@ -70,14 +70,6 @@ export interface AuthContextType {
   logout: () => Promise<void>;
 }
 
-export interface Stats {
-  totalMovies: number;
-  totalMinutes: number;
-  days: number;
-  hours: number;
-  minutes: number;
-}
-
 export type ToastType = 'success' | 'error' | 'info';
 
 export interface ToastContextType {

@@ -105,14 +105,3 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     throw error;
   }
 };
-
-// Utility function to export with compression (if needed for multiple files)
-export const exportWithCompression = async (
-  movies: Movie[],
-  filters: ExportFilters,
-  format: 'excel'
-): Promise<void> => {
-  // For now, just call the export function
-  // In future, can add JSZip for multiple files compression
-  await exportToExcel(movies, filters);
-};
