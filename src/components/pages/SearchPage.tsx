@@ -223,12 +223,61 @@ const SearchPage: React.FC = () => {
         {loading ? (
           <Loading fullScreen={false} size={40} className="py-20" />
         ) : !query && isAiLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-4">
-            <div className="w-24 h-24">
-              {suggestAnimation && <Lottie animationData={suggestAnimation} loop={true} />}
+          <>
+            <div className="flex flex-col items-center justify-center py-20 space-y-4">
+              <div className="w-24 h-24">
+                {suggestAnimation && <Lottie animationData={suggestAnimation} loop={true} />}
+              </div>
+              <p className="text-lg font-medium text-primary animate-pulse">Đang gợi ý phim cho bạn...</p>
             </div>
-            <p className="text-lg font-medium text-primary animate-pulse">Đang gợi ý phim cho bạn...</p>
-          </div>
+            {/* Always show trending movies even when AI is loading */}
+            <div className="flex items-center gap-2">
+              <Popcorn className="text-primary" size={18} />
+              <h2 className="text-xl text-primary font-bold">Phim vừa ra mắt</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              {trendingMovies.map(movie => (
+                <div
+                  key={movie.id}
+                  onClick={() => handleSelectMovie(movie)}
+                  className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 cursor-pointer hover:shadow-lg transition-all"
+                >
+                  <div className="aspect-2/3 w-full relative overflow-hidden">
+                    {movie.poster_path ? (
+                      <img
+                        src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
+                        alt={movie.title || movie.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-text-muted">
+                        <Film size={32} />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                    {/* Saved Badge */}
+                    {isMovieSaved(movie.id) && (
+                      <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-green-500/50 backdrop-blur-md rounded-lg border border-white/20 z-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+                        </svg>
+                        <span className="text-xs font-bold text-white">Đã lưu</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>
+                      {movie.title || movie.name}
+                    </h3>
+                    <p className="text-xs text-text-muted mt-1">
+                      {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A'} • {movie.media_type === 'tv' ? 'TV' : 'Movie'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
           <>
             {!query && (
