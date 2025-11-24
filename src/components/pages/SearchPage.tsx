@@ -249,7 +249,7 @@ const SearchPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
             <div className="hidden sm:flex items-center gap-2 bg-surface border border-black/10 dark:border-white/10 rounded-xl px-3 py-2">
               <Filter size={16} className="text-text-muted" />
               <span className="text-sm font-medium text-text-muted">Lọc theo:</span>
@@ -296,7 +296,7 @@ const SearchPage: React.FC = () => {
               placeholder="Năm"
               value={filterYear}
               onChange={(e) => setFilterYear(e.target.value)}
-              className="w-24 bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full sm:w-24 bg-surface border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm flex-1 sm:flex-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </div>
         </div>
