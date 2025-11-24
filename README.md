@@ -1,5 +1,5 @@
 ﻿<div align="center">
-  <img src="public/logo.gif" alt="Logo dự án">
+  <img src="public/logo_text.png" alt="Logo dự án">
 </div>
 
 Chào mừng đến với **Cinemetrics**! Đây là một ứng dụng để theo dõi và quản lý danh sách phim đã xem, giúp bạn lưu giữ những khoảnh khắc điện ảnh đáng nhớ. 🍿✨
