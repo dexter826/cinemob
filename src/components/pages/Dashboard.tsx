@@ -169,6 +169,11 @@ const Dashboard: React.FC = () => {
     setCurrentPage(1);
   }, [searchQuery, filterRating, filterYear, filterCountry, filterContentType, sortBy, sortOrder, filterVersion]);
 
+  // Reset to page 1 when tab changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
+
   const handleDelete = async (docId: string) => {
     showAlert({
       title: "Xóa phim",
