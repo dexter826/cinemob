@@ -75,3 +75,11 @@ export type ToastType = 'success' | 'error' | 'info';
 export interface ToastContextType {
   showToast: (message: string, type?: ToastType) => void;
 }
+
+export interface Stats {
+  totalMovies: number;
+  totalMinutes: number;
+  days: number;
+  hours: number;
+  minutes: number;
+}

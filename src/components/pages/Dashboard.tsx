@@ -4,7 +4,7 @@ import { useAuth } from '../providers/AuthProvider';
 import { subscribeToMovies, deleteMovie } from '../../services/movieService';
 
 import { Movie, Stats } from '../../types';
-import { Film, Plus, Loader, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Filter, Star } from 'lucide-react';
+import { Film, Plus, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Filter, Star } from 'lucide-react';
 import MovieCard from '../ui/MovieCard';
 import MovieDetailModal from '../modals/MovieDetailModal';
 import Navbar from '../layout/Navbar';
@@ -561,7 +561,7 @@ const Dashboard: React.FC = () => {
                           key={page}
                           type="button"
                           onClick={() => setCurrentPage(page)}
-                          className={`min-w-[40px] h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
+                          className={`min-w-10 h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
                             ? 'bg-primary text-white shadow-lg shadow-primary/25'
                             : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30'
                             }`}
