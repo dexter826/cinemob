@@ -31,6 +31,7 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [historyMovies, setHistoryMovies] = useState<Movie[]>([]);
   const [lastAiHistoryLength, setLastAiHistoryLength] = useState(0);
+  const [hasFetchedInitial, setHasFetchedInitial] = useState(false);
   const [previouslyRecommendedTitles, setPreviouslyRecommendedTitles] = useState<Set<string>>(() => {
     if (!user) return new Set();
     const stored = sessionStorage.getItem(`previously_recommended_${user.uid}`);
@@ -59,12 +60,13 @@ export const RecommendationsProvider: React.FC<{ children: React.ReactNode }> = 
     return () => unsubscribe();
   }, [user]);
 
-  // Fetch recommendations when user logs in (not on history changes)
+  // Fetch recommendations when user logs in and history is loaded (only initial fetch)
   useEffect(() => {
-    if (user && historyMovies.length >= 0) { // Allow even with 0 movies for trending
+    if (user && !hasFetchedInitial && historyMovies.length >= 0) {
       refreshRecommendations();
+      setHasFetchedInitial(true);
     }
-  }, [user]); // Removed historyMovies.length dependency to prevent auto-refresh
+  }, [user, hasFetchedInitial, historyMovies.length]);
 
   const refreshRecommendations = async (forceRefresh = false) => {
     if (!user) return;

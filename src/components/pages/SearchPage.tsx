@@ -48,6 +48,13 @@ const SearchPage: React.FC = () => {
     return () => unsubscribe();
   }, [user]);
 
+  // Auto-fetch recommendations when accessing the page if user is logged in and no AI recommendations yet
+  useEffect(() => {
+    if (user && aiRecommendations.length === 0 && !isAiLoading) {
+      refreshRecommendations();
+    }
+  }, [user, aiRecommendations.length, isAiLoading, refreshRecommendations]);
+
   // Filters
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
   const [filterYear, setFilterYear] = useState<string>('');
