@@ -3,7 +3,7 @@ import { X, FolderPlus, Film } from 'lucide-react';
 import { Movie, Album } from '../../types';
 import { subscribeToAlbums } from '../../services/albumService';
 import { useAuth } from '../providers/AuthProvider';
-import { useToast } from '../contexts/Toast';
+import useToastStore from '../../stores/toastStore';
 import { updateAlbum, addAlbum } from '../../services/albumService';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
@@ -16,7 +16,7 @@ interface AlbumSelectorModalProps {
 
 const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose, movie }) => {
   const { user } = useAuth();
-  const { showToast } = useToast();
+  const { showToast } = useToastStore();
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingToAlbum, setAddingToAlbum] = useState<string | null>(null);

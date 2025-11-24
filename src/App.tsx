@@ -1,12 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './components/providers/AuthProvider';
-import { ToastProvider } from './components/contexts/Toast';
-import { AlertProvider } from './components/contexts/Alert';
-import { AddMovieProvider, useAddMovie } from './components/contexts/AddMovieContext';
-import { ExportProvider } from './components/contexts/ExportContext';
-import { RecommendationsProvider } from './components/contexts/RecommendationsContext';
-import { AlbumProvider } from './components/contexts/AlbumContext';
+import useAddMovieStore from './stores/addMovieStore';
 import Login from './components/auth/Login';
 const Dashboard = lazy(() => import('./components/pages/Dashboard'));
 const SearchPage = lazy(() => import('./components/pages/SearchPage'));
@@ -18,6 +13,10 @@ import Layout from './components/layout/Layout';
 import SplashScreen from './components/ui/SplashScreen';
 import Loading from './components/ui/Loading';
 import { ThemeProvider } from './components/providers/ThemeProvider';
+import AlbumStoreInitializer from './components/providers/AlbumStoreInitializer';
+import RecommendationsStoreInitializer from './components/providers/RecommendationsStoreInitializer';
+import ToastContainer from './components/ui/ToastContainer';
+import AlertContainer from './components/ui/AlertContainer';
 
 const AppContent: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
@@ -51,6 +50,8 @@ const AppContent: React.FC = () => {
 
   return (
     <>
+      <AlbumStoreInitializer />
+      <RecommendationsStoreInitializer />
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
@@ -71,21 +72,11 @@ const App: React.FC = () => {
     <Router>
       <AuthProvider>
         <ThemeProvider>
-          <ToastProvider>
-            <AlertProvider>
-              <AddMovieProvider>
-                <ExportProvider>
-                  <RecommendationsProvider>
-                    <AlbumProvider>
-                      <Layout>
-                        <AppContent />
-                      </Layout>
-                    </AlbumProvider>
-                  </RecommendationsProvider>
-                </ExportProvider>
-              </AddMovieProvider>
-            </AlertProvider>
-          </ToastProvider>
+          <Layout>
+            <AppContent />
+          </Layout>
+          <ToastContainer />
+          <AlertContainer />
         </ThemeProvider>
       </AuthProvider>
     </Router>

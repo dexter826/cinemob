@@ -6,7 +6,7 @@ import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
 import AlbumSelectorModal from './AlbumSelectorModal';
-import { useToast } from '../contexts/Toast';
+import useToastStore from '../../stores/toastStore';
 
 interface MovieDetailModalProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   const [details, setDetails] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
-  const { showToast } = useToast();
+  const { showToast } = useToastStore();
 
   useEffect(() => {
     const fetchDetails = async () => {

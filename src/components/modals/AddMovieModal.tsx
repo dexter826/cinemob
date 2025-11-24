@@ -3,17 +3,17 @@ import { X, Calendar, Star, Save, Loader2, FolderPlus, Check } from 'lucide-reac
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
 import { getMovieDetails, getMovieDetailsWithLanguage } from '../../services/tmdbService';
-import { useToast } from '../contexts/Toast';
+import useToastStore from '../../stores/toastStore';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
-import { useAddMovie } from '../contexts/AddMovieContext';
+import useAddMovieStore from '../../stores/addMovieStore';
 import Loading from '../ui/Loading';
 import { subscribeToAlbums, updateAlbum, addAlbum } from '../../services/albumService';
 import { Album } from '../../types';
 
 const AddMovieModal: React.FC = () => {
-  const { isOpen, closeAddModal, initialData } = useAddMovie();
+  const { isOpen, closeAddModal, initialData } = useAddMovieStore();
   const { user } = useAuth();
-  const { showToast } = useToast();
+  const { showToast } = useToastStore();
 
   const [formData, setFormData] = useState({
     title: '',

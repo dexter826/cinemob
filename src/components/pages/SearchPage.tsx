@@ -5,18 +5,18 @@ import { TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../layout/Navbar';
-import { useAddMovie } from '../contexts/AddMovieContext';
+import useAddMovieStore from '../../stores/addMovieStore';
 import Loading from '../ui/Loading';
 import { useAuth } from '../providers/AuthProvider';
 import { subscribeToMovies } from '../../services/movieService';
-import { useRecommendations } from '../contexts/RecommendationsContext';
+import useRecommendationsStore from '../../stores/recommendationsStore';
 import { Movie } from '../../types';
 import Lottie from 'lottie-react';
 import { Sparkles, Popcorn } from 'lucide-react';
 
 const SearchPage: React.FC = () => {
   const navigate = useNavigate();
-  const { openAddModal } = useAddMovie();
+  const { openAddModal } = useAddMovieStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const SearchPage: React.FC = () => {
   const [totalSearchPages, setTotalSearchPages] = useState(1);
 
   const { user } = useAuth();
-  const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations } = useRecommendations();
+  const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations } = useRecommendationsStore();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
 
@@ -51,7 +51,7 @@ const SearchPage: React.FC = () => {
   // Auto-fetch recommendations when accessing the page if user is logged in and no AI recommendations yet
   useEffect(() => {
     if (user && aiRecommendations.length === 0 && !isAiLoading) {
-      refreshRecommendations();
+      refreshRecommendations(user.uid);
     }
   }, [user, aiRecommendations.length, isAiLoading, refreshRecommendations]);
 
@@ -293,7 +293,7 @@ const SearchPage: React.FC = () => {
 
                     <button
                       type="button"
-                      onClick={() => refreshRecommendations(true)}
+                      onClick={() => refreshRecommendations(user?.uid || '', true)}
                       className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-main"
                     >
                       <RotateCcw size={16} />
@@ -481,7 +481,7 @@ const SearchPage: React.FC = () => {
                         key={page}
                         type="button"
                         onClick={() => setSearchPage(page)}
-                        className={`min-w-[40px] h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
+                        className={`min-w-10 h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
                           ? 'bg-primary text-white shadow-lg shadow-primary/25'
                           : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30'
                           }`}

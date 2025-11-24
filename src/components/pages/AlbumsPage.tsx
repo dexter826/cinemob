@@ -5,17 +5,17 @@ import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
 import { Album } from '../../types';
 import { addAlbum, deleteAlbum } from '../../services/albumService';
-import { useToast } from '../contexts/Toast';
-import { useAlert } from '../contexts/Alert';
+import useToastStore from '../../stores/toastStore';
+import useAlertStore from '../../stores/alertStore';
 import { useNavigate } from 'react-router-dom';
-import { useAlbum } from '../contexts/AlbumContext';
+import useAlbumStore from '../../stores/albumStore';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
-  const { showToast } = useToast();
-  const { showAlert } = useAlert();
+  const { showToast } = useToastStore();
+  const { showAlert } = useAlertStore();
   const navigate = useNavigate();
-  const { albums, loading, albumCoverMovies } = useAlbum();
+  const { albums, loading, albumCoverMovies } = useAlbumStore();
 
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);

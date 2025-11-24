@@ -6,7 +6,7 @@ import { subscribeToMovies } from '../../services/movieService';
 import { getTrendingMovies } from '../../services/tmdbService';
 import { Movie, TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
-import { useAddMovie } from '../contexts/AddMovieContext';
+import useAddMovieStore from '../../stores/addMovieStore';
 import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
 
@@ -17,7 +17,7 @@ interface RandomPickerModalProps {
 
 const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
-  const { openAddModal } = useAddMovie();
+  const { openAddModal } = useAddMovieStore();
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);

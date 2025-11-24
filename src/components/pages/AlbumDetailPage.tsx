@@ -7,8 +7,8 @@ import { Album, Movie } from '../../types';
 import { subscribeToAlbum, updateAlbum } from '../../services/albumService';
 import { subscribeToMovies } from '../../services/movieService';
 import { useAuth } from '../providers/AuthProvider';
-import { useToast } from '../contexts/Toast';
-import { useAlert } from '../contexts/Alert';
+import useToastStore from '../../stores/toastStore';
+import useAlertStore from '../../stores/alertStore';
 import MovieCard from '../ui/MovieCard';
 import { Timestamp } from 'firebase/firestore';
 
@@ -16,8 +16,8 @@ const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { showToast } = useToast();
-  const { showAlert } = useAlert();
+  const { showToast } = useToastStore();
+  const { showAlert } = useAlertStore();
 
   const [album, setAlbum] = useState<Album | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -399,7 +399,7 @@ const AlbumDetailPage: React.FC = () => {
                             key={page}
                             type="button"
                             onClick={() => setCurrentPage(page)}
-                            className={`min-w-[40px] h-10 px-3 rounded-xl text-sm font-semibold transition-all ${isActive
+                            className={`min-w-10 h-10 px-3 rounded-xl text-sm font-semibold transition-all ${isActive
                               ? 'bg-primary text-white shadow-lg shadow-primary/25'
                               : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30'
                               }`}

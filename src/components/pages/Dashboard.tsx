@@ -10,10 +10,10 @@ import MovieDetailModal from '../modals/MovieDetailModal';
 import Navbar from '../layout/Navbar';
 import { TMDB_API_KEY } from '../../constants';
 import { Timestamp } from 'firebase/firestore';
-import { useToast } from '../contexts/Toast';
-import { useAlert } from '../contexts/Alert';
-import { useAddMovie } from '../contexts/AddMovieContext';
-import { useExport } from '../contexts/ExportContext';
+import useToastStore from '../../stores/toastStore';
+import useAlertStore from '../../stores/alertStore';
+import useAddMovieStore from '../../stores/addMovieStore';
+import useExportStore from '../../stores/exportStore';
 import Loading from '../ui/Loading';
 
 type SortOption = 'date' | 'title';
@@ -21,10 +21,10 @@ type SortOrder = 'asc' | 'desc';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const { showToast } = useToast();
-  const { showAlert } = useAlert();
-  const { openAddModal } = useAddMovie();
-  const { setMovies: setExportMovies } = useExport();
+  const { showToast } = useToastStore();
+  const { showAlert } = useAlertStore();
+  const { openAddModal } = useAddMovieStore();
+  const { setMovies: setExportMovies } = useExportStore();
   const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);

@@ -5,8 +5,8 @@ import { useTheme } from '../providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RandomPickerModal from '../modals/RandomPickerModal';
 import ExportModal from '../modals/ExportModal';
-import { useExport } from '../contexts/ExportContext';
-import { useAlert } from '../contexts/Alert';
+import useExportStore from '../../stores/exportStore';
+import useAlertStore from '../../stores/alertStore';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,8 +16,8 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isExportModalOpen, setIsExportModalOpen, movies } = useExport();
-  const { showAlert } = useAlert();
+  const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
+  const { showAlert } = useAlertStore();
 
   React.useEffect(() => {
     if (isMenuOpen) {

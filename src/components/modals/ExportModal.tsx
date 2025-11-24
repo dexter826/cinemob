@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { X, Download, FileSpreadsheet, Loader2, Star, Filter } from 'lucide-react';
 import { Movie } from '../../types';
 import { exportToExcel, ExportFilters } from '../../services/exportService';
-import { useToast } from '../contexts/Toast';
+import useToastStore from '../../stores/toastStore';
 import { Timestamp } from 'firebase/firestore';
 
 interface ExportModalProps {
@@ -12,7 +12,7 @@ interface ExportModalProps {
 }
 
 const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) => {
-  const { showToast } = useToast();
+  const { showToast } = useToastStore();
 
   const [isExporting, setIsExporting] = useState(false);
 
