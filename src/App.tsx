@@ -21,21 +21,32 @@ import AlertContainer from './components/ui/AlertContainer';
 const AppContent: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const [isSplashing, setIsSplashing] = useState(() => !sessionStorage.getItem('splashScreenShown'));
+  const [animationFinished, setAnimationFinished] = useState(false);
+  const [timerExpired, setTimerExpired] = useState(false);
 
   useEffect(() => {
     if (isSplashing) {
       const timer = setTimeout(() => {
-        sessionStorage.setItem('splashScreenShown', 'true');
-        setIsSplashing(false);
+        setTimerExpired(true);
+        if (animationFinished) {
+          sessionStorage.setItem('splashScreenShown', 'true');
+          setIsSplashing(false);
+        }
       }, 2000); // Splash screen minimum time
 
       return () => clearTimeout(timer);
     }
-  }, [isSplashing]);
+  }, [isSplashing, animationFinished]);
 
   // If splash screen is active, show it.
   if (isSplashing) {
-    return <SplashScreen onAnimationFinish={() => { }} />;
+    return <SplashScreen onAnimationFinish={() => {
+      setAnimationFinished(true);
+      if (timerExpired) {
+        sessionStorage.setItem('splashScreenShown', 'true');
+        setIsSplashing(false);
+      }
+    }} />;
   }
 
   // After splash, if auth is still loading, show a blank screen to prevent flashing Login page.
