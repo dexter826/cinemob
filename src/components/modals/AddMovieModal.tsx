@@ -423,7 +423,7 @@ const AddMovieModal: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Nội dung (tùy chọn)</label>
+                    <label className="block text-sm font-medium text-text-muted mb-1">Nội dung</label>
                     <textarea
                       rows={8}
                       value={formData.content}
@@ -434,7 +434,7 @@ const AddMovieModal: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Tagline (tùy chọn)</label>
+                    <label className="block text-sm font-medium text-text-muted mb-1">Tagline</label>
                     <input
                       type="text"
                       value={formData.tagline}

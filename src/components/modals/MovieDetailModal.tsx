@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { X, Calendar, Clock, Star, Film, Info, FolderPlus, Play } from 'lucide-react';
-import { Movie, TMDBMovieDetail, TMDBVideo } from '../../types';
-import { getMovieDetails, getMovieVideos } from '../../services/tmdbService';
+import { Movie, TMDBVideo } from '../../types';
+import { getMovieVideos } from '../../services/tmdbService';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
@@ -15,46 +15,33 @@ interface MovieDetailModalProps {
 }
 
 const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, movie }) => {
-  const [details, setDetails] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
   const [videos, setVideos] = useState<TMDBVideo[]>([]);
   const { showToast } = useToastStore();
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      if (movie && movie.source === 'tmdb' && movie.id) {
+    const fetchData = async () => {
+      if (movie && movie.source === 'tmdb' && movie.id && movie.status === 'watchlist') {
         setLoading(true);
         try {
-          let data = await getMovieDetails(Number(movie.id), movie.media_type || 'movie');
-
-          // Fallback for legacy data: if 'movie' failed and we didn't specify type, try 'tv'
-          if (!data && !movie.media_type) {
-              data = await getMovieDetails(Number(movie.id), 'tv');
-          }
-
-          setDetails(data);
-
           // Fetch videos for watchlist movies
-          if (movie.status === 'watchlist') {
-            const movieVideos = await getMovieVideos(Number(movie.id), movie.media_type || 'movie');
-            setVideos(movieVideos);
-          } else {
-            setVideos([]);
-          }
+          const movieVideos = await getMovieVideos(Number(movie.id), movie.media_type || 'movie');
+          setVideos(movieVideos);
         } catch (error) {
-          console.error("Failed to fetch details", error);
+          console.error("Failed to fetch videos", error);
+          setVideos([]);
         } finally {
           setLoading(false);
         }
       } else {
-        setDetails(null);
         setVideos([]);
+        setLoading(false);
       }
     };
 
     if (isOpen && movie) {
-      fetchDetails();
+      fetchData();
     }
   }, [isOpen, movie]);
 
@@ -71,20 +58,16 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
   if (!isOpen || !movie) return null;
 
-  const title = getDisplayTitle(movie) || details?.title || details?.name;
-  const overview = details?.overview || movie.review || "Chưa có mô tả.";
-  const backdropUrl = details?.backdrop_path 
-    ? `${TMDB_IMAGE_BASE_URL}${details.backdrop_path}` 
-    : (movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE);
-  
-  const posterUrl = details?.poster_path 
-    ? `${TMDB_IMAGE_BASE_URL}${details.poster_path}`
-    : (movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : (movie.poster_path || PLACEHOLDER_IMAGE));
+  const title = getDisplayTitle(movie);
+  const overview = movie.content || movie.review || "Chưa có mô tả.";
+  const backdropUrl = movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
 
-  const genres = details?.genres?.map(g => g.name).join(', ');
-  const rating = details?.vote_average ? details.vote_average.toFixed(1) : null;
-  const releaseDate = details?.release_date || details?.first_air_date;
-  const country = details?.production_countries?.map(c => c.name).join(', ') || movie.country;
+  const posterUrl = movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
+
+  const genres = movie.genres;
+  const rating = null;
+  const releaseDate = movie.release_date;
+  const country = movie.country;
 
   const canAddToAlbum = (movie.status || 'history') === 'history' && movie.docId;
 
@@ -131,8 +114,8 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
             <div className="space-y-6">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-2">{title}</h2>
-                {details?.tagline && (
-                  <p className="text-text-muted italic text-lg">"{details.tagline}"</p>
+                {movie.tagline && (
+                  <p className="text-text-muted italic text-lg">"{movie.tagline}"</p>
                 )}
               </div>
 
@@ -143,22 +126,24 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                     <span>{new Date(releaseDate).getFullYear()}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full">
-                  <Clock size={16} className="text-blue-400" />
-                  <span>{movie.media_type === 'tv' ? `${details?.number_of_seasons || movie.seasons || 0} phần` : `${details?.runtime || movie.runtime} phút`}</span>
-                </div>
-                {rating && (
+                {(movie.media_type === 'tv' ? (movie.seasons && movie.seasons > 0) : (movie.runtime && movie.runtime > 0)) ? (
+                  <div className="flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full">
+                    <Clock size={16} className="text-blue-400" />
+                    <span>{movie.media_type === 'tv' ? `${movie.seasons} phần` : `${movie.runtime} phút`}</span>
+                  </div>
+                ) : null}
+                {rating ? (
                   <div className="flex items-center gap-1 bg-white/5 px-3 py-1 rounded-full">
                     <Star size={16} className="text-yellow-500 fill-yellow-500" />
                     <span>{rating}/10 (TMDB)</span>
                   </div>
-                )}
-                {movie.rating && (
+                ) : null}
+                {(movie.rating && movie.rating > 0) ? (
                    <div className="flex items-center gap-1 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
                    <Star size={16} className="text-primary fill-primary" />
                    <span className="text-primary font-medium">{movie.rating}/5 (Của bạn)</span>
                  </div>
-                )}
+                ) : null}
               </div>
 
               {genres && (
