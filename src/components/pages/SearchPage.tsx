@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../layout/Navbar';
 import Pagination from '../ui/Pagination';
 import CustomDropdown from '../ui/CustomDropdown';
+import MultiSelectDropdown from '../ui/MultiSelectDropdown';
 import useAddMovieStore from '../../stores/addMovieStore';
 import Loading from '../ui/Loading';
 import { useAuth } from '../providers/AuthProvider';
@@ -66,7 +67,7 @@ const SearchPage: React.FC = () => {
   // Filters
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
   const [filterYear, setFilterYear] = useState<string>('');
-  const [filterGenre, setFilterGenre] = useState<string>('');
+  const [filterGenres, setFilterGenres] = useState<(string | number)[]>([]);
   const [filterCountry, setFilterCountry] = useState<string>('');
   const [genres, setGenres] = useState<{ id: number, name: string }[]>([]);
   const [countries, setCountries] = useState<{ iso_3166_1: string, english_name: string, native_name: string }[]>([]);
@@ -113,7 +114,7 @@ const SearchPage: React.FC = () => {
     if (discoverMovies.length > 0) {
       setDiscoverPage(1);
     }
-  }, [filterGenre, filterYear, filterCountry]);
+  }, [filterGenres, filterYear, filterCountry]);
 
   // Auto-load discover movies when page or filters change
   useEffect(() => {
@@ -122,7 +123,7 @@ const SearchPage: React.FC = () => {
         setDiscoverLoading(true);
         const { results, totalPages } = await getDiscoverMovies({
           page: discoverPage,
-          genre: filterGenre,
+          genres: filterGenres.map(g => String(g)),
           year: filterYear,
           country: filterCountry,
         });
@@ -132,7 +133,7 @@ const SearchPage: React.FC = () => {
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [discoverPage, filterGenre, filterYear, filterCountry]);
+  }, [discoverPage, filterGenres, filterYear, filterCountry]);
 
   // Reset search page when query changes
   useEffect(() => {
@@ -152,9 +153,12 @@ const SearchPage: React.FC = () => {
       if (!date || !date.startsWith(filterYear)) return false;
     }
 
-    if (filterGenre) {
-      // Note: discover results contain genre_ids array
-      if (!movie.genre_ids || !movie.genre_ids.includes(Number(filterGenre))) return false;
+    if (filterGenres.length > 0) {
+      // Check if movie has at least one of the selected genres
+      const hasMatchingGenre = filterGenres.some(g =>
+        movie.genre_ids?.includes(Number(g))
+      );
+      if (!hasMatchingGenre) return false;
     }
 
     if (filterCountry) {
@@ -195,7 +199,7 @@ const SearchPage: React.FC = () => {
       setDiscoverLoading(true);
       const { results, totalPages } = await getDiscoverMovies({
         page: discoverPage,
-        genre: filterGenre,
+        genres: filterGenres.map(g => String(g)),
         year: filterYear,
         country: filterCountry,
       });
@@ -268,15 +272,14 @@ const SearchPage: React.FC = () => {
             />
 
 
-            <CustomDropdown
-              options={[
-                { value: '', label: 'Tất cả thể loại' },
-                ...genres.map(g => ({ value: g.id, label: g.name })),
-              ]}
-              value={filterGenre}
-              onChange={(value) => setFilterGenre(value as string)}
+            <MultiSelectDropdown
+              options={genres.map(g => ({ value: g.id, label: g.name }))}
+              values={filterGenres}
+              onChange={(values) => setFilterGenres(values)}
               placeholder="Chọn thể loại"
-              className="flex-1 sm:flex-none min-w-[140px]"
+              className="flex-1 sm:flex-none min-w-[180px]"
+              searchable={true}
+              maxDisplay={1}
             />
 
             <CustomDropdown

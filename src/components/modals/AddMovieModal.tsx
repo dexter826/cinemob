@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Calendar, Star, Save, Loader2, FolderPlus, Check } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
-import { getMovieDetails, getMovieDetailsWithLanguage } from '../../services/tmdbService';
+import { getMovieDetails, getMovieDetailsWithLanguage, getGenres } from '../../services/tmdbService';
 import useToastStore from '../../stores/toastStore';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
 import useAddMovieStore from '../../stores/addMovieStore';
@@ -10,6 +10,7 @@ import Loading from '../ui/Loading';
 import { subscribeToAlbums, updateAlbum, addAlbum } from '../../services/albumService';
 import { Album } from '../../types';
 import CustomDropdown from '../ui/CustomDropdown';
+import MultiSelectDropdown from '../ui/MultiSelectDropdown';
 
 const AddMovieModal: React.FC = () => {
   const { isOpen, closeAddModal, initialData } = useAddMovieStore();
@@ -46,6 +47,10 @@ const AddMovieModal: React.FC = () => {
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
 
+  // Genre options for MultiSelectDropdown
+  const [genreOptions, setGenreOptions] = useState<{ id: number; name: string }[]>([]);
+  const [selectedGenreIds, setSelectedGenreIds] = useState<(string | number)[]>([]);
+
   const isManualMode = !initialData?.tmdbId && !initialData?.movie && !initialData?.movieToEdit;
 
   // Subscribe to albums
@@ -56,6 +61,29 @@ const AddMovieModal: React.FC = () => {
     });
     return () => unsubscribe();
   }, [user]);
+
+  // Fetch genre options
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const genres = await getGenres();
+      setGenreOptions(genres);
+    };
+    fetchGenres();
+  }, []);
+
+  // Set selectedGenreIds when genreOptions is loaded and we have TMDB data
+  useEffect(() => {
+    if (genreOptions.length > 0 && isOpen && (initialData?.tmdbId || initialData?.movie) && !initialData?.movieToEdit && formData.genres) {
+      // This is for TMDB add mode - parse the genres string back to IDs
+      const genreNames = formData.genres.split(',').map(g => g.trim());
+      const matchedIds = genreOptions
+        .filter(opt => genreNames.includes(opt.name))
+        .map(opt => opt.id);
+      if (matchedIds.length > 0) {
+        setSelectedGenreIds(matchedIds);
+      }
+    }
+  }, [genreOptions, isOpen, initialData, formData.genres]);
 
   // Reset form when modal opens with new data
   useEffect(() => {
@@ -110,6 +138,24 @@ const AddMovieModal: React.FC = () => {
           country: m.country || '',
           content: m.content || ''
         });
+
+        // Parse genres string to IDs for editing
+        if (m.genres && genreOptions.length > 0) {
+          const genreNames = m.genres.split(',').map(g => g.trim());
+          const matchedIds = genreOptions
+            .filter(opt => {
+              // Try exact match first
+              if (genreNames.includes(opt.name)) return true;
+              // Try case-insensitive match
+              return genreNames.some(name =>
+                name.toLowerCase() === opt.name.toLowerCase()
+              );
+            })
+            .map(opt => opt.id);
+          setSelectedGenreIds(matchedIds);
+        } else {
+          setSelectedGenreIds([]);
+        }
       } else if (initialData?.tmdbId || initialData?.movie) {
         // Add Mode from Search or ID
         setStatus('history');
@@ -147,10 +193,17 @@ const AddMovieModal: React.FC = () => {
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
                 const seasons = details.number_of_seasons || 0;
                 const tagline = details.tagline || '';
+                // Keep genres in English as returned by TMDB
                 const genres = details.genres?.map(g => g.name).join(', ') || '';
                 const releaseDate = details.release_date || details.first_air_date || '';
                 const country = details.production_countries?.map(c => c.name).join(', ') || '';
                 const content = details.overview || '';
+
+                // Set selected genre IDs for dropdown (only if genreOptions is loaded)
+                if (genreOptions.length > 0) {
+                  const genreIds = details.genres?.map(g => g.id) || [];
+                  setSelectedGenreIds(genreIds);
+                }
 
                 const now = new Date();
                 setFormData(prev => ({
@@ -202,9 +255,10 @@ const AddMovieModal: React.FC = () => {
         setManualMediaType('movie');
         setMovieExists(false);
         setStatus('history');
+        setSelectedGenreIds([]);
       }
     }
-  }, [isOpen, initialData, user]);
+  }, [isOpen, initialData, user, genreOptions]);
 
   const handleCreateAlbum = async () => {
     if (!newAlbumName.trim() || !user) return;
@@ -462,15 +516,29 @@ const AddMovieModal: React.FC = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-text-muted mb-1">Thể loại</label>
-                    <input
-                      type="text"
-                      required={isManualMode}
-                      value={formData.genres}
-                      onChange={e => setFormData({ ...formData, genres: e.target.value })}
-                      placeholder="Hành động, Phiêu lưu, Khoa học viễn tưởng..."
-                      disabled={!isManualMode && !initialData?.movieToEdit}
-                      className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    />
+                    {(isManualMode || initialData?.movieToEdit) ? (
+                      <MultiSelectDropdown
+                        options={genreOptions.map(g => ({ value: g.id, label: g.name }))}
+                        values={selectedGenreIds}
+                        onChange={(values) => {
+                          setSelectedGenreIds(values);
+                          // Update formData.genres as comma-separated string
+                          const genreNames = genreOptions
+                            .filter(g => values.includes(g.id))
+                            .map(g => g.name)
+                            .join(', ');
+                          setFormData(prev => ({ ...prev, genres: genreNames }));
+                        }}
+                        placeholder="Chọn thể loại..."
+                        searchable={true}
+                        maxDisplay={2}
+                        className="w-full"
+                      />
+                    ) : (
+                      <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main opacity-60">
+                        {formData.genres || 'Không có thể loại'}
+                      </div>
+                    )}
                   </div>
 
                   <div>

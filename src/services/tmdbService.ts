@@ -93,7 +93,7 @@ export const getGenres = async (): Promise<{ id: number; name: string }[]> => {
 
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}&language=vi-VN`
+      `${TMDB_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}`
     );
 
     if (!response.ok) throw new Error('TMDB API Error');
@@ -111,7 +111,7 @@ export const getTrendingMovies = async (page: number = 1): Promise<{ results: TM
 
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&language=vi-VN&page=${page}`
+      `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&page=${page}`
     );
 
     if (!response.ok) throw new Error('TMDB API Error');
@@ -145,7 +145,7 @@ export const getCountries = async (): Promise<{ iso_3166_1: string; english_name
 
 export const getDiscoverMovies = async (params: {
   page?: number;
-  genre?: string;
+  genres?: string[];
   year?: string;
   country?: string;
 } = {}): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
@@ -157,14 +157,18 @@ export const getDiscoverMovies = async (params: {
     // Discover movies
     const movieQueryParams = new URLSearchParams({
       api_key: TMDB_API_KEY,
-      language: 'vi-VN',
       page: page.toString(),
       sort_by: 'popularity.desc',
       include_adult: 'false',
       include_video: 'false',
     });
 
-    if (params.genre) movieQueryParams.append('with_genres', params.genre);
+    // Support multiple genres - TMDB uses comma-separated for AND, pipe for OR
+    // Using comma (AND) means movies must have ALL selected genres
+    // Using pipe (OR) means movies must have AT LEAST ONE selected genre
+    if (params.genres && params.genres.length > 0) {
+      movieQueryParams.append('with_genres', params.genres.join(','));
+    }
     if (params.year) movieQueryParams.append('primary_release_year', params.year);
     if (params.country) movieQueryParams.append('with_origin_country', params.country);
 
@@ -175,14 +179,15 @@ export const getDiscoverMovies = async (params: {
     // Discover TV shows
     const tvQueryParams = new URLSearchParams({
       api_key: TMDB_API_KEY,
-      language: 'vi-VN',
       page: page.toString(),
       sort_by: 'popularity.desc',
       include_adult: 'false',
       include_video: 'false',
     });
 
-    if (params.genre) tvQueryParams.append('with_genres', params.genre);
+    if (params.genres && params.genres.length > 0) {
+      tvQueryParams.append('with_genres', params.genres.join(','));
+    }
     if (params.year) tvQueryParams.append('first_air_date_year', params.year);
     if (params.country) tvQueryParams.append('with_origin_country', params.country);
 
