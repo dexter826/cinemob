@@ -116,7 +116,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
             key={option.value}
             className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium"
           >
-            <span className="truncate max-w-[80px]">{option.label}</span>
+            <span className="truncate max-w-20">{option.label}</span>
             <button
               type="button"
               onClick={(e) => handleRemove(option.value, e)}
