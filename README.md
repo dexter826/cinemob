@@ -15,6 +15,7 @@ Cinemetrics là một ứng dụng quản lý phim cá nhân thông minh với A
 - **🤖 Gợi ý phim bằng AI:** Nhận gợi ý phim cá nhân hóa dựa trên lịch sử xem của bạn.
 - **📝 Quản lý danh sách:** Thêm phim đã xem, watchlist, ghi chú ngày xem, đánh giá và review.
 - **📁 Quản lý Album:** Tạo album phim cá nhân, sắp xếp và quản lý bộ sưu tập.
+- **👤 Trang người nổi tiếng:** Xem chi tiết thông tin diễn viên, đạo diễn với danh sách phim tham gia, bộ lọc và sắp xếp.
 - **📊 Thống kê chi tiết:** Biểu đồ về số lượng phim, thể loại, quốc gia, đánh giá,...
 - **🎲 Random Picker:** Chọn phim ngẫu nhiên từ bộ sưu tập của bạn.
 - **📤 Xuất dữ liệu:** Xuất danh sách phim sang Excel/CSV.
@@ -89,7 +90,7 @@ cinemetrics/
      auth/           # Component đăng nhập
      layout/         # Layout components (Navbar, Footer)
      modals/         # Modal components (AddMovie, AlbumSelector, Export, MovieDetail, RandomPicker)
-     pages/          # Page components (Dashboard, SearchPage, StatsPage, AlbumsPage, AlbumDetailPage)
+     pages/          # Page components (Dashboard, SearchPage, StatsPage, AlbumsPage, AlbumDetailPage, PersonDetailPage)
      providers/      # React Context providers (AuthProvider, ThemeProvider, AlbumStoreInitializer, RecommendationsStoreInitializer)
      ui/             # UI components (Loading, MovieCard, SplashScreen, StatsCard)
    services/          # API services (aiService, albumService, exportService, movieService, tmdbService)
