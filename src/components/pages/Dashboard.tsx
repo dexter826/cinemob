@@ -295,7 +295,7 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative overflow-hidden">
                   <div
-                    className={`absolute inset-y-1 left-1 w-1/2 rounded-full bg-primary transition-transform duration-300 ease-out ${activeTab === 'history' ? 'translate-x-0' : 'translate-x-full'}`}
+                    className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary transition-transform duration-300 ease-out ${activeTab === 'history' ? 'translate-x-0' : 'translate-x-full'}`}
                   />
                   <button
                     type="button"
