@@ -61,22 +61,22 @@ const PersonDetailPage: React.FC = () => {
     };
 
     fetchPersonData();
-   }, [personId]);
+  }, [personId]);
 
-   useEffect(() => {
-     const handleClickOutside = (event: MouseEvent) => {
-       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
-         setShowFilters(false);
-       }
-     };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilters(false);
+      }
+    };
 
-     if (showFilters) {
-       document.addEventListener('mousedown', handleClickOutside);
-     }
-     return () => {
-       document.removeEventListener('mousedown', handleClickOutside);
-     };
-   }, [showFilters]);
+    if (showFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFilters]);
 
   // Get unique genres and years for filters
   const availableGenres = useMemo(() => {
@@ -314,87 +314,99 @@ const PersonDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="flex flex-col items-end gap-3 relative">
-          <div className="flex items-center gap-2 w-full">
-            {/* Search Bar */}
-            <div className="relative group flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm phim..."
-                className="w-full bg-surface border-2 border-black/10 dark:border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main"
-                >
-                  <X size={14} />
-                </button>
-              )}
+        {/* Search & Filter Bar + Results Count */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          {/* Search & Filter Section - Left Half on Desktop */}
+          <div className="flex flex-col items-end gap-3 relative md:flex-1">
+            <div className="flex items-center gap-2 w-full">
+              {/* Search Bar */}
+              <div className="relative group flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm kiếm phim..."
+                  className="w-full bg-surface border-2 border-black/10 dark:border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              {/* Filter Toggle Button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
+                className={`p-2 rounded-xl border-2 transition-colors cursor-pointer ${showFilters ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-surface border-black/10 dark:border-white/10 text-text-muted hover:text-text-main hover:border-primary/30'}`}
+              >
+                {showFilters ? <X size={20} /> : <Filter size={20} />}
+              </button>
             </div>
 
-            {/* Filter Toggle Button */}
-            <button
-              onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-              className={`p-2 rounded-xl border-2 transition-colors cursor-pointer ${showFilters ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-surface border-black/10 dark:border-white/10 text-text-muted hover:text-text-main hover:border-primary/30'}`}
-            >
-              {showFilters ? <X size={20} /> : <Filter size={20} />}
-            </button>
+            {/* Sorting Controls (Dropdown/Expandable) */}
+            {showFilters && (
+              <div ref={filterRef} className="absolute top-full right-0 mt-2 z-20 bg-surface p-4 rounded-xl border border-black/5 dark:border-white/10 shadow-xl flex flex-col gap-4 min-w-[280px]">
+
+                {/* Sort Section */}
+                <div className="space-y-2">
+                  <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Sắp xếp</div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSortBy('year')}
+                      className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'year' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
+                    >
+                      <Calendar size={14} />
+                      <span>Năm</span>
+                    </button>
+                    <button
+                      onClick={() => setSortBy('title')}
+                      className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'title' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
+                    >
+                      <Type size={14} />
+                      <span>Tên</span>
+                    </button>
+                    <button
+                      onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                    >
+                      {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+                      <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-px bg-black/10 dark:bg-white/10" />
+
+                {/* Filter Section */}
+                <div className="space-y-3">
+                  <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Lọc</div>
+
+                  {/* Year Filter */}
+                  <div>
+                    <label className="text-xs text-text-muted mb-1.5 block">Năm phát hành</label>
+                    <MultiSelectDropdown
+                      options={availableYears.map(year => ({ value: year, label: year }))}
+                      values={selectedYears}
+                      onChange={(values) => setSelectedYears(values.map(v => v.toString()))}
+                      placeholder="Chọn năm"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Sorting Controls (Dropdown/Expandable) */}
-          {showFilters && (
-            <div ref={filterRef} className="absolute top-full right-0 mt-2 z-20 bg-surface p-4 rounded-xl border border-black/5 dark:border-white/10 shadow-xl flex flex-col gap-4 min-w-[280px]">
-
-              {/* Sort Section */}
-              <div className="space-y-2">
-                <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Sắp xếp</div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSortBy('year')}
-                    className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'year' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
-                  >
-                    <Calendar size={14} />
-                    <span>Năm</span>
-                  </button>
-                  <button
-                    onClick={() => setSortBy('title')}
-                    className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'title' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}
-                  >
-                    <Type size={14} />
-                    <span>Tên</span>
-                  </button>
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main transition-colors cursor-pointer"
-                  >
-                    {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
-                    <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="h-px bg-black/10 dark:bg-white/10" />
-
-              {/* Filter Section */}
-              <div className="space-y-3">
-                <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Lọc</div>
-
-                {/* Year Filter */}
-                <div>
-                  <label className="text-xs text-text-muted mb-1.5 block">Năm phát hành</label>
-                  <MultiSelectDropdown
-                    options={availableYears.map(year => ({ value: year, label: year }))}
-                    values={selectedYears}
-                    onChange={(values) => setSelectedYears(values.map(v => v.toString()))}
-                    placeholder="Chọn năm"
-                  />
-                </div>
-              </div>
+          {/* Results Count - Right Half on Desktop */}
+          {paginatedMovies.length > 0 && (
+            <div className="md:flex-1 md:flex md:justify-end">
+              <p className="text-text-muted">
+                Hiển thị {paginatedMovies.length} trong tổng số {filteredMovies.length} phim
+              </p>
             </div>
           )}
         </div>
@@ -402,11 +414,6 @@ const PersonDetailPage: React.FC = () => {
         {/* Results */}
         {paginatedMovies.length > 0 ? (
           <>
-            <div className="flex justify-between items-center">
-              <p className="text-text-muted">
-                Hiển thị {paginatedMovies.length} trong tổng số {filteredMovies.length} phim
-              </p>
-            </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {paginatedMovies.map((movie) => (
