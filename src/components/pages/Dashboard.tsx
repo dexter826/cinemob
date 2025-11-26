@@ -354,7 +354,7 @@ const Dashboard: React.FC = () => {
 
                 {/* Sorting Controls (Dropdown/Expandable) */}
                 {showFilters && (
-                  <div ref={filterRef} className="absolute top-full right-0 mt-2 z-20 bg-surface p-4 rounded-xl border border-black/5 dark:border-white/10 shadow-xl flex flex-col gap-4 min-w-[280px] animate-fade-in">
+                  <div ref={filterRef} className="absolute top-full right-0 mt-2 z-50 bg-surface p-4 rounded-xl border border-black/5 dark:border-white/10 shadow-xl flex flex-col gap-4 min-w-[280px] animate-fade-in">
 
                     {/* Sort Section */}
                     <div className="space-y-2">

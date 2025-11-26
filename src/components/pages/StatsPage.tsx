@@ -3,7 +3,7 @@ import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
 import { subscribeToMovies } from '../../services/movieService';
 import { Movie } from '../../types';
-import { Calendar, Film, Star, TrendingUp, Tv, Globe } from 'lucide-react';
+import { Calendar, Film, Star, TrendingUp, Tv, Globe, View } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import StatsCard from '../ui/StatsCard';
 import { Timestamp } from 'firebase/firestore';
@@ -92,7 +92,7 @@ const StatsPage: React.FC = () => {
     const movieCount = watchedMovies.filter(m => m.media_type === 'movie').length;
     const tvCount = watchedMovies.filter(m => m.media_type === 'tv').length;
     const totalMinutes = watchedMovies.reduce((acc, curr) => acc + (curr.runtime || 0), 0);
-    
+
     const days = Math.floor(totalMinutes / 1440);
     const hours = Math.floor((totalMinutes % 1440) / 60);
     const minutes = totalMinutes % 60;
@@ -111,7 +111,7 @@ const StatsPage: React.FC = () => {
     });
 
     // Movies by Rating
-    const moviesByRating: Record<string, number> = {1:0, 2:0, 3:0, 4:0, 5:0};
+    const moviesByRating: Record<string, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     ratedMovies.forEach(m => {
       if (m.rating) moviesByRating[m.rating] = (moviesByRating[m.rating] || 0) + 1;
     });
@@ -141,6 +141,18 @@ const StatsPage: React.FC = () => {
 
     const totalCountries = Object.keys(moviesByCountry).length;
 
+    // Series Statistics
+    const tvSeries = watchedMovies.filter(m => m.media_type === 'tv');
+    const totalSeasons = tvSeries.reduce((acc, curr) => acc + (curr.seasons || 0), 0);
+    const totalEpisodesWatched = tvSeries.reduce((acc, curr) => {
+      if (curr.progress && curr.progress.watched_episodes) {
+        return acc + curr.progress.watched_episodes;
+      }
+      return acc;
+    }, 0);
+    const completedSeries = tvSeries.filter(m => m.progress?.is_completed).length;
+    const watchingSeries = tvSeries.filter(m => m.progress && !m.progress.is_completed).length;
+
     return {
       totalMovies,
       movieCount,
@@ -154,9 +166,13 @@ const StatsPage: React.FC = () => {
       moviesByRating,
       moviesByCountry,
       moviesByGenre,
-      totalCountries
+      totalCountries,
+      totalSeasons,
+      totalEpisodesWatched,
+      completedSeries,
+      watchingSeries
     };
-  }, [watchedMovies]);
+  }, [watchedMovies, movies]);
 
   if (loading) {
     return <Loading />;
@@ -165,7 +181,7 @@ const StatsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-text-main pb-20">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         <h1 className="md:text-2xl text-xl font-bold flex items-center gap-3">
           <TrendingUp className="text-primary" />
@@ -181,10 +197,10 @@ const StatsPage: React.FC = () => {
             colorClass="text-blue-500"
           />
           <StatsCard
-            label="Tổng quốc gia"
-            value={stats.totalCountries}
-            icon={Globe}
-            colorClass="text-purple-500"
+            label="Series đang xem"
+            value={stats.watchingSeries}
+            icon={View}
+            colorClass="text-orange-500"
           />
           <StatsCard
             label="Phim / TV"
@@ -203,7 +219,7 @@ const StatsPage: React.FC = () => {
 
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
+
           {/* Movies by Year */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -255,7 +271,7 @@ const StatsPage: React.FC = () => {
                     <Star size={12} className="fill-yellow-500 text-yellow-500" />
                   </div>
                   <div className="flex-1 h-2 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-yellow-500 rounded-full transition-all duration-500"
                       style={{ width: `${(stats.moviesByRating[rating] / (movies.filter(m => m.rating).length || 1)) * 100}%` }}
                     />
@@ -272,7 +288,7 @@ const StatsPage: React.FC = () => {
 
         {/* Country and Genre Distribution */}
         <div className="space-y-8">
-          
+
           {/* Movies by Country */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -294,15 +310,15 @@ const StatsPage: React.FC = () => {
                     margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" className="stroke-text-muted" opacity={0.1} />
-                    <XAxis 
-                      dataKey="country" 
+                    <XAxis
+                      dataKey="country"
                       angle={-45}
                       textAnchor="end"
                       height={80}
                       tick={{ fill: 'currentColor', fontSize: 12 }}
                       className="text-text-muted"
                     />
-                    <YAxis 
+                    <YAxis
                       tick={{ fill: 'currentColor', fontSize: 12 }}
                       className="text-text-muted"
                     />
