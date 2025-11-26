@@ -146,9 +146,32 @@ const AddMovieModal: React.FC = () => {
           content: m.content || ''
         });
 
-        // Load progress data for TV series
+        // Load progress data for TV series and fetch episode info from TMDB
         if (m.media_type === 'tv') {
-          setTotalEpisodes(m.total_episodes || 0);
+          // Fetch episode info from TMDB if source is tmdb
+          if (m.source === 'tmdb' && m.id && m.seasons) {
+            const fetchEpisodeInfo = async () => {
+              setIsLoadingDetails(true);
+              try {
+                const episodeInfo = await getTVShowEpisodeInfo(Number(m.id), m.seasons);
+                setTotalEpisodes(episodeInfo.total_episodes);
+                setEpisodesPerSeason(episodeInfo.episodes_per_season);
+              } catch (error) {
+                console.error('Failed to fetch episode info:', error);
+                // Fallback to stored data
+                setTotalEpisodes(m.total_episodes || 0);
+                setEpisodesPerSeason({});
+              } finally {
+                setIsLoadingDetails(false);
+              }
+            };
+            fetchEpisodeInfo();
+          } else {
+            // Manual entry or no TMDB data
+            setTotalEpisodes(m.total_episodes || 0);
+            setEpisodesPerSeason({});
+          }
+
           if (m.progress) {
             setCurrentSeason(m.progress.current_season || 1);
             setCurrentEpisode(m.progress.current_episode || 0);
