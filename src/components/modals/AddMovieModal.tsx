@@ -780,9 +780,9 @@ const AddMovieModal: React.FC = () => {
 
                 {/* TV Series Progress */}
                 {status === 'history' && (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') && (
-                  <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 space-y-4">
+                  <div className="bg-green-500/5 border border-green-500/10 rounded-xl p-4 space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-blue-500 flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-green-500 flex items-center gap-2">
                         <Tv size={16} /> Tiến độ xem
                       </h3>
                       <div className="flex items-center gap-2">
@@ -791,7 +791,7 @@ const AddMovieModal: React.FC = () => {
                           id="completed-checkbox"
                           checked={isCompleted}
                           onChange={(e) => setIsCompleted(e.target.checked)}
-                          className="w-4 h-4 rounded border-blue-500/30 text-blue-500 focus:ring-blue-500"
+                          className="w-4 h-4 rounded border-green-500/30 text-green-500 focus:ring-green-500 accent-green-500"
                         />
                         <label htmlFor="completed-checkbox" className="text-sm text-text-main cursor-pointer select-none">
                           Đã xem hết
@@ -848,7 +848,7 @@ const AddMovieModal: React.FC = () => {
                     )}
 
                     {totalEpisodes > 0 && !isCompleted && (
-                      <div className="text-xs text-text-muted text-center pt-2 border-t border-blue-500/10">
+                      <div className="text-xs text-text-muted text-center pt-2 border-t border-green-500/10">
                         Tổng: {totalEpisodes} tập • Mùa này: {episodesPerSeason[currentSeason] || '?'} tập
                       </div>
                     )}
@@ -865,9 +865,17 @@ const AddMovieModal: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-                        className="text-xs text-primary hover:underline font-medium flex items-center gap-1"
+                        className={`text-xs hover:underline font-medium flex items-center gap-1 transition-colors ${showCreateAlbum ? 'text-red-500' : 'text-primary'}`}
                       >
-                        <Plus size={12} /> Tạo album mới
+                        {showCreateAlbum ? (
+                          <>
+                            <X size={12} /> Hủy
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={12} /> Tạo album mới
+                          </>
+                        )}
                       </button>
                     </div>
 
