@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, Star, Save, Loader2, FolderPlus, Check } from 'lucide-react';
+import { X, Calendar, Star, Save, Loader2, FolderPlus, Check, Clock, Globe, Film, Tv, LayoutGrid, AlignLeft, Plus } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
 import { getMovieDetails, getMovieDetailsWithLanguage, getGenres, getTVShowEpisodeInfo } from '../../services/tmdbService';
@@ -335,13 +335,7 @@ const AddMovieModal: React.FC = () => {
     }
   };
 
-  const toggleAlbumSelection = (albumId: string) => {
-    setSelectedAlbumIds(prev =>
-      prev.includes(albumId)
-        ? prev.filter(id => id !== albumId)
-        : [...prev, albumId]
-    );
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -500,486 +494,441 @@ const AddMovieModal: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-2xl md:max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col">
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-surface/95 backdrop-blur shrink-0">
           <h2 className="text-xl font-bold text-text-main">
             {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
-          <button onClick={closeAddModal} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer">
-            <X size={20} className="text-text-muted" />
+          <button onClick={closeAddModal} className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer text-text-muted hover:text-text-main">
+            <X size={20} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-6">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
           {isLoadingDetails ? (
-            <Loading fullScreen={false} size={40} text="Đang tải thông tin..." className="py-12" />
+            <div className="h-full flex flex-col items-center justify-center gap-4 text-text-muted min-h-[400px]">
+              <Loading fullScreen={false} size={40} />
+              <p>Đang tải thông tin...</p>
+            </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="flex flex-col md:flex-row gap-6">
-                {/* Poster Preview */}
-                <div className="w-full md:w-1/3 flex flex-col gap-4">
-                  <div className="aspect-2/3 rounded-xl overflow-hidden bg-black/10 dark:bg-black/20 border border-black/10 dark:border-white/5 relative group">
-                    {formData.poster ? (
-                      <img
-                        src={formData.poster.startsWith('http') ? formData.poster : `${TMDB_IMAGE_BASE_URL}${formData.poster}`}
-                        alt="Poster"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-text-muted">
-                        No Poster
-                      </div>
-                    )}
-                  </div>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-12 gap-8">
+
+              {/* LEFT COLUMN: Visuals & Core Status */}
+              <div className="md:col-span-4 space-y-6">
+                {/* Poster */}
+                <div className="aspect-[2/3] rounded-xl overflow-hidden bg-black/20 border border-white/10 relative shadow-lg group">
+                  {formData.poster ? (
+                    <img
+                      src={formData.poster.startsWith('http') ? formData.poster : `${TMDB_IMAGE_BASE_URL}${formData.poster}`}
+                      alt="Poster"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-text-muted gap-2">
+                      <LayoutGrid size={40} className="opacity-20" />
+                      <span className="text-sm">No Poster</span>
+                    </div>
+                  )}
+                  {/* Rating Overlay if History */}
+                  {status === 'history' && formData.rating > 0 && (
+                    <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 border border-white/10">
+                      <Star size={14} className="fill-yellow-500 text-yellow-500" />
+                      <span className="text-white font-bold text-sm">{formData.rating}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Fields */}
-                <div className="w-full md:w-2/3 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Trạng thái</label>
-                    <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1">
-                      <button
-                        type="button"
-                        onClick={() => setStatus('history')}
-                        className={`px-3 py-1 text-xs font-medium rounded-full transition-colors cursor-pointer ${status === 'history' ? 'bg-primary text-white' : 'text-text-muted hover:text-text-main'}`}
-                      >
-                        Đã xem
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setStatus('watchlist')}
-                        className={`px-3 py-1 text-xs font-medium rounded-full transition-colors cursor-pointer ${status === 'watchlist' ? 'bg-primary text-white' : 'text-text-muted hover:text-text-main'}`}
-                      >
-                        Sẽ xem
-                      </button>
+                {/* Status Toggle */}
+                <div className="bg-black/5 dark:bg-white/5 p-1 rounded-xl flex">
+                  <button
+                    type="button"
+                    onClick={() => setStatus('history')}
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${status === 'history'
+                      ? 'bg-surface shadow-sm text-primary'
+                      : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+                      }`}
+                  >
+                    Đã xem
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatus('watchlist')}
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${status === 'watchlist'
+                      ? 'bg-surface shadow-sm text-primary'
+                      : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+                      }`}
+                  >
+                    Sẽ xem
+                  </button>
+                </div>
+
+                {/* History Specifics: Rating & Date */}
+                {status === 'history' && (
+                  <div className="space-y-4 animate-in slide-in-from-top-2 duration-200">
+                    <div className="bg-black/5 dark:bg-white/5 rounded-xl p-4 space-y-3">
+                      <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Đánh giá</label>
+                      <div className="flex justify-between px-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                            className="group p-1 focus:outline-none"
+                          >
+                            <Star
+                              size={28}
+                              className={`transition-all duration-200 ${star <= formData.rating
+                                ? 'fill-yellow-500 text-yellow-500 scale-110'
+                                : 'text-text-muted/40 group-hover:text-yellow-500/50 group-hover:scale-110'
+                                }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-black/5 dark:bg-white/5 rounded-xl p-4 space-y-3">
+                      <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Thời gian xem</label>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                          <input
+                            type="date"
+                            required
+                            value={formData.date}
+                            onChange={e => setFormData({ ...formData, date: e.target.value })}
+                            className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all scheme-light dark:scheme-dark"
+                          />
+                        </div>
+                        <div className="relative">
+                          <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                          <input
+                            type="time"
+                            required
+                            value={formData.time}
+                            onChange={e => setFormData({ ...formData, time: e.target.value })}
+                            className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all scheme-light dark:scheme-dark"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
+                )}
+              </div>
 
+              {/* RIGHT COLUMN: Details & Form */}
+              <div className="md:col-span-8 space-y-6">
+
+                {/* Title Section */}
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Tên phim</label>
                     <input
                       type="text"
                       required
                       value={formData.title}
                       onChange={e => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors"
+                      placeholder="Tên phim"
+                      className="w-full bg-transparent border-b-2 border-black/10 dark:border-white/10 px-0 py-2 text-2xl font-bold text-text-main placeholder-text-muted/50 focus:border-primary outline-none transition-colors"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Nội dung</label>
-                    <textarea
-                      rows={8}
-                      value={formData.content}
-                      onChange={e => setFormData({ ...formData, content: e.target.value })}
-                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors resize-none"
-                      placeholder="Tóm tắt nội dung phim..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Tagline</label>
                     <input
                       type="text"
                       value={formData.tagline}
                       onChange={e => setFormData({ ...formData, tagline: e.target.value })}
-                      placeholder="Câu slogan của phim..."
+                      placeholder="Tagline / Slogan..."
                       disabled={!isManualMode && !initialData?.movieToEdit}
-                      className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                      className="w-full bg-transparent border-b border-black/10 dark:border-white/10 px-0 py-2 text-base text-text-muted italic focus:border-primary focus:text-text-main outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
+                </div>
 
-                  {isManualMode && (
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Link Poster (URL)</label>
-                      <input
-                        type="url"
-                        value={formData.poster}
-                        onChange={e => setFormData({ ...formData, poster: e.target.value })}
-                        placeholder="https://example.com/poster.jpg"
-                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors"
-                      />
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Thể loại</label>
-                    {(isManualMode || initialData?.movieToEdit) ? (
-                      <MultiSelectDropdown
-                        options={genreOptions.map(g => ({ value: g.id, label: g.name }))}
-                        values={selectedGenreIds}
-                        onChange={(values) => {
-                          setSelectedGenreIds(values);
-                          // Update formData.genres as comma-separated string
-                          const genreNames = genreOptions
-                            .filter(g => values.includes(g.id))
-                            .map(g => g.name)
-                            .join(', ');
-                          setFormData(prev => ({ ...prev, genres: genreNames }));
+                {/* Metadata Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Media Type */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                      <Film size={12} /> Loại
+                    </label>
+                    {isManualMode ? (
+                      <CustomDropdown
+                        options={[
+                          { value: 'movie', label: 'Phim lẻ' },
+                          { value: 'tv', label: 'TV Series' },
+                        ]}
+                        value={manualMediaType}
+                        onChange={(value) => {
+                          setManualMediaType(value as 'movie' | 'tv');
+                          setFormData(prev => ({ ...prev, runtime: '', seasons: '' }));
                         }}
-                        placeholder="Chọn thể loại..."
-                        searchable={true}
-                        maxDisplay={2}
-                        className="w-full"
+                        placeholder="Chọn loại"
                       />
                     ) : (
-                      <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main opacity-60">
-                        {formData.genres || 'Không có thể loại'}
+                      <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-text-main text-sm">
+                        {(initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') ? 'TV Series' : 'Phim lẻ'}
                       </div>
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Quốc gia</label>
+                  {/* Country */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                      <Globe size={12} /> Quốc gia
+                    </label>
                     <input
                       type="text"
                       required={isManualMode}
                       value={formData.country}
                       onChange={e => setFormData({ ...formData, country: e.target.value })}
-                      placeholder="Việt Nam, Mỹ, Hàn Quốc..."
+                      placeholder="Quốc gia..."
                       disabled={!isManualMode && !initialData?.movieToEdit}
-                      className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode && !initialData?.movieToEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-text-muted mb-1">Ngày phát hành</label>
+                  {/* Release Date */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                      <Calendar size={12} /> Phát hành
+                    </label>
                     <input
                       type="date"
                       required={isManualMode}
                       value={formData.releaseDate}
                       onChange={e => setFormData({ ...formData, releaseDate: e.target.value })}
                       disabled={!isManualMode}
-                      className={`w-full max-w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 scheme-light dark:scheme-dark"
                     />
                   </div>
 
-                  {status === 'history' && (
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Ngày xem</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
-                        <input
-                          type="datetime-local"
-                          required
-                          value={`${formData.date}T${formData.time}`}
-                          onChange={e => {
-                            const datetimeValue = e.target.value;
-                            if (datetimeValue) {
-                              const [datePart, timePart] = datetimeValue.split('T');
-                              setFormData({ ...formData, date: datePart, time: timePart });
-                            }
-                          }}
-                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors scheme-light dark:scheme-dark"
-                        />
-                      </div>
+                  {/* Runtime / Seasons */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                      {(isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv')) ? <Tv size={12} /> : <Clock size={12} />}
+                      {(isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv')) ? 'Số phần' : 'Thời lượng (phút)'}
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      disabled={!isManualMode}
+                      value={(isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv')) ? formData.seasons : formData.runtime}
+                      onChange={e => setFormData({ ...formData, [(isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv')) ? 'seasons' : 'runtime']: e.target.value })}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50"
+                    />
+                  </div>
+                </div>
+
+                {/* Genres */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-text-muted uppercase tracking-wider">Thể loại</label>
+                  {(isManualMode || initialData?.movieToEdit) ? (
+                    <MultiSelectDropdown
+                      options={genreOptions.map(g => ({ value: g.id, label: g.name }))}
+                      values={selectedGenreIds}
+                      onChange={(values) => {
+                        setSelectedGenreIds(values);
+                        const genreNames = genreOptions
+                          .filter(g => values.includes(g.id))
+                          .map(g => g.name)
+                          .join(', ');
+                        setFormData(prev => ({ ...prev, genres: genreNames }));
+                      }}
+                      placeholder="Chọn thể loại..."
+                      searchable={true}
+                      maxDisplay={5}
+                      className="w-full"
+                    />
+                  ) : (
+                    <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main opacity-70">
+                      {formData.genres || 'Không có thể loại'}
                     </div>
                   )}
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-text-muted mb-1">Loại nội dung</label>
-                      {isManualMode ? (
-                        <CustomDropdown
-                          options={[
-                            { value: 'movie', label: 'Phim lẻ' },
-                            { value: 'tv', label: 'TV Series' },
-                          ]}
-                          value={manualMediaType}
-                          onChange={(value) => {
-                            setManualMediaType(value as 'movie' | 'tv');
-                            // Reset runtime/seasons when switching
-                            setFormData(prev => ({
-                              ...prev,
-                              runtime: '',
-                              seasons: ''
-                            }));
-                          }}
-                          placeholder="Chọn loại"
-                        />
-                      ) : (
-                        <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main">
-                          {(initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') ? 'TV Series' : 'Phim lẻ'}
-                        </div>
-                      )}
-                    </div>
-                    {(isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv')) ? (
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-1">Số phần</label>
+                {/* Overview */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                    <AlignLeft size={12} /> Nội dung
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={formData.content}
+                    onChange={e => setFormData({ ...formData, content: e.target.value })}
+                    className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all custom-scrollbar resize-none"
+                    placeholder="Tóm tắt nội dung phim..."
+                  />
+                </div>
+
+                {/* Review (History Only) */}
+                {/* Review (History Only) */}
+                {status === 'history' && (
+                  <div className="space-y-1.5 animate-in fade-in duration-300">
+                    <label className="text-xs font-medium text-text-muted uppercase tracking-wider">Review ngắn</label>
+                    <textarea
+                      rows={3}
+                      value={formData.review}
+                      onChange={e => setFormData({ ...formData, review: e.target.value })}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all custom-scrollbar resize-none"
+                      placeholder="Cảm nhận của bạn về phim..."
+                    />
+                  </div>
+                )}
+
+                {/* TV Series Progress */}
+                {status === 'history' && (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') && (
+                  <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-blue-500 flex items-center gap-2">
+                        <Tv size={16} /> Tiến độ xem
+                      </h3>
+                      <div className="flex items-center gap-2">
                         <input
-                          type="number"
-                          required
-                          disabled={!isManualMode}
-                          value={formData.seasons}
-                          onChange={e => setFormData({ ...formData, seasons: e.target.value })}
-                          className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+                          type="checkbox"
+                          id="completed-checkbox"
+                          checked={isCompleted}
+                          onChange={(e) => setIsCompleted(e.target.checked)}
+                          className="w-4 h-4 rounded border-blue-500/30 text-blue-500 focus:ring-blue-500"
                         />
+                        <label htmlFor="completed-checkbox" className="text-sm text-text-main cursor-pointer select-none">
+                          Đã xem hết
+                        </label>
                       </div>
-                    ) : (
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-1">Thời lượng (phút)</label>
-                        <input
-                          type="number"
-                          required
-                          disabled={!isManualMode}
-                          value={formData.runtime}
-                          onChange={e => setFormData({ ...formData, runtime: e.target.value })}
-                          className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main focus:outline-none focus:border-primary/50 transition-colors ${!isManualMode ? 'opacity-60 cursor-not-allowed' : ''}`}
-                        />
+                    </div>
+
+                    {!isCompleted && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-xs text-text-muted">Season</label>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            >
+                              -
+                            </button>
+                            <div className="flex-1 text-center font-medium text-text-main">{currentSeason}</div>
+                            <button
+                              type="button"
+                              onClick={() => setCurrentSeason(Math.min(parseInt(formData.seasons) || 1, currentSeason + 1))}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs text-text-muted">Episode</label>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            >
+                              -
+                            </button>
+                            <div className="flex-1 text-center font-medium text-text-main">{currentEpisode}</div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const maxEpisodes = episodesPerSeason[currentSeason] || 999;
+                                setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
+                              }}
+                              className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {totalEpisodes > 0 && !isCompleted && (
+                      <div className="text-xs text-text-muted text-center pt-2 border-t border-blue-500/10">
+                        Tổng: {totalEpisodes} tập • Mùa này: {episodesPerSeason[currentSeason] || '?'} tập
                       </div>
                     )}
                   </div>
+                )}
 
-                  {status === 'history' && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-1">
-                          Đánh giá {!isManualMode && <span className="text-red-500">*</span>}
-                        </label>
-                        <div className="flex gap-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              type="button"
-                              onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                              className="p-1 hover:scale-110 transition-transform"
-                            >
-                              <Star
-                                size={32}
-                                className={`${star <= formData.rating
-                                  ? 'fill-yellow-500 text-yellow-500'
-                                  : 'text-text-muted hover:text-yellow-500'
-                                  } transition-colors`}
-                              />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-1">Review ngắn (tùy chọn)</label>
-                        <textarea
-                          rows={3}
-                          value={formData.review}
-                          onChange={e => setFormData({ ...formData, review: e.target.value })}
-                          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-colors resize-none"
-                          placeholder="Cảm nhận của bạn về phim..."
-                        />
-                      </div>
-
-                      {/* Progress Tracking for TV Series */}
-                      {(initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv') && (
-                        <div className="border border-blue-500/20 rounded-xl p-4 bg-blue-500/5">
-                          <h3 className="text-sm font-semibold text-text-main mb-3">Tiến độ xem</h3>
-
-                          <div className="space-y-4">
-                            {/* Season Selector */}
-                            <div>
-                              <label className="block text-xs font-medium text-text-muted mb-2">Season hiện tại</label>
-                              <div className="flex items-center gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                                  disabled={currentSeason <= 1 || isCompleted}
-                                  className="px-3 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg text-text-main disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                >
-                                  -
-                                </button>
-                                <div className="flex-1 text-center bg-black/5 dark:bg-white/5 rounded-lg px-4 py-2 text-text-main font-semibold">
-                                  Season {currentSeason}
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => setCurrentSeason(Math.min(parseInt(formData.seasons) || 1, currentSeason + 1))}
-                                  disabled={currentSeason >= (parseInt(formData.seasons) || 1) || isCompleted}
-                                  className="px-3 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg text-text-main disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Episode Selector */}
-                            <div>
-                              <label className="block text-xs font-medium text-text-muted mb-2">
-                                Tập đã xem {episodesPerSeason[currentSeason] ? `(tối đa ${episodesPerSeason[currentSeason]} tập)` : ''}
-                              </label>
-                              <div className="flex items-center gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                                  disabled={currentEpisode <= 0 || isCompleted}
-                                  className="px-3 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg text-text-main disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                >
-                                  -
-                                </button>
-                                <div className="flex-1 text-center bg-black/5 dark:bg-white/5 rounded-lg px-4 py-2 text-text-main font-semibold">
-                                  {currentEpisode} tập
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const maxEpisodes = episodesPerSeason[currentSeason] || 999;
-                                    setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
-                                  }}
-                                  disabled={isCompleted}
-                                  className="px-3 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg text-text-main disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Completed Checkbox */}
-                            <div className="flex items-center gap-2 pt-2">
-                              <input
-                                type="checkbox"
-                                id="completed-checkbox"
-                                checked={isCompleted}
-                                onChange={(e) => setIsCompleted(e.target.checked)}
-                                className="w-4 h-4 rounded border-black/20 dark:border-white/20 text-primary focus:ring-primary focus:ring-offset-0"
-                              />
-                              <label htmlFor="completed-checkbox" className="text-sm text-text-main cursor-pointer">
-                                Đã xem hết series này
-                              </label>
-                            </div>
-
-                            {/* Progress Info */}
-                            {totalEpisodes > 0 && !isCompleted && (
-                              <div className="text-xs text-text-muted pt-2 border-t border-black/10 dark:border-white/10">
-                                Tiến độ: S{currentSeason}E{currentEpisode} / {totalEpisodes} tập
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Album Selection - Only show when adding new movie with history status */}
-              {!initialData?.movieToEdit && status === 'history' && (
-                <div className="border-t border-black/10 dark:border-white/10 pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-text-main">Thêm vào Album</h3>
-                      <p className="text-sm text-text-muted">Chọn album để lưu phim này (tùy chọn)</p>
+                {/* Album Selection (New/History only) */}
+                {!initialData?.movieToEdit && status === 'history' && (
+                  <div className="pt-4 border-t border-black/10 dark:border-white/10 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <FolderPlus size={12} /> Thêm vào Album
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowCreateAlbum(!showCreateAlbum)}
+                        className="text-xs text-primary hover:underline font-medium flex items-center gap-1"
+                      >
+                        <Plus size={12} /> Tạo album mới
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-                      className="flex items-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors text-sm font-medium"
-                    >
-                      <FolderPlus size={16} />
-                      Tạo album mới
-                    </button>
-                  </div>
 
-                  {showCreateAlbum && (
-                    <div className="mb-4 p-4 border border-primary/20 rounded-xl bg-primary/5">
-                      <div className="space-y-3">
+                    {showCreateAlbum && (
+                      <div className="flex gap-2 animate-in slide-in-from-top-1 p-3 bg-black/5 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5">
                         <input
                           type="text"
-                          placeholder="Tên album"
+                          placeholder="Tên album mới..."
                           value={newAlbumName}
                           onChange={(e) => setNewAlbumName(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              handleCreateAlbum();
-                            }
-                          }}
-                          className="w-full p-3 rounded-lg border border-black/10 dark:border-white/10 bg-surface text-text-main placeholder-text-muted focus:border-primary focus:outline-none"
+                          onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
+                          className="flex-1 bg-surface border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                          autoFocus
                         />
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={handleCreateAlbum}
-                            disabled={creatingAlbum || !newAlbumName.trim()}
-                            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-                          >
-                            {creatingAlbum ? 'Đang tạo...' : 'Tạo album'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowCreateAlbum(false);
-                              setNewAlbumName('');
-                            }}
-                            className="px-4 py-2 border border-black/10 dark:border-white/10 text-text-main rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-sm"
-                          >
-                            Hủy
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {albums.length === 0 ? (
-                    <div className="text-center py-6 text-text-muted text-sm">
-                      Bạn chưa có album nào. Tạo album mới để bắt đầu.
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto custom-scrollbar pr-2">
-                      {albums.map(album => (
                         <button
-                          key={album.docId}
                           type="button"
-                          onClick={() => album.docId && toggleAlbumSelection(album.docId)}
-                          className={`p-3 rounded-lg border-2 transition-all text-left ${selectedAlbumIds.includes(album.docId || '')
-                            ? 'border-primary bg-primary/10'
-                            : 'border-black/10 dark:border-white/10 hover:border-primary/50 hover:bg-black/5 dark:hover:bg-white/5'
-                            }`}
+                          onClick={handleCreateAlbum}
+                          disabled={creatingAlbum || !newAlbumName.trim()}
+                          className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors shadow-sm"
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-text-main truncate">{album.name}</h4>
-                              <p className="text-xs text-text-muted">{album.movieDocIds.length} phim</p>
-                            </div>
-                            {selectedAlbumIds.includes(album.docId || '') && (
-                              <div className="ml-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center shrink-0">
-                                <Check size={14} className="text-white" />
-                              </div>
-                            )}
-                          </div>
+                          {creatingAlbum ? <Loader2 size={16} className="animate-spin" /> : 'Tạo'}
                         </button>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {selectedAlbumIds.length > 0 && (
-                    <div className="mt-3 text-sm text-primary">
-                      Đã chọn {selectedAlbumIds.length} album
-                    </div>
-                  )}
-                </div>
-              )}
+                    <MultiSelectDropdown
+                      options={albums.map(album => ({ value: album.docId || '', label: album.name }))}
+                      values={selectedAlbumIds}
+                      onChange={(values) => setSelectedAlbumIds(values as string[])}
+                      placeholder="Chọn album..."
+                      searchable={true}
+                      maxDisplay={3}
+                      className="w-full"
+                    />
+                  </div>
+                )}
 
-              <div className="flex justify-end pt-4 border-t border-black/10 dark:border-white/10">
-                <button
-                  type="button"
-                  onClick={closeAddModal}
-                  className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors mr-3"
-                >
-                  {movieExists ? 'Đóng' : 'Hủy'}
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting || movieExists}
-                  className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-                  {movieExists ? 'Phim đã lưu' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
-                </button>
               </div>
             </form>
           )}
         </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur flex justify-end gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={closeAddModal}
+            className="px-5 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+          >
+            {movieExists ? 'Đóng' : 'Hủy bỏ'}
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting || movieExists}
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
+          >
+            {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            {movieExists ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
+          </button>
+        </div>
+
       </div>
     </div>
   );
