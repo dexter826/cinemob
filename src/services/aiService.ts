@@ -33,23 +33,23 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
     const previouslyRecommendedTitles = excludePreviouslyRecommended.join(', ');
 
     const prompt = `
-    Based on the user's watched movie history below, recommend 10 similar movies that they haven't watched and are not already in their collection.
+    Based on the user's watched movie and TV series history below, recommend 10 similar movies or TV series that they haven't watched and are not already in their collection.
 
     User History:
     ${watchedList}
 
-    Exclude these movies (already in user's collection):
+    Exclude these movies/TV series (already in user's collection):
     ${existingTitles}
 
-    Also exclude these movies (previously recommended but not selected):
+    Also exclude these movies/TV series (previously recommended but not selected):
     ${previouslyRecommendedTitles}
 
     Return ONLY a JSON array with the following format, no other text:
     [
-      { "title": "Movie Name 1", "reason": "Short reason why" },
-      { "title": "Movie Name 2", "reason": "Short reason why" }
+      { "title": "Movie/Series Name 1", "reason": "Short reason why" },
+      { "title": "Movie/Series Name 2", "reason": "Short reason why" }
     ]
-    The movie title must be the exact English or Original title for TMDB search.
+    The title must be the exact English or Original title for TMDB search.
   `;
 
     try {
