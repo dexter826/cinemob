@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Calendar, Star, Save, Loader2, FolderPlus, Check, Clock, Globe, Film, Tv, LayoutGrid, AlignLeft, Plus } from 'lucide-react';
+import { X, Calendar, Star, Save, Loader2, FolderPlus, Clock, Globe, Film, Tv, LayoutGrid, AlignLeft, Plus } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
 import { getMovieDetails, getMovieDetailsWithLanguage, getGenres, getTVShowEpisodeInfo } from '../../services/tmdbService';
@@ -11,6 +11,8 @@ import { subscribeToAlbums, updateAlbum, addAlbum } from '../../services/albumSe
 import { Album } from '../../types';
 import CustomDropdown from '../ui/CustomDropdown';
 import MultiSelectDropdown from '../ui/MultiSelectDropdown';
+import CustomDatePicker from '../ui/CustomDatePicker';
+import CustomTimePicker from '../ui/CustomTimePicker';
 
 const AddMovieModal: React.FC = () => {
   const { isOpen, closeAddModal, initialData } = useAddMovieStore();
@@ -638,7 +640,7 @@ const AddMovieModal: React.FC = () => {
               {/* LEFT COLUMN: Visuals & Core Status */}
               <div className="md:col-span-4 space-y-6">
                 {/* Poster */}
-                <div className="aspect-[2/3] rounded-xl overflow-hidden bg-black/20 border border-white/10 relative shadow-lg group">
+                <div className="aspect-2/3 rounded-xl overflow-hidden bg-black/20 border border-white/10 relative shadow-lg group">
                   {formData.poster ? (
                     <img
                       src={formData.poster.startsWith('http') ? formData.poster : `${TMDB_IMAGE_BASE_URL}${formData.poster}`}
@@ -716,27 +718,15 @@ const AddMovieModal: React.FC = () => {
 
                     <div className="bg-black/5 dark:bg-white/5 rounded-xl p-4 space-y-3">
                       <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Thời gian xem</label>
-                      <div className="space-y-2 overflow-x-hidden">
-                        <div className="relative">
-                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                          <input
-                            type="date"
-                            required
-                            value={formData.date}
-                            onChange={e => setFormData({ ...formData, date: e.target.value })}
-                            className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all scheme-light dark:scheme-dark"
-                          />
-                        </div>
-                        <div className="relative">
-                          <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-                          <input
-                            type="time"
-                            required
-                            value={formData.time}
-                            onChange={e => setFormData({ ...formData, time: e.target.value })}
-                            className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-lg pl-10 pr-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all scheme-light dark:scheme-dark"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <CustomDatePicker
+                          value={formData.date}
+                          onChange={(val) => setFormData({ ...formData, date: val })}
+                        />
+                        <CustomTimePicker
+                          value={formData.time}
+                          onChange={(val) => setFormData({ ...formData, time: val })}
+                        />
                       </div>
                     </div>
                   </div>
@@ -826,23 +816,28 @@ const AddMovieModal: React.FC = () => {
                   </div>
 
                   {/* Release Date */}
-                  <div className="space-y-1.5 overflow-x-hidden">
+                  <div className="space-y-1.5">
                     <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                       <Calendar size={12} /> Phát hành
                     </label>
-                    <div className={`transition-transform duration-500 ${isAnimating && releaseDateError ? 'scale-110' : ''}`}>
-                      <input
-                        ref={releaseDateRef}
-                        type="date"
-                        required={isManualMode}
-                        value={formData.releaseDate}
-                        onChange={e => {
-                          setFormData({ ...formData, releaseDate: e.target.value });
-                          setReleaseDateError(false);
-                        }}
-                        disabled={!isManualMode}
-                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 scheme-light dark:scheme-dark"
-                      />
+                    <div ref={releaseDateRef} className={`transition-transform duration-500 ${isAnimating && releaseDateError ? 'scale-110' : ''}`}>
+                      {isManualMode ? (
+                        <CustomDatePicker
+                          value={formData.releaseDate}
+                          onChange={(val) => {
+                            setFormData({ ...formData, releaseDate: val });
+                            setReleaseDateError(false);
+                          }}
+                          placeholder="Chọn ngày phát hành..."
+                        />
+                      ) : (
+                        <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm text-text-main opacity-50">
+                          {formData.releaseDate ? (() => {
+                            const [y, m, d] = formData.releaseDate.split('-').map(Number);
+                            return `${d}/${m}/${y}`;
+                          })() : 'Không có thông tin'}
+                        </div>
+                      )}
                     </div>
                   </div>
 
