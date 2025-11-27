@@ -56,7 +56,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
     // Initialize random sound
     const audio = new Audio(randomAudioFile);
-    audio.preload = 'none'; // Only load when needed to prevent IDM from capturing
+    audio.preload = 'auto';
     audio.volume = 0.3; // Set volume to 30%
     setRandomAudio(audio);
 
