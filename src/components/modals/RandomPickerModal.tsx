@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { X, Dice5 } from 'lucide-react';
 import Lottie from 'lottie-react';
+import { Howl } from 'howler';
 import { useAuth } from '../providers/AuthProvider';
 import { subscribeToMovies } from '../../services/movieService';
 import { getTrendingMovies } from '../../services/tmdbService';
@@ -10,7 +11,7 @@ import useAddMovieStore from '../../stores/addMovieStore';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
-import randomAudioFile from '../../assets/audio/random.WAV';
+import randomAudioFile from '../../assets/audio/random.MP3';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const [isShuffling, setIsShuffling] = useState(false);
   const [hasResult, setHasResult] = useState(false);
   const [confettiData, setConfettiData] = useState<any | null>(null);
-  const [randomAudio, setRandomAudio] = useState<HTMLAudioElement | null>(null);
+  const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
 
   // Subscribe to user's movies only when modal is open
   useEffect(() => {
@@ -55,16 +56,17 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       });
 
     // Initialize random sound
-    const audio = new Audio(randomAudioFile);
-    audio.preload = 'auto';
-    audio.volume = 0.3; // Set volume to 30%
+    const audio = new Howl({
+      src: [randomAudioFile],
+      volume: 0.3,
+      preload: true,
+    });
     setRandomAudio(audio);
 
     // Cleanup
     return () => {
       if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
+        audio.stop();
       }
     };
   }, []);
@@ -102,8 +104,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
       // Stop audio when modal closes
       if (randomAudio) {
-        randomAudio.pause();
-        randomAudio.currentTime = 0;
+        randomAudio.stop();
       }
       return;
     }
@@ -155,15 +156,13 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
     // Play random sound
     if (randomAudio) {
-      randomAudio.currentTime = 0;
-      randomAudio.play().catch(() => {
-        // Silent fail if audio can't play (e.g., user hasn't interacted with page yet)
-      });
+      randomAudio.stop();
+      randomAudio.play();
     }
 
     // Wheel of Fortune effect - synced with audio timing
     const shuffleDuration = 3150; // 3.15s - match audio sound effect end
-    const totalDuration = 4000; // 4.14s - full audio duration
+    const totalDuration = 5100; // 5.10s - full audio duration
     const start = Date.now();
     let intervalSpeed = 80; // Start with fast changes
 
@@ -210,13 +209,12 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         setIsShuffling(false);
         setHasResult(true);
 
-        // Let audio finish naturally at 4.14s
+        // Let audio finish naturally at 5.10s
         setTimeout(() => {
           if (randomAudio) {
-            randomAudio.pause();
-            randomAudio.currentTime = 0;
+            randomAudio.stop();
           }
-        }, totalDuration - shuffleDuration); // Wait remaining 0.99s
+        }, totalDuration - shuffleDuration); // Wait remaining 1.95s
       }
     }, intervalSpeed);
   };
@@ -371,14 +369,14 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                     />
 
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
 
 
                   </div>
                 </div>
 
                 {/* Right Side Card */}
-                <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-[15deg] w-24 h-36 z-10 opacity-70">
+                <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70">
                   <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-white/30 dark:border-gray-500">
                     <img
                       src={(() => {
