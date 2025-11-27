@@ -256,7 +256,7 @@ const AddMovieModal: React.FC = () => {
                   setEpisodesPerSeason(episodeInfo.episodes_per_season);
                   setCurrentSeason(1);
                   setCurrentEpisode(0);
-                  setIsCompleted(false);
+                  setIsCompleted(true);
                 }
 
                 const now = new Date();
@@ -310,6 +310,11 @@ const AddMovieModal: React.FC = () => {
         setMovieExists(false);
         setStatus('history');
         setSelectedGenreIds([]);
+        setTotalEpisodes(0);
+        setEpisodesPerSeason({});
+        setCurrentSeason(1);
+        setCurrentEpisode(0);
+        setIsCompleted(true);
       }
     }
   }, [isOpen, initialData, user, genreOptions]);
@@ -929,7 +934,7 @@ const AddMovieModal: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting || movieExists}
-            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 cursor-pointer"
           >
             {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
             {movieExists ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
