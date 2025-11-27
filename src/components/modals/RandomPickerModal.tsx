@@ -10,6 +10,7 @@ import useAddMovieStore from '../../stores/addMovieStore';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
+import randomAudioFile from '../../assets/audio/random.WAV';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
@@ -54,8 +55,8 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       });
 
     // Initialize random sound
-    const audio = new Audio('/audio/random.WAV');
-    audio.preload = 'auto';
+    const audio = new Audio(randomAudioFile);
+    audio.preload = 'none'; // Only load when needed to prevent IDM from capturing
     audio.volume = 0.3; // Set volume to 30%
     setRandomAudio(audio);
 
