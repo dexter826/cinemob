@@ -117,31 +117,59 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     setIsShuffling(true);
     setHasResult(false);
 
-    const duration = 2200;
-    const intervalMs = 90;
+    // Wheel of Fortune effect - rapidly change movie content
+    const duration = 3000; // 3 seconds total
     const start = Date.now();
+    let intervalSpeed = 80; // Start with fast changes
 
-    const interval = setInterval(() => {
+    const shuffleInterval = setInterval(() => {
       const now = Date.now();
       const elapsed = now - start;
+      const progress = elapsed / duration;
 
       const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
       if (!effectivePool || effectivePool.length === 0) {
-        clearInterval(interval);
+        clearInterval(shuffleInterval);
         setIsShuffling(false);
         setHasResult(false);
         return;
       }
 
-      const randomIndex = Math.floor(Math.random() * effectivePool.length);
-      setCurrentIndex(randomIndex);
+      // Gradually slow down the content changes (like a real wheel of fortune)
+      if (progress < 0.6) {
+        // Fast changes for first 60%
+        intervalSpeed = 80;
+      } else if (progress < 0.8) {
+        // Medium speed for next 20%
+        intervalSpeed = 150;
+      } else if (progress < 0.95) {
+        // Slow down for next 15%
+        intervalSpeed = 300;
+      } else {
+        // Very slow for final 5%
+        intervalSpeed = 500;
+      }
+
+      // Change to next movie in sequence (like wheel segments)
+      setCurrentIndex(prevIndex => {
+        if (prevIndex === null) return 0;
+        return (prevIndex + 1) % effectivePool.length;
+      });
 
       if (elapsed >= duration) {
-        clearInterval(interval);
-        setIsShuffling(false);
-        setHasResult(true);
+        clearInterval(shuffleInterval);
+
+        // Final result - pick a random movie for the final stop
+        const finalIndex = Math.floor(Math.random() * effectivePool.length);
+        setCurrentIndex(finalIndex);
+
+        // Stop with smooth transition
+        setTimeout(() => {
+          setIsShuffling(false);
+          setHasResult(true);
+        }, 300);
       }
-    }, intervalMs);
+    }, intervalSpeed);
   };
 
   const handleRespin = () => {
@@ -256,28 +284,127 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
           )}
 
           {!isLoadingPool && hasPool && (
-            <div className="flex flex-col items-center gap-4">
-              <div className={`relative w-40 h-60 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg ${isShuffling ? 'animate-pulse-soft' : ''}`}>
-                {currentItem ? (
-                  <img
-                    src={getPoster()}
-                    alt={getTitle()}
-                    className={`w-full h-full object-cover transition-transform duration-300 ${isShuffling ? 'scale-105' : ''}`}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-text-muted text-xs px-4 text-center">
-                    Đang trộn danh sách phim...
+            <div className="flex flex-col items-center gap-6">
+              {/* Wheel of Fortune Layout - Fixed positions, changing content */}
+              <div className="relative w-80 h-60 flex items-center justify-center movie-wheel-container">
+
+                {/* Left Side Card */}
+                <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70">
+                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-white/30 dark:border-gray-500">
+                    <img
+                      src={(() => {
+                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
+                        const leftIndex = (currentIndex - 1 + activePool.length) % activePool.length;
+                        const movie = activePool[leftIndex];
+                        if (poolType === 'watchlist') {
+                          const m = movie as Movie;
+                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
+                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                        }
+                        const m = movie as TMDBMovieResult;
+                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                      })()}
+                      alt="Left movie"
+                      className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+                    />
+                    <div className="absolute inset-0 bg-black/30" />
                   </div>
-                )}
+                </div>
+
+                {/* Center Card - Main focus */}
+                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
+                  <div className={`w-full h-full rounded-xl overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${isShuffling ? 'animate-pulse-soft' : 'animate-card-float'}`}>
+                    <img
+                      src={(() => {
+                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
+                        const movie = activePool[currentIndex];
+                        if (poolType === 'watchlist') {
+                          const m = movie as Movie;
+                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
+                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                        }
+                        const m = movie as TMDBMovieResult;
+                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                      })()}
+                      alt="Center movie"
+                      className="w-full h-full object-cover transition-all duration-200"
+                    />
+
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+                    {/* Movie title */}
+                    <div className="absolute bottom-3 left-3 right-3 text-white">
+                      <p className="text-sm font-bold line-clamp-2 drop-shadow-lg">
+                        {(() => {
+                          if (!activePool || activePool.length === 0 || currentIndex === null) return '';
+                          const movie = activePool[currentIndex];
+                          if (poolType === 'watchlist') {
+                            return (movie as Movie).title;
+                          }
+                          const m = movie as TMDBMovieResult;
+                          return m.title || m.name || '';
+                        })()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side Card */}
+                <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-[15deg] w-24 h-36 z-10 opacity-70">
+                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-white/30 dark:border-gray-500">
+                    <img
+                      src={(() => {
+                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
+                        const rightIndex = (currentIndex + 1) % activePool.length;
+                        const movie = activePool[rightIndex];
+                        if (poolType === 'watchlist') {
+                          const m = movie as Movie;
+                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
+                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                        }
+                        const m = movie as TMDBMovieResult;
+                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                      })()}
+                      alt="Right movie"
+                      className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+                    />
+                    <div className="absolute inset-0 bg-black/30" />
+                  </div>
+                </div>
+
+                {/* Selection Indicator Arrow */}
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-40">
+                  <div className="w-0 h-0 border-l-4 border-r-4 border-b-6 border-l-transparent border-r-transparent border-b-primary drop-shadow-lg animate-bounce"></div>
+                </div>
+
+
               </div>
 
-              <div className="text-center space-y-1">
+              <div className="text-center space-y-2">
                 <p className="text-xs uppercase tracking-wide text-primary font-semibold">
                   {poolType === 'watchlist' ? 'Từ Watchlist của bạn' : 'Phim thịnh hành'}
                 </p>
-                <h3 className="text-lg font-bold text-text-main line-clamp-2" title={getTitle()}>
-                  {getTitle() || 'Đang quay...'}
-                </h3>
+                {!isShuffling && currentIndex !== null && (
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold text-text-main line-clamp-2" title={getTitle()}>
+                      {getTitle()}
+                    </h3>
+                    <p className="text-sm text-text-muted">
+                      {hasResult ? '🎉 Đây là lựa chọn của bạn!' : 'Phim được chọn ngẫu nhiên'}
+                    </p>
+                  </div>
+                )}
+                {isShuffling && (
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold text-text-main animate-pulse">
+                      Đang quay...
+                    </h3>
+                    <p className="text-sm text-text-muted animate-pulse">
+                      Chờ một chút nhé! 🎲
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}

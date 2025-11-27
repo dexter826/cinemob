@@ -137,4 +137,77 @@
             transform: none;
         }
     }
+
+    /* Spin Wheel Animations */
+    @keyframes spin-wheel {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes pulse-soft {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+    }
+
+    @keyframes card-float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+
+    .animate-spin-wheel {
+        animation: spin-wheel 1s linear infinite;
+    }
+
+    .animate-pulse-soft {
+        animation: pulse-soft 1.5s ease-in-out infinite;
+    }
+
+    .animate-card-float {
+        animation: card-float 3s ease-in-out infinite;
+    }
+
+    /* 3D perspective for movie cards */
+    .movie-wheel-container {
+        perspective: 1200px;
+        transform-style: preserve-3d;
+    }
+
+    /* Smooth transitions for card movements */
+    .movie-card-transition {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Glow effect for center card */
+    .center-card-glow {
+        box-shadow:
+            0 0 20px rgba(16, 185, 129, 0.3),
+            0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Side card effects */
+    .side-card-blur {
+        filter: blur(1px);
+        transition: filter 0.3s ease;
+    }
 }
