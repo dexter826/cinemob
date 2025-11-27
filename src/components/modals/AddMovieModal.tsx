@@ -593,7 +593,7 @@ const AddMovieModal: React.FC = () => {
 
                     <div className="bg-black/5 dark:bg-white/5 rounded-xl p-4 space-y-3">
                       <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Thời gian xem</label>
-                      <div className="space-y-2">
+                      <div className="space-y-2 overflow-x-hidden">
                         <div className="relative">
                           <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
                           <input
@@ -691,7 +691,7 @@ const AddMovieModal: React.FC = () => {
                   </div>
 
                   {/* Release Date */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 overflow-x-hidden">
                     <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                       <Calendar size={12} /> Phát hành
                     </label>
@@ -763,7 +763,6 @@ const AddMovieModal: React.FC = () => {
                   />
                 </div>
 
-                {/* Review (History Only) */}
                 {/* Review (History Only) */}
                 {status === 'history' && (
                   <div className="space-y-1.5 animate-in fade-in duration-300">
