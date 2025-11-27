@@ -27,6 +27,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const [isShuffling, setIsShuffling] = useState(false);
   const [hasResult, setHasResult] = useState(false);
   const [confettiData, setConfettiData] = useState<any | null>(null);
+  const [randomAudio, setRandomAudio] = useState<HTMLAudioElement | null>(null);
 
   // Subscribe to user's movies only when modal is open
   useEffect(() => {
@@ -41,7 +42,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     };
   }, [user, isOpen]);
 
-  // Load confetti animation once
+  // Load confetti animation and audio once
   useEffect(() => {
     fetch('/confetti.json')
       .then(res => res.json())
@@ -49,6 +50,20 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       .catch(() => {
         // Silent fail if file not found
       });
+
+    // Initialize random sound
+    const audio = new Audio('/random.WAV');
+    audio.preload = 'auto';
+    audio.volume = 0.3; // Set volume to 30%
+    setRandomAudio(audio);
+
+    // Cleanup
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
   }, []);
 
   const watchlistMovies = useMemo(
@@ -69,6 +84,12 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       setCurrentIndex(null);
       setIsShuffling(false);
       setHasResult(false);
+
+      // Stop audio when modal closes
+      if (randomAudio) {
+        randomAudio.pause();
+        randomAudio.currentTime = 0;
+      }
       return;
     }
 
@@ -117,15 +138,24 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     setIsShuffling(true);
     setHasResult(false);
 
-    // Wheel of Fortune effect - rapidly change movie content
-    const duration = 3000; // 3 seconds total
+    // Play random sound
+    if (randomAudio) {
+      randomAudio.currentTime = 0;
+      randomAudio.play().catch(() => {
+        // Silent fail if audio can't play (e.g., user hasn't interacted with page yet)
+      });
+    }
+
+    // Wheel of Fortune effect - synced with audio timing
+    const shuffleDuration = 3150; // 3.15s - match audio sound effect end
+    const totalDuration = 4000; // 4.14s - full audio duration
     const start = Date.now();
     let intervalSpeed = 80; // Start with fast changes
 
     const shuffleInterval = setInterval(() => {
       const now = Date.now();
       const elapsed = now - start;
-      const progress = elapsed / duration;
+      const progress = elapsed / shuffleDuration;
 
       const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
       if (!effectivePool || effectivePool.length === 0) {
@@ -135,19 +165,19 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         return;
       }
 
-      // Gradually slow down the content changes (like a real wheel of fortune)
-      if (progress < 0.6) {
-        // Fast changes for first 60%
-        intervalSpeed = 80;
-      } else if (progress < 0.8) {
-        // Medium speed for next 20%
-        intervalSpeed = 150;
-      } else if (progress < 0.95) {
-        // Slow down for next 15%
-        intervalSpeed = 300;
+      // Gradually slow down to match audio rhythm
+      if (progress < 0.5) {
+        // Fast changes for first 50% (1.575s)
+        intervalSpeed = 70;
+      } else if (progress < 0.75) {
+        // Medium speed for next 25% (0.7875s)
+        intervalSpeed = 120;
+      } else if (progress < 0.9) {
+        // Slow down for next 15% (0.4725s)
+        intervalSpeed = 200;
       } else {
-        // Very slow for final 5%
-        intervalSpeed = 500;
+        // Very slow for final 10% (0.315s)
+        intervalSpeed = 400;
       }
 
       // Change to next movie in sequence (like wheel segments)
@@ -156,18 +186,22 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         return (prevIndex + 1) % effectivePool.length;
       });
 
-      if (elapsed >= duration) {
+      if (elapsed >= shuffleDuration) {
         clearInterval(shuffleInterval);
 
-        // Final result - pick a random movie for the final stop
+        // Final result at 3.15s - match audio sound effect
         const finalIndex = Math.floor(Math.random() * effectivePool.length);
         setCurrentIndex(finalIndex);
+        setIsShuffling(false);
+        setHasResult(true);
 
-        // Stop with smooth transition
+        // Let audio finish naturally at 4.14s
         setTimeout(() => {
-          setIsShuffling(false);
-          setHasResult(true);
-        }, 300);
+          if (randomAudio) {
+            randomAudio.pause();
+            randomAudio.currentTime = 0;
+          }
+        }, totalDuration - shuffleDuration); // Wait remaining 0.99s
       }
     }, intervalSpeed);
   };
