@@ -22,11 +22,10 @@ const AlertContainer: React.FC = () => {
       <div className="bg-surface w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-white/10 transform transition-all scale-100">
         <div className="p-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className={`p-3 rounded-full ${
-              alert.type === 'danger' ? 'bg-red-500/20 text-red-500' :
+            <div className={`p-3 rounded-full ${alert.type === 'danger' ? 'bg-red-500/20 text-red-500' :
               alert.type === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
-              'bg-blue-500/20 text-blue-500'
-            }`}>
+                'bg-blue-500/20 text-blue-500'
+              }`}>
               <AlertTriangle size={24} />
             </div>
             <h3 className="text-xl font-bold text-text-main">{alert.title}</h3>
@@ -39,16 +38,15 @@ const AlertContainer: React.FC = () => {
           <div className="flex justify-end gap-3">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 rounded-lg text-text-muted hover:bg-white/5 transition-colors font-medium"
+              className="px-4 py-2 rounded-lg text-text-muted hover:bg-white/5 transition-colors font-medium cursor-pointer"
             >
               {alert.cancelText || 'Hủy'}
             </button>
             <button
               onClick={handleConfirm}
-              className={`px-4 py-2 rounded-lg text-white font-medium transition-colors flex items-center gap-2 ${
-                alert.type === 'danger' ? 'bg-red-500 hover:bg-red-600' :
+              className={`px-4 py-2 rounded-lg text-white font-medium transition-colors flex items-center gap-2 cursor-pointer ${alert.type === 'danger' ? 'bg-red-500 hover:bg-red-600' :
                 'bg-primary hover:bg-primary-dark'
-              }`}
+                }`}
             >
               {alert.confirmText || 'Đồng ý'}
             </button>
