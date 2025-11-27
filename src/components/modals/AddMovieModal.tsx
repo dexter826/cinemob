@@ -929,15 +929,15 @@ const AddMovieModal: React.FC = () => {
             onClick={closeAddModal}
             className="px-5 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
-            {movieExists ? 'Đóng' : 'Hủy bỏ'}
+            {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
           </button>
           <button
             onClick={handleSubmit}
-            disabled={isSubmitting || movieExists}
+            disabled={isSubmitting || (movieExists && !initialData?.movieToEdit)}
             className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 cursor-pointer"
           >
             {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            {movieExists ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
+            {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
           </button>
         </div>
 

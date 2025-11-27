@@ -7,6 +7,7 @@ import { getTrendingMovies } from '../../services/tmdbService';
 import { Movie, TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useAddMovieStore from '../../stores/addMovieStore';
+import useMovieDetailStore from '../../stores/movieDetailStore';
 import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
 
@@ -18,6 +19,7 @@ interface RandomPickerModalProps {
 const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const { openAddModal } = useAddMovieStore();
+  const { openDetailModal } = useMovieDetailStore();
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);
@@ -76,6 +78,18 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     if (poolType === 'trending') return trending;
     return [];
   }, [poolType, watchlistMovies, trending]);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   // Reset and prepare pool when modal opens
   useEffect(() => {
@@ -216,20 +230,11 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
     if (poolType === 'watchlist') {
       const movie = activePool[currentIndex] as Movie;
-      const now = new Date();
-      const existingDate = movie.watched_at instanceof Timestamp
-        ? movie.watched_at.toDate()
-        : (movie.watched_at as Date | undefined);
-
-      openAddModal({
-        movieToEdit: {
-          ...movie,
-          status: 'history',
-          watched_at: existingDate || now,
-        },
-      });
+      // For watchlist movies, open detail modal
+      openDetailModal(movie);
     } else if (poolType === 'trending') {
       const tmdbMovie = activePool[currentIndex] as TMDBMovieResult;
+      // For trending movies, open add modal
       openAddModal({
         movie: tmdbMovie,
         mediaType:
@@ -434,7 +439,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         <div className="mt-4 flex flex-col sm:flex-row gap-3 relative z-10">
           <button
             onClick={handleRespin}
-            disabled={!hasPool || isLoadingPool}
+            disabled={!hasPool || isLoadingPool || isShuffling}
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-text-main text-sm font-medium hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <Dice5 size={18} />
@@ -443,7 +448,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
           <button
             onClick={handleWatchNow}
-            disabled={!hasPool || isLoadingPool || currentIndex === null}
+            disabled={!hasPool || isLoadingPool || currentIndex === null || isShuffling}
             className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Xem ngay

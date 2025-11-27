@@ -6,7 +6,6 @@ import { subscribeToMovies, deleteMovie } from '../../services/movieService';
 import { Movie, Stats } from '../../types';
 import { Film, Plus, AlertTriangle, Calendar, Type, ArrowUp, ArrowDown, Search, X, Filter, Star } from 'lucide-react';
 import MovieCard from '../ui/MovieCard';
-import MovieDetailModal from '../modals/MovieDetailModal';
 import Navbar from '../layout/Navbar';
 import Pagination from '../ui/Pagination';
 import CustomDropdown from '../ui/CustomDropdown';
@@ -15,6 +14,7 @@ import { Timestamp } from 'firebase/firestore';
 import useToastStore from '../../stores/toastStore';
 import useAlertStore from '../../stores/alertStore';
 import useAddMovieStore from '../../stores/addMovieStore';
+import useMovieDetailStore from '../../stores/movieDetailStore';
 import useExportStore from '../../stores/exportStore';
 import Loading from '../ui/Loading';
 
@@ -26,13 +26,12 @@ const Dashboard: React.FC = () => {
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
   const { openAddModal } = useAddMovieStore();
+  const { openDetailModal } = useMovieDetailStore();
   const { setMovies: setExportMovies } = useExportStore();
   const navigate = useNavigate();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
@@ -217,8 +216,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleMovieClick = (movie: Movie) => {
-    setSelectedMovie(movie);
-    setIsDetailModalOpen(true);
+    openDetailModal(movie);
   };
 
   const handleMarkAsWatched = (movie: Movie) => {
@@ -570,12 +568,6 @@ const Dashboard: React.FC = () => {
         </div>
 
       </main>
-
-      <MovieDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        movie={selectedMovie}
-      />
     </div>
   );
 };
