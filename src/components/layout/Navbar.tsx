@@ -7,6 +7,7 @@ import RandomPickerModal from '../modals/RandomPickerModal';
 import ExportModal from '../modals/ExportModal';
 import useExportStore from '../../stores/exportStore';
 import useAlertStore from '../../stores/alertStore';
+import logoText from '../../assets/images/logo_text.png';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -50,7 +51,7 @@ const Navbar: React.FC = () => {
             className="flex items-center cursor-pointer"
             onClick={() => navigate('/')}
           >
-            <img src="/logo_text.png" alt="Cinemetrics Logo" className="h-8 w-auto" />
+            <img src={logoText} alt="Cinemetrics Logo" className="h-8 w-auto" />
           </div>
 
           {/* Desktop Menu - Centered */}

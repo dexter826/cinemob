@@ -1,5 +1,5 @@
 ﻿<div align="center">
-  <img src="public/logo_text.png" alt="Logo dự án">
+  <img src="docs/images/logo_text.png" alt="Logo dự án">
 </div>
 
 Chào mừng đến với **Cinemetrics**! Đây là một ứng dụng để theo dõi và quản lý danh sách phim đã xem, giúp bạn lưu giữ những khoảnh khắc điện ảnh đáng nhớ. 🍿✨
@@ -23,7 +23,7 @@ Cinemetrics là một ứng dụng quản lý phim cá nhân thông minh với A
 - **📱 Responsive:** Giao diện đẹp mắt, tương thích tốt trên cả máy tính và điện thoại.
 
 <div align="center">
-  <img src="public/mockup.webp" alt="Mockup của ứng dụng">
+  <img src="docs/images/mockup.webp" alt="Mockup của ứng dụng">
 </div>
 
 ## 🛠️ Công nghệ sử dụng

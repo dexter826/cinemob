@@ -44,7 +44,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
   // Load confetti animation and audio once
   useEffect(() => {
-    fetch('/confetti.json')
+    fetch('/data/confetti.json')
       .then(res => res.json())
       .then(data => setConfettiData(data))
       .catch(() => {
@@ -52,7 +52,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       });
 
     // Initialize random sound
-    const audio = new Audio('/random.WAV');
+    const audio = new Audio('/audio/random.WAV');
     audio.preload = 'auto';
     audio.volume = 0.3; // Set volume to 30%
     setRandomAudio(audio);

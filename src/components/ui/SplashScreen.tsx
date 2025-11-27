@@ -9,7 +9,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish }) => {
   const [animationData, setAnimationData] = useState(null);
 
   useEffect(() => {
-    fetch('/splashscreen.json')
+    fetch('/data/splashscreen.json')
       .then(response => response.json())
       .then(data => setAnimationData(data))
       .catch(error => console.error('Error fetching animation data:', error));
@@ -22,7 +22,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish }) => {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-background">
       <div className="w-96 h-96 md:w-lg md:h-lg">
-        <Lottie 
+        <Lottie
           animationData={animationData}
           loop={false}
           onComplete={onAnimationFinish}

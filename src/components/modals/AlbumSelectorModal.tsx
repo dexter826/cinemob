@@ -7,6 +7,7 @@ import useToastStore from '../../stores/toastStore';
 import { updateAlbum, addAlbum } from '../../services/albumService';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
+import logoText from '../../assets/images/logo_text.png';
 
 interface AlbumSelectorModalProps {
   isOpen: boolean;
@@ -86,15 +87,15 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
 
   if (!isOpen || !movie) return null;
 
-  const availableAlbums = albums.filter(album => 
+  const availableAlbums = albums.filter(album =>
     album.movieDocIds && !album.movieDocIds.includes(movie.docId || '')
   );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
       <div className="bg-surface w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative">
-        
-        <button 
+
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors cursor-pointer"
         >
@@ -106,7 +107,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 rounded-xl overflow-hidden">
               <img
-                src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : '/logo_text.png'}
+                src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : logoText}
                 alt={getDisplayTitle(movie)}
                 className="w-full h-full object-cover"
               />

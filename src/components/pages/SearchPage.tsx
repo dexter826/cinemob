@@ -39,7 +39,7 @@ const SearchPage: React.FC = () => {
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    fetch('/loading_suggest.json')
+    fetch('/data/loading_suggest.json')
       .then(res => res.json())
       .then(data => setSuggestAnimation(data))
       .catch(err => console.error('Error loading animation:', err));
