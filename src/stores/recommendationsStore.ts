@@ -76,8 +76,10 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
         });
 
         const tmdbResults = (await Promise.all(tmdbPromises)).filter(m => m !== null) as TMDBMovieResult[];
+        // Lấy 15 phim từ 17 phim được trả về (để phòng trường hợp một số phim không có trong TMDB)
+        const displayResults = tmdbResults.slice(0, 15);
         set({
-          aiRecommendations: tmdbResults,
+          aiRecommendations: displayResults,
           lastAiHistoryLength: watchedHistory.length
         });
 

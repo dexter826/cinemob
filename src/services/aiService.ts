@@ -20,10 +20,10 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
         return shuffled.slice(0, Math.min(count, array.length));
     };
 
-    const selectedMovies = getRandomItems(filteredMovies, 30); // Giới hạn 30 phim ngẫu nhiên
+    const selectedMovies = getRandomItems(filteredMovies, 200); // Giới hạn 200 phim ngẫu nhiên
 
     const watchedList = selectedMovies
-        .map(m => `${m.title} (${m.rating}/5 stars) - Genre: ${m.genres || 'Unknown'}`)
+        .map(m => `${m.title} (${m.rating}/5 stars)`)
         .join('\n');
 
     // Danh sách phim đã có trong collection để loại trừ
@@ -33,7 +33,7 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
     const previouslyRecommendedTitles = excludePreviouslyRecommended.join(', ');
 
     const prompt = `
-    Based on the user's watched movie and TV series history below, recommend 10 similar movies or TV series that they haven't watched and are not already in their collection.
+    Based on the user's watched movie and TV series history below, recommend 17 similar movies or TV series that they haven't watched and are not already in their collection.
 
     User History:
     ${watchedList}

@@ -162,6 +162,19 @@ const AddMovieModal: React.FC = () => {
     };
   }, [isOpen]);
 
+  // Load albums that contain the movie being edited
+  useEffect(() => {
+    if (isOpen && initialData?.movieToEdit && albums.length > 0) {
+      const movieDocId = initialData.movieToEdit.docId;
+      if (movieDocId) {
+        const albumsContainingMovie = albums
+          .filter(album => album.movieDocIds?.includes(movieDocId))
+          .map(album => album.docId || '');
+        setSelectedAlbumIds(albumsContainingMovie);
+      }
+    }
+  }, [isOpen, initialData?.movieToEdit, albums]);
+
   // Reset form when modal opens with new data
   useEffect(() => {
     if (isOpen) {
@@ -536,6 +549,38 @@ const AddMovieModal: React.FC = () => {
         }
 
         await updateMovie(initialData.movieToEdit.docId, updateData);
+
+        // Update album associations for edit mode
+        if (isHistory) {
+          try {
+            const movieDocId = initialData.movieToEdit.docId;
+
+            // Find albums that previously contained this movie
+            const previousAlbums = albums.filter(album =>
+              album.movieDocIds?.includes(movieDocId)
+            );
+
+            // Remove movie from albums that are no longer selected
+            for (const album of previousAlbums) {
+              if (album.docId && !selectedAlbumIds.includes(album.docId)) {
+                const newIds = (album.movieDocIds || []).filter(id => id !== movieDocId);
+                await updateAlbum(album.docId, { movieDocIds: newIds });
+              }
+            }
+
+            // Add movie to newly selected albums
+            for (const albumId of selectedAlbumIds) {
+              const album = albums.find(a => a.docId === albumId);
+              if (album && album.docId && !album.movieDocIds?.includes(movieDocId)) {
+                const newIds = Array.from(new Set([...(album.movieDocIds || []), movieDocId]));
+                await updateAlbum(album.docId, { movieDocIds: newIds });
+              }
+            }
+          } catch (error) {
+            console.error('Error updating albums:', error);
+          }
+        }
+
         showToast("Đã cập nhật phim", "success");
       } else {
         // Add New
@@ -1000,12 +1045,12 @@ const AddMovieModal: React.FC = () => {
                   </div>
                 )}
 
-                {/* Album Selection (New/History only) */}
-                {!initialData?.movieToEdit && status === 'history' && (
+                {/* Album Selection (History only) */}
+                {status === 'history' && (
                   <div className="pt-4 border-t border-black/10 dark:border-white/10 space-y-3">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-                        <FolderPlus size={12} /> Thêm vào Album
+                        <FolderPlus size={12} /> {initialData?.movieToEdit ? 'Quản lý Album' : 'Thêm vào Album'}
                       </label>
                       <button
                         type="button"

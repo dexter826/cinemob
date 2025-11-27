@@ -10,6 +10,11 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const [inputValue, setInputValue] = useState(currentPage.toString());
 
+  const handlePageChange = (page: number) => {
+    onPageChange(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -18,7 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     e.preventDefault();
     const page = parseInt(inputValue, 10);
     if (page >= 1 && page <= totalPages) {
-      onPageChange(page);
+      handlePageChange(page);
     } else {
       setInputValue(currentPage.toString());
     }
@@ -27,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   const handleInputBlur = () => {
     const page = parseInt(inputValue, 10);
     if (page >= 1 && page <= totalPages) {
-      onPageChange(page);
+      handlePageChange(page);
     } else {
       setInputValue(currentPage.toString());
     }
@@ -40,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       {/* Previous Button */}
       <button
         type="button"
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
         className="p-2.5 rounded-xl bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30 transition-all shadow-sm cursor-pointer"
       >
@@ -71,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             <button
               key={page}
               type="button"
-              onClick={() => onPageChange(page)}
+              onClick={() => handlePageChange(page)}
               className={`min-w-10 h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
                 ? 'bg-primary text-white shadow-lg shadow-primary/25'
                 : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30'
@@ -103,7 +108,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       {/* Next Button */}
       <button
         type="button"
-        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
         className="p-2.5 rounded-xl bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30 transition-all shadow-sm cursor-pointer"
       >
