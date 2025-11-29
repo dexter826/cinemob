@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Brand section with fade-in animation */}
-          <div className="text-center md:text-left animate-fade-in-up">
+          <div className="flex-1 text-center md:text-left animate-fade-in-up">
             <div className="flex items-center justify-center md:justify-start gap-2 group">
               <img
                 src={logoText}
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Social links with staggered animation */}
-          <div className="flex items-center gap-4">
+          <div className="flex-1 flex items-center justify-center gap-4">
             {socialLinks.map((link, index) => {
               const Icon = link.icon;
               return (
@@ -90,15 +90,15 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Copyright with fade-in animation */}
-          <div className="text-sm text-text-muted animate-fade-in-up flex items-center gap-1.5" style={{ animationDelay: '400ms' }}>
+          <div className="flex-1 text-sm text-text-muted animate-fade-in-up flex items-center justify-center md:justify-end gap-1.5" style={{ animationDelay: '400ms' }}>
             <span>© {new Date().getFullYear()}</span>
             <span className="text-primary font-semibold">CineMOB</span>
-            <span className="hidden sm:inline">• Made by</span>
+            <span>• Made by</span>
             <a
               href="https://github.com/dexter826"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline text-primary hover:underline font-medium transition-colors"
+              className="text-primary hover:underline font-medium transition-colors"
             >
               MOB
             </a>
