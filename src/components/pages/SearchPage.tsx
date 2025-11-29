@@ -34,7 +34,7 @@ const SearchPage: React.FC = () => {
   const [discoverLoading, setDiscoverLoading] = useState(false);
 
   const { user } = useAuth();
-  const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations } = useRecommendationsStore();
+  const { aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations, historyMovies } = useRecommendationsStore();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
 
@@ -56,6 +56,9 @@ const SearchPage: React.FC = () => {
     });
     return () => unsubscribe();
   }, [user]);
+
+  // Calculate watched movies count
+  const watchedMoviesCount = historyMovies.filter(m => (m.status || 'history') === 'history').length;
 
   // Auto-fetch recommendations when accessing the page if user is logged in and no AI recommendations yet
   useEffect(() => {
@@ -442,6 +445,24 @@ const SearchPage: React.FC = () => {
           </>
         ) : !query && !discoverMovies.length && isAiLoading && searchTab === 'movies' ? (
           <>
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="text-primary" size={18} />
+                <h2 className="text-xl font-bold text-primary">
+                  Đề xuất cho bạn
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => refreshRecommendations(user?.uid || '', true)}
+                disabled={isAiLoading}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
+              >
+                <RotateCcw size={16} />
+                <span>Làm mới</span>
+              </button>
+            </div>
             <div className="flex flex-col items-center justify-center py-20 space-y-4">
               <div className="w-24 h-24">
                 {suggestAnimation && <Lottie animationData={suggestAnimation} loop={true} />}
@@ -504,7 +525,8 @@ const SearchPage: React.FC = () => {
           <>
             {!query && !discoverMovies.length && (
               <>
-                {aiRecommendations.length > 0 && (
+                {/* Always show header if user has watched enough movies */}
+                {watchedMoviesCount >= 3 && (
                   <div className="mb-4 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
                       <Sparkles className="text-primary" size={18} />
@@ -513,14 +535,29 @@ const SearchPage: React.FC = () => {
                       </h2>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => refreshRecommendations(user?.uid || '', true)}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-main"
-                    >
-                      <RotateCcw size={16} />
-                      <span>Làm mới</span>
-                    </button>
+                    {aiRecommendations.length === 0 && !isAiLoading ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-text-muted">Không thể tải. </span>
+                        <button
+                          type="button"
+                          onClick={() => refreshRecommendations(user?.uid || '', true)}
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
+                        >
+                          <RotateCcw size={16} />
+                          <span>Thử lại</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => refreshRecommendations(user?.uid || '', true)}
+                        disabled={isAiLoading}
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
+                      >
+                        <RotateCcw size={16} />
+                        <span>Làm mới</span>
+                      </button>
+                    )}
                   </div>
                 )}
                 {aiRecommendations.length > 0 && (
