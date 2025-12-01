@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search, CalendarDays } from 'lucide-react';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -78,6 +78,14 @@ const Navbar: React.FC = () => {
             >
               <Folder size={20} />
               <span>Album</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/calendar')}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary' : 'hover:bg-primary/10 hover:text-primary text-text-main'}`}
+            >
+              <CalendarDays size={20} />
+              <span>Lịch phát sóng</span>
             </button>
 
             <button
@@ -223,6 +231,14 @@ const Navbar: React.FC = () => {
             >
               <Folder size={20} />
               <span>Album phim</span>
+            </button>
+
+            <button
+              onClick={() => { navigate('/calendar'); setIsMenuOpen(false); }}
+              className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary' : 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main'}`}
+            >
+              <CalendarDays size={20} />
+              <span>Lịch phát sóng</span>
             </button>
 
             <button

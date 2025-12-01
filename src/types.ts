@@ -146,3 +146,25 @@ export interface PersonMovie {
   job?: string;
   department?: string;
 }
+
+// Release Calendar types
+export interface TMDBEpisode {
+  id: number;
+  name: string;
+  overview: string;
+  air_date: string;
+  episode_number: number;
+  season_number: number;
+  still_path: string | null;
+  vote_average: number;
+  runtime?: number;
+}
+
+export interface UpcomingEpisode {
+  seriesId: number;
+  seriesName: string;
+  seriesNameVi?: string;
+  posterPath: string | null;
+  episode: TMDBEpisode;
+  docId?: string; // Reference to user's saved movie
+}

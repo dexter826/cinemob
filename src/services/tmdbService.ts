@@ -1,5 +1,5 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../constants';
-import { TMDBMovieResult, TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie, TMDBPerson } from '../types';
+import { TMDBMovieResult, TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie, TMDBPerson, TMDBEpisode } from '../types';
 
 export const searchMovies = async (query: string, page: number = 1): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!query || !TMDB_API_KEY) return { results: [], totalPages: 0 };
@@ -432,5 +432,120 @@ export const searchPeople = async (query: string, page: number = 1): Promise<{ r
   } catch (error) {
     console.error("Failed to search people:", error);
     return { results: [], totalPages: 0 };
+  }
+};
+
+// Get upcoming episodes for a TV show
+export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpisode[]> => {
+  if (!TMDB_API_KEY) return [];
+
+  try {
+    // Get TV show details first to know number of seasons and status
+    const detailResponse = await fetch(
+      `${TMDB_BASE_URL}/tv/${tvId}?api_key=${TMDB_API_KEY}`
+    );
+
+    if (!detailResponse.ok) return [];
+
+    const details = await detailResponse.json();
+    
+    // If show has ended or been cancelled, no upcoming episodes
+    if (details.status === 'Ended' || details.status === 'Canceled') {
+      return [];
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcomingEpisodes: TMDBEpisode[] = [];
+
+    // Get the latest season(s) to find upcoming episodes
+    const numberOfSeasons = details.number_of_seasons || 0;
+    
+    // Check the last 2 seasons (current and potentially next)
+    const seasonsToCheck = [];
+    if (numberOfSeasons > 0) {
+      seasonsToCheck.push(numberOfSeasons);
+      if (numberOfSeasons > 1) {
+        seasonsToCheck.push(numberOfSeasons - 1);
+      }
+    }
+
+    for (const seasonNum of seasonsToCheck) {
+      const seasonResponse = await fetch(
+        `${TMDB_BASE_URL}/tv/${tvId}/season/${seasonNum}?api_key=${TMDB_API_KEY}`
+      );
+
+      if (!seasonResponse.ok) continue;
+
+      const seasonData = await seasonResponse.json();
+      const episodes = seasonData.episodes || [];
+
+      for (const ep of episodes) {
+        if (ep.air_date) {
+          const airDate = new Date(ep.air_date);
+          airDate.setHours(0, 0, 0, 0);
+          
+          // Include episodes from today onwards (within next 60 days)
+          const sixtyDaysFromNow = new Date(today);
+          sixtyDaysFromNow.setDate(sixtyDaysFromNow.getDate() + 60);
+          
+          if (airDate >= today && airDate <= sixtyDaysFromNow) {
+            upcomingEpisodes.push({
+              id: ep.id,
+              name: ep.name,
+              overview: ep.overview || '',
+              air_date: ep.air_date,
+              episode_number: ep.episode_number,
+              season_number: ep.season_number,
+              still_path: ep.still_path,
+              vote_average: ep.vote_average || 0,
+              runtime: ep.runtime
+            });
+          }
+        }
+      }
+    }
+
+    // Sort by air date
+    upcomingEpisodes.sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime());
+
+    return upcomingEpisodes;
+  } catch (error) {
+    console.error("Failed to get TV show upcoming episodes:", error);
+    return [];
+  }
+};
+
+// Get next episode to air for a TV show
+export const getTVShowNextEpisode = async (tvId: number): Promise<TMDBEpisode | null> => {
+  if (!TMDB_API_KEY) return null;
+
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/tv/${tvId}?api_key=${TMDB_API_KEY}&append_to_response=next_episode_to_air`
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    
+    if (data.next_episode_to_air) {
+      return {
+        id: data.next_episode_to_air.id,
+        name: data.next_episode_to_air.name,
+        overview: data.next_episode_to_air.overview || '',
+        air_date: data.next_episode_to_air.air_date,
+        episode_number: data.next_episode_to_air.episode_number,
+        season_number: data.next_episode_to_air.season_number,
+        still_path: data.next_episode_to_air.still_path,
+        vote_average: data.next_episode_to_air.vote_average || 0,
+        runtime: data.next_episode_to_air.runtime
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Failed to get TV show next episode:", error);
+    return null;
   }
 };

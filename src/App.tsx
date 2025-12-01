@@ -10,6 +10,7 @@ const StatsPage = lazy(() => import('./components/pages/StatsPage'));
 const AlbumsPage = lazy(() => import('./components/pages/AlbumsPage'));
 const AlbumDetailPage = lazy(() => import('./components/pages/AlbumDetailPage'));
 const PersonDetailPage = lazy(() => import('./components/pages/PersonDetailPage'));
+const ReleaseCalendarPage = lazy(() => import('./components/pages/ReleaseCalendarPage'));
 const AddMovieModal = lazy(() => import('./components/modals/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('./components/modals/MovieDetailModal'));
 import Layout from './components/layout/Layout';
@@ -58,6 +59,7 @@ const MainApp: React.FC<{ onReady: () => void }> = ({ onReady }) => {
             <Route path="/albums" element={<AlbumsPage />} />
             <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
             <Route path="/person/:personId" element={<PersonDetailPage />} />
+            <Route path="/calendar" element={<ReleaseCalendarPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           <AddMovieModal />
