@@ -1,12 +1,12 @@
 ﻿<div align="center">
   <img src="docs/images/logo_text.png" alt="Logo dự án">
+  <br />
+  <i>Cine Over B**ch !!</i> 🎞️✨
 </div>
-
-Chào mừng đến với **CineMOB**! Đây là một ứng dụng để theo dõi và quản lý danh sách phim đã xem, giúp bạn lưu giữ những khoảnh khắc điện ảnh đáng nhớ. 🍿✨
 
 ## 🚀 Giới thiệu
 
-**CineMOB** là một ứng dụng web hiện đại, được xây dựng để trở thành người bạn đồng hành lý tưởng cho những người yêu điện ảnh. Với CineMOB, bạn không chỉ có thể theo dõi và quản lý danh sách phim đã xem một cách chi tiết, mà còn có thể khám phá những bộ phim mới mẻ thông qua hệ thống gợi ý bằng AI, tạo các album phim theo chủ đề cá nhân, và xem thống kê trực quan về thói quen xem phim của mình. Hãy để CineMOB giúp bạn xây dựng và chăm sóc bộ sưu tập điện ảnh độc đáo của riêng bạn. 🍿✨
+**CineMOB** là một ứng dụng web hiện đại, được xây dựng để trở thành người bạn đồng hành lý tưởng cho những người yêu điện ảnh. Với CineMOB, bạn không chỉ có thể theo dõi và quản lý danh sách phim đã xem một cách chi tiết, mà còn có thể khám phá những bộ phim mới mẻ thông qua hệ thống gợi ý bằng AI, tạo các album phim theo chủ đề cá nhân, và xem thống kê trực quan về thói quen xem phim của mình. Hãy để CineMOB giúp bạn xây dựng và chăm sóc bộ sưu tập điện ảnh độc đáo của riêng bạn. 🍿🎥
 
 ## ✨ Tính năng nổi bật
 
@@ -32,7 +32,7 @@ Chào mừng đến với **CineMOB**! Đây là một ứng dụng để theo d
 | Hạng mục               | Công nghệ                                                                                                                                                       |
 | :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Core Framework**     | [React](https://react.dev/) `v19.2.0`, [TypeScript](https://www.typescriptlang.org/) `~5.8.2`                                                                   |
-| **Build Tool**         | [Vite](https://vitejs.dev/) `v6.2.0`                                                                                                                            |
+| **Build Tool**         | [Vite](https://vitejs.dev/) `v6.2.0` with [vite-plugin-pwa](https://vite-pwa-org.netlify.app/)                                                                  |
 | **Styling**            | [Tailwind CSS](https://tailwindcss.com/) `v4.1.17`, [Lucide React](https://lucide.dev/) `v0.554.0`                                                              |
 | **Routing**            | [React Router DOM](https://reactrouter.com/) `v7.9.6`                                                                                                           |
 | **State Management**   | [Zustand](https://zustand-demo.pmnd.rs/) `v5.0.8`                                                                                                               |
@@ -88,7 +88,7 @@ Chào mừng đến với **CineMOB**! Đây là một ứng dụng để theo d
     ```bash
     npm run dev
     ```
-    Ứng dụng sẽ chạy tại địa chỉ `http://localhost:5173` (hoặc một cổng khác nếu cổng 5173 đã được sử dụng).
+    Mở trình duyệt và truy cập `http://localhost:3000` để xem ứng dụng.
 
 ## 📂 Cấu trúc thư mục
 
