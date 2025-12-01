@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '../providers/AuthProvider';
-import { subscribeToMovies } from '../../services/movieService';
+import React, { useState, useMemo } from 'react';
 import { getTVShowNextEpisode, getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage } from '../../services/tmdbService';
 import { Movie, UpcomingEpisode, TMDBEpisode } from '../../types';
 import { Calendar, ChevronLeft, ChevronRight, Tv, Clock, Film, CalendarDays, Bell, Info } from 'lucide-react';
@@ -8,90 +6,31 @@ import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useMovieDetailStore from '../../stores/movieDetailStore';
+import useReleaseCalendarStore from '../../stores/releaseCalendarStore';
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
 const ReleaseCalendarPage: React.FC = () => {
-  const { user } = useAuth();
   const { openDetailModal } = useMovieDetailStore();
-  
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [upcomingEpisodes, setUpcomingEpisodes] = useState<UpcomingEpisode[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+  const {
+    movies,
+    upcomingEpisodes,
+    loading,
+    loadingEpisodes
+  } = useReleaseCalendarStore();
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
-  // Subscribe to user's movies
-  useEffect(() => {
-    if (!user) return;
-
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setMovies(data);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
-
   // Get all TV series from user's collection (history + watchlist)
   const tvSeries = useMemo(() => {
-    return movies.filter(m => 
-      m.media_type === 'tv' && 
+    return movies.filter(m =>
+      m.media_type === 'tv' &&
       m.source === 'tmdb'
     );
   }, [movies]);
-
-  // Fetch upcoming episodes for all TV series
-  useEffect(() => {
-    const fetchUpcomingEpisodes = async () => {
-      if (tvSeries.length === 0) {
-        setUpcomingEpisodes([]);
-        setLoadingEpisodes(false);
-        return;
-      }
-
-      setLoadingEpisodes(true);
-      const allUpcoming: UpcomingEpisode[] = [];
-
-      for (const series of tvSeries) {
-        try {
-          const tvId = Number(series.id);
-          const episodes = await getTVShowUpcomingEpisodes(tvId);
-          
-          // Get Vietnamese name if available
-          let seriesNameVi = series.title_vi;
-          if (!seriesNameVi) {
-            const viDetails = await getMovieDetailsWithLanguage(tvId, 'tv', 'vi-VN');
-            seriesNameVi = viDetails?.name;
-          }
-
-          for (const ep of episodes) {
-            allUpcoming.push({
-              seriesId: tvId,
-              seriesName: series.title,
-              seriesNameVi: seriesNameVi,
-              posterPath: series.poster_path,
-              episode: ep,
-              docId: series.docId
-            });
-          }
-        } catch (error) {
-          console.error(`Failed to fetch episodes for ${series.title}:`, error);
-        }
-      }
-
-      // Sort by air date
-      allUpcoming.sort((a, b) => new Date(a.episode.air_date).getTime() - new Date(b.episode.air_date).getTime());
-      
-      setUpcomingEpisodes(allUpcoming);
-      setLoadingEpisodes(false);
-    };
-
-    fetchUpcomingEpisodes();
-  }, [tvSeries]);
 
   // Calendar helpers
   const getDaysInMonth = (date: Date) => {
