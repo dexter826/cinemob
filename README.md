@@ -14,6 +14,7 @@ Chào mừng đến với **CineMOB**! Đây là một ứng dụng để theo d
 - **🔍 Tìm kiếm thông minh:** Dễ dàng tìm kiếm phim và chương trình TV từ cơ sở dữ liệu khổng lồ của TMDB với các bộ lọc nâng cao.
 - **🤖 Gợi ý phim bằng AI:** Khám phá những bộ phim mới phù hợp với sở thích của bạn nhờ hệ thống gợi ý được cá nhân hóa bằng AI.
 - **📝 Quản lý phim chi tiết:** Thêm phim vào danh sách đã xem hoặc danh sách chờ, kèm theo ngày xem, điểm đánh giá và ghi chú cá nhân.
+- **📅 Lịch phát sóng:** Theo dõi ngày ra mắt tập mới của các series TV trong bộ sưu tập, giúp bạn không bỏ lỡ tập phim yêu thích.
 - **📁 Bộ sưu tập (Album):** Tự do tạo và quản lý các album phim theo chủ đề, giúp sắp xếp bộ sưu tập của bạn một cách khoa học.
 - **🌟 Trang chi tiết:** Cung cấp thông tin đầy đủ về phim, diễn viên, và đạo diễn, bao gồm danh sách phim đã tham gia.
 - **📊 Thống kê trực quan:** Theo dõi thói quen xem phim của bạn qua các biểu đồ sinh động về số lượng, thể loại, quốc gia, và điểm đánh giá.
