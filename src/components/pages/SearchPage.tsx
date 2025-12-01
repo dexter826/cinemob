@@ -120,7 +120,7 @@ const SearchPage: React.FC = () => {
     if (discoverMovies.length > 0) {
       setDiscoverPage(1);
     }
-  }, [filterYear, filterCountry, filterRating, sortBy]);
+  }, [filterYear, filterCountry, filterRating, sortBy, filterType]);
 
   // Auto-load discover movies when page or filters change
   useEffect(() => {
@@ -133,6 +133,7 @@ const SearchPage: React.FC = () => {
           country: filterCountry,
           rating: filterRating,
           sortBy: sortBy,
+          type: filterType,
         });
         setDiscoverMovies(results);
         setTotalDiscoverPages(totalPages);
@@ -140,7 +141,7 @@ const SearchPage: React.FC = () => {
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [discoverPage, filterYear, filterCountry, filterRating, sortBy]);
+  }, [discoverPage, filterYear, filterCountry, filterRating, sortBy, filterType]);
 
   // Reset search page when query changes
   useEffect(() => {
@@ -152,26 +153,7 @@ const SearchPage: React.FC = () => {
     ? results
     : discoverMovies;
 
-  const filteredResults = displayMovies.filter(movie => {
-    if (filterType !== 'all' && movie.media_type !== filterType) return false;
-
-    if (filterYear) {
-      const date = movie.release_date || movie.first_air_date;
-      if (!date || !date.startsWith(filterYear)) return false;
-    }
-
-
-    if (filterCountry) {
-      if (!movie.origin_country || !movie.origin_country.includes(filterCountry)) return false;
-    }
-
-    if (filterRating) {
-      const minRating = parseFloat(filterRating);
-      if (!movie.vote_average || movie.vote_average < minRating) return false;
-    }
-
-    return true;
-  });
+  const filteredResults = displayMovies; // All filters are now server-side
 
   const isLoading = isSearchMode ? loading : discoverLoading;
   const currentPage = isSearchMode ? searchPage : discoverPage;
@@ -216,6 +198,7 @@ const SearchPage: React.FC = () => {
           country: filterCountry,
           rating: filterRating,
           sortBy: sortBy,
+          type: filterType,
         });
         setDiscoverMovies(results);
         setTotalDiscoverPages(totalPages);

@@ -5,17 +5,36 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
   if (!query || !TMDB_API_KEY) return { results: [], totalPages: 0 };
 
   try {
-    const response = await fetch(
-      `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}`
+    // Search movies
+    const movieResponse = await fetch(
+      `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}`
     );
 
-    if (!response.ok) throw new Error('TMDB API Error');
+    // Search TV shows
+    const tvResponse = await fetch(
+      `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}`
+    );
 
-    const data = await response.json();
-    let results = (data.results || []).filter((item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv');
+    if (!movieResponse.ok || !tvResponse.ok) throw new Error('TMDB API Error');
 
-    // Cập nhật tiêu đề tiếng Việt cho phim từ Việt Nam
-    for (let movie of results) {
+    const movieData = await movieResponse.json();
+    const tvData = await tvResponse.json();
+
+    // Add media_type
+    const movieResults = (movieData.results || []).map((item: any) => ({ ...item, media_type: 'movie' }));
+    const tvResults = (tvData.results || []).map((item: any) => ({ ...item, media_type: 'tv' }));
+
+    // Combine results
+    let combinedResults = [...movieResults, ...tvResults];
+
+    // Sort by popularity descending
+    combinedResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+    // Limit to 20 results per page for consistency
+    combinedResults = combinedResults.slice(0, 20);
+
+    // Update Vietnamese titles for Vietnamese movies
+    for (let movie of combinedResults) {
       const detail = await getMovieDetails(movie.id, movie.media_type as 'movie' | 'tv');
       if (detail && detail.production_countries?.some(country => country.iso_3166_1 === 'VN')) {
         const viDetail = await getMovieDetailsWithLanguage(movie.id, movie.media_type as 'movie' | 'tv', 'vi-VN');
@@ -29,7 +48,10 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
       }
     }
 
-    return { results, totalPages: data.total_pages || 1 };
+    // Use max total pages
+    const totalPages = Math.max(movieData.total_pages || 1, tvData.total_pages || 1);
+
+    return { results: combinedResults, totalPages };
   } catch (error) {
     console.error("Failed to search movies:", error);
     return { results: [], totalPages: 0 };
@@ -155,6 +177,7 @@ export const getDiscoverMovies = async (params: {
   country?: string;
   rating?: string;
   sortBy?: string;
+  type?: 'all' | 'movie' | 'tv';
 } = {}): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!TMDB_API_KEY) return { results: [], totalPages: 0 };
 
@@ -162,66 +185,75 @@ export const getDiscoverMovies = async (params: {
     const page = params.page || 1;
     const sortBy = params.sortBy || 'popularity.desc';
 
-    // Discover movies
-    const movieQueryParams = new URLSearchParams({
-      api_key: TMDB_API_KEY,
-      page: page.toString(),
-      sort_by: sortBy,
-      include_adult: 'false',
-      include_video: 'false',
-    });
+    let combinedResults: any[] = [];
+    let totalPages = 1;
 
-    // Support multiple genres - TMDB uses comma-separated for AND, pipe for OR
-    // Using comma (AND) means movies must have ALL selected genres
-    // Using pipe (OR) means movies must have AT LEAST ONE selected genre
-    if (params.genres && params.genres.length > 0) {
-      movieQueryParams.append('with_genres', params.genres.join(','));
+    const fetchMovies = async () => {
+      const movieQueryParams = new URLSearchParams({
+        api_key: TMDB_API_KEY,
+        page: page.toString(),
+        sort_by: sortBy,
+        include_adult: 'false',
+        include_video: 'false',
+      });
+
+      if (params.genres && params.genres.length > 0) {
+        movieQueryParams.append('with_genres', params.genres.join(','));
+      }
+      if (params.year) movieQueryParams.append('primary_release_year', params.year);
+      if (params.country) movieQueryParams.append('with_origin_country', params.country);
+      if (params.rating) {
+        movieQueryParams.append('vote_average.gte', params.rating);
+        movieQueryParams.append('vote_count.gte', '100');
+      }
+
+      const movieResponse = await fetch(`${TMDB_BASE_URL}/discover/movie?${movieQueryParams}`);
+      if (!movieResponse.ok) throw new Error('TMDB API Error');
+      const movieData = await movieResponse.json();
+      const movieResults = (movieData.results || []).map((item: any) => ({ ...item, media_type: 'movie' }));
+      return { results: movieResults, totalPages: movieData.total_pages || 1 };
+    };
+
+    const fetchTV = async () => {
+      const tvQueryParams = new URLSearchParams({
+        api_key: TMDB_API_KEY,
+        page: page.toString(),
+        sort_by: sortBy,
+        include_adult: 'false',
+        include_video: 'false',
+      });
+
+      if (params.genres && params.genres.length > 0) {
+        tvQueryParams.append('with_genres', params.genres.join(','));
+      }
+      if (params.year) tvQueryParams.append('first_air_date_year', params.year);
+      if (params.country) tvQueryParams.append('with_origin_country', params.country);
+      if (params.rating) {
+        tvQueryParams.append('vote_average.gte', params.rating);
+        tvQueryParams.append('vote_count.gte', '100');
+      }
+
+      const tvResponse = await fetch(`${TMDB_BASE_URL}/discover/tv?${tvQueryParams}`);
+      if (!tvResponse.ok) throw new Error('TMDB API Error');
+      const tvData = await tvResponse.json();
+      const tvResults = (tvData.results || []).map((item: any) => ({ ...item, media_type: 'tv' }));
+      return { results: tvResults, totalPages: tvData.total_pages || 1 };
+    };
+
+    if (params.type === 'movie') {
+      const { results, totalPages: tp } = await fetchMovies();
+      combinedResults = results;
+      totalPages = tp;
+    } else if (params.type === 'tv') {
+      const { results, totalPages: tp } = await fetchTV();
+      combinedResults = results;
+      totalPages = tp;
+    } else {
+      // 'all' or undefined
+      const [movieData, tvData] = await Promise.all([fetchMovies(), fetchTV()]);
+      combinedResults = [...movieData.results, ...tvData.results];
+      totalPages = Math.max(movieData.totalPages, tvData.totalPages);
     }
-    if (params.year) movieQueryParams.append('primary_release_year', params.year);
-    if (params.country) movieQueryParams.append('with_origin_country', params.country);
-    if (params.rating) {
-      movieQueryParams.append('vote_average.gte', params.rating);
-      movieQueryParams.append('vote_count.gte', '100'); // Minimum vote count for reliability
-    }
-
-    const movieResponse = await fetch(
-      `${TMDB_BASE_URL}/discover/movie?${movieQueryParams}`
-    );
-
-    // Discover TV shows
-    const tvQueryParams = new URLSearchParams({
-      api_key: TMDB_API_KEY,
-      page: page.toString(),
-      sort_by: sortBy,
-      include_adult: 'false',
-      include_video: 'false',
-    });
-
-    if (params.genres && params.genres.length > 0) {
-      tvQueryParams.append('with_genres', params.genres.join(','));
-    }
-    if (params.year) tvQueryParams.append('first_air_date_year', params.year);
-    if (params.country) tvQueryParams.append('with_origin_country', params.country);
-    if (params.rating) {
-      tvQueryParams.append('vote_average.gte', params.rating);
-      tvQueryParams.append('vote_count.gte', '100'); // Minimum vote count for reliability
-    }
-
-    const tvResponse = await fetch(
-      `${TMDB_BASE_URL}/discover/tv?${tvQueryParams}`
-    );
-
-    if (!movieResponse.ok || !tvResponse.ok) throw new Error('TMDB API Error');
-
-    const movieData = await movieResponse.json();
-    const tvData = await tvResponse.json();
-
-    // Combine results and add media_type
-    const movieResults = (movieData.results || []).map((item: any) => ({ ...item, media_type: 'movie' }));
-    const tvResults = (tvData.results || []).map((item: any) => ({ ...item, media_type: 'tv' }));
-
-    // Combine and sort based on sortBy parameter
-    let combinedResults = [...movieResults, ...tvResults];
 
     // Apply sorting based on sortBy parameter
     if (sortBy === 'popularity.desc') {
@@ -253,10 +285,6 @@ export const getDiscoverMovies = async (params: {
         return titleB.localeCompare(titleA);
       });
     }
-
-    // For pagination, since we're combining, we need to handle total pages differently
-    // For simplicity, use the max of the two total pages
-    const totalPages = Math.max(movieData.total_pages || 1, tvData.total_pages || 1);
 
     return { results: combinedResults, totalPages };
   } catch (error) {
