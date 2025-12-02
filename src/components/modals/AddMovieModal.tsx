@@ -192,7 +192,7 @@ const AddMovieModal: React.FC = () => {
         const timeStr = `${hours}:${minutes}`;
 
         setFormData({
-          title: getDisplayTitle(m),
+          title: m.title,
           title_vi: m.title_vi || '',
           runtime: m.runtime.toString(),
           seasons: m.seasons ? m.seasons.toString() : '',
@@ -324,7 +324,7 @@ const AddMovieModal: React.FC = () => {
                 const now = new Date();
                 setFormData(prev => ({
                   ...prev,
-                  title: displayTitle,
+                  title: originalTitle,
                   title_vi: vietnameseTitle,
                   runtime: runtime.toString(),
                   seasons: seasons ? seasons.toString() : '',
@@ -503,16 +503,9 @@ const AddMovieModal: React.FC = () => {
         : new Date();
       const isTv = initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || (initialData?.movieToEdit?.media_type === 'tv') || (isManualMode && manualMediaType === 'tv');
 
-      // Parse title and title_vi if title contains parentheses
-      let parsedTitle = formData.title;
-      let parsedTitleVi = formData.title_vi;
-      if (formData.title.includes('(') && formData.title.includes(')')) {
-        const match = formData.title.match(/^(.+?)\s*\((.+?)\)$/);
-        if (match) {
-          parsedTitle = match[1].trim();
-          parsedTitleVi = match[2].trim();
-        }
-      }
+      // Title and title_vi are already separated in form fields
+      const parsedTitle = formData.title;
+      const parsedTitleVi = formData.title_vi;
 
       // Calculate watched episodes for TV series
       let watchedEpisodes = 0;
@@ -791,19 +784,32 @@ const AddMovieModal: React.FC = () => {
 
                 {/* Title Section */}
                 <div className="space-y-4">
-                  <div className={`transition-transform duration-500 ${isAnimating && titleError ? 'scale-110' : ''}`}>
-                    <input
-                      ref={titleRef}
-                      type="text"
-                      required
-                      value={formData.title}
-                      onChange={e => {
-                        setFormData({ ...formData, title: e.target.value });
-                        setTitleError(false);
-                      }}
-                      placeholder="Tên phim"
-                      className="w-full bg-transparent border-b-2 border-black/10 dark:border-white/10 px-0 py-2 text-2xl font-bold text-text-main placeholder-text-muted/50 focus:border-primary outline-none transition-colors"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={`transition-transform duration-500 ${isAnimating && titleError ? 'scale-110' : ''}`}>
+                      <label className="text-xs font-medium text-text-muted uppercase tracking-wider block mb-2">Tên gốc</label>
+                      <input
+                        ref={titleRef}
+                        type="text"
+                        required
+                        value={formData.title}
+                        onChange={e => {
+                          setFormData({ ...formData, title: e.target.value });
+                          setTitleError(false);
+                        }}
+                        placeholder="Tên phim gốc..."
+                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-text-muted uppercase tracking-wider block mb-2">Tên tiếng Việt</label>
+                      <input
+                        type="text"
+                        value={formData.title_vi}
+                        onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
+                        placeholder="Tên phim tiếng Việt..."
+                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                      />
+                    </div>
                   </div>
                   <div>
                     <input
