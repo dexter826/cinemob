@@ -16,7 +16,7 @@ const Loading: React.FC<LoadingProps> = ({
 }) => {
   if (fullScreen) {
     return (
-      <div className={`min-h-screen bg-background flex flex-col items-center justify-center text-primary ${className}`}>
+      <div className={`fixed inset-0 bg-background flex flex-col items-center justify-center text-primary z-40 ${className}`}>
         <Disc3 className="animate-spin" size={size} />
         {text && <p className="mt-4 text-text-muted">{text}</p>}
       </div>
