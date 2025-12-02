@@ -11,6 +11,7 @@
   "dependencies": {
     "file-saver": "^2.0.5",
     "firebase": "^12.6.0",
+    "framer-motion": "^12.23.25",
     "howler": "^2.2.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.554.0",

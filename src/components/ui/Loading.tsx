@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Disc3 } from 'lucide-react';
 
 interface LoadingProps {
@@ -17,16 +18,52 @@ const Loading: React.FC<LoadingProps> = ({
   if (fullScreen) {
     return (
       <div className={`fixed inset-0 bg-background flex flex-col items-center justify-center text-primary z-40 ${className}`}>
-        <Disc3 className="animate-spin" size={size} />
-        {text && <p className="mt-4 text-text-muted">{text}</p>}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ 
+            duration: 1, 
+            repeat: Infinity, 
+            ease: "linear" 
+          }}
+        >
+          <Disc3 size={size} />
+        </motion.div>
+        {text && (
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="mt-4 text-text-muted"
+          >
+            {text}
+          </motion.p>
+        )}
       </div>
     );
   }
 
   return (
     <div className={`flex flex-col items-center justify-center text-primary ${className}`}>
-      <Disc3 className="animate-spin" size={size} />
-      {text && <p className="mt-4 text-text-muted">{text}</p>}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ 
+          duration: 1, 
+          repeat: Infinity, 
+          ease: "linear" 
+        }}
+      >
+        <Disc3 size={size} />
+      </motion.div>
+      {text && (
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          className="mt-4 text-text-muted"
+        >
+          {text}
+        </motion.p>
+      )}
     </div>
   );
 };

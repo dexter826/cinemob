@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider, useAuth } from './components/providers/AuthProvider';
 import useAddMovieStore from './stores/addMovieStore';
 import useMovieDetailStore from './stores/movieDetailStore';
@@ -25,6 +26,49 @@ import ToastContainer from './components/ui/ToastContainer';
 import AlertContainer from './components/ui/AlertContainer';
 
 import useInitialLoadStore from './stores/initialLoadStore';
+
+// Page transition variants - chỉ fade opacity, không translate để tránh chớp
+const pageVariants = {
+  initial: { opacity: 0 },
+  in: { opacity: 1 },
+  out: { opacity: 0 }
+};
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'easeInOut',
+  duration: 0.2
+};
+
+// Animated Routes component to handle page transitions
+const AnimatedRoutes: React.FC = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+        transition={pageTransition}
+        className="w-full"
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/albums" element={<AlbumsPage />} />
+          <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
+          <Route path="/person/:personId" element={<PersonDetailPage />} />
+          <Route path="/calendar" element={<ReleaseCalendarPage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 
 const MainApp: React.FC<{ onReady: () => void }> = ({ onReady }) => {
   const { user, loading: authLoading } = useAuth();
@@ -54,16 +98,7 @@ const MainApp: React.FC<{ onReady: () => void }> = ({ onReady }) => {
         <RecommendationsStoreInitializer />
         <ReleaseCalendarStoreInitializer />
         <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/stats" element={<StatsPage />} />
-            <Route path="/albums" element={<AlbumsPage />} />
-            <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
-            <Route path="/person/:personId" element={<PersonDetailPage />} />
-            <Route path="/calendar" element={<ReleaseCalendarPage />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+          <AnimatedRoutes />
           <AddMovieModal />
           <MovieDetailModal
             isOpen={isDetailModalOpen}

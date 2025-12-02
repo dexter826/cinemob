@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Calendar, Star, Save, Loader2, FolderPlus, Clock, Globe, Film, Tv, LayoutGrid, AlignLeft, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
 import { getMovieDetails, getMovieDetailsWithLanguage, getGenres, getTVShowEpisodeInfo } from '../../services/tmdbService';
@@ -657,11 +658,23 @@ const AddMovieModal: React.FC = () => {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-surface border border-white/10 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="bg-surface border border-white/10 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+          >
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-surface/95 backdrop-blur shrink-0">
@@ -1141,8 +1154,10 @@ const AddMovieModal: React.FC = () => {
           </button>
         </div>
 
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

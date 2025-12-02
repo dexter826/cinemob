@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Calendar, Clock, Star, Film, Info, FolderPlus, Play, Users, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, TMDBVideo, TMDBCredits } from '../../types';
 import { getMovieVideos, getMovieCredits } from '../../services/tmdbService';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
@@ -9,6 +10,35 @@ import AlbumSelectorModal from './AlbumSelectorModal';
 import useToastStore from '../../stores/toastStore';
 import { useNavigate } from 'react-router-dom';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
+
+// Modal animation variants
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 }
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.9, y: 20 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    y: 0,
+    transition: {
+      type: 'spring',
+      damping: 25,
+      stiffness: 300
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.9, 
+    y: 20,
+    transition: {
+      duration: 0.2
+    }
+  }
+};
 
 interface MovieDetailModalProps {
   isOpen: boolean;
@@ -60,20 +90,19 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
     }
   }, [isOpen, movie]);
 
-  if (!isOpen || !movie) return null;
+  // Early return for type safety - these vars are only used when modal is open
+  const title = movie ? getDisplayTitle(movie) : '';
+  const overview = movie?.content || movie?.review || "Chưa có mô tả.";
+  const backdropUrl = movie?.poster_path && movie?.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
 
-  const title = getDisplayTitle(movie);
-  const overview = movie.content || movie.review || "Chưa có mô tả.";
-  const backdropUrl = movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
+  const posterUrl = movie?.poster_path && movie?.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
 
-  const posterUrl = movie.poster_path && movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : PLACEHOLDER_IMAGE;
-
-  const genres = movie.genres;
+  const genres = movie?.genres;
   const rating = null;
-  const releaseDate = movie.release_date;
-  const country = movie.country;
+  const releaseDate = movie?.release_date;
+  const country = movie?.country;
 
-  const canAddToAlbum = (movie.status || 'history') === 'history' && movie.docId;
+  const canAddToAlbum = (movie?.status || 'history') === 'history' && movie?.docId;
 
   const handleAddToAlbum = () => {
     if (!canAddToAlbum) {
@@ -95,16 +124,28 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
-      onTouchMove={(e) => e.preventDefault()}
-      onWheel={(e) => e.preventDefault()}
-    >
-      <div
-        className="bg-surface w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row max-h-[90vh]"
-        onTouchMove={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOpen && movie && (
+        <motion.div
+          variants={overlayVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={onClose}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
+          <motion.div
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="bg-surface w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+          >
 
         <button
           onClick={onClose}
@@ -323,15 +364,17 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
             </div>
           )}
         </div>
-      </div>
 
-      {/* Album Selector Modal */}
-      <AlbumSelectorModal
-        isOpen={showAlbumSelector}
-        onClose={() => setShowAlbumSelector(false)}
-        movie={movie}
-      />
-    </div>
+        {/* Album Selector Modal */}
+        <AlbumSelectorModal
+          isOpen={showAlbumSelector}
+          onClose={() => setShowAlbumSelector(false)}
+          movie={movie}
+        />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

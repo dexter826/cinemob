@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, FolderPlus, Film } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, Album } from '../../types';
 import { subscribeToAlbums } from '../../services/albumService';
 import { useAuth } from '../providers/AuthProvider';
@@ -88,23 +89,32 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
     }
   };
 
-  if (!isOpen || !movie) return null;
-
   const availableAlbums = albums.filter(album =>
-    album.movieDocIds && !album.movieDocIds.includes(movie.docId || '')
+    album.movieDocIds && !album.movieDocIds.includes(movie?.docId || '')
   );
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
-      onTouchMove={(e) => e.preventDefault()}
-      onWheel={(e) => e.preventDefault()}
-    >
-      <div
-        className="bg-surface w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative"
-        onTouchMove={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOpen && movie && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={onClose}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="bg-surface w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative"
+            onClick={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+          >
 
         <button
           onClick={onClose}
@@ -224,8 +234,10 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
             </div>
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

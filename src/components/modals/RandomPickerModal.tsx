@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { X, Dice5 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { Howl } from 'howler';
 import { useAuth } from '../providers/AuthProvider';
@@ -238,8 +239,6 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     onClose();
   };
 
-  if (!isOpen) return null;
-
   const hasPool = activePool && activePool.length > 0;
   const currentItem = hasPool && currentIndex !== null ? activePool[currentIndex] : null;
 
@@ -267,17 +266,33 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      onTouchMove={(e) => e.preventDefault()}
-      onWheel={(e) => e.preventDefault()}
-    >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <AnimatePresence>
+      {isOpen && (() => {
+        return (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+        >
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+            onClick={onClose} 
+          />
 
-      <div
-        className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-black/10 dark:border-white/10 flex flex-col gap-4"
-        onTouchMove={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-black/10 dark:border-white/10 flex flex-col gap-4"
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
       >
         {/* Confetti Layer */}
         {hasResult && confettiData && (
@@ -453,8 +468,11 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
             Xem ngay
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+        );
+      })()}
+    </AnimatePresence>
   );
 };
 

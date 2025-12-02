@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Facebook, Instagram, Github, Mail, Heart, Star, Film, Clapperboard, Popcorn, Sparkles, PartyPopper, Ticket, Video, Camera, Award } from 'lucide-react';
 import logoText from '../../assets/images/logo_text.png';
 
@@ -14,6 +15,44 @@ interface ConfettiParticle {
   scale: number;
   color: string;
 }
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring' as const,
+      damping: 20,
+      stiffness: 300
+    }
+  }
+};
+
+const socialIconVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: 'spring' as const,
+      damping: 15,
+      stiffness: 400
+    }
+  }
+};
 
 const Footer: React.FC = () => {
   const [particles, setParticles] = useState<ConfettiParticle[]>([]);
@@ -32,10 +71,6 @@ const Footer: React.FC = () => {
 
   const handleLogoClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (isAnimating) return;
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
 
     // Generate 12-18 random particles
     const particleCount = Math.floor(Math.random() * 7) + 12;
@@ -71,26 +106,22 @@ const Footer: React.FC = () => {
     {
       href: "https://www.facebook.com/ctrlkd1",
       icon: Facebook,
-      label: "Facebook",
-      delay: "0ms"
+      label: "Facebook"
     },
     {
       href: "https://www.instagram.com/trcongminh_04/",
       icon: Instagram,
-      label: "Instagram",
-      delay: "100ms"
+      label: "Instagram"
     },
     {
       href: "https://github.com/dexter826",
       icon: Github,
-      label: "GitHub",
-      delay: "200ms"
+      label: "GitHub"
     },
     {
       href: "mailto:tcongminh1604@gmail.com",
       icon: Mail,
-      label: "Email",
-      delay: "300ms"
+      label: "Email"
     }
   ];
 
@@ -101,99 +132,190 @@ const Footer: React.FC = () => {
 
       {/* Floating particles effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-2 h-2 bg-primary/20 rounded-full animate-float-1" style={{ top: '20%', left: '10%' }} />
-        <div className="absolute w-1.5 h-1.5 bg-secondary/20 rounded-full animate-float-2" style={{ top: '60%', left: '80%' }} />
-        <div className="absolute w-2.5 h-2.5 bg-primary/15 rounded-full animate-float-3" style={{ top: '40%', left: '50%' }} />
+        <motion.div 
+          className="absolute w-2 h-2 bg-primary/20 rounded-full" 
+          style={{ top: '20%', left: '10%' }}
+          animate={{ 
+            y: [0, -20, 0],
+            x: [0, 10, 0],
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute w-1.5 h-1.5 bg-secondary/20 rounded-full" 
+          style={{ top: '60%', left: '80%' }}
+          animate={{ 
+            y: [0, 15, 0],
+            x: [0, -15, 0],
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.5, 0.2]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute w-2.5 h-2.5 bg-primary/15 rounded-full" 
+          style={{ top: '40%', left: '50%' }}
+          animate={{ 
+            y: [0, -10, 0],
+            x: [0, 20, 0],
+            scale: [1, 1.1, 1],
+            opacity: [0.25, 0.55, 0.25]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8">
+      <motion.div 
+        className="relative max-w-7xl mx-auto px-4 md:px-8"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          {/* Brand section with fade-in animation */}
-          <div className="flex-1 text-center md:text-left animate-fade-in-up">
-            <div 
+          {/* Brand section */}
+          <motion.div 
+            className="flex-1 text-center md:text-left"
+            variants={itemVariants}
+          >
+            <motion.div 
               className="flex items-center justify-center md:justify-start gap-2 group cursor-pointer relative"
               onClick={handleLogoClick}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               {/* Logo with confetti container */}
               <div className="relative">
-                {/* Confetti particles container - positioned at center of logo */}
+                {/* Confetti particles container */}
                 <div className="absolute inset-0 pointer-events-none overflow-visible flex items-center justify-center">
-                  {particles.map((particle) => (
-                    <div
-                      key={particle.id}
-                      className="absolute confetti-particle"
-                      style={{
-                        '--tx': `${particle.x}px`,
-                        '--ty': `${particle.y}px`,
-                        '--rotation': `${particle.rotation}deg`,
-                        '--scale': particle.scale,
-                        color: particle.color,
-                      } as React.CSSProperties}
-                    >
-                      <particle.Icon size={16} strokeWidth={2} />
-                    </div>
-                  ))}
+                  <AnimatePresence>
+                    {particles.map((particle) => (
+                      <motion.div
+                        key={particle.id}
+                        className="absolute"
+                        style={{ color: particle.color }}
+                        initial={{ 
+                          x: 0, 
+                          y: 0, 
+                          rotate: 0, 
+                          scale: 0,
+                          opacity: 1 
+                        }}
+                        animate={{ 
+                          x: particle.x, 
+                          y: particle.y, 
+                          rotate: particle.rotation, 
+                          scale: particle.scale,
+                          opacity: 0
+                        }}
+                        exit={{ opacity: 0 }}
+                        transition={{ 
+                          duration: 0.8, 
+                          ease: [0.25, 0.46, 0.45, 0.94]
+                        }}
+                      >
+                        <particle.Icon size={16} strokeWidth={2} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
 
-                <img
+                <motion.img
                   src={logoText}
                   alt="CineMOB"
-                  className={`h-8 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] group-hover:scale-105 select-none ${isAnimating ? 'animate-logo-pop' : ''}`}
+                  className="h-8 select-none"
+                  animate={isAnimating ? { scale: [1, 0.9, 1.1, 1] } : {}}
+                  transition={{ duration: 0.4 }}
+                  whileHover={{ 
+                    filter: "drop-shadow(0 0 8px rgba(16,185,129,0.5))"
+                  }}
                 />
               </div>
-            </div>
-            <p className="text-sm text-text-muted mt-1 flex items-center justify-center md:justify-start gap-1.5">
+            </motion.div>
+            <motion.p 
+              className="text-sm text-text-muted mt-1 flex items-center justify-center md:justify-start gap-1.5"
+              variants={itemVariants}
+            >
               Cine Over B**ch
-              <Heart className="w-3.5 h-3.5 text-primary animate-pulse-soft inline-block" />
-            </p>
-          </div>
+              <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <Heart className="w-3.5 h-3.5 text-primary inline-block" />
+              </motion.span>
+            </motion.p>
+          </motion.div>
 
           {/* Social links with staggered animation */}
-          <div className="flex-1 flex items-center justify-center gap-4">
-            {socialLinks.map((link, index) => {
+          <motion.div 
+            className="flex-1 flex items-center justify-center gap-4"
+            variants={containerVariants}
+          >
+            {socialLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <a
+                <motion.a
                   key={link.label}
                   href={link.href}
                   target={link.href.startsWith('http') ? '_blank' : undefined}
                   rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="group relative text-text-muted hover:text-primary transition-all duration-300 animate-fade-in-up"
-                  style={{ animationDelay: link.delay }}
+                  className="group relative text-text-muted"
                   aria-label={link.label}
+                  variants={socialIconVariants}
+                  whileHover={{ 
+                    scale: 1.15, 
+                    y: -3,
+                    color: '#10b981'
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {/* Glow effect on hover */}
-                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-150" />
+                  <motion.div 
+                    className="absolute inset-0 bg-primary/20 rounded-full blur-md scale-150"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  />
 
-                  <div className="relative transform group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-300">
+                  <div className="relative">
                     <Icon size={22} strokeWidth={1.5} />
                   </div>
 
                   {/* Tooltip */}
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-black/10 dark:border-white/10 rounded text-xs text-text-main whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg">
+                  <motion.span 
+                    className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-black/10 dark:border-white/10 rounded text-xs text-text-main whitespace-nowrap pointer-events-none shadow-lg"
+                    initial={{ opacity: 0, y: 5 }}
+                    whileHover={{ opacity: 1, y: 0 }}
+                  >
                     {link.label}
-                  </span>
-                </a>
+                  </motion.span>
+                </motion.a>
               );
             })}
-          </div>
+          </motion.div>
 
-          {/* Copyright with fade-in animation */}
-          <div className="flex-1 text-sm text-text-muted animate-fade-in-up flex items-center justify-center md:justify-end gap-1.5" style={{ animationDelay: '400ms' }}>
+          {/* Copyright */}
+          <motion.div 
+            className="flex-1 text-sm text-text-muted flex items-center justify-center md:justify-end gap-1.5"
+            variants={itemVariants}
+          >
             <span>© {new Date().getFullYear()}</span>
             <span className="text-primary font-semibold">CineMOB</span>
             <span>• Made by</span>
-            <a
+            <motion.a
               href="https://github.com/dexter826"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium transition-colors"
+              className="text-primary font-medium"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               MOB
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       <style>{`
         @keyframes gradient-x {
@@ -201,98 +323,14 @@ const Footer: React.FC = () => {
           50% { background-position: 100% 50%; }
         }
         
-        @keyframes float-1 {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-          50% { transform: translate(10px, -20px) scale(1.2); opacity: 0.6; }
-        }
-        
-        @keyframes float-2 {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-          50% { transform: translate(-15px, 15px) scale(1.3); opacity: 0.5; }
-        }
-        
-        @keyframes float-3 {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
-          50% { transform: translate(20px, -10px) scale(1.1); opacity: 0.55; }
-        }
-        
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
         .animate-gradient-x {
           background-size: 200% 200%;
           animation: gradient-x 15s ease infinite;
         }
         
-        .animate-float-1 {
-          animation: float-1 8s ease-in-out infinite;
-        }
-        
-        .animate-float-2 {
-          animation: float-2 10s ease-in-out infinite;
-        }
-        
-        .animate-float-3 {
-          animation: float-3 12s ease-in-out infinite;
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s ease-out forwards;
-          opacity: 0;
-        }
-        
-        @keyframes confetti-burst {
-          0% {
-            transform: translate(0, 0) rotate(0deg) scale(0);
-            opacity: 1;
-          }
-          20% {
-            opacity: 1;
-            transform: translate(calc(var(--tx) * 0.3), calc(var(--ty) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(var(--scale));
-          }
-          100% {
-            transform: translate(var(--tx), var(--ty)) rotate(var(--rotation)) scale(0);
-            opacity: 0;
-          }
-        }
-        
-        @keyframes logo-pop {
-          0% { transform: scale(1); }
-          30% { transform: scale(0.9); }
-          60% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-        
-        .confetti-particle {
-          animation: confetti-burst 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        
-        .animate-logo-pop {
-          animation: logo-pop 0.4s ease-out;
-        }
-        
         @media (prefers-reduced-motion: reduce) {
-          .animate-gradient-x,
-          .animate-float-1,
-          .animate-float-2,
-          .animate-float-3,
-          .animate-fade-in-up,
-          .animate-pulse-soft,
-          .confetti-particle,
-          .animate-logo-pop {
+          .animate-gradient-x {
             animation: none;
-          }
-          
-          .group:hover > * {
-            transform: none !important;
           }
         }
       `}</style>

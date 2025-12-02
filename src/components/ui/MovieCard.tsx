@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Movie } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import { getDisplayTitle } from '../../utils/movieUtils';
@@ -26,9 +27,15 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   };
 
   return (
-    <div
+    <motion.div
       onClick={() => onClick(movie)}
-      className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
+      className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/50 transition-colors duration-300 cursor-pointer"
+      whileHover={{ 
+        scale: 1.02,
+        boxShadow: "0 10px 40px -10px rgba(16, 185, 129, 0.2)"
+      }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
       {/* Image Container */}
       <div className="aspect-2/3 w-full relative overflow-hidden">
@@ -162,7 +169,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
