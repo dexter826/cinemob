@@ -280,20 +280,20 @@ const AddMovieModal: React.FC = () => {
               const details = await getMovieDetails(Number(id), type);
               let displayTitle = '';
               let vietnameseTitle = '';
+              let vietnameseOverview = '';
               if (details) {
                 const originalTitle = details.title || details.name || '';
-                // Fetch Vietnamese title only if from Vietnam
-                if (details.production_countries?.some(c => c.iso_3166_1 === 'VN')) {
+                // Always try to fetch Vietnamese translation
+                try {
                   const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
                   if (viDetails) {
                     vietnameseTitle = viDetails.title || viDetails.name || '';
-                    displayTitle = vietnameseTitle;
-                  } else {
-                    displayTitle = originalTitle;
+                    vietnameseOverview = viDetails.overview || '';
                   }
-                } else {
-                  displayTitle = originalTitle;
+                } catch (error) {
+                  // Ignore if no Vietnamese translation available
                 }
+                displayTitle = vietnameseTitle || originalTitle;
 
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
                 const seasons = details.number_of_seasons || 0;
@@ -302,7 +302,7 @@ const AddMovieModal: React.FC = () => {
                 const genres = details.genres?.map(g => g.name).join(', ') || '';
                 const releaseDate = details.release_date || details.first_air_date || '';
                 const country = details.production_countries?.map(c => c.name).join(', ') || '';
-                const content = details.overview || '';
+                const content = vietnameseOverview || details.overview || '';
 
                 // Set selected genre IDs for dropdown (only if genreOptions is loaded)
                 if (genreOptions.length > 0) {
