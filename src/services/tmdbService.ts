@@ -33,20 +33,6 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
     // Limit to 20 results per page for consistency
     combinedResults = combinedResults.slice(0, 20);
 
-    // Update Vietnamese titles for Vietnamese movies
-    for (let movie of combinedResults) {
-      const detail = await getMovieDetails(movie.id, movie.media_type as 'movie' | 'tv');
-      if (detail && detail.production_countries?.some(country => country.iso_3166_1 === 'VN')) {
-        const viDetail = await getMovieDetailsWithLanguage(movie.id, movie.media_type as 'movie' | 'tv', 'vi-VN');
-        if (viDetail) {
-          if (movie.media_type === 'movie') {
-            movie.title = viDetail.title || movie.title;
-          } else {
-            movie.name = viDetail.name || movie.name;
-          }
-        }
-      }
-    }
 
     // Use max total pages
     const totalPages = Math.max(movieData.total_pages || 1, tvData.total_pages || 1);
