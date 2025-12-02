@@ -39,7 +39,7 @@
 | **Backend & Database** | [Firebase](https://firebase.google.com/) `v12.6.0` (Firestore, Authentication)                                                                                  |
 | **External APIs**      | [The Movie Database (TMDB)](https://www.themoviedb.org/), [OpenRouter AI](https://openrouter.ai/)                                                               |
 | **Data Visualization** | [Recharts](https://recharts.org/) `v3.4.1`                                                                                                                      |
-| **Animation**          | [Lottie React](https://lottiereact.com/) `v2.4.1`                                                                                                               |
+| **Animation**          | [Framer Motion](https://www.framer.com/motion/) `v12.23.25`, [Lottie React](https://lottiereact.com/) `v2.4.1`                                                  |
 | **Utilities**          | [xlsx](https://www.npmjs.com/package/xlsx) `v0.18.5`, [file-saver](https://www.npmjs.com/package/file-saver) `v2.0.5`, [howler](https://howlerjs.com/) `v2.2.4` |
 
 ## ⚙️ Cài đặt và Chạy dự án

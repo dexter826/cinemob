@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Facebook, Instagram, Github, Mail, Heart, Star, Film, Clapperboard, Popcorn, Sparkles, PartyPopper, Ticket, Video, Camera, Award } from 'lucide-react';
+import { Facebook, Instagram, Github, Mail, Heart, Star, Film, Clapperboard, Popcorn, Sparkles, PartyPopper, Ticket, Video, Camera, Award, HandCoins } from 'lucide-react';
 import logoText from '../../assets/images/logo_text.png';
 
 // Icon pool for confetti burst
@@ -239,12 +239,7 @@ const Footer: React.FC = () => {
               variants={itemVariants}
             >
               Cine Over B**ch
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <Heart className="w-3.5 h-3.5 text-primary inline-block" />
-              </motion.span>
+              <HandCoins className="w-3.5 h-3.5 text-primary inline-block" />
             </motion.p>
           </motion.div>
 
@@ -301,8 +296,14 @@ const Footer: React.FC = () => {
             variants={itemVariants}
           >
             <span>© {new Date().getFullYear()}</span>
-            <span className="text-primary font-semibold">CineMOB</span>
-            <span>• Made by</span>
+            <span>• Made with</span>
+            <motion.span
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <Heart className="w-3.5 h-3.5 text-primary inline-block" />
+            </motion.span>
+            <span> by</span>
             <motion.a
               href="https://github.com/dexter826"
               target="_blank"
