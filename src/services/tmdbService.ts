@@ -7,12 +7,12 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
   try {
     // Search movies
     const movieResponse = await fetch(
-      `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}`
+      `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}&language=vi-VN`
     );
 
     // Search TV shows
     const tvResponse = await fetch(
-      `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}`
+      `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}&language=vi-VN`
     );
 
     if (!movieResponse.ok || !tvResponse.ok) throw new Error('TMDB API Error');
@@ -120,7 +120,7 @@ export const getTrendingMovies = async (page: number = 1): Promise<{ results: TM
   try {
     // Fetch 22 movies (2 extra as backup) but only display 20
     const response = await fetch(
-      `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&page=${page}`
+      `${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}&page=${page}&language=vi-VN`
     );
 
     if (!response.ok) throw new Error('TMDB API Error');
@@ -181,6 +181,7 @@ export const getDiscoverMovies = async (params: {
         sort_by: sortBy,
         include_adult: 'false',
         include_video: 'false',
+        language: 'vi-VN',
       });
 
       if (params.genres && params.genres.length > 0) {
@@ -207,6 +208,7 @@ export const getDiscoverMovies = async (params: {
         sort_by: sortBy,
         include_adult: 'false',
         include_video: 'false',
+        language: 'vi-VN',
       });
 
       if (params.genres && params.genres.length > 0) {

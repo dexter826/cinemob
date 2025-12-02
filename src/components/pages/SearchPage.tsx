@@ -4,6 +4,7 @@ import { searchMovies, getTrendingMovies, getCountries, getDiscoverMovies, searc
 import { TMDBMovieResult, TMDBPerson, Movie } from '../../types';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
 import { useNavigate } from 'react-router-dom';
+import { getDisplayTitleForTMDB } from '../../utils/movieUtils';
 import Navbar from '../layout/Navbar';
 import Pagination from '../ui/Pagination';
 import CustomDropdown from '../ui/CustomDropdown';
@@ -493,8 +494,8 @@ const SearchPage: React.FC = () => {
                     })()}
                   </div>
                   <div className="p-3">
-                    <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>
-                      {movie.title || movie.name}
+                    <h3 className="font-semibold text-sm line-clamp-1" title={getDisplayTitleForTMDB(movie)}>
+                      {getDisplayTitleForTMDB(movie)}
                     </h3>
                     <p className="text-xs text-text-muted mt-1">
                       {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A'} • {movie.media_type === 'tv' ? 'TV' : 'Movie'}
@@ -580,8 +581,8 @@ const SearchPage: React.FC = () => {
                           })()}
                         </div>
                         <div className="p-3">
-                          <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>
-                            {movie.title || movie.name}
+                          <h3 className="font-semibold text-sm line-clamp-1" title={getDisplayTitleForTMDB(movie)}>
+                            {getDisplayTitleForTMDB(movie)}
                           </h3>
                           <p className="text-xs text-text-muted mt-1">
                             {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A'} • {movie.media_type === 'tv' ? 'TV' : 'Movie'}
@@ -634,8 +635,8 @@ const SearchPage: React.FC = () => {
                     })()}
                   </div>
                   <div className="p-3">
-                    <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>
-                      {movie.title || movie.name}
+                    <h3 className="font-semibold text-sm line-clamp-1" title={getDisplayTitleForTMDB(movie)}>
+                      {getDisplayTitleForTMDB(movie)}
                     </h3>
                     <p className="text-xs text-text-muted mt-1">
                       {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A'} • {movie.media_type === 'tv' ? 'TV' : 'Movie'}
@@ -677,8 +678,8 @@ const SearchPage: React.FC = () => {
                     })()}
                   </div>
                   <div className="p-3">
-                    <h3 className="font-semibold text-sm line-clamp-1" title={movie.title || movie.name}>
-                      {movie.title || movie.name}
+                    <h3 className="font-semibold text-sm line-clamp-1" title={getDisplayTitleForTMDB(movie)}>
+                      {getDisplayTitleForTMDB(movie)}
                     </h3>
                     <p className="text-xs text-text-muted mt-1">
                       {(movie.release_date || movie.first_air_date)?.split('-')[0] || 'N/A'} • {movie.media_type === 'tv' ? 'TV' : 'Movie'}

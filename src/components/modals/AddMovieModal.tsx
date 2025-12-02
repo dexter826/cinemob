@@ -3,6 +3,7 @@ import { X, Calendar, Star, Save, Loader2, FolderPlus, Clock, Globe, Film, Tv, L
 import { useAuth } from '../providers/AuthProvider';
 import { addMovie, updateMovie, checkMovieExists } from '../../services/movieService';
 import { getMovieDetails, getMovieDetailsWithLanguage, getGenres, getTVShowEpisodeInfo } from '../../services/tmdbService';
+import { getDisplayTitle, getDisplayTitleForTMDB } from '../../utils/movieUtils';
 import useToastStore from '../../stores/toastStore';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
 import useAddMovieStore from '../../stores/addMovieStore';
@@ -191,7 +192,7 @@ const AddMovieModal: React.FC = () => {
         const timeStr = `${hours}:${minutes}`;
 
         setFormData({
-          title: m.title_vi || m.title,
+          title: getDisplayTitle(m),
           title_vi: m.title_vi || '',
           runtime: m.runtime.toString(),
           seasons: m.seasons ? m.seasons.toString() : '',
@@ -293,7 +294,7 @@ const AddMovieModal: React.FC = () => {
                 } catch (error) {
                   // Ignore if no Vietnamese translation available
                 }
-                displayTitle = vietnameseTitle || originalTitle;
+                displayTitle = vietnameseTitle ? `${originalTitle} (${vietnameseTitle})` : originalTitle;
 
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;
                 const seasons = details.number_of_seasons || 0;
@@ -502,6 +503,17 @@ const AddMovieModal: React.FC = () => {
         : new Date();
       const isTv = initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || (initialData?.movieToEdit?.media_type === 'tv') || (isManualMode && manualMediaType === 'tv');
 
+      // Parse title and title_vi if title contains parentheses
+      let parsedTitle = formData.title;
+      let parsedTitleVi = formData.title_vi;
+      if (formData.title.includes('(') && formData.title.includes(')')) {
+        const match = formData.title.match(/^(.+?)\s*\((.+?)\)$/);
+        if (match) {
+          parsedTitle = match[1].trim();
+          parsedTitleVi = match[2].trim();
+        }
+      }
+
       // Calculate watched episodes for TV series
       let watchedEpisodes = 0;
       if (isTv && !isCompleted) {
@@ -517,8 +529,8 @@ const AddMovieModal: React.FC = () => {
       if (initialData?.movieToEdit && initialData.movieToEdit.docId) {
         // Update Existing
         const updateData: any = {
-          title: formData.title,
-          title_vi: formData.title_vi,
+          title: parsedTitle,
+          title_vi: parsedTitleVi,
           runtime: parseInt(formData.runtime) || 0,
           seasons: parseInt(formData.seasons) || 0,
           poster_path: formData.poster,
@@ -584,8 +596,8 @@ const AddMovieModal: React.FC = () => {
         const movieData: any = {
           uid: user.uid,
           id: usedId,
-          title: formData.title,
-          title_vi: formData.title_vi,
+          title: parsedTitle,
+          title_vi: parsedTitleVi,
           poster_path: formData.poster,
           runtime: parseInt(formData.runtime) || 0,
           seasons: parseInt(formData.seasons) || 0,
