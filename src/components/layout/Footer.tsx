@@ -1,8 +1,72 @@
-import React from 'react';
-import { Facebook, Instagram, Github, Mail, Heart } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { Facebook, Instagram, Github, Mail, Heart, Star, Film, Clapperboard, Popcorn, Sparkles, PartyPopper, Ticket, Video, Camera, Award } from 'lucide-react';
 import logoText from '../../assets/images/logo_text.png';
 
+// Icon pool for confetti burst
+const confettiIcons = [Star, Film, Clapperboard, Popcorn, Sparkles, PartyPopper, Ticket, Video, Camera, Award, Heart];
+
+interface ConfettiParticle {
+  id: number;
+  Icon: React.ElementType;
+  x: number;
+  y: number;
+  rotation: number;
+  scale: number;
+  color: string;
+}
+
 const Footer: React.FC = () => {
+  const [particles, setParticles] = useState<ConfettiParticle[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const colors = [
+    '#10b981', // primary green
+    '#f59e0b', // amber
+    '#ef4444', // red
+    '#8b5cf6', // violet
+    '#3b82f6', // blue
+    '#ec4899', // pink
+    '#14b8a6', // teal
+    '#f97316', // orange
+  ];
+
+  const handleLogoClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isAnimating) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    // Generate 12-18 random particles
+    const particleCount = Math.floor(Math.random() * 7) + 12;
+    const newParticles: ConfettiParticle[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.5;
+      const distance = 60 + Math.random() * 80;
+      const Icon = confettiIcons[Math.floor(Math.random() * confettiIcons.length)];
+      
+      newParticles.push({
+        id: Date.now() + i,
+        Icon,
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+        rotation: Math.random() * 720 - 360,
+        scale: 0.5 + Math.random() * 0.7,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+
+    setParticles(newParticles);
+    setIsAnimating(true);
+
+    // Clear particles after animation
+    setTimeout(() => {
+      setParticles([]);
+      setIsAnimating(false);
+    }, 800);
+  }, [isAnimating]);
+
   const socialLinks = [
     {
       href: "https://www.facebook.com/ctrlkd1",
@@ -46,12 +110,37 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Brand section with fade-in animation */}
           <div className="flex-1 text-center md:text-left animate-fade-in-up">
-            <div className="flex items-center justify-center md:justify-start gap-2 group">
-              <img
-                src={logoText}
-                alt="CineMOB"
-                className="h-8 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] group-hover:scale-105"
-              />
+            <div 
+              className="flex items-center justify-center md:justify-start gap-2 group cursor-pointer relative"
+              onClick={handleLogoClick}
+            >
+              {/* Logo with confetti container */}
+              <div className="relative">
+                {/* Confetti particles container - positioned at center of logo */}
+                <div className="absolute inset-0 pointer-events-none overflow-visible flex items-center justify-center">
+                  {particles.map((particle) => (
+                    <div
+                      key={particle.id}
+                      className="absolute confetti-particle"
+                      style={{
+                        '--tx': `${particle.x}px`,
+                        '--ty': `${particle.y}px`,
+                        '--rotation': `${particle.rotation}deg`,
+                        '--scale': particle.scale,
+                        color: particle.color,
+                      } as React.CSSProperties}
+                    >
+                      <particle.Icon size={16} strokeWidth={2} />
+                    </div>
+                  ))}
+                </div>
+
+                <img
+                  src={logoText}
+                  alt="CineMOB"
+                  className={`h-8 transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] group-hover:scale-105 select-none ${isAnimating ? 'animate-logo-pop' : ''}`}
+                />
+              </div>
             </div>
             <p className="text-sm text-text-muted mt-1 flex items-center justify-center md:justify-start gap-1.5">
               Cine Over B**ch
@@ -160,13 +249,45 @@ const Footer: React.FC = () => {
           opacity: 0;
         }
         
+        @keyframes confetti-burst {
+          0% {
+            transform: translate(0, 0) rotate(0deg) scale(0);
+            opacity: 1;
+          }
+          20% {
+            opacity: 1;
+            transform: translate(calc(var(--tx) * 0.3), calc(var(--ty) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(var(--scale));
+          }
+          100% {
+            transform: translate(var(--tx), var(--ty)) rotate(var(--rotation)) scale(0);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes logo-pop {
+          0% { transform: scale(1); }
+          30% { transform: scale(0.9); }
+          60% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+        
+        .confetti-particle {
+          animation: confetti-burst 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        .animate-logo-pop {
+          animation: logo-pop 0.4s ease-out;
+        }
+        
         @media (prefers-reduced-motion: reduce) {
           .animate-gradient-x,
           .animate-float-1,
           .animate-float-2,
           .animate-float-3,
           .animate-fade-in-up,
-          .animate-pulse-soft {
+          .animate-pulse-soft,
+          .confetti-particle,
+          .animate-logo-pop {
             animation: none;
           }
           
