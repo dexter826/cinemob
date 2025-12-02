@@ -40,13 +40,25 @@ const PersonDetailPage: React.FC = () => {
 
       try {
         // Fetch person details
-        const personResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}`
+        let personResponse = await fetch(
+          `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=vi`
         );
 
         if (!personResponse.ok) throw new Error('Failed to fetch person details');
 
-        const personData = await personResponse.json();
+        let personData = await personResponse.json();
+
+        // If biography is empty, try fetching in English
+        if (!personData.biography) {
+          const englishResponse = await fetch(
+            `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=en`
+          );
+          if (englishResponse.ok) {
+            const englishData = await englishResponse.json();
+            personData.biography = englishData.biography;
+          }
+        }
+
         setPerson(personData);
 
         // Fetch person's movie credits

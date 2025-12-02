@@ -784,7 +784,7 @@ const AddMovieModal: React.FC = () => {
 
                 {/* Title Section */}
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className={`transition-transform duration-500 ${isAnimating && titleError ? 'scale-110' : ''}`}>
                       <label className="text-xs font-medium text-text-muted uppercase tracking-wider block mb-2">Tên gốc</label>
                       <input
@@ -797,7 +797,7 @@ const AddMovieModal: React.FC = () => {
                           setTitleError(false);
                         }}
                         placeholder="Tên phim gốc..."
-                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                        className="w-full bg-transparent border-b border-black/10 dark:border-white/10 px-0 py-2 text-base text-text-main font-bold focus:border-primary focus:text-text-main outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                     <div>
@@ -807,7 +807,7 @@ const AddMovieModal: React.FC = () => {
                         value={formData.title_vi}
                         onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
                         placeholder="Tên phim tiếng Việt..."
-                        className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                        className="w-full bg-transparent border-b border-black/10 dark:border-white/10 px-0 py-2 text-base text-text-main font-bold focus:border-primary focus:text-text-main outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -960,7 +960,7 @@ const AddMovieModal: React.FC = () => {
                     <AlignLeft size={12} /> Nội dung
                   </label>
                   <textarea
-                    rows={4}
+                    rows={5}
                     value={formData.content}
                     onChange={e => setFormData({ ...formData, content: e.target.value })}
                     className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all custom-scrollbar resize-none"
