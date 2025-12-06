@@ -128,16 +128,8 @@ const sendNtfyNotification = async (title, body, options = {}) => {
             title: title,
             message: body,
             priority: options.priority || 4,
-            tags: options.tags || ['tv', 'clapper'],
+            tags: options.tags || ['clapper'],
         };
-
-        if (options.icon) {
-            payload.icon = options.icon;
-        }
-
-        if (options.click) {
-            payload.click = options.click;
-        }
 
         const response = await fetch('https://ntfy.sh', {
             method: 'POST',
@@ -212,14 +204,8 @@ const main = async () => {
         const title = `${seriesName}`;
         const body = `${episodeCode} • ${episode.name}`;
 
-        const posterUrl = series.poster_path
-            ? `https://image.tmdb.org/t/p/w200${series.poster_path}`
-            : undefined;
-
         const success = await sendNtfyNotification(title, body, {
-            icon: posterUrl,
             priority: 4,
-            tags: ['clapper'],
         });
 
         if (success) notificationsSent++;
@@ -235,7 +221,6 @@ const main = async () => {
 
         const success = await sendNtfyNotification(title, episodeLines, {
             priority: 4,
-            tags: ['clapper'],
         });
 
         if (success) notificationsSent++;
