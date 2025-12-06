@@ -183,35 +183,65 @@ const main = async () => {
 
     // Check each series for today's episodes
     let notificationsSent = 0;
+    const todayEpisodes = [];
 
     for (const series of tvSeries) {
         const episodes = await getUpcomingEpisodes(series.id);
 
         for (const episode of episodes) {
-            const seriesName = series.title_vi || series.title;
-            const episodeInfo = `S${episode.season_number}E${episode.episode_number}`;
-            const title = `🎬 ${seriesName}`;
-            const body = `${episodeInfo}: "${episode.name}" phát hôm nay!`;
-
-            const posterUrl = series.poster_path
-                ? `https://image.tmdb.org/t/p/w200${series.poster_path}`
-                : undefined;
-
-            const success = await sendNtfyNotification(title, body, {
-                icon: posterUrl,
-                priority: 4,
+            todayEpisodes.push({
+                series,
+                episode
             });
-
-            if (success) {
-                notificationsSent++;
-            }
-
-            // Small delay to avoid rate limiting
-            await new Promise((resolve) => setTimeout(resolve, 500));
         }
     }
 
-    console.log(`\n🏁 Done! Sent ${notificationsSent} notification(s)`);
+    // If no episodes today, exit
+    if (todayEpisodes.length === 0) {
+        console.log('📭 No episodes airing today');
+        return;
+    }
+
+    // Send notification(s)
+    if (todayEpisodes.length === 1) {
+        // Single episode - detailed notification
+        const { series, episode } = todayEpisodes[0];
+        const seriesName = series.title_vi || series.title;
+        const episodeCode = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
+
+        const title = `${seriesName}`;
+        const body = `${episodeCode} • ${episode.name}`;
+
+        const posterUrl = series.poster_path
+            ? `https://image.tmdb.org/t/p/w200${series.poster_path}`
+            : undefined;
+
+        const success = await sendNtfyNotification(title, body, {
+            icon: posterUrl,
+            priority: 4,
+            tags: ['clapper'],
+        });
+
+        if (success) notificationsSent++;
+    } else {
+        // Multiple episodes - summary notification
+        const title = `📺 ${todayEpisodes.length} tập phim mới hôm nay`;
+
+        const episodeLines = todayEpisodes.map(({ series, episode }) => {
+            const name = series.title_vi || series.title;
+            const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
+            return `• ${name} (${code})`;
+        }).join('\n');
+
+        const success = await sendNtfyNotification(title, episodeLines, {
+            priority: 4,
+            tags: ['clapper'],
+        });
+
+        if (success) notificationsSent++;
+    }
+
+    console.log(`\n🏁 Done! Sent ${notificationsSent} notification(s) for ${todayEpisodes.length} episode(s)`);
 };
 
 // Run
