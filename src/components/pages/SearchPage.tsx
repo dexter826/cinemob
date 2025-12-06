@@ -520,12 +520,12 @@ const SearchPage: React.FC = () => {
                     </div>
 
                     {aiRecommendations.length === 0 && !isAiLoading ? (
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-text-muted">Không thể tải. </span>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                        <span className="hidden sm:inline text-sm text-text-muted">Không thể tải. </span>
                         <button
                           type="button"
                           onClick={() => refreshRecommendations(user?.uid || '', true)}
-                          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer self-start sm:self-auto"
                         >
                           <RotateCcw size={16} />
                           <span>Thử lại</span>
