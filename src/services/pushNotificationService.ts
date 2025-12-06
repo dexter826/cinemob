@@ -198,25 +198,3 @@ async function removeSubscriptionFromFirestore(): Promise<void> {
   await deleteDoc(doc(db, 'push_subscriptions', user.uid));
 }
 
-// Send a test notification (for development/testing)
-export async function sendTestNotification(): Promise<void> {
-  if (!isPushSupported()) {
-    alert('Push notifications are not supported on this device');
-    return;
-  }
-
-  const permission = getNotificationPermission();
-  if (permission !== 'granted') {
-    alert('Notification permission not granted');
-    return;
-  }
-
-  // Use local notification for testing
-  const registration = await navigator.serviceWorker.ready;
-  await registration.showNotification('🎬 CineMOB Test', {
-    body: 'Push notification đang hoạt động!',
-    icon: '/logo192.png',
-    badge: '/logo192.png',
-    tag: 'test-notification',
-  });
-}

@@ -15,8 +15,7 @@ import {
   getNotificationPermission,
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
-  isSubscribedToPush,
-  sendTestNotification
+  isSubscribedToPush
 } from '../../services/pushNotificationService';
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -88,8 +87,6 @@ const ReleaseCalendarPage: React.FC = () => {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          // Send test notification to confirm it works
-          await sendTestNotification();
           alert('✅ Đã bật thông báo!\n\nBạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.');
         }
       }
