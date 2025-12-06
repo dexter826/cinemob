@@ -260,27 +260,26 @@ const main = async () => {
         // Single episode - detailed notification
         const { series, episode } = todayEpisodes[0];
         const seriesName = series.title_vi || series.title;
-        const episodeCode = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
 
         title = seriesName;
-        body = `${episodeCode} • ${episode.name}`;
+        body = `Mùa ${episode.season_number} • Tập ${episode.episode_number}`;
     } else {
         // Multiple episodes - summary notification
-        title = `📺 ${todayEpisodes.length} tập phim mới hôm nay`;
+        title = `${todayEpisodes.length} tập phim mới phát sóng hôm nay`;
 
         // Show max 3 episodes, then "và X phim khác"
         const maxShow = 3;
         const episodeLines = todayEpisodes.slice(0, maxShow).map(({ series, episode }) => {
             const name = series.title_vi || series.title;
-            const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
-            return `• ${name} (${code})`;
+            return `${name}\nMùa ${episode.season_number} • Tập ${episode.episode_number}`;
         });
 
         if (todayEpisodes.length > maxShow) {
-            episodeLines.push(`... và ${todayEpisodes.length - maxShow} phim khác`);
+            const remaining = todayEpisodes.length - maxShow;
+            episodeLines.push(`\n... và ${remaining} tập phim khác`);
         }
 
-        body = episodeLines.join('\n');
+        body = episodeLines.join('\n\n');
     }
 
     // Send to all subscriptions
