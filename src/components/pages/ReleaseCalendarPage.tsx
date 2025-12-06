@@ -1,12 +1,23 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { getTVShowNextEpisode, getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage } from '../../services/tmdbService';
 import { Movie, UpcomingEpisode, TMDBEpisode } from '../../types';
-import { Calendar, ChevronLeft, ChevronRight, Tv, Clock, Film, CalendarDays, Bell, Info } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Tv, Clock, Film, CalendarDays, Bell, BellOff, BellRing, Info } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import useReleaseCalendarStore from '../../stores/releaseCalendarStore';
+import {
+  isPushSupported,
+  isPushUsable,
+  isInstalledPWA,
+  isMobileDevice,
+  getNotificationPermission,
+  subscribeToPushNotifications,
+  unsubscribeFromPushNotifications,
+  isSubscribedToPush,
+  sendTestNotification
+} from '../../services/pushNotificationService';
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -23,6 +34,79 @@ const ReleaseCalendarPage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+
+  // Push notification states
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+
+  // Check push notification status on mount
+  useEffect(() => {
+    const checkPushStatus = async () => {
+      const usable = isPushUsable();
+      setPushSupported(usable);
+      
+      if (usable) {
+        setNotificationPermission(getNotificationPermission());
+        const subscribed = await isSubscribedToPush();
+        setPushSubscribed(subscribed);
+      }
+    };
+    checkPushStatus();
+  }, []);
+
+  // Handle push notification toggle
+  const handlePushToggle = async () => {
+    if (!pushSupported) {
+      const mobile = isMobileDevice();
+      const installed = isInstalledPWA();
+      
+      let message = 'Push notifications không khả dụng.\n\n';
+      
+      if (!mobile && !installed) {
+        message += '💡 Để nhận thông báo:\n\n';
+        message += '📱 Trên mobile: Mở app bằng Safari (iOS) hoặc Chrome (Android)\n\n';
+        message += '🖥️ Trên desktop: Install app (Add to Home Screen) để nhận thông báo';
+      } else if (mobile && !installed) {
+        message += '💡 Vui lòng Add to Home Screen để nhận thông báo:\n\n';
+        message += '• iOS: Nhấn nút Share → Add to Home Screen\n';
+        message += '• Android: Menu → Install app';
+      }
+      
+      alert(message);
+      return;
+    }
+
+    setPushLoading(true);
+    try {
+      if (pushSubscribed) {
+        await unsubscribeFromPushNotifications();
+        setPushSubscribed(false);
+        alert('✅ Đã tắt thông báo');
+      } else {
+        const subscription = await subscribeToPushNotifications();
+        if (subscription) {
+          setPushSubscribed(true);
+          // Send test notification to confirm it works
+          await sendTestNotification();
+          alert('✅ Đã bật thông báo!\n\nBạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.');
+        }
+      }
+      setNotificationPermission(getNotificationPermission());
+    } catch (error) {
+      console.error('Push notification error:', error);
+      
+      let errorMessage = 'Có lỗi xảy ra khi thiết lập thông báo';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      alert('❌ ' + errorMessage);
+    } finally {
+      setPushLoading(false);
+    }
+  };
 
   // Get all TV series from user's collection (history + watchlist)
   const tvSeries = useMemo(() => {
@@ -219,6 +303,39 @@ const ReleaseCalendarPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Push notification toggle button */}
+              <button
+                onClick={handlePushToggle}
+                disabled={pushLoading}
+                title={pushSubscribed ? 'Tắt thông báo' : 'Bật thông báo tập phim mới'}
+                className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                  pushSubscribed
+                    ? 'bg-green-500 text-white hover:bg-green-600'
+                    : notificationPermission === 'denied'
+                    ? 'bg-red-500/20 text-red-500 cursor-not-allowed'
+                    : 'bg-surface border border-black/5 dark:border-white/5 text-text-main hover:bg-primary/10'
+                } ${pushLoading ? 'opacity-50 cursor-wait' : ''}`}
+              >
+                {pushLoading ? (
+                  <div className="w-[18px] h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : pushSubscribed ? (
+                  <BellRing size={18} />
+                ) : notificationPermission === 'denied' ? (
+                  <BellOff size={18} />
+                ) : (
+                  <Bell size={18} />
+                )}
+                <span className="hidden md:inline">
+                  {pushLoading
+                    ? 'Đang xử lý...'
+                    : pushSubscribed
+                    ? 'Đang bật'
+                    : notificationPermission === 'denied'
+                    ? 'Bị chặn'
+                    : 'Thông báo'}
+                </span>
+              </button>
+
               <button
                 onClick={() => setViewMode('calendar')}
                 className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-2 ${

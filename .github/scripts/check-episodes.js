@@ -1,14 +1,18 @@
 /**
- * GitHub Actions script to check today's episodes and send ntfy notifications
+ * GitHub Actions script to check today's episodes and send Web Push notifications
  * Reads TV series from Firestore, checks TMDB for today's episodes
+ * Sends Web Push to all subscribed devices
  */
 
 import admin from 'firebase-admin';
+import webpush from 'web-push';
 
 // ============ Configuration ============
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
-const NTFY_TOPIC = process.env.NTFY_TOPIC;
 const USER_UID = process.env.USER_UID;
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+const VAPID_EMAIL = process.env.VAPID_EMAIL || 'mailto:cinemob@example.com';
 
 // ============ Initialize Firebase Admin ============
 const initFirebase = () => {
@@ -23,6 +27,11 @@ const initFirebase = () => {
             privateKey: privateKey,
         }),
     });
+};
+
+// ============ Initialize Web Push ============
+const initWebPush = () => {
+    webpush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 };
 
 // ============ Firestore Functions ============
@@ -48,6 +57,26 @@ const getTVSeriesFromFirestore = async () => {
 
     console.log(`📺 Found ${series.length} TV series in Firestore`);
     return series;
+};
+
+const getPushSubscriptions = async () => {
+    const db = admin.firestore();
+    const snapshot = await db.collection('push_subscriptions').get();
+
+    const subscriptions = [];
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.endpoint && data.keys) {
+            subscriptions.push({
+                id: doc.id,
+                endpoint: data.endpoint,
+                keys: data.keys,
+            });
+        }
+    });
+
+    console.log(`📱 Found ${subscriptions.length} push subscription(s)`);
+    return subscriptions;
 };
 
 // ============ TMDB Functions ============
@@ -116,38 +145,49 @@ const getUpcomingEpisodes = async (tvId) => {
 };
 
 // ============ Notification Functions ============
-const sendNtfyNotification = async (title, body, options = {}) => {
-    if (!NTFY_TOPIC) {
-        console.warn('⚠️ NTFY_TOPIC not configured');
-        return false;
-    }
-
+const sendWebPushNotification = async (subscription, payload) => {
     try {
-        const payload = {
-            topic: NTFY_TOPIC,
-            title: title,
-            message: body,
-            priority: options.priority || 4,
-            tags: options.tags || ['clapper'],
+        const pushSubscription = {
+            endpoint: subscription.endpoint,
+            keys: subscription.keys,
         };
 
-        const response = await fetch('https://ntfy.sh', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            console.log(`✅ Notification sent: ${title}`);
-            return true;
-        } else {
-            console.error(`❌ Failed to send notification: ${response.statusText}`);
-            return false;
-        }
+        await webpush.sendNotification(pushSubscription, JSON.stringify(payload));
+        console.log(`✅ Push sent to subscription ${subscription.id}`);
+        return true;
     } catch (error) {
-        console.error('❌ Error sending notification:', error.message);
+        console.error(`❌ Push failed for ${subscription.id}:`, error.message);
+
+        // If subscription is expired/invalid, remove it from Firestore
+        if (error.statusCode === 404 || error.statusCode === 410) {
+            console.log(`🗑️ Removing expired subscription ${subscription.id}`);
+            const db = admin.firestore();
+            await db.collection('push_subscriptions').doc(subscription.id).delete();
+        }
+
         return false;
     }
+};
+
+const sendToAllSubscriptions = async (subscriptions, title, body) => {
+    const payload = {
+        title: title,
+        body: body,
+        icon: '/logo192.png',
+        badge: '/logo192.png',
+        tag: 'cinemob-episode',
+        data: {
+            url: '/',
+        },
+    };
+
+    let successCount = 0;
+    for (const subscription of subscriptions) {
+        const success = await sendWebPushNotification(subscription, payload);
+        if (success) successCount++;
+    }
+
+    return successCount;
 };
 
 // ============ Main Function ============
@@ -156,14 +196,28 @@ const main = async () => {
     console.log(`📅 Today: ${getTodayDateString()}`);
 
     // Validate environment variables
-    if (!TMDB_API_KEY || !NTFY_TOPIC || !USER_UID) {
+    if (!TMDB_API_KEY || !USER_UID) {
         console.error('❌ Missing required environment variables');
-        console.error('Required: TMDB_API_KEY, NTFY_TOPIC, USER_UID');
+        console.error('Required: TMDB_API_KEY, USER_UID');
         process.exit(1);
     }
 
-    // Initialize Firebase
+    if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+        console.error('❌ Missing VAPID keys for Web Push');
+        console.error('Required: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY');
+        process.exit(1);
+    }
+
+    // Initialize Firebase and Web Push
     initFirebase();
+    initWebPush();
+
+    // Get push subscriptions
+    const subscriptions = await getPushSubscriptions();
+    if (subscriptions.length === 0) {
+        console.log('📭 No push subscriptions found, skipping...');
+        return;
+    }
 
     // Get TV series from Firestore
     const tvSeries = await getTVSeriesFromFirestore();
@@ -174,7 +228,6 @@ const main = async () => {
     }
 
     // Check each series for today's episodes
-    let notificationsSent = 0;
     const todayEpisodes = [];
 
     for (const series of tvSeries) {
@@ -183,7 +236,7 @@ const main = async () => {
         for (const episode of episodes) {
             todayEpisodes.push({
                 series,
-                episode
+                episode,
             });
         }
     }
@@ -194,24 +247,26 @@ const main = async () => {
         return;
     }
 
-    // Send notification(s)
+    console.log(`\n🎬 Found ${todayEpisodes.length} episode(s) airing today:`);
+    todayEpisodes.forEach(({ series, episode }) => {
+        const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
+        console.log(`  • ${series.title_vi || series.title} - ${code}`);
+    });
+
+    // Build notification content
+    let title, body;
+
     if (todayEpisodes.length === 1) {
         // Single episode - detailed notification
         const { series, episode } = todayEpisodes[0];
         const seriesName = series.title_vi || series.title;
         const episodeCode = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
 
-        const title = `${seriesName}`;
-        const body = `${episodeCode} • ${episode.name}`;
-
-        const success = await sendNtfyNotification(title, body, {
-            priority: 4,
-        });
-
-        if (success) notificationsSent++;
+        title = seriesName;
+        body = `${episodeCode} • ${episode.name}`;
     } else {
         // Multiple episodes - summary notification
-        const title = `📺 ${todayEpisodes.length} tập phim mới hôm nay`;
+        title = `📺 ${todayEpisodes.length} tập phim mới hôm nay`;
 
         // Show max 3 episodes, then "và X phim khác"
         const maxShow = 3;
@@ -225,16 +280,14 @@ const main = async () => {
             episodeLines.push(`... và ${todayEpisodes.length - maxShow} phim khác`);
         }
 
-        const body = episodeLines.join('\n');
-
-        const success = await sendNtfyNotification(title, episodeLines, {
-            priority: 4,
-        });
-
-        if (success) notificationsSent++;
+        body = episodeLines.join('\n');
     }
 
-    console.log(`\n🏁 Done! Sent ${notificationsSent} notification(s) for ${todayEpisodes.length} episode(s)`);
+    // Send to all subscriptions
+    console.log(`\n📤 Sending push notifications...`);
+    const successCount = await sendToAllSubscriptions(subscriptions, title, body);
+
+    console.log(`\n🏁 Done! Sent ${successCount}/${subscriptions.length} notification(s) for ${todayEpisodes.length} episode(s)`);
 };
 
 // Run

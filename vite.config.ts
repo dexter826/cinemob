@@ -14,9 +14,17 @@ export default defineConfig(() => {
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg}']
-        }
+        // Use injectManifest strategy to have custom SW with push support
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.ts',
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        },
+        devOptions: {
+          enabled: true,
+          type: 'module',
+        },
       })
     ],
     resolve: {
