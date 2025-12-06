@@ -126,7 +126,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-surface border-t border-black/10 dark:border-white/10 py-8 mt-auto overflow-hidden">
+    <footer className="relative bg-surface border-t border-black/10 dark:border-white/10 py-8 mt-auto overflow-hidden z-10">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-linear-to-r from-primary/5 via-secondary/5 to-primary/5 animate-gradient-x opacity-50" />
 

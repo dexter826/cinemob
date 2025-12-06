@@ -70,7 +70,7 @@ const AnimatedRoutes: React.FC = () => {
   );
 };
 
-const MainApp: React.FC<{ onReady: () => void }> = ({ onReady }) => {
+const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady, appReady }) => {
   const { user, loading: authLoading } = useAuth();
   const { isOpen: isDetailModalOpen, movie: selectedMovie, closeDetailModal } = useMovieDetailStore();
   const { isInitialLoadComplete } = useInitialLoadStore();
@@ -93,7 +93,7 @@ const MainApp: React.FC<{ onReady: () => void }> = ({ onReady }) => {
 
   return (
     <PullToRefreshProvider>
-      <Layout>
+      <Layout appReady={appReady}>
         <AlbumStoreInitializer />
         <RecommendationsStoreInitializer />
         <ReleaseCalendarStoreInitializer />
@@ -142,7 +142,7 @@ const App: React.FC = () => {
       {animationFinished && (
         <AuthProvider>
           <ThemeProvider>
-            <MainApp onReady={handleAppReady} />
+            <MainApp onReady={handleAppReady} appReady={appReady} />
             <ToastContainer />
             <AlertContainer />
           </ThemeProvider>

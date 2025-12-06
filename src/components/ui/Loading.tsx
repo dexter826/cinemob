@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Disc3 } from 'lucide-react';
+import useInitialLoadStore from '../../stores/initialLoadStore';
 
 interface LoadingProps {
   size?: number;
@@ -15,9 +16,21 @@ const Loading: React.FC<LoadingProps> = ({
   text,
   className = ''
 }) => {
+  const { setPageLoading } = useInitialLoadStore();
+
+  // Khi Loading fullScreen mount/unmount, cập nhật global state
+  useEffect(() => {
+    if (fullScreen) {
+      setPageLoading(true);
+      return () => {
+        setPageLoading(false);
+      };
+    }
+  }, [fullScreen, setPageLoading]);
+
   if (fullScreen) {
     return (
-      <div className={`fixed inset-0 bg-background flex flex-col items-center justify-center text-primary z-40 ${className}`}>
+      <div className={`fixed inset-0 bg-background flex flex-col items-center justify-center text-primary z-50 ${className}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ 
