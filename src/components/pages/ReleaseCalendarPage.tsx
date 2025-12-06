@@ -1,18 +1,21 @@
 import React, { useState, useMemo } from 'react';
 import { getTVShowNextEpisode, getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage } from '../../services/tmdbService';
 import { Movie, UpcomingEpisode, TMDBEpisode } from '../../types';
-import { Calendar, ChevronLeft, ChevronRight, Tv, Clock, Film, CalendarDays, Bell, Info } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Tv, Clock, Film, CalendarDays, Bell, Info, Send } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import useReleaseCalendarStore from '../../stores/releaseCalendarStore';
+import { sendTestNotification, isNtfyConfigured } from '../../services/ntfyService';
+import useToastStore from '../../stores/toastStore';
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
 const ReleaseCalendarPage: React.FC = () => {
   const { openDetailModal } = useMovieDetailStore();
+  const { showToast } = useToastStore();
   const {
     movies,
     upcomingEpisodes,
@@ -23,6 +26,25 @@ const ReleaseCalendarPage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [sendingTest, setSendingTest] = useState(false);
+
+  // Handle test notification
+  const handleTestNotification = async () => {
+    if (!isNtfyConfigured()) {
+      showToast('Chưa cấu hình NTFY_TOPIC trong .env', 'error');
+      return;
+    }
+    
+    setSendingTest(true);
+    const success = await sendTestNotification();
+    setSendingTest(false);
+    
+    if (success) {
+      showToast('Đã gửi notification test!', 'success');
+    } else {
+      showToast('Gửi notification thất bại', 'error');
+    }
+  };
 
   // Get all TV series from user's collection (history + watchlist)
   const tvSeries = useMemo(() => {
@@ -219,6 +241,18 @@ const ReleaseCalendarPage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Test Notification Button */}
+              {isNtfyConfigured() && (
+                <button
+                  onClick={handleTestNotification}
+                  disabled={sendingTest}
+                  className="px-3 py-2 rounded-lg transition-colors flex items-center gap-2 bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 disabled:opacity-50"
+                  title="Gửi notification test"
+                >
+                  <Send size={18} className={sendingTest ? 'animate-pulse' : ''} />
+                  <span className="hidden md:inline">{sendingTest ? 'Đang gửi...' : 'Test'}</span>
+                </button>
+              )}
               <button
                 onClick={() => setViewMode('calendar')}
                 className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-2 ${

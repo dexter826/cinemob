@@ -1,0 +1,37 @@
+name: Daily Episode Notification
+
+on:
+  schedule:
+    # Run daily at 1:00 UTC (8:00 AM Vietnam time)
+    - cron: "0 1 * * *"
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  check-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          cd .github/scripts
+          npm install
+
+      - name: Check episodes and send notifications
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          USER_UID: ${{ secrets.USER_UID }}
+        run: |
+          cd .github/scripts
+          node check-episodes.js
