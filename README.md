@@ -96,7 +96,10 @@ Dự án được tổ chức theo cấu trúc module hóa, giúp dễ dàng b�
 
 ```
 /
-├── public/                   # Chứa các file tĩnh (icon, manifest, animations)
+├── .github/                  # Cấu hình GitHub Actions
+├── dev-dist/                 # Thư mục build cho development
+├── docs/                     # Tài liệu và hình ảnh dự án
+├── public/                   # Chứa các file tĩnh (icon, manifest, animations, data)
 ├── src/                      # Thư mục mã nguồn chính
 │   ├── assets/               # Tài nguyên như hình ảnh, icon, âm thanh
 │   ├── components/           # Các React component có thể tái sử dụng
@@ -106,18 +109,29 @@ Dự án được tổ chức theo cấu trúc module hóa, giúp dễ dàng b�
 │   │   ├── pages/            # Các trang chính của ứng dụng
 │   │   ├── providers/        # Các React Context Provider
 │   │   └── ui/               # Các component giao diện người dùng cơ bản
-│   ├── constants.ts          # Lưu trữ các hằng số
-│   ├── firebase.ts           # Khởi tạo và cấu hình Firebase
+│   ├── hooks/                # Custom React hooks
+│   ├── scripts/              # Scripts tiện ích
 │   ├── services/             # Xử lý logic gọi API
 │   ├── stores/               # Quản lý state bằng Zustand
-│   ├── types.ts              # Định nghĩa các kiểu dữ liệu TypeScript
+│   ├── types/                # Định nghĩa các kiểu dữ liệu TypeScript
 │   ├── utils/                # Các hàm tiện ích
 │   ├── App.tsx               # Component gốc, quản lý routing
+│   ├── constants.ts          # Lưu trữ các hằng số
+│   ├── firebase.ts           # Khởi tạo và cấu hình Firebase
 │   ├── index.css             # CSS toàn cục
-│   └── index.tsx             # Điểm vào của ứng dụng
+│   ├── index.tsx             # Điểm vào của ứng dụng
+│   ├── sw.ts                 # Service Worker
+│   ├── types.ts              # Định nghĩa các kiểu dữ liệu TypeScript
+│   └── vite-env.d.ts         # Kiểu dữ liệu cho Vite
 ├── .env.example              # File mẫu cho biến môi trường
 ├── firebase.json             # Cấu hình cho Firebase Hosting
+├── firestore.indexes.json    # Cấu hình Firestore indexes
+├── firestore.rules           # Quy tắc bảo mật Firestore
+├── index.html                # File HTML chính
 ├── package.json              # Quản lý dependencies và scripts
+├── postcss.config.js         # Cấu hình PostCSS
+├── tailwind.config.js        # Cấu hình Tailwind CSS
+├── tsconfig.json             # Cấu hình TypeScript
 └── vite.config.ts            # Cấu hình cho Vite
 ```
 
