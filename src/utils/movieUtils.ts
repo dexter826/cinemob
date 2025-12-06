@@ -16,7 +16,7 @@ export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
   const title = movie.title || movie.name || '';
   const originalTitle = movie.original_title || movie.original_name || '';
   if (title && originalTitle && title !== originalTitle) {
-    return `${originalTitle} (${title})`;
+    return `${title} (${originalTitle})`;
   }
   return title;
 };
