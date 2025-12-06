@@ -213,11 +213,19 @@ const main = async () => {
         // Multiple episodes - summary notification
         const title = `📺 ${todayEpisodes.length} tập phim mới hôm nay`;
 
-        const episodeLines = todayEpisodes.map(({ series, episode }) => {
+        // Show max 3 episodes, then "và X phim khác"
+        const maxShow = 3;
+        const episodeLines = todayEpisodes.slice(0, maxShow).map(({ series, episode }) => {
             const name = series.title_vi || series.title;
             const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
             return `• ${name} (${code})`;
-        }).join('\n');
+        });
+
+        if (todayEpisodes.length > maxShow) {
+            episodeLines.push(`... và ${todayEpisodes.length - maxShow} phim khác`);
+        }
+
+        const body = episodeLines.join('\n');
 
         const success = await sendNtfyNotification(title, episodeLines, {
             priority: 4,
