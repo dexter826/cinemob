@@ -178,24 +178,3 @@ export const checkAndNotifyTodayEpisodes = async (upcomingEpisodes: UpcomingEpis
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 };
-
-/**
- * Send a test notification to verify setup
- */
-export const sendTestNotification = async (): Promise<boolean> => {
-  return sendNtfyNotification(
-    '🎬 CineMOB Test',
-    'Notification đã được cấu hình thành công!',
-    {
-      priority: 3,
-      tags: ['white_check_mark', 'tada'],
-    }
-  );
-};
-
-/**
- * Check if ntfy is configured
- */
-export const isNtfyConfigured = (): boolean => {
-  return !!NTFY_TOPIC;
-};
