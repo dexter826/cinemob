@@ -7,6 +7,8 @@ import Loading from '../ui/Loading';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import useReleaseCalendarStore from '../../stores/releaseCalendarStore';
+import useAlertStore from '../../stores/alertStore';
+import useToastStore from '../../stores/toastStore';
 import {
   isPushSupported,
   isPushUsable,
@@ -22,13 +24,15 @@ const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
 const ReleaseCalendarPage: React.FC = () => {
-  const { openDetailModal } = useMovieDetailStore();
-  const {
-    movies,
-    upcomingEpisodes,
-    loading,
-    loadingEpisodes
-  } = useReleaseCalendarStore();
+   const { openDetailModal } = useMovieDetailStore();
+   const {
+     movies,
+     upcomingEpisodes,
+     loading,
+     loadingEpisodes
+   } = useReleaseCalendarStore();
+   const { showAlert } = useAlertStore();
+   const { showToast } = useToastStore();
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -56,50 +60,40 @@ const ReleaseCalendarPage: React.FC = () => {
   }, []);
 
   // Handle push notification toggle
-  const handlePushToggle = async () => {
-    if (!pushSupported) {
-      const mobile = isMobileDevice();
-      const installed = isInstalledPWA();
-      
-      let message = 'Push notifications không khả dụng.\n\n';
-      
-      if (!mobile && !installed) {
-        message += '💡 Để nhận thông báo:\n\n';
-        message += '📱 Trên mobile: Mở app bằng Safari (iOS) hoặc Chrome (Android)\n\n';
-        message += '🖥️ Trên desktop: Install app (Add to Home Screen) để nhận thông báo';
-      } else if (mobile && !installed) {
-        message += '💡 Vui lòng Add to Home Screen để nhận thông báo:\n\n';
-        message += '• iOS: Nhấn nút Share → Add to Home Screen\n';
-        message += '• Android: Menu → Install app';
-      }
-      
-      alert(message);
-      return;
-    }
+   const handlePushToggle = async () => {
+     if (!pushSupported) {
+       showAlert({
+         title: 'Thông báo',
+         message: 'Tính năng thông báo đẩy chỉ khả dụng trên mobile khi ứng dụng được cài đặt dưới dạng PWA (Thêm vào Màn hình chính)',
+         type: 'info',
+         onConfirm: () => {}
+       });
+       return;
+     }
 
     setPushLoading(true);
     try {
       if (pushSubscribed) {
         await unsubscribeFromPushNotifications();
         setPushSubscribed(false);
-        alert('✅ Đã tắt thông báo');
+        showToast('Đã tắt thông báo', 'success');
       } else {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          alert('✅ Đã bật thông báo!\n\nBạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.');
+          showToast('Đã bật thông báo! Bạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.', 'success');
         }
       }
       setNotificationPermission(getNotificationPermission());
     } catch (error) {
       console.error('Push notification error:', error);
-      
+
       let errorMessage = 'Có lỗi xảy ra khi thiết lập thông báo';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      
-      alert('❌ ' + errorMessage);
+
+      showToast(errorMessage, 'error');
     } finally {
       setPushLoading(false);
     }

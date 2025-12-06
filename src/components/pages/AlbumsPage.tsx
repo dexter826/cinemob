@@ -53,7 +53,7 @@ const AlbumsPage: React.FC = () => {
       onConfirm: async () => {
         try {
           await deleteAlbum(album.docId!);
-          showToast('Đã xóa album', 'info');
+          showToast('Đã xóa album', 'success');
         } catch (error) {
           showToast('Xóa album thất bại', 'error');
         }

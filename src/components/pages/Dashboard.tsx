@@ -202,7 +202,7 @@ const Dashboard: React.FC = () => {
       onConfirm: async () => {
         try {
           await deleteMovie(docId);
-          showToast("Đã xóa phim", "info");
+          showToast("Đã xóa phim", "success");
         } catch (e) {
           showToast("Xóa phim thất bại", "error");
         }
