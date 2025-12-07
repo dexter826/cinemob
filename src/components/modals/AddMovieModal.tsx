@@ -286,15 +286,20 @@ const AddMovieModal: React.FC = () => {
               if (details) {
                 const originalTitle = details.title || details.name || '';
                 // Always try to fetch Vietnamese translation
-                try {
-                  const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
-                  if (viDetails) {
-                    vietnameseTitle = viDetails.title || viDetails.name || '';
-                    vietnameseOverview = viDetails.overview || '';
+                  try {
+                    const viDetails = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
+                    if (viDetails) {
+                      const viTitle = viDetails.title || viDetails.name || '';
+                      // Check if it contains Vietnamese diacritics and is different from original
+                      const hasVietnameseDiacritics = /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(viTitle);
+                      if (hasVietnameseDiacritics && viTitle !== originalTitle) {
+                        vietnameseTitle = viTitle;
+                        vietnameseOverview = viDetails.overview || '';
+                      }
+                    }
+                  } catch (error) {
+                    // Ignore if no Vietnamese translation available
                   }
-                } catch (error) {
-                  // Ignore if no Vietnamese translation available
-                }
                 displayTitle = vietnameseTitle ? `${originalTitle} (${vietnameseTitle})` : originalTitle;
 
                 const runtime = details.runtime || (details.episode_run_time && details.episode_run_time[0]) || 0;

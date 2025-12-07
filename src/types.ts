@@ -47,6 +47,7 @@ export interface TMDBMovieResult {
   name?: string;
   original_title?: string;
   original_name?: string;
+  english_title?: string; // English title for consistency
   poster_path: string | null;
   release_date?: string;
   first_air_date?: string;

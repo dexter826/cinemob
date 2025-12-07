@@ -33,6 +33,27 @@ export const searchMovies = async (query: string, page: number = 1): Promise<{ r
     // Limit to 20 results per page for consistency
     combinedResults = combinedResults.slice(0, 20);
 
+    // Fetch English titles for consistency
+    const englishTitlesPromises = combinedResults.map(async (result) => {
+      try {
+        const type = result.media_type === 'tv' ? 'tv' : 'movie';
+        const englishResponse = await fetch(
+          `${TMDB_BASE_URL}/${type}/${result.id}?api_key=${TMDB_API_KEY}&language=en-US`
+        );
+        if (englishResponse.ok) {
+          const englishData = await englishResponse.json();
+          return englishData.title || englishData.name || '';
+        }
+      } catch (error) {
+        console.error('Failed to fetch English title for', result.id, error);
+      }
+      return '';
+    });
+
+    const englishTitles = await Promise.all(englishTitlesPromises);
+    combinedResults.forEach((result, index) => {
+      result.english_title = englishTitles[index];
+    });
 
     // Use max total pages
     const totalPages = Math.max(movieData.total_pages || 1, tvData.total_pages || 1);
@@ -130,6 +151,28 @@ export const getTrendingMovies = async (page: number = 1): Promise<{ results: TM
 
     // Limit to 22 results (20 to display + 2 backup)
     results = results.slice(0, 22);
+
+    // Fetch English titles for consistency
+    const englishTitlesPromises = results.map(async (result) => {
+      try {
+        const type = result.media_type === 'tv' ? 'tv' : 'movie';
+        const englishResponse = await fetch(
+          `${TMDB_BASE_URL}/${type}/${result.id}?api_key=${TMDB_API_KEY}&language=en-US`
+        );
+        if (englishResponse.ok) {
+          const englishData = await englishResponse.json();
+          return englishData.title || englishData.name || '';
+        }
+      } catch (error) {
+        console.error('Failed to fetch English title for', result.id, error);
+      }
+      return '';
+    });
+
+    const englishTitles = await Promise.all(englishTitlesPromises);
+    results.forEach((result, index) => {
+      result.english_title = englishTitles[index];
+    });
 
     return { results, totalPages: data.total_pages || 1 };
   } catch (error) {
@@ -273,6 +316,28 @@ export const getDiscoverMovies = async (params: {
         return titleB.localeCompare(titleA);
       });
     }
+
+    // Fetch English titles for consistency
+    const englishTitlesPromises = combinedResults.map(async (result) => {
+      try {
+        const type = result.media_type === 'tv' ? 'tv' : 'movie';
+        const englishResponse = await fetch(
+          `${TMDB_BASE_URL}/${type}/${result.id}?api_key=${TMDB_API_KEY}&language=en-US`
+        );
+        if (englishResponse.ok) {
+          const englishData = await englishResponse.json();
+          return englishData.title || englishData.name || '';
+        }
+      } catch (error) {
+        console.error('Failed to fetch English title for', result.id, error);
+      }
+      return '';
+    });
+
+    const englishTitles = await Promise.all(englishTitlesPromises);
+    combinedResults.forEach((result, index) => {
+      result.english_title = englishTitles[index];
+    });
 
     return { results: combinedResults, totalPages };
   } catch (error) {

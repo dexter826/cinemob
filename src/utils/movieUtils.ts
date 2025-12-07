@@ -14,9 +14,12 @@ export const getDisplayTitle = (movie: Movie): string => {
 
 export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
   const title = movie.title || movie.name || '';
-  const originalTitle = movie.original_title || movie.original_name || '';
-  if (title && originalTitle && title !== originalTitle) {
-    return `${title} (${originalTitle})`;
+  const englishTitle = movie.english_title || '';
+  // Check if title contains Vietnamese diacritics
+  const hasVietnameseDiacritics = /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(title);
+  if (title && englishTitle && title !== englishTitle && hasVietnameseDiacritics) {
+    return `${title} (${englishTitle})`;
   }
-  return title;
+  // If no Vietnamese title or title is not Vietnamese, show English title
+  return englishTitle || title;
 };
