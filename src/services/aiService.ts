@@ -10,7 +10,7 @@ interface AIRecommendation {
 export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
     if (!history || history.length === 0) return [];
 
-    // 1. Chuẩn bị dữ liệu lịch sử
+    // 1. Chuẩn bị dữ liệu lịch sử xem phim
     // Chỉ lấy phim được đánh giá cao (>= 3 sao)
     const filteredMovies = history.filter(m => (m.rating || 0) >= 3); // Chỉ lấy phim user thích
 
@@ -33,18 +33,15 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
     const previouslyRecommendedTitles = excludePreviouslyRecommended.join(', ');
 
     const prompt = `
-    Analyze the user's taste based on the watched history below (focus on directors, genres, themes, and rating).
-    Recommend 22 movies/TV series that highly match this taste they haven't watched but are NOT in the excluded lists.
+    Based on the user's watched movie and TV series history below, recommend 22 similar movies or TV series that they haven't watched and are not already in their collection.
 
     User History:
     ${watchedList}
 
-    CRITICAL INSTRUCTION: DO NOT recommend any movie listed below. 
-    Check the list carefully. If a movie has alternative titles (English/Vietnamese), exclude it too.
-    Exclude List (Already in collection):
+    Exclude these movies/TV series (already in user's collection):
     ${existingTitles}
 
-    Also exclude these (Previously recommended):
+    Also exclude these movies/TV series (previously recommended but not selected):
     ${previouslyRecommendedTitles}
 
     Return ONLY a JSON array with the following format, no other text:
@@ -65,7 +62,7 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
                 "X-Title": "CineMOB", // Optional
             },
             body: JSON.stringify({
-                "model": "meta-llama/llama-3.3-70b-instruct:free",
+                "model": "amazon/nova-2-lite-v1:free",
                 "messages": [
                     { "role": "system", "content": "You are a helpful movie recommendation engine. You output valid JSON only." },
                     { "role": "user", "content": prompt }
