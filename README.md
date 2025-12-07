@@ -22,12 +22,13 @@
 - **📤 Xuất dữ liệu:** Dễ dàng xuất toàn bộ danh sách phim của bạn ra file Excel (XLSX) để lưu trữ hoặc chia sẻ.
 - **🌓 Giao diện linh hoạt:** Tùy chỉnh giao diện với chế độ Sáng (Light) và Tối (Dark).
 - **📱 Thiết kế đáp ứng (Responsive):** Trải nghiệm mượt mà và đồng nhất trên mọi thiết bị, từ máy tính để bàn đến điện thoại di động.
+- **🔔 Thông báo phim:** Nhận thông báo đẩy về tập phim mới của series trong bộ sưu tập để không bỏ lỡ tập yêu thích. (Chỉ áp dụng trên PWA di động)
 
 <div align="center">
   <img src="docs/images/mockup.jpg" alt="Mockup của ứng dụng">
 </div>
 
-## 🛠️ Công nghệ sử dụng
+## ️ Công nghệ sử dụng
 
 | Hạng mục               | Công nghệ                                                                                                                                                       |
 | :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -97,7 +98,6 @@ Dự án được tổ chức theo cấu trúc module hóa, giúp dễ dàng b�
 ```
 /
 ├── .github/                  # Cấu hình GitHub Actions
-├── dev-dist/                 # Thư mục build cho development
 ├── docs/                     # Tài liệu và hình ảnh dự án
 ├── public/                   # Chứa các file tĩnh (icon, manifest, animations, data)
 ├── src/                      # Thư mục mã nguồn chính
@@ -110,7 +110,6 @@ Dự án được tổ chức theo cấu trúc module hóa, giúp dễ dàng b�
 │   │   ├── providers/        # Các React Context Provider
 │   │   └── ui/               # Các component giao diện người dùng cơ bản
 │   ├── hooks/                # Custom React hooks
-│   ├── scripts/              # Scripts tiện ích
 │   ├── services/             # Xử lý logic gọi API
 │   ├── stores/               # Quản lý state bằng Zustand
 │   ├── types/                # Định nghĩa các kiểu dữ liệu TypeScript
