@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
   <img src="docs/images/logo_text.png" alt="Logo dự án">
   <br />
   <i>Cine Over B**ch !!</i> 🎞️✨
@@ -32,7 +32,7 @@
 
 | Hạng mục               | Công nghệ                                                                                                                                                       |
 | :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Core Framework**     | [React](https://react.dev/) `v19.2.0`, [TypeScript](https://www.typescriptlang.org/) `~5.8.2`                                                                   |
+| **Core Framework**     | [React](https://react.dev/) `v19.2.1`, [TypeScript](https://www.typescriptlang.org/) `~5.8.2`                                                                   |
 | **Build Tool**         | [Vite](https://vitejs.dev/) `v6.2.0` with [vite-plugin-pwa](https://vite-pwa-org.netlify.app/)                                                                  |
 | **Styling**            | [Tailwind CSS](https://tailwindcss.com/) `v4.1.17`, [Lucide React](https://lucide.dev/) `v0.554.0`                                                              |
 | **Routing**            | [React Router DOM](https://reactrouter.com/) `v7.9.6`                                                                                                           |
