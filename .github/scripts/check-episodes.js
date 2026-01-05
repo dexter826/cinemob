@@ -35,28 +35,38 @@ const initWebPush = () => {
 };
 
 // ============ Firestore Functions ============
-const getTVSeriesFromFirestore = async () => {
+const getWatchlistFromFirestore = async () => {
     const db = admin.firestore();
     const snapshot = await db
         .collection('movies')
         .where('uid', '==', USER_UID)
-        .where('media_type', '==', 'tv')
         .where('source', '==', 'tmdb')
         .get();
 
-    const series = [];
+    const tvSeries = [];
+    const movies = [];
+
     snapshot.forEach((doc) => {
         const data = doc.data();
-        series.push({
+        const item = {
             id: data.id,
             title: data.title,
             title_vi: data.title_vi || '',
             poster_path: data.poster_path,
-        });
+            media_type: data.media_type,
+            status: data.status,
+            release_date: data.release_date,
+        };
+
+        if (data.media_type === 'tv') {
+            tvSeries.push(item);
+        } else if (data.media_type === 'movie' && data.status === 'watchlist') {
+            movies.push(item);
+        }
     });
 
-    console.log(`📺 Found ${series.length} TV series in Firestore`);
-    return series;
+    console.log(`📺 Found ${tvSeries.length} TV series and ${movies.length} movies in watchlist`);
+    return { tvSeries, movies };
 };
 
 const getPushSubscriptions = async () => {
@@ -81,8 +91,10 @@ const getPushSubscriptions = async () => {
 
 // ============ TMDB Functions ============
 const getTodayDateString = () => {
-    const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    // Get current time in Vietnam (UTC+7)
+    const now = new Date();
+    const vnTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    return vnTime.toISOString().split('T')[0];
 };
 
 const fetchTMDB = async (endpoint) => {
@@ -219,67 +231,77 @@ const main = async () => {
         return;
     }
 
-    // Get TV series from Firestore
-    const tvSeries = await getTVSeriesFromFirestore();
+    // Get items from Firestore
+    const { tvSeries, movies } = await getWatchlistFromFirestore();
 
-    if (tvSeries.length === 0) {
-        console.log('📭 No TV series found in your collection');
+    if (tvSeries.length === 0 && movies.length === 0) {
+        console.log('📭 No items found in your collection');
         return;
     }
 
-    // Check each series for today's episodes
+    const today = getTodayDateString();
     const todayEpisodes = [];
+    const todayMovies = [];
 
+    // Check each series for today's episodes
     for (const series of tvSeries) {
         const episodes = await getUpcomingEpisodes(series.id);
-
         for (const episode of episodes) {
-            todayEpisodes.push({
-                series,
-                episode,
-            });
+            todayEpisodes.push({ series, episode });
         }
     }
 
-    // If no episodes today, exit
-    if (todayEpisodes.length === 0) {
-        console.log('📭 No episodes airing today');
+    // Check each movie for today's release
+    for (const movie of movies) {
+        if (movie.release_date === today) {
+            todayMovies.push(movie);
+        }
+    }
+
+    // If no episodes or movies today, exit
+    if (todayEpisodes.length === 0 && todayMovies.length === 0) {
+        console.log('📭 No episodes or movies airing today');
         return;
     }
 
-    console.log(`\n🎬 Found ${todayEpisodes.length} episode(s) airing today:`);
+    console.log(`\n🎬 Found ${todayEpisodes.length} episode(s) and ${todayMovies.length} movie(s) today:`);
     todayEpisodes.forEach(({ series, episode }) => {
         const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
-        console.log(`  • ${series.title_vi || series.title} - ${code}`);
+        console.log(`  • [TV] ${series.title_vi || series.title} - ${code}`);
+    });
+    todayMovies.forEach((movie) => {
+        console.log(`  • [Movie] ${movie.title_vi || movie.title}`);
     });
 
     // Build notification content
     let title, body;
 
-    if (todayEpisodes.length === 1) {
-        // Single episode - detailed notification
-        const { series, episode } = todayEpisodes[0];
-        const seriesName = series.title_vi || series.title;
-
-        title = seriesName;
-        body = `Mùa ${episode.season_number} • Tập ${episode.episode_number}`;
+    if (todayEpisodes.length + todayMovies.length === 1) {
+        if (todayEpisodes.length === 1) {
+            const { series, episode } = todayEpisodes[0];
+            title = series.title_vi || series.title;
+            body = `Mùa ${episode.season_number} • Tập ${episode.episode_number} phát sóng hôm nay`;
+        } else {
+            const movie = todayMovies[0];
+            title = movie.title_vi || movie.title;
+            body = `Phim đã chính thức khởi chiếu hôm nay!`;
+        }
     } else {
-        // Multiple episodes - summary notification
-        title = `${todayEpisodes.length} tập phim mới phát sóng hôm nay`;
+        const total = todayEpisodes.length + todayMovies.length;
+        title = `${total} phim mới hôm nay`;
 
-        // Show max 3 episodes, then "và X phim khác"
-        const maxShow = 3;
-        const episodeLines = todayEpisodes.slice(0, maxShow).map(({ series, episode }) => {
-            const name = series.title_vi || series.title;
-            return `${name}\nMùa ${episode.season_number} • Tập ${episode.episode_number}`;
+        const lines = [];
+        todayEpisodes.slice(0, 2).forEach(({ series, episode }) => {
+            lines.push(`${series.title_vi || series.title} (S${episode.season_number}E${episode.episode_number})`);
+        });
+        todayMovies.slice(0, 2).forEach((movie) => {
+            lines.push(`${movie.title_vi || movie.title} (Khởi chiếu)`);
         });
 
-        if (todayEpisodes.length > maxShow) {
-            const remaining = todayEpisodes.length - maxShow;
-            episodeLines.push(`\n... và ${remaining} tập phim khác`);
+        if (total > 4) {
+            lines.push(`... và ${total - 4} phim khác`);
         }
-
-        body = episodeLines.join('\n\n');
+        body = lines.join('\n');
     }
 
     // Send to all subscriptions

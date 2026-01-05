@@ -2,8 +2,8 @@ name: Daily Episode Notification
 
 on:
   schedule:
-    # Run daily at 1:00 UTC (8:00 AM Vietnam time)
-    - cron: "0 1 * * *"
+    # Run daily at 0:00 UTC (7:00 AM Vietnam time) to compensate for GitHub Actions delay
+    - cron: "0 0 * * *"
   workflow_dispatch: # Allow manual trigger for testing
 
 jobs:
