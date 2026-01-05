@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, RotateCcw, Film, ArrowLeft, Filter, ArrowDown, User } from 'lucide-react';
+import { Search, RotateCcw, Film, ArrowLeft, Filter, ArrowDown, User, X } from 'lucide-react';
 import { searchMovies, getTrendingMovies, getCountries, getDiscoverMovies, searchPeople } from '../../services/tmdbService';
 import { TMDBMovieResult, TMDBPerson, Movie } from '../../types';
 import { TMDB_IMAGE_BASE_URL } from '../../constants';
@@ -92,13 +92,15 @@ const SearchPage: React.FC = () => {
     fetchStaticData();
   }, []);
 
+  const isSearchMode = query.trim().length > 2;
+
   // Auto-search when query changes (for search mode)
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (query.trim().length > 2) {
         setLoading(true);
         if (searchTab === 'movies') {
-          const { results: data, totalPages } = await searchMovies(query, searchPage);
+          const { results: data, totalPages } = await searchMovies(query, searchPage, filterYear);
           setResults(data);
           setTotalSearchPages(totalPages);
         } else {
@@ -110,22 +112,23 @@ const SearchPage: React.FC = () => {
       } else {
         setResults([]);
         setPeopleResults([]);
-        setSearchPage(1);
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [query, searchPage, searchTab]);
+  }, [query, searchPage, searchTab, filterYear]);
 
   // Reset discover page when filters change
   useEffect(() => {
-    if (discoverMovies.length > 0) {
-      setDiscoverPage(1);
-    }
+    setDiscoverPage(1);
   }, [filterYear, filterCountry, filterRating, sortBy, filterType]);
 
   // Auto-load discover movies when page or filters change
   useEffect(() => {
-    if (!isSearchMode && discoverMovies.length > 0) {
+    if (isSearchMode) return;
+
+    const hasFilters = filterYear || filterCountry || filterRating || sortBy !== 'popularity.desc' || filterType !== 'all';
+    
+    if (hasFilters) {
       const timer = setTimeout(async () => {
         setDiscoverLoading(true);
         const { results, totalPages } = await getDiscoverMovies({
@@ -141,20 +144,29 @@ const SearchPage: React.FC = () => {
         setDiscoverLoading(false);
       }, 300);
       return () => clearTimeout(timer);
+    } else {
+      setDiscoverMovies([]);
+      setDiscoverLoading(false);
     }
-  }, [discoverPage, filterYear, filterCountry, filterRating, sortBy, filterType]);
+  }, [discoverPage, filterYear, filterCountry, filterRating, sortBy, filterType, isSearchMode]);
 
   // Reset search page when query changes
   useEffect(() => {
     setSearchPage(1);
   }, [query]);
 
-  const isSearchMode = query.trim().length > 0;
   const displayMovies = isSearchMode
     ? results
     : discoverMovies;
 
-  const filteredResults = displayMovies; // All filters are now server-side
+  const filteredResults = displayMovies.filter(movie => {
+    if (isSearchMode) {
+      if (filterType !== 'all' && movie.media_type !== filterType) return false;
+      if (filterCountry && movie.origin_country && !movie.origin_country.includes(filterCountry)) return false;
+      if (filterRating && (movie.vote_average || 0) < Number(filterRating)) return false;
+    }
+    return true;
+  });
 
   const isLoading = isSearchMode ? loading : discoverLoading;
   const currentPage = isSearchMode ? searchPage : discoverPage;
@@ -174,13 +186,29 @@ const SearchPage: React.FC = () => {
     return movie ? movie.status || null : null;
   };
 
+  // Handle clear search
+  const handleClear = () => {
+    setQuery('');
+    setFilterType('all');
+    setFilterYear('');
+    setFilterCountry('');
+    setFilterRating('');
+    setSortBy('popularity.desc');
+    setResults([]);
+    setDiscoverMovies([]);
+    setPeopleResults([]);
+    setSearchPage(1);
+    setDiscoverPage(1);
+    setLoading(false);
+    setDiscoverLoading(false);
+  };
+
   // Handle search/discover
   const handleSearch = async () => {
-    if (query.trim()) {
-      // Search mode
+    if (query.trim().length > 2) {
       setLoading(true);
       if (searchTab === 'movies') {
-        const { results: data, totalPages } = await searchMovies(query, searchPage);
+        const { results: data, totalPages } = await searchMovies(query, searchPage, filterYear);
         setResults(data);
         setTotalSearchPages(totalPages);
       } else {
@@ -189,22 +217,6 @@ const SearchPage: React.FC = () => {
         setTotalSearchPages(totalPages);
       }
       setLoading(false);
-    } else {
-      // Discover mode (only for movies)
-      if (searchTab === 'movies') {
-        setDiscoverLoading(true);
-        const { results, totalPages } = await getDiscoverMovies({
-          page: discoverPage,
-          year: filterYear,
-          country: filterCountry,
-          rating: filterRating,
-          sortBy: sortBy,
-          type: filterType,
-        });
-        setDiscoverMovies(results);
-        setTotalDiscoverPages(totalPages);
-        setDiscoverLoading(false);
-      }
     }
   };
 
@@ -276,15 +288,25 @@ const SearchPage: React.FC = () => {
                   handleSearch();
                 }
               }}
-              className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl py-4 pl-12 pr-16 focus:outline-none focus:border-primary/50 transition-all shadow-sm text-lg"
+              className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl py-4 pl-12 pr-32 focus:outline-none focus:border-primary/50 transition-all shadow-sm text-lg"
               autoFocus
             />
-            <button
-              onClick={handleSearch}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium"
-            >
-              Tìm
-            </button>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              {query && (
+                <button
+                  onClick={handleClear}
+                  className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              )}
+              <button
+                onClick={handleSearch}
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium"
+              >
+                Tìm
+              </button>
+            </div>
           </div>
 
           {searchTab === 'movies' && (
@@ -363,6 +385,16 @@ const SearchPage: React.FC = () => {
                 placeholder="Sắp xếp"
                 className="flex-1 sm:flex-none min-w-[140px]"
               />
+
+              {(filterType !== 'all' || filterCountry || filterYear || filterRating || sortBy !== 'popularity.desc') && (
+                <button
+                  onClick={handleClear}
+                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-sm font-medium cursor-pointer"
+                >
+                  <RotateCcw size={16} />
+                  <span>Đặt lại</span>
+                </button>
+              )}
             </div>
           )}
         </div>

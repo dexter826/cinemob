@@ -1,19 +1,31 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../constants';
 import { TMDBMovieResult, TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie, TMDBPerson, TMDBEpisode } from '../types';
 
-export const searchMovies = async (query: string, page: number = 1): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
+export const searchMovies = async (query: string, page: number = 1, year?: string): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!query || !TMDB_API_KEY) return { results: [], totalPages: 0 };
 
   try {
     // Search movies
-    const movieResponse = await fetch(
-      `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}&language=vi-VN`
-    );
+    const movieUrl = new URL(`${TMDB_BASE_URL}/search/movie`);
+    movieUrl.searchParams.append('api_key', TMDB_API_KEY);
+    movieUrl.searchParams.append('query', query);
+    movieUrl.searchParams.append('include_adult', 'false');
+    movieUrl.searchParams.append('page', page.toString());
+    movieUrl.searchParams.append('language', 'vi-VN');
+    if (year) movieUrl.searchParams.append('primary_release_year', year);
+
+    const movieResponse = await fetch(movieUrl.toString());
 
     // Search TV shows
-    const tvResponse = await fetch(
-      `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false&page=${page}&language=vi-VN`
-    );
+    const tvUrl = new URL(`${TMDB_BASE_URL}/search/tv`);
+    tvUrl.searchParams.append('api_key', TMDB_API_KEY);
+    tvUrl.searchParams.append('query', query);
+    tvUrl.searchParams.append('include_adult', 'false');
+    tvUrl.searchParams.append('page', page.toString());
+    tvUrl.searchParams.append('language', 'vi-VN');
+    if (year) tvUrl.searchParams.append('first_air_date_year', year);
+
+    const tvResponse = await fetch(tvUrl.toString());
 
     if (!movieResponse.ok || !tvResponse.ok) throw new Error('TMDB API Error');
 
