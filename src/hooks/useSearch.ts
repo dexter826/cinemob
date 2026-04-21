@@ -6,12 +6,12 @@ import {
   getDiscoverMovies, 
   searchPeople 
 } from '../services/tmdb';
-import { TMDBMovieResult, TMDBPerson, Movie } from '../types';
-import { subscribeToMovies } from '../services/movieService';
+import { TMDBMovieResult, TMDBPerson } from '../types';
+import useMovieStore from '../stores/movieStore';
 import useRecommendationsStore from '../stores/recommendationsStore';
 import useAddMovieStore from '../stores/addMovieStore';
 
-/** Quản lý logic tìm kiếm phim và người nổi tiếng. */
+/** Logic tìm kiếm phim và người nổi tiếng. */
 export const useSearch = (user: any) => {
   const { openAddModal } = useAddMovieStore();
   const { 
@@ -36,7 +36,7 @@ export const useSearch = (user: any) => {
   const [totalDiscoverPages, setTotalDiscoverPages] = useState(1);
   const [discoverLoading, setDiscoverLoading] = useState(false);
 
-  const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
+  const { movies: savedMovies } = useMovieStore();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
   const [countries, setCountries] = useState<{ iso_3166_1: string, english_name: string, native_name: string }[]>([]);
 
@@ -46,7 +46,6 @@ export const useSearch = (user: any) => {
   const [filterRating, setFilterRating] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('popularity.desc');
 
-  /** Tải dữ liệu ban đầu (countries, animations). */
   useEffect(() => {
     fetch('/data/loading_suggest.json')
       .then(res => res.json())
@@ -66,19 +65,6 @@ export const useSearch = (user: any) => {
     fetchStaticData();
   }, []);
 
-  /** Theo dõi phim đã lưu của người dùng. */
-  useEffect(() => {
-    if (!user) {
-      setSavedMovies([]);
-      return;
-    }
-    const unsubscribe = subscribeToMovies(user.uid, (movies) => {
-      setSavedMovies(movies);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
-  /** Tải đề xuất AI nếu chưa có. */
   useEffect(() => {
     if (user && aiRecommendations.length === 0 && !isAiLoading) {
       refreshRecommendations(user.uid);
@@ -87,7 +73,6 @@ export const useSearch = (user: any) => {
 
   const isSearchMode = query.trim().length > 2;
 
-  /** Xử lý tìm kiếm với debounce. */
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (query.trim().length > 2) {
@@ -110,12 +95,10 @@ export const useSearch = (user: any) => {
     return () => clearTimeout(timer);
   }, [query, searchPage, searchTab, filterYear]);
 
-  /** Reset trang khám phá khi thay đổi bộ lọc. */
   useEffect(() => {
     setDiscoverPage(1);
   }, [filterYear, filterCountry, filterRating, sortBy, filterType]);
 
-  /** Xử lý khám phá phim (Discover). */
   useEffect(() => {
     if (isSearchMode) return;
 
@@ -149,7 +132,7 @@ export const useSearch = (user: any) => {
 
   const displayMovies = isSearchMode ? results : discoverMovies;
 
-  /** Lọc kết quả tìm kiếm cục bộ. */
+/** Lọc kết quả cục bộ. */
   const filteredResults = displayMovies.filter(movie => {
     if (isSearchMode) {
       if (filterType !== 'all' && movie.media_type !== filterType) return false;
@@ -159,7 +142,7 @@ export const useSearch = (user: any) => {
     return true;
   });
 
-  /** Xử lý chọn phim để thêm vào bộ sưu tập. */
+/** Mở modal thêm phim. */
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     openAddModal({
       movie: movie,
@@ -169,13 +152,13 @@ export const useSearch = (user: any) => {
     });
   };
 
-  /** Lấy trạng thái của phim (Đã xem/Sẽ xem). */
+/** Lấy trạng thái phim. */
   const getMovieStatus = (movieId: number): 'history' | 'watchlist' | null => {
     const movie = savedMovies.find(m => m.id === movieId);
     return movie ? movie.status || null : null;
   };
 
-  /** Xóa toàn bộ tìm kiếm và bộ lọc. */
+/** Reset tìm kiếm và bộ lọc. */
   const handleClear = () => {
     setQuery('');
     setFilterType('all');
@@ -192,7 +175,7 @@ export const useSearch = (user: any) => {
     setDiscoverLoading(false);
   };
 
-  /** Xử lý tìm kiếm thủ công (Enter/Nút Tìm). */
+/** Xử lý tìm kiếm thủ công. */
   const handleSearch = async () => {
     if (query.trim().length > 2) {
       setLoading(true);

@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from './AuthProvider';
-import { subscribeToMovies } from '../../services/movieService';
 import useRecommendationsStore from '../../stores/recommendationsStore';
+import useMovieStore from '../../stores/movieStore';
 
 const RecommendationsStoreInitializer: React.FC = () => {
   const { user } = useAuth();
@@ -16,7 +16,8 @@ const RecommendationsStoreInitializer: React.FC = () => {
     historyMovies
   } = useRecommendationsStore();
 
-  // Subscribe to user's movies
+  const { movies, loading: moviesLoading } = useMovieStore();
+
   useEffect(() => {
     if (!user) {
       setAiRecommendations([]);
@@ -31,14 +32,9 @@ const RecommendationsStoreInitializer: React.FC = () => {
     };
     init();
 
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setHistoryMovies(data);
-    });
+    setHistoryMovies(movies);
+  }, [user, movies, setAiRecommendations, setTrendingMovies, setHistoryMovies, setHasFetchedInitial, initializeForUser]);
 
-    return () => unsubscribe();
-  }, [user, setAiRecommendations, setTrendingMovies, setHistoryMovies, setHasFetchedInitial, initializeForUser]);
-
-  // Fetch recommendations when user logs in and history is loaded (only initial fetch)
   useEffect(() => {
     if (user && !hasFetchedInitial && historyMovies.length >= 0) {
       refreshRecommendations(user.uid);

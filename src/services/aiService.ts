@@ -7,7 +7,7 @@ interface AIRecommendation {
     reason: string;
 }
 
-/** Lấy danh sách gợi ý phim từ AI dựa trên lịch sử xem của người dùng. */
+/** Lấy gợi ý phim từ AI theo lịch sử xem. */
 export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
     if (!history || history.length === 0) return [];
 

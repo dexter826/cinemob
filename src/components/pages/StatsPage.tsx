@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { subscribeToMovies } from '../../services/movieService';
-import { Movie } from '../../types';
-import { Calendar, Film, Star, TrendingUp, Tv, Globe, View } from 'lucide-react';
+import { Film, Star, TrendingUp, Tv, Globe, View, Calendar } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import StatsCard from '../ui/StatsCard';
 import { Timestamp } from 'firebase/firestore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import Loading from '../ui/Loading';
+import useMovieStore from '../../stores/movieStore';
 
 const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#f97316', '#84cc16', '#6366f1', '#14b8a6'];
 
@@ -45,6 +44,7 @@ const GENRE_TRANSLATIONS: Record<string, string> = {
 const StatsPage: React.FC = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const { movies, loading } = useMovieStore();
 
   const customTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -63,22 +63,11 @@ const StatsPage: React.FC = () => {
     return null;
   };
 
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showAllYears, setShowAllYears] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setMovies(data);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, [user]);
-
-  useEffect(() => {
-    const update = () => setIsSmallScreen(window.innerWidth < 640); // Tailwind 'sm'
+    const update = () => setIsSmallScreen(window.innerWidth < 640);
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);

@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Trash2, Edit2, X as XIcon, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Film, PlusCircle, Trash2, Edit2, X as XIcon, Search } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import Loading from '../ui/Loading';
 import { Album, Movie } from '../../types';
 import { subscribeToAlbum, updateAlbum } from '../../services/albumService';
-import { subscribeToMovies } from '../../services/movieService';
 import { useAuth } from '../providers/AuthProvider';
 import useToastStore from '../../stores/toastStore';
 import useAlertStore from '../../stores/alertStore';
 import MovieCard from '../ui/MovieCard';
 import Pagination from '../ui/Pagination';
 import { Timestamp } from 'firebase/firestore';
+import useMovieStore from '../../stores/movieStore';
 
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -20,8 +20,8 @@ const AlbumDetailPage: React.FC = () => {
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
 
+  const { movies } = useMovieStore();
   const [album, setAlbum] = useState<Album | null>(null);
-  const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState('');
@@ -45,16 +45,6 @@ const AlbumDetailPage: React.FC = () => {
     return () => unsubscribe();
   }, [albumId, user]);
 
-  useEffect(() => {
-    if (!user) return;
-
-    const unsubscribe = subscribeToMovies(user.uid, data => {
-      setMovies(data);
-    });
-
-    return () => unsubscribe();
-  }, [user]);
-
   const watchedMovies = useMemo(
     () => movies.filter(m => (m.status || 'history') === 'history'),
     [movies]
@@ -72,7 +62,6 @@ const AlbumDetailPage: React.FC = () => {
     return watchedMovies.filter(m => m.docId && !ids.has(m.docId));
   }, [album, watchedMovies]);
 
-  // Helper function to normalize Vietnamese text for search
   const normalizeVietnamese = (str: string) => {
     return str
       .normalize('NFD')

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { Howl } from 'howler';
 import { useAuth } from '../providers/AuthProvider';
-import { subscribeToMovies } from '../../services/movieService';
 import { getTrendingMovies } from '../../services/tmdb';
 import { Movie, TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
@@ -14,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
 import randomAudioFile from '../../assets/audio/random.MP3';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
+import useMovieStore from '../../stores/movieStore';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
 
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const { movies } = useMovieStore();
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);
   const [isLoadingPool, setIsLoadingPool] = useState(false);
   const [poolType, setPoolType] = useState<'watchlist' | 'trending' | null>(null);
@@ -35,32 +35,15 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const [confettiData, setConfettiData] = useState<any | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
 
-  // Prevent body scroll when modal is open
   usePreventScroll(isOpen);
 
-  // Subscribe to user's movies only when modal is open
-  useEffect(() => {
-    if (!user || !isOpen) return;
-
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setMovies(data);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [user, isOpen]);
-
-  // Load confetti animation and audio once
   useEffect(() => {
     fetch('/data/confetti.json')
       .then(res => res.json())
       .then(data => setConfettiData(data))
       .catch(() => {
-        // Silent fail if file not found
       });
 
-    // Initialize random sound
     const audio = new Howl({
       src: [randomAudioFile],
       volume: 0.3,
@@ -68,7 +51,6 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     });
     setRandomAudio(audio);
 
-    // Cleanup
     return () => {
       if (audio) {
         audio.stop();
@@ -87,7 +69,6 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     return [];
   }, [poolType, watchlistMovies, trending]);
 
-  // Reset and prepare pool when modal opens
   useEffect(() => {
     if (!isOpen) {
       setPoolType(null);
@@ -95,7 +76,6 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       setIsShuffling(false);
       setHasResult(false);
 
-      // Stop audio when modal closes
       if (randomAudio) {
         randomAudio.stop();
       }
@@ -121,17 +101,14 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     };
 
     preparePool();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, watchlistMovies.length]);
 
-  // Start shuffle once pool is ready
   useEffect(() => {
     if (!isOpen) return;
     if (!poolType) return;
     if (activePool.length === 0) return;
 
     startShuffle(poolType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, poolType, activePool.length]);
 
   const startShuffle = (source: 'watchlist' | 'trending') => {
@@ -147,17 +124,15 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     setIsShuffling(true);
     setHasResult(false);
 
-    // Play random sound
     if (randomAudio) {
       randomAudio.stop();
       randomAudio.play();
     }
 
-    // Wheel of Fortune effect - synced with audio timing
-    const shuffleDuration = 3150; // 3.15s - match audio sound effect end
-    const totalDuration = 5100; // 5.10s - full audio duration
+    const shuffleDuration = 3150;
+    const totalDuration = 5100;
     const start = Date.now();
-    let intervalSpeed = 80; // Start with fast changes
+    let intervalSpeed = 80;
 
     const shuffleInterval = setInterval(() => {
       const now = Date.now();
@@ -172,22 +147,16 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         return;
       }
 
-      // Gradually slow down to match audio rhythm
       if (progress < 0.5) {
-        // Fast changes for first 50% (1.575s)
         intervalSpeed = 70;
       } else if (progress < 0.75) {
-        // Medium speed for next 25% (0.7875s)
         intervalSpeed = 120;
       } else if (progress < 0.9) {
-        // Slow down for next 15% (0.4725s)
         intervalSpeed = 200;
       } else {
-        // Very slow for final 10% (0.315s)
         intervalSpeed = 400;
       }
 
-      // Change to next movie in sequence (like wheel segments)
       setCurrentIndex(prevIndex => {
         if (prevIndex === null) return 0;
         return (prevIndex + 1) % effectivePool.length;
@@ -196,18 +165,15 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       if (elapsed >= shuffleDuration) {
         clearInterval(shuffleInterval);
 
-        // Final result at 3.15s - match audio sound effect
         const finalIndex = Math.floor(Math.random() * effectivePool.length);
         setCurrentIndex(finalIndex);
         setIsShuffling(false);
         setHasResult(true);
-
-        // Let audio finish naturally at 5.10s
         setTimeout(() => {
           if (randomAudio) {
             randomAudio.stop();
           }
-        }, totalDuration - shuffleDuration); // Wait remaining 1.95s
+        }, totalDuration - shuffleDuration);
       }
     }, intervalSpeed);
   };
@@ -222,11 +188,9 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
     if (poolType === 'watchlist') {
       const movie = activePool[currentIndex] as Movie;
-      // For watchlist movies, open detail modal
       openDetailModal(movie);
     } else if (poolType === 'trending') {
       const tmdbMovie = activePool[currentIndex] as TMDBMovieResult;
-      // For trending movies, open add modal
       openAddModal({
         movie: tmdbMovie,
         mediaType:

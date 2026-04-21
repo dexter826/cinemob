@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../components/providers/AuthProvider';
 import useAddMovieStore from '../stores/addMovieStore';
 import useAlertStore from '../stores/alertStore';
+import useToastStore from '../stores/toastStore';
 import { getMovieDetails, getMovieDetailsWithLanguage, getTVShowEpisodeInfo } from '../services/tmdb';
 import { addMovie, updateMovie, checkMovieExists } from '../services/movieService';
 import { Movie } from '../types';
@@ -9,9 +10,10 @@ import { Movie } from '../types';
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from './useAlbumSync';
 
-/** Hook điều phối chính cho form thêm phim. */
+/** Điều phối form thêm phim. */
 export const useAddMovieForm = () => {
   const { user } = useAuth();
+  const { showToast } = useToastStore();
   const { isOpen, initialData, closeAddModal } = useAddMovieStore();
   const { showAlert } = useAlertStore();
 
@@ -45,10 +47,6 @@ export const useAddMovieForm = () => {
 
   const isManualMode = !initialData?.tmdbId && !initialData?.movie && !initialData?.movieToEdit;
   const isTVSeries = (isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv'));
-
-  const showToast = (message: string, type: 'success' | 'error') => {
-    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message, type } }));
-  };
 
   // Sub-hooks
   const tvProgress = useTVProgress({ 

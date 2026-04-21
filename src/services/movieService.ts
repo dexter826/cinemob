@@ -17,7 +17,7 @@ import { Movie } from '../types';
 
 const COLLECTION_NAME = 'movies';
 
-/** Thêm phim mới vào kho lưu trữ cá nhân. */
+/** Lưu phim mới vào kho cá nhân. */
 export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   try {
     const payload = {
@@ -33,7 +33,7 @@ export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   }
 };
 
-/** Cập nhật thông tin của một bộ phim đã lưu. */
+/** Cập nhật thông tin phim. */
 export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   try {
     const movieRef = doc(db, COLLECTION_NAME, docId);
@@ -44,7 +44,7 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   }
 };
 
-/** Xóa phim khỏi danh sách của người dùng. */
+/** Xóa phim khỏi danh sách. */
 export const deleteMovie = async (docId: string) => {
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, docId));
@@ -54,7 +54,7 @@ export const deleteMovie = async (docId: string) => {
   }
 };
 
-/** Kiểm tra xem phim đã tồn tại trong danh sách của người dùng chưa. */
+/** Kiểm tra phim đã có trong danh sách chưa. */
 export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
   try {
     const q = query(
@@ -70,7 +70,34 @@ export const checkMovieExists = async (uid: string, movieId: string | number): P
   }
 };
 
-/** Theo dõi thay đổi danh sách phim của người dùng theo thời gian thực. */
+/** Chuyển dữ liệu Firestore sang Object Movie. */
+export const mapDocToMovie = (docId: string, data: any): Movie => {
+  return {
+    docId,
+    uid: data.uid,
+    id: data.id,
+    title: data.title,
+    title_vi: data.title_vi || '',
+    poster_path: data.poster_path,
+    runtime: data.runtime,
+    seasons: data.seasons || 0,
+    total_episodes: data.total_episodes || 0,
+    watched_at: data.watched_at,
+    source: data.source,
+    media_type: data.media_type || 'movie',
+    status: data.status || 'history',
+    rating: data.rating || 0,
+    review: data.review || '',
+    tagline: data.tagline || '',
+    genres: data.genres || '',
+    release_date: data.release_date || '',
+    country: data.country || '',
+    content: data.content || '',
+    progress: data.progress || undefined
+  } as Movie;
+};
+
+/** Theo dõi danh sách phim thời gian thực. */
 export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
   const q = query(
     collection(db, COLLECTION_NAME),
@@ -79,37 +106,9 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
   );
 
   return onSnapshot(q, (snapshot) => {
-    const movies = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        docId: doc.id,
-        uid: data.uid,
-        id: data.id,
-        title: data.title,
-        title_vi: data.title_vi || '',
-        poster_path: data.poster_path,
-        runtime: data.runtime,
-        seasons: data.seasons || 0,
-        total_episodes: data.total_episodes || 0,
-        watched_at: data.watched_at,
-        source: data.source,
-        media_type: data.media_type || 'movie',
-        status: data.status || 'history',
-        rating: data.rating || 0,
-        review: data.review || '',
-        tagline: data.tagline || '',
-        genres: data.genres || '',
-        release_date: data.release_date || '',
-        country: data.country || '',
-        content: data.content || '',
-        progress: data.progress || undefined
-      } as Movie;
-    });
+    const movies = snapshot.docs.map(doc => mapDocToMovie(doc.id, doc.data()));
     callback(movies);
   }, (error) => {
     console.error("Snapshot error:", error);
-    if (error.code === 'permission-denied') {
-      console.error("Permission Denied: Check Firestore Security Rules.");
-    }
   });
-};
+};

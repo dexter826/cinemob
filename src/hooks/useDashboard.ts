@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import { Movie, Stats } from '../types';
-import { subscribeToMovies, deleteMovie } from '../services/movieService';
+import { deleteMovie } from '../services/movieService';
 import { normalizeMovieDate } from '../utils/movieUtils';
+import useMovieStore from '../stores/movieStore';
 import useToastStore from '../stores/toastStore';
 import useAlertStore from '../stores/alertStore';
 import useAddMovieStore from '../stores/addMovieStore';
@@ -14,7 +15,7 @@ export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
 export type ActiveTab = 'history' | 'watchlist';
 
-/** Quản lý logic và dữ liệu cho trang Dashboard. */
+/** Logic và dữ liệu cho Dashboard. */
 export const useDashboard = (user: any) => {
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
@@ -22,9 +23,9 @@ export const useDashboard = (user: any) => {
   const { openDetailModal } = useMovieDetailStore();
   const { setMovies: setExportMovies } = useExportStore();
   const { markInitialLoadComplete } = useInitialLoadStore();
+  
+  const { movies, loading } = useMovieStore();
 
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +42,6 @@ export const useDashboard = (user: any) => {
   const moviesPerPage = 18;
   const [activeTab, setActiveTab] = useState<ActiveTab>('history');
 
-  /** Đóng bộ lọc khi click ra ngoài. */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
@@ -57,21 +57,10 @@ export const useDashboard = (user: any) => {
     };
   }, [showFilters]);
 
-  /** Đăng ký theo dõi danh sách phim từ Firestore. */
   useEffect(() => {
-    if (!user) return;
+    setExportMovies(movies);
+  }, [movies, setExportMovies]);
 
-    const unsubscribe = subscribeToMovies(user.uid, (data) => {
-      setMovies(data);
-      setExportMovies(data);
-      setLoading(false);
-      markInitialLoadComplete();
-    });
-
-    return () => unsubscribe();
-  }, [user, setExportMovies, markInitialLoadComplete]);
-
-  /** Reset trang khi thay đổi tiêu chí lọc hoặc tab. */
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, filterRating, filterYear, filterCountry, filterContentType, filterWatchStatus, sortBy, sortOrder, activeTab]);
@@ -80,7 +69,6 @@ export const useDashboard = (user: any) => {
   const watchlistMovies = useMemo(() => movies.filter(m => m.status === 'watchlist'), [movies]);
   const currentTabMovies = activeTab === 'history' ? historyMovies : watchlistMovies;
 
-  /** Tính toán thống kê thời gian xem. */
   const stats: Stats = useMemo(() => {
     const totalMovies = currentTabMovies.length;
     const totalMinutes = currentTabMovies.reduce((acc, curr) => acc + (curr.runtime || 0), 0);
@@ -92,14 +80,12 @@ export const useDashboard = (user: any) => {
     return { totalMovies, totalMinutes, days, hours, minutes };
   }, [currentTabMovies]);
 
-  /** Thống kê số lượng theo loại nội dung. */
   const contentTypeStats = useMemo(() => {
     const moviesCount = currentTabMovies.filter(m => m.media_type === 'movie' || !m.media_type).length;
     const tvCount = currentTabMovies.filter(m => m.media_type === 'tv').length;
     return { moviesCount, tvCount };
   }, [currentTabMovies]);
 
-  /** Xử lý lọc và sắp xếp danh sách phim. */
   const processedMovies = useMemo(() => {
     let result = [...currentTabMovies];
 
@@ -163,7 +149,7 @@ export const useDashboard = (user: any) => {
     return processedMovies.slice(startIndex, startIndex + moviesPerPage);
   }, [processedMovies, currentPage, moviesPerPage]);
 
-  /** Xử lý xóa phim. */
+/** Xóa phim. */
   const handleDelete = async (docId: string) => {
     showAlert({
       title: "Xóa phim",
@@ -181,12 +167,12 @@ export const useDashboard = (user: any) => {
     });
   };
 
-  /** Xử lý sửa phim. */
+/** Mở modal sửa phim. */
   const handleEdit = (movie: Movie) => {
     openAddModal({ movieToEdit: movie });
   };
 
-  /** Đánh dấu phim đã xem. */
+/** Đánh dấu đã xem. */
   const handleMarkAsWatched = (movie: Movie) => {
     const now = new Date();
     const existingDate = movie.watched_at instanceof Timestamp
@@ -202,7 +188,7 @@ export const useDashboard = (user: any) => {
     });
   };
 
-  /** Reset tất cả các bộ lọc. */
+/** Reset bộ lọc. */
   const clearFilters = () => {
     setFilterRating(null);
     setFilterYear(null);

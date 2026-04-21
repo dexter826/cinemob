@@ -21,6 +21,7 @@ import { ThemeProvider } from './components/providers/ThemeProvider';
 import AlbumStoreInitializer from './components/providers/AlbumStoreInitializer';
 import RecommendationsStoreInitializer from './components/providers/RecommendationsStoreInitializer';
 import ReleaseCalendarStoreInitializer from './components/providers/ReleaseCalendarStoreInitializer';
+import MovieStoreInitializer from './components/providers/MovieStoreInitializer';
 import PullToRefreshProvider from './components/providers/PullToRefreshProvider';
 import ToastContainer from './components/ui/ToastContainer';
 import AlertContainer from './components/ui/AlertContainer';
@@ -92,6 +93,7 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
   return (
     <PullToRefreshProvider>
       <Layout appReady={appReady}>
+        <MovieStoreInitializer />
         <AlbumStoreInitializer />
         <RecommendationsStoreInitializer />
         <ReleaseCalendarStoreInitializer />
