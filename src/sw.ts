@@ -4,17 +4,12 @@ import { clientsClaim } from 'workbox-core';
 
 declare let self: ServiceWorkerGlobalScope;
 
-// Workbox injection point
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
 
-// Take control immediately
 self.skipWaiting();
 clientsClaim();
 
-// ==========================================
-// Push Notification Handling
-// ==========================================
 
 self.addEventListener('push', (event) => {
 
@@ -38,7 +33,6 @@ self.addEventListener('push', (event) => {
         ...payload,
       };
     } catch (e) {
-      // If not JSON, use text
       data.body = event.data.text();
     }
   }
@@ -58,16 +52,13 @@ self.addEventListener('notificationclick', (event) => {
 
   event.notification.close();
 
-  // Open the app when notification is clicked
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // If app is already open, focus it
       for (const client of clientList) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           return client.focus();
         }
       }
-      // Otherwise open new window
       if (self.clients.openWindow) {
         return self.clients.openWindow('/');
       }
@@ -76,5 +67,4 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('notificationclose', (event) => {
-  // Notification closed
 });

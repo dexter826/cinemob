@@ -27,7 +27,6 @@ import AlertContainer from './components/ui/AlertContainer';
 
 import useInitialLoadStore from './stores/initialLoadStore';
 
-// Page transition variants - chỉ fade opacity, không translate để tránh chớp
 const pageVariants = {
   initial: { opacity: 0 },
   in: { opacity: 1 },
@@ -38,9 +37,8 @@ const pageTransition = {
   type: 'tween',
   ease: 'easeInOut',
   duration: 0.2
-};
+} as const;
 
-// Animated Routes component to handle page transitions
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
   
@@ -141,11 +139,9 @@ const App: React.FC = () => {
 
       {animationFinished && (
         <AuthProvider>
-          <ThemeProvider>
-            <MainApp onReady={handleAppReady} appReady={appReady} />
-            <ToastContainer />
-            <AlertContainer />
-          </ThemeProvider>
+          <MainApp onReady={handleAppReady} appReady={appReady} />
+          <ToastContainer />
+          <AlertContainer />
         </AuthProvider>
       )}
     </Router>

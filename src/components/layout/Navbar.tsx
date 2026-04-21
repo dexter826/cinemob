@@ -54,7 +54,6 @@ const Navbar: React.FC = () => {
             <img src={logoText} alt="CineMOB Logo" className="h-8 w-auto" />
           </div>
 
-          {/* Desktop Menu - Centered */}
           <div className="hidden md:flex items-center justify-center flex-1 space-x-4">
             <button
               onClick={() => navigate('/search')}
@@ -97,7 +96,6 @@ const Navbar: React.FC = () => {
             </button>
           </div>
 
-          {/* Desktop Right Menu */}
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -152,7 +150,6 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Button & Theme Toggle */}
           <div className="md:hidden flex items-center gap-1">
             <button
               onClick={() => navigate('/search')}
@@ -182,7 +179,6 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Sidebar Overlay */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden animate-in fade-in duration-200"
@@ -190,7 +186,6 @@ const Navbar: React.FC = () => {
         />
       )}
 
-      {/* Mobile Menu Sidebar */}
       <div className={`fixed top-0 right-0 bottom-0 w-72 bg-surface border-l border-black/5 dark:border-white/5 z-50 md:hidden transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} shadow-2xl`}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/5">
@@ -204,7 +199,6 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-2">
-            {/* User Info */}
             <div className="flex items-center space-x-3 p-3 mb-4 bg-black/5 dark:bg-white/5 rounded-xl">
               {user?.photoURL ? (
                 <img src={user.photoURL} alt="Avatar" className="w-10 h-10 rounded-full" />

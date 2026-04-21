@@ -26,7 +26,10 @@ const RecommendationsStoreInitializer: React.FC = () => {
       return;
     }
 
-    initializeForUser(user.uid);
+    const init = async () => {
+      await initializeForUser(user.uid);
+    };
+    init();
 
     const unsubscribe = subscribeToMovies(user.uid, (data) => {
       setHistoryMovies(data);

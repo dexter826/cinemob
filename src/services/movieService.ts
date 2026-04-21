@@ -17,10 +17,9 @@ import { Movie } from '../types';
 
 const COLLECTION_NAME = 'movies';
 
+/** Thêm phim mới vào kho lưu trữ cá nhân. */
 export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   try {
-    // Ensure watched_at is a Date or Timestamp, default to serverTimestamp if missing
-    // Note: If passed a JS Date, Firestore handles it.
     const payload = {
       ...movie,
       watched_at: movie.watched_at || serverTimestamp()
@@ -34,6 +33,7 @@ export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   }
 };
 
+/** Cập nhật thông tin của một bộ phim đã lưu. */
 export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   try {
     const movieRef = doc(db, COLLECTION_NAME, docId);
@@ -44,6 +44,7 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   }
 };
 
+/** Xóa phim khỏi danh sách của người dùng. */
 export const deleteMovie = async (docId: string) => {
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, docId));
@@ -53,6 +54,7 @@ export const deleteMovie = async (docId: string) => {
   }
 };
 
+/** Kiểm tra xem phim đã tồn tại trong danh sách của người dùng chưa. */
 export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
   try {
     const q = query(
@@ -68,6 +70,7 @@ export const checkMovieExists = async (uid: string, movieId: string | number): P
   }
 };
 
+/** Theo dõi thay đổi danh sách phim của người dùng theo thời gian thực. */
 export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
   const q = query(
     collection(db, COLLECTION_NAME),
@@ -78,8 +81,6 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
   return onSnapshot(q, (snapshot) => {
     const movies = snapshot.docs.map(doc => {
       const data = doc.data();
-      // Convert timestamp to Date for easier handling in UI if needed, 
-      // but keeping as Timestamp/Date mix is handled by helper functions in UI
       return {
         docId: doc.id,
         uid: data.uid,

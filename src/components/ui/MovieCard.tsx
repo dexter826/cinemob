@@ -2,9 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Movie } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
-import { getDisplayTitle } from '../../utils/movieUtils';
+import { getDisplayTitle, formatMovieDate } from '../../utils/movieUtils';
 import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle, Film, Tv, CheckCircle } from 'lucide-react';
-import { Timestamp } from 'firebase/firestore';
 
 interface MovieCardProps {
   movie: Movie;
@@ -19,12 +18,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
     ? (movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : movie.poster_path)
     : PLACEHOLDER_IMAGE;
 
-  // Helper to format timestamp
-  const formatDate = (date: Timestamp | Date) => {
-    if (!date) return '';
-    const d = date instanceof Timestamp ? date.toDate() : date;
-    return new Intl.DateTimeFormat('vi-VN', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(d);
-  };
 
   return (
     <motion.div
@@ -37,7 +30,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
-      {/* Image Container */}
       <div className="aspect-2/3 w-full relative overflow-hidden">
         <img
           src={imageUrl}
@@ -47,7 +39,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent opacity-100" />
 
-        {/* Progress Bar with Tooltip - Only show for history (watched movies) */}
         {movie.status !== 'watchlist' && (
           <div className="absolute bottom-0 left-0 right-0 h-3 bg-transparent z-20 group/progress">
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30">
@@ -64,7 +55,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
                 }}
               />
             </div>
-            {/* Progress Tooltip */}
             <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover/progress:opacity-100 transition-opacity pointer-events-none z-30">
               <div className="bg-black text-white text-xs font-semibold px-2 py-1 rounded shadow-lg whitespace-nowrap">
                 {movie.media_type === 'tv' && movie.progress ? (
@@ -83,7 +73,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </div>
         )}
 
-        {/* Action Buttons (Always visible on mobile, visible on hover on desktop) */}
         <div className="absolute top-2 right-2 flex space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
           {!onMarkAsWatched && (
             <button
@@ -112,7 +101,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </button>
         </div>
 
-        {/* Rating Badge (Top Left) */}
         {movie.rating && movie.rating > 0 && (
           <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10">
             <Star size={12} className="text-yellow-500 fill-yellow-500" />
@@ -120,7 +108,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </div>
         )}
 
-        {/* Media Type Badge (Top Left, below rating or standalone) */}
         <div className={`absolute left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10 ${movie.rating && movie.rating > 0 ? 'top-12' : 'top-2'}`}>
           {movie.media_type === 'tv' ? (
             <>
@@ -135,7 +122,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           )}
         </div>
 
-        {/* Review Indicator (Bottom Right of Image) */}
         {movie.review && (
           <div className="absolute bottom-2 right-2 p-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-gray-300 z-10" title="Có đánh giá">
             <MessageCircle size={12} />
@@ -143,7 +129,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4 absolute bottom-0 w-full">
         <h3 className="font-semibold text-lg leading-tight text-white mb-2 line-clamp-1" title={getDisplayTitle(movie)}>
           {getDisplayTitle(movie)}
@@ -165,7 +150,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </div>
           <div className="flex items-center space-x-1">
             <Calendar size={12} className="text-secondary" />
-            <span>{formatDate(movie.watched_at)}</span>
+            <span>{formatMovieDate(movie.watched_at)}</span>
           </div>
         </div>
       </div>

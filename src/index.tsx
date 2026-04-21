@@ -5,7 +5,6 @@ import App from './App';
 import { ThemeProvider } from './components/providers/ThemeProvider';
 import { registerSW } from 'virtual:pwa-register';
 
-// Register service worker
 if ('serviceWorker' in navigator) {
   registerSW({
     immediate: true,

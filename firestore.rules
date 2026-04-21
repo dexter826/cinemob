@@ -2,44 +2,54 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Movies
-    match /movies/{document=**} {
-      // Đọc / update / delete chỉ khi user là owner
-      allow read, update, delete: if
-        request.auth != null &&
-        request.auth.uid == resource.data.uid;
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
 
-      // Tạo mới: kiểm tra trên request.resource
-      allow create: if
-        request.auth != null &&
-        request.auth.uid == request.resource.data.uid;
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isValidMovie() {
+      let data = request.resource.data;
+      return data.uid == request.auth.uid &&
+             data.id != null &&
+             data.title is string &&
+             data.title.size() > 0 &&
+             data.watched_at is timestamp;
+    }
+
+    function isValidAlbum() {
+      let data = request.resource.data;
+      return data.uid == request.auth.uid &&
+             data.name is string &&
+             data.name.size() > 0 &&
+             data.movieDocIds is list;
+    }
+
+    // Movies
+    match /movies/{movieId} {
+      allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
+      allow create: if isSignedIn() && isValidMovie();
+      allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidMovie();
     }
 
     // Albums
-    match /albums/{document=**} {
-      // Đọc / update / delete chỉ khi user là owner
-      allow read, update, delete: if
-        request.auth != null &&
-        request.auth.uid == resource.data.uid;
-
-      // Tạo mới: kiểm tra uid trong data gửi lên
-      allow create: if
-        request.auth != null &&
-        request.auth.uid == request.resource.data.uid;
+    match /albums/{albumId} {
+      allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
+      allow create: if isSignedIn() && isValidAlbum();
+      allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidAlbum();
     }
 
-    // Push Subscriptions - user chỉ có thể đọc/ghi subscription của chính mình
+    // Users - stores preferences like previously recommended titles
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && isOwner(userId);
+    }
+
+    // Push Subscriptions
     match /push_subscriptions/{userId} {
-      // Cho phép read/write/delete nếu userId trùng với auth.uid
-      allow read, write, delete: if
-        request.auth != null &&
-        request.auth.uid == userId;
-      
-      // Cho phép create nếu document ID = auth.uid
-      allow create: if
-        request.auth != null &&
-        request.auth.uid == userId &&
-        request.resource.data.userId == request.auth.uid;
+      allow read, write, delete: if isSignedIn() && isOwner(userId);
     }
   }
 }

@@ -5,7 +5,7 @@ import Lottie from 'lottie-react';
 import { Howl } from 'howler';
 import { useAuth } from '../providers/AuthProvider';
 import { subscribeToMovies } from '../../services/movieService';
-import { getTrendingMovies } from '../../services/tmdbService';
+import { getTrendingMovies } from '../../services/tmdb';
 import { Movie, TMDBMovieResult } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import useAddMovieStore from '../../stores/addMovieStore';

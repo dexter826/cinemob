@@ -169,5 +169,9 @@ export interface UpcomingEpisode {
   seriesNameVi?: string;
   posterPath: string | null;
   episode: TMDBEpisode;
-  docId?: string; // Reference to user's saved movie
+  docId?: string;
+}
+
+export interface UserData {
+  previouslyRecommendedTitles: string[];
 }

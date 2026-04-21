@@ -7,13 +7,12 @@ interface AIRecommendation {
     reason: string;
 }
 
+/** Lấy danh sách gợi ý phim từ AI dựa trên lịch sử xem của người dùng. */
 export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
     if (!history || history.length === 0) return [];
 
-    // Chuẩn bị dữ liệu: Chỉ lấy phim user thích (Rating >= 3 hoặc phim trong watchlist chưa có rating)
     const filteredMovies = history.filter(m => (m.rating || 0) >= 3);
 
-    // Hàm chọn ngẫu nhiên
     const getRandomItems = (array: Movie[], count: number): Movie[] => {
         const shuffled = [...array].sort(() => 0.5 - Math.random());
         return shuffled.slice(0, Math.min(count, array.length));
@@ -25,7 +24,6 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
         .map(m => `- ${m.title} (${m.rating ? m.rating + '/5 stars' : 'Liked'})`)
         .join('\n');
 
-    // Danh sách loại trừ
     const existingTitles = allMovies.map(m => m.title).join(', ');
     const previouslyRecommendedTitles = excludePreviouslyRecommended.join(', ');
 

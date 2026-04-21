@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import { Movie, UpcomingEpisode } from '../types';
 
-// Cache duration for upcoming episodes (in milliseconds)
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+// Thời gian lưu cache tập phim để giảm số lần gọi API.
+const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
-// Helper function to check if cache is expired
 const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
 };
@@ -36,7 +35,6 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   setLoadingEpisodes: (loading) => set({ loadingEpisodes: loading }),
   setHasFetchedInitial: (fetched) => set({ hasFetchedInitial: fetched }),
   initializeForUser: (userId: string) => {
-    // Reset state for new user
     set({
       movies: [],
       upcomingEpisodes: [],
@@ -45,10 +43,10 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       hasFetchedInitial: false
     });
   },
+  // Đồng bộ lịch phát sóng tập mới từ TMDB về store.
   fetchUpcomingEpisodes: async (userId: string, movies: Movie[]) => {
     const state = get();
 
-    // Get TV series from user's collection
     const tvSeries = movies.filter(m =>
       m.media_type === 'tv' &&
       m.source === 'tmdb'
@@ -59,7 +57,6 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       return;
     }
 
-    // Check cache
     const cacheKey = `upcoming_episodes_${userId}`;
     const cachedData = localStorage.getItem(cacheKey);
 
@@ -84,42 +81,44 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
     const allUpcoming: UpcomingEpisode[] = [];
 
     try {
-      // Import here to avoid circular dependencies
-      const { getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage } = await import('../services/tmdbService');
+      const { getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage, withLimit } = await import('../services/tmdb');
 
-      for (const series of tvSeries) {
+      const tasks = tvSeries.map(series => async () => {
         try {
           const tvId = Number(series.id);
           const episodes = await getTVShowUpcomingEpisodes(tvId);
 
-          // Get Vietnamese name if available
           let seriesNameVi = series.title_vi;
           if (!seriesNameVi) {
             const viDetails = await getMovieDetailsWithLanguage(tvId, 'tv', 'vi-VN');
             seriesNameVi = viDetails?.name;
           }
 
-          for (const ep of episodes) {
-            allUpcoming.push({
-              seriesId: tvId,
-              seriesName: series.title,
-              seriesNameVi: seriesNameVi,
-              posterPath: series.poster_path,
-              episode: ep,
-              docId: series.docId
-            });
-          }
+          const upcomingForSeries: UpcomingEpisode[] = episodes.map(ep => ({
+            seriesId: tvId,
+            seriesName: series.title,
+            seriesNameVi: seriesNameVi,
+            posterPath: series.poster_path,
+            episode: ep,
+            docId: series.docId
+          }));
+
+          return upcomingForSeries;
         } catch (error) {
           console.error(`Failed to fetch episodes for ${series.title}:`, error);
+          return [];
         }
-      }
+      });
 
-      // Sort by air date
+      const results = await withLimit(tasks, 5);
+      results.forEach(res => {
+        if (res) allUpcoming.push(...res);
+      });
+
       allUpcoming.sort((a, b) => new Date(a.episode.air_date).getTime() - new Date(b.episode.air_date).getTime());
 
       set({ upcomingEpisodes: allUpcoming, loadingEpisodes: false });
 
-      // Save to cache
       localStorage.setItem(cacheKey, JSON.stringify({
         data: allUpcoming,
         timestamp: Date.now()

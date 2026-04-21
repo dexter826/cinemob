@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { X, Calendar, Clock, Star, Film, Info, FolderPlus, Play, Users, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, TMDBVideo, TMDBCredits } from '../../types';
-import { getMovieVideos, getMovieCredits } from '../../services/tmdbService';
+import { getMovieVideos, getMovieCredits } from '../../services/tmdb';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
-import { getDisplayTitle } from '../../utils/movieUtils';
+import { getDisplayTitle, formatMovieDate } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
 import AlbumSelectorModal from './AlbumSelectorModal';
 import useToastStore from '../../stores/toastStore';
@@ -28,7 +28,7 @@ const modalVariants = {
       type: 'spring',
       damping: 25,
       stiffness: 300
-    }
+    } as const
   },
   exit: { 
     opacity: 0, 
@@ -36,7 +36,7 @@ const modalVariants = {
     y: 20,
     transition: {
       duration: 0.2
-    }
+    } as const
   }
 };
 
@@ -357,7 +357,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
               {movie.status !== 'watchlist' && (
                 <div className="pt-4 border-t border-white/10 text-xs text-text-muted flex justify-between">
-                  <span>Đã xem: {movie.watched_at instanceof Object && 'toDate' in movie.watched_at ? movie.watched_at.toDate().toLocaleDateString('vi-VN') : new Date(movie.watched_at as any).toLocaleDateString('vi-VN')}</span>
+                  <span>Đã xem: {formatMovieDate(movie.watched_at)}</span>
                   <span>Nguồn: {movie.source === 'tmdb' ? 'TMDB' : 'Thủ công'}</span>
                 </div>
               )}

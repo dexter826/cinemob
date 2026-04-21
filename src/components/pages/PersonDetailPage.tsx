@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Film, Tv, User, Calendar, CalendarCheck, MapPin, Users, Star, X, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Type, Filter } from 'lucide-react';
 import { PersonMovie, TMDBPerson } from '../../types';
-import { getPersonMovieCredits } from '../../services/tmdbService';
+import { getPersonMovieCredits } from '../../services/tmdb';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE, TMDB_API_KEY } from '../../constants';
 import Loading from '../ui/Loading';
 import Pagination from '../ui/Pagination';

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 interface InitialLoadStore {
   isInitialLoadComplete: boolean;
-  isPageLoading: boolean; // Track page-level loading
+  isPageLoading: boolean;
   markInitialLoadComplete: () => void;
   setPageLoading: (loading: boolean) => void;
 }

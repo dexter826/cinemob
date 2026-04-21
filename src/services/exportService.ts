@@ -11,6 +11,7 @@ export interface ExportFilters {
   status?: 'all' | 'history' | 'watchlist';
 }
 
+/** Lọc danh sách phim dựa trên các tiêu chí xuất dữ liệu. */
 export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): Movie[] => {
   let result = [...movies];
 
@@ -44,6 +45,7 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
 };
 
 
+/** Xuất danh sách phim ra file Excel (.xlsx) kèm bộ lọc. */
 export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Promise<void> => {
   try {
     const filteredMovies = filterMoviesForExport(movies, filters);
@@ -52,7 +54,6 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
       throw new Error('Không có dữ liệu để xuất');
     }
 
-    // Prepare data for Excel
     const excelData = filteredMovies.map(movie => {
       const watchedDate = movie.watched_at instanceof Timestamp ? movie.watched_at.toDate() : (movie.watched_at as Date);
       const isTV = movie.media_type === 'tv';
@@ -73,12 +74,10 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
       };
     });
 
-    // Create workbook
     const ws = XLSX.utils.json_to_sheet(excelData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Danh sách phim');
 
-    // Auto-size columns
     const colWidths = [
       { wch: 30 }, // Tên phim
       { wch: 10 }, // Năm xem
@@ -96,7 +95,6 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     ];
     ws['!cols'] = colWidths;
 
-    // Save file
     const fileName = `cinemob_export_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
 

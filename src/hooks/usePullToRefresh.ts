@@ -8,11 +8,11 @@ interface UsePullToRefreshOptions {
 }
 
 const defaultRefresh = async () => {
-    // Default refresh: just reload the page
     await new Promise(resolve => setTimeout(resolve, 800));
     window.location.reload();
 };
 
+/** Hook xử lý logic kéo để làm mới (Pull to Refresh) trên thiết bị di động. */
 export const usePullToRefresh = ({
     onRefresh,
     threshold = 80,
@@ -30,7 +30,6 @@ export const usePullToRefresh = ({
         if (!enabled) return;
 
         const handleTouchStart = (e: TouchEvent) => {
-            // Only trigger if at the top of the page
             if (window.scrollY === 0) {
                 startY.current = e.touches[0].clientY;
                 isDragging.current = true;
@@ -44,11 +43,9 @@ export const usePullToRefresh = ({
             const distance = currentY.current - startY.current;
 
             if (distance > 0) {
-                // Apply resistance to make it feel natural
                 const adjustedDistance = distance / resistance;
                 setPullDistance(adjustedDistance);
 
-                // Prevent default scroll behavior when pulling down
                 if (distance > 10) {
                     e.preventDefault();
                 }

@@ -77,7 +77,6 @@ const StatsPage: React.FC = () => {
     return () => unsubscribe();
   }, [user]);
 
-  // Track screen size to tweak chart labels on mobile
   useEffect(() => {
     const update = () => setIsSmallScreen(window.innerWidth < 640); // Tailwind 'sm'
     update();
@@ -102,7 +101,6 @@ const StatsPage: React.FC = () => {
       ? (ratedMovies.reduce((acc, curr) => acc + (curr.rating || 0), 0) / ratedMovies.length).toFixed(1)
       : '0';
 
-    // Movies by Year (Watched Year)
     const moviesByYear: Record<string, number> = {};
     watchedMovies.forEach(m => {
       const date = m.watched_at instanceof Timestamp ? m.watched_at.toDate() : new Date(m.watched_at as any);
@@ -110,13 +108,11 @@ const StatsPage: React.FC = () => {
       moviesByYear[year] = (moviesByYear[year] || 0) + 1;
     });
 
-    // Movies by Rating
     const moviesByRating: Record<string, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     ratedMovies.forEach(m => {
       if (m.rating) moviesByRating[m.rating] = (moviesByRating[m.rating] || 0) + 1;
     });
 
-    // Movies by Country
     const moviesByCountry: Record<string, number> = {};
     movies.forEach(m => {
       if (m.country && m.country.trim().length > 0) {
@@ -127,7 +123,6 @@ const StatsPage: React.FC = () => {
       }
     });
 
-    // Movies by Genre
     const moviesByGenre: Record<string, number> = {};
     movies.forEach(m => {
       if (m.genres && m.genres.trim().length > 0) {
@@ -141,7 +136,6 @@ const StatsPage: React.FC = () => {
 
     const totalCountries = Object.keys(moviesByCountry).length;
 
-    // Series Statistics
     const tvSeries = watchedMovies.filter(m => m.media_type === 'tv');
     const totalSeasons = tvSeries.reduce((acc, curr) => acc + (curr.seasons || 0), 0);
     const totalEpisodesWatched = tvSeries.reduce((acc, curr) => {
@@ -188,7 +182,6 @@ const StatsPage: React.FC = () => {
           Thống kê phim đã xem
         </h1>
 
-        {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatsCard
             label="Tổng phim đã xem"
@@ -217,10 +210,8 @@ const StatsPage: React.FC = () => {
           />
         </div>
 
-        {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* Movies by Year */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Calendar size={20} className="text-primary" />
@@ -257,7 +248,6 @@ const StatsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Rating Distribution */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Star size={20} className="text-yellow-500" />
@@ -286,10 +276,8 @@ const StatsPage: React.FC = () => {
 
         </div>
 
-        {/* Country and Genre Distribution */}
         <div className="space-y-8">
 
-          {/* Movies by Country */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Globe size={20} className="text-purple-500" />
@@ -335,7 +323,6 @@ const StatsPage: React.FC = () => {
             )}
           </div>
 
-          {/* Movies by Genre */}
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Film size={20} className="text-teal-500" />
@@ -350,7 +337,6 @@ const StatsPage: React.FC = () => {
                         .sort((a, b) => Number(b[1]) - Number(a[1]))
                         .map(([genre, count]) => ({ name: genre, value: Number(count) }));
 
-                      // Keep top 7 and group the rest as "Khác" to prevent long legends
                       let genreData = entries;
                       if (entries.length > 8) {
                         const top = entries.slice(0, 7);
