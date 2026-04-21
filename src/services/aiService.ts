@@ -68,25 +68,33 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
                 "X-Title": "CineMOB", 
             },
             body: JSON.stringify({
-                "model": "meta-llama/llama-3.3-70b-instruct:free", 
+                "model": "openrouter/elephant-alpha", 
                 "messages": [
                     { "role": "system", "content": "You are a professional movie recommendation engine. Output valid JSON only." },
                     { "role": "user", "content": prompt }
                 ],
-                // Giảm temperature để AI tuân thủ luật loại trừ tốt hơn
                 "temperature": 0.5, 
             })
         });
 
+        if (response.status === 429) {
+            console.error("OpenRouter Rate Limit: Too many requests.");
+            throw new Error("API_RATE_LIMIT");
+        }
+
         const data = await response.json();
+
+        if (data.error) {
+            console.error("OpenRouter API Error:", data.error);
+            throw new Error(data.error.message || "API_ERROR");
+        }
 
         if (data.choices && data.choices.length > 0) {
             const content = data.choices[0].message.content;
-            // Xử lý làm sạch JSON triệt để hơn
             const jsonString = content
-                .replace(/^```json\s*/, '') // Xóa ```json ở đầu
-                .replace(/^```\s*/, '')     // Xóa ``` ở đầu
-                .replace(/\s*```$/, '')     // Xóa ``` ở cuối
+                .replace(/^```json\s*/, '') 
+                .replace(/^```\s*/, '')     
+                .replace(/\s*```$/, '')     
                 .trim();
                 
             return JSON.parse(jsonString) as AIRecommendation[];
