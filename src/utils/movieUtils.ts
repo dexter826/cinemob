@@ -23,17 +23,13 @@ export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
   return title || originalTitle;
 };
 
-/** Chuyển đổi mọi định dạng ngày tháng về Date object chuẩn. */
+/** Chuyển đổi định dạng ngày tháng về Date object chuẩn. */
 export const normalizeMovieDate = (date: any): Date | null => {
   if (!date) return null;
-  if (date.toDate && typeof date.toDate === 'function') return date.toDate();
+  if (typeof date.toDate === 'function') return date.toDate();
   if (date instanceof Date) return date;
-  if (typeof date === 'string' || typeof date === 'number') {
-    const d = new Date(date);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  if (date.seconds !== undefined) return new Date(date.seconds * 1000);
-  return null;
+  const d = new Date(date);
+  return isNaN(d.getTime()) ? null : d;
 };
 
 /** Định dạng ngày tháng theo chuẩn vi-VN. */

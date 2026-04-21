@@ -10,8 +10,10 @@ export const getUserData = async (userId: string): Promise<UserData | null> => {
       return userDoc.data() as UserData;
     }
     return null;
-  } catch (error) {
-    console.error('Failed to get user data:', error);
+  } catch (error: any) {
+    if (error?.code !== 'permission-denied') {
+      console.error('Failed to get user data:', error);
+    }
     return null;
   }
 };

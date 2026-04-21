@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActiveTab } from '../../hooks/useDashboard';
+import { ActiveTab } from '../../hooks/useDashboardFilters';
 
 interface DashboardTabsProps {
   activeTab: ActiveTab;

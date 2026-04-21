@@ -53,8 +53,10 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
       } else {
         set({ previouslyRecommendedTitles: new Set<string>() });
       }
-    } catch (e) {
-      console.error('Failed to initialize user data from Firestore:', e);
+    } catch (e: any) {
+      if (e?.code !== 'permission-denied') {
+        console.error('Failed to initialize user data from Firestore:', e);
+      }
       set({ previouslyRecommendedTitles: new Set<string>() });
     }
   },

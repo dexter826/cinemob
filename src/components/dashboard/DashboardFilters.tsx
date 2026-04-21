@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
 import CustomDropdown from '../ui/CustomDropdown';
-import { SortOption, SortOrder } from '../../hooks/useDashboard';
+import { SortOption, SortOrder } from '../../hooks/useDashboardFilters';
 
 interface DashboardFiltersProps {
   searchQuery: string;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Footer from './Footer';
+import MobileBottomNav from './MobileBottomNav';
 import ScrollToTop from '../ui/ScrollToTop';
 import useInitialLoadStore from '../../stores/initialLoadStore';
 
@@ -12,17 +13,14 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, appReady = true }) => {
   const { isInitialLoadComplete, isPageLoading } = useInitialLoadStore();
   
-  // Footer chỉ hiển thị khi:
-  // 1. App đã ready (không còn SplashScreen)
-  // 2. Initial load complete
-  // 3. KHÔNG có page nào đang loading
   const showFooter = appReady && isInitialLoadComplete && !isPageLoading;
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
-      <div className="flex-1">
+      <div className="flex-1 pb-20 md:pb-0">
         {children}
       </div>
+      
       <AnimatePresence>
         {showFooter && (
           <motion.div
@@ -34,9 +32,12 @@ const Layout: React.FC<LayoutProps> = ({ children, appReady = true }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <MobileBottomNav />
       <ScrollToTop />
     </div>
   );
 };
 
 export default Layout;
+

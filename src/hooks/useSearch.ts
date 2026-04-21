@@ -1,17 +1,13 @@
-import { useState, useEffect } from 'react';
-import { 
-  searchMovies, 
-  getTrendingMovies, 
-  getCountries, 
-  getDiscoverMovies, 
-  searchPeople 
-} from '../services/tmdb';
-import { TMDBMovieResult, TMDBPerson } from '../types';
+import { useState, useEffect, useMemo } from 'react';
+import { getCountries } from '../services/tmdb';
 import useMovieStore from '../stores/movieStore';
 import useRecommendationsStore from '../stores/recommendationsStore';
 import useAddMovieStore from '../stores/addMovieStore';
+import { useSearchPeople } from './useSearchPeople';
+import { useSearchTMDB } from './useSearchTMDB';
+import { TMDBMovieResult } from '../types';
 
-/** Logic tìm kiếm phim và người nổi tiếng. */
+/** Hook điều phối chính cho trang Tìm kiếm. */
 export const useSearch = (user: any) => {
   const { openAddModal } = useAddMovieStore();
   const { 
@@ -22,29 +18,29 @@ export const useSearch = (user: any) => {
     historyMovies 
   } = useRecommendationsStore();
 
+  const { movies: savedMovies } = useMovieStore();
+
   const [query, setQuery] = useState('');
   const [searchTab, setSearchTab] = useState<'movies' | 'people'>('movies');
-  const [results, setResults] = useState<TMDBMovieResult[]>([]);
-  const [peopleResults, setPeopleResults] = useState<TMDBPerson[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [searchPage, setSearchPage] = useState(1);
-  const [totalSearchPages, setTotalSearchPages] = useState(1);
-
-  const [discoverMovies, setDiscoverMovies] = useState<TMDBMovieResult[]>([]);
-  const [discoverPage, setDiscoverPage] = useState(1);
-  const [totalDiscoverPages, setTotalDiscoverPages] = useState(1);
-  const [discoverLoading, setDiscoverLoading] = useState(false);
-
-  const { movies: savedMovies } = useMovieStore();
   const [suggestAnimation, setSuggestAnimation] = useState(null);
   const [countries, setCountries] = useState<{ iso_3166_1: string, english_name: string, native_name: string }[]>([]);
 
+  // Filters state
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
   const [filterYear, setFilterYear] = useState<string>('');
   const [filterCountry, setFilterCountry] = useState<string>('');
   const [filterRating, setFilterRating] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('popularity.desc');
+
+  const filters = useMemo(() => ({
+    year: filterYear,
+    country: filterCountry,
+    rating: filterRating,
+    sortBy,
+    type: filterType
+  }), [filterYear, filterCountry, filterRating, sortBy, filterType]);
 
   useEffect(() => {
     fetch('/data/loading_suggest.json')
@@ -52,17 +48,10 @@ export const useSearch = (user: any) => {
       .then(data => setSuggestAnimation(data))
       .catch(err => console.error('Error loading animation:', err));
 
-    const fetchStaticData = async () => {
-      try {
-        const countriesList = await getCountries();
-        setCountries(countriesList);
-      } catch (error) {
-        console.error("Error fetching static data:", error);
-      } finally {
-        setInitialLoading(false);
-      }
-    };
-    fetchStaticData();
+    getCountries().then(data => {
+      setCountries(data);
+      setInitialLoading(false);
+    }).catch(() => setInitialLoading(false));
   }, []);
 
   useEffect(() => {
@@ -71,78 +60,29 @@ export const useSearch = (user: any) => {
     }
   }, [user, aiRecommendations.length, isAiLoading, refreshRecommendations]);
 
-  const isSearchMode = query.trim().length > 2;
-
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (query.trim().length > 2) {
-        setLoading(true);
-        if (searchTab === 'movies') {
-          const { results: data, totalPages } = await searchMovies(query, searchPage, filterYear);
-          setResults(data);
-          setTotalSearchPages(totalPages);
-        } else {
-          const { results: data, totalPages } = await searchPeople(query, searchPage);
-          setPeopleResults(data);
-          setTotalSearchPages(totalPages);
-        }
-        setLoading(false);
-      } else {
-        setResults([]);
-        setPeopleResults([]);
-      }
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [query, searchPage, searchTab, filterYear]);
+    setCurrentPage(1);
+  }, [query, filterType, filterYear, filterCountry, filterRating, sortBy]);
 
-  useEffect(() => {
-    setDiscoverPage(1);
-  }, [filterYear, filterCountry, filterRating, sortBy, filterType]);
+  // Sub-hooks
+  const { results, totalSearchPages, isSearchLoading, discoverMovies, totalDiscoverPages, isDiscoverLoading, isSearchMode } = useSearchTMDB(query, currentPage, filters);
 
-  useEffect(() => {
-    if (isSearchMode) return;
-
-    const hasFilters = filterYear || filterCountry || filterRating || sortBy !== 'popularity.desc' || filterType !== 'all';
-    
-    if (hasFilters) {
-      const timer = setTimeout(async () => {
-        setDiscoverLoading(true);
-        const { results, totalPages } = await getDiscoverMovies({
-          page: discoverPage,
-          year: filterYear,
-          country: filterCountry,
-          rating: filterRating,
-          sortBy: sortBy,
-          type: filterType,
-        });
-        setDiscoverMovies(results);
-        setTotalDiscoverPages(totalPages);
-        setDiscoverLoading(false);
-      }, 300);
-      return () => clearTimeout(timer);
-    } else {
-      setDiscoverMovies([]);
-      setDiscoverLoading(false);
-    }
-  }, [discoverPage, filterYear, filterCountry, filterRating, sortBy, filterType, isSearchMode]);
-
-  useEffect(() => {
-    setSearchPage(1);
-  }, [query]);
+  const { peopleResults, totalPeoplePages, isPeopleLoading } = useSearchPeople(query, currentPage);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
 
-/** Lọc kết quả cục bộ. */
-  const filteredResults = displayMovies.filter(movie => {
-    if (isSearchMode) {
-      if (filterType !== 'all' && movie.media_type !== filterType) return false;
-      if (filterCountry && movie.origin_country && !movie.origin_country.includes(filterCountry)) return false;
-      if (filterRating && (movie.vote_average || 0) < Number(filterRating)) return false;
-    }
-    return true;
-  });
+  /** Lọc kết quả cục bộ nếu cần. */
+  const filteredResults = useMemo(() => {
+    return displayMovies.filter(movie => {
+      if (isSearchMode) {
+        if (filterType !== 'all' && movie.media_type !== filterType) return false;
+        if (filterCountry && movie.origin_country && !movie.origin_country.includes(filterCountry)) return false;
+        if (filterRating && (movie.vote_average || 0) < Number(filterRating)) return false;
+      }
+      return true;
+    });
+  }, [displayMovies, isSearchMode, filterType, filterCountry, filterRating]);
 
-/** Mở modal thêm phim. */
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     openAddModal({
       movie: movie,
@@ -152,13 +92,11 @@ export const useSearch = (user: any) => {
     });
   };
 
-/** Lấy trạng thái phim. */
-  const getMovieStatus = (movieId: number): 'history' | 'watchlist' | null => {
+  const getMovieStatus = (movieId: number) => {
     const movie = savedMovies.find(m => m.id === movieId);
     return movie ? movie.status || null : null;
   };
 
-/** Reset tìm kiếm và bộ lọc. */
   const handleClear = () => {
     setQuery('');
     setFilterType('all');
@@ -166,43 +104,22 @@ export const useSearch = (user: any) => {
     setFilterCountry('');
     setFilterRating('');
     setSortBy('popularity.desc');
-    setResults([]);
-    setDiscoverMovies([]);
-    setPeopleResults([]);
-    setSearchPage(1);
-    setDiscoverPage(1);
-    setLoading(false);
-    setDiscoverLoading(false);
-  };
-
-/** Xử lý tìm kiếm thủ công. */
-  const handleSearch = async () => {
-    if (query.trim().length > 2) {
-      setLoading(true);
-      if (searchTab === 'movies') {
-        const { results: data, totalPages } = await searchMovies(query, searchPage, filterYear);
-        setResults(data);
-        setTotalSearchPages(totalPages);
-      } else {
-        const { results: data, totalPages } = await searchPeople(query, searchPage);
-        setPeopleResults(data);
-        setTotalSearchPages(totalPages);
-      }
-      setLoading(false);
-    }
+    setCurrentPage(1);
   };
 
   return {
     query, setQuery,
     searchTab, setSearchTab,
-    results, peopleResults,
-    loading, initialLoading,
-    currentPage: isSearchMode ? searchPage : discoverPage,
-    totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
-    setCurrentPage: isSearchMode ? setSearchPage : setDiscoverPage,
-    discoverMovies, discoverLoading,
+    peopleResults,
+    initialLoading,
+    currentPage,
+    totalPages: searchTab === 'movies' 
+      ? (isSearchMode ? totalSearchPages : totalDiscoverPages)
+      : totalPeoplePages,
+    setCurrentPage,
+    discoverMovies,
     aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations,
-    historyMovies, suggestAnimation, countries,
+    suggestAnimation, countries,
     filterType, setFilterType,
     filterYear, setFilterYear,
     filterCountry, setFilterCountry,
@@ -210,9 +127,9 @@ export const useSearch = (user: any) => {
     sortBy, setSortBy,
     filteredResults,
     handleSelectMovie, getMovieStatus,
-    handleClear, handleSearch,
-    isSearchMode,
-    isLoading: isSearchMode ? loading : discoverLoading,
+    handleClear,
+    handleSearch: () => {}, // Handled by effects
+    isLoading: searchTab === 'movies' ? (isSearchMode ? isSearchLoading : isDiscoverLoading) : isPeopleLoading,
     watchedMoviesCount: historyMovies.filter(m => (m.status || 'history') === 'history').length
   };
 };
