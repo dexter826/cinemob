@@ -2,6 +2,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(() => {
   return {
@@ -11,10 +12,10 @@ export default defineConfig(() => {
     },
     envPrefix: ['VITE_', 'REACT_APP_'],
     plugins: [
+      tailwindcss(),
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        // Use injectManifest strategy to have custom SW with push support
         strategies: 'injectManifest',
         srcDir: 'src',
         filename: 'sw.ts',

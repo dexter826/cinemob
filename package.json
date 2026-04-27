@@ -23,7 +23,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/vite": "^4.2.4",
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.6",
     "@vitejs/plugin-react": "^5.0.0",
