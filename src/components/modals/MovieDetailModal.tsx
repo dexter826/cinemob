@@ -155,7 +155,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
         </button>
 
         {/* Poster Section */}
-        <div className="w-full md:w-1/3 h-64 md:h-auto relative shrink-0">
+        <div className="w-full md:w-2/5 h-64 md:h-auto relative shrink-0">
           <img
             src={posterUrl}
             alt={title}

@@ -31,8 +31,8 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
       </div>
       <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-green-500/10 rounded-lg">
-            <Bell size={20} className="text-green-500" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Bell size={20} className="text-primary" />
           </div>
           <div>
             <p className="text-2xl font-bold text-text-main">{upcomingEpisodesCount}</p>
@@ -42,8 +42,8 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
       </div>
       <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-orange-500/10 rounded-lg">
-            <Calendar size={20} className="text-orange-500" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Calendar size={20} className="text-primary" />
           </div>
           <div>
             <p className="text-2xl font-bold text-text-main">{todayEpisodesCount}</p>
@@ -53,8 +53,8 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
       </div>
       <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-500/10 rounded-lg">
-            <Clock size={20} className="text-purple-500" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Clock size={20} className="text-primary" />
           </div>
           <div>
             <p className="text-2xl font-bold text-text-main">{thisWeekEpisodesCount}</p>

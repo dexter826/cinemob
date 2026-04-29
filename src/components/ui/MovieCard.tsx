@@ -22,7 +22,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
     <motion.div
       onClick={() => onClick(movie)}
       className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl"
-      whileHover={{ y: -4 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
@@ -31,35 +30,17 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         <img
           src={imageUrl}
           alt={getDisplayTitle(movie)}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
         />
         
-        {/* Progress Bar (TV Show Only) */}
-        {movie.status !== 'watchlist' && movie.media_type === 'tv' && (
-          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/40 z-20 overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ 
-                width: movie.progress
-                  ? movie.progress.is_completed
-                    ? '100%'
-                    : movie.total_episodes && movie.total_episodes > 0
-                      ? `${Math.min(100, Math.max(0, (movie.progress.watched_episodes / movie.total_episodes) * 100))}%`
-                      : '100%'
-                  : '100%'
-              }}
-              className="h-full bg-primary"
-              transition={{ duration: 1, ease: "easeOut" }}
-            />
-          </div>
-        )}
+
 
         {/* Action Buttons (Top Right) */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-30">
           <button
             onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
-            className="p-2 bg-red-500/90 text-white rounded-xl backdrop-blur-md hover:bg-red-600 transition-colors shadow-lg"
+            className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-red-400 hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
             title="Xóa phim"
           >
             <Trash2 size={16} />
@@ -68,7 +49,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {!onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-              className="p-2 bg-blue-500/90 text-white rounded-xl backdrop-blur-md hover:bg-blue-600 transition-colors shadow-lg"
+              className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-primary hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
               title="Chỉnh sửa"
             >
               <Edit2 size={16} />
@@ -78,7 +59,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onMarkAsWatched(movie); }}
-              className="p-2 bg-green-500/90 text-white rounded-xl backdrop-blur-md hover:bg-green-600 transition-colors shadow-lg"
+              className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-green-400 hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
               title="Đánh dấu đã xem"
             >
               <CheckCircle size={16} />
@@ -109,43 +90,63 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
 
       {/* Info Section */}
       <div className="p-3.5 flex flex-col flex-1">
-        <h3 className="font-bold text-sm md:text-base leading-tight text-text-main line-clamp-2 min-h-10 mb-2 group-hover:text-primary transition-colors">
-          {getDisplayTitle(movie)}
-        </h3>
-
-        <div className="mt-auto space-y-2">
-          {/* Progress / Episodes Info */}
-          {movie.media_type === 'tv' && movie.progress && (
-            <div className="flex items-center text-[11px] text-text-muted font-medium bg-black/5 dark:bg-white/5 px-2 py-1 rounded-lg">
-              <Tv size={12} className="mr-1.5 text-primary" />
-              <span className="truncate">
-                {movie.progress.is_completed 
-                  ? 'Hoàn thành' 
-                  : `S${movie.progress.current_season} E${movie.progress.current_episode} • ${movie.progress.watched_episodes}/${movie.total_episodes || '?'} tập`}
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2.5 text-[11px] text-text-muted">
-              <div className="flex items-center">
-                <Calendar size={12} className="mr-1 text-secondary" />
-                <span>{formatMovieDate(movie.watched_at)}</span>
-              </div>
-              {movie.runtime && (
-                <div className="flex items-center">
-                  <Clock size={12} className="mr-1 text-primary" />
-                  <span>{movie.runtime}m</span>
-                </div>
-              )}
-            </div>
+        <div className="min-h-10 mb-2">
+          {(() => {
+            const isVN = movie.country && (movie.country.includes('Vietnam') || movie.country.includes('VN'));
+            const mainTitle = isVN && movie.title_vi ? movie.title_vi : (movie.title_vi || movie.title);
+            const subTitle = (!isVN && movie.title_vi && movie.title_vi !== movie.title) ? movie.title : null;
             
-            {movie.review && (
-              <div className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary" title="Có đánh giá">
-                <MessageCircle size={12} />
-              </div>
+            return (
+              <>
+                <h3 className="font-bold text-sm md:text-base leading-tight text-text-main truncate group-hover:text-primary transition-colors" title={mainTitle}>
+                  {mainTitle}
+                </h3>
+                {subTitle && (
+                  <p className="text-xs text-text-muted truncate mt-0.5" title={subTitle}>
+                    {subTitle}
+                  </p>
+                )}
+              </>
+            );
+          })()}
+        </div>
+
+        <div className="mt-auto pt-2.5 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[11px] text-text-muted">
+          <div className="flex items-center flex-wrap gap-x-1.5 gap-y-1">
+            {movie.media_type === 'tv' ? (
+              <>
+                {movie.seasons && movie.seasons > 0 && (
+                  <>
+                    <span>{movie.seasons} mùa</span>
+                    <span>•</span>
+                  </>
+                )}
+                {movie.progress && !movie.progress.is_completed && (
+                  <>
+                    <span>{`Đang xem S${movie.progress.current_season}E${movie.progress.current_episode}`}</span>
+                    <span>•</span>
+                  </>
+                )}
+                <span>Xem ngày {formatMovieDate(movie.watched_at)}</span>
+              </>
+            ) : (
+              <>
+                {movie.runtime && (
+                  <>
+                    <span>{movie.runtime} phút</span>
+                    <span>•</span>
+                  </>
+                )}
+                <span>Xem ngày {formatMovieDate(movie.watched_at)}</span>
+              </>
             )}
           </div>
+          
+          {movie.review && (
+            <div className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0" title="Có đánh giá">
+              <MessageCircle size={12} />
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

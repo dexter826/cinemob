@@ -275,24 +275,13 @@ const AlbumDetailPage: React.FC = () => {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {albumMovies.map(movie => (
-                <div key={movie.docId} className="relative">
-                  <MovieCard
-                    movie={movie}
-                    onClick={() => { }}
-                    onEdit={() => { }}
-                    onDelete={() => {
-                      if (!movie.docId) return;
-                      handleRemoveMovie(movie);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveMovie(movie)}
-                    className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 text-red-400 hover:bg-red-500 hover:text-white transition-colors z-20"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
+                <MovieCard
+                  key={movie.docId}
+                  movie={movie}
+                  onClick={() => { }}
+                  onEdit={() => { }}
+                  onDelete={() => handleRemoveMovie(movie)}
+                />
               ))}
             </div>
           )}

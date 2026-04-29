@@ -9,6 +9,8 @@ import TVProgressSection from './add-movie/TVProgressSection';
 import AlbumSection from './add-movie/AlbumSection';
 import MovieFormFields from './add-movie/MovieFormFields';
 import PosterPreview from './add-movie/PosterPreview';
+import CustomDatePicker from '../ui/CustomDatePicker';
+import CustomTimePicker from '../ui/CustomTimePicker';
 
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
@@ -19,7 +21,7 @@ const AddMovieModal: React.FC = () => {
     formData, setFormData,
     status, setStatus,
     manualMediaType, setManualMediaType,
-    isSubmitting, isLoadingDetails, movieExists,
+    isDirty, isSubmitting, isLoadingDetails, movieExists,
     ratingError, setRatingError,
     hoverRating, setHoverRating,
     isAnimating,
@@ -109,6 +111,27 @@ const AddMovieModal: React.FC = () => {
                         />
                       )}
 
+                      {status === 'history' && (
+                        <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Ngày xem</label>
+                            <CustomDatePicker
+                              value={formData.date}
+                              onChange={(val) => setFormData({ ...formData, date: val })}
+                              placeholder="Chọn ngày xem..."
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Giờ xem</label>
+                            <CustomTimePicker
+                              value={formData.time}
+                              onChange={(val) => setFormData({ ...formData, time: val })}
+                              placeholder="Chọn giờ xem..."
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       <div className="space-y-1.5">
                         <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề</label>
                         <input
@@ -185,8 +208,8 @@ const AddMovieModal: React.FC = () => {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting || (movieExists && !initialData?.movieToEdit)}
-                className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:cursor-not-allowed shadow-lg shadow-primary/20 cursor-pointer"
+                disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
+                className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                 {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}

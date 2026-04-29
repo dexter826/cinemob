@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from '../components/providers/AuthProvider';
 import useAddMovieStore from '../stores/addMovieStore';
 import useAlertStore from '../stores/alertStore';
@@ -210,8 +210,43 @@ export const useAddMovieForm = () => {
     } catch (error) { showToast("Có lỗi xảy ra", "error"); } finally { setIsSubmitting(false); }
   };
 
+  const isDirty = useMemo(() => {
+    if (!initialData?.movieToEdit) return true;
+    
+    const m = initialData.movieToEdit;
+    const isBasicDirty = 
+      formData.title !== m.title ||
+      formData.title_vi !== (m.title_vi || '') ||
+      formData.runtime !== m.runtime.toString() ||
+      formData.seasons !== (m.seasons ? m.seasons.toString() : '') ||
+      formData.rating !== (m.rating || 0) ||
+      formData.review !== (m.review || '') ||
+      formData.tagline !== (m.tagline || '') ||
+      formData.genres !== (m.genres || '') ||
+      formData.releaseDate !== (m.release_date || '') ||
+      formData.country !== (m.country || '') ||
+      formData.content !== (m.content || '') ||
+      status !== (m.status || 'history');
+
+    const d = m.watched_at instanceof Object && 'toDate' in m.watched_at ? m.watched_at.toDate() : new Date(m.watched_at as any);
+    const origDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const origTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    const isTimeDirty = status === 'history' && (formData.date !== origDate || formData.time !== origTime);
+
+    let isProgressDirty = false;
+    if (isTVSeries && m.progress) {
+      isProgressDirty = 
+        tvProgress.currentSeason !== m.progress.current_season ||
+        tvProgress.currentEpisode !== m.progress.current_episode ||
+        tvProgress.isCompleted !== m.progress.is_completed;
+    }
+
+    return isBasicDirty || isTimeDirty || isProgressDirty;
+  }, [formData, status, initialData, isTVSeries, tvProgress.currentSeason, tvProgress.currentEpisode, tvProgress.isCompleted]);
+
   return {
     isOpen, initialData, closeAddModal, formData, setFormData, status, setStatus, manualMediaType, setManualMediaType,
+    isDirty,
     isSubmitting, isLoadingDetails: isLoadingDetails || tvProgress.isLoading, movieExists, ratingError, setRatingError,
     hoverRating, setHoverRating, isAnimating,
     currentSeason: tvProgress.currentSeason, setCurrentSeason: tvProgress.setCurrentSeason,
