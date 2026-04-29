@@ -11,35 +11,7 @@ import useMovieStore from '../stores/movieStore';
 
 const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 
-const GENRE_TRANSLATIONS: Record<string, string> = {
-  'Action': 'Hành động',
-  'Adventure': 'Phiêu lưu',
-  'Animation': 'Hoạt hình',
-  'Comedy': 'Hài',
-  'Crime': 'Tội phạm',
-  'Documentary': 'Tài liệu',
-  'Drama': 'Chính kịch',
-  'Family': 'Gia đình',
-  'Fantasy': 'Phiêu lưu kỳ thú',
-  'History': 'Lịch sử',
-  'Horror': 'Kinh dị',
-  'Music': 'Âm nhạc',
-  'Mystery': 'Bí ẩn',
-  'Romance': 'Lãng mạn',
-  'Science Fiction': 'Khoa học viễn tưởng',
-  'TV Movie': 'Phim truyền hình',
-  'Thriller': 'Gay cấn',
-  'War': 'Chiến tranh',
-  'Western': 'Miền Tây',
-  'Sci-Fi & Fantasy': 'Khoa học viễn tưởng',
-  'Action & Adventure': 'Hành động & Phiêu lưu',
-  'War & Politics': 'Chiến tranh & Chính trị',
-  'Soap': 'Phím dài tập',
-  'Talk': 'Talk show',
-  'News': 'Tin tức',
-  'Reality': 'Thực tế',
-  'Kids': 'Thiếu nhi'
-};
+import { GENRE_TRANSLATIONS } from '../constants/genres';
 
 const StatsPage: React.FC = () => {
   const { user } = useAuth();

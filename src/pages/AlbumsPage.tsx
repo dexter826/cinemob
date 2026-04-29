@@ -9,6 +9,7 @@ import useToastStore from '../stores/toastStore';
 import useAlertStore from '../stores/alertStore';
 import { useNavigate } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
+import { getTMDBImageUrl } from '../utils/movieUtils';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
@@ -129,7 +130,7 @@ const AlbumsPage: React.FC = () => {
                 <div className="relative h-40 sm:h-44 md:h-48 w-full overflow-hidden">
                   {albumCoverMovies[album.docId || '']?.poster_path ? (
                     <img
-                      src={`https://image.tmdb.org/t/p/w500${albumCoverMovies[album.docId || '']!.poster_path}`}
+                      src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path)}
                       alt={albumCoverMovies[album.docId || '']!.title}
                       className="h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"

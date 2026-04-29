@@ -1,6 +1,6 @@
 import React from 'react';
 import { TMDBPerson } from '../../types';
-import { TMDB_IMAGE_BASE_URL } from '../../constants';
+import { getTMDBImageUrl } from '../../utils/movieUtils';
 import { User } from 'lucide-react';
 
 interface PersonCardProps {
@@ -15,18 +15,12 @@ const PersonCard: React.FC<PersonCardProps> = ({ person, onClick }) => {
       className="group relative bg-surface rounded-xl overflow-hidden border border-black/5 dark:border-white/5 cursor-pointer hover:shadow-lg transition-all"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden">
-        {person.profile_path ? (
-          <img
-            src={`${TMDB_IMAGE_BASE_URL}${person.profile_path}`}
-            alt={person.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-text-muted">
-            <User size={32} />
-          </div>
-        )}
+        <img
+          src={getTMDBImageUrl(person.profile_path, 'h632')}
+          alt={person.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+        />
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       <div className="p-3">

@@ -29,21 +29,8 @@ const Dashboard: React.FC = () => {
     setCurrentPage,
     activeTab,
     setActiveTab,
-    sortBy,
-    setSortBy,
-    sortOrder,
-    searchQuery,
-    setSearchQuery,
-    filterRating,
-    setFilterRating,
-    filterYear,
-    setFilterYear,
-    filterCountry,
-    setFilterCountry,
-    filterContentType,
-    setFilterContentType,
-    filterWatchStatus,
-    setFilterWatchStatus,
+    filters,
+    updateFilter,
     showFilters,
     setShowFilters,
     filterRef,
@@ -117,25 +104,12 @@ const Dashboard: React.FC = () => {
 
             {movies.length > 0 && (
               <DashboardFilters 
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
+                filters={filters}
+                updateFilter={updateFilter}
                 showFilters={showFilters}
                 setShowFilters={setShowFilters}
                 filterRef={filterRef}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                sortOrder={sortOrder}
                 toggleSortOrder={toggleSortOrder}
-                filterRating={filterRating}
-                setFilterRating={setFilterRating}
-                filterYear={filterYear}
-                setFilterYear={setFilterYear}
-                filterCountry={filterCountry}
-                setFilterCountry={setFilterCountry}
-                filterContentType={filterContentType}
-                setFilterContentType={setFilterContentType}
-                filterWatchStatus={filterWatchStatus}
-                setFilterWatchStatus={setFilterWatchStatus}
                 activeTab={activeTab}
                 availableYears={availableYears}
                 availableCountries={availableCountries}
@@ -151,21 +125,21 @@ const Dashboard: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-lg font-medium text-text-main">
-                  {searchQuery
+                  {filters.searchQuery
                     ? "Không tìm thấy nội dung phù hợp"
                     : activeTab === 'history'
                       ? "Chưa có nội dung nào trong lịch sử"
                       : "Danh sách Sẽ xem đang trống"}
                 </h3>
                 <p className="text-text-muted max-w-xs mx-auto">
-                  {searchQuery
+                  {filters.searchQuery
                     ? "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn."
                     : activeTab === 'history'
                       ? "Bắt đầu xây dựng lịch sử điện ảnh cá nhân của bạn bằng cách thêm bộ phim hoặc series đầu tiên."
                       : "Tìm kiếm và thêm những phim bạn muốn xem sau."}
                 </p>
               </div>
-              {!searchQuery && (
+              {!filters.searchQuery && (
                 <button
                   onClick={() => navigate('/search')}
                   className="px-6 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-text-main rounded-full font-medium transition-colors"

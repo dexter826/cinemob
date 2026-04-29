@@ -1,7 +1,8 @@
 import React from 'react';
 import { Bell, Info, Clock } from 'lucide-react';
 import { UpcomingEpisode } from '../../types';
-import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
+import { PLACEHOLDER_IMAGE } from '../../constants';
+import { getTMDBImageUrl } from '../../utils/movieUtils';
 
 interface EpisodeListProps {
   viewMode: 'calendar' | 'list';
@@ -94,10 +95,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                       className="flex gap-3 p-3 bg-background rounded-xl hover:bg-primary/5 transition-all duration-300 cursor-pointer border border-black/5 dark:border-white/5 relative group items-center"
                     >
                       <img
-                        src={ep.posterPath 
-                          ? `${TMDB_IMAGE_BASE_URL}${ep.posterPath}`
-                          : PLACEHOLDER_IMAGE
-                        }
+                        src={getTMDBImageUrl(ep.posterPath)}
                         alt={ep.seriesName}
                         className="w-12 h-16 object-cover rounded-lg shadow-md"
                       />

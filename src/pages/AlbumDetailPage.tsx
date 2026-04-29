@@ -12,6 +12,8 @@ import MovieCard from '../components/ui/MovieCard';
 import Pagination from '../components/ui/Pagination';
 import { Timestamp } from 'firebase/firestore';
 import useMovieStore from '../stores/movieStore';
+import { formatMovieDate } from '../utils/movieUtils';
+import useMovieDetailStore from '../stores/movieDetailStore';
 
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -21,6 +23,7 @@ const AlbumDetailPage: React.FC = () => {
   const { showAlert } = useAlertStore();
 
   const { movies } = useMovieStore();
+  const { openDetailModal } = useMovieDetailStore();
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -144,16 +147,6 @@ const AlbumDetailPage: React.FC = () => {
     });
   };
 
-  const formatDate = (value: Timestamp | Date | undefined) => {
-    if (!value) return '';
-    const d = value instanceof Timestamp ? value.toDate() : value;
-    return new Intl.DateTimeFormat('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(d);
-  };
-
   if (loading) {
     return <Loading />;
   }
@@ -201,7 +194,7 @@ const AlbumDetailPage: React.FC = () => {
                 <h1 className="text-xl md:text-2xl font-bold truncate">{album.name}</h1>
               </div>
               <p className="text-xs text-text-muted mt-1">
-                {album.movieDocIds.length} phim · Tạo ngày {formatDate(album.createdAt)}
+                {album.movieDocIds.length} phim · Tạo ngày {formatMovieDate(album.createdAt)}
               </p>
             </div>
           </div>
@@ -278,8 +271,8 @@ const AlbumDetailPage: React.FC = () => {
                 <MovieCard
                   key={movie.docId}
                   movie={movie}
-                  onClick={() => { }}
-                  onEdit={() => { }}
+                  onClick={openDetailModal}
+                  onEdit={() => {}}
                   onDelete={() => handleRemoveMovie(movie)}
                 />
               ))}
@@ -328,9 +321,9 @@ const AlbumDetailPage: React.FC = () => {
                       >
                         <MovieCard
                           movie={movie}
-                          onClick={() => { }}
-                          onEdit={() => { }}
-                          onDelete={() => { }}
+                          onClick={openDetailModal}
+                          onEdit={() => {}}
+                          onDelete={() => {}}
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-xl flex items-center justify-center">
                           <PlusCircle

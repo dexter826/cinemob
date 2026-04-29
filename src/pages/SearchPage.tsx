@@ -11,7 +11,8 @@ import SearchResults from '../components/search/SearchResults';
 const SearchPage: React.FC = () => {
   const { user } = useAuth();
   const {
-    query, setQuery,
+    filters,
+    updateFilter,
     initialLoading,
     currentPage,
     totalPages,
@@ -19,12 +20,9 @@ const SearchPage: React.FC = () => {
     discoverMovies,
     aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations,
     suggestAnimation,
-    filterType, setFilterType,
-    filterYear, setFilterYear,
-    sortBy, setSortBy,
     filteredResults,
     handleSelectMovie, getMovieStatus,
-    handleClear, handleSearch,
+    handleClear,
     isLoading,
     watchedMoviesCount
   } = useSearch(user);
@@ -43,21 +41,15 @@ const SearchPage: React.FC = () => {
         />
 
         <SearchFilters 
-          query={query}
-          setQuery={setQuery}
-          handleSearch={handleSearch}
+          filters={filters}
+          updateFilter={updateFilter}
+          handleSearch={() => {}}
           handleClear={handleClear}
-          filterType={filterType}
-          setFilterType={setFilterType}
-          filterYear={filterYear}
-          setFilterYear={setFilterYear}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
         />
 
         <SearchResults 
           isLoading={isLoading}
-          query={query}
+          query={filters.query}
           totalPages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}

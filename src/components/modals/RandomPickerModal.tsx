@@ -6,7 +6,8 @@ import { Howl } from 'howler';
 import { useAuth } from '../providers/AuthProvider';
 import { getTrendingMovies } from '../../services/tmdb';
 import { Movie, TMDBMovieResult } from '../../types';
-import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
+import { PLACEHOLDER_IMAGE } from '../../constants';
+import { getTMDBImageUrl } from '../../utils/movieUtils';
 import useAddMovieStore from '../../stores/addMovieStore';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import { Timestamp } from 'firebase/firestore';
@@ -219,14 +220,10 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     if (!currentItem) return PLACEHOLDER_IMAGE;
     if (poolType === 'watchlist') {
       const m = currentItem as Movie;
-      if (!m.poster_path) return PLACEHOLDER_IMAGE;
-      return m.source === 'tmdb'
-        ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}`
-        : m.poster_path;
+      return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
     }
     const m = currentItem as TMDBMovieResult;
-    if (!m.poster_path) return PLACEHOLDER_IMAGE;
-    return `${TMDB_IMAGE_BASE_URL}${m.poster_path}`;
+    return getTMDBImageUrl(m.poster_path);
   };
 
   return (
@@ -315,11 +312,10 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         const movie = activePool[leftIndex];
                         if (poolType === 'watchlist') {
                           const m = movie as Movie;
-                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
-                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
                         }
                         const m = movie as TMDBMovieResult;
-                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                        return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Left movie"
                       className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
@@ -337,11 +333,10 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         const movie = activePool[currentIndex];
                         if (poolType === 'watchlist') {
                           const m = movie as Movie;
-                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
-                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
                         }
                         const m = movie as TMDBMovieResult;
-                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                        return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Center movie"
                       className="w-full h-full object-cover transition-all duration-200"
@@ -364,11 +359,10 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         const movie = activePool[rightIndex];
                         if (poolType === 'watchlist') {
                           const m = movie as Movie;
-                          if (!m.poster_path) return PLACEHOLDER_IMAGE;
-                          return m.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : m.poster_path;
+                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
                         }
                         const m = movie as TMDBMovieResult;
-                        return m.poster_path ? `${TMDB_IMAGE_BASE_URL}${m.poster_path}` : PLACEHOLDER_IMAGE;
+                        return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Right movie"
                       className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}

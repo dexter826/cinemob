@@ -6,21 +6,38 @@ export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
 export type ActiveTab = 'history' | 'watchlist';
 
+interface FilterState {
+  sortBy: SortOption;
+  sortOrder: SortOrder;
+  searchQuery: string;
+  rating: number | null;
+  year: number | null;
+  country: string;
+  contentType: 'all' | 'movie' | 'tv';
+  watchStatus: 'all' | 'watching' | 'completed';
+}
+
+const INITIAL_FILTER_STATE: FilterState = {
+  sortBy: 'date',
+  sortOrder: 'desc',
+  searchQuery: '',
+  rating: null,
+  year: null,
+  country: '',
+  contentType: 'all',
+  watchStatus: 'all',
+};
+
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
-
-  const [sortBy, setSortBy] = useState<SortOption>('date');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterRating, setFilterRating] = useState<number | null>(null);
-  const [filterYear, setFilterYear] = useState<number | null>(null);
-  const [filterCountry, setFilterCountry] = useState<string>('');
-  const [filterContentType, setFilterContentType] = useState<'all' | 'movie' | 'tv'>('all');
-  const [filterWatchStatus, setFilterWatchStatus] = useState<'all' | 'watching' | 'completed'>('all');
-
+  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTER_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 18;
+
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -28,125 +45,85 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
         setShowFilters(false);
       }
     };
-
-    if (showFilters) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    if (showFilters) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showFilters]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, filterRating, filterYear, filterCountry, filterContentType, filterWatchStatus, sortBy, sortOrder, activeTab]);
+  }, [filters, activeTab]);
 
-  const currentTabMovies = useMemo(() => {
-    return movies.filter(m => {
-      const status = m.status || 'history';
-      return status === activeTab;
-    });
-  }, [movies, activeTab]);
+  const currentTabMovies = useMemo(() => 
+    movies.filter(m => (m.status || 'history') === activeTab),
+  [movies, activeTab]);
 
   const processedMovies = useMemo(() => {
     let result = [...currentTabMovies];
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(movie => 
-        movie.title.toLowerCase().includes(q) || 
-        (movie.title_vi && movie.title_vi.toLowerCase().includes(q))
+    if (filters.searchQuery.trim()) {
+      const q = filters.searchQuery.toLowerCase();
+      result = result.filter(m => 
+        m.title.toLowerCase().includes(q) || 
+        (m.title_vi && m.title_vi.toLowerCase().includes(q))
       );
     }
 
-    if (filterRating !== null) {
-      result = result.filter(movie => (movie.rating || 0) >= filterRating);
+    if (filters.rating !== null) result = result.filter(m => (m.rating || 0) >= (filters.rating || 0));
+    
+    if (filters.year !== null) {
+      result = result.filter(m => normalizeMovieDate(m.watched_at)?.getFullYear() === filters.year);
     }
 
-    if (filterYear !== null) {
-      result = result.filter(movie => {
-        const date = normalizeMovieDate(movie.watched_at);
-        return date && date.getFullYear() === filterYear;
-      });
+    if (filters.country) {
+      const q = filters.country.toLowerCase();
+      result = result.filter(m => m.country?.toLowerCase().includes(q));
     }
 
-    if (filterCountry) {
-      const q = filterCountry.toLowerCase();
-      result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(q));
+    if (filters.contentType !== 'all') {
+      result = result.filter(m => (m.media_type || 'movie') === filters.contentType);
     }
 
-    if (filterContentType !== 'all') {
-      result = result.filter(movie => (movie.media_type || 'movie') === filterContentType);
-    }
-
-    if (activeTab === 'history' && filterWatchStatus !== 'all') {
-      result = result.filter(movie => {
-        if (filterWatchStatus === 'watching') {
-          return movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed;
-        } else if (filterWatchStatus === 'completed') {
-          return movie.media_type === 'movie' || !movie.media_type || (movie.progress && movie.progress.is_completed);
-        }
+    if (activeTab === 'history' && filters.watchStatus !== 'all') {
+      result = result.filter(m => {
+        if (filters.watchStatus === 'watching') return m.media_type === 'tv' && m.progress && !m.progress.is_completed;
+        if (filters.watchStatus === 'completed') return m.media_type === 'movie' || !m.media_type || (m.progress && m.progress.is_completed);
         return true;
       });
     }
 
     result.sort((a, b) => {
-      let comparison = 0;
-      if (sortBy === 'title') {
-        comparison = a.title.localeCompare(b.title);
-      } else {
-        const dateA = normalizeMovieDate(a.watched_at)?.getTime() || 0;
-        const dateB = normalizeMovieDate(b.watched_at)?.getTime() || 0;
-        comparison = dateA - dateB;
+      let comp = 0;
+      if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title);
+      else {
+        const da = normalizeMovieDate(a.watched_at)?.getTime() || 0;
+        const db = normalizeMovieDate(b.watched_at)?.getTime() || 0;
+        comp = da - db;
       }
-      return sortOrder === 'asc' ? comparison : -comparison;
+      return filters.sortOrder === 'asc' ? comp : -comp;
     });
 
     return result;
-  }, [currentTabMovies, searchQuery, filterRating, filterYear, filterCountry, filterContentType, filterWatchStatus, sortBy, sortOrder, activeTab]);
+  }, [currentTabMovies, filters, activeTab]);
 
   const totalPages = Math.ceil(processedMovies.length / moviesPerPage);
   const paginatedMovies = useMemo(() => {
-    const startIndex = (currentPage - 1) * moviesPerPage;
-    return processedMovies.slice(startIndex, startIndex + moviesPerPage);
+    const start = (currentPage - 1) * moviesPerPage;
+    return processedMovies.slice(start, start + moviesPerPage);
   }, [processedMovies, currentPage]);
-
-  const clearFilters = () => {
-    setFilterRating(null);
-    setFilterYear(null);
-    setFilterCountry('');
-    setFilterContentType('all');
-    setFilterWatchStatus('all');
-    setSearchQuery('');
-  };
 
   return {
     showFilters,
     setShowFilters,
     filterRef,
-    sortBy,
-    setSortBy,
-    sortOrder,
-    setSortOrder,
-    searchQuery,
-    setSearchQuery,
-    filterRating,
-    setFilterRating,
-    filterYear,
-    setFilterYear,
-    filterCountry,
-    setFilterCountry,
-    filterContentType,
-    setFilterContentType,
-    filterWatchStatus,
-    setFilterWatchStatus,
+    filters,
+    updateFilter,
     currentPage,
     setCurrentPage,
     totalPages,
     processedMovies: paginatedMovies,
     allProcessedMoviesCount: processedMovies.length,
-    clearFilters,
+    clearFilters: () => setFilters(prev => ({ ...INITIAL_FILTER_STATE, sortBy: prev.sortBy, sortOrder: prev.sortOrder })),
     currentTabMovies,
-    toggleSortOrder: () => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc'),
+    toggleSortOrder: () => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc'),
   };
 };

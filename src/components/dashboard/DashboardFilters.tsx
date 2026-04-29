@@ -4,58 +4,40 @@ import CustomDropdown from '../ui/CustomDropdown';
 import { SortOption, SortOrder } from '../../hooks/useDashboardFilters';
 
 interface DashboardFiltersProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  filters: {
+    sortBy: SortOption;
+    sortOrder: SortOrder;
+    searchQuery: string;
+    rating: number | null;
+    year: number | null;
+    country: string;
+    contentType: 'all' | 'movie' | 'tv';
+    watchStatus: 'all' | 'watching' | 'completed';
+  };
+  updateFilter: (key: any, value: any) => void;
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   filterRef: React.RefObject<HTMLDivElement | null>;
-  sortBy: SortOption;
-  setSortBy: (sort: SortOption) => void;
-  sortOrder: SortOrder;
   toggleSortOrder: () => void;
-  filterRating: number | null;
-  setFilterRating: (rating: number | null) => void;
-  filterYear: number | null;
-  setFilterYear: (year: number | null) => void;
-  filterCountry: string;
-  setFilterCountry: (country: string) => void;
-  filterContentType: 'all' | 'movie' | 'tv';
-  setFilterContentType: (type: 'all' | 'movie' | 'tv') => void;
-  filterWatchStatus: 'all' | 'watching' | 'completed';
-  setFilterWatchStatus: (status: 'all' | 'watching' | 'completed') => void;
   activeTab: 'history' | 'watchlist';
   availableYears: { value: string | number; label: string }[];
   availableCountries: { value: string; label: string }[];
   clearFilters: () => void;
 }
 
-/** Thanh tìm kiếm và bộ lọc nâng cao cho Dashboard. */
 const DashboardFilters: React.FC<DashboardFiltersProps> = ({
-  searchQuery,
-  setSearchQuery,
+  filters,
+  updateFilter,
   showFilters,
   setShowFilters,
   filterRef,
-  sortBy,
-  setSortBy,
-  sortOrder,
   toggleSortOrder,
-  filterRating,
-  setFilterRating,
-  filterYear,
-  setFilterYear,
-  filterCountry,
-  setFilterCountry,
-  filterContentType,
-  setFilterContentType,
-  filterWatchStatus,
-  setFilterWatchStatus,
   activeTab,
   availableYears,
   availableCountries,
   clearFilters
 }) => {
-  const hasActiveFilters = filterRating !== null || filterYear !== null || filterCountry || filterContentType !== 'all' || filterWatchStatus !== 'all';
+  const hasActiveFilters = filters.rating !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all';
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
@@ -64,14 +46,14 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
           <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={filters.searchQuery}
+            onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim..."
             className="w-full sm:w-64 bg-surface border-2 border-black/10 dark:border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-text-main placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all"
           />
-          {searchQuery && (
+          {filters.searchQuery && (
             <button
-              onClick={() => setSearchQuery('')}
+              onClick={() => updateFilter('searchQuery', '')}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main"
             >
               <X size={14} />
@@ -98,18 +80,18 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Sắp xếp</div>
             <div className="flex gap-2">
               <button
-                onClick={() => setSortBy('date')}
+                onClick={() => updateFilter('sortBy', 'date')}
                 className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                  sortBy === 'date' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'
+                  filters.sortBy === 'date' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'
                 }`}
               >
                 <Calendar size={14} />
                 <span>Ngày</span>
               </button>
               <button
-                onClick={() => setSortBy('title')}
+                onClick={() => updateFilter('sortBy', 'title')}
                 className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                  sortBy === 'title' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'
+                  filters.sortBy === 'title' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'
                 }`}
               >
                 <Type size={14} />
@@ -119,8 +101,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                 onClick={toggleSortOrder}
                 className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main transition-colors cursor-pointer"
               >
-                {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
-                <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
+                {filters.sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+                <span>{filters.sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
               </button>
             </div>
           </div>
@@ -148,8 +130,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                   { value: 'movie', label: 'Phim' },
                   { value: 'tv', label: 'TV Series' },
                 ]}
-                value={filterContentType}
-                onChange={(value) => setFilterContentType(value as any)}
+                value={filters.contentType}
+                onChange={(value) => updateFilter('contentType', value as any)}
                 placeholder="Chọn loại nội dung"
               />
             </div>
@@ -163,8 +145,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     { value: 'watching', label: 'Đang xem' },
                     { value: 'completed', label: 'Đã xem xong' },
                   ]}
-                  value={filterWatchStatus}
-                  onChange={(value) => setFilterWatchStatus(value as any)}
+                  value={filters.watchStatus}
+                  onChange={(value) => updateFilter('watchStatus', value as any)}
                   placeholder="Chọn trạng thái"
                 />
               </div>
@@ -176,12 +158,12 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
-                    onClick={() => setFilterRating(filterRating === star ? null : star)}
+                    onClick={() => updateFilter('rating', filters.rating === star ? null : star)}
                     className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                      (filterRating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
+                      (filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                     }`}
                   >
-                    <Star size={16} fill={(filterRating || 0) >= star ? "currentColor" : "none"} />
+                    <Star size={16} fill={(filters.rating || 0) >= star ? "currentColor" : "none"} />
                   </button>
                 ))}
               </div>
@@ -191,8 +173,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               <label className="text-xs text-text-muted mb-1.5 block">Năm xem</label>
               <CustomDropdown
                 options={[{ value: '', label: 'Tất cả các năm' }, ...availableYears]}
-                value={filterYear || ''}
-                onChange={(value) => setFilterYear(value === '' ? null : Number(value))}
+                value={filters.year || ''}
+                onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
                 placeholder="Chọn năm"
               />
             </div>
@@ -201,8 +183,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               <label className="text-xs text-text-muted mb-1.5 block">Quốc gia</label>
               <CustomDropdown
                 options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
-                value={filterCountry}
-                onChange={(value) => setFilterCountry(value as string)}
+                value={filters.country}
+                onChange={(value) => updateFilter('country', value as string)}
                 placeholder="Chọn quốc gia"
                 searchable={true}
               />
