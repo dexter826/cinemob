@@ -22,7 +22,7 @@ const PullToRefreshIndicator: React.FC<PullToRefreshIndicatorProps> = ({
                 opacity: Math.min(progress, 1),
             }}
         >
-            <div className="bg-surface border border-black/10 dark:border-white/10 rounded-full p-3 shadow-lg">
+            <div className="bg-surface border border-border-default rounded-full p-3 shadow-premium">
                 <RefreshCw
                     size={24}
                     className={`text-primary ${isRefreshing ? 'animate-spin' : ''}`}

@@ -144,7 +144,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-left
+          w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-200
           flex items-center justify-between
@@ -177,14 +177,14 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
       {isOpen && (
         <div
           className="
-            absolute top-full left-0 right-0 mt-1 bg-surface border border-black/10 dark:border-white/10
+            absolute top-full left-0 right-0 mt-1 bg-surface border border-border-default
             rounded-xl shadow-lg z-50
           "
           role="listbox"
         >
           {/* Search Input */}
           {searchable && (
-            <div className="p-2 border-b border-black/5 dark:border-white/5">
+            <div className="p-2 border-b border-border-default">
               <input
                 ref={inputRef}
                 type="text"
@@ -202,7 +202,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
 
           {/* Selected Count */}
           {values.length > 0 && (
-            <div className="px-3 py-2 border-b border-black/5 dark:border-white/5 flex items-center justify-between">
+            <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
               <span className="text-xs text-text-muted">
                 Đã chọn {values.length} mục
               </span>

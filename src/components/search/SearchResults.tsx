@@ -67,7 +67,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 type="button"
                 onClick={() => refreshRecommendations(userId, true)}
                 disabled={isAiLoading}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
               >
                 <RotateCcw size={16} />
                 <span>Làm mới</span>
@@ -122,7 +122,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                         type="button"
                         onClick={() => refreshRecommendations(userId, true)}
                         disabled={isAiLoading}
-                        className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface transition-colors cursor-pointer text-text-main"
                       >
                         <RotateCcw size={16} />
                         <span>Làm mới</span>

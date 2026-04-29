@@ -24,11 +24,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   return (
     <motion.div
       onClick={() => onClick(movie)}
-      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl"
+      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default hover:border-primary/30 transition-all duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover"
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
-      <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5">
+      <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
           src={imageUrl}
           alt={mainTitle}
@@ -36,55 +36,58 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           loading="lazy"
         />
 
+        {/* Action Menu */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 [@media(hover:none)]:opacity-100 group-hover:opacity-100 transition-all duration-300 translate-x-2 [@media(hover:none)]:translate-x-0 group-hover:translate-x-0 z-30">
           <button
             onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
-            className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-red-400 hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
+            className="p-2 bg-black/40 hover:bg-error/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
             title="Xóa"
           >
-            <Trash2 size={16} />
+            <Trash2 size={15} />
           </button>
           
           {!onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-              className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-primary hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
+              className="p-2 bg-black/40 hover:bg-primary/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
               title="Sửa"
             >
-              <Edit2 size={16} />
+              <Edit2 size={15} />
             </button>
           )}
           
           {onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onMarkAsWatched(movie); }}
-              className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-green-400 hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
+              className="p-2 bg-black/40 hover:bg-success/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
               title="Đã xem"
             >
-              <CheckCircle size={16} />
+              <CheckCircle size={15} />
             </button>
           )}
         </div>
 
+        {/* Rating Badge */}
         {movie.rating && movie.rating > 0 && (
-          <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10">
-            <Star size={12} className="text-yellow-400 fill-yellow-400" />
-            <span className="text-[11px] font-bold text-white">{movie.rating.toFixed(1)}</span>
+          <div className="absolute top-2 left-2 flex items-center space-x-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 z-10 shadow-glass">
+            <Star size={11} className="text-warning fill-warning" />
+            <span className="text-[10px] font-bold text-white leading-none">{movie.rating.toFixed(1)}</span>
           </div>
         )}
 
-        <div className={`absolute left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10 transition-all duration-300 ${movie.rating && movie.rating > 0 ? 'top-9' : 'top-2'}`}>
+        {/* Media Type Badge */}
+        <div className={`absolute left-2 flex items-center space-x-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 z-10 shadow-glass transition-all duration-300 ${movie.rating && movie.rating > 0 ? 'top-9' : 'top-2'}`}>
           {movie.media_type === 'tv' ? (
             <>
-              <Tv size={11} className="text-blue-400" />
+              <Tv size={11} className="text-info" />
               <span className="text-[10px] font-bold text-white tracking-wider">
                 {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
               </span>
             </>
           ) : (
             <>
-              <Film size={11} className="text-green-400" />
-              <span className="text-[10px] font-bold text-white tracking-wider">Phim</span>
+              <Film size={11} className="text-success" />
+              <span className="text-[10px] font-bold text-white tracking-wider uppercase">Phim</span>
             </>
           )}
         </div>
@@ -96,26 +99,29 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
             {mainTitle}
           </h3>
           {subTitle && (
-            <p className="text-xs text-text-muted truncate mt-0.5" title={subTitle}>
+            <p className="text-[11px] text-text-muted truncate mt-0.5 italic" title={subTitle}>
               {subTitle}
             </p>
           )}
         </div>
 
-        <div className="mt-auto pt-2 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[11px] text-text-muted">
-          <div className="flex items-center flex-wrap gap-1.5">
+        <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-muted">
+          <div className="flex items-center flex-wrap gap-1.5 font-medium">
             {movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed && (
               <>
-                <span>{`S${movie.progress.current_season}E${movie.progress.current_episode}`}</span>
-                <span>•</span>
+                <span className="text-primary">{`S${movie.progress.current_season}E${movie.progress.current_episode}`}</span>
+                <span className="opacity-30">•</span>
               </>
             )}
-            <span>{formatMovieDate(movie.watched_at)}</span>
+            <div className="flex items-center gap-1">
+              <Calendar size={10} className="opacity-70" />
+              <span>{formatMovieDate(movie.watched_at)}</span>
+            </div>
           </div>
           
           {movie.review && (
             <div className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0" title="Có đánh giá">
-              <MessageCircle size={12} />
+              <MessageCircle size={11} />
             </div>
           )}
         </div>

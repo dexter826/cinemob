@@ -45,8 +45,8 @@ const ReleaseCalendarPage: React.FC = () => {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background pb-20">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      <main className="min-h-screen bg-background pb-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12">
           <CalendarHeader 
             handlePushToggle={handlePushToggle}
             pushLoading={pushLoading}
@@ -67,21 +67,21 @@ const ReleaseCalendarPage: React.FC = () => {
           />
 
           {tvSeries.length === 0 ? (
-            <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-8 text-center">
-              <div className="flex justify-center mb-4">
-                <div className="p-4 bg-primary/10 rounded-full">
+            <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-[32px] p-16 text-center shadow-premium animate-in fade-in zoom-in-95 duration-500">
+              <div className="flex justify-center mb-8">
+                <div className="w-24 h-24 bg-primary/10 rounded-[24px] flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/5">
                   <Tv size={48} className="text-primary" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-text-main mb-2">
-                Chưa có series nào để theo dõi
+              <h3 className="text-3xl font-bold text-text-main mb-3 tracking-tight">
+                Chưa có TV Series nào
               </h3>
-              <p className="text-text-secondary max-w-md mx-auto">
-                Thêm các series TV vào danh sách xem hoặc đang xem để theo dõi lịch phát sóng các tập mới.
+              <p className="text-text-muted max-w-md mx-auto text-lg opacity-80 leading-relaxed">
+                Thêm các bộ phim bộ vào danh sách <strong>"Đang xem"</strong> hoặc <strong>"Sẽ xem"</strong> để theo dõi lịch phát sóng chi tiết.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
               {viewMode === 'calendar' && (
                 <CalendarGrid 
                   currentDate={currentDate}

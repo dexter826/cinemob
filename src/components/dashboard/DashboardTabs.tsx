@@ -18,16 +18,16 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   return (
     <div className="flex items-baseline gap-3">
       <div className="flex items-center gap-3">
-        <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative overflow-hidden">
+        <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden">
           <div
-            className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary transition-transform duration-300 ease-out ${
+            className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-lg shadow-primary/30 transition-transform duration-300 ease-out ${
               activeTab === 'history' ? 'translate-x-0' : 'translate-x-full'
             }`}
           />
           <button
             type="button"
             onClick={() => onTabChange('history')}
-            className={`px-3 py-1 text-sm md:text-base font-medium rounded-full transition-colors cursor-pointer relative ${
+            className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'history' ? 'text-white' : 'text-text-muted hover:text-text-main'
             }`}
           >
@@ -36,7 +36,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
           <button
             type="button"
             onClick={() => onTabChange('watchlist')}
-            className={`px-3 py-1 text-sm md:text-base font-medium rounded-full transition-colors cursor-pointer relative ${
+            className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'watchlist' ? 'text-white' : 'text-text-muted hover:text-text-main'
             }`}
           >

@@ -95,22 +95,22 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-left
+          w-full bg-surface border border-border-default rounded-xl px-4 py-2.5 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-all duration-200
-          flex items-center justify-between
+          hover:border-primary/30 transition-all duration-300
+          flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
+          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20 shadow-premium' : ''}
         `}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className={`text-sm ${selectedOption ? 'text-text-main' : 'text-text-muted'}`}>
+        <span className={`text-sm font-medium ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           size={16}
-          className={`text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`text-text-muted transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`}
         />
       </button>
 
@@ -118,14 +118,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {isOpen && (
         <div
           className="
-            absolute top-full left-0 right-0 mt-1 bg-surface border border-black/10 dark:border-white/10
-            rounded-xl shadow-lg z-50
+            absolute top-full left-0 right-0 mt-2 bg-surface/95 backdrop-blur-2xl border border-border-default
+            rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200
           "
           role="listbox"
         >
           {/* Search Input */}
           {searchable && (
-            <div className="p-2 border-b border-black/5 dark:border-white/5">
+            <div className="p-3 border-b border-border-default bg-black/5 dark:bg-white/5">
               <input
                 ref={inputRef}
                 type="text"
@@ -133,8 +133,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm..."
                 className="
-                  w-full bg-black/5 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-sm
-                  focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted
+                  w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-sm
+                  focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted/50
                 "
                 onClick={(e) => e.stopPropagation()}
               />
@@ -143,11 +143,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           {/* Options List */}
           <div
-            className="overflow-y-auto"
+            className="overflow-y-auto custom-scrollbar p-1.5"
             style={{ maxHeight }}
           >
             {filteredOptions.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-muted text-center">
+              <div className="px-4 py-4 text-sm text-text-muted text-center italic opacity-60">
                 {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
               </div>
             ) : (
@@ -157,16 +157,19 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   type="button"
                   onClick={() => handleSelect(option)}
                   className={`
-                    w-full px-4 py-3 text-left text-sm hover:bg-black/5 dark:hover:bg-white/5
-                    transition-colors duration-150 flex items-center justify-between
-                    ${option.value === value ? 'bg-primary/10 text-primary' : 'text-text-main'}
+                    w-full px-4 py-3 text-left text-sm rounded-xl
+                    transition-all duration-200 flex items-center justify-between mb-0.5 last:mb-0
+                    ${option.value === value 
+                      ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' 
+                      : 'text-text-main hover:bg-primary/10 hover:text-primary'
+                    }
                   `}
                   role="option"
                   aria-selected={option.value === value}
                 >
                   <span>{option.label}</span>
                   {option.value === value && (
-                    <Check size={16} className="text-primary" />
+                    <Check size={16} className="text-white" />
                   )}
                 </button>
               ))

@@ -115,12 +115,12 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+          <motion.div
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl"
           onClick={onClose}
         >
           <motion.div
@@ -128,12 +128,12 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative flex flex-col md:flex-row max-h-[90vh]"
+            className="bg-surface w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default relative flex flex-col md:flex-row max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors cursor-pointer"
+              className="absolute top-4 right-4 z-10 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10"
             >
               <X size={20} />
             </button>
@@ -149,39 +149,39 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
               ) : (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-1">{mainTitle}</h2>
-                    {subTitle && <p className="text-text-muted text-lg mb-2">{subTitle}</p>}
-                    {movie.tagline && <p className="text-text-muted italic">"{movie.tagline}"</p>}
+                    <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-1 tracking-tight">{mainTitle}</h2>
+                    {subTitle && <p className="text-text-muted text-lg mb-2 italic">{subTitle}</p>}
+                    {movie.tagline && <p className="text-text-muted italic opacity-80">"{movie.tagline}"</p>}
                   </div>
 
                   <div className="flex flex-wrap gap-3 text-sm text-text-muted">
                     {movie.release_date && (
-                      <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full">
-                        <Calendar size={14} className="text-primary" />
-                        <span>{new Date(movie.release_date).getFullYear()}</span>
+                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default">
+                        <Calendar size={14} className="text-info" />
+                        <span className="font-medium">{new Date(movie.release_date).getFullYear()}</span>
                       </div>
                     )}
                     {(movie.media_type === 'tv' ? (movie.seasons && movie.seasons > 0) : (movie.runtime && movie.runtime > 0)) && (
-                      <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full">
-                        <Clock size={14} className="text-blue-400" />
-                        <span>{movie.media_type === 'tv' ? `${movie.seasons} Phần` : `${movie.runtime} Phút`}</span>
+                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default">
+                        <Clock size={14} className="text-primary" />
+                        <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Phần` : `${movie.runtime} Phút`}</span>
                       </div>
                     )}
                     {movie.rating && movie.rating > 0 && (
-                      <div className="flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                        <Star size={14} className="text-primary fill-primary" />
-                        <span className="text-primary font-bold">{movie.rating}/5</span>
+                      <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
+                        <Star size={14} className="text-warning fill-warning" />
+                        <span className="text-warning font-bold">{movie.rating.toFixed(1)}/5.0</span>
                       </div>
                     )}
                   </div>
 
                   {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
-                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-text-muted text-sm font-medium">Tiến độ xem</span>
-                        {movie.progress.is_completed && <span className="text-green-500 text-xs font-bold">✓ HOÀN THÀNH</span>}
+                    <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-5 border border-border-default">
+                      <div className="flex items-center justify-between mb-2.5">
+                        <span className="text-text-muted text-xs font-bold uppercase tracking-wider">Tiến độ xem</span>
+                        {movie.progress.is_completed && <span className="text-success text-[10px] font-bold tracking-widest px-2 py-0.5 bg-success/10 rounded-md border border-success/20">✓ HOÀN THÀNH</span>}
                       </div>
-                      <div className="text-text-main font-bold text-xl mb-3">
+                      <div className="text-text-main font-bold text-2xl mb-4">
                         {movie.progress.is_completed ? "Đã xem hết" : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
                         {!movie.progress.is_completed && movie.total_episodes && (
                           <span className="text-text-muted font-normal text-sm ml-2">
@@ -189,9 +189,9 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                           </span>
                         )}
                       </div>
-                      <div className="w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
                         <div
-                          className="h-full bg-primary transition-all duration-500"
+                          className="h-full bg-primary transition-all duration-700 ease-out rounded-full"
                           style={{
                             width: movie.progress.is_completed ? '100%' : `${(movie.progress.watched_episodes / (movie.total_episodes || 1)) * 100}%`
                           }}
@@ -203,33 +203,37 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {movie.genres && (
                       <div className="flex items-center gap-2.5 text-text-muted text-sm">
-                        <Film size={16} className="shrink-0" />
-                        <span className="line-clamp-1">{movie.genres}</span>
+                        <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default">
+                          <Film size={16} />
+                        </div>
+                        <span className="line-clamp-1 font-medium">{movie.genres}</span>
                       </div>
                     )}
                     {movie.country && (
                       <div className="flex items-center gap-2.5 text-text-muted text-sm">
-                        <Info size={16} className="shrink-0" />
-                        <span className="line-clamp-1">{movie.country}</span>
+                        <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default">
+                          <Info size={16} />
+                        </div>
+                        <span className="line-clamp-1 font-medium">{movie.country}</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-text-main">Nội dung</h3>
-                    <p className="text-text-muted leading-relaxed text-sm md:text-base">{overview}</p>
+                  <div className="space-y-2.5">
+                    <h3 className="text-lg font-bold text-text-main tracking-tight">Nội dung</h3>
+                    <p className="text-text-muted leading-relaxed text-sm md:text-base opacity-90">{overview}</p>
                   </div>
 
                   {credits && (
                     <div className="space-y-4">
                       {credits.cast && credits.cast.length > 0 && (
-                        <div className="space-y-2">
-                          <h3 className="text-lg font-bold text-text-main flex items-center gap-2">
-                            <Users size={18} /> Diễn viên
+                        <div className="space-y-2.5">
+                          <h3 className="text-lg font-bold text-text-main flex items-center gap-2 tracking-tight">
+                            <Users size={18} className="text-primary" /> Diễn viên
                           </h3>
                           <div className="flex flex-wrap gap-2">
                             {credits.cast.slice(0, 8).map(actor => (
-                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg text-xs text-text-muted hover:text-text-main transition-colors border border-white/5 cursor-pointer">
+                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-3 py-2 rounded-xl text-xs font-medium text-text-muted transition-all border border-border-default cursor-pointer">
                                 {actor.name}
                               </button>
                             ))}
@@ -241,18 +245,18 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   <div className="pt-4 flex flex-col gap-3">
                     {movie.status === 'watchlist' ? (
-                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold transition-all ${videos.length > 0 ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg' : 'bg-white/5 text-text-muted cursor-not-allowed'}`}>
-                        <Play size={20} fill="currentColor" /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
+                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                        <Play size={18} fill="currentColor" /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
                       </button>
                     ) : (
-                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold transition-all ${canAddToAlbum ? 'bg-primary hover:bg-primary/90 text-white shadow-lg' : 'bg-white/5 text-text-muted cursor-not-allowed'}`}>
-                        <FolderPlus size={20} /> THÊM VÀO ALBUM
+                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                        <FolderPlus size={18} /> THÊM VÀO ALBUM
                       </button>
                     )}
                   </div>
 
                   {movie.status !== 'watchlist' && (
-                    <div className="pt-4 border-t border-white/5 flex justify-between text-[10px] uppercase tracking-widest text-text-muted font-bold">
+                    <div className="pt-6 border-t border-border-default flex justify-between text-[10px] uppercase tracking-[0.2em] text-text-muted font-bold opacity-60">
                       <span>ĐÃ XEM: {formatMovieDate(movie.watched_at)}</span>
                       <span>NGUỒN: {movie.source}</span>
                     </div>

@@ -80,15 +80,6 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-background text-text-main pb-20 transition-colors duration-300">
       <Navbar />
 
-      {!TMDB_API_KEY && (
-        <div className="bg-yellow-500/10 border-b border-yellow-500/20 p-2 text-center">
-          <p className="text-yellow-500 text-sm flex items-center justify-center gap-2">
-            <AlertTriangle size={14} />
-            TMDB API Key bị thiếu. Tìm kiếm sẽ không hoạt động.
-          </p>
-        </div>
-      )}
-
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         
         <DashboardActions onOpenAddModal={() => openAddModal()} />
@@ -119,34 +110,42 @@ const Dashboard: React.FC = () => {
           </div>
 
           {processedMovies.length === 0 ? (
-            <div className="border-2 border-dashed border-black/10 dark:border-white/10 rounded-3xl p-12 flex flex-col items-center justify-center text-center space-y-4">
-              <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center">
-                <Film className="text-text-muted" size={32} />
+            <div className="flex flex-col items-center justify-center py-24 bg-surface rounded-3xl border border-border-default shadow-premium">
+              <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-border-default">
+                <Film className="text-text-muted opacity-40" size={40} />
               </div>
-              <div>
-                <h3 className="text-lg font-medium text-text-main">
-                  {filters.searchQuery
-                    ? "Không tìm thấy nội dung phù hợp"
-                    : activeTab === 'history'
-                      ? "Chưa có nội dung nào trong lịch sử"
-                      : "Danh sách Sẽ xem đang trống"}
-                </h3>
-                <p className="text-text-muted max-w-xs mx-auto">
-                  {filters.searchQuery
-                    ? "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn."
-                    : activeTab === 'history'
-                      ? "Bắt đầu xây dựng lịch sử điện ảnh cá nhân của bạn bằng cách thêm bộ phim hoặc series đầu tiên."
-                      : "Tìm kiếm và thêm những phim bạn muốn xem sau."}
-                </p>
+              <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight">
+                {filters.searchQuery
+                  ? "Không tìm thấy nội dung phù hợp"
+                  : activeTab === 'history'
+                    ? "Chưa có nội dung nào trong lịch sử"
+                    : "Danh sách Sẽ xem đang trống"}
+              </h3>
+              <p className="text-text-muted/60 text-sm mb-8 max-w-xs text-center">
+                {filters.searchQuery
+                  ? "Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại."
+                  : activeTab === 'history'
+                    ? "Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên."
+                    : "Khám phá và thêm những bộ phim bạn muốn xem vào đây."}
+              </p>
+              
+              <div className="flex gap-3">
+                {filters.searchQuery || filters.rating || filters.year || filters.country || filters.contentType !== 'all' ? (
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-2.5 bg-primary/10 text-primary rounded-xl font-bold text-sm hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 shadow-sm"
+                  >
+                    Xóa tất cả bộ lọc
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate('/search')}
+                    className="px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer shadow-premium"
+                  >
+                    Khám phá ngay
+                  </button>
+                )}
               </div>
-              {!filters.searchQuery && (
-                <button
-                  onClick={() => navigate('/search')}
-                  className="px-6 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-text-main rounded-full font-medium transition-colors"
-                >
-                  Thêm nội dung
-                </button>
-              )}
             </div>
           ) : (
             <>

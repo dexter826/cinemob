@@ -185,7 +185,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 className={`
-          w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-left
+          w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-200
           flex items-center justify-between
@@ -207,7 +207,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             {isOpen && (
                 <div
                     className="
-            absolute top-full left-0 mt-1 bg-surface border border-black/10 dark:border-white/10
+            absolute top-full left-0 mt-1 bg-surface border border-border-default
             rounded-xl shadow-lg z-50 p-3 w-72
           "
                     role="dialog"
@@ -303,7 +303,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                     </div>
 
                     {/* Today Button */}
-                    <div className="mt-3 pt-3 border-t border-black/5 dark:border-white/5">
+                    <div className="mt-3 pt-3 border-t border-border-default">
                         <button
                             type="button"
                             onClick={() => {

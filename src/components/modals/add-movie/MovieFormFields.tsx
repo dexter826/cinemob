@@ -49,12 +49,12 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
   status
 }) => {
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         {/* Media Type */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Film size={14} className="text-primary" /> Loại
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+            <Film size={14} className="text-primary" /> Loại hình
           </label>
           {isManualMode ? (
             <CustomDropdown
@@ -70,18 +70,18 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               placeholder="Chọn loại"
             />
           ) : (
-            <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-text-muted opacity-60 backdrop-blur-sm">
+            <div className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 text-sm font-bold text-text-muted opacity-80 backdrop-blur-sm shadow-sm">
               {isTVSeries ? 'TV Series' : 'Phim lẻ'}
             </div>
           )}
         </div>
 
         {/* Country */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
             <Globe size={14} className="text-primary" /> Quốc gia
           </label>
-          <div ref={refs.country} className={`transition-transform duration-500 ${isAnimating && errors.country ? 'scale-105' : ''}`}>
+          <div ref={refs.country} className={`transition-transform duration-500 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}>
             <CustomDropdown
               options={countryOptions}
               value={formData.country}
@@ -94,28 +94,28 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
         </div>
 
         {/* Release Date */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
             <Calendar size={14} className="text-primary" /> Phát hành
           </label>
-          <div ref={refs.releaseDate} className={`transition-transform duration-500 ${isAnimating && errors.releaseDate ? 'scale-105' : ''}`}>
+          <div ref={refs.releaseDate} className={`transition-transform duration-500 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}>
             <CustomDatePicker
               value={formData.releaseDate}
               onChange={(val) => {
                 setFormData({ ...formData, releaseDate: val });
               }}
-              placeholder="Chọn ngày phát hành..."
+              placeholder="Chọn ngày..."
             />
           </div>
         </div>
 
         {/* Runtime / Seasons */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
             {isTVSeries ? <Tv size={14} className="text-primary" /> : <Clock size={14} className="text-primary" />}
             {isTVSeries ? 'Số phần' : 'Thời lượng (phút)'}
           </label>
-          <div className={`transition-transform duration-500 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-105' : ''}`}>
+          <div className={`transition-transform duration-500 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}>
             <input
               ref={isTVSeries ? refs.seasons : refs.runtime}
               type="number"
@@ -124,15 +124,16 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               onChange={e => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-text-main focus:border-primary/50 focus:ring-4 focus:ring-primary/20 outline-none transition-all hover:border-black/20 dark:hover:border-white/20"
+              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
+              placeholder={isTVSeries ? "Số phần..." : "Phút..."}
             />
           </div>
         </div>
       </div>
 
       {/* Genres */}
-      <div className="space-y-2">
-        <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Thể loại</label>
+      <div className="space-y-3">
+        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Thể loại phim</label>
         <MultiSelectDropdown
           options={genreOptions.map(g => ({ value: g.id, label: g.name }))}
           values={selectedGenreIds}
@@ -144,30 +145,27 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               .join(', ');
             setFormData((prev: any) => ({ ...prev, genres: genreNames }));
           }}
-          placeholder="Chọn thể loại..."
+          placeholder="Tìm hoặc chọn thể loại..."
           searchable={true}
           maxDisplay={5}
           className="w-full"
         />
       </div>
 
-
       {/* Overview */}
-      <div className="space-y-2">
-        <label className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-          <AlignLeft size={14} className="text-primary" /> Nội dung
+      <div className="space-y-3">
+        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+          <AlignLeft size={14} className="text-primary" /> Nội dung tóm tắt
         </label>
         <textarea
-          rows={5}
+          rows={6}
           value={formData.content}
           onChange={e => setFormData({ ...formData, content: e.target.value })}
-          className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/20 outline-none transition-all custom-scrollbar resize-none hover:border-black/20 dark:hover:border-white/20"
-          placeholder="Tóm tắt nội dung phim..."
+          className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-[24px] px-5 py-4 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all custom-scrollbar resize-none shadow-sm"
+          placeholder="Giới thiệu ngắn về cốt truyện..."
         />
       </div>
-
     </div>
-
   );
 };
 

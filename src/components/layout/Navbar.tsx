@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="border-b border-black/5 dark:border-white/5 bg-surface/50 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
+      <nav className="border-b border-border-default bg-surface/50 backdrop-blur-xl sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           {/* Logo */}
           <div
@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
             <div className="relative dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer"
+                className="flex items-center space-x-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full object-cover" />
@@ -110,8 +110,8 @@ const Navbar: React.FC = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-xl border border-black/5 dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="px-4 py-3 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5">
+                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-2xl border border-border-default rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="px-4 py-3 border-b border-border-default bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
                   </div>
 

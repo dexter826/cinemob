@@ -100,140 +100,140 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
           onClick={onClose}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-surface w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative"
+            className="bg-surface w-full max-w-xl rounded-[32px] overflow-hidden shadow-premium border border-border-default relative"
             onClick={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
           >
-
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors cursor-pointer"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Header */}
-        <div className="p-6 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 rounded-xl overflow-hidden">
-              <img
-                src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : logoText}
-                alt={getDisplayTitle(movie)}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold text-text-main truncate">{getDisplayTitle(movie)}</h2>
-              <p className="text-sm text-text-muted">Chọn album để thêm phim này</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 max-h-96 overflow-y-auto custom-scrollbar">
-          {showCreateForm ? (
-            <div className="mb-6 p-4 border border-primary/20 rounded-xl bg-primary/5">
-              <h3 className="text-lg font-medium text-text-main mb-3">Tạo album mới</h3>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Tên album"
-                  value={newAlbumName}
-                  onChange={(e) => setNewAlbumName(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-black/10 dark:border-white/10 bg-surface text-text-main placeholder-text-muted focus:border-primary focus:outline-none"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleCreateAlbum}
-                    disabled={creatingAlbum || !newAlbumName.trim()}
-                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {creatingAlbum ? 'Đang tạo...' : 'Tạo album'}
-                  </button>
-                  <button
-                    onClick={() => setShowCreateForm(false)}
-                    className="px-4 py-2 border border-black/10 dark:border-white/10 text-text-main rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                  >
-                    Hủy
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
             <button
-              onClick={() => setShowCreateForm(true)}
-              className="w-full p-4 mb-4 rounded-xl border-2 border-dashed border-primary/50 hover:border-primary hover:bg-primary/5 transition-all duration-200 text-left group cursor-pointer"
+              onClick={onClose}
+              className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main transition-all cursor-pointer"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                  <FolderPlus size={20} className="text-primary" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-primary">Tạo album mới</h3>
-                  <p className="text-sm text-text-muted">Tạo album để thêm phim</p>
-                </div>
-              </div>
+              <X size={20} />
             </button>
-          )}
 
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loading size={32} />
-            </div>
-          ) : availableAlbums.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FolderPlus className="text-text-muted" size={32} />
+            {/* Header */}
+            <div className="p-8 border-b border-border-default bg-surface/50 backdrop-blur-md">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-24 rounded-2xl overflow-hidden shadow-lg border border-border-default shrink-0">
+                  <img
+                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : logoText}
+                    alt={getDisplayTitle(movie)}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-1 block">Thêm vào Album</span>
+                  <h2 className="text-2xl font-bold text-text-main truncate tracking-tight">{getDisplayTitle(movie)}</h2>
+                  <p className="text-sm text-text-muted mt-1 opacity-80">Lưu giữ phim vào danh sách yêu thích của bạn</p>
+                </div>
               </div>
-              <h3 className="text-lg font-medium text-text-main mb-2">Không có album phù hợp</h3>
-              <p className="text-sm text-text-muted max-w-sm mx-auto">
-                {albums.length === 0
-                  ? 'Bạn chưa tạo album nào. Sử dụng nút "Tạo album mới" ở trên để tạo album đầu tiên.'
-                  : 'Phim này đã có trong tất cả album của bạn. Tạo album mới nếu muốn.'
-                }
-              </p>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {availableAlbums.map(album => (
+
+            {/* Content */}
+            <div className="p-8 max-h-[50vh] overflow-y-auto custom-scrollbar">
+              {showCreateForm ? (
+                <div className="mb-8 p-6 border border-primary/20 rounded-2xl bg-primary/5 animate-in fade-in slide-in-from-top-2">
+                  <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Tạo album mới</h3>
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Nhập tên album..."
+                      value={newAlbumName}
+                      onChange={(e) => setNewAlbumName(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
+                      className="w-full px-5 py-3.5 rounded-2xl border border-border-default bg-surface text-text-main font-bold placeholder-text-muted focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
+                      autoFocus
+                    />
+                    <div className="flex gap-3">
+                      <button
+                        onClick={handleCreateAlbum}
+                        disabled={creatingAlbum || !newAlbumName.trim()}
+                        className="flex-1 px-6 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-premium disabled:opacity-40 transition-all shadow-lg shadow-primary/20"
+                      >
+                        {creatingAlbum ? 'Đang xử lý...' : 'Tạo album'}
+                      </button>
+                      <button
+                        onClick={() => setShowCreateForm(false)}
+                        className="px-6 py-3.5 border border-border-default text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl font-bold transition-all"
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
                 <button
-                  key={album.docId}
-                  onClick={() => handleAddToAlbum(album)}
-                  disabled={addingToAlbum === album.docId}
-                  className="w-full p-4 rounded-xl border border-black/10 dark:border-white/10 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer"
+                  onClick={() => setShowCreateForm(true)}
+                  className="w-full p-6 mb-6 rounded-[24px] border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 text-left group cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-linear-to-br from-primary/20 to-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                      <Film size={20} className="text-primary" />
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 group-hover:scale-110 transition-transform">
+                      <FolderPlus size={24} className="text-primary" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-text-main group-hover:text-primary transition-colors">
-                        {album.name}
-                      </h3>
-                      <p className="text-sm text-text-muted">
-                        {album.movieDocIds.length} phim hiện tại
-                      </p>
-                    </div>
-                    <div className="text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                      {addingToAlbum === album.docId ? 'Đang thêm...' : 'Thêm vào'}
+                    <div className="flex-1">
+                      <h3 className="font-bold text-primary text-lg">Tạo bộ sưu tập mới</h3>
+                      <p className="text-sm text-text-muted opacity-70">Phân loại phim theo sở thích riêng</p>
                     </div>
                   </div>
                 </button>
-              ))}
+              )}
+
+              {loading ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-4">
+                  <Loading size={40} fullScreen={false} />
+                  <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest animate-pulse">Đang tải album...</p>
+                </div>
+              ) : availableAlbums.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-[24px] flex items-center justify-center mx-auto mb-5 border border-border-default">
+                    <FolderPlus className="text-text-muted opacity-20" size={40} />
+                  </div>
+                  <h3 className="text-xl font-bold text-text-main mb-2">Trống trải quá</h3>
+                  <p className="text-sm text-text-muted max-w-xs mx-auto opacity-70">
+                    {albums.length === 0
+                      ? 'Bạn chưa có album nào. Hãy tạo cái đầu tiên để bắt đầu lưu trữ!'
+                      : 'Phim này đã có mặt trong tất cả các album hiện có của bạn.'
+                    }
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Chọn Album</h3>
+                  {availableAlbums.map(album => (
+                    <button
+                      key={album.docId}
+                      onClick={() => handleAddToAlbum(album)}
+                      disabled={addingToAlbum === album.docId}
+                      className="w-full p-5 rounded-[24px] border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-border-default group-hover:border-primary/30 group-hover:bg-primary/10 transition-all">
+                          <Film size={22} className="text-text-muted group-hover:text-primary transition-colors" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-text-main group-hover:text-primary transition-colors text-lg truncate">
+                            {album.name}
+                          </h3>
+                          <p className="text-sm text-text-muted font-medium">
+                            {album.movieDocIds.length} phim trong bộ sưu tập
+                          </p>
+                        </div>
+                        <div className="text-primary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                          {addingToAlbum === album.docId ? 'Đang xử lý...' : 'Chọn ngay'}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
           </motion.div>
         </motion.div>
       )}

@@ -251,7 +251,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-black/10 dark:border-white/10 flex flex-col gap-4"
+            className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-premium border border-border-default flex flex-col gap-4"
             onTouchMove={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
       >
@@ -412,7 +412,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
           <button
             onClick={handleRespin}
             disabled={!hasPool || isLoadingPool || isShuffling}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-text-main text-sm font-medium hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border-default bg-black/5 dark:bg-white/5 text-text-main text-sm font-medium hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <Dice5 size={18} />
             <span>Quay lại</span>

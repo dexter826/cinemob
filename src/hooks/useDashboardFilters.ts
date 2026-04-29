@@ -33,7 +33,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const filterRef = useRef<HTMLDivElement>(null);
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTER_STATE);
   const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 18;
+  const moviesPerPage = 20;
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters(prev => ({ ...prev, [key]: value }));

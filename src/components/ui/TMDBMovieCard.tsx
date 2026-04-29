@@ -2,6 +2,7 @@ import React from 'react';
 import { TMDBMovieResult } from '../../types';
 import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '../../utils/movieUtils';
 import { Film, Tv, Bookmark, Star, Calendar } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface TMDBMovieCardProps {
   movie: TMDBMovieResult;
@@ -19,9 +20,10 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <div
+    <motion.div
       onClick={() => onClick(movie)}
-      className="group relative bg-surface rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 cursor-pointer hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+      whileTap={{ scale: 0.98 }}
+      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/30 transition-all duration-300"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
@@ -35,8 +37,8 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
 
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
           {status && (
-            <div className={`flex items-center gap-1 px-2 py-1 backdrop-blur-md rounded-lg border border-white/20 text-[10px] font-bold text-white shadow-sm ${
-              status === 'history' ? 'bg-green-500/60' : 'bg-primary/60'
+            <div className={`flex items-center gap-1 px-2 py-1 backdrop-blur-xl rounded-lg border border-white/20 text-[10px] font-bold text-white shadow-glass ${
+              status === 'history' ? 'bg-success/60' : 'bg-primary/60'
             }`}>
               <Bookmark size={10} className="fill-white" />
               <span>{status === 'history' ? 'ĐÃ XEM' : 'SẼ XEM'}</span>
@@ -45,14 +47,14 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
           
           <div className="flex items-center gap-1.5">
             {rating && (
-              <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-md rounded-md border border-white/10 text-[10px] font-bold text-yellow-400">
+              <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-xl rounded-md border border-white/10 text-[10px] font-bold text-warning shadow-glass">
                 <Star size={10} fill="currentColor" />
                 <span>{rating}</span>
               </div>
             )}
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-md rounded-md border border-white/10 text-[10px] font-bold text-white uppercase">
-              {isTV ? <Tv size={10} /> : <Film size={10} />}
-              <span>{isTV ? 'TV' : 'Movie'}</span>
+            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-xl rounded-md border border-white/10 text-[10px] font-bold text-white uppercase shadow-glass">
+              {isTV ? <Tv size={10} className="text-info" /> : <Film size={10} className="text-success" />}
+              <span>{isTV ? 'TV' : 'Phim'}</span>
             </div>
           </div>
         </div>
@@ -69,19 +71,19 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
           </p>
           {year && (
             <div className="flex items-center gap-1 text-[10px] text-text-muted font-medium shrink-0">
-              <Calendar size={10} />
+              <Calendar size={10} className="opacity-70" />
               <span>{year}</span>
             </div>
           )}
         </div>
 
         {(character || job) && (
-          <p className="text-[10px] text-primary/80 font-medium truncate pt-1 border-t border-black/5 dark:border-white/5">
+          <p className="text-[10px] text-primary/80 font-medium truncate pt-1 border-t border-border-default">
             {character ? `Nhân vật: ${character}` : `Công việc: ${job}`}
           </p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

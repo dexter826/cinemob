@@ -18,34 +18,34 @@ const AlertContainer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-surface w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-white/10 transform transition-all scale-100">
+    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl animate-fade-in">
+      <div className="bg-surface w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-border-default transform transition-all scale-100">
         <div className="p-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className={`p-3 rounded-full ${alert.type === 'danger' ? 'bg-red-500/20 text-red-500' :
-              alert.type === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
-                'bg-blue-500/20 text-blue-500'
+            <div className={`p-3 rounded-2xl ${alert.type === 'danger' ? 'bg-error/10 text-error' :
+              alert.type === 'warning' ? 'bg-warning/10 text-warning' :
+                'bg-info/10 text-info'
               }`}>
               <AlertTriangle size={24} />
             </div>
-            <h3 className="text-xl font-bold text-text-main">{alert.title}</h3>
+            <h3 className="text-xl font-bold text-text-main tracking-tight">{alert.title}</h3>
           </div>
 
-          <p className="text-text-muted mb-6 leading-relaxed">
+          <p className="text-text-muted mb-6 leading-relaxed opacity-90">
             {alert.message}
           </p>
 
           <div className="flex justify-end gap-3">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 rounded-lg text-text-muted hover:bg-white/5 transition-colors font-medium cursor-pointer"
+              className="px-5 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold text-sm cursor-pointer"
             >
               {alert.cancelText || 'Hủy'}
             </button>
             <button
               onClick={handleConfirm}
-              className={`px-4 py-2 rounded-lg text-white font-medium transition-colors flex items-center gap-2 cursor-pointer ${alert.type === 'danger' ? 'bg-red-500 hover:bg-red-600' :
-                'bg-primary hover:bg-primary-dark'
+              className={`px-5 py-2.5 rounded-xl text-white font-bold text-sm transition-all shadow-premium hover:shadow-premium-hover flex items-center gap-2 cursor-pointer ${alert.type === 'danger' ? 'bg-error' :
+                'bg-primary'
                 }`}
             >
               {alert.confirmText || 'Đồng ý'}

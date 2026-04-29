@@ -75,25 +75,25 @@ const AddMovieModal: React.FC = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-surface border border-white/10 rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+            className="bg-surface border border-border-default rounded-[32px] w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-premium flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-8 py-5 border-b border-white/10 bg-surface/95 backdrop-blur shrink-0">
-              <h2 className="text-xl font-bold text-text-main">
+            <div className="flex items-center justify-between px-8 py-6 border-b border-border-default bg-surface/90 backdrop-blur-xl shrink-0">
+              <h2 className="text-2xl font-bold text-text-main tracking-tight">
                 {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
               </h2>
               <button
                 onClick={closeAddModal}
-                className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                className="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main hover:border-primary/30 transition-all cursor-pointer"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
@@ -101,11 +101,14 @@ const AddMovieModal: React.FC = () => {
             <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
               {isLoadingDetails ? (
                 <div className="h-64 flex flex-col items-center justify-center gap-4">
-                  <Loader2 className="animate-spin text-primary" size={40} />
-                  <p className="text-text-muted animate-pulse">Đang tải thông tin chi tiết...</p>
+                  <div className="relative">
+                    <Loader2 className="animate-spin text-primary opacity-20" size={48} />
+                    <Loader2 className="animate-spin text-primary absolute inset-0" size={48} style={{ animationDirection: 'reverse', animationDuration: '2s' }} />
+                  </div>
+                  <p className="text-text-muted font-bold text-sm tracking-widest uppercase opacity-60">Đang đồng bộ dữ liệu...</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-8">
+                <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-10">
                   <PosterPreview
                     posterPath={formData.poster}
                     title={formData.title}
@@ -114,67 +117,63 @@ const AddMovieModal: React.FC = () => {
 
                   <div className="flex-1 space-y-8">
                     {/* Tabs Navigation */}
-                    <div className="flex border-b border-black/10 dark:border-white/10 gap-6">
+                    <div className="flex bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-border-default gap-1">
                       <button
                         type="button"
                         onClick={() => setActiveTab('info')}
-                        className={`pb-3 text-sm font-semibold transition-all cursor-pointer relative flex items-center gap-2 border-b-2 -mb-px ${activeTab === 'info' ? 'text-primary border-primary' : 'text-text-muted border-transparent hover:text-text-main'}`}
+                        className={`flex-1 py-2.5 text-xs font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-premium border border-border-default' : 'text-text-muted hover:text-text-main hover:bg-surface/50'}`}
                       >
-                        <Film size={16} />
-                        <span>Thông tin phim</span>
+                        <Film size={14} />
+                        <span className="uppercase tracking-widest">Thông tin</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab('review')}
-                        className={`pb-3 text-sm font-semibold transition-all cursor-pointer relative flex items-center gap-2 border-b-2 -mb-px ${activeTab === 'review' ? 'text-primary border-primary' : 'text-text-muted border-transparent hover:text-text-main'}`}
+                        className={`flex-1 py-2.5 text-xs font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-premium border border-border-default' : 'text-text-muted hover:text-text-main hover:bg-surface/50'}`}
                       >
-                        <Star size={16} />
-                        <span>Đánh giá & Nhật ký</span>
+                        <Star size={14} />
+                        <span className="uppercase tracking-widest">Nhật ký</span>
                       </button>
-
-
                     </div>
 
                     {activeTab === 'info' && (
-                      <div className="space-y-6 animate-in fade-in duration-200">
-                        {/* Khối 1: Tiêu đề */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề gốc</label>
+                      <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Tiêu đề gốc</label>
                             <input
                               ref={refs.title}
                               type="text"
                               required
                               value={formData.title}
                               onChange={e => setFormData({ ...formData, title: e.target.value })}
-                              className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted ${isAnimating && errors.title ? 'scale-105' : ''}`}
-                              placeholder="Tên gốc (ví dụ: The Revenant)..."
+                              className={`w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 text-base font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50 ${isAnimating && errors.title ? 'scale-[1.02] border-error/50' : ''}`}
+                              placeholder="Tên gốc của phim..."
                             />
                           </div>
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề tiếng Việt</label>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Tiêu đề tiếng Việt</label>
                             <input
                               type="text"
                               value={formData.title_vi}
                               onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
-                              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted"
-                              placeholder="Tên tiếng Việt (nếu có)..."
+                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 text-base font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50"
+                              placeholder="Tên tiếng Việt..."
                             />
                           </div>
                         </div>
 
-                        <div className="space-y-1.5 mt-4">
-                          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Link ảnh Poster</label>
+                        <div className="space-y-2 mt-4">
+                          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">URL Ảnh Poster</label>
                           <input
                             type="text"
                             value={formData.poster}
                             onChange={e => setFormData({ ...formData, poster: e.target.value })}
-                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder-text-muted"
-                            placeholder="Dán link ảnh poster (https://...) vào đây..."
+                            className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 text-sm font-medium text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+                            placeholder="https://..."
                           />
                         </div>
 
-                        {/* Khối 2: Chi tiết phim */}
                         <MovieFormFields
                           isManualMode={isManualMode}
                           manualMediaType={manualMediaType}
@@ -195,8 +194,7 @@ const AddMovieModal: React.FC = () => {
                     )}
 
                     {activeTab === 'review' && (
-                      <div className="space-y-6 animate-in fade-in duration-200">
-                        {/* Khối 3: Trải nghiệm cá nhân */}
+                      <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
                         <StatusToggle status={status} setStatus={setStatus} />
 
                         {status === 'history' && (
@@ -211,35 +209,34 @@ const AddMovieModal: React.FC = () => {
                         )}
 
                         {status === 'history' && (
-                          <div className="space-y-2 animate-in fade-in duration-300">
-                            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Review ngắn</label>
+                          <div className="space-y-3 animate-in fade-in duration-300">
+                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Review & Cảm nhận</label>
                             <textarea
-                              rows={3}
+                              rows={4}
                               value={formData.review}
                               onChange={e => setFormData({ ...formData, review: e.target.value })}
-                              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/20 outline-none transition-all custom-scrollbar resize-none hover:border-black/20 dark:hover:border-white/20"
-                              placeholder="Cảm nhận của bạn về phim..."
+                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-[24px] px-5 py-4 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all custom-scrollbar resize-none hover:border-border-default/80"
+                              placeholder="Bạn thấy phim này thế nào?"
                             />
                           </div>
                         )}
 
                         {status === 'history' && (
-
-                          <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
-                            <div className="space-y-1.5">
-                              <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Ngày xem</label>
+                          <div className="grid grid-cols-2 gap-6 animate-in fade-in duration-300">
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Ngày xem</label>
                               <CustomDatePicker
                                 value={formData.date}
                                 onChange={(val) => setFormData({ ...formData, date: val })}
-                                placeholder="Chọn ngày xem..."
+                                placeholder="Chọn ngày..."
                               />
                             </div>
-                            <div className="space-y-1.5">
-                              <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Giờ xem</label>
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Giờ xem</label>
                               <CustomTimePicker
                                 value={formData.time}
                                 onChange={(val) => setFormData({ ...formData, time: val })}
-                                placeholder="Chọn giờ xem..."
+                                placeholder="Chọn giờ..."
                               />
                             </div>
                           </div>
@@ -275,28 +272,27 @@ const AddMovieModal: React.FC = () => {
                         )}
                       </div>
                     )}
-
                   </div>
                 </form>
               )}
             </div>
 
             {/* Footer */}
-            <div className="px-8 py-5 border-t border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur flex justify-end gap-3 shrink-0">
+            <div className="px-8 py-6 border-t border-border-default bg-surface/90 backdrop-blur-xl flex justify-end gap-3 shrink-0">
               <button
                 type="button"
                 onClick={closeAddModal}
-                className="px-6 py-3 rounded-xl text-sm font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                className="px-8 py-3.5 rounded-2xl text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
               >
                 {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:active:scale-100 shadow-lg shadow-primary/20 cursor-pointer"
+                className="bg-primary hover:shadow-premium text-white px-8 py-3.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-                {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}
+                {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Cập nhật' : 'Lưu phim')}
               </button>
             </div>
           </motion.div>

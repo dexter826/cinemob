@@ -164,7 +164,7 @@ const AlbumDetailPage: React.FC = () => {
             <ArrowLeft size={18} />
             <span>Quay lại danh sách album</span>
           </button>
-          <div className="border border-black/10 dark:border-white/10 rounded-2xl p-10 text-center">
+          <div className="border border-border-default rounded-2xl p-10 text-center">
             <p className="text-lg font-medium mb-2">Không tìm thấy album</p>
             <p className="text-text-muted text-sm">
               Có thể album đã bị xóa hoặc bạn không có quyền truy cập.
@@ -179,42 +179,56 @@ const AlbumDetailPage: React.FC = () => {
     <div className="min-h-screen bg-background text-text-main pb-20">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex items-center gap-4 min-w-0">
             <button
               type="button"
               onClick={() => navigate('/albums')}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-text-main shrink-0"
+              className="w-12 h-12 rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={22} />
             </button>
             <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Film className="text-primary" size={24} />
-                <h1 className="text-xl md:text-2xl font-bold truncate">{album.name}</h1>
+              <div className="flex items-center gap-3 mb-1.5">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+                  <Film className="text-primary" size={16} />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold truncate tracking-tight">{album.name}</h1>
               </div>
-              <p className="text-xs text-text-muted mt-1">
+              <p className="text-xs text-text-muted font-medium opacity-60 ml-1">
                 {album.movieDocIds.length} phim · Tạo ngày {formatMovieDate(album.createdAt)}
               </p>
             </div>
           </div>
 
-          <div className="flex items-stretch gap-2 w-full md:w-auto md:justify-end">
+          <div className="flex items-stretch gap-3 w-full md:w-auto md:justify-end">
             <button
               type="button"
               onClick={() => setManagingMovies(v => !v)}
-              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+              className={`
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all border
+                ${managingMovies 
+                  ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
+                  : 'bg-surface border-border-default text-text-main hover:border-primary/50 shadow-premium'
+                }
+              `}
             >
-              <PlusCircle size={16} />
-              <span>{managingMovies ? 'Đóng danh sách phim' : 'Thêm phim đã xem'}</span>
+              <PlusCircle size={18} />
+              <span>{managingMovies ? 'Đóng quản lý' : 'Thêm phim'}</span>
             </button>
             <button
               type="button"
               onClick={() => setEditing(v => !v)}
-              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm bg-surface border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+              className={`
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all border
+                ${editing 
+                  ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
+                  : 'bg-surface border-border-default text-text-main hover:border-primary/50 shadow-premium'
+                }
+              `}
             >
-              {editing ? <XIcon size={16} /> : <Edit2 size={16} />}
-              <span>{editing ? 'Hủy' : 'Sửa thông tin'}</span>
+              {editing ? <XIcon size={18} /> : <Edit2 size={18} />}
+              <span>{editing ? 'Hủy' : 'Sửa tên'}</span>
             </button>
           </div>
         </div>
@@ -222,31 +236,31 @@ const AlbumDetailPage: React.FC = () => {
         {editing && (
           <form
             onSubmit={handleSaveInfo}
-            className="bg-surface border border-black/10 dark:border-white/10 rounded-2xl p-4 md:p-5"
+            className="bg-surface border border-border-default rounded-3xl p-6 shadow-premium animate-in fade-in slide-in-from-top-2 duration-300"
           >
-            <div className="flex flex-col md:flex-row md:items-end gap-4">
-              <div className="flex-1 flex items-center gap-3">
-                <label className="text-sm font-medium text-text-muted whitespace-nowrap">Tên album</label>
+            <div className="flex flex-col md:flex-row md:items-end gap-6">
+              <div className="flex-1 space-y-2">
+                <label className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tên album mới</label>
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-background border border-black/10 dark:border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-primary/50 text-sm"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-5 py-3.5 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-sm font-medium transition-all"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 py-2 rounded-xl text-sm text-text-muted hover:bg-black/5 dark:hover:bg-white/5"
+                  className="px-6 py-3 rounded-2xl text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-all"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-xl text-sm bg-primary text-white font-medium hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-8 py-3.5 rounded-2xl text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-all"
                 >
                   {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </button>
@@ -256,14 +270,21 @@ const AlbumDetailPage: React.FC = () => {
         )}
 
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Phim trong album</h2>
-            <span className="text-sm text-text-muted">{albumMovies.length} phim</span>
+          <div className="flex items-center justify-between border-b border-border-default pb-4">
+            <h2 className="text-xl font-bold tracking-tight">Phim trong album</h2>
+            <span className="text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest">
+              {albumMovies.length} phim
+            </span>
           </div>
 
           {albumMovies.length === 0 ? (
-            <div className="border border-dashed border-black/10 dark:border-white/10 rounded-2xl p-10 text-center text-sm text-text-muted">
-              Chưa có phim nào trong album này. Nhấn "Thêm phim đã xem" để thêm từ lịch sử xem của bạn.
+            <div className="flex flex-col items-center justify-center py-20 bg-surface rounded-3xl border border-border-default shadow-premium">
+              <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default">
+                <Film className="text-text-muted opacity-40" size={32} />
+              </div>
+              <p className="text-text-muted/60 text-sm font-medium max-w-xs text-center">
+                Chưa có phim nào trong album này. Hãy nhấn "Thêm phim" để bắt đầu bộ sưu tập.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
@@ -281,43 +302,43 @@ const AlbumDetailPage: React.FC = () => {
         </div>
 
         {managingMovies && (
-          <div className="space-y-4">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <h2 className="text-lg font-semibold">Chọn thêm phim đã xem</h2>
-              <div className="flex items-center gap-3">
-                <div className="relative flex-1 md:w-64">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-t border-border-default pt-8">
+              <h2 className="text-xl font-bold tracking-tight">Chọn thêm phim</h2>
+              <div className="flex items-center gap-4">
+                <div className="relative group flex-1 md:w-80">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={18} />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    placeholder="Tìm kiếm phim..."
-                    className="w-full bg-surface border border-black/10 dark:border-white/10 rounded-xl pl-10 pr-4 py-2 focus:outline-none focus:border-primary/50 text-sm"
+                    placeholder="Tìm trong lịch sử xem..."
+                    className="w-full bg-surface border border-border-default rounded-2xl pl-12 pr-4 py-3 focus:outline-none focus:border-primary/50 text-sm font-medium shadow-sm transition-all"
                   />
                 </div>
-                <span className="text-sm text-text-muted whitespace-nowrap">
+                <span className="text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest whitespace-nowrap">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>
             </div>
 
             {availableMovies.length === 0 ? (
-              <div className="border border-dashed border-black/10 dark:border-white/10 rounded-2xl p-8 text-center text-sm text-text-muted">
-                Tất cả phim đã xem của bạn đều đã nằm trong album này.
+              <div className="flex flex-col items-center justify-center py-16 bg-surface/50 rounded-3xl border border-dashed border-border-default">
+                <p className="text-text-muted/60 text-sm font-medium">Tất cả phim trong lịch sử đều đã có trong album.</p>
               </div>
             ) : filteredAvailableMovies.length === 0 ? (
-              <div className="border border-dashed border-black/10 dark:border-white/10 rounded-2xl p-8 text-center text-sm text-text-muted">
-                Không tìm thấy phim nào phù hợp với từ khóa "{searchQuery}".
+              <div className="flex flex-col items-center justify-center py-16 bg-surface/50 rounded-3xl border border-dashed border-border-default">
+                <p className="text-text-muted/60 text-sm font-medium">Không tìm thấy phim phù hợp với "{searchQuery}"</p>
               </div>
             ) : (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                   {paginatedMovies.map(movie => (
-                    <div key={movie.docId} className="relative">
+                    <div key={movie.docId} className="relative group">
                       <button
                         type="button"
                         onClick={() => handleAddMovie(movie)}
-                        className="w-full text-left group"
+                        className="w-full text-left"
                       >
                         <MovieCard
                           movie={movie}
@@ -325,10 +346,10 @@ const AlbumDetailPage: React.FC = () => {
                           onEdit={() => {}}
                           onDelete={() => {}}
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-xl flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-all rounded-3xl flex items-center justify-center backdrop-blur-[2px] opacity-0 group-hover:opacity-100 border border-transparent group-hover:border-primary/50">
                           <PlusCircle
-                            className="opacity-0 group-hover:opacity-100 transition-opacity text-white"
-                            size={32}
+                            className="text-white drop-shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300"
+                            size={48}
                           />
                         </div>
                       </button>
@@ -336,11 +357,13 @@ const AlbumDetailPage: React.FC = () => {
                   ))}
                 </div>
 
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
+                <div className="pt-4">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
               </>
             )}
           </div>

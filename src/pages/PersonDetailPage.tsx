@@ -184,122 +184,130 @@ const PersonDetailPage: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer"
+            className="w-12 h-12 rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
           >
-            <ArrowLeft size={24} />
+            <ArrowLeft size={22} />
           </button>
-          <h1 className="text-2xl font-bold">{person.name}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{person.name}</h1>
         </div>
 
         {/* Person Info Section */}
-        <div className="bg-surface border border-black/10 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row gap-6">
+        <div className="bg-surface border border-border-default rounded-3xl p-8 shadow-premium overflow-hidden relative">
+          <div className="flex flex-col md:flex-row gap-8 relative z-10">
             {/* Person Image */}
             <div className="flex justify-center md:justify-start shrink-0">
-              <img
-                src={getTMDBImageUrl(person.profile_path, 'h632')}
-                alt={person.name}
-                className="w-48 h-72 object-cover rounded-xl shadow-lg"
-              />
+              <div className="relative group">
+                <img
+                  src={getTMDBImageUrl(person.profile_path, 'h632')}
+                  alt={person.name}
+                  className="w-56 h-80 object-cover rounded-2xl shadow-premium border border-white/10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
             </div>
 
             {/* Person Details */}
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-6">
               <div>
-                <h2 className="text-xl font-semibold text-text-main mb-4">Thông tin cá nhân</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <User size={18} className="text-primary" />
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-text-main tracking-tight">Thông tin cá nhân</h2>
+                  <div className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-lg border border-primary/20">
+                    TMDB ID: {person.id}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <User size={18} className="text-primary" />
+                      </div>
                       <div>
-                        <div className="text-sm text-text-muted">Nghề nghiệp</div>
-                        <div className="font-medium">{person.known_for_department || 'Không rõ'}</div>
+                        <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Nghề nghiệp</div>
+                        <div className="font-bold text-sm">{person.known_for_department || 'N/A'}</div>
                       </div>
                     </div>
 
                     {person.birthday && (
-                      <div className="flex items-center gap-3">
-                        <Calendar size={18} className="text-primary" />
+                      <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                          <Calendar size={18} className="text-primary" />
+                        </div>
                         <div>
-                          <div className="text-sm text-text-muted">Ngày sinh</div>
-                          <div className="font-medium">{new Date(person.birthday).toLocaleDateString('vi-VN')}</div>
+                          <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Ngày sinh</div>
+                          <div className="font-bold text-sm">{new Date(person.birthday).toLocaleDateString('vi-VN')}</div>
                         </div>
                       </div>
                     )}
 
                     {person.deathday && (
-                      <div className="flex items-center gap-3">
-                        <Calendar size={18} className="text-red-400" />
-                        <div>
-                          <div className="text-sm text-text-muted">Ngày mất</div>
-                          <div className="font-medium">{new Date(person.deathday).toLocaleDateString('vi-VN')}</div>
+                      <div className="flex items-center gap-4 p-3 bg-error/5 rounded-2xl border border-error/20">
+                        <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center border border-error/20">
+                          <Calendar size={18} className="text-error" />
                         </div>
-                      </div>
-                    )}
-
-                    {person.birthday && !person.deathday && (
-                      <div className="flex items-center gap-3">
-                        <Users size={18} className="text-primary" />
                         <div>
-                          <div className="text-sm text-text-muted">Tuổi</div>
-                          <div className="font-medium">{new Date().getFullYear() - new Date(person.birthday).getFullYear()}</div>
+                          <div className="text-[10px] font-bold text-error uppercase tracking-widest opacity-60">Ngày mất</div>
+                          <div className="font-bold text-sm text-error">{new Date(person.deathday).toLocaleDateString('vi-VN')}</div>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="space-y-3">
-                    {person.gender !== undefined && (
-                      <div className="flex items-center gap-3">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                         <Users size={18} className="text-primary" />
-                        <div>
-                          <div className="text-sm text-text-muted">Giới tính</div>
-                          <div className="font-medium">
-                            {person.gender === 1 ? 'Nữ' : person.gender === 2 ? 'Nam' : 'Không rõ'}
-                          </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Giới tính / Tuổi</div>
+                        <div className="font-bold text-sm">
+                          {person.gender === 1 ? 'Nữ' : person.gender === 2 ? 'Nam' : 'N/A'} 
+                          {person.birthday && !person.deathday && ` · ${new Date().getFullYear() - new Date(person.birthday).getFullYear()} tuổi`}
                         </div>
                       </div>
-                    )}
+                    </div>
 
-                    <div className="flex items-center gap-3">
-                      <Star size={18} className="text-primary" />
+                    <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
+                      <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center border border-warning/20">
+                        <Star size={18} className="text-warning" />
+                      </div>
                       <div>
-                        <div className="text-sm text-text-muted">Độ phổ biến</div>
-                        <div className="font-medium">{person.popularity?.toFixed(1) || 'N/A'}</div>
+                        <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Độ phổ biến</div>
+                        <div className="font-bold text-sm">{person.popularity?.toFixed(1) || 'N/A'}</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {person.place_of_birth && (
-                  <div className="mt-4">
-                    <div className="flex items-center gap-3">
+                  <div className="mt-4 flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                       <MapPin size={18} className="text-primary" />
-                      <div>
-                        <div className="text-sm text-text-muted">Nơi sinh</div>
-                        <div className="font-medium">{person.place_of_birth}</div>
-                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Nơi sinh</div>
+                      <div className="font-bold text-sm">{person.place_of_birth}</div>
                     </div>
                   </div>
                 )}
               </div>
 
               {person.biography && (
-                <div>
-                  <h2 className="text-xl font-semibold text-text-main mb-3">Tiểu sử</h2>
-                  <div className="text-text-muted leading-relaxed">
-                    <p className={showFullBio ? '' : 'line-clamp-3'}>
+                <div className="pt-4 border-t border-border-default">
+                  <h2 className="text-lg font-bold text-text-main mb-3 tracking-tight">Tiểu sử</h2>
+                  <div className="text-text-muted leading-relaxed text-sm">
+                    <p className={showFullBio ? 'whitespace-pre-wrap' : 'line-clamp-4'}>
                       {person.biography}
                     </p>
                     {person.biography.length > 200 && (
                       <button
                         onClick={() => setShowFullBio(!showFullBio)}
-                        className="mt-2 text-primary hover:text-primary/80 font-medium transition-colors cursor-pointer"
+                        className="mt-3 text-primary hover:text-primary-dark font-bold text-xs uppercase tracking-widest flex items-center gap-1 transition-all cursor-pointer"
                       >
                         {showFullBio ? (
-                          <>Thu gọn <ChevronUp size={16} className="inline ml-1" /></>
+                          <>Thu gọn <ChevronUp size={14} /></>
                         ) : (
-                          <>Xem thêm <ChevronDown size={16} className="inline ml-1" /></>
+                          <>Xem thêm <ChevronDown size={14} /></>
                         )}
                       </button>
                     )}
@@ -311,62 +319,63 @@ const PersonDetailPage: React.FC = () => {
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex flex-col items-end gap-3 relative md:flex-1">
-            <div className="flex items-center gap-2 w-full">
-              <div className="relative group flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm phim..."
-                  className="w-full bg-surface border-2 border-black/10 dark:border-white/10 rounded-xl py-2 pl-10 pr-8 text-sm text-text-main focus:outline-none focus:border-primary/50 transition-all"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-
-              <button
-                onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-                className={`p-2 rounded-xl border-2 transition-colors cursor-pointer ${showFilters ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-surface border-black/10 dark:border-white/10 text-text-muted hover:border-primary/30'}`}
-              >
-                {showFilters ? <X size={20} /> : <Filter size={20} />}
-              </button>
+        <div className="flex flex-col md:flex-row md:items-center gap-6 pt-4">
+          <div className="flex items-center gap-3 relative md:flex-1">
+            <div className="relative group flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={18} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm phim của nghệ sĩ này..."
+                className="w-full bg-surface border border-border-default rounded-2xl py-3 pl-12 pr-10 text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 shadow-premium transition-all"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')} 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-muted transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
 
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
+              className={`w-12 h-12 flex items-center justify-center rounded-2xl border transition-all shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
+            >
+              <Filter size={20} />
+            </button>
+
             {showFilters && (
-              <div ref={filterRef} className="absolute top-full right-0 mt-2 z-20 bg-surface p-4 rounded-xl border border-black/10 dark:border-white/10 shadow-xl flex flex-col gap-4 min-w-[280px]">
-                <div className="space-y-2">
-                  <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Sắp xếp</div>
-                  <div className="flex gap-2">
-                    <button onClick={() => setSortBy('year')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'year' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}>
+              <div ref={filterRef} className="absolute top-full left-0 md:left-auto md:right-0 mt-3 z-30 bg-surface/95 backdrop-blur-2xl p-6 rounded-3xl border border-border-default shadow-premium flex flex-col gap-6 min-w-[320px] animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="space-y-3">
+                  <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setSortBy('year')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                       <Calendar size={14} /> <span>Năm</span>
                     </button>
-                    <button onClick={() => setSortBy('title')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${sortBy === 'title' ? 'bg-primary/10 text-primary' : 'bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main'}`}>
+                    <button onClick={() => setSortBy('title')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                       <Type size={14} /> <span>Tên</span>
                     </button>
-                    <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 text-text-muted hover:text-text-main transition-colors cursor-pointer">
+                    <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-black/5 dark:bg-white/5 text-text-muted hover:bg-black/10 dark:hover:bg-white/10 transition-all border border-transparent cursor-pointer ml-auto">
                       {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                       <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="h-px bg-black/10 dark:bg-white/10" />
+                <div className="h-px bg-border-default" />
 
-                <div className="space-y-3">
-                  <div className="text-xs font-semibold text-text-muted uppercase tracking-wider">Lọc</div>
-                  <div>
-                    <label className="text-xs text-text-muted mb-1.5 block">Năm phát hành</label>
+                <div className="space-y-4">
+                  <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Lọc nâng cao</div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1">Năm phát hành</label>
                     <MultiSelectDropdown
                       options={availableYears.map(year => ({ value: year, label: year }))}
                       values={selectedYears}
                       onChange={(values) => setSelectedYears(values.map(v => v.toString()))}
-                      placeholder="Chọn năm"
+                      placeholder="Tất cả các năm"
                     />
                   </div>
                 </div>
@@ -375,17 +384,17 @@ const PersonDetailPage: React.FC = () => {
           </div>
 
           {paginatedMovies.length > 0 && (
-            <div className="md:flex-1 md:flex md:justify-end">
-              <p className="text-text-muted text-sm">
-                Hiển thị {paginatedMovies.length} / {filteredMovies.length} phim
-              </p>
+            <div className="flex items-center justify-end">
+              <span className="text-[10px] font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest">
+                Hiển thị {paginatedMovies.length} / {filteredMovies.length} mục
+              </span>
             </div>
           )}
         </div>
 
         {/* Results */}
         {paginatedMovies.length > 0 ? (
-          <>
+          <div className="space-y-8">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {paginatedMovies.map((movie) => (
                 <TMDBMovieCard
@@ -399,22 +408,22 @@ const PersonDetailPage: React.FC = () => {
             </div>
 
             {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
+              <div className="pt-4">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             )}
-          </>
+          </div>
         ) : (
-          <div className="border-2 border-dashed border-black/10 dark:border-white/10 rounded-3xl p-12 flex flex-col items-center justify-center text-center space-y-4">
-            <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center">
-              <Film className="text-text-muted" size={32} />
+          <div className="flex flex-col items-center justify-center py-24 bg-surface rounded-3xl border border-border-default shadow-premium">
+            <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-border-default">
+              <Film className="text-text-muted opacity-40" size={40} />
             </div>
-            <div>
-              <h3 className="text-lg font-medium text-text-main">Không tìm thấy phim nào</h3>
-              <p className="text-text-muted max-w-xs mx-auto text-sm">Thử điều chỉnh bộ lọc hoặc tìm kiếm khác</p>
-            </div>
+            <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight">Không tìm thấy phim</h3>
+            <p className="text-text-muted/60 text-sm max-w-xs text-center">Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm khác</p>
           </div>
         )}
       </div>

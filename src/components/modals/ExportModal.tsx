@@ -119,14 +119,14 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-surface border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-surface border border-border-default rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-premium"
             onClick={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border-default bg-surface/95 backdrop-blur">
           <h2 className="text-xl font-bold text-text-main">Xuất dữ liệu</h2>
           <button
             onClick={onClose}
@@ -234,7 +234,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-black/10 dark:border-white/10">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border-default">
             <button
               type="button"
               onClick={onClose}

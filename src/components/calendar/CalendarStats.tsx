@@ -17,48 +17,48 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
   thisWeekEpisodesCount
 }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Tv size={20} className="text-primary" />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+      <div className="bg-surface border border-border-default rounded-2xl p-6 shadow-premium group hover:scale-[1.02] transition-all duration-300">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors shadow-sm">
+            <Tv size={24} className="text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-main">{tvSeriesCount}</p>
-            <p className="text-sm text-text-secondary">Series trong bộ sưu tập</p>
+            <p className="text-3xl font-bold text-text-main tracking-tight leading-none">{tvSeriesCount}</p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-widest mt-2 opacity-60">Series phim</p>
           </div>
         </div>
       </div>
-      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Bell size={20} className="text-primary" />
+      <div className="bg-surface border border-border-default rounded-2xl p-6 shadow-premium group hover:scale-[1.02] transition-all duration-300">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors shadow-sm">
+            <Bell size={24} className="text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-main">{upcomingEpisodesCount}</p>
-            <p className="text-sm text-text-secondary">Tập sắp chiếu</p>
+            <p className="text-3xl font-bold text-text-main tracking-tight leading-none">{upcomingEpisodesCount}</p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-widest mt-2 opacity-60">Sắp chiếu</p>
           </div>
         </div>
       </div>
-      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Calendar size={20} className="text-primary" />
+      <div className="bg-surface border border-border-default rounded-2xl p-6 shadow-premium group hover:scale-[1.02] transition-all duration-300">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors shadow-sm">
+            <Calendar size={24} className="text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-main">{todayEpisodesCount}</p>
-            <p className="text-sm text-text-secondary">Hôm nay</p>
+            <p className="text-3xl font-bold text-text-main tracking-tight leading-none">{todayEpisodesCount}</p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-widest mt-2 opacity-60">Hôm nay</p>
           </div>
         </div>
       </div>
-      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Clock size={20} className="text-primary" />
+      <div className="bg-surface border border-border-default rounded-2xl p-6 shadow-premium group hover:scale-[1.02] transition-all duration-300">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors shadow-sm">
+            <Clock size={24} className="text-primary" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-text-main">{thisWeekEpisodesCount}</p>
-            <p className="text-sm text-text-secondary">Tuần này</p>
+            <p className="text-3xl font-bold text-text-main tracking-tight leading-none">{thisWeekEpisodesCount}</p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-widest mt-2 opacity-60">Tuần này</p>
           </div>
         </div>
       </div>

@@ -21,14 +21,19 @@ const RatingSection: React.FC<RatingSectionProps> = ({
   return (
     <div 
       ref={ratingRef} 
-      className={`bg-black/5 dark:bg-white/5 rounded-xl p-4 space-y-3 transition-transform duration-500 ${
-        isAnimating ? 'scale-110' : ''
+      className={`bg-black/5 dark:bg-white/5 rounded-[24px] p-6 space-y-4 transition-all duration-500 border border-border-default ${
+        isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : 'shadow-premium'
       }`}
     >
-      <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">
-        Đánh giá
-      </label>
-      <div className="flex justify-between px-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">
+          Đánh giá phim
+        </label>
+        <div className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg border border-primary/20">
+          {rating > 0 ? `${rating} / 5` : 'Chưa đánh giá'}
+        </div>
+      </div>
+      <div className="flex justify-between max-w-xs mx-auto">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -36,14 +41,14 @@ const RatingSection: React.FC<RatingSectionProps> = ({
             onClick={() => setRating(star)}
             onMouseEnter={() => setHoverRating(star)}
             onMouseLeave={() => setHoverRating(0)}
-            className="group p-1 focus:outline-none"
+            className="group p-2 focus:outline-none transition-transform active:scale-90"
           >
             <Star
-              size={28}
-              className={`transition-all duration-200 ${
+              size={32}
+              className={`transition-all duration-300 ${
                 star <= (hoverRating || rating)
-                  ? 'fill-yellow-500 text-yellow-500 scale-110'
-                  : 'text-text-muted/40 group-hover:text-yellow-500/50 group-hover:scale-110'
+                  ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
+                  : 'text-text-muted/30 group-hover:text-warning/50 group-hover:scale-110'
               }`}
             />
           </button>

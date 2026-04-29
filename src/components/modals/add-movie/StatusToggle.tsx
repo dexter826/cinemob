@@ -7,14 +7,14 @@ interface StatusToggleProps {
 
 const StatusToggle: React.FC<StatusToggleProps> = ({ status, setStatus }) => {
   return (
-    <div className="bg-black/5 dark:bg-white/5 p-1 rounded-xl flex">
+    <div className="bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl flex border border-border-default gap-1">
       <button
         type="button"
         onClick={() => setStatus('history')}
-        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+        className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 uppercase tracking-widest ${
           status === 'history'
-            ? 'bg-surface shadow-sm text-primary'
-            : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+            ? 'bg-surface shadow-premium text-primary border border-border-default'
+            : 'text-text-muted hover:text-text-main hover:bg-surface/50'
         }`}
       >
         Đã xem
@@ -22,10 +22,10 @@ const StatusToggle: React.FC<StatusToggleProps> = ({ status, setStatus }) => {
       <button
         type="button"
         onClick={() => setStatus('watchlist')}
-        className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+        className={`flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 uppercase tracking-widest ${
           status === 'watchlist'
-            ? 'bg-surface shadow-sm text-primary'
-            : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
+            ? 'bg-surface shadow-premium text-primary border border-border-default'
+            : 'text-text-muted hover:text-text-main hover:bg-surface/50'
         }`}
       >
         Sẽ xem

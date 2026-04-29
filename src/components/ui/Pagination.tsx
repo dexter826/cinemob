@@ -52,9 +52,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         type="button"
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="p-2.5 rounded-xl bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30 transition-all shadow-sm cursor-pointer"
+        className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-all shadow-premium cursor-pointer"
       >
-        <ArrowDown size={20} className="rotate-90" />
+        <ArrowDown size={18} className="rotate-90" />
       </button>
 
       {/* Desktop Pagination */}
@@ -69,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           if (!showPage) {
             if (page === currentPage - 2 || page === currentPage + 2) {
               return (
-                <span key={page} className="px-1 text-text-muted select-none">
+                <span key={page} className="px-1 text-text-muted select-none opacity-50">
                   •••
                 </span>
               );
@@ -82,9 +82,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
               key={page}
               type="button"
               onClick={() => handlePageChange(page)}
-              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
-                ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                : 'bg-surface border border-black/10 dark:border-white/10 text-text-main hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30'
+              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold transition-all cursor-pointer ${isActive
+                ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
                 }`}
             >
               {page}
@@ -94,9 +94,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       </div>
 
       {/* Mobile Pagination with Input */}
-      <div className="md:hidden flex items-center gap-2">
-        <span className="text-sm text-text-muted">Trang</span>
-        <form onSubmit={handleInputSubmit} className="flex items-center gap-1">
+      <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-xl shadow-premium">
+        <span className="text-xs font-medium text-text-muted">Trang</span>
+        <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
           <input
             type="number"
             min={1}
@@ -104,9 +104,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleInputBlur}
-            className="w-12 h-8 px-2 text-center bg-surface border border-black/10 dark:border-white/10 rounded-lg text-sm text-text-main focus:outline-none focus:border-primary/50"
+            className="w-10 h-7 text-center bg-black/5 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-text-main focus:ring-1 focus:ring-primary/50 outline-none"
           />
-          <span className="text-sm text-text-muted">/ {totalPages}</span>
+          <span className="text-xs font-bold text-text-muted opacity-50">/ {totalPages}</span>
         </form>
       </div>
 
@@ -115,9 +115,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         type="button"
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="p-2.5 rounded-xl bg-surface border border-black/10 dark:border-white/10 text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 hover:border-primary/30 transition-all shadow-sm cursor-pointer"
+        className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-all shadow-premium cursor-pointer"
       >
-        <ArrowDown size={20} className="-rotate-90" />
+        <ArrowDown size={18} className="-rotate-90" />
       </button>
     </div>
   );

@@ -36,7 +36,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full bg-surface border-2 border-black/10 dark:border-white/10 rounded-2xl py-3.5 pl-12 pr-32 focus:outline-none focus:border-primary/50 transition-all shadow-sm text-base md:text-lg text-text-main placeholder-text-muted"
+          className="w-full bg-surface border-2 border-border-default rounded-2xl py-3.5 pl-12 pr-32 focus:outline-none focus:border-primary/50 transition-all shadow-sm text-base md:text-lg text-text-main placeholder-text-muted"
           autoFocus
         />
 
@@ -59,7 +59,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-black/5 dark:border-white/5 rounded-xl px-3 py-2">
+        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default rounded-xl px-3 py-2">
           <Filter size={16} className="text-text-muted" />
           <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Lọc theo</span>
         </div>

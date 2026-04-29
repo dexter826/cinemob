@@ -14,27 +14,27 @@ const DashboardActions: React.FC<DashboardActionsProps> = ({ onOpenAddModal }) =
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
       <button
         onClick={() => navigate('/search')}
-        className="w-full bg-linear-to-br from-primary/80 to-primary hover:to-primary/90 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-lg shadow-primary/20 cursor-pointer"
+        className="w-full bg-linear-to-br from-primary/90 to-primary hover:to-primary/90 p-7 rounded-3xl flex items-center justify-between group transition-all shadow-xl shadow-primary/20 cursor-pointer border border-white/10"
       >
         <div>
-          <p className="text-white/90 text-sm font-medium mb-1 text-left">Thêm vào bộ sưu tập</p>
-          <h3 className="text-2xl font-bold text-white text-left">Ghi lại phim</h3>
+          <p className="text-white/80 text-xs font-bold uppercase tracking-wider mb-2 text-left">Thêm vào bộ sưu tập</p>
+          <h3 className="text-3xl font-bold text-white text-left tracking-tight">Ghi lại phim</h3>
         </div>
-        <div className="bg-white/20 p-3 rounded-xl group-hover:rotate-90 transition-transform duration-300">
-          <Search size={24} className="text-white" />
+        <div className="bg-white/10 p-4 rounded-2xl group-hover:rotate-12 transition-transform duration-500 backdrop-blur-md border border-white/10">
+          <Search size={28} className="text-white" />
         </div>
       </button>
 
       <button
         onClick={onOpenAddModal}
-        className="w-full bg-surface border border-black/5 dark:border-white/10 hover:border-primary/50 p-6 rounded-2xl flex items-center justify-between group transition-all shadow-sm hover:shadow-md cursor-pointer"
+        className="w-full bg-surface border border-border-default hover:border-primary/50 p-7 rounded-3xl flex items-center justify-between group transition-all shadow-premium hover:shadow-premium-hover cursor-pointer"
       >
         <div>
-          <p className="text-text-muted text-sm font-medium mb-1 text-left">Không tìm thấy phim?</p>
-          <h3 className="text-2xl font-bold text-text-main text-left">Thêm thủ công</h3>
+          <p className="text-text-muted text-xs font-bold uppercase tracking-wider mb-2 text-left opacity-60">Không tìm thấy phim?</p>
+          <h3 className="text-3xl font-bold text-text-main text-left tracking-tight">Thêm thủ công</h3>
         </div>
-        <div className="bg-black/5 dark:bg-white/10 p-3 rounded-xl group-hover:bg-primary/10 group-hover:rotate-90 transition-all duration-300">
-          <Plus size={24} className="text-text-main group-hover:text-primary transition-colors" />
+        <div className="bg-black/5 dark:bg-white/5 p-4 rounded-2xl group-hover:bg-primary/10 group-hover:rotate-12 transition-all duration-500 border border-border-default">
+          <Plus size={28} className="text-text-main group-hover:text-primary transition-colors" />
         </div>
       </button>
     </div>

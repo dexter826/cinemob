@@ -10,19 +10,19 @@ const ToastContainer: React.FC = () => {
       {toasts.map(toast => (
         <div
           key={toast.id}
-          className={`flex items-center p-4 rounded-xl shadow-lg border backdrop-blur-md animate-slide-down transition-all ${
-            toast.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-            toast.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-            'bg-blue-500/10 border-blue-500/20 text-blue-400'
+          className={`flex items-center p-4 rounded-2xl shadow-premium border backdrop-blur-xl animate-slide-down transition-all ${
+            toast.type === 'success' ? 'bg-success/10 border-success/20 text-success' :
+            toast.type === 'error' ? 'bg-error/10 border-error/20 text-error' :
+            'bg-info/10 border-info/20 text-info'
           }`}
         >
-          {toast.type === 'success' && <CheckCircle size={20} className="mr-3" />}
-          {toast.type === 'error' && <AlertCircle size={20} className="mr-3" />}
-          {toast.type === 'info' && <Info size={20} className="mr-3" />}
-          <span className="text-sm font-medium mr-8">{toast.message}</span>
+          {toast.type === 'success' && <CheckCircle size={18} className="mr-3" />}
+          {toast.type === 'error' && <AlertCircle size={18} className="mr-3" />}
+          {toast.type === 'info' && <Info size={18} className="mr-3" />}
+          <span className="text-sm font-bold mr-8 tracking-tight">{toast.message}</span>
           <button
             onClick={() => removeToast(toast.id)}
-            className="hover:bg-white/10 rounded-full p-1 transition-colors"
+            className="hover:bg-black/10 dark:hover:bg-white/10 rounded-full p-1 transition-colors cursor-pointer"
           >
             <X size={14} />
           </button>
