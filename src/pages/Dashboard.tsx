@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/providers/AuthProvider';
 import { Film, AlertTriangle } from 'lucide-react';
 import MovieCard from '../components/ui/MovieCard';
-import Navbar from '../components/layout/Navbar';
 import Pagination from '../components/ui/Pagination';
 import Loading from '../components/ui/Loading';
 import { TMDB_API_KEY } from '../constants';
@@ -77,9 +76,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20 transition-colors duration-300">
-      <Navbar />
-
+    <div className="text-text-main transition-colors duration-300">
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         
         <DashboardActions onOpenAddModal={() => openAddModal()} />

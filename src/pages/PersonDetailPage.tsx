@@ -9,7 +9,6 @@ import { getTMDBImageUrl } from '../utils/movieUtils';
 import Loading from '../components/ui/Loading';
 import Pagination from '../components/ui/Pagination';
 import MultiSelectDropdown from '../components/ui/MultiSelectDropdown';
-import Navbar from '../components/layout/Navbar';
 import useAddMovieStore from '../stores/addMovieStore';
 
 const PersonDetailPage: React.FC = () => {
@@ -156,8 +155,7 @@ const PersonDetailPage: React.FC = () => {
 
   if (error || !person) {
     return (
-      <div className="min-h-screen bg-background text-text-main pb-20">
-        <Navbar />
+      <div className="text-text-main">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-text-main mb-4">
@@ -176,9 +174,7 @@ const PersonDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20">
-      <Navbar />
-
+    <div className="text-text-main">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -348,7 +344,7 @@ const PersonDetailPage: React.FC = () => {
             </button>
 
             {showFilters && (
-              <div ref={filterRef} className="absolute top-full left-0 md:left-auto md:right-0 mt-3 z-30 bg-surface/95 backdrop-blur-2xl p-6 rounded-3xl border border-border-default shadow-premium flex flex-col gap-6 min-w-[320px] animate-in fade-in slide-in-from-top-4 duration-300">
+              <div ref={filterRef} className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface/95 backdrop-blur-2xl p-6 rounded-3xl border border-border-default shadow-premium flex flex-col gap-6 md:min-w-[320px] animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="space-y-3">
                   <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
                   <div className="flex flex-wrap gap-2">

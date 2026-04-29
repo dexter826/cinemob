@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '../components/providers/AuthProvider';
-import Navbar from '../components/layout/Navbar';
 import Loading from '../components/ui/Loading';
 import SearchHeader from '../components/search/SearchHeader';
 import SearchFilters from '../components/search/SearchFilters';
@@ -32,9 +31,7 @@ const SearchPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20">
-      <Navbar />
-
+    <div className="text-text-main">
       <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <SearchHeader 
           hasDiscoverMovies={discoverMovies.length > 0}

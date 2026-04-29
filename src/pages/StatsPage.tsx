@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../components/providers/AuthProvider';
 import { useTheme } from '../components/providers/ThemeProvider';
 import { Film, Star, TrendingUp, Globe } from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
 import StatsCard from '../components/ui/StatsCard';
 import { Timestamp } from 'firebase/firestore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
@@ -99,9 +98,7 @@ const StatsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20">
-      <Navbar />
-
+    <div className="text-text-main">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         <h1 className="text-3xl font-bold flex items-center gap-4 tracking-tight">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import Navbar from './Navbar';
 import Footer from './Footer';
 import MobileBottomNav from './MobileBottomNav';
 import ScrollToTop from '../ui/ScrollToTop';
@@ -17,6 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children, appReady = true }) => {
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
+      <Navbar />
       <div className="flex-1 pb-20 md:pb-0">
         {children}
       </div>

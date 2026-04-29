@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/layout/Navbar';
 import Loading from '../components/ui/Loading';
 import { Tv } from 'lucide-react';
 
@@ -33,20 +32,15 @@ const ReleaseCalendarPage: React.FC = () => {
 
   if (loading) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Loading />
-        </div>
-      </>
+      <div className="flex items-center justify-center py-20">
+        <Loading />
+      </div>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-background pb-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12">
+    <main className="text-text-main">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12">
           <CalendarHeader 
             handlePushToggle={handlePushToggle}
             pushLoading={pushLoading}
@@ -107,7 +101,6 @@ const ReleaseCalendarPage: React.FC = () => {
           )}
         </div>
       </main>
-    </>
   );
 };
 

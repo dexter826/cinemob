@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Film, PlusCircle, Trash2, Edit2, X as XIcon, Search } from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
 import Loading from '../components/ui/Loading';
 import { Album, Movie } from '../types';
 import { subscribeToAlbum, updateAlbum } from '../services/albumService';
@@ -153,8 +152,7 @@ const AlbumDetailPage: React.FC = () => {
 
   if (!album) {
     return (
-      <div className="min-h-screen bg-background text-text-main pb-20">
-        <Navbar />
+      <div className="text-text-main">
         <div className="max-w-3xl mx-auto px-4 md:px-8 py-12">
           <button
             type="button"
@@ -176,8 +174,7 @@ const AlbumDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20">
-      <Navbar />
+    <div className="text-text-main">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-center gap-4 min-w-0">

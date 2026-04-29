@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
 import { useAuth } from '../components/providers/AuthProvider';
-import Navbar from '../components/layout/Navbar';
 import Loading from '../components/ui/Loading';
 import { Album } from '../types';
 import { addAlbum, deleteAlbum } from '../services/albumService';
@@ -67,8 +66,7 @@ const AlbumsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main pb-20">
-      <Navbar />
+    <div className="text-text-main">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
