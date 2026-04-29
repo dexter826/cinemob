@@ -49,6 +49,7 @@ const Dashboard: React.FC = () => {
     filterRef,
     handleDelete,
     handleEdit,
+    openAddModal,
     handleMarkAsWatched,
     handleMovieClick,
     toggleSortOrder,
@@ -103,7 +104,7 @@ const Dashboard: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
         
-        <DashboardActions onOpenAddModal={() => handleEdit({} as any)} />
+        <DashboardActions onOpenAddModal={() => openAddModal()} />
 
         <div className="space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">

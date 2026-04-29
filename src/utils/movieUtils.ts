@@ -46,6 +46,6 @@ export const formatMovieDate = (date: any): string => {
 /** Lấy URL ảnh đầy đủ từ TMDB. */
 export const getTMDBImageUrl = (path: string | null, size: string = 'w500'): string => {
   if (!path) return PLACEHOLDER_IMAGE;
-  if (path.startsWith('http')) return path;
+  if (path.startsWith('http') || path.startsWith('data:')) return path;
   return `${TMDB_IMAGE_BASE_URL.replace('w500', size)}${path}`;
 };

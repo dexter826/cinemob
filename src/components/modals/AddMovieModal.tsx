@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, Save, Loader2, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,6 +14,7 @@ import CustomTimePicker from '../ui/CustomTimePicker';
 
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
+import { usePreventScroll } from '../../hooks/usePreventScroll';
 
 const AddMovieModal: React.FC = () => {
   const {
@@ -41,6 +42,8 @@ const AddMovieModal: React.FC = () => {
     refs, errors, albums
   } = useAddMovieForm();
 
+
+
   const countryOptions = [
     { value: 'USA', label: 'Mỹ' }, { value: 'Vietnam', label: 'Việt Nam' }, { value: 'Korea', label: 'Hàn Quốc' },
     { value: 'Japan', label: 'Nhật Bản' }, { value: 'China', label: 'Trung Quốc' }, { value: 'Thailand', label: 'Thái Lan' },
@@ -48,6 +51,8 @@ const AddMovieModal: React.FC = () => {
     { value: 'Italy', label: 'Ý' }, { value: 'Spain', label: 'Tây Ban Nha' }, { value: 'India', label: 'Ấn Độ' },
     { value: 'Hong Kong', label: 'Hồng Kông' }, { value: 'Taiwan', label: 'Đài Loan' }, { value: 'Other', label: 'Khác' }
   ];
+
+  usePreventScroll(isOpen);
 
   if (!isOpen) return null;
 
@@ -59,17 +64,17 @@ const AddMovieModal: React.FC = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-surface border border-white/10 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+            className="bg-surface border border-white/10 rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-surface/95 backdrop-blur shrink-0">
+            <div className="flex items-center justify-between px-8 py-5 border-b border-white/10 bg-surface/95 backdrop-blur shrink-0">
               <h2 className="text-xl font-bold text-text-main">
                 {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
               </h2>
@@ -82,7 +87,7 @@ const AddMovieModal: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
               {isLoadingDetails ? (
                 <div className="h-64 flex flex-col items-center justify-center gap-4">
                   <Loader2 className="animate-spin text-primary" size={40} />
@@ -98,54 +103,48 @@ const AddMovieModal: React.FC = () => {
 
                   <div className="flex-1 space-y-8">
                     <div className="space-y-6">
-                      <StatusToggle status={status} setStatus={setStatus} />
+                      {/* Khối 1: Tiêu đề */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề gốc</label>
+                          <input
+                            ref={refs.title}
+                            type="text"
+                            required
+                            disabled={!isManualMode}
+                            value={formData.title}
+                            onChange={e => setFormData({ ...formData, title: e.target.value })}
+                            className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted ${isAnimating && errors.title ? 'scale-105' : ''}`}
+                            placeholder="Tên gốc (ví dụ: The Revenant)..."
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề tiếng Việt</label>
+                          <input
+                            type="text"
+                            disabled={!isManualMode}
+                            value={formData.title_vi}
+                            onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
+                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted"
+                            placeholder="Tên tiếng Việt (nếu có)..."
+                          />
+                        </div>
+                      </div>
 
-                      {status === 'history' && (
-                        <RatingSection
-                          rating={formData.rating}
-                          hoverRating={hoverRating}
-                          isAnimating={isAnimating && ratingError}
-                          setRating={(r) => { setFormData({ ...formData, rating: r }); setRatingError(false); }}
-                          setHoverRating={setHoverRating}
-                          ratingRef={refs.rating}
-                        />
-                      )}
-
-                      {status === 'history' && (
-                        <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Ngày xem</label>
-                            <CustomDatePicker
-                              value={formData.date}
-                              onChange={(val) => setFormData({ ...formData, date: val })}
-                              placeholder="Chọn ngày xem..."
-                            />
-                          </div>
-                          <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Giờ xem</label>
-                            <CustomTimePicker
-                              value={formData.time}
-                              onChange={(val) => setFormData({ ...formData, time: val })}
-                              placeholder="Chọn giờ xem..."
-                            />
-                          </div>
+                      {isManualMode && (
+                        <div className="space-y-1.5 mt-4">
+                          <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Link ảnh Poster</label>
+                          <input
+                            type="text"
+                            value={formData.poster}
+                            onChange={e => setFormData({ ...formData, poster: e.target.value })}
+                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder-text-muted"
+                            placeholder="Dán link ảnh poster (https://...) vào đây..."
+                          />
                         </div>
                       )}
 
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề</label>
-                        <input
-                          ref={refs.title}
-                          type="text"
-                          required
-                          disabled={!isManualMode}
-                          value={formData.title_vi ? `${formData.title} (${formData.title_vi})` : formData.title}
-                          onChange={e => setFormData({ ...formData, title: e.target.value })}
-                          className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-lg font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 ${isAnimating && errors.title ? 'scale-105' : ''}`}
-                          placeholder="Tên phim..."
-                        />
-                      </div>
-
+                      {/* Khối 2: Chi tiết phim */}
                       <MovieFormFields
                         isManualMode={isManualMode}
                         manualMediaType={manualMediaType}
@@ -162,6 +161,43 @@ const AddMovieModal: React.FC = () => {
                         refs={refs}
                         status={status}
                       />
+
+                      {/* Khối 3: Trải nghiệm cá nhân */}
+                      <div className="pt-4 border-t border-white/5 space-y-6">
+                        <StatusToggle status={status} setStatus={setStatus} />
+
+                        {status === 'history' && (
+                          <RatingSection
+                            rating={formData.rating}
+                            hoverRating={hoverRating}
+                            isAnimating={isAnimating && ratingError}
+                            setRating={(r) => { setFormData({ ...formData, rating: r }); setRatingError(false); }}
+                            setHoverRating={setHoverRating}
+                            ratingRef={refs.rating}
+                          />
+                        )}
+
+                        {status === 'history' && (
+                          <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Ngày xem</label>
+                              <CustomDatePicker
+                                value={formData.date}
+                                onChange={(val) => setFormData({ ...formData, date: val })}
+                                placeholder="Chọn ngày xem..."
+                              />
+                            </div>
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Giờ xem</label>
+                              <CustomTimePicker
+                                value={formData.time}
+                                onChange={(val) => setFormData({ ...formData, time: val })}
+                                placeholder="Chọn giờ xem..."
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
                       {status === 'history' && isTVSeries && (
                         <TVProgressSection
@@ -198,18 +234,18 @@ const AddMovieModal: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur flex justify-end gap-3 shrink-0">
+            <div className="px-8 py-5 border-t border-black/10 dark:border-white/10 bg-surface/95 backdrop-blur flex justify-end gap-3 shrink-0">
               <button
                 type="button"
                 onClick={closeAddModal}
-                className="px-5 py-2.5 rounded-xl text-sm font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="px-6 py-3 rounded-xl text-sm font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               >
                 {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all disabled:cursor-not-allowed disabled:opacity-50 shadow-lg shadow-primary/20 cursor-pointer"
+                className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:active:scale-100 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                 {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Lưu thay đổi' : 'Lưu phim')}

@@ -33,6 +33,19 @@ export const useReleaseCalendar = () => {
   const [pushLoading, setPushLoading] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setViewMode('list');
+      } else {
+        setViewMode('calendar');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   /** Kiểm tra trạng thái thông báo đẩy khi mount. */
   useEffect(() => {
     const checkPushStatus = async () => {
@@ -115,12 +128,21 @@ export const useReleaseCalendar = () => {
     return upcomingEpisodes.filter(ep => ep.episode.air_date === dateStr);
   };
 
-  /** Danh sách tập phim hiển thị (theo ngày chọn hoặc tất cả). */
+  /** Danh sách tập phim hiển thị (theo ngày chọn hoặc tất cả trong 30 ngày tới). */
   const displayedEpisodes = useMemo(() => {
     if (selectedDate) {
       return getEpisodesForDate(selectedDate);
     }
-    return upcomingEpisodes;
+    
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const thirtyDaysLater = new Date();
+    thirtyDaysLater.setDate(now.getDate() + 30);
+    
+    return upcomingEpisodes.filter(ep => {
+      const airDate = new Date(ep.episode.air_date);
+      return airDate >= now && airDate <= thirtyDaysLater;
+    });
   }, [selectedDate, upcomingEpisodes]);
 
   /** Nhóm tập phim theo ngày cho chế độ hiển thị danh sách. */

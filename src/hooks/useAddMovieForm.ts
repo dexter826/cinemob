@@ -6,6 +6,7 @@ import useToastStore from '../stores/toastStore';
 import { getMovieDetails, getMovieDetailsWithLanguage, getTVShowEpisodeInfo } from '../services/tmdb';
 import { addMovie, updateMovie, checkMovieExists } from '../services/movieService';
 import { Movie } from '../types';
+import { normalizeMovieDate } from '../utils/movieUtils';
 
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from './useAlbumSync';
@@ -45,7 +46,7 @@ export const useAddMovieForm = () => {
     rating: useRef<HTMLDivElement>(null)
   };
 
-  const isManualMode = !initialData?.tmdbId && !initialData?.movie && !initialData?.movieToEdit;
+  const isManualMode = !initialData?.tmdbId && !initialData?.movie && (!initialData?.movieToEdit || initialData?.movieToEdit?.source === 'manual');
   const isTVSeries = (isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv'));
 
   // Sub-hooks
@@ -87,9 +88,9 @@ export const useAddMovieForm = () => {
     if (initialData?.movieToEdit) {
       const m = initialData.movieToEdit;
       setStatus(m.status || 'history');
-      const d = m.watched_at instanceof Object && 'toDate' in m.watched_at ? m.watched_at.toDate() : new Date(m.watched_at as any);
+      const d = normalizeMovieDate(m.watched_at) || new Date();
       setFormData({
-        title: m.title, title_vi: m.title_vi || '', runtime: m.runtime.toString(), seasons: m.seasons ? m.seasons.toString() : '', poster: m.poster_path,
+        title: m.title, title_vi: m.title_vi || '', runtime: m.runtime ? m.runtime.toString() : '', seasons: m.seasons ? m.seasons.toString() : '', poster: m.poster_path,
         date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
         time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
         rating: m.rating || 0, review: m.review || '', tagline: m.tagline || '', genres: m.genres || '', releaseDate: m.release_date || '', country: m.country || '', content: m.content || ''
@@ -217,7 +218,7 @@ export const useAddMovieForm = () => {
     const isBasicDirty = 
       formData.title !== m.title ||
       formData.title_vi !== (m.title_vi || '') ||
-      formData.runtime !== m.runtime.toString() ||
+      formData.runtime !== (m.runtime ? m.runtime.toString() : '') ||
       formData.seasons !== (m.seasons ? m.seasons.toString() : '') ||
       formData.rating !== (m.rating || 0) ||
       formData.review !== (m.review || '') ||

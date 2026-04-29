@@ -18,7 +18,7 @@ const ReleaseCalendarPage: React.FC = () => {
     upcomingEpisodes,
     currentDate,
     selectedDate, setSelectedDate,
-    viewMode, setViewMode,
+    viewMode,
     pushLoading,
     pushSubscribed,
     notificationPermission,
@@ -52,8 +52,6 @@ const ReleaseCalendarPage: React.FC = () => {
             pushLoading={pushLoading}
             pushSubscribed={pushSubscribed}
             notificationPermission={notificationPermission}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
           />
 
           <CalendarStats 

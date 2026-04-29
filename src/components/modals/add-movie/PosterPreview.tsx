@@ -30,16 +30,6 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
             <span className="text-xs font-medium opacity-40">Không có ảnh</span>
           </div>
         )}
-        {isManualMode && (
-          <button
-            type="button"
-            onClick={onPosterClick}
-            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-2 text-white"
-          >
-            <Camera size={32} />
-            <span className="text-sm font-medium">Thay đổi ảnh</span>
-          </button>
-        )}
       </div>
     </div>
   );

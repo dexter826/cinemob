@@ -1,13 +1,11 @@
 import React from 'react';
-import { CalendarDays, Bell, BellOff, BellRing, Calendar, Film } from 'lucide-react';
+import { CalendarDays, Bell, BellOff, BellRing } from 'lucide-react';
 
 interface CalendarHeaderProps {
   handlePushToggle: () => void;
   pushLoading: boolean;
   pushSubscribed: boolean;
   notificationPermission: NotificationPermission;
-  viewMode: 'calendar' | 'list';
-  setViewMode: (mode: 'calendar' | 'list') => void;
 }
 
 /** Header của trang lịch phát sóng, chứa các nút chuyển chế độ và thông báo. */
@@ -15,9 +13,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   handlePushToggle,
   pushLoading,
   pushSubscribed,
-  notificationPermission,
-  viewMode,
-  setViewMode
+  notificationPermission
 }) => {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
@@ -62,29 +58,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               ? 'Bị chặn'
               : 'Thông báo'}
           </span>
-        </button>
-
-        <button
-          onClick={() => setViewMode('calendar')}
-          className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-            viewMode === 'calendar' 
-              ? 'bg-primary text-white' 
-              : 'bg-surface border border-black/5 dark:border-white/5 text-text-main hover:bg-primary/10'
-          }`}
-        >
-          <Calendar size={18} />
-          <span className="hidden md:inline">Lịch</span>
-        </button>
-        <button
-          onClick={() => setViewMode('list')}
-          className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-            viewMode === 'list' 
-              ? 'bg-primary text-white' 
-              : 'bg-surface border border-black/5 dark:border-white/5 text-text-main hover:bg-primary/10'
-          }`}
-        >
-          <Film size={18} />
-          <span className="hidden md:inline">Danh sách</span>
         </button>
       </div>
     </div>

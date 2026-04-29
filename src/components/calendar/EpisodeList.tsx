@@ -35,19 +35,19 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
 
   return (
     <div className={viewMode === 'calendar' ? 'lg:col-span-1' : 'lg:col-span-3'}>
-      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-xl p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-text-main flex items-center gap-2">
-            <Bell size={18} className="text-primary" />
+      <div className="bg-surface border border-black/5 dark:border-white/5 rounded-2xl p-6 flex flex-col h-full min-h-[500px] lg:min-h-[600px]">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-bold text-text-main flex items-center gap-2 text-lg">
+            <Bell size={20} className="text-primary" />
             {selectedDate 
-              ? `Tập phát sóng ngày ${selectedDate.toLocaleDateString('vi-VN')}`
+              ? `Phát sóng ${selectedDate.toLocaleDateString('vi-VN')}`
               : 'Tập sắp phát sóng'
             }
           </h3>
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
-              className="text-xs text-primary hover:underline cursor-pointer"
+              className="text-xs font-semibold text-primary hover:underline cursor-pointer bg-primary/10 px-2.5 py-1 rounded-full transition-colors"
             >
               Xem tất cả
             </button>
@@ -55,22 +55,22 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
         </div>
 
         {loadingEpisodes ? (
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, idx) => (
-              <div key={idx} className="flex gap-3 p-3 bg-background rounded-lg animate-pulse">
+          <div className="space-y-3 flex-1">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div key={idx} className="flex gap-3 p-3 bg-background rounded-xl animate-pulse">
                 <div className="w-12 h-16 bg-black/10 dark:bg-white/10 rounded-lg" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-black/10 dark:bg-white/10 rounded w-3/4" />
-                  <div className="h-3 bg-black/10 dark:bg-white/10 rounded w-1/4" />
-                  <div className="h-3 bg-black/10 dark:bg-white/10 rounded w-1/2" />
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-4 bg-black/10 dark:bg-white/10 rounded-md w-3/4" />
+                  <div className="h-3 bg-black/10 dark:bg-white/10 rounded-md w-1/4" />
+                  <div className="h-3 bg-black/10 dark:bg-white/10 rounded-md w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : displayedEpisodes.length === 0 ? (
-          <div className="text-center py-8">
-            <Info size={32} className="mx-auto text-text-secondary mb-2" />
-            <p className="text-text-secondary">
+          <div className="flex-1 flex flex-col items-center justify-center py-12">
+            <Info size={40} className="text-text-secondary mb-3 opacity-50" />
+            <p className="text-text-secondary font-medium text-sm">
               {selectedDate 
                 ? 'Không có tập nào phát sóng ngày này'
                 : 'Không có tập nào sắp phát sóng'
@@ -78,7 +78,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
             </p>
           </div>
         ) : (
-          <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar">
             {Object.entries(episodesByDate).map(([date, episodes]) => (
               <div key={date}>
                 <div className="sticky top-0 bg-surface py-2 z-10">
@@ -91,7 +91,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                     <div
                       key={`${ep.seriesId}-${ep.episode.id}-${idx}`}
                       onClick={() => handleSeriesClick(ep)}
-                      className="flex gap-3 p-3 bg-background rounded-lg hover:bg-primary/5 transition-colors cursor-pointer"
+                      className="flex gap-3 p-3 bg-background rounded-xl hover:bg-primary/5 transition-all duration-300 cursor-pointer border border-black/5 dark:border-white/5 relative group items-center"
                     >
                       <img
                         src={ep.posterPath 
@@ -99,25 +99,27 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                           : PLACEHOLDER_IMAGE
                         }
                         alt={ep.seriesName}
-                        className="w-12 h-16 object-cover rounded-lg"
+                        className="w-12 h-16 object-cover rounded-lg shadow-md"
                       />
                       <div className="flex-1 min-w-0">
-                        <h5 className="font-medium text-text-main truncate">
+                        <h5 className="font-bold text-text-main truncate group-hover:text-primary transition-colors">
                           {ep.seriesNameVi || ep.seriesName}
                         </h5>
-                        <p className="text-sm text-primary">
+                        <p className="text-sm font-semibold text-primary mt-0.5">
                           S{ep.episode.season_number}E{ep.episode.episode_number}
                         </p>
                         <p className="text-xs text-text-secondary truncate mt-1">
                           {ep.episode.name}
                         </p>
                         {ep.episode.runtime && (
-                          <p className="text-xs text-text-secondary flex items-center gap-1 mt-1">
-                            <Clock size={12} />
+                          <p className="text-xs text-text-secondary flex items-center gap-1 mt-1 font-medium">
+                            <Clock size={12} className="text-primary" />
                             {ep.episode.runtime} phút
                           </p>
                         )}
                       </div>
+                      
+
                     </div>
                   ))}
                 </div>

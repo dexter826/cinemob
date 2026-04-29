@@ -82,6 +82,7 @@ export const useDashboard = (user: any) => {
     handleEdit,
     handleMarkAsWatched,
     handleMovieClick: openDetailModal,
+    openAddModal,
     ...filters
   };
 };

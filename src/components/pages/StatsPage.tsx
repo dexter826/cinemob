@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { Film, Star, TrendingUp, Tv, Globe, View, Calendar } from 'lucide-react';
+import { Film, Star, TrendingUp, Globe } from 'lucide-react';
 import Navbar from '../layout/Navbar';
 import StatsCard from '../ui/StatsCard';
 import { Timestamp } from 'firebase/firestore';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import Loading from '../ui/Loading';
 import useMovieStore from '../../stores/movieStore';
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#f97316', '#84cc16', '#6366f1', '#14b8a6'];
+const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 
 const GENRE_TRANSLATIONS: Record<string, string> = {
   'Action': 'Hành động',
@@ -63,7 +63,7 @@ const StatsPage: React.FC = () => {
     return null;
   };
 
-  const [showAllYears, setShowAllYears] = useState(false);
+
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
@@ -79,23 +79,11 @@ const StatsPage: React.FC = () => {
     const totalMovies = watchedMovies.length;
     const movieCount = watchedMovies.filter(m => m.media_type === 'movie').length;
     const tvCount = watchedMovies.filter(m => m.media_type === 'tv').length;
-    const totalMinutes = watchedMovies.reduce((acc, curr) => acc + (curr.runtime || 0), 0);
-
-    const days = Math.floor(totalMinutes / 1440);
-    const hours = Math.floor((totalMinutes % 1440) / 60);
-    const minutes = totalMinutes % 60;
 
     const ratedMovies = watchedMovies.filter(m => m.rating && m.rating > 0);
     const avgRating = ratedMovies.length > 0
       ? (ratedMovies.reduce((acc, curr) => acc + (curr.rating || 0), 0) / ratedMovies.length).toFixed(1)
       : '0';
-
-    const moviesByYear: Record<string, number> = {};
-    watchedMovies.forEach(m => {
-      const date = m.watched_at instanceof Timestamp ? m.watched_at.toDate() : new Date(m.watched_at as any);
-      const year = date.getFullYear();
-      moviesByYear[year] = (moviesByYear[year] || 0) + 1;
-    });
 
     const moviesByRating: Record<string, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     ratedMovies.forEach(m => {
@@ -123,37 +111,14 @@ const StatsPage: React.FC = () => {
       }
     });
 
-    const totalCountries = Object.keys(moviesByCountry).length;
-
-    const tvSeries = watchedMovies.filter(m => m.media_type === 'tv');
-    const totalSeasons = tvSeries.reduce((acc, curr) => acc + (curr.seasons || 0), 0);
-    const totalEpisodesWatched = tvSeries.reduce((acc, curr) => {
-      if (curr.progress && curr.progress.watched_episodes) {
-        return acc + curr.progress.watched_episodes;
-      }
-      return acc;
-    }, 0);
-    const completedSeries = tvSeries.filter(m => m.progress?.is_completed).length;
-    const watchingSeries = tvSeries.filter(m => m.progress && !m.progress.is_completed).length;
-
     return {
       totalMovies,
       movieCount,
       tvCount,
-      totalMinutes,
-      days,
-      hours,
-      minutes,
       avgRating,
-      moviesByYear,
       moviesByRating,
       moviesByCountry,
-      moviesByGenre,
-      totalCountries,
-      totalSeasons,
-      totalEpisodesWatched,
-      completedSeries,
-      watchingSeries
+      moviesByGenre
     };
   }, [watchedMovies, movies]);
 
@@ -171,24 +136,13 @@ const StatsPage: React.FC = () => {
           Thống kê phim đã xem
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StatsCard
-            label="Tổng phim đã xem"
+            label="Tổng nội dung"
             value={stats.totalMovies}
+            subValue={`${stats.movieCount} Điện ảnh • ${stats.tvCount} TV Series`}
             icon={Film}
-            colorClass="text-blue-500"
-          />
-          <StatsCard
-            label="Series đang xem"
-            value={stats.watchingSeries}
-            icon={View}
-            colorClass="text-orange-500"
-          />
-          <StatsCard
-            label="Phim / TV"
-            value={`${stats.movieCount}/${stats.tvCount}`}
-            icon={Tv}
-            colorClass="text-green-500"
+            colorClass="text-primary"
           />
           <StatsCard
             label="Đánh giá trung bình"
@@ -200,43 +154,6 @@ const StatsPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-          <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Calendar size={20} className="text-primary" />
-              Phim theo năm
-            </h3>
-            <div className="relative">
-              <div className="space-y-4">
-                {Object.entries(stats.moviesByYear)
-                  .sort((a, b) => Number(b[0]) - Number(a[0]))
-                  .slice(0, showAllYears ? undefined : 4)
-                  .map(([year, count]) => (
-                    <div key={year} className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span>{year}</span>
-                        <span className="font-medium">{count} phim</span>
-                      </div>
-                      <div className="h-2 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
-                          style={{ width: `${(Number(count) / (stats.totalMovies || 1)) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              {Object.keys(stats.moviesByYear).length > 4 && !showAllYears && (
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-surface to-transparent cursor-pointer flex items-end justify-center pb-2"
-                  onClick={() => setShowAllYears(true)}
-                >
-                  <span className="text-primary font-medium text-sm">Xem thêm</span>
-                </div>
-              )}
-            </div>
-          </div>
-
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Star size={20} className="text-yellow-500" />
@@ -244,18 +161,18 @@ const StatsPage: React.FC = () => {
             </h3>
             <div className="space-y-4">
               {[5, 4, 3, 2, 1].map((rating) => (
-                <div key={rating} className="flex items-center gap-4">
+                <div key={rating} className="flex items-center gap-4 p-4 bg-black/5 dark:bg-white/5 rounded-xl transition-all duration-300 hover:scale-[1.02]">
                   <div className="flex items-center gap-1 w-12">
-                    <span className="font-bold">{rating}</span>
-                    <Star size={12} className="fill-yellow-500 text-yellow-500" />
+                    <span className="font-bold text-lg">{rating}</span>
+                    <Star size={16} className="fill-yellow-500 text-yellow-500" />
                   </div>
-                  <div className="flex-1 h-2 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+                  <div className="flex-1 h-3 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-yellow-500 rounded-full transition-all duration-500"
                       style={{ width: `${(stats.moviesByRating[rating] / (movies.filter(m => m.rating).length || 1)) * 100}%` }}
                     />
                   </div>
-                  <span className="text-sm text-text-muted w-12 text-right">
+                  <span className="text-sm font-semibold text-text-main bg-black/10 dark:bg-white/10 px-3 py-1 rounded-full w-12 text-center">
                     {stats.moviesByRating[rating]}
                   </span>
                 </div>
@@ -263,117 +180,97 @@ const StatsPage: React.FC = () => {
             </div>
           </div>
 
-        </div>
-
-        <div className="space-y-8">
-
           <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Globe size={20} className="text-purple-500" />
-              Phân bố phim theo quốc gia
+              <Globe size={20} className="text-primary" />
+              Top 5 Quốc gia xem nhiều nhất
             </h3>
             {Object.keys(stats.moviesByCountry).length > 0 ? (
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                  <BarChart
-                    data={Object.entries(stats.moviesByCountry)
-                      .sort((a, b) => Number(b[1]) - Number(a[1]))
-                      .slice(0, 10)
-                      .map(([country, count]) => ({
-                        country: country.length > 12 ? country.substring(0, 12) + '...' : country,
-                        fullCountry: country,
-                        count: Number(count)
-                      }))}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-text-muted" opacity={0.1} />
-                    <XAxis
-                      dataKey="country"
-                      angle={-45}
-                      textAnchor="end"
-                      height={80}
-                      tick={{ fill: 'currentColor', fontSize: 12 }}
-                      className="text-text-muted"
-                    />
-                    <YAxis
-                      tick={{ fill: 'currentColor', fontSize: 12 }}
-                      className="text-text-muted"
-                    />
-                    <Tooltip content={customTooltip} />
-                    <Bar dataKey="count" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="space-y-4">
+                {Object.entries(stats.moviesByCountry)
+                  .sort((a, b) => Number(b[1]) - Number(a[1]))
+                  .slice(0, 5)
+                  .map(([country, count], index) => (
+                    <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl transition-all duration-300 hover:scale-[1.02]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-primary text-lg w-6">#{index + 1}</span>
+                        <span className="font-medium text-text-main">{country}</span>
+                      </div>
+                      <span className="text-sm font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                        {count} phim
+                      </span>
+                    </div>
+                  ))}
               </div>
             ) : (
-              <div className="h-80 flex flex-col items-center justify-center text-center text-text-muted">
+              <div className="h-40 flex flex-col items-center justify-center text-center text-text-muted">
                 <Globe size={48} className="opacity-50 mb-4" />
                 <p className="text-sm">Chưa có dữ liệu quốc gia</p>
               </div>
             )}
           </div>
+        </div>
 
-          <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Film size={20} className="text-teal-500" />
-              Phân bố phim theo thể loại
-            </h3>
-            {Object.keys(stats.moviesByGenre).length > 0 ? (
-              <div className="h-112 sm:h-80">
-                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                  <PieChart>
-                    {(() => {
-                      const entries = Object.entries(stats.moviesByGenre)
-                        .sort((a, b) => Number(b[1]) - Number(a[1]))
-                        .map(([genre, count]) => ({ name: genre, value: Number(count) }));
+        <div className="bg-surface border border-black/5 dark:border-white/5 p-6 rounded-2xl">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <Film size={20} className="text-primary" />
+            Phân bố phim theo thể loại
+          </h3>
+          {Object.keys(stats.moviesByGenre).length > 0 ? (
+            <div className="h-112 sm:h-80">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <PieChart>
+                  {(() => {
+                    const entries = Object.entries(stats.moviesByGenre)
+                      .sort((a, b) => Number(b[1]) - Number(a[1]))
+                      .map(([genre, count]) => ({ name: genre, value: Number(count) }));
 
-                      let genreData = entries;
-                      if (entries.length > 8) {
-                        const top = entries.slice(0, 7);
-                        const othersTotal = entries.slice(7).reduce((acc, cur) => acc + cur.value, 0);
-                        genreData = [...top, { name: 'Khác', value: othersTotal }];
-                      } else {
-                        genreData = entries.slice(0, 8);
-                      }
-                      return (
-                        <>
-                          <Pie
-                            data={genreData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={isSmallScreen ? false : (({ name, value }) => `${name}: ${((value / stats.totalMovies) * 100).toFixed(1)}%`)}
-                            outerRadius={isSmallScreen ? 80 : 90}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {genreData.map((_, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          {isSmallScreen && (
-                            <Legend
-                              verticalAlign="bottom"
-                              align="center"
-                              layout="vertical"
-                              wrapperStyle={{ fontSize: 12, marginTop: 12 }}
-                              formatter={(value: string, entry: any) => `${value}: ${((entry.payload.value / stats.totalMovies) * 100).toFixed(1)}%`}
-                            />
-                          )}
-                        </>
-                      );
-                    })()}
-                    <Tooltip content={customTooltip} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="h-80 flex flex-col items-center justify-center text-center text-text-muted">
-                <Film size={48} className="opacity-50 mb-4" />
-                <p className="text-sm">Chưa có dữ liệu thể loại</p>
-              </div>
-            )}
-          </div>
-
+                    let genreData = entries;
+                    if (entries.length > 8) {
+                      const top = entries.slice(0, 7);
+                      const othersTotal = entries.slice(7).reduce((acc, cur) => acc + cur.value, 0);
+                      genreData = [...top, { name: 'Khác', value: othersTotal }];
+                    } else {
+                      genreData = entries.slice(0, 8);
+                    }
+                    return (
+                      <>
+                        <Pie
+                          data={genreData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={isSmallScreen ? false : (({ name, value }) => `${name}: ${((value / stats.totalMovies) * 100).toFixed(1)}%`)}
+                          outerRadius={isSmallScreen ? 80 : 90}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {genreData.map((_, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        {isSmallScreen && (
+                          <Legend
+                            verticalAlign="bottom"
+                            align="center"
+                            layout="vertical"
+                            wrapperStyle={{ fontSize: 12, marginTop: 12 }}
+                            formatter={(value: string, entry: any) => `${value}: ${((entry.payload.value / stats.totalMovies) * 100).toFixed(1)}%`}
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
+                  <Tooltip content={customTooltip} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="h-80 flex flex-col items-center justify-center text-center text-text-muted">
+              <Film size={48} className="opacity-50 mb-4" />
+              <p className="text-sm">Chưa có dữ liệu thể loại</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
