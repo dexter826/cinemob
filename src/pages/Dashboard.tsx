@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../providers/AuthProvider';
+import { useAuth } from '../components/providers/AuthProvider';
 import { Film, AlertTriangle } from 'lucide-react';
-import MovieCard from '../ui/MovieCard';
-import Navbar from '../layout/Navbar';
-import Pagination from '../ui/Pagination';
-import Loading from '../ui/Loading';
-import { TMDB_API_KEY } from '../../constants';
-import { normalizeMovieDate } from '../../utils/movieUtils';
+import MovieCard from '../components/ui/MovieCard';
+import Navbar from '../components/layout/Navbar';
+import Pagination from '../components/ui/Pagination';
+import Loading from '../components/ui/Loading';
+import { TMDB_API_KEY } from '../constants';
+import { normalizeMovieDate } from '../utils/movieUtils';
 
-import { useDashboard } from '../../hooks/useDashboard';
-import DashboardActions from '../dashboard/DashboardActions';
-import DashboardTabs from '../dashboard/DashboardTabs';
-import DashboardFilters from '../dashboard/DashboardFilters';
+import { useDashboard } from '../hooks/useDashboard';
+import DashboardActions from '../components/dashboard/DashboardActions';
+import DashboardTabs from '../components/dashboard/DashboardTabs';
+import DashboardFilters from '../components/dashboard/DashboardFilters';
 
 /** Trang Dashboard trung tâm quản lý bộ sưu tập phim. */
 const Dashboard: React.FC = () => {

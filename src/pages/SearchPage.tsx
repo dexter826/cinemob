@@ -1,11 +1,11 @@
 import React from 'react';
-import { useSearch } from '../../hooks/useSearch';
-import { useAuth } from '../providers/AuthProvider';
-import Navbar from '../layout/Navbar';
-import Loading from '../ui/Loading';
-import SearchHeader from '../search/SearchHeader';
-import SearchFilters from '../search/SearchFilters';
-import SearchResults from '../search/SearchResults';
+import { useSearch } from '../hooks/useSearch';
+import { useAuth } from '../components/providers/AuthProvider';
+import Navbar from '../components/layout/Navbar';
+import Loading from '../components/ui/Loading';
+import SearchHeader from '../components/search/SearchHeader';
+import SearchFilters from '../components/search/SearchFilters';
+import SearchResults from '../components/search/SearchResults';
 
 /** Trang Tìm kiếm và Khám phá nội dung TMDB. */
 const SearchPage: React.FC = () => {

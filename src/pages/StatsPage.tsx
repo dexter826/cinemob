@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '../providers/AuthProvider';
-import { useTheme } from '../providers/ThemeProvider';
+import { useAuth } from '../components/providers/AuthProvider';
+import { useTheme } from '../components/providers/ThemeProvider';
 import { Film, Star, TrendingUp, Globe } from 'lucide-react';
-import Navbar from '../layout/Navbar';
-import StatsCard from '../ui/StatsCard';
+import Navbar from '../components/layout/Navbar';
+import StatsCard from '../components/ui/StatsCard';
 import { Timestamp } from 'firebase/firestore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import Loading from '../ui/Loading';
-import useMovieStore from '../../stores/movieStore';
+import Loading from '../components/ui/Loading';
+import useMovieStore from '../stores/movieStore';
 
 const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 

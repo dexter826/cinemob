@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
-import { useAuth } from '../providers/AuthProvider';
-import Navbar from '../layout/Navbar';
-import Loading from '../ui/Loading';
-import { Album } from '../../types';
-import { addAlbum, deleteAlbum } from '../../services/albumService';
-import useToastStore from '../../stores/toastStore';
-import useAlertStore from '../../stores/alertStore';
+import { useAuth } from '../components/providers/AuthProvider';
+import Navbar from '../components/layout/Navbar';
+import Loading from '../components/ui/Loading';
+import { Album } from '../types';
+import { addAlbum, deleteAlbum } from '../services/albumService';
+import useToastStore from '../stores/toastStore';
+import useAlertStore from '../stores/alertStore';
 import { useNavigate } from 'react-router-dom';
-import useAlbumStore from '../../stores/albumStore';
+import useAlbumStore from '../stores/albumStore';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();

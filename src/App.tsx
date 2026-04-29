@@ -5,23 +5,20 @@ import { AuthProvider, useAuth } from './components/providers/AuthProvider';
 import useAddMovieStore from './stores/addMovieStore';
 import useMovieDetailStore from './stores/movieDetailStore';
 import Login from './components/auth/Login';
-const Dashboard = lazy(() => import('./components/pages/Dashboard'));
-const SearchPage = lazy(() => import('./components/pages/SearchPage'));
-const StatsPage = lazy(() => import('./components/pages/StatsPage'));
-const AlbumsPage = lazy(() => import('./components/pages/AlbumsPage'));
-const AlbumDetailPage = lazy(() => import('./components/pages/AlbumDetailPage'));
-const PersonDetailPage = lazy(() => import('./components/pages/PersonDetailPage'));
-const ReleaseCalendarPage = lazy(() => import('./components/pages/ReleaseCalendarPage'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
+const StatsPage = lazy(() => import('./pages/StatsPage'));
+const AlbumsPage = lazy(() => import('./pages/AlbumsPage'));
+const AlbumDetailPage = lazy(() => import('./pages/AlbumDetailPage'));
+const PersonDetailPage = lazy(() => import('./pages/PersonDetailPage'));
+const ReleaseCalendarPage = lazy(() => import('./pages/ReleaseCalendarPage'));
 const AddMovieModal = lazy(() => import('./components/modals/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('./components/modals/MovieDetailModal'));
 import Layout from './components/layout/Layout';
 import SplashScreen from './components/ui/SplashScreen';
 import Loading from './components/ui/Loading';
 import { ThemeProvider } from './components/providers/ThemeProvider';
-import AlbumStoreInitializer from './components/providers/AlbumStoreInitializer';
-import RecommendationsStoreInitializer from './components/providers/RecommendationsStoreInitializer';
-import ReleaseCalendarStoreInitializer from './components/providers/ReleaseCalendarStoreInitializer';
-import MovieStoreInitializer from './components/providers/MovieStoreInitializer';
+import { useAppInit } from './hooks/useAppInit';
 import PullToRefreshProvider from './components/providers/PullToRefreshProvider';
 import ToastContainer from './components/ui/ToastContainer';
 import AlertContainer from './components/ui/AlertContainer';
@@ -74,6 +71,8 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
   const { isOpen: isDetailModalOpen, movie: selectedMovie, closeDetailModal } = useMovieDetailStore();
   const { isInitialLoadComplete } = useInitialLoadStore();
 
+  useAppInit();
+
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -93,10 +92,6 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
   return (
     <PullToRefreshProvider>
       <Layout appReady={appReady}>
-        <MovieStoreInitializer />
-        <AlbumStoreInitializer />
-        <RecommendationsStoreInitializer />
-        <ReleaseCalendarStoreInitializer />
         <Suspense fallback={<Loading />}>
           <AnimatedRoutes />
           <AddMovieModal />

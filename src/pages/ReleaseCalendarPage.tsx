@@ -1,13 +1,13 @@
 import React from 'react';
-import Navbar from '../layout/Navbar';
-import Loading from '../ui/Loading';
+import Navbar from '../components/layout/Navbar';
+import Loading from '../components/ui/Loading';
 import { Tv } from 'lucide-react';
 
-import { useReleaseCalendar } from '../../hooks/useReleaseCalendar';
-import CalendarHeader from '../calendar/CalendarHeader';
-import CalendarStats from '../calendar/CalendarStats';
-import CalendarGrid from '../calendar/CalendarGrid';
-import EpisodeList from '../calendar/EpisodeList';
+import { useReleaseCalendar } from '../hooks/useReleaseCalendar';
+import CalendarHeader from '../components/calendar/CalendarHeader';
+import CalendarStats from '../components/calendar/CalendarStats';
+import CalendarGrid from '../components/calendar/CalendarGrid';
+import EpisodeList from '../components/calendar/EpisodeList';
 
 /** Trang Lịch phát sóng các tập phim mới của Series. */
 const ReleaseCalendarPage: React.FC = () => {
