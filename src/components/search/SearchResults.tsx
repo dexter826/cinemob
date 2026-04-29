@@ -10,9 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface SearchResultsProps {
   isLoading: boolean;
-  searchTab: 'movies' | 'people';
   query: string;
-  peopleResults: TMDBPerson[];
   totalPages: number;
   currentPage: number;
   setCurrentPage: (page: number) => void;
@@ -32,9 +30,7 @@ interface SearchResultsProps {
 /** Hiển thị kết quả tìm kiếm, phim thịnh hành hoặc đề xuất AI. */
 const SearchResults: React.FC<SearchResultsProps> = ({
   isLoading,
-  searchTab,
   query,
-  peopleResults,
   totalPages,
   currentPage,
   setCurrentPage,
@@ -50,44 +46,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   refreshRecommendations,
   userId
 }) => {
+
   const navigate = useNavigate();
 
   if (isLoading) {
     return <Loading fullScreen={false} size={40} className="py-20" />;
   }
 
-  if (searchTab === 'people' && query.trim().length > 0) {
-    return (
-      <>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-          {peopleResults.map(person => (
-            <PersonCard
-              key={person.id}
-              person={person}
-              onClick={(id) => navigate(`/person/${id}`)}
-            />
-          ))}
-        </div>
+  return (
 
-        {peopleResults.length === 0 && query.length > 2 && (
-          <div className="col-span-full text-center py-10 text-text-muted">
-            Không tìm thấy kết quả nào.
-          </div>
-        )}
-
-        {peopleResults.length > 0 && totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        )}
-      </>
-    );
-  }
-
-  if (searchTab === 'movies') {
-    return (
       <>
         {!query && !discoverMovies.length && isAiLoading ? (
           <>
@@ -221,15 +188,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
           </>
         )}
       </>
-    );
-  }
-
-  return (
-    <div className="col-span-full flex flex-col items-center justify-center py-20 text-text-muted opacity-50">
-      <Search size={48} className="mb-4" />
-      <p>Nhập từ khóa để tìm kiếm</p>
-    </div>
   );
 };
+
 
 export default SearchResults;

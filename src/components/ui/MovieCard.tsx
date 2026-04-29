@@ -37,12 +37,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
 
 
         {/* Action Buttons (Top Right) */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-30">
+        <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 [@media(hover:none)]:opacity-100 group-hover:opacity-100 transition-all duration-300 translate-x-2 [@media(hover:none)]:translate-x-0 group-hover:translate-x-0 z-30">
           <button
             onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
             className="p-2 bg-black/60 dark:bg-black/70 text-white/90 hover:text-red-400 hover:bg-black/80 rounded-xl backdrop-blur-md transition-all duration-200 shadow-sm border border-white/10 cursor-pointer"
             title="Xóa phim"
           >
+
             <Trash2 size={16} />
           </button>
           
@@ -78,18 +79,26 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         {/* Media Type Badge */}
         <div className={`absolute left-2 flex items-center space-x-1 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 z-10 transition-all duration-300 ${movie.rating && movie.rating > 0 ? 'top-9' : 'top-2'}`}>
           {movie.media_type === 'tv' ? (
-            <Tv size={11} className="text-blue-400" />
+            <>
+              <Tv size={11} className="text-blue-400" />
+              <span className="text-[10px] font-bold text-white tracking-wider">
+                {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
+              </span>
+            </>
           ) : (
-            <Film size={11} className="text-green-400" />
+            <>
+              <Film size={11} className="text-green-400" />
+              <span className="text-[10px] font-bold text-white tracking-wider">
+                Phim
+              </span>
+            </>
           )}
-          <span className="text-[10px] font-bold text-white uppercase tracking-wider">
-            {movie.media_type === 'tv' ? 'TV' : 'Movie'}
-          </span>
         </div>
       </div>
 
+
       {/* Info Section */}
-      <div className="p-3.5 flex flex-col flex-1">
+      <div className="p-3 flex flex-col flex-1">
         <div className="min-h-10 mb-2">
           {(() => {
             const isVN = movie.country && (movie.country.includes('Vietnam') || movie.country.includes('VN'));
@@ -111,16 +120,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           })()}
         </div>
 
-        <div className="mt-auto pt-2.5 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[11px] text-text-muted">
-          <div className="flex items-center flex-wrap gap-x-1.5 gap-y-1">
+        <div className="mt-auto pt-2 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[11px] text-text-muted">
+          <div className="flex items-center flex-wrap gap-1.5">
+
             {movie.media_type === 'tv' ? (
               <>
-                {movie.seasons && movie.seasons > 0 && (
-                  <>
-                    <span>{movie.seasons} mùa</span>
-                    <span>•</span>
-                  </>
-                )}
                 {movie.progress && !movie.progress.is_completed && (
                   <>
                     <span>{`Đang xem S${movie.progress.current_season}E${movie.progress.current_episode}`}</span>
@@ -131,12 +135,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
               </>
             ) : (
               <>
-                {movie.runtime && (
-                  <>
-                    <span>{movie.runtime} phút</span>
-                    <span>•</span>
-                  </>
-                )}
                 <span>Xem ngày {formatMovieDate(movie.watched_at)}</span>
               </>
             )}
@@ -149,6 +147,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           )}
         </div>
       </div>
+
     </motion.div>
   );
 };

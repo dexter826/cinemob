@@ -21,26 +21,18 @@ export const useSearch = (user: any) => {
   const { movies: savedMovies } = useMovieStore();
 
   const [query, setQuery] = useState('');
-  const [searchTab, setSearchTab] = useState<'movies' | 'people'>('movies');
   const [currentPage, setCurrentPage] = useState(1);
   const [initialLoading, setInitialLoading] = useState(true);
   const [suggestAnimation, setSuggestAnimation] = useState(null);
-  const [countries, setCountries] = useState<{ iso_3166_1: string, english_name: string, native_name: string }[]>([]);
-
-  // Filters state
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'tv'>('all');
   const [filterYear, setFilterYear] = useState<string>('');
-  const [filterCountry, setFilterCountry] = useState<string>('');
-  const [filterRating, setFilterRating] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('popularity.desc');
 
   const filters = useMemo(() => ({
     year: filterYear,
-    country: filterCountry,
-    rating: filterRating,
     sortBy,
     type: filterType
-  }), [filterYear, filterCountry, filterRating, sortBy, filterType]);
+  }), [filterYear, sortBy, filterType]);
 
   useEffect(() => {
     fetch('/data/loading_suggest.json')
@@ -48,10 +40,7 @@ export const useSearch = (user: any) => {
       .then(data => setSuggestAnimation(data))
       .catch(err => console.error('Error loading animation:', err));
 
-    getCountries().then(data => {
-      setCountries(data);
-      setInitialLoading(false);
-    }).catch(() => setInitialLoading(false));
+    setInitialLoading(false);
   }, []);
 
   useEffect(() => {
@@ -62,12 +51,10 @@ export const useSearch = (user: any) => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [query, filterType, filterYear, filterCountry, filterRating, sortBy]);
+  }, [query, filterType, filterYear, sortBy]);
 
   // Sub-hooks
   const { results, totalSearchPages, isSearchLoading, discoverMovies, totalDiscoverPages, isDiscoverLoading, isSearchMode } = useSearchTMDB(query, currentPage, filters);
-
-  const { peopleResults, totalPeoplePages, isPeopleLoading } = useSearchPeople(query, currentPage);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
 
@@ -76,12 +63,10 @@ export const useSearch = (user: any) => {
     return displayMovies.filter(movie => {
       if (isSearchMode) {
         if (filterType !== 'all' && movie.media_type !== filterType) return false;
-        if (filterCountry && movie.origin_country && !movie.origin_country.includes(filterCountry)) return false;
-        if (filterRating && (movie.vote_average || 0) < Number(filterRating)) return false;
       }
       return true;
     });
-  }, [displayMovies, isSearchMode, filterType, filterCountry, filterRating]);
+  }, [displayMovies, isSearchMode, filterType]);
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     openAddModal({
@@ -101,35 +86,29 @@ export const useSearch = (user: any) => {
     setQuery('');
     setFilterType('all');
     setFilterYear('');
-    setFilterCountry('');
-    setFilterRating('');
     setSortBy('popularity.desc');
     setCurrentPage(1);
   };
 
   return {
     query, setQuery,
-    searchTab, setSearchTab,
-    peopleResults,
     initialLoading,
     currentPage,
-    totalPages: searchTab === 'movies' 
-      ? (isSearchMode ? totalSearchPages : totalDiscoverPages)
-      : totalPeoplePages,
+    totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage,
     discoverMovies,
     aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations,
-    suggestAnimation, countries,
+    suggestAnimation,
     filterType, setFilterType,
     filterYear, setFilterYear,
-    filterCountry, setFilterCountry,
-    filterRating, setFilterRating,
     sortBy, setSortBy,
     filteredResults,
     handleSelectMovie, getMovieStatus,
     handleClear,
     handleSearch: () => {}, // Handled by effects
-    isLoading: searchTab === 'movies' ? (isSearchMode ? isSearchLoading : isDiscoverLoading) : isPeopleLoading,
+    isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
     watchedMoviesCount: historyMovies.filter(m => (m.status || 'history') === 'history').length
   };
+
+
 };

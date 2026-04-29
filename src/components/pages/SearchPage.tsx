@@ -12,19 +12,15 @@ const SearchPage: React.FC = () => {
   const { user } = useAuth();
   const {
     query, setQuery,
-    searchTab, setSearchTab,
-    peopleResults,
     initialLoading,
     currentPage,
     totalPages,
     setCurrentPage,
     discoverMovies,
     aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations,
-    suggestAnimation, countries,
+    suggestAnimation,
     filterType, setFilterType,
     filterYear, setFilterYear,
-    filterCountry, setFilterCountry,
-    filterRating, setFilterRating,
     sortBy, setSortBy,
     filteredResults,
     handleSelectMovie, getMovieStatus,
@@ -43,38 +39,25 @@ const SearchPage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
         <SearchHeader 
-          searchTab={searchTab}
-          onTabChange={(tab) => {
-            setSearchTab(tab);
-            setCurrentPage(1);
-          }}
           hasDiscoverMovies={discoverMovies.length > 0}
         />
 
         <SearchFilters 
           query={query}
           setQuery={setQuery}
-          searchTab={searchTab}
           handleSearch={handleSearch}
           handleClear={handleClear}
           filterType={filterType}
           setFilterType={setFilterType}
-          filterCountry={filterCountry}
-          setFilterCountry={setFilterCountry}
-          countries={countries}
           filterYear={filterYear}
           setFilterYear={setFilterYear}
-          filterRating={filterRating}
-          setFilterRating={setFilterRating}
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
 
         <SearchResults 
           isLoading={isLoading}
-          searchTab={searchTab}
           query={query}
-          peopleResults={peopleResults}
           totalPages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
