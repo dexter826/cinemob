@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { X, Save, Loader2, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+
+import { X, Save, Loader2, ArrowLeft, Film, Star } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Sub-components
@@ -41,6 +43,15 @@ const AddMovieModal: React.FC = () => {
     isManualMode, isTVSeries,
     refs, errors, albums
   } = useAddMovieForm();
+
+  const [activeTab, setActiveTab] = useState<'info' | 'review'>(initialData?.movieToEdit ? 'review' : 'info');
+
+  useEffect(() => {
+    if (errors.title || errors.country || errors.releaseDate || errors.runtime || errors.seasons) {
+      setActiveTab('info');
+    }
+  }, [errors]);
+
 
 
 
@@ -102,36 +113,56 @@ const AddMovieModal: React.FC = () => {
                   />
 
                   <div className="flex-1 space-y-8">
-                    <div className="space-y-6">
-                      {/* Khối 1: Tiêu đề */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề gốc</label>
-                          <input
-                            ref={refs.title}
-                            type="text"
-                            required
-                            disabled={!isManualMode}
-                            value={formData.title}
-                            onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted ${isAnimating && errors.title ? 'scale-105' : ''}`}
-                            placeholder="Tên gốc (ví dụ: The Revenant)..."
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề tiếng Việt</label>
-                          <input
-                            type="text"
-                            disabled={!isManualMode}
-                            value={formData.title_vi}
-                            onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
-                            className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted"
-                            placeholder="Tên tiếng Việt (nếu có)..."
-                          />
-                        </div>
-                      </div>
+                    {/* Tabs Navigation */}
+                    <div className="flex border-b border-black/10 dark:border-white/10 gap-6">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('info')}
+                        className={`pb-3 text-sm font-semibold transition-all cursor-pointer relative flex items-center gap-2 border-b-2 -mb-px ${activeTab === 'info' ? 'text-primary border-primary' : 'text-text-muted border-transparent hover:text-text-main'}`}
+                      >
+                        <Film size={16} />
+                        <span>Thông tin phim</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('review')}
+                        className={`pb-3 text-sm font-semibold transition-all cursor-pointer relative flex items-center gap-2 border-b-2 -mb-px ${activeTab === 'review' ? 'text-primary border-primary' : 'text-text-muted border-transparent hover:text-text-main'}`}
+                      >
+                        <Star size={16} />
+                        <span>Đánh giá & Nhật ký</span>
+                      </button>
 
-                      {isManualMode && (
+
+                    </div>
+
+                    {activeTab === 'info' && (
+                      <div className="space-y-6 animate-in fade-in duration-200">
+                        {/* Khối 1: Tiêu đề */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề gốc</label>
+                            <input
+                              ref={refs.title}
+                              type="text"
+                              required
+                              value={formData.title}
+                              onChange={e => setFormData({ ...formData, title: e.target.value })}
+                              className={`w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted ${isAnimating && errors.title ? 'scale-105' : ''}`}
+                              placeholder="Tên gốc (ví dụ: The Revenant)..."
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Tiêu đề tiếng Việt</label>
+                            <input
+                              type="text"
+                              value={formData.title_vi}
+                              onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
+                              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-base font-bold text-text-main focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50 disabled:text-text-muted"
+                              placeholder="Tên tiếng Việt (nếu có)..."
+                            />
+                          </div>
+                        </div>
+
                         <div className="space-y-1.5 mt-4">
                           <label className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Link ảnh Poster</label>
                           <input
@@ -142,28 +173,30 @@ const AddMovieModal: React.FC = () => {
                             placeholder="Dán link ảnh poster (https://...) vào đây..."
                           />
                         </div>
-                      )}
 
-                      {/* Khối 2: Chi tiết phim */}
-                      <MovieFormFields
-                        isManualMode={isManualMode}
-                        manualMediaType={manualMediaType}
-                        setManualMediaType={setManualMediaType}
-                        formData={formData}
-                        setFormData={setFormData}
-                        isTVSeries={isTVSeries}
-                        countryOptions={countryOptions}
-                        genreOptions={genreOptions}
-                        selectedGenreIds={selectedGenreIds}
-                        setSelectedGenreIds={setSelectedGenreIds}
-                        isAnimating={isAnimating}
-                        errors={errors}
-                        refs={refs}
-                        status={status}
-                      />
+                        {/* Khối 2: Chi tiết phim */}
+                        <MovieFormFields
+                          isManualMode={isManualMode}
+                          manualMediaType={manualMediaType}
+                          setManualMediaType={setManualMediaType}
+                          formData={formData}
+                          setFormData={setFormData}
+                          isTVSeries={isTVSeries}
+                          countryOptions={countryOptions}
+                          genreOptions={genreOptions}
+                          selectedGenreIds={selectedGenreIds}
+                          setSelectedGenreIds={setSelectedGenreIds}
+                          isAnimating={isAnimating}
+                          errors={errors}
+                          refs={refs}
+                          status={status}
+                        />
+                      </div>
+                    )}
 
-                      {/* Khối 3: Trải nghiệm cá nhân */}
-                      <div className="pt-4 border-t border-white/5 space-y-6">
+                    {activeTab === 'review' && (
+                      <div className="space-y-6 animate-in fade-in duration-200">
+                        {/* Khối 3: Trải nghiệm cá nhân */}
                         <StatusToggle status={status} setStatus={setStatus} />
 
                         {status === 'history' && (
@@ -178,6 +211,20 @@ const AddMovieModal: React.FC = () => {
                         )}
 
                         {status === 'history' && (
+                          <div className="space-y-2 animate-in fade-in duration-300">
+                            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Review ngắn</label>
+                            <textarea
+                              rows={3}
+                              value={formData.review}
+                              onChange={e => setFormData({ ...formData, review: e.target.value })}
+                              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/20 outline-none transition-all custom-scrollbar resize-none hover:border-black/20 dark:hover:border-white/20"
+                              placeholder="Cảm nhận của bạn về phim..."
+                            />
+                          </div>
+                        )}
+
+                        {status === 'history' && (
+
                           <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
                             <div className="space-y-1.5">
                               <label className="text-xs font-medium text-text-muted uppercase tracking-wider block">Ngày xem</label>
@@ -197,37 +244,38 @@ const AddMovieModal: React.FC = () => {
                             </div>
                           </div>
                         )}
+
+                        {status === 'history' && isTVSeries && (
+                          <TVProgressSection
+                            isCompleted={isCompleted}
+                            setIsCompleted={setIsCompleted}
+                            currentSeason={currentSeason}
+                            setCurrentSeason={setCurrentSeason}
+                            currentEpisode={currentEpisode}
+                            setCurrentEpisode={setCurrentEpisode}
+                            totalEpisodes={totalEpisodes}
+                            episodesPerSeason={episodesPerSeason}
+                            maxSeasons={parseInt(formData.seasons) || 1}
+                          />
+                        )}
+
+                        {status === 'history' && (
+                          <AlbumSection
+                            isEditMode={!!initialData?.movieToEdit}
+                            showCreateAlbum={showCreateAlbum}
+                            setShowCreateAlbum={setShowCreateAlbum}
+                            newAlbumName={newAlbumName}
+                            setNewAlbumName={setNewAlbumName}
+                            handleCreateAlbum={handleCreateAlbum}
+                            creatingAlbum={creatingAlbum}
+                            albums={albums}
+                            selectedAlbumIds={selectedAlbumIds}
+                            setSelectedAlbumIds={setSelectedAlbumIds}
+                          />
+                        )}
                       </div>
+                    )}
 
-                      {status === 'history' && isTVSeries && (
-                        <TVProgressSection
-                          isCompleted={isCompleted}
-                          setIsCompleted={setIsCompleted}
-                          currentSeason={currentSeason}
-                          setCurrentSeason={setCurrentSeason}
-                          currentEpisode={currentEpisode}
-                          setCurrentEpisode={setCurrentEpisode}
-                          totalEpisodes={totalEpisodes}
-                          episodesPerSeason={episodesPerSeason}
-                          maxSeasons={parseInt(formData.seasons) || 1}
-                        />
-                      )}
-
-                      {status === 'history' && (
-                        <AlbumSection
-                          isEditMode={!!initialData?.movieToEdit}
-                          showCreateAlbum={showCreateAlbum}
-                          setShowCreateAlbum={setShowCreateAlbum}
-                          newAlbumName={newAlbumName}
-                          setNewAlbumName={setNewAlbumName}
-                          handleCreateAlbum={handleCreateAlbum}
-                          creatingAlbum={creatingAlbum}
-                          albums={albums}
-                          selectedAlbumIds={selectedAlbumIds}
-                          setSelectedAlbumIds={setSelectedAlbumIds}
-                        />
-                      )}
-                    </div>
                   </div>
                 </form>
               )}

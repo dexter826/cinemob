@@ -113,9 +113,8 @@ const Navbar: React.FC = () => {
                 <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-xl border border-black/5 dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-3 border-b border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
-                    <p className="text-[10px] text-text-muted truncate uppercase tracking-wider font-bold mt-0.5">Thành viên</p>
                   </div>
-                  
+
                   <div className="p-1">
                     <button
                       onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
