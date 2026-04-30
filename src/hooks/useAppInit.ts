@@ -25,10 +25,8 @@ export const useAppInit = () => {
     setAiRecommendations,
     setTrendingMovies,
     setHistoryMovies,
-    setHasFetchedInitial: setRecsFetchedInitial,
     initializeForUser: initRecs,
     refreshRecommendations,
-    hasFetchedInitial: recsFetchedInitial,
     historyMovies
   } = useRecommendationsStore();
 
@@ -118,20 +116,13 @@ export const useAppInit = () => {
       setAiRecommendations([]);
       setTrendingMovies([]);
       setHistoryMovies([]);
-      setRecsFetchedInitial(false);
       return;
     }
 
     initRecs(user.uid);
     setHistoryMovies(allMovies);
-  }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, setRecsFetchedInitial, initRecs]);
-
-  useEffect(() => {
-    if (user && !recsFetchedInitial && historyMovies.length >= 0) {
-      refreshRecommendations(user.uid);
-      setRecsFetchedInitial(true);
-    }
-  }, [user, recsFetchedInitial, historyMovies.length, refreshRecommendations, setRecsFetchedInitial]);
+    refreshRecommendations(user.uid);
+  }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs, refreshRecommendations]);
 
   // Release Calendar Logic
   useEffect(() => {

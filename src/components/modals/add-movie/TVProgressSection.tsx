@@ -25,7 +25,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
   maxSeasons
 }) => {
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-[24px] p-6 space-y-6 shadow-sm">
+    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-2">
           <Tv size={14} /> Tiến độ xem
@@ -51,8 +51,8 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
       </div>
 
       {!isCompleted && (
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Mùa (Season)</label>
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-xl border border-border-default">
               <button
@@ -72,7 +72,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
               </button>
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Tập (Episode)</label>
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-xl border border-border-default">
               <button

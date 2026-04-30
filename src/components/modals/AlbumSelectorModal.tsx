@@ -100,7 +100,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
           onClick={onClose}
         >
           <motion.div
@@ -108,7 +108,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-surface w-full max-w-xl rounded-[32px] overflow-hidden shadow-premium border border-border-default relative"
+            className="bg-surface w-full max-w-xl rounded-4xl overflow-hidden shadow-premium border border-border-default relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -171,7 +171,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
               ) : (
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="w-full p-6 mb-6 rounded-[24px] border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 text-left group cursor-pointer"
+                  className="w-full p-6 mb-6 rounded-3xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 group-hover:scale-110 transition-transform">
@@ -192,7 +192,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                 </div>
               ) : availableAlbums.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-[24px] flex items-center justify-center mx-auto mb-5 border border-border-default">
+                  <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-5 border border-border-default">
                     <FolderPlus className="text-text-muted opacity-20" size={40} />
                   </div>
                   <h3 className="text-xl font-bold text-text-main mb-2">Trống trải quá</h3>
@@ -211,7 +211,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                       key={album.docId}
                       onClick={() => handleAddToAlbum(album)}
                       disabled={addingToAlbum === album.docId}
-                      className="w-full p-5 rounded-[24px] border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer"
+                      className="w-full p-5 rounded-3xl border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-border-default group-hover:border-primary/30 group-hover:bg-primary/10 transition-all">

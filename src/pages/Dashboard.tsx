@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
         <DashboardActions onOpenAddModal={() => openAddModal()} />
 
         <div className="space-y-4">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <DashboardTabs 
               activeTab={activeTab}
               onTabChange={setActiveTab}
@@ -130,14 +130,14 @@ const Dashboard: React.FC = () => {
                 {filters.searchQuery || filters.rating || filters.year || filters.country || filters.contentType !== 'all' ? (
                   <button
                     onClick={clearFilters}
-                    className="px-6 py-2.5 bg-primary/10 text-primary rounded-xl font-bold text-sm hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 shadow-sm"
+                    className="px-6 py-3 bg-primary/10 text-primary rounded-xl font-bold text-sm hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 shadow-sm"
                   >
                     Xóa tất cả bộ lọc
                   </button>
                 ) : (
                   <button
                     onClick={() => navigate('/search')}
-                    className="px-8 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer shadow-premium"
+                    className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer shadow-premium"
                   >
                     Khám phá ngay
                   </button>

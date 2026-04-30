@@ -31,8 +31,8 @@ const SearchPage: React.FC = () => {
   }
 
   return (
-    <div className="text-text-main">
-      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
+    <div className="text-text-main transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
         <SearchHeader 
           hasDiscoverMovies={discoverMovies.length > 0}
         />

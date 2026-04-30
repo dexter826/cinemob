@@ -16,8 +16,8 @@ const PosterPreview: React.FC<PosterPreviewProps> = ({
   onPosterClick
 }) => {
   return (
-    <div className="md:w-80 shrink-0 space-y-4">
-      <div className="relative group aspect-2/3 rounded-[32px] overflow-hidden bg-black/5 dark:bg-white/5 border border-border-default shadow-premium">
+    <div className="w-full max-w-60 sm:max-w-none sm:md:w-80 mx-auto md:mx-0 shrink-0 space-y-4">
+      <div className="relative group aspect-2/3 rounded-3xl sm:rounded-4xl overflow-hidden bg-black/5 dark:bg-white/5 border border-border-default shadow-premium">
         {posterPath ? (
           <>
             <img

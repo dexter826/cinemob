@@ -33,19 +33,6 @@ export const useReleaseCalendar = () => {
   const [pushLoading, setPushLoading] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setViewMode('list');
-      } else {
-        setViewMode('calendar');
-      }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   /** Kiểm tra trạng thái thông báo đẩy khi mount. */
   useEffect(() => {
     const checkPushStatus = async () => {

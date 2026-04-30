@@ -98,16 +98,16 @@ const StatsPage: React.FC = () => {
   }
 
   return (
-    <div className="text-text-main">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
-        <h1 className="text-3xl font-bold flex items-center gap-4 tracking-tight">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-            <TrendingUp className="text-primary" size={24} />
+    <div className="text-text-main transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
+        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3 sm:gap-4 tracking-tight">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+            <TrendingUp className="text-primary sm:w-6 sm:h-6" size={20} />
           </div>
           Thống kê điện ảnh
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatsCard
             label="Tổng nội dung"
             value={stats.totalMovies}
@@ -124,26 +124,26 @@ const StatsPage: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-surface border border-border-default p-8 rounded-3xl shadow-premium">
-            <h3 className="text-xl font-bold mb-8 flex items-center gap-3 tracking-tight">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+            <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
               <Star size={20} className="text-warning" />
               Phân bố đánh giá
             </h3>
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {[5, 4, 3, 2, 1].map((rating) => (
-                <div key={rating} className="flex items-center gap-4 group">
-                  <div className="flex items-center gap-1.5 w-14 shrink-0">
-                    <span className="font-bold text-lg text-text-main">{rating}</span>
-                    <Star size={16} className="fill-warning text-warning" />
+                <div key={rating} className="flex items-center gap-3 sm:gap-4 group">
+                  <div className="flex items-center gap-1 w-12 sm:w-14 shrink-0">
+                    <span className="font-bold text-base sm:text-lg text-text-main">{rating}</span>
+                    <Star size={14} className="fill-warning text-warning sm:w-4 sm:h-4" />
                   </div>
-                  <div className="flex-1 h-3 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default shadow-inner">
+                  <div className="flex-1 h-2.5 sm:h-3 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default shadow-inner">
                     <div
                       className="h-full bg-warning rounded-full transition-all duration-700 ease-out"
                       style={{ width: `${(stats.moviesByRating[rating] / (movies.filter(m => m.rating).length || 1)) * 100}%` }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-lg w-12 text-center border border-border-default group-hover:text-primary transition-colors">
+                  <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg w-10 sm:w-12 text-center border border-border-default group-hover:text-primary transition-colors">
                     {stats.moviesByRating[rating]}
                   </span>
                 </div>
@@ -151,23 +151,23 @@ const StatsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-surface border border-border-default p-8 rounded-3xl shadow-premium">
-            <h3 className="text-xl font-bold mb-8 flex items-center gap-3 tracking-tight">
+          <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+            <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
               <Globe size={20} className="text-primary" />
               Top 5 Quốc gia
             </h3>
             {Object.keys(stats.moviesByCountry).length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {Object.entries(stats.moviesByCountry)
                   .sort((a, b) => Number(b[1]) - Number(a[1]))
                   .slice(0, 5)
                   .map(([country, count], index) => (
-                    <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl transition-all duration-300 hover:shadow-md hover:bg-black/[0.08] dark:hover:bg-white/[0.08] border border-transparent hover:border-border-default group">
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-primary/40 text-2xl w-8 group-hover:text-primary transition-colors">0{index + 1}</span>
-                        <span className="font-bold text-text-main">{country}</span>
+                    <div key={country} className="flex items-center justify-between p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-2xl transition-all duration-300 hover:shadow-md hover:bg-black/8 dark:hover:bg-white/8 border border-transparent hover:border-border-default group">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <span className="font-bold text-primary/40 text-xl sm:text-2xl w-6 sm:w-8 group-hover:text-primary transition-colors">0{index + 1}</span>
+                        <span className="font-bold text-sm sm:text-base text-text-main truncate max-w-[120px] sm:max-w-none">{country}</span>
                       </div>
-                      <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20">
+                      <span className="text-[10px] sm:text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-primary/20 whitespace-nowrap">
                         {count} phim
                       </span>
                     </div>
@@ -182,13 +182,13 @@ const StatsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-surface border border-border-default p-8 rounded-3xl shadow-premium">
-          <h3 className="text-xl font-bold mb-8 flex items-center gap-3 tracking-tight">
+        <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+          <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
             <Film size={20} className="text-primary" />
             Phân bố thể loại
           </h3>
           {Object.keys(stats.moviesByGenre).length > 0 ? (
-            <div className="h-112 sm:h-96">
+            <div className="h-96 sm:h-112">
               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
                   {(() => {
@@ -214,7 +214,10 @@ const StatsPage: React.FC = () => {
                           outerRadius={isSmallScreen ? 90 : 140}
                           paddingAngle={5}
                           labelLine={false}
-                          label={isSmallScreen ? false : (({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`)}
+                          label={isSmallScreen ? false : ((props: any) => {
+                            const p = props.percent ?? 0;
+                            return `${props.name}: ${(p * 100).toFixed(0)}%`;
+                          })}
                           dataKey="value"
                           stroke="none"
                         >

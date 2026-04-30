@@ -19,7 +19,6 @@ import SplashScreen from './components/ui/SplashScreen';
 import Loading from './components/ui/Loading';
 import { ThemeProvider } from './components/providers/ThemeProvider';
 import { useAppInit } from './hooks/useAppInit';
-import PullToRefreshProvider from './components/providers/PullToRefreshProvider';
 import ToastContainer from './components/ui/ToastContainer';
 import AlertContainer from './components/ui/AlertContainer';
 
@@ -90,19 +89,17 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
   }
 
   return (
-    <PullToRefreshProvider>
-      <Layout appReady={appReady}>
-        <Suspense fallback={<Loading />}>
-          <AnimatedRoutes />
-          <AddMovieModal />
-          <MovieDetailModal
-            isOpen={isDetailModalOpen}
-            onClose={closeDetailModal}
-            movie={selectedMovie}
-          />
-        </Suspense>
-      </Layout>
-    </PullToRefreshProvider>
+    <Layout appReady={appReady}>
+      <Suspense fallback={<Loading mobileFriendly />}>
+        <AnimatedRoutes />
+        <AddMovieModal />
+        <MovieDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={closeDetailModal}
+          movie={selectedMovie}
+        />
+      </Suspense>
+    </Layout>
   );
 };
 

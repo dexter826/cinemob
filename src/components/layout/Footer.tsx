@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-surface border-t border-border-default py-6 mt-auto">
+    <footer className="hidden md:block relative bg-surface border-t border-border-default py-6 mt-auto">
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
         {/* Khối 1: Thương hiệu */}
         <div className="flex-1 text-center md:text-left">

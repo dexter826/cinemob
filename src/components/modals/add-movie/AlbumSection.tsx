@@ -29,7 +29,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
   setSelectedAlbumIds
 }) => {
   return (
-    <div className="pt-6 border-t border-border-default space-y-4">
+    <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
           <FolderPlus size={14} /> {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}

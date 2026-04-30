@@ -55,7 +55,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       days.push(
         <div 
           key={`prev-${day}`} 
-          className="h-14 md:h-28 p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-2xl flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-[10px] font-bold text-text-muted">{day}</div>
         </div>
@@ -74,37 +74,37 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           key={day}
           onClick={() => setSelectedDate(date)}
           className={`
-            h-14 md:h-28 p-3 border cursor-pointer transition-all duration-300
-            hover:bg-primary/10 relative rounded-2xl flex flex-col justify-between group
+            h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-all duration-300
+            hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group
             ${today ? 'bg-primary/5 border-primary/50 shadow-lg shadow-primary/10' : 'border-border-default bg-black/5 dark:bg-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
             ${hasEp ? 'hover:scale-[1.02] active:scale-95' : ''}
           `}
         >
-          <div className={`text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
+          <div className={`text-[10px] sm:text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
             {day}
           </div>
           {hasEp && (
-            <div className="hidden md:block mt-1 space-y-1.5 overflow-hidden">
+            <div className="hidden sm:block mt-1 space-y-1 sm:space-y-1.5 overflow-hidden">
               {episodes.slice(0, 2).map((ep, idx) => (
                 <div 
                   key={idx} 
-                  className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
+                  className="text-[8px] sm:text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
                 </div>
               ))}
               {episodes.length > 2 && (
-                <div className="text-[9px] text-text-muted font-bold opacity-60 pl-1">+{episodes.length - 2} tập khác</div>
+                <div className="text-[8px] sm:text-[9px] text-text-muted font-bold opacity-60 pl-1">+{episodes.length - 2}</div>
               )}
             </div>
           )}
           {hasEp && (
-            <div className="md:hidden absolute bottom-2 left-1/2 transform -translate-x-1/2">
-              <div className="flex gap-1">
+            <div className="sm:hidden absolute bottom-1.5 left-1/2 transform -translate-x-1/2">
+              <div className="flex gap-0.5">
                 {episodes.slice(0, 3).map((_, idx) => (
-                  <div key={idx} className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_rgba(var(--color-primary),0.5)]"></div>
+                  <div key={idx} className="w-1 h-1 rounded-full bg-primary shadow-[0_0_3px_rgba(var(--color-primary),0.5)]"></div>
                 ))}
               </div>
             </div>
@@ -119,7 +119,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       days.push(
         <div 
           key={`next-${day}`} 
-          className="h-14 md:h-28 p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-2xl flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-[10px] font-bold text-text-muted">{day}</div>
         </div>
@@ -130,40 +130,40 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default p-8 rounded-[32px] flex flex-col h-full shadow-premium">
-      <div className="flex items-center justify-between mb-8">
-        <button onClick={() => navigateMonth('prev')} className="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
+    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default p-4 sm:p-6 md:p-8 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium">
+      <div className="flex items-center justify-between mb-6 sm:mb-8">
+        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
           <ChevronLeft size={20} />
         </button>
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold text-text-main tracking-tight uppercase">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight uppercase whitespace-nowrap">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button onClick={goToToday} className="px-4 py-1.5 text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all uppercase tracking-widest cursor-pointer">
+          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all uppercase tracking-widest cursor-pointer">
             Hôm nay
           </button>
         </div>
-        <button onClick={() => navigateMonth('next')} className="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
+        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
           <ChevronRight size={20} />
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 mb-3">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
         {DAYS_OF_WEEK.map(day => (
-          <div key={day} className="text-center text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] py-3 opacity-60">
+          <div key={day} className="text-center text-[8px] sm:text-[10px] font-bold text-text-muted uppercase tracking-wider sm:tracking-[0.2em] py-2 sm:py-3 opacity-60">
             {day}
           </div>
         ))}
       </div>
 
       {loadingEpisodes ? (
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {Array.from({ length: 42 }).map((_, idx) => (
-            <div key={idx} className="h-14 md:h-28 p-2 border border-border-default/50 rounded-2xl animate-pulse bg-black/5 dark:bg-white/5" />
+            <div key={idx} className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-xl sm:rounded-2xl animate-pulse bg-black/5 dark:bg-white/5" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {renderCalendarDays()}
         </div>
       )}

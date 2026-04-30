@@ -95,7 +95,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full bg-surface border border-border-default rounded-xl px-4 py-2.5 text-left
+          w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-xl px-4 py-3 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-300
           flex items-center justify-between shadow-sm
@@ -105,7 +105,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <span className={`text-sm font-medium ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}>
+        <span className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown

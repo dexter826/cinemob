@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Clock, ChevronUp, ChevronDown } from 'lucide-react';
+import { Clock, ChevronUp, ChevronDown, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 interface CustomTimePickerProps {
     value: string; // HH:mm format
@@ -19,11 +20,19 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
     minuteStep = 1,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const hourListRef = useRef<HTMLDivElement>(null);
     const minuteListRef = useRef<HTMLDivElement>(null);
 
     const [hours, minutes] = value ? value.split(':').map(Number) : [0, 0];
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -32,12 +41,12 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
             }
         };
 
-        if (isOpen) {
+        if (isOpen && !isMobile) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isOpen]);
+    }, [isOpen, isMobile]);
 
     // Scroll to selected time when opening
     useEffect(() => {
@@ -123,6 +132,93 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
     const hourOptions = Array.from({ length: 24 }, (_, i) => i);
     const minuteOptions = Array.from({ length: 60 / minuteStep }, (_, i) => i * minuteStep);
 
+    const renderPicker = () => (
+        <div
+            className={`
+                bg-surface border border-border-default rounded-2xl shadow-2xl p-4
+                ${isMobile 
+                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[280px] mx-auto animate-in zoom-in-95 duration-200' 
+                    : 'absolute top-full left-0 mt-1 z-50 w-56'}
+            `}
+            role="dialog"
+            aria-label="Chọn giờ"
+            onClick={(e) => isMobile && e.stopPropagation()}
+        >
+            {isMobile && (
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
+                    <span className="text-sm font-bold text-text-main uppercase tracking-widest">Chọn giờ</span>
+                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
+                        <X size={20} className="text-text-muted" />
+                    </button>
+                </div>
+            )}
+
+            {/* Quick Select Lists */}
+            <div className="flex gap-2 max-h-40">
+                {/* Hour List */}
+                <div
+                    ref={hourListRef}
+                    className="flex-1 overflow-y-auto custom-scrollbar"
+                >
+                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold uppercase tracking-widest">Giờ</div>
+                    {hourOptions.map((h) => (
+                        <button
+                            key={h}
+                            type="button"
+                            data-selected={h === hours}
+                            onClick={() => handleHourChange(h)}
+                            className={`
+                                w-full py-1.5 text-sm rounded-lg transition-colors
+                                ${h === hours
+                                    ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
+                                    : 'text-text-main hover:bg-primary/10 hover:text-primary font-medium'
+                                }
+                            `}
+                        >
+                            {String(h).padStart(2, '0')}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Minute List */}
+                <div
+                    ref={minuteListRef}
+                    className="flex-1 overflow-y-auto custom-scrollbar"
+                >
+                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold uppercase tracking-widest">Phút</div>
+                    {minuteOptions.map((m) => (
+                        <button
+                            key={m}
+                            type="button"
+                            data-selected={m === minutes}
+                            onClick={() => handleMinuteChange(m)}
+                            className={`
+                                w-full py-1.5 text-sm rounded-lg transition-colors
+                                ${m === minutes
+                                    ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
+                                    : 'text-text-main hover:bg-primary/10 hover:text-primary font-medium'
+                                }
+                            `}
+                        >
+                            {String(m).padStart(2, '0')}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Now Button */}
+            <div className="mt-4 pt-3 border-t border-border-default">
+                <button
+                    type="button"
+                    onClick={setCurrentTime}
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-all uppercase tracking-widest border border-primary/20"
+                >
+                    Bây giờ
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
@@ -132,10 +228,10 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 className={`
-          w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-left
+          w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-xl px-4 py-3 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-200
-          flex items-center justify-between
+          flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
@@ -144,133 +240,26 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
             >
                 <div className="flex items-center gap-2">
                     <Clock size={16} className="text-text-muted" />
-                    <span className={`text-sm ${value ? 'text-text-main' : 'text-text-muted'}`}>
+                    <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
                         {value ? formatDisplayTime(value) : placeholder}
                     </span>
                 </div>
             </button>
 
-            {/* Time Picker Dropdown */}
+            {/* Picker UI */}
             {isOpen && (
-                <div
-                    className="
-            absolute top-full left-0 mt-1 bg-surface border border-border-default
-            rounded-xl shadow-lg z-50 p-3 w-56
-          "
-                    role="dialog"
-                    aria-label="Chọn giờ"
-                >
-                    {/* Time Display */}
-                    <div className="flex items-center justify-center gap-2 mb-3 pb-3 border-b border-border-default">
-                        {/* Hour Control */}
-                        <div className="flex flex-col items-center">
-                            <button
-                                type="button"
-                                onClick={incrementHour}
-                                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                                <ChevronUp size={18} className="text-text-muted" />
-                            </button>
-                            <span className="text-2xl font-bold text-text-main w-12 text-center">
-                                {String(hours).padStart(2, '0')}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={decrementHour}
-                                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                                <ChevronDown size={18} className="text-text-muted" />
-                            </button>
-                        </div>
-
-                        <span className="text-2xl font-bold text-text-muted">:</span>
-
-                        {/* Minute Control */}
-                        <div className="flex flex-col items-center">
-                            <button
-                                type="button"
-                                onClick={incrementMinute}
-                                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                                <ChevronUp size={18} className="text-text-muted" />
-                            </button>
-                            <span className="text-2xl font-bold text-text-main w-12 text-center">
-                                {String(minutes).padStart(2, '0')}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={decrementMinute}
-                                className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                                <ChevronDown size={18} className="text-text-muted" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Quick Select Lists */}
-                    <div className="flex gap-2 max-h-40">
-                        {/* Hour List */}
-                        <div
-                            ref={hourListRef}
-                            className="flex-1 overflow-y-auto custom-scrollbar"
+                isMobile ? (
+                    createPortal(
+                        <div 
+                            className="fixed inset-0 z-60 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                            onClick={() => setIsOpen(false)}
                         >
-                            <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface">Giờ</div>
-                            {hourOptions.map((h) => (
-                                <button
-                                    key={h}
-                                    type="button"
-                                    data-selected={h === hours}
-                                    onClick={() => handleHourChange(h)}
-                                    className={`
-                    w-full py-1.5 text-sm rounded-lg transition-colors
-                    ${h === hours
-                                            ? 'bg-primary text-white font-medium'
-                                            : 'text-text-main hover:bg-black/5 dark:hover:bg-white/5'
-                                        }
-                  `}
-                                >
-                                    {String(h).padStart(2, '0')}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Minute List */}
-                        <div
-                            ref={minuteListRef}
-                            className="flex-1 overflow-y-auto custom-scrollbar"
-                        >
-                            <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface">Phút</div>
-                            {minuteOptions.map((m) => (
-                                <button
-                                    key={m}
-                                    type="button"
-                                    data-selected={m === minutes}
-                                    onClick={() => handleMinuteChange(m)}
-                                    className={`
-                    w-full py-1.5 text-sm rounded-lg transition-colors
-                    ${m === minutes
-                                            ? 'bg-primary text-white font-medium'
-                                            : 'text-text-main hover:bg-black/5 dark:hover:bg-white/5'
-                                        }
-                  `}
-                                >
-                                    {String(m).padStart(2, '0')}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Now Button */}
-                    <div className="mt-3 pt-3 border-t border-border-default">
-                        <button
-                            type="button"
-                            onClick={setCurrentTime}
-                            className="w-full py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors font-medium"
-                        >
-                            Bây giờ
-                        </button>
-                    </div>
-                </div>
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                            {renderPicker()}
+                        </div>,
+                        document.body
+                    )
+                ) : renderPicker()
             )}
         </div>
     );

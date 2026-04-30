@@ -7,18 +7,70 @@ interface AIRecommendation {
     reason: string;
 }
 
+interface CircuitBreakerState {
+    failCount: number;
+    lastFailTime: number;
+    state: 'CLOSED' | 'OPEN';
+}
+
+const CIRCUIT_CONFIG = {
+    FAIL_THRESHOLD: 5,
+    RECOVERY_TIME: 60000, // 60 giây
+} as const;
+
+const RETRY_CONFIG = {
+    MAX_RETRIES: 3,
+    BASE_DELAY: 2000, // 2 giây
+} as const;
+
+let circuitBreaker: CircuitBreakerState = {
+    failCount: 0,
+    lastFailTime: 0,
+    state: 'CLOSED',
+};
+
+const isCircuitOpen = (): boolean => {
+    if (circuitBreaker.state === 'CLOSED') return false;
+    
+    const timeSinceFail = Date.now() - circuitBreaker.lastFailTime;
+    if (timeSinceFail > CIRCUIT_CONFIG.RECOVERY_TIME) {
+        circuitBreaker = { failCount: 0, lastFailTime: 0, state: 'CLOSED' };
+        return false;
+    }
+    return true;
+};
+
+const recordFailure = (): void => {
+    circuitBreaker.failCount++;
+    circuitBreaker.lastFailTime = Date.now();
+    
+    if (circuitBreaker.failCount >= CIRCUIT_CONFIG.FAIL_THRESHOLD) {
+        circuitBreaker.state = 'OPEN';
+    }
+};
+
+const recordSuccess = (): void => {
+    circuitBreaker.failCount = 0;
+    circuitBreaker.state = 'CLOSED';
+};
+
 /** Lấy gợi ý phim từ AI theo lịch sử xem. */
 export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
     if (!history || history.length === 0) return [];
 
+    if (isCircuitOpen()) {
+        console.warn("Circuit breaker OPEN: Too many API failures. Skipping AI recommendations.");
+        throw new Error("CIRCUIT_BREAKER_OPEN");
+    }
+
+    return retryWithBackoff(() => callOpenRouterAPI(history, allMovies, excludePreviouslyRecommended));
+};
+
+const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[]): Promise<AIRecommendation[]> => {
     const filteredMovies = history.filter(m => (m.rating || 0) >= 3);
-
-    const getRandomItems = (array: Movie[], count: number): Movie[] => {
-        const shuffled = [...array].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, Math.min(count, array.length));
-    };
-
-    const selectedMovies = getRandomItems(filteredMovies, 150); 
+    const selectedMovies = filteredMovies
+        .sort(() => 0.5 - Math.random())
+        .slice(0, Math.min(150, filteredMovies.length)); 
 
     const watchedList = selectedMovies
         .map(m => `- ${m.title} (${m.rating ? m.rating + '/5 stars' : 'Liked'})`)
@@ -56,51 +108,78 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
     ]
     `;
 
-    try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": window.location.origin, 
-                "X-Title": "CineMOB", 
-            },
-            body: JSON.stringify({
-                "model": "openrouter/elephant-alpha", 
-                "messages": [
-                    { "role": "system", "content": "You are a professional movie recommendation engine. Output valid JSON only." },
-                    { "role": "user", "content": prompt }
-                ],
-                "temperature": 0.5, 
-            })
-        });
+    const response = await makeOpenRouterRequest(prompt);
+    
+    if (response.status === 429) {
+        recordFailure();
+        throw new Error("API_RATE_LIMIT");
+    }
 
-        if (response.status === 429) {
-            console.error("OpenRouter Rate Limit: Too many requests.");
-            throw new Error("API_RATE_LIMIT");
-        }
+    const data = await response.json();
 
-        const data = await response.json();
+    if (data.error) {
+        recordFailure();
+        throw new Error(data.error.message || "API_ERROR");
+    }
 
-        if (data.error) {
-            console.error("OpenRouter API Error:", data.error);
-            throw new Error(data.error.message || "API_ERROR");
-        }
-
-        if (data.choices && data.choices.length > 0) {
-            const content = data.choices[0].message.content;
-            const jsonString = content
-                .replace(/^```json\s*/, '') 
-                .replace(/^```\s*/, '')     
-                .replace(/\s*```$/, '')     
-                .trim();
-                
-            return JSON.parse(jsonString) as AIRecommendation[];
-        }
-
-        return [];
-    } catch (error) {
-        console.error("AI Recommendation Error:", error);
+    if (!data.choices?.length) {
+        recordFailure();
         return [];
     }
+
+    try {
+        const recommendations = parseAIResponse(data.choices[0].message.content);
+        recordSuccess();
+        return recommendations;
+    } catch (error) {
+        recordFailure();
+        throw new Error("PARSE_ERROR");
+    }
 };
+
+const sleep = (ms: number): Promise<void> => 
+    new Promise(resolve => setTimeout(resolve, ms));
+
+const retryWithBackoff = async (
+    fn: () => Promise<AIRecommendation[]>,
+    retries: number = RETRY_CONFIG.MAX_RETRIES
+): Promise<AIRecommendation[]> => {
+    try {
+        return await fn();
+    } catch (error) {
+        const shouldRetry = (error as Error).message === "API_RATE_LIMIT" && retries > 0;
+        if (!shouldRetry) throw error;
+
+        const delayMs = RETRY_CONFIG.BASE_DELAY * Math.pow(2, RETRY_CONFIG.MAX_RETRIES - retries);
+        await sleep(delayMs);
+        return retryWithBackoff(fn, retries - 1);
+    }
+};
+
+const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
+    fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": window.location.origin,
+            "X-Title": "CineMOB",
+        },
+        body: JSON.stringify({
+            model: "minimax/minimax-m2.5:free",
+            messages: [
+                { role: "system", content: "You are a professional movie recommendation engine. Output valid JSON only." },
+                { role: "user", content: prompt }
+            ],
+            temperature: 0.5,
+        })
+    });
+
+const parseAIResponse = (content: string): AIRecommendation[] => {
+    const jsonString = content
+        .replace(/^```json\s*/, "")
+        .replace(/^```\s*/, "")
+        .replace(/\s*```$/, "")
+        .trim();
+    return JSON.parse(jsonString);
+}

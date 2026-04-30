@@ -74,7 +74,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
       </div>
 
       {showFilters && (
-        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface/95 backdrop-blur-2xl p-5 rounded-2xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[300px] animate-fade-in">
+        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface/95 backdrop-blur-2xl p-4 rounded-2xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in">
           
           <div className="space-y-3">
             <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp</div>

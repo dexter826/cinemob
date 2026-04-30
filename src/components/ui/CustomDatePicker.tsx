@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 interface CustomDatePickerProps {
     value: string; // YYYY-MM-DD format
@@ -27,6 +28,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     maxDate,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const [viewDate, setViewDate] = useState(() => {
         if (value) {
             const [y, m] = value.split('-').map(Number);
@@ -42,18 +44,25 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     })() : null;
 
     useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
 
-        if (isOpen) {
+        if (isOpen && !isMobile) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isOpen]);
+    }, [isOpen, isMobile]);
 
     // Update viewDate when value changes externally
     useEffect(() => {
@@ -176,6 +185,134 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
         }
     };
 
+    const renderCalendar = () => (
+        <div
+            className={`
+                bg-surface border border-border-default rounded-2xl shadow-2xl p-4
+                ${isMobile 
+                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[320px] mx-auto animate-in zoom-in-95 duration-200' 
+                    : 'absolute top-full left-0 mt-1 z-50 w-72'}
+            `}
+            role="dialog"
+            aria-label="Chọn ngày"
+            onClick={(e) => isMobile && e.stopPropagation()}
+        >
+            {isMobile && (
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
+                    <span className="text-sm font-bold text-text-main uppercase tracking-widest">Chọn ngày</span>
+                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
+                        <X size={20} className="text-text-muted" />
+                    </button>
+                </div>
+            )}
+
+            {/* Header: Year Navigation */}
+            <div className="flex items-center justify-between mb-2">
+                <button
+                    type="button"
+                    onClick={handlePrevYear}
+                    className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+                    aria-label="Năm trước"
+                >
+                    <ChevronLeft size={14} className="text-text-muted -mr-1.5" />
+                    <ChevronLeft size={14} className="text-text-muted" />
+                </button>
+                <span className="text-sm font-semibold text-text-main">
+                    {viewDate.getFullYear()}
+                </span>
+                <button
+                    type="button"
+                    onClick={handleNextYear}
+                    className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+                    aria-label="Năm sau"
+                >
+                    <ChevronRight size={14} className="text-text-muted -mr-1.5" />
+                    <ChevronRight size={14} className="text-text-muted" />
+                </button>
+            </div>
+
+            {/* Header: Month Navigation */}
+            <div className="flex items-center justify-between mb-3">
+                <button
+                    type="button"
+                    onClick={handlePrevMonth}
+                    className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+                    aria-label="Tháng trước"
+                >
+                    <ChevronLeft size={16} className="text-text-muted" />
+                </button>
+                <span className="text-sm font-medium text-text-main">
+                    {MONTHS_VI[viewDate.getMonth()]}
+                </span>
+                <button
+                    type="button"
+                    onClick={handleNextMonth}
+                    className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+                    aria-label="Tháng sau"
+                >
+                    <ChevronRight size={16} className="text-text-muted" />
+                </button>
+            </div>
+
+            {/* Day Headers */}
+            <div className="grid grid-cols-7 gap-1 mb-1">
+                {DAYS_VI.map((day) => (
+                    <div
+                        key={day}
+                        className="text-center text-[10px] sm:text-xs font-bold text-text-muted/60 py-1 uppercase"
+                    >
+                        {day}
+                    </div>
+                ))}
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="grid grid-cols-7 gap-1">
+                {getDaysInMonth().map((item, index) => {
+                    const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
+                    const isTodayDate = item.isCurrentMonth && isToday(item.day);
+                    const isSelectedDate = item.isCurrentMonth && isSelected(item.day);
+
+                    return (
+                        <button
+                            key={index}
+                            type="button"
+                            onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
+                            disabled={!item.isCurrentMonth || isDisabled}
+                            className={`
+                                w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-all duration-150
+                                flex items-center justify-center
+                                ${!item.isCurrentMonth ? 'text-text-muted/20 cursor-default' : ''}
+                                ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-main font-medium' : ''}
+                                ${isDisabled ? 'text-text-muted/20 cursor-not-allowed' : ''}
+                                ${isTodayDate && !isSelectedDate ? 'border border-primary/50 text-primary font-bold' : ''}
+                                ${isSelectedDate ? 'bg-primary text-white font-bold shadow-lg shadow-primary/30 scale-110' : ''}
+                            `}
+                        >
+                            {item.day}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Today Button */}
+            <div className="mt-4 pt-3 border-t border-border-default">
+                <button
+                    type="button"
+                    onClick={() => {
+                        const today = new Date();
+                        setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
+                        onChange(formatDateToString(today));
+                        setIsOpen(false);
+                    }}
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-all uppercase tracking-widest border border-primary/20"
+                >
+                    Hôm nay
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
@@ -185,10 +322,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 className={`
-          w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-left
+          w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-xl px-4 py-3 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-200
-          flex items-center justify-between
+          flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
@@ -197,127 +334,26 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             >
                 <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-text-muted" />
-                    <span className={`text-sm ${value ? 'text-text-main' : 'text-text-muted'}`}>
+                    <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
                         {value ? formatDisplayDate(value) : placeholder}
                     </span>
                 </div>
             </button>
 
-            {/* Calendar Dropdown */}
+            {/* Calendar UI */}
             {isOpen && (
-                <div
-                    className="
-            absolute top-full left-0 mt-1 bg-surface border border-border-default
-            rounded-xl shadow-lg z-50 p-3 w-72
-          "
-                    role="dialog"
-                    aria-label="Chọn ngày"
-                >
-                    {/* Header: Year Navigation */}
-                    <div className="flex items-center justify-between mb-2">
-                        <button
-                            type="button"
-                            onClick={handlePrevYear}
-                            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
-                            aria-label="Năm trước"
+                isMobile ? (
+                    createPortal(
+                        <div 
+                            className="fixed inset-0 z-60 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                            onClick={() => setIsOpen(false)}
                         >
-                            <ChevronLeft size={14} className="text-text-muted -mr-1.5" />
-                            <ChevronLeft size={14} className="text-text-muted" />
-                        </button>
-                        <span className="text-sm font-semibold text-text-main">
-                            {viewDate.getFullYear()}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={handleNextYear}
-                            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
-                            aria-label="Năm sau"
-                        >
-                            <ChevronRight size={14} className="text-text-muted -mr-1.5" />
-                            <ChevronRight size={14} className="text-text-muted" />
-                        </button>
-                    </div>
-
-                    {/* Header: Month Navigation */}
-                    <div className="flex items-center justify-between mb-3">
-                        <button
-                            type="button"
-                            onClick={handlePrevMonth}
-                            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            aria-label="Tháng trước"
-                        >
-                            <ChevronLeft size={16} className="text-text-muted" />
-                        </button>
-                        <span className="text-sm font-medium text-text-main">
-                            {MONTHS_VI[viewDate.getMonth()]}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={handleNextMonth}
-                            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                            aria-label="Tháng sau"
-                        >
-                            <ChevronRight size={16} className="text-text-muted" />
-                        </button>
-                    </div>
-
-                    {/* Day Headers */}
-                    <div className="grid grid-cols-7 gap-1 mb-1">
-                        {DAYS_VI.map((day) => (
-                            <div
-                                key={day}
-                                className="text-center text-xs font-medium text-text-muted py-1"
-                            >
-                                {day}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-1">
-                        {getDaysInMonth().map((item, index) => {
-                            const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
-                            const isTodayDate = item.isCurrentMonth && isToday(item.day);
-                            const isSelectedDate = item.isCurrentMonth && isSelected(item.day);
-
-                            return (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
-                                    disabled={!item.isCurrentMonth || isDisabled}
-                                    className={`
-                    w-8 h-8 text-sm rounded-lg transition-all duration-150
-                    flex items-center justify-center
-                    ${!item.isCurrentMonth ? 'text-text-muted/30 cursor-default' : ''}
-                    ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-black/5 dark:hover:bg-white/5 text-text-main' : ''}
-                    ${isDisabled ? 'text-text-muted/30 cursor-not-allowed' : ''}
-                    ${isTodayDate && !isSelectedDate ? 'border border-primary/50 text-primary' : ''}
-                    ${isSelectedDate ? 'bg-primary text-white font-medium' : ''}
-                  `}
-                                >
-                                    {item.day}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    {/* Today Button */}
-                    <div className="mt-3 pt-3 border-t border-border-default">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const today = new Date();
-                                setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
-                                onChange(formatDateToString(today));
-                                setIsOpen(false);
-                            }}
-                            className="w-full py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors font-medium"
-                        >
-                            Hôm nay
-                        </button>
-                    </div>
-                </div>
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                            {renderCalendar()}
+                        </div>,
+                        document.body
+                    )
+                ) : renderCalendar()
             )}
         </div>
     );

@@ -19,40 +19,40 @@ const RatingSection: React.FC<RatingSectionProps> = ({
   ratingRef
 }) => {
   return (
-    <div 
-      ref={ratingRef} 
-      className={`bg-black/5 dark:bg-white/5 rounded-[24px] p-6 space-y-4 transition-all duration-500 border border-border-default ${
-        isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : 'shadow-premium'
-      }`}
-    >
+    <div ref={ratingRef} className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">
+        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+          <Star size={14} className="text-primary" />
           Đánh giá phim
         </label>
         <div className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg border border-primary/20">
           {rating > 0 ? `${rating} / 5` : 'Chưa đánh giá'}
         </div>
       </div>
-      <div className="flex justify-between max-w-xs mx-auto">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => setRating(star)}
-            onMouseEnter={() => setHoverRating(star)}
-            onMouseLeave={() => setHoverRating(0)}
-            className="group p-2 focus:outline-none transition-transform active:scale-90"
-          >
-            <Star
-              size={32}
-              className={`transition-all duration-300 ${
-                star <= (hoverRating || rating)
-                  ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
-                  : 'text-text-muted/30 group-hover:text-warning/50 group-hover:scale-110'
-              }`}
-            />
-          </button>
-        ))}
+      <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-all duration-500 shadow-sm ${
+        isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : ''
+      }`}>
+        <div className="flex justify-between max-w-xs mx-auto">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              type="button"
+              onClick={() => setRating(star)}
+              onMouseEnter={() => setHoverRating(star)}
+              onMouseLeave={() => setHoverRating(0)}
+              className="group p-2 focus:outline-none transition-transform active:scale-90"
+            >
+              <Star
+                size={28}
+                className={`transition-all duration-300 ${
+                  star <= (hoverRating || rating)
+                    ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
+                    : 'text-text-muted/30 group-hover:text-warning/50 group-hover:scale-110'
+                }`}
+              />
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

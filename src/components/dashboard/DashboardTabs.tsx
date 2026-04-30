@@ -16,8 +16,8 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   tvCount 
 }) => {
   return (
-    <div className="flex items-baseline gap-3">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="flex items-center">
         <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden">
           <div
             className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-lg shadow-primary/30 transition-transform duration-300 ease-out ${

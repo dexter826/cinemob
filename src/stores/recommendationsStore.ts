@@ -10,20 +10,18 @@ const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
 };
 
+const pendingRequests = new Map<string, Promise<any>>();
+
 interface RecommendationsState {
   aiRecommendations: TMDBMovieResult[];
   trendingMovies: TMDBMovieResult[];
   isAiLoading: boolean;
   historyMovies: Movie[];
-  lastAiHistoryLength: number;
-  hasFetchedInitial: boolean;
   previouslyRecommendedTitles: Set<string>;
   setAiRecommendations: (recs: TMDBMovieResult[]) => void;
   setTrendingMovies: (movies: TMDBMovieResult[]) => void;
   setIsAiLoading: (loading: boolean) => void;
   setHistoryMovies: (movies: Movie[]) => void;
-  setLastAiHistoryLength: (length: number) => void;
-  setHasFetchedInitial: (fetched: boolean) => void;
   setPreviouslyRecommendedTitles: (titles: Set<string>) => void;
   initializeForUser: (userId: string) => Promise<void>;
   refreshRecommendations: (userId: string, forceRefresh?: boolean) => Promise<void>;
@@ -34,15 +32,11 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   trendingMovies: [],
   isAiLoading: false,
   historyMovies: [],
-  lastAiHistoryLength: 0,
-  hasFetchedInitial: false,
   previouslyRecommendedTitles: new Set(),
   setAiRecommendations: (recs) => set({ aiRecommendations: recs }),
   setTrendingMovies: (movies) => set({ trendingMovies: movies }),
   setIsAiLoading: (loading) => set({ isAiLoading: loading }),
   setHistoryMovies: (movies) => set({ historyMovies: movies }),
-  setLastAiHistoryLength: (length) => set({ lastAiHistoryLength: length }),
-  setHasFetchedInitial: (fetched) => set({ hasFetchedInitial: fetched }),
   setPreviouslyRecommendedTitles: (titles) => set({ previouslyRecommendedTitles: titles }),
   initializeForUser: async (userId: string) => {
     try {
@@ -62,36 +56,47 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   },
   refreshRecommendations: async (userId: string, forceRefresh = false) => {
     const state = get();
+    
+    const pendingKey = `ai_${userId}`;
+    if (pendingRequests.has(pendingKey) && !forceRefresh) {
+      return pendingRequests.get(pendingKey);
+    }
+
     set({ isAiLoading: true });
 
-    try {
-      const { fetchAIRecommendations, fetchTrendingFallback } = await import('../services/recommendationService');
-      
-      const result = await fetchAIRecommendations(
-        userId,
-        state.historyMovies,
-        state.previouslyRecommendedTitles,
-        forceRefresh
-      );
+    const requestPromise = (async () => {
+      try {
+        const { fetchAIRecommendations, fetchTrendingFallback } = await import('../services/recommendationService');
+        
+        const result = await fetchAIRecommendations(
+          userId,
+          state.historyMovies,
+          state.previouslyRecommendedTitles,
+          forceRefresh
+        );
 
-      if (result) {
-        set({
-          aiRecommendations: result.aiRecommendations,
-          lastAiHistoryLength: result.lastAiHistoryLength,
-          previouslyRecommendedTitles: new Set(JSON.parse(localStorage.getItem(`previously_recommended_${userId}`) || '{"titles":[]}').titles)
-        });
-      } else {
+        if (result) {
+          set({
+            aiRecommendations: result.aiRecommendations,
+            previouslyRecommendedTitles: new Set(JSON.parse(localStorage.getItem(`previously_recommended_${userId}`) || '{"titles":[]}').titles)
+          });
+        } else {
+          const trending = await fetchTrendingFallback();
+          set({ trendingMovies: trending });
+        }
+      } catch (error) {
+        console.error("Recommendations failed:", error);
+        const { fetchTrendingFallback } = await import('../services/recommendationService');
         const trending = await fetchTrendingFallback();
         set({ trendingMovies: trending });
+      } finally {
+        set({ isAiLoading: false });
+        pendingRequests.delete(pendingKey);
       }
-    } catch (e) {
-      console.error('Recommendations failed:', e);
-      const { fetchTrendingFallback } = await import('../services/recommendationService');
-      const trending = await fetchTrendingFallback();
-      set({ trendingMovies: trending });
-    } finally {
-      set({ isAiLoading: false });
-    }
+    })();
+
+    pendingRequests.set(pendingKey, requestPromise);
+    return requestPromise;
   },
 }));
 

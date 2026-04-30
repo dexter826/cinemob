@@ -17,7 +17,7 @@ const ReleaseCalendarPage: React.FC = () => {
     upcomingEpisodes,
     currentDate,
     selectedDate, setSelectedDate,
-    viewMode,
+    viewMode, setViewMode,
     pushLoading,
     pushSubscribed,
     notificationPermission,
@@ -40,12 +40,14 @@ const ReleaseCalendarPage: React.FC = () => {
 
   return (
     <main className="text-text-main">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-8 sm:pt-12">
           <CalendarHeader 
             handlePushToggle={handlePushToggle}
             pushLoading={pushLoading}
             pushSubscribed={pushSubscribed}
             notificationPermission={notificationPermission}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
           />
 
           <CalendarStats 
@@ -61,9 +63,9 @@ const ReleaseCalendarPage: React.FC = () => {
           />
 
           {tvSeries.length === 0 ? (
-            <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-[32px] p-16 text-center shadow-premium animate-in fade-in zoom-in-95 duration-500">
+            <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-4xl p-16 text-center shadow-premium animate-in fade-in zoom-in-95 duration-500">
               <div className="flex justify-center mb-8">
-                <div className="w-24 h-24 bg-primary/10 rounded-[24px] flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/5">
+                <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/5">
                   <Tv size={48} className="text-primary" />
                 </div>
               </div>
@@ -75,7 +77,7 @@ const ReleaseCalendarPage: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               {viewMode === 'calendar' && (
                 <CalendarGrid 
                   currentDate={currentDate}

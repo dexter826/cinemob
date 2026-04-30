@@ -52,10 +52,10 @@ export const useSearch = (user: any) => {
   }, []);
 
   useEffect(() => {
-    if (user && aiRecommendations.length === 0 && !isAiLoading) {
+    if (user?.uid && aiRecommendations.length === 0 && !isAiLoading) {
       refreshRecommendations(user.uid);
     }
-  }, [user, aiRecommendations.length, isAiLoading, refreshRecommendations]);
+  }, [user?.uid, aiRecommendations.length, isAiLoading]);
 
   useEffect(() => {
     setCurrentPage(1);

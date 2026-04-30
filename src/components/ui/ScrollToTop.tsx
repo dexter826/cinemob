@@ -50,7 +50,7 @@ const ScrollToTop: React.FC = () => {
       {isVisible && !hasModal && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
+          className="fixed bottom-20 md:bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
         >
           <ArrowUpToLine size={24} />
         </button>
