@@ -2,17 +2,17 @@ import { Movie, TMDBMovieResult } from '../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
 import { translateCountries } from '../constants/countries';
 
-/** Lấy tiêu đề chính (Ưu tiên tiếng Việt nếu là phim VN). */
+/** Lấy tiêu đề chính ưu tiên Tiếng Việt. */
 export const getMainTitle = (movie: Movie): string => {
   const country = movie.country || '';
-  const isVN = country.includes('Vietnam') || country.includes('Việt Nam') || country.includes('VN');
+  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
   return isVN && movie.title_vi ? movie.title_vi : (movie.title_vi || movie.title);
 };
 
-/** Lấy tiêu đề phụ (Tên gốc nếu khác tên chính). */
+/** Lấy tiêu đề phụ (tên gốc). */
 export const getSubTitle = (movie: Movie): string => {
   const country = movie.country || '';
-  const isVN = country.includes('Vietnam') || country.includes('Việt Nam') || country.includes('VN');
+  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
   const mainTitle = getMainTitle(movie);
   
   if (!isVN && movie.title_vi && movie.title_vi !== movie.title) {
@@ -64,15 +64,11 @@ export const normalizeMovieDate = (date: any): Date | null => {
   return isNaN(d.getTime()) ? null : d;
 };
 
-/** Định dạng ngày tháng theo chuẩn vi-VN. */
+/** Định dạng ngày chuẩn Việt Nam. */
 export const formatMovieDate = (date: any): string => {
   const normalized = normalizeMovieDate(date);
   if (!normalized) return 'N/A';
-  return new Intl.DateTimeFormat('vi-VN', { 
-    month: 'numeric', 
-    day: 'numeric', 
-    year: 'numeric' 
-  }).format(normalized);
+  return new Intl.DateTimeFormat('vi-VN', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(normalized);
 };
 
 /** Lấy URL ảnh đầy đủ từ TMDB. */

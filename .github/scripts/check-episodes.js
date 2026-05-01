@@ -55,6 +55,8 @@ const getWatchlistFromFirestore = async () => {
             poster_path: data.poster_path,
             media_type: data.media_type,
             status: data.status,
+            genres: data.genres,
+            country: data.country,
             release_date: data.release_date,
         };
 
@@ -106,52 +108,44 @@ const fetchTMDB = async (endpoint) => {
     return response.json();
 };
 
+/** Lấy danh sách tập phim phát sóng dựa trên múi giờ quốc gia. */
 const getUpcomingEpisodes = async (tvId) => {
     try {
         const details = await fetchTMDB(`/tv/${tvId}`);
-
-        // Check if show is still running
-        if (details.status === 'Ended' || details.status === 'Canceled') {
-            return [];
-        }
+        if (details.status === 'Ended' || details.status === 'Canceled') return [];
 
         const episodes = [];
-        const today = getTodayDateString();
+        const now = new Date();
+        const offset = 7 * 60 * 60 * 1000;
+        const today = new Date(now.getTime() + offset).toISOString().split('T')[0];
+        const yesterday = new Date(now.getTime() + offset - 86400000).toISOString().split('T')[0];
 
-        // Check next episode
-        if (details.next_episode_to_air) {
+        const isWestern = details.origin_country?.some(c => ['US', 'CA', 'GB', 'FR', 'DE', 'ES', 'IT'].includes(c));
+        const targetDate = isWestern ? yesterday : today;
+
+        if (details.next_episode_to_air?.air_date === targetDate) {
             const nextEp = details.next_episode_to_air;
-            if (nextEp.air_date === today) {
+            episodes.push({
+                season_number: nextEp.season_number,
+                episode_number: nextEp.episode_number,
+                name: nextEp.name,
+                air_date: nextEp.air_date,
+            });
+        }
+
+        if (details.last_episode_to_air?.air_date === targetDate) {
+            const lastEp = details.last_episode_to_air;
+            if (!episodes.some(e => e.season_number === lastEp.season_number && e.episode_number === lastEp.episode_number)) {
                 episodes.push({
-                    season_number: nextEp.season_number,
-                    episode_number: nextEp.episode_number,
-                    name: nextEp.name,
-                    air_date: nextEp.air_date,
+                    season_number: lastEp.season_number,
+                    episode_number: lastEp.episode_number,
+                    name: lastEp.name,
+                    air_date: lastEp.air_date,
                 });
             }
         }
-
-        // Also check last episode (sometimes next_episode_to_air is not updated immediately)
-        if (details.last_episode_to_air) {
-            const lastEp = details.last_episode_to_air;
-            if (lastEp.air_date === today) {
-                const alreadyAdded = episodes.some(
-                    (e) => e.season_number === lastEp.season_number && e.episode_number === lastEp.episode_number
-                );
-                if (!alreadyAdded) {
-                    episodes.push({
-                        season_number: lastEp.season_number,
-                        episode_number: lastEp.episode_number,
-                        name: lastEp.name,
-                        air_date: lastEp.air_date,
-                    });
-                }
-            }
-        }
-
         return episodes;
     } catch (error) {
-        console.error(`❌ Error fetching episodes for TV ${tvId}:`, error.message);
         return [];
     }
 };
@@ -251,11 +245,17 @@ const main = async () => {
         }
     }
 
-    // Check each movie for today's release
     for (const movie of movies) {
-        if (movie.release_date === today) {
-            todayMovies.push(movie);
-        }
+        const country = movie.country || '';
+        const isWestern = ['Mỹ', 'Anh', 'Pháp', 'USA', 'UK'].some(c => country.includes(c));
+        
+        const now = new Date();
+        const offset = 7 * 60 * 60 * 1000;
+        const targetDate = isWestern 
+            ? new Date(now.getTime() + offset - 86400000).toISOString().split('T')[0]
+            : today;
+
+        if (movie.release_date === targetDate) todayMovies.push(movie);
     }
 
     // If no episodes or movies today, exit
@@ -266,7 +266,7 @@ const main = async () => {
 
     console.log(`\n🎬 Found ${todayEpisodes.length} episode(s) and ${todayMovies.length} movie(s) today:`);
     todayEpisodes.forEach(({ series, episode }) => {
-        const code = `S${String(episode.season_number).padStart(2, '0')}E${String(episode.episode_number).padStart(2, '0')}`;
+        const code = `Mùa ${episode.season_number} - Tập ${episode.episode_number}`;
         console.log(`  • [TV] ${series.title_vi || series.title} - ${code}`);
     });
     todayMovies.forEach((movie) => {
@@ -279,27 +279,27 @@ const main = async () => {
     if (todayEpisodes.length + todayMovies.length === 1) {
         if (todayEpisodes.length === 1) {
             const { series, episode } = todayEpisodes[0];
-            title = series.title_vi || series.title;
-            body = `Mùa ${episode.season_number} • Tập ${episode.episode_number} phát sóng hôm nay`;
+            title = `🎬 Lịch chiếu: ${series.title_vi || series.title}`;
+            body = `Hôm nay phát sóng Mùa ${episode.season_number} • Tập ${episode.episode_number}. Đừng bỏ lỡ nhé!`;
         } else {
             const movie = todayMovies[0];
-            title = movie.title_vi || movie.title;
-            body = `Phim đã chính thức khởi chiếu hôm nay!`;
+            title = `🍿 Khởi chiếu: ${movie.title_vi || movie.title}`;
+            body = `Bộ phim bạn mong đợi đã chính thức ra mắt hôm nay!`;
         }
     } else {
         const total = todayEpisodes.length + todayMovies.length;
-        title = `${total} phim mới hôm nay`;
+        title = `🎬 Cinemob: Lịch chiếu hôm nay (${total} phim)`;
 
         const lines = [];
-        todayEpisodes.slice(0, 2).forEach(({ series, episode }) => {
-            lines.push(`${series.title_vi || series.title} (S${episode.season_number}E${episode.episode_number})`);
+        todayEpisodes.slice(0, 3).forEach(({ series, episode }) => {
+            lines.push(`• ${series.title_vi || series.title} (Tập ${episode.episode_number})`);
         });
         todayMovies.slice(0, 2).forEach((movie) => {
-            lines.push(`${movie.title_vi || movie.title} (Khởi chiếu)`);
+            lines.push(`• ${movie.title_vi || movie.title} (Khởi chiếu)`);
         });
 
-        if (total > 4) {
-            lines.push(`... và ${total - 4} phim khác`);
+        if (total > lines.length) {
+            lines.push(`... và ${total - lines.length} nội dung khác`);
         }
         body = lines.join('\n');
     }

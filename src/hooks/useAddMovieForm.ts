@@ -151,7 +151,7 @@ export const useAddMovieForm = () => {
     }
   }, [isOpen, initialData, user]);
 
-  // Cuộn đến vùng bị lỗi khi submit
+  /** Cuộn đến phần tử lỗi khi validate thất bại. */
   useEffect(() => {
     if (errorTrigger > 0) {
       const errorKey = Object.keys(errors).find(k => (errors as any)[k]) || (ratingError ? 'rating' : null);
