@@ -97,22 +97,6 @@ const StatsPage: React.FC = () => {
     };
   }, [watchedMovies, movies]);
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <div className="h-12 w-64 bg-surface rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-          <div className="h-28 bg-surface rounded-3xl animate-pulse" />
-          <div className="h-28 bg-surface rounded-3xl animate-pulse" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-          <div className="h-80 bg-surface rounded-3xl animate-pulse" />
-          <div className="h-80 bg-surface rounded-3xl animate-pulse" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="text-text-main transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -122,151 +106,167 @@ const StatsPage: React.FC = () => {
           description="Cái nhìn tổng quan về thói quen xem phim của bạn."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <StatsCard
-            label="Tổng nội dung"
-            value={stats.totalMovies}
-            subValue={`${stats.movieCount} Điện ảnh • ${stats.tvCount} TV Series`}
-            icon={Film}
-            colorClass="text-primary"
-          />
-          <StatsCard
-            label="Đánh giá trung bình"
-            value={stats.avgRating}
-            subValue={`Trên ${movies.filter(m => m.rating && m.rating > 0).length} phim`}
-            icon={Star}
-            colorClass="text-warning"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-          <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
-            <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
-              <Star size={20} className="text-warning" />
-              Phân bố đánh giá
-            </h3>
-            <div className="space-y-4 sm:space-y-5">
-              {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
-                <div key={rating} className="flex items-center gap-3 sm:gap-4 group">
-                  <div className="flex items-center gap-1 w-12 sm:w-14 shrink-0">
-                    <span className="font-bold text-base sm:text-lg text-text-main">{rating}</span>
-                    <Star size={14} className="fill-warning text-warning sm:w-4 sm:h-4" />
-                  </div>
-                  <div className="flex-1 h-2.5 sm:h-3 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default shadow-inner">
-                    <div
-                      className="h-full bg-warning rounded-full transition-all duration-700 ease-out"
-                      style={{ width: `${(stats.moviesByRating[rating] / (movies.filter(m => m.rating).length || 1)) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg w-10 sm:w-12 text-center border border-border-default group-hover:text-primary transition-colors">
-                    {stats.moviesByRating[rating]}
-                  </span>
-                </div>
-              ))}
+        {loading ? (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+              <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="h-96 bg-surface rounded-3xl animate-pulse" />
+              <div className="h-96 bg-surface rounded-3xl animate-pulse" />
             </div>
           </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <StatsCard
+                label="Tổng nội dung"
+                value={stats.totalMovies}
+                subValue={`${stats.movieCount} Điện ảnh • ${stats.tvCount} TV Series`}
+                icon={Film}
+                colorClass="text-primary"
+              />
+              <StatsCard
+                label="Đánh giá trung bình"
+                value={stats.avgRating}
+                subValue={`Trên ${movies.filter(m => m.rating && m.rating > 0).length} phim`}
+                icon={Star}
+                colorClass="text-warning"
+              />
+            </div>
 
-          <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
-            <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
-              <Globe size={20} className="text-primary" />
-              Top 5 Quốc gia
-            </h3>
-            {Object.keys(stats.moviesByCountry).length > 0 ? (
-              <div className="space-y-3 sm:space-y-4">
-                {Object.entries(stats.moviesByCountry)
-                  .sort((a, b) => Number(b[1]) - Number(a[1]))
-                  .slice(0, 5)
-                  .map(([country, count], index) => (
-                    <div key={country} className="flex items-center justify-between p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-2xl transition-all duration-300 hover:shadow-md hover:bg-black/8 dark:hover:bg-white/8 border border-transparent hover:border-border-default group">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <span className="font-bold text-primary/40 text-xl sm:text-2xl w-6 sm:w-8 group-hover:text-primary transition-colors">0{index + 1}</span>
-                        <span className="font-bold text-sm sm:text-base text-text-main truncate max-w-[120px] sm:max-w-none">{country}</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+              <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
+                <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
+                  <Star size={20} className="text-warning" />
+                  Phân bố đánh giá
+                </h3>
+                <div className="space-y-4 sm:space-y-5">
+                  {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
+                    <div key={rating} className="flex items-center gap-3 sm:gap-4 group">
+                      <div className="flex items-center gap-1 w-12 sm:w-14 shrink-0">
+                        <span className="font-bold text-base sm:text-lg text-text-main">{rating}</span>
+                        <Star size={14} className="fill-warning text-warning sm:w-4 sm:h-4" />
                       </div>
-                      <span className="text-[10px] sm:text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-primary/20 whitespace-nowrap">
-                        {count} phim
+                      <div className="flex-1 h-2.5 sm:h-3 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default shadow-inner">
+                        <div
+                          className="h-full bg-warning rounded-full transition-all duration-700 ease-out"
+                          style={{ width: `${(stats.moviesByRating[rating] / (movies.filter(m => m.rating).length || 1)) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg w-10 sm:w-12 text-center border border-border-default group-hover:text-primary transition-colors">
+                        {stats.moviesByRating[rating]}
                       </span>
                     </div>
                   ))}
+                </div>
               </div>
-            ) : (
-              <EmptyState
-                icon={Globe}
-                title="Chưa có dữ liệu"
-                description="Thêm phim vào lịch sử để xem thống kê theo quốc gia."
-                className="py-10"
-              />
-            )}
-          </div>
-        </div>
 
-        <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
-          <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
-            <Film size={20} className="text-primary" />
-            Phân bố thể loại
-          </h3>
-          {Object.keys(stats.moviesByGenre).length > 0 ? (
-            <div className="h-96 sm:h-112">
-              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                <PieChart>
-                  {(() => {
-                    const entries = Object.entries(stats.moviesByGenre)
+              <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
+                <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
+                  <Globe size={20} className="text-primary" />
+                  Top 5 Quốc gia
+                </h3>
+                {Object.keys(stats.moviesByCountry).length > 0 ? (
+                  <div className="space-y-3 sm:space-y-4">
+                    {Object.entries(stats.moviesByCountry)
                       .sort((a, b) => Number(b[1]) - Number(a[1]))
-                      .map(([genre, count]) => ({ name: genre, value: Number(count) }));
-
-                    let genreData = entries;
-                    if (entries.length > 8) {
-                      const top = entries.slice(0, 7);
-                      const othersTotal = entries.slice(7).reduce((acc, cur) => acc + cur.value, 0);
-                      genreData = [...top, { name: 'Khác', value: othersTotal }];
-                    } else {
-                      genreData = entries.slice(0, 8);
-                    }
-                    return (
-                      <>
-                        <Pie
-                          data={genreData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={isSmallScreen ? 60 : 100}
-                          outerRadius={isSmallScreen ? 90 : 140}
-                          paddingAngle={5}
-                          labelLine={false}
-                          label={isSmallScreen ? false : ((props: any) => {
-                            const p = props.percent ?? 0;
-                            return `${props.name}: ${(p * 100).toFixed(0)}%`;
-                          })}
-                          dataKey="value"
-                          stroke="none"
-                        >
-                          {genreData.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        {isSmallScreen && (
-                          <Legend
-                            verticalAlign="bottom"
-                            align="center"
-                            layout="vertical"
-                            wrapperStyle={{ fontSize: 11, marginTop: 24, fontWeight: 'bold' }}
-                            formatter={(value: string, entry: any) => `${value}: ${((entry.payload.value / stats.totalMovies) * 100).toFixed(1)}%`}
-                          />
-                        )}
-                      </>
-                    );
-                  })()}
-                  <Tooltip content={customTooltip} />
-                </PieChart>
-              </ResponsiveContainer>
+                      .slice(0, 5)
+                      .map(([country, count], index) => (
+                        <div key={country} className="flex items-center justify-between p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-2xl transition-all duration-300 hover:shadow-md hover:bg-black/8 dark:hover:bg-white/8 border border-transparent hover:border-border-default group">
+                          <div className="flex items-center gap-3 sm:gap-4">
+                            <span className="font-bold text-primary/40 text-xl sm:text-2xl w-6 sm:w-8 group-hover:text-primary transition-colors">0{index + 1}</span>
+                            <span className="font-bold text-sm sm:text-base text-text-main truncate max-w-[120px] sm:max-w-none">{country}</span>
+                          </div>
+                          <span className="text-[10px] sm:text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-primary/20 whitespace-nowrap">
+                            {count} phim
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon={Globe}
+                    title="Chưa có dữ liệu"
+                    description="Thêm phim vào lịch sử để xem thống kê theo quốc gia."
+                    className="py-10"
+                  />
+                )}
+              </div>
             </div>
-          ) : (
-            <EmptyState
-              icon={Film}
-              title="Chưa có dữ liệu"
-              description="Thêm phim vào lịch sử để xem thống kê theo thể loại."
-              className="py-10"
-            />
-          )}
-        </div>
+
+            <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
+              <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
+                <Film size={20} className="text-primary" />
+                Phân bố thể loại
+              </h3>
+              {Object.keys(stats.moviesByGenre).length > 0 ? (
+                <div className="h-96 sm:h-112">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                    <PieChart>
+                      {(() => {
+                        const entries = Object.entries(stats.moviesByGenre)
+                          .sort((a, b) => Number(b[1]) - Number(a[1]))
+                          .map(([genre, count]) => ({ name: genre, value: Number(count) }));
+
+                        let genreData = entries;
+                        if (entries.length > 8) {
+                          const top = entries.slice(0, 7);
+                          const othersTotal = entries.slice(7).reduce((acc, cur) => acc + cur.value, 0);
+                          genreData = [...top, { name: 'Khác', value: othersTotal }];
+                        } else {
+                          genreData = entries.slice(0, 8);
+                        }
+                        return (
+                          <>
+                            <Pie
+                              data={genreData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={isSmallScreen ? 60 : 100}
+                              outerRadius={isSmallScreen ? 90 : 140}
+                              paddingAngle={5}
+                              labelLine={false}
+                              label={isSmallScreen ? false : ((props: any) => {
+                                const p = props.percent ?? 0;
+                                return `${props.name}: ${(p * 100).toFixed(0)}%`;
+                              })}
+                              dataKey="value"
+                              stroke="none"
+                            >
+                              {genreData.map((_, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            {isSmallScreen && (
+                              <Legend
+                                verticalAlign="bottom"
+                                align="center"
+                                layout="vertical"
+                                wrapperStyle={{ fontSize: 11, marginTop: 24, fontWeight: 'bold' }}
+                                formatter={(value: string, entry: any) => `${value}: ${((entry.payload.value / stats.totalMovies) * 100).toFixed(1)}%`}
+                              />
+                            )}
+                          </>
+                        );
+                      })()}
+                      <Tooltip content={customTooltip} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <EmptyState
+                  icon={Film}
+                  title="Chưa có dữ liệu"
+                  description="Thêm phim vào lịch sử để xem thống kê theo thể loại."
+                  className="py-10"
+                />
+              )}
+            </div>
+          </>
+        )}
+
       </div>
     </div>
   );

@@ -96,8 +96,23 @@ const AddMovieModal: React.FC = () => {
             {/* Content */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6">
               {isLoadingDetails ? (
-                <div className="h-64 flex items-center justify-center">
-                  <Loading fullScreen={false} text="Đang lấy thông tin phim..." />
+                <div className="flex flex-col md:flex-row gap-6 animate-in fade-in duration-500">
+                  <div className="w-full md:w-1/3 aspect-2/3 bg-black/5 dark:bg-white/5 rounded-3xl animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-6">
+                    <div className="h-10 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                      </div>
+                      <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+                      <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                        <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">

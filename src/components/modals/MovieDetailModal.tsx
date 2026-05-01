@@ -119,7 +119,33 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
             <div className="flex-1 p-5 md:p-6 overflow-y-auto custom-scrollbar">
               {loading ? (
-                <Loading fullScreen={false} size={48} />
+                <div className="space-y-6 animate-in fade-in duration-500">
+                  <div className="space-y-2">
+                    <div className="h-10 bg-black/5 dark:bg-white/5 rounded-2xl w-3/4 animate-pulse" />
+                    <div className="h-6 bg-black/5 dark:bg-white/5 rounded-xl w-1/2 animate-pulse" />
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <div className="h-8 w-20 bg-black/5 dark:bg-white/5 rounded-full animate-pulse" />
+                    <div className="h-8 w-24 bg-black/5 dark:bg-white/5 rounded-full animate-pulse" />
+                    <div className="h-8 w-16 bg-black/5 dark:bg-white/5 rounded-full animate-pulse" />
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="h-4 bg-black/5 dark:bg-white/5 rounded-lg w-full animate-pulse" />
+                    <div className="h-4 bg-black/5 dark:bg-white/5 rounded-lg w-full animate-pulse" />
+                    <div className="h-4 bg-black/5 dark:bg-white/5 rounded-lg w-2/3 animate-pulse" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="h-6 bg-black/5 dark:bg-white/5 rounded-lg w-32 animate-pulse" />
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="h-8 w-24 bg-black/5 dark:bg-white/5 rounded-xl animate-pulse" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <div className="space-y-6">
                   <div>

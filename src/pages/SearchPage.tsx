@@ -28,27 +28,13 @@ const SearchPage: React.FC = () => {
     watchedMoviesCount
   } = useSearch(user);
 
-  if (initialLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <div className="h-8 w-40 bg-surface rounded-xl animate-pulse" />
-        <div className="h-12 bg-surface rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="text-text-main transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader 
           icon={Search}
           title={discoverMovies.length > 0 ? "Khám phá điện ảnh" : "Tìm kiếm phim"}
-          description="Tìm kiếm phim, diễn viên và khám phá các gợi ý mới nhất từ TMDB."
+          description="Tìm kiếm phim, series và khám phá các gợi ý mới nhất từ TMDB."
         />
 
         <SearchFilters 
@@ -58,24 +44,32 @@ const SearchPage: React.FC = () => {
           handleClear={handleClear}
         />
 
-        <SearchResults 
-          isLoading={isLoading}
-          query={filters.query}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          isAiLoading={isAiLoading}
-          aiRecommendations={aiRecommendations}
-          trendingMovies={trendingMovies}
-          discoverMovies={discoverMovies}
-          filteredResults={filteredResults}
-          suggestAnimation={suggestAnimation}
-          watchedMoviesCount={watchedMoviesCount}
-          getMovieStatus={getMovieStatus}
-          handleSelectMovie={handleSelectMovie}
-          refreshRecommendations={refreshRecommendations}
-          userId={user?.uid || ''}
-        />
+        {initialLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : (
+          <SearchResults 
+            isLoading={isLoading}
+            query={filters.query}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            isAiLoading={isAiLoading}
+            aiRecommendations={aiRecommendations}
+            trendingMovies={trendingMovies}
+            discoverMovies={discoverMovies}
+            filteredResults={filteredResults}
+            suggestAnimation={suggestAnimation}
+            watchedMoviesCount={watchedMoviesCount}
+            getMovieStatus={getMovieStatus}
+            handleSelectMovie={handleSelectMovie}
+            refreshRecommendations={refreshRecommendations}
+            userId={user?.uid || ''}
+          />
+        )}
       </div>
     </div>
   );

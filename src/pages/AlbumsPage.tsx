@@ -65,19 +65,6 @@ const AlbumsPage: React.FC = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <div className="h-24 bg-surface rounded-3xl animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="text-text-main transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -107,7 +94,7 @@ const AlbumsPage: React.FC = () => {
             </div>
             <button
               type="submit"
-              disabled={creating}
+              disabled={creating || loading}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
             >
               <Plus size={16} />
@@ -116,7 +103,13 @@ const AlbumsPage: React.FC = () => {
           </div>
         </form>
 
-        {albums.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 animate-in fade-in duration-500">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
+            ))}
+          </div>
+        ) : albums.length === 0 ? (
           <EmptyState
             icon={Folder}
             title="Chưa có album nào"
