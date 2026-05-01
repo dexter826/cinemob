@@ -11,6 +11,7 @@ import useMovieStore from '../stores/movieStore';
 const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 
 import { GENRE_TRANSLATIONS } from '../constants/genres';
+import { COUNTRY_TRANSLATIONS } from '../constants/countries';
 
 const StatsPage: React.FC = () => {
   const { user } = useAuth();
@@ -66,7 +67,8 @@ const StatsPage: React.FC = () => {
       if (m.country && m.country.trim().length > 0) {
         const countries = m.country.split(',').map(c => c.trim()).filter(c => c.length > 0);
         countries.forEach(country => {
-          moviesByCountry[country] = (moviesByCountry[country] || 0) + 1;
+          const translated = COUNTRY_TRANSLATIONS[country] || country;
+          moviesByCountry[translated] = (moviesByCountry[translated] || 0) + 1;
         });
       }
     });

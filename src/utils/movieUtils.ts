@@ -1,15 +1,18 @@
 import { Movie, TMDBMovieResult } from '../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
+import { translateCountries } from '../constants/countries';
 
 /** Lấy tiêu đề chính (Ưu tiên tiếng Việt nếu là phim VN). */
 export const getMainTitle = (movie: Movie): string => {
-  const isVN = movie.country && (movie.country.includes('Vietnam') || movie.country.includes('VN'));
+  const country = movie.country || '';
+  const isVN = country.includes('Vietnam') || country.includes('Việt Nam') || country.includes('VN');
   return isVN && movie.title_vi ? movie.title_vi : (movie.title_vi || movie.title);
 };
 
 /** Lấy tiêu đề phụ (Tên gốc nếu khác tên chính). */
 export const getSubTitle = (movie: Movie): string => {
-  const isVN = movie.country && (movie.country.includes('Vietnam') || movie.country.includes('VN'));
+  const country = movie.country || '';
+  const isVN = country.includes('Vietnam') || country.includes('Việt Nam') || country.includes('VN');
   const mainTitle = getMainTitle(movie);
   
   if (!isVN && movie.title_vi && movie.title_vi !== movie.title) {
@@ -77,4 +80,9 @@ export const getTMDBImageUrl = (path: string | null, size: string = 'w500'): str
   if (!path) return PLACEHOLDER_IMAGE;
   if (path.startsWith('http') || path.startsWith('data:')) return path;
   return `${TMDB_IMAGE_BASE_URL.replace('w500', size)}${path}`;
+};
+
+/** Dịch tên quốc gia sang Tiếng Việt. */
+export const getTranslatedCountries = (countryStr: string): string => {
+  return translateCountries(countryStr);
 };

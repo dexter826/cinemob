@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Movie } from '../types';
-import { normalizeMovieDate } from '../utils/movieUtils';
+import { normalizeMovieDate, getTranslatedCountries } from '../utils/movieUtils';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
@@ -76,7 +76,10 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
     if (filters.country) {
       const q = filters.country.toLowerCase();
-      result = result.filter(m => m.country?.toLowerCase().includes(q));
+      result = result.filter(m => {
+        const translatedCountry = getTranslatedCountries(m.country || '').toLowerCase();
+        return translatedCountry.includes(q);
+      });
     }
 
     if (filters.contentType !== 'all') {

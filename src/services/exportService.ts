@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Movie } from '../types';
 import { Timestamp } from 'firebase/firestore';
+import { getTranslatedCountries } from '../utils/movieUtils';
 
 export interface ExportFilters {
   rating?: number | null;
@@ -65,7 +66,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
         'Thời lượng (phút)': isTV ? '' : (movie.runtime || ''),
         'Số phần': isTV ? (movie.seasons || '') : '',
         'Thể loại': movie.genres || '',
-        'Quốc gia': movie.country || '',
+        'Quốc gia': getTranslatedCountries(movie.country || ''),
         'Loại': isTV ? 'TV Series' : 'Phim',
         'Trạng thái': movie.status === 'watchlist' ? 'Sẽ xem' : 'Đã xem',
         'Đánh giá chi tiết': movie.review || '',

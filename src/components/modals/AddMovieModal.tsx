@@ -17,6 +17,7 @@ import CustomTimePicker from '../ui/CustomTimePicker';
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
+import { COUNTRY_OPTIONS } from '../../constants/countries';
 
 const AddMovieModal: React.FC = () => {
   const {
@@ -55,13 +56,7 @@ const AddMovieModal: React.FC = () => {
 
 
 
-  const countryOptions = [
-    { value: 'USA', label: 'Mỹ' }, { value: 'Vietnam', label: 'Việt Nam' }, { value: 'Korea', label: 'Hàn Quốc' },
-    { value: 'Japan', label: 'Nhật Bản' }, { value: 'China', label: 'Trung Quốc' }, { value: 'Thailand', label: 'Thái Lan' },
-    { value: 'UK', label: 'Anh' }, { value: 'France', label: 'Pháp' }, { value: 'Germany', label: 'Đức' },
-    { value: 'Italy', label: 'Ý' }, { value: 'Spain', label: 'Tây Ban Nha' }, { value: 'India', label: 'Ấn Độ' },
-    { value: 'Hong Kong', label: 'Hồng Kông' }, { value: 'Taiwan', label: 'Đài Loan' }, { value: 'Other', label: 'Khác' }
-  ];
+  const countryOptions = COUNTRY_OPTIONS;
 
   usePreventScroll(isOpen);
 

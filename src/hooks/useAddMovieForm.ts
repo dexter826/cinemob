@@ -11,6 +11,7 @@ import { MESSAGES } from '../constants/messages';
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from './useAlbumSync';
 import { GENRE_OPTIONS } from '../constants/genres';
+import { translateCountries } from '../constants/countries';
 
 /** Quản lý logic form thêm/sửa phim và series. */
 export const useAddMovieForm = () => {
@@ -132,7 +133,8 @@ export const useAddMovieForm = () => {
             title: originalTitle, title_vi: viTitle, runtime: runtime.toString(), seasons: seasons ? seasons.toString() : '', poster: details.poster_path || '',
             date: now.toISOString().split('T')[0], time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
             tagline: details.tagline || '', genres: details.genres?.map(g => g.name).join(', ') || '', releaseDate: details.release_date || details.first_air_date || '',
-            country: details.production_countries?.map(c => c.name).join(', ') || '', content: viOverview || details.overview || ''
+            country: translateCountries(details.production_countries?.map(c => c.name).join(', ') || ''), 
+            content: viOverview || details.overview || ''
           }));
           setSelectedGenreIds(details.genres?.map(g => g.id) || []);
         } catch (error) { 

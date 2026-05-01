@@ -7,6 +7,7 @@ import Pagination from '../components/ui/Pagination';
 import Loading from '../components/ui/Loading';
 import { TMDB_API_KEY } from '../constants';
 import { normalizeMovieDate } from '../utils/movieUtils';
+import { COUNTRY_TRANSLATIONS } from '../constants/countries';
 
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardActions from '../components/dashboard/DashboardActions';
@@ -67,7 +68,7 @@ const Dashboard: React.FC = () => {
       .sort()
       .map(country => ({
         value: country,
-        label: country,
+        label: COUNTRY_TRANSLATIONS[country] || country,
       }));
   }, [movies]);
 
