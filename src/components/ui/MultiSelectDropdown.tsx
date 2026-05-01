@@ -144,7 +144,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-left
+          w-full min-h-[44px] bg-surface border border-border-default rounded-2xl px-3 py-2 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-200
           flex items-center justify-between
@@ -218,7 +218,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
 
           {/* Options List */}
           <div
-            className="overflow-y-auto"
+            className="overflow-y-auto custom-scrollbar p-2"
             style={{ maxHeight }}
           >
             {filteredOptions.length === 0 ? (
@@ -234,9 +234,9 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                     type="button"
                     onClick={() => handleSelect(option)}
                     className={`
-                      w-full px-4 py-3 text-left text-sm hover:bg-black/5 dark:hover:bg-white/5
-                      transition-colors duration-150 flex items-center gap-3
-                      ${isSelected ? 'bg-primary/5' : ''}
+                      w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl
+                      transition-all duration-150 flex items-center gap-3 mb-1 last:mb-0
+                      ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}
                     `}
                     role="option"
                     aria-selected={isSelected}

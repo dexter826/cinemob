@@ -43,13 +43,13 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
     <div className="flex flex-col items-end gap-3 relative">
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={15} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
           <input
             type="text"
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim..."
-            className="w-full sm:w-64 bg-surface border-border-default border rounded-xl py-2 pl-9 pr-8 text-sm text-text-main placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-premium"
+            className="w-full sm:w-64 h-11 bg-surface border-border-default border rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-premium"
           />
           {filters.searchQuery && (
             <button
@@ -63,7 +63,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
         <button
           onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-          className={`p-2.5 rounded-xl border transition-all duration-300 cursor-pointer shadow-premium ${
+          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-300 cursor-pointer shadow-premium ${
             showFilters 
               ? 'bg-primary/10 border-primary/30 text-primary' 
               : 'bg-surface border-border-default text-text-muted hover:text-text-main hover:border-primary/30'
@@ -81,7 +81,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
                   filters.sortBy === 'date' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
@@ -90,7 +90,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               </button>
               <button
                 onClick={() => updateFilter('sortBy', 'title')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
                   filters.sortBy === 'title' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
@@ -99,7 +99,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-all cursor-pointer"
+                className="flex items-center justify-center p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-all cursor-pointer"
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
               >
                 {filters.sortOrder === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}

@@ -112,22 +112,36 @@ const AddMovieModal: React.FC = () => {
 
                   <div className="flex-1 space-y-6">
                     {/* Tabs Navigation */}
-                    <div className="flex bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-border-default gap-1">
+                    <div className="flex bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default relative">
                       <button
                         type="button"
                         onClick={() => setActiveTab('info')}
-                        className={`flex-1 py-2.5 text-xs font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-premium border border-border-default' : 'text-text-muted hover:text-text-main hover:bg-surface/50'}`}
+                        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}
                       >
                         <Film size={14} />
                         <span className="uppercase tracking-widest">Thông tin</span>
+                        {activeTab === 'info' && (
+                          <motion.div
+                            layoutId="activeTab"
+                            className="absolute inset-0 bg-surface border border-border-default shadow-premium rounded-xl z-[-1]"
+                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab('review')}
-                        className={`flex-1 py-2.5 text-xs font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-premium border border-border-default' : 'text-text-muted hover:text-text-main hover:bg-surface/50'}`}
+                        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}
                       >
                         <Star size={14} />
                         <span className="uppercase tracking-widest">Đánh giá</span>
+                        {activeTab === 'review' && (
+                          <motion.div
+                            layoutId="activeTab"
+                            className="absolute inset-0 bg-surface border border-border-default shadow-premium rounded-xl z-[-1]"
+                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
                       </button>
                     </div>
 
@@ -145,7 +159,7 @@ const AddMovieModal: React.FC = () => {
                               required
                               value={formData.title}
                               onChange={e => setFormData({ ...formData, title: e.target.value })}
-                              className={`w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50 ${isAnimating && errors.title ? 'scale-[1.02] border-error/50' : ''}`}
+                              className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50 ${isAnimating && errors.title ? 'scale-[1.02] border-error/50' : ''}`}
                               placeholder="Tên gốc của phim..."
                             />
                           </div>
@@ -158,7 +172,7 @@ const AddMovieModal: React.FC = () => {
                               type="text"
                               value={formData.title_vi}
                               onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
-                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50"
+                              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all disabled:opacity-50"
                               placeholder="Tên tiếng Việt..."
                             />
                           </div>
@@ -173,7 +187,7 @@ const AddMovieModal: React.FC = () => {
                             type="text"
                             value={formData.poster}
                             onChange={e => setFormData({ ...formData, poster: e.target.value })}
-                            className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-medium text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+                            className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-medium text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
                             placeholder="https://..."
                           />
                         </div>
@@ -222,7 +236,7 @@ const AddMovieModal: React.FC = () => {
                               rows={4}
                               value={formData.review}
                               onChange={e => setFormData({ ...formData, review: e.target.value })}
-                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-[20px] px-4 py-3 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all custom-scrollbar resize-none hover:border-border-default/80"
+                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all custom-scrollbar resize-none hover:border-border-default/80 shadow-sm"
                               placeholder="Bạn thấy phim này thế nào?"
                             />
                           </div>
@@ -295,14 +309,14 @@ const AddMovieModal: React.FC = () => {
               <button
                 type="button"
                 onClick={closeAddModal}
-                className="order-2 sm:order-1 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
+                className="order-2 sm:order-1 px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
               >
                 {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="order-1 sm:order-2 bg-primary hover:shadow-premium text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
+                className="order-1 sm:order-2 bg-primary hover:shadow-premium text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                 {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Cập nhật' : 'Lưu phim')}

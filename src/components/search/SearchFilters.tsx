@@ -27,7 +27,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   return (
     <div className="flex flex-col gap-3 sm:gap-4">
       <div className="relative w-full group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={20} />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={18} />
         <input
           type="text"
           placeholder="Nhập tên phim hoặc series..."
@@ -36,7 +36,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full bg-surface border-2 border-border-default rounded-2xl py-3 sm:py-3 pl-11 sm:pl-12 pr-24 sm:pr-28 focus:outline-none focus:border-primary/50 transition-all shadow-sm text-sm sm:text-base md:text-lg text-text-main placeholder-text-muted"
+          className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-2xl pl-11 sm:pl-12 pr-24 sm:pr-28 focus:outline-none focus:border-primary/50 transition-all shadow-premium text-sm sm:text-base md:text-lg text-text-main placeholder-text-muted/50"
           autoFocus
         />
 
@@ -59,7 +59,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default rounded-xl px-3 py-2">
+        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default rounded-2xl px-3 h-11">
           <Filter size={16} className="text-text-muted" />
           <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Lọc theo</span>
         </div>
@@ -111,7 +111,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-wider cursor-pointer border border-transparent hover:border-border-default"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-wider cursor-pointer border border-transparent hover:border-border-default"
           >
             <RotateCcw size={14} />
             <span>Đặt lại</span>

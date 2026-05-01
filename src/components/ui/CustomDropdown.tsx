@@ -95,7 +95,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-xl px-4 py-3 text-left
+          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-all duration-300
           flex items-center justify-between shadow-sm
@@ -143,7 +143,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           {/* Options List */}
           <div
-            className="overflow-y-auto custom-scrollbar p-1.5"
+            className="overflow-y-auto custom-scrollbar p-2"
             style={{ maxHeight }}
           >
             {filteredOptions.length === 0 ? (
@@ -157,8 +157,8 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   type="button"
                   onClick={() => handleSelect(option)}
                   className={`
-                    w-full px-4 py-3 text-left text-sm rounded-xl
-                    transition-all duration-200 flex items-center justify-between mb-0.5 last:mb-0
+                    w-full px-4 py-2.5 text-left text-sm rounded-xl
+                    transition-all duration-200 flex items-center justify-between mb-1 last:mb-0
                     ${option.value === value 
                       ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' 
                       : 'text-text-main hover:bg-primary/10 hover:text-primary'

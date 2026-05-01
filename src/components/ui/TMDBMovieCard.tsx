@@ -45,23 +45,22 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
             </div>
           )}
           
-          <div className="flex items-center gap-1.5">
-            {rating && (
-              <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-xl rounded-md border border-white/10 text-[10px] font-bold text-warning shadow-glass">
-                <Star size={10} fill="currentColor" />
-                <span>{rating}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/40 backdrop-blur-xl rounded-md border border-white/10 text-[10px] font-bold text-white uppercase shadow-glass">
-              {isTV ? <Tv size={10} className="text-info" /> : <Film size={10} className="text-success" />}
-              <span>{isTV ? 'TV' : 'Phim'}</span>
+          {rating && (
+            <div className="flex items-center gap-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 text-[10px] font-bold text-warning shadow-glass">
+              <Star size={10} fill="currentColor" />
+              <span>{rating}</span>
             </div>
+          )}
+
+          <div className="flex items-center gap-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 text-[10px] font-bold text-white uppercase shadow-glass">
+            {isTV ? <Tv size={10} className="text-info" /> : <Film size={10} className="text-success" />}
+            <span className="ml-1">{isTV ? 'TV' : 'Phim'}</span>
           </div>
         </div>
       </div>
 
       <div className="p-3 space-y-1">
-        <h3 className="font-bold text-sm line-clamp-1 text-text-main group-hover:text-primary transition-colors" title={mainTitle}>
+        <h3 className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-main group-hover:text-primary transition-colors" title={mainTitle}>
           {mainTitle}
         </h3>
         

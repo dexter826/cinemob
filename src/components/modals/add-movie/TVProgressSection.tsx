@@ -54,7 +54,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Mùa (Season)</label>
-            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-xl border border-border-default">
+            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default">
               <button
                 type="button"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
@@ -74,7 +74,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Tập (Episode)</label>
-            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-xl border border-border-default">
+            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default">
               <button
                 type="button"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
