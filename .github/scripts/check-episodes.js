@@ -279,29 +279,29 @@ const main = async () => {
     if (todayEpisodes.length + todayMovies.length === 1) {
         if (todayEpisodes.length === 1) {
             const { series, episode } = todayEpisodes[0];
-            title = `🎬 Lịch chiếu: ${series.title_vi || series.title}`;
-            body = `Hôm nay phát sóng Mùa ${episode.season_number} • Tập ${episode.episode_number}. Đừng bỏ lỡ nhé!`;
+            title = `🎬 ${series.title_vi || series.title}`;
+            body = `Mùa ${episode.season_number} • Tập ${episode.episode_number} đã lên sóng!`;
         } else {
             const movie = todayMovies[0];
-            title = `🍿 Khởi chiếu: ${movie.title_vi || movie.title}`;
-            body = `Bộ phim bạn mong đợi đã chính thức ra mắt hôm nay!`;
+            title = `🍿 ${movie.title_vi || movie.title}`;
+            body = `Phim chính thức khởi chiếu hôm nay!`;
         }
     } else {
         const total = todayEpisodes.length + todayMovies.length;
-        title = `🎬 Cinemob: Lịch chiếu hôm nay (${total} phim)`;
+        title = `🎬 Cinemob: ${total} phim mới hôm nay`;
 
-        const lines = [];
-        todayEpisodes.slice(0, 3).forEach(({ series, episode }) => {
-            lines.push(`• ${series.title_vi || series.title} (Tập ${episode.episode_number})`);
+        const items = [];
+        todayEpisodes.forEach(({ series, episode }) => {
+            items.push(`${series.title_vi || series.title} (T.${episode.episode_number})`);
         });
-        todayMovies.slice(0, 2).forEach((movie) => {
-            lines.push(`• ${movie.title_vi || movie.title} (Khởi chiếu)`);
+        todayMovies.forEach((movie) => {
+            items.push(`${movie.title_vi || movie.title} (Mới)`);
         });
 
-        if (total > lines.length) {
-            lines.push(`... và ${total - lines.length} nội dung khác`);
+        body = items.join(', ');
+        if (body.length > 100) {
+            body = body.substring(0, 97) + '...';
         }
-        body = lines.join('\n');
     }
 
     // Send to all subscriptions
