@@ -226,7 +226,25 @@ const AddMovieModal: React.FC = () => {
                     {activeTab === 'review' && (
                       <div className="space-y-5">
                         <StatusToggle status={status} setStatus={setStatus} />
-
+                        
+                        {status === 'history' && (
+                          <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl group hover:border-primary/30 transition-all cursor-pointer" 
+                            onClick={() => setFormData({ ...formData, is_review: !formData.is_review })}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all ${formData.is_review ? 'bg-primary/20 text-primary' : 'bg-black/10 dark:bg-white/5 text-text-muted'}`}>
+                                <MessageSquare size={20} />
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-bold text-text-main">Xem qua review</h4>
+                                <p className="text-[10px] text-text-muted font-medium opacity-60">Đánh dấu nếu bạn xem bản tóm tắt phim</p>
+                              </div>
+                            </div>
+                            <div className={`relative w-12 h-6 rounded-full transition-all duration-300 ${formData.is_review ? 'bg-primary' : 'bg-black/20 dark:bg-white/10'}`}>
+                              <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`} />
+                            </div>
+                          </div>
+                        )}
                         {status === 'history' && (
                           <RatingSection
                             rating={formData.rating}
@@ -317,18 +335,18 @@ const AddMovieModal: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-4 sm:px-6 sm:py-5 border-t border-border-default bg-surface/90 backdrop-blur-xl flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 shrink-0">
+            <div className="px-5 py-4 sm:px-6 sm:py-5 border-t border-border-default bg-surface/90 backdrop-blur-xl flex flex-row items-center justify-end gap-3 shrink-0">
               <button
                 type="button"
                 onClick={closeAddModal}
-                className="order-2 sm:order-1 px-5 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
+                className="flex-1 sm:flex-none px-5 sm:px-8 py-3 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
               >
                 {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="order-1 sm:order-2 bg-primary hover:shadow-premium text-white px-5 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
+                className="flex-2 sm:flex-none bg-primary hover:shadow-premium text-white px-5 sm:px-8 py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                 {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Cập nhật' : 'Lưu phim')}

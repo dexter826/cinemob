@@ -22,7 +22,8 @@ export const useAddMovieForm = () => {
     title: '', title_vi: '', runtime: '', seasons: '', poster: '',
     date: new Date().toISOString().split('T')[0],
     time: `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
-    rating: 0, review: '', tagline: '', genres: '', releaseDate: '', country: '', content: ''
+    rating: 0, review: '', tagline: '', genres: '', releaseDate: '', country: '', content: '',
+    is_review: false
   });
 
   const [status, setStatus] = useState<'history' | 'watchlist'>('history');
@@ -67,7 +68,8 @@ export const useAddMovieForm = () => {
         title: m.title, title_vi: m.title_vi || '', runtime: m.runtime?.toString() || '', seasons: m.seasons?.toString() || '', poster: m.poster_path,
         date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
         time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
-        rating: m.rating || 0, review: m.review || '', tagline: m.tagline || '', genres: m.genres || '', releaseDate: m.release_date || '', country: m.country || '', content: m.content || ''
+        rating: m.rating || 0, review: m.review || '', tagline: m.tagline || '', genres: m.genres || '', releaseDate: m.release_date || '', country: m.country || '', content: m.content || '',
+        is_review: m.is_review || false
       });
       if (m.genres) {
         const names = m.genres.split(',').map(g => g.trim().toLowerCase());
@@ -94,14 +96,22 @@ export const useAddMovieForm = () => {
           ...details,
           date: now.toISOString().split('T')[0], 
           time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
-          rating: 0, review: ''
+          rating: 0, 
+          review: '',
+          is_review: false
         }));
         setSelectedGenreIds(details.genreIds);
       };
       initTMDB();
     } else {
       const now = new Date();
-      setFormData({ title: '', title_vi: '', runtime: '', seasons: '', poster: '', date: now.toISOString().split('T')[0], time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`, rating: 0, review: '', tagline: '', genres: '', releaseDate: '', country: '', content: '' });
+      setFormData({ 
+        title: '', title_vi: '', runtime: '', seasons: '', poster: '', 
+        date: now.toISOString().split('T')[0], 
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`, 
+        rating: 0, review: '', tagline: '', genres: '', releaseDate: '', country: '', content: '',
+        is_review: false
+      });
       setManualMediaType('movie'); setMovieExists(false); setStatus('history'); setSelectedGenreIds([]);
     }
   }, [isOpen, initialData, user, fetchDetails]);
@@ -129,7 +139,8 @@ export const useAddMovieForm = () => {
         genres: formData.genres,
         release_date: formData.releaseDate,
         country: formData.country,
-        content: formData.content
+        content: formData.content,
+        is_review: formData.is_review
       };
 
       if (isTVSeries) {
@@ -180,7 +191,8 @@ export const useAddMovieForm = () => {
       formData.rating !== (m.rating || 0) || formData.review !== (m.review || '') ||
       formData.tagline !== (m.tagline || '') || formData.genres !== (m.genres || '') ||
       formData.releaseDate !== (m.release_date || '') || formData.country !== (m.country || '') ||
-      formData.content !== (m.content || '') || status !== (m.status || 'history');
+      formData.content !== (m.content || '') || status !== (m.status || 'history') ||
+      formData.is_review !== (m.is_review || false);
 
     const d = normalizeMovieDate(m.watched_at) || new Date();
     const origDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

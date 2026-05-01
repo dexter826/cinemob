@@ -93,7 +93,8 @@ export const mapDocToMovie = (docId: string, data: any): Movie => {
     release_date: data.release_date || '',
     country: data.country || '',
     content: data.content || '',
-    progress: data.progress || undefined
+    progress: data.progress || undefined,
+    is_review: data.is_review || false
   } as Movie;
 };
 

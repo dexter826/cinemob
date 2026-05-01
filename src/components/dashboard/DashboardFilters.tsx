@@ -13,6 +13,7 @@ interface DashboardFiltersProps {
     country: string;
     contentType: 'all' | 'movie' | 'tv';
     watchStatus: 'all' | 'watching' | 'completed';
+    sourceType: 'all' | 'normal' | 'review';
   };
   updateFilter: (key: any, value: any) => void;
   showFilters: boolean;
@@ -37,7 +38,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
   availableCountries,
   clearFilters
 }) => {
-  const hasActiveFilters = filters.ratingRange !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all';
+  const hasActiveFilters = filters.ratingRange !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all' || filters.sourceType !== 'all';
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
@@ -203,6 +204,20 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                 <p className="text-[9px] text-text-muted mt-2 opacity-50 text-center">
                   Nhấn hai điểm khác nhau để chọn khoảng
                 </p>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 block opacity-60">Nguồn nội dung</label>
+                <CustomDropdown
+                  options={[
+                    { value: 'all', label: 'Tất cả nguồn' },
+                    { value: 'normal', label: 'Xem trực tiếp' },
+                    { value: 'review', label: 'Xem qua review' },
+                  ]}
+                  value={filters.sourceType}
+                  onChange={(value) => updateFilter('sourceType', value as any)}
+                  placeholder="Chọn nguồn"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

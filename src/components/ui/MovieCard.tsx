@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Movie } from '../../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
 import { getMainTitle, getSubTitle, formatMovieDate } from '../../utils/movieUtils';
-import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle, Film, Tv, CheckCircle, Info } from 'lucide-react';
+import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle, MessageSquare, Film, Tv, CheckCircle, Info } from 'lucide-react';
 
 interface MovieCardProps {
   movie: Movie;
@@ -20,6 +20,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
 
   const mainTitle = getMainTitle(movie);
   const subTitle = getSubTitle(movie);
+
+  const progressWidth = movie.media_type === 'tv'
+    ? (movie.progress?.is_completed ? '100%' : `${((movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)) * 100}%`)
+    : (movie.status === 'history' ? '100%' : '0%');
 
   return (
     <div
@@ -69,6 +73,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
 
         {/* Badges Stack */}
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
+          {movie.is_review && (
+            <div className="flex items-center space-x-1 px-2 py-1 bg-primary/80 backdrop-blur-xl rounded-lg border border-white/20 shadow-glass ring-1 ring-white/20">
+              <MessageSquare size={10} className="text-white" fill="currentColor" />
+              <span className="text-[10px] font-bold text-white leading-none uppercase tracking-tighter">Review</span>
+            </div>
+          )}
+
           {movie.rating && movie.rating > 0 && (
             <div className="flex items-center space-x-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 shadow-glass">
               <Star size={10} className="text-warning" fill="currentColor" />
@@ -93,15 +104,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           </div>
         </div>
 
-        {/* Progress Bar for TV Series */}
-        {movie.media_type === 'tv' && movie.progress && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
-            <div 
-              className="h-full bg-primary transition-all duration-700 ease-out"
-              style={{ width: movie.progress.is_completed ? '100%' : `${(movie.progress.watched_episodes / (movie.total_episodes || 1)) * 100}%` }}
-            />
-          </div>
-        )}
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
+          <div 
+            className="h-full bg-primary transition-all duration-700 ease-out"
+            style={{ width: progressWidth }}
+          />
+        </div>
       </div>
 
       <div className="p-3 flex flex-col flex-1">

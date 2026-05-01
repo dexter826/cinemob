@@ -5,6 +5,7 @@ import { normalizeMovieDate, getTranslatedCountries } from '../utils/movieUtils'
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
 export type ActiveTab = 'history' | 'watchlist';
+export type SourceType = 'all' | 'normal' | 'review';
 
 interface FilterState {
   sortBy: SortOption;
@@ -15,6 +16,7 @@ interface FilterState {
   country: string;
   contentType: 'all' | 'movie' | 'tv';
   watchStatus: 'all' | 'watching' | 'completed';
+  sourceType: SourceType;
 }
 
 const INITIAL_FILTER_STATE: FilterState = {
@@ -26,6 +28,7 @@ const INITIAL_FILTER_STATE: FilterState = {
   country: '',
   contentType: 'all',
   watchStatus: 'all',
+  sourceType: 'all',
 };
 
 // Xử lý lọc và sắp xếp danh sách phim.
@@ -95,6 +98,13 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
         if (filters.watchStatus === 'watching') return m.media_type === 'tv' && m.progress && !m.progress.is_completed;
         if (filters.watchStatus === 'completed') return m.media_type === 'movie' || !m.media_type || (m.progress && m.progress.is_completed);
         return true;
+      });
+    }
+
+    if (filters.sourceType !== 'all') {
+      result = result.filter(m => {
+        if (filters.sourceType === 'review') return m.is_review === true;
+        return !m.is_review;
       });
     }
 

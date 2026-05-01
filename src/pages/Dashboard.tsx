@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
         <PageHeader 
           icon={Film}
           title="Thư viện điện ảnh"
-          description="Quản lý và khám phá bộ sưu tập phim cá nhân của bạn."
+          description="Quản lý bộ sưu tập phim cá nhân."
         />
         
         <DashboardActions onOpenAddModal={() => openAddModal()} />

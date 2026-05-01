@@ -27,6 +27,7 @@ export interface Movie {
     watched_episodes: number;
     is_completed: boolean;
   };
+  is_review?: boolean;
 }
 
 export interface Album {
