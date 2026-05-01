@@ -25,9 +25,6 @@ const RatingSection: React.FC<RatingSectionProps> = ({
           <Star size={14} className="text-primary" />
           Đánh giá phim
         </label>
-        <div className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-lg border border-primary/20">
-          {rating > 0 ? `${rating} / 5` : 'Chưa đánh giá'}
-        </div>
       </div>
       <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-all duration-500 shadow-sm ${
         isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : ''

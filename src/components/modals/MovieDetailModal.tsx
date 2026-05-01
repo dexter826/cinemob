@@ -141,9 +141,14 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       </div>
                     )}
                     {movie.rating && movie.rating > 0 && (
-                      <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
-                        <Star size={14} className="text-warning fill-warning" />
-                        <span className="text-warning font-bold">{movie.rating.toFixed(1)}/5.0</span>
+                      <div className="flex items-center gap-1 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star 
+                            key={star} 
+                            size={12} 
+                            className={`${star <= Math.round(movie.rating || 0) ? 'text-warning fill-warning' : 'text-warning/20'}`} 
+                          />
+                        ))}
                       </div>
                     )}
                   </div>
