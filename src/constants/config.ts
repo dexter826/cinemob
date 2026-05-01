@@ -13,5 +13,5 @@ export const FIREBASE_CONFIG = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:12345:web:abcde"
 };
 
-// Fallback image cho các mục thủ công hoặc thiếu poster
+// Ảnh mặc định khi thiếu poster.
 export const PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale&blur=2';

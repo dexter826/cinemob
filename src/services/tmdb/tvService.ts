@@ -1,13 +1,13 @@
 import { tmdbFetch, withLimit, API_KEY } from './tmdbClient';
 import { TMDBEpisode } from '../../types';
 
-/** Lấy thông tin chi tiết của một mùa phim (TV Season). */
+// Lấy thông tin mùa phim.
 export const getTVSeasonDetails = async (tvId: number, seasonNumber: number): Promise<{ episode_count: number } | null> => {
   const data = await tmdbFetch<{ episodes?: any[] }>(`tv/${tvId}/season/${seasonNumber}`);
   return data ? { episode_count: data.episodes?.length || 0 } : null;
 };
 
-/** Lấy thông tin tổng hợp về các tập phim của một TV Show. */
+// Lấy tổng số tập phim theo mùa.
 export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number): Promise<{
   total_episodes: number;
   episodes_per_season: { [season: number]: number };
@@ -39,10 +39,7 @@ export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number
   }
 };
 
-/** 
- * Điều chỉnh ngày chiếu dựa trên quốc gia gốc.
- * Cộng thêm 1 ngày cho phim Âu Mỹ để khớp với giờ khả dụng tại Việt Nam.
- */
+// Điều chỉnh ngày chiếu theo múi giờ Việt Nam.
 const adjustAirDate = (airDateStr: string, originCountries: string[] = []): string => {
   if (!airDateStr) return '';
   const asianCountries = ['VN', 'KR', 'JP', 'CN', 'TH', 'TW', 'HK'];
@@ -59,7 +56,7 @@ const adjustAirDate = (airDateStr: string, originCountries: string[] = []): stri
   }
 };
 
-/** Lấy danh sách các tập phim sắp phát hành. */
+// Lấy danh sách tập phim sắp chiếu.
 export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpisode[]> => {
   const details = await tmdbFetch<any>(`tv/${tvId}`);
   if (!details || details.status === 'Ended' || details.status === 'Canceled') return [];
@@ -105,7 +102,7 @@ export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpiso
   return upcomingEpisodes.sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime());
 };
 
-/** Lấy thông tin tập phim tiếp theo sẽ phát hành. */
+// Lấy thông tin tập phim tiếp theo.
 export const getTVShowNextEpisode = async (tvId: number): Promise<TMDBEpisode | null> => {
   const data = await tmdbFetch<any>(`tv/${tvId}`, { append_to_response: 'next_episode_to_air' });
   

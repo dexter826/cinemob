@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { searchPeople } from '../services/tmdb';
 import { TMDBPerson } from '../types';
 
+// Tìm kiếm diễn viên và đạo diễn.
 export const useSearchPeople = (query: string, searchPage: number) => {
   const [peopleResults, setPeopleResults] = useState<TMDBPerson[]>([]);
   const [totalPeoplePages, setTotalPeoplePages] = useState(1);

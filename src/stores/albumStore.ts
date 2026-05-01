@@ -10,6 +10,7 @@ interface AlbumState {
   setAlbumCoverMovies: (covers: Record<string, Movie | null>) => void;
 }
 
+// Quản lý danh sách album và ảnh bìa.
 const useAlbumStore = create<AlbumState>((set) => ({
   albums: [],
   loading: true,

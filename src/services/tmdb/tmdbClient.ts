@@ -1,6 +1,6 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '../../constants';
 
-/** Giới hạn số lượng request đồng thời để tránh flood network. */
+// Giới hạn request đồng thời.
 export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> => {
   return new Promise((resolve) => {
     const results: T[] = [];
@@ -36,7 +36,7 @@ export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promis
 export const BASE_URL = TMDB_BASE_URL;
 export const API_KEY = TMDB_API_KEY;
 
-/** Helper để fetch dữ liệu từ TMDB. */
+// Gọi API từ TMDB.
 export const tmdbFetch = async <T>(endpoint: string, params: Record<string, string> = {}): Promise<T | null> => {
   if (!API_KEY) return null;
 

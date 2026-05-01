@@ -3,4 +3,3 @@ export * from './movieService';
 export * from './tvService';
 export * from './searchService';
 export * from './discoveryService';
-export * from './configService';

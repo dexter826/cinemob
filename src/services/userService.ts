@@ -2,7 +2,7 @@ import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserData } from '../types';
 
-/** Lấy dữ liệu người dùng từ Firestore. */
+// Lấy dữ liệu người dùng từ Firestore.
 export const getUserData = async (userId: string): Promise<UserData | null> => {
   try {
     const userDoc = await getDoc(doc(db, 'users', userId));
@@ -18,7 +18,7 @@ export const getUserData = async (userId: string): Promise<UserData | null> => {
   }
 };
 
-/** Cập nhật danh sách phim đã gợi ý để tránh lặp lại. */
+// Cập nhật danh sách phim đã gợi ý.
 export const updatePreviouslyRecommendedTitles = async (userId: string, titles: string[]): Promise<void> => {
   try {
     const userRef = doc(db, 'users', userId);

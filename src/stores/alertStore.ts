@@ -16,6 +16,7 @@ interface AlertState {
   hideAlert: () => void;
 }
 
+// Quản lý thông báo xác nhận.
 const useAlertStore = create<AlertState>((set) => ({
   alert: null,
   showAlert: (options) => set({ alert: options }),

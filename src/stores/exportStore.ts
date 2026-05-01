@@ -8,6 +8,7 @@ interface ExportState {
   setMovies: (movies: Movie[]) => void;
 }
 
+// Quản lý modal xuất dữ liệu.
 const useExportStore = create<ExportState>((set) => ({
   isExportModalOpen: false,
   movies: [],

@@ -12,7 +12,7 @@ interface AlbumSyncProps {
     showToast: (message: string, type: 'success' | 'error') => void;
 }
 
-/** Hook quản lý việc thêm phim vào các Album/Bộ sưu tập. */
+// Quản lý việc thêm phim vào Album.
 export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSyncProps) => {
     const { albums } = useAlbumStore();
     const [selectedAlbumIds, setSelectedAlbumIds] = useState<string[]>([]);
@@ -63,7 +63,6 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
     const syncAlbums = async (movieDocId: string) => {
         const previousAlbums = albums.filter(album => album.movieDocIds?.includes(movieDocId));
         
-        // Remove from albums not selected anymore
         for (const album of previousAlbums) {
             if (album.docId && !selectedAlbumIds.includes(album.docId)) {
                 await updateAlbum(album.docId, { 
@@ -72,7 +71,6 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
             }
         }
         
-        // Add to newly selected albums
         for (const albumId of selectedAlbumIds) {
             const album = albums.find(a => a.docId === albumId);
             if (album && album.docId && !album.movieDocIds?.includes(movieDocId)) {

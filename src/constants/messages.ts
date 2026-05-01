@@ -1,4 +1,4 @@
-/** Quản lý tập trung các thông báo trong ứng dụng. */
+// Danh sách các thông báo trong ứng dụng.
 export const MESSAGES = {
   MOVIE: {
     ADD_SUCCESS: "Đã thêm phim mới",

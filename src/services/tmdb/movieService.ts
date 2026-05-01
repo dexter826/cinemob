@@ -2,28 +2,28 @@ import { tmdbFetch } from './tmdbClient';
 import { TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie } from '../../types';
 import { API_KEY, BASE_URL } from './tmdbClient';
 
-/** Lấy thông tin chi tiết của phim. */
+// Lấy thông tin chi tiết phim.
 export const getMovieDetails = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBMovieDetail | null> => {
   return tmdbFetch<TMDBMovieDetail>(`${mediaType}/${id}`);
 };
 
-/** Lấy thông tin chi tiết phim với ngôn ngữ cụ thể. */
+// Lấy thông tin chi tiết phim theo ngôn ngữ.
 export const getMovieDetailsWithLanguage = async (id: number, mediaType: 'movie' | 'tv' = 'movie', language: string = 'vi-VN'): Promise<TMDBMovieDetail | null> => {
   return tmdbFetch<TMDBMovieDetail>(`${mediaType}/${id}`, { language });
 };
 
-/** Lấy danh sách trailer/video của phim. */
+// Lấy danh sách trailer/video.
 export const getMovieVideos = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBVideo[]> => {
   const data = await tmdbFetch<{ results: TMDBVideo[] }>(`${mediaType}/${id}/videos`);
   return (data?.results || []).filter((video: TMDBVideo) => video.type === 'Trailer' && video.site === 'YouTube');
 };
 
-/** Lấy danh sách diễn viên và đoàn làm phim. */
+// Lấy danh sách diễn viên và đoàn phim.
 export const getMovieCredits = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBCredits | null> => {
   return tmdbFetch<TMDBCredits>(`${mediaType}/${id}/credits`);
 };
 
-/** Lấy danh sách phim mà một diễn viên đã tham gia. */
+// Lấy phim theo diễn viên.
 export const getPersonMovieCredits = async (personId: number): Promise<PersonMovie[]> => {
   if (!API_KEY) return [];
 

@@ -8,19 +8,16 @@ import useReleaseCalendarStore from '../stores/releaseCalendarStore';
 import { subscribeToAlbums } from '../services/albumService';
 import { Album, Movie } from '../types';
 
-/** Khởi tạo toàn bộ dữ liệu ứng dụng sau khi đăng nhập. */
+// Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
   const { user } = useAuth();
   
-  // Movie Store
   const { initialize: initMovies, cleanup: cleanupMovies, initialized: moviesInitialized, movies: allMovies, loading: moviesLoading } = useMovieStore();
   const { markInitialLoadComplete } = useInitialLoadStore();
 
-  // Album Store
   const { albums, loading: albumsLoading, setAlbums, setLoading: setAlbumsLoading, setAlbumCoverMovies } = useAlbumStore();
   const coverMovieIdsRef = useRef<Record<string, string>>({});
 
-  // Recommendations Store
   const {
     setAiRecommendations,
     setTrendingMovies,
@@ -30,7 +27,6 @@ export const useAppInit = () => {
     historyMovies
   } = useRecommendationsStore();
 
-  // Release Calendar Store
   const {
     setMovies: setCalendarMovies,
     setLoading: setCalendarLoading,
@@ -39,7 +35,6 @@ export const useAppInit = () => {
     hasFetchedInitial: calFetchedInitial,
   } = useReleaseCalendarStore();
 
-  // Movie Initialization
   useEffect(() => {
     if (user) {
       initMovies(user.uid);
@@ -54,7 +49,6 @@ export const useAppInit = () => {
     }
   }, [moviesInitialized, markInitialLoadComplete]);
 
-  // Album Initialization
   useEffect(() => {
     if (!user) {
       setAlbums([]);
@@ -70,7 +64,6 @@ export const useAppInit = () => {
     return () => unsubscribe();
   }, [user, setAlbums, setAlbumsLoading]);
 
-  // Album Cover Logic
   useEffect(() => {
     if (albumsLoading || !moviesInitialized) return;
 
@@ -110,7 +103,6 @@ export const useAppInit = () => {
     }
   }, [albums, albumsLoading, moviesInitialized, allMovies, setAlbumCoverMovies]);
 
-  // Recommendations Logic
   useEffect(() => {
     if (!user) {
       setAiRecommendations([]);
@@ -124,7 +116,6 @@ export const useAppInit = () => {
     refreshRecommendations(user.uid);
   }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs, refreshRecommendations]);
 
-  // Release Calendar Logic
   useEffect(() => {
     setCalendarMovies(allMovies);
     setCalendarLoading(moviesLoading);

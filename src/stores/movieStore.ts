@@ -12,14 +12,13 @@ interface MovieState {
   setMovies: (movies: Movie[]) => void;
 }
 
-/** Store trung tâm quản lý và đồng bộ danh sách phim. */
+// Quản lý và đồng bộ danh sách phim.
 const useMovieStore = create<MovieState>((set, get) => ({
   movies: [],
   loading: true,
   initialized: false,
   unsubscribe: null,
 
-  /** Khởi tạo listener Firestore duy nhất. */
   initialize: (uid: string) => {
     if (get().unsubscribe) return;
 
@@ -34,7 +33,6 @@ const useMovieStore = create<MovieState>((set, get) => ({
     set({ unsubscribe: unsub });
   },
 
-  /** Hủy lắng nghe dữ liệu. */
   cleanup: () => {
     const { unsubscribe } = get();
     if (unsubscribe) {
@@ -48,7 +46,6 @@ const useMovieStore = create<MovieState>((set, get) => ({
     }
   },
 
-  /** Cập nhật thủ công danh sách phim. */
   setMovies: (movies) => set({ movies })
 }));
 

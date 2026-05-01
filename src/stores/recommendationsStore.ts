@@ -27,6 +27,7 @@ interface RecommendationsState {
   refreshRecommendations: (userId: string, forceRefresh?: boolean) => Promise<void>;
 }
 
+// Quản lý phim gợi ý từ AI và trending.
 const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   aiRecommendations: [],
   trendingMovies: [],

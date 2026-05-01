@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { searchMovies, getDiscoverMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '../types';
 
+// Tìm kiếm và khám phá phim từ TMDB.
 export const useSearchTMDB = (query: string, searchPage: number, filters: any) => {
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [totalSearchPages, setTotalSearchPages] = useState(1);
@@ -13,7 +14,6 @@ export const useSearchTMDB = (query: string, searchPage: number, filters: any) =
 
   const isSearchMode = query.trim().length > 2;
 
-  // Search logic
   useEffect(() => {
     if (isSearchMode) {
       const timer = setTimeout(async () => {
@@ -35,7 +35,6 @@ export const useSearchTMDB = (query: string, searchPage: number, filters: any) =
     }
   }, [query, searchPage, filters.year, isSearchMode]);
 
-  // Discover logic
   useEffect(() => {
     if (!isSearchMode) {
       const { year, country, rating, sortBy, type } = filters;

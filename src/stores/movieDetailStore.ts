@@ -8,6 +8,7 @@ interface MovieDetailState {
     closeDetailModal: () => void;
 }
 
+// Quản lý modal chi tiết phim.
 const useMovieDetailStore = create<MovieDetailState>((set) => ({
     isOpen: false,
     movie: null,

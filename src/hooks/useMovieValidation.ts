@@ -10,7 +10,7 @@ export interface FormErrors {
   seasons: boolean;
 }
 
-/** Hook xử lý validation và hiệu ứng lỗi cho form phim. */
+// Xử lý validation và hiệu ứng lỗi cho form.
 export const useMovieValidation = () => {
   const { showToast } = useToastStore();
   const [ratingError, setRatingError] = useState(false);
@@ -33,14 +33,12 @@ export const useMovieValidation = () => {
     rating: useRef<HTMLDivElement>(null)
   };
 
-  /** Xóa toàn bộ trạng thái lỗi. */
   const clearErrors = useCallback(() => {
     setRatingError(false);
     setErrors({ title: false, country: false, releaseDate: false, runtime: false, seasons: false });
     setErrorTrigger(0);
   }, []);
 
-  /** Cuộn đến phần tử lỗi khi có thay đổi trigger. */
   useEffect(() => {
     if (errorTrigger > 0) {
       const errorKey = (Object.keys(errors) as Array<keyof FormErrors>).find(k => errors[k]) || (ratingError ? 'rating' : null);
@@ -53,7 +51,6 @@ export const useMovieValidation = () => {
     }
   }, [errorTrigger, errors, ratingError]);
 
-  /** Thực hiện validate các trường dữ liệu. */
   const validate = (
     isManualMode: boolean,
     isTVSeries: boolean,

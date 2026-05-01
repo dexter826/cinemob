@@ -12,7 +12,7 @@ export interface ExportFilters {
   status?: 'all' | 'history' | 'watchlist';
 }
 
-/** Lọc danh sách phim dựa trên các tiêu chí xuất dữ liệu. */
+// Lọc phim theo tiêu chí xuất dữ liệu.
 export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): Movie[] => {
   let result = [...movies];
 
@@ -46,7 +46,7 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
 };
 
 
-/** Xuất danh sách phim ra file Excel (.xlsx) kèm bộ lọc. */
+// Xuất danh sách phim ra Excel.
 export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Promise<void> => {
   try {
     const filteredMovies = filterMoviesForExport(movies, filters);
@@ -80,19 +80,19 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     XLSX.utils.book_append_sheet(wb, ws, 'Danh sách phim');
 
     const colWidths = [
-      { wch: 30 }, // Tên phim
-      { wch: 10 }, // Năm xem
-      { wch: 12 }, // Ngày xem
-      { wch: 10 }, // Đánh giá
-      { wch: 15 }, // Thời lượng (phút)
-      { wch: 10 }, // Số mùa
-      { wch: 20 }, // Thể loại
-      { wch: 15 }, // Quốc gia
-      { wch: 12 }, // Loại
-      { wch: 10 }, // Trạng thái
-      { wch: 30 }, // Đánh giá chi tiết
-      { wch: 25 }, // Tagline
-      { wch: 40 }  // Nội dung
+      { wch: 30 },
+      { wch: 10 },
+      { wch: 12 },
+      { wch: 10 },
+      { wch: 15 },
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 12 },
+      { wch: 10 },
+      { wch: 30 },
+      { wch: 25 },
+      { wch: 40 }
     ];
     ws['!cols'] = colWidths;
 

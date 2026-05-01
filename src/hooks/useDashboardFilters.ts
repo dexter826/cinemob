@@ -28,6 +28,7 @@ const INITIAL_FILTER_STATE: FilterState = {
   watchStatus: 'all',
 };
 
+// Xử lý lọc và sắp xếp danh sách phim.
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);

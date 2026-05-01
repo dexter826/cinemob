@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
-import { Disc3 } from 'lucide-react';
+import Loading from './Loading';
 
 interface SplashScreenProps {
   onAnimationFinish: () => void;
@@ -30,7 +30,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish, showLoad
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center z-60 bg-background overflow-hidden">
+    <div className="fixed inset-0 flex flex-col items-center justify-center z-150 bg-background overflow-hidden">
       <div className="w-80 h-80 md:w-96 md:h-96 shrink-0 relative">
         <Lottie
           animationData={animationData}
@@ -38,8 +38,8 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish, showLoad
           onComplete={onAnimationFinish}
         />
         {showLoading && (
-          <div className="absolute bottom-36 md:bottom-44 left-1/2 -translate-x-1/2 z-10">
-            <Disc3 className="animate-spin text-primary" size={40} />
+          <div className="absolute bottom-32 md:bottom-40 left-1/2 -translate-x-1/2 z-10">
+            <Loading fullScreen={false} size={40} />
           </div>
         )}
       </div>

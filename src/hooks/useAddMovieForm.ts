@@ -12,13 +12,12 @@ import { GENRE_OPTIONS } from '../constants/genres';
 import { useTMDBLookup } from './useTMDBLookup';
 import { useMovieValidation } from './useMovieValidation';
 
-/** Quản lý logic toàn diện cho form thêm/sửa phim và series. */
+// Quản lý form thêm/sửa phim và series.
 export const useAddMovieForm = () => {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { isOpen, initialData, closeAddModal } = useAddMovieStore();
 
-  // Trạng thái form
   const [formData, setFormData] = useState({
     title: '', title_vi: '', runtime: '', seasons: '', poster: '',
     date: new Date().toISOString().split('T')[0],
@@ -32,7 +31,6 @@ export const useAddMovieForm = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
 
-  // Các hook con chuyên biệt
   const { fetchDetails, isLoading: isTMDBLoading, movieExists, setMovieExists } = useTMDBLookup();
   const { 
     ratingError, setRatingError, errors, isAnimating, refs, clearErrors, validate 
@@ -51,7 +49,6 @@ export const useAddMovieForm = () => {
 
   const albumSync = useAlbumSync({ user, movieToEdit: initialData?.movieToEdit, isOpen, showToast });
 
-  // Reset lỗi khi mở modal
   useEffect(() => {
     if (isOpen) {
       clearErrors();
@@ -59,7 +56,6 @@ export const useAddMovieForm = () => {
     }
   }, [isOpen, clearErrors]);
 
-  // Khởi tạo dữ liệu form
   useEffect(() => {
     if (!isOpen) return;
 

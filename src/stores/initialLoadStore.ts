@@ -7,6 +7,7 @@ interface InitialLoadStore {
   setPageLoading: (loading: boolean) => void;
 }
 
+// Quản lý trạng thái tải dữ liệu lần đầu.
 const useInitialLoadStore = create<InitialLoadStore>((set) => ({
   isInitialLoadComplete: false,
   isPageLoading: false,

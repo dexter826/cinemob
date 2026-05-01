@@ -17,7 +17,7 @@ import { Movie } from '../types';
 
 const COLLECTION_NAME = 'movies';
 
-/** Lưu phim mới vào kho cá nhân. */
+// Lưu phim mới vào kho cá nhân.
 export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   try {
     const payload = {
@@ -33,7 +33,7 @@ export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   }
 };
 
-/** Cập nhật thông tin phim. */
+// Cập nhật thông tin phim.
 export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   try {
     const movieRef = doc(db, COLLECTION_NAME, docId);
@@ -44,7 +44,7 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   }
 };
 
-/** Xóa phim khỏi danh sách. */
+// Xóa phim khỏi danh sách.
 export const deleteMovie = async (docId: string) => {
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, docId));
@@ -54,7 +54,7 @@ export const deleteMovie = async (docId: string) => {
   }
 };
 
-/** Kiểm tra phim đã có trong danh sách chưa. */
+// Kiểm tra phim đã tồn tại chưa.
 export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
   try {
     const q = query(
@@ -70,7 +70,7 @@ export const checkMovieExists = async (uid: string, movieId: string | number): P
   }
 };
 
-/** Chuyển dữ liệu Firestore sang Object Movie. */
+// Chuyển dữ liệu Firestore sang Object Movie.
 export const mapDocToMovie = (docId: string, data: any): Movie => {
   return {
     docId,
@@ -97,7 +97,7 @@ export const mapDocToMovie = (docId: string, data: any): Movie => {
   } as Movie;
 };
 
-/** Theo dõi danh sách phim thời gian thực. */
+// Theo dõi danh sách phim thời gian thực.
 export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
   const q = query(
     collection(db, COLLECTION_NAME),

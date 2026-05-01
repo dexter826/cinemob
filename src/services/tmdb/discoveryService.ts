@@ -1,7 +1,7 @@
 import { tmdbFetch, API_KEY } from './tmdbClient';
 import { TMDBMovieResult } from '../../types';
 
-/** Lấy danh sách phim đang xu hướng. */
+// Lấy phim đang thịnh hành.
 export const getTrendingMovies = async (page: number = 1): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   const data = await tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`trending/all/week`, {
     page: page.toString(),
@@ -14,7 +14,7 @@ export const getTrendingMovies = async (page: number = 1): Promise<{ results: TM
   return { results, totalPages: data?.total_pages || 1 };
 };
 
-/** Khám phá phim với các bộ lọc nâng cao. */
+// Khám phá phim với bộ lọc.
 export const getDiscoverMovies = async (params: {
   page?: number;
   genres?: string[];
@@ -71,7 +71,6 @@ export const getDiscoverMovies = async (params: {
       totalPages = Math.max(movieData?.total_pages || 1, tvData?.total_pages || 1);
     }
 
-    // Sorting logic (same as before)
     if (sortBy === 'popularity.desc') {
       combinedResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     } else if (sortBy === 'vote_average.desc') {

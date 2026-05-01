@@ -1,3 +1,4 @@
+// Định nghĩa và dịch thể loại phim.
 export const GENRE_TRANSLATIONS: Record<string, string> = {
   'Action': 'Hành động',
   'Adventure': 'Phiêu lưu',

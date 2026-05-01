@@ -10,7 +10,7 @@ const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
 };
 
-/** Lấy danh sách gợi ý phim từ AI có kết hợp cache và giới hạn concurrency. */
+// Lấy phim gợi ý từ AI kèm cache.
 export const fetchAIRecommendations = async (
   userId: string,
   historyMovies: Movie[],
@@ -79,7 +79,7 @@ export const fetchAIRecommendations = async (
   };
 };
 
-/** Lấy danh sách phim thịnh hành làm phương án dự phòng. */
+// Lấy phim thịnh hành làm dự phòng.
 export const fetchTrendingFallback = async (): Promise<TMDBMovieResult[]> => {
   const trendingData = await getTrendingMovies();
   return trendingData.results;

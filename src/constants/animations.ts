@@ -1,6 +1,6 @@
 import { Variants } from 'framer-motion';
 
-/** Các hiệu ứng chuyển động chung cho Modal. */
+// Hiệu ứng chuyển động cho Modal.
 export const MODAL_VARIANTS: Variants = {
   hidden: { opacity: 0, scale: 0.9, y: 20 },
   visible: { 
@@ -23,14 +23,14 @@ export const MODAL_VARIANTS: Variants = {
   }
 };
 
-/** Hiệu ứng lớp phủ nền (Overlay). */
+// Hiệu ứng lớp phủ nền.
 export const OVERLAY_VARIANTS: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
   exit: { opacity: 0 }
 };
 
-/** Hiệu ứng chuyển trang (Page transitions). */
+// Hiệu ứng chuyển trang.
 export const PAGE_VARIANTS: Variants = {
   initial: { opacity: 0 },
   in: { opacity: 1 },

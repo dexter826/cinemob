@@ -12,7 +12,7 @@ import {
 } from '../services/pushNotificationService';
 import { UpcomingEpisode } from '../types';
 
-/** Quản lý logic lịch phát sóng và thông báo đẩy. */
+// Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { openDetailModal } = useMovieDetailStore();
   const {
@@ -33,7 +33,6 @@ export const useReleaseCalendar = () => {
   const [pushLoading, setPushLoading] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
-  /** Kiểm tra trạng thái thông báo đẩy khi mount. */
   useEffect(() => {
     const checkPushStatus = async () => {
       const usable = isPushUsable();
@@ -48,7 +47,6 @@ export const useReleaseCalendar = () => {
     checkPushStatus();
   }, []);
 
-  /** Xử lý bật/tắt thông báo đẩy. */
   const handlePushToggle = async () => {
     if (!pushSupported) {
       showAlert({
@@ -86,12 +84,10 @@ export const useReleaseCalendar = () => {
     }
   };
 
-  /** Lấy danh sách phim TV từ bộ sưu tập. */
   const tvSeries = useMemo(() => {
     return movies.filter(m => m.media_type === 'tv' && m.source === 'tmdb');
   }, [movies]);
 
-  /** Điều hướng tháng. */
   const navigateMonth = (direction: 'prev' | 'next') => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
@@ -109,13 +105,11 @@ export const useReleaseCalendar = () => {
     setSelectedDate(new Date());
   };
 
-  /** Lấy các tập phim cho một ngày cụ thể. */
   const getEpisodesForDate = (date: Date) => {
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     return upcomingEpisodes.filter(ep => ep.episode.air_date === dateStr);
   };
 
-  /** Danh sách tập phim hiển thị (theo ngày chọn hoặc tất cả trong 30 ngày tới). */
   const displayedEpisodes = useMemo(() => {
     if (selectedDate) {
       return getEpisodesForDate(selectedDate);
@@ -132,7 +126,6 @@ export const useReleaseCalendar = () => {
     });
   }, [selectedDate, upcomingEpisodes]);
 
-  /** Nhóm tập phim theo ngày cho chế độ hiển thị danh sách. */
   const episodesByDate = useMemo(() => {
     const grouped: { [key: string]: UpcomingEpisode[] } = {};
     displayedEpisodes.forEach(ep => {
@@ -144,7 +137,6 @@ export const useReleaseCalendar = () => {
     return grouped;
   }, [displayedEpisodes]);
 
-  /** Xử lý khi nhấn vào một series. */
   const handleSeriesClick = (episode: UpcomingEpisode) => {
     const movie = movies.find(m => Number(m.id) === episode.seriesId);
     if (movie) {

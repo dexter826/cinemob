@@ -10,7 +10,7 @@ interface TVProgressProps {
     isOpen: boolean;
 }
 
-/** Hook quản lý tiến độ xem phim bộ (TV Series). */
+// Quản lý tiến độ xem phim bộ.
 export const useTVProgress = ({ movieToEdit, tmdbId, mediaType, isTVSeries, isOpen }: TVProgressProps) => {
     const [currentSeason, setCurrentSeason] = useState(1);
     const [currentEpisode, setCurrentEpisode] = useState(0);

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Movie, Stats } from '../types';
 
+// Tính toán số liệu thống kê cho Dashboard.
 export const useDashboardStats = (currentTabMovies: Movie[]) => {
   const stats: Stats = useMemo(() => {
     const totalMovies = currentTabMovies.length;

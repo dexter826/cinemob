@@ -24,7 +24,7 @@ interface TMDBLookupResult {
   };
 }
 
-/** Hook xử lý việc tra cứu thông tin phim từ TMDB. */
+// Xử lý tra cứu thông tin phim từ TMDB.
 export const useTMDBLookup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [movieExists, setMovieExists] = useState(false);
@@ -55,7 +55,6 @@ export const useTMDBLookup = () => {
           viOverview = vi.overview || '';
         }
       } catch (e) {
-        // Bỏ qua lỗi ngôn ngữ nếu không tìm thấy bản tiếng Việt
       }
 
       const runtime = details.runtime || (details.episode_run_time?.[0]) || 0;

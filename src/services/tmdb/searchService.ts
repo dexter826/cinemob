@@ -1,7 +1,7 @@
 import { tmdbFetch, API_KEY } from './tmdbClient';
 import { TMDBMovieResult, TMDBPerson } from '../../types';
 
-/** Tìm kiếm phim và TV show. */
+// Tìm kiếm phim và TV show.
 export const searchMovies = async (query: string, page: number = 1, year?: string): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!query || !API_KEY) return { results: [], totalPages: 0 };
 
@@ -36,7 +36,7 @@ export const searchMovies = async (query: string, page: number = 1, year?: strin
   }
 };
 
-/** Tìm kiếm diễn viên/người nổi tiếng. */
+// Tìm kiếm người nổi tiếng.
 export const searchPeople = async (query: string, page: number = 1): Promise<{ results: TMDBPerson[]; totalPages: number }> => {
   const data = await tmdbFetch<{ results: TMDBPerson[]; total_pages: number }>(`search/person`, {
     query,

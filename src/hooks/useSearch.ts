@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getCountries } from '../services/tmdb';
 import useMovieStore from '../stores/movieStore';
 import useRecommendationsStore from '../stores/recommendationsStore';
 import useAddMovieStore from '../stores/addMovieStore';
@@ -21,7 +20,7 @@ const INITIAL_FILTERS: SearchFilters = {
   sortBy: 'popularity.desc',
 };
 
-/** Hook điều phối chính cho trang Tìm kiếm. */
+// Hook điều phối chính cho trang Tìm kiếm.
 export const useSearch = (user: any) => {
   const { openAddModal } = useAddMovieStore();
   const { 

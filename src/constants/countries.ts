@@ -1,4 +1,4 @@
-/** Bảng ánh xạ tên quốc gia từ Tiếng Anh sang Tiếng Việt. */
+// Ánh xạ tên quốc gia sang Tiếng Việt.
 export const COUNTRY_TRANSLATIONS: Record<string, string> = {
   'United States of America': 'Mỹ',
   'United States': 'Mỹ',
@@ -27,7 +27,7 @@ export const COUNTRY_TRANSLATIONS: Record<string, string> = {
   'Mexico': 'Mexico',
 };
 
-/** Danh sách quốc gia phổ biến dùng cho dropdown form. */
+// Các quốc gia phổ biến cho form.
 export const COUNTRY_OPTIONS = [
   { value: 'Mỹ', label: 'Mỹ' }, 
   { value: 'Việt Nam', label: 'Việt Nam' }, 
@@ -46,7 +46,7 @@ export const COUNTRY_OPTIONS = [
   { value: 'Khác', label: 'Khác' }
 ];
 
-/** Hàm hỗ trợ dịch danh sách quốc gia. */
+// Hỗ trợ dịch danh sách quốc gia.
 export const translateCountries = (countriesString: string): string => {
   if (!countriesString) return '';
   return countriesString

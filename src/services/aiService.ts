@@ -15,12 +15,12 @@ interface CircuitBreakerState {
 
 const CIRCUIT_CONFIG = {
     FAIL_THRESHOLD: 5,
-    RECOVERY_TIME: 60000, // 60 giây
+    RECOVERY_TIME: 60000,
 } as const;
 
 const RETRY_CONFIG = {
     MAX_RETRIES: 3,
-    BASE_DELAY: 2000, // 2 giây
+    BASE_DELAY: 2000,
 } as const;
 
 let circuitBreaker: CircuitBreakerState = {
@@ -54,7 +54,7 @@ const recordSuccess = (): void => {
     circuitBreaker.state = 'CLOSED';
 };
 
-/** Lấy gợi ý phim từ AI theo lịch sử xem. */
+// Lấy phim gợi ý từ AI theo lịch sử.
 export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
     if (!history || history.length === 0) return [];
 

@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { Movie, UpcomingEpisode } from '../types';
 
-// Thời gian lưu cache tập phim để giảm số lần gọi API.
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
 const isExpired = (timestamp: number, duration: number): boolean => {
@@ -23,6 +22,7 @@ interface ReleaseCalendarState {
   fetchUpcomingEpisodes: (userId: string, movies: Movie[]) => Promise<void>;
 }
 
+// Quản lý lịch phát sóng tập phim mới.
 const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   movies: [],
   upcomingEpisodes: [],
@@ -43,7 +43,6 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       hasFetchedInitial: false
     });
   },
-  // Đồng bộ lịch phát sóng tập mới từ TMDB về store.
   fetchUpcomingEpisodes: async (userId: string, movies: Movie[]) => {
     const state = get();
 
