@@ -8,6 +8,7 @@ import useToastStore from '../../stores/toastStore';
 import { updateAlbum, addAlbum } from '../../services/albumService';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
+import EmptyState from '../ui/EmptyState';
 import logoText from '../../assets/images/logo_text.png';
 import { MESSAGES, MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
@@ -193,18 +194,15 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                   <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest animate-pulse">Đang tải album...</p>
                 </div>
               ) : availableAlbums.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-5 border border-border-default">
-                    <FolderPlus className="text-text-muted opacity-20" size={40} />
-                  </div>
-                  <h3 className="text-xl font-bold text-text-main mb-2">Trống trải quá</h3>
-                  <p className="text-sm text-text-muted max-w-xs mx-auto opacity-70">
-                    {albums.length === 0
-                      ? 'Bạn chưa có album nào. Hãy tạo cái đầu tiên để bắt đầu lưu trữ!'
-                      : 'Phim này đã có mặt trong tất cả các album hiện có của bạn.'
-                    }
-                  </p>
-                </div>
+                <EmptyState
+                  icon={FolderPlus}
+                  title="Trống trải quá"
+                  description={albums.length === 0
+                    ? 'Bạn chưa có album nào. Hãy tạo cái đầu tiên để bắt đầu lưu trữ!'
+                    : 'Phim này đã có mặt trong tất cả các album hiện có của bạn.'
+                  }
+                  className="py-10"
+                />
               ) : (
                 <div className="space-y-4">
                   <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Chọn Album</h3>

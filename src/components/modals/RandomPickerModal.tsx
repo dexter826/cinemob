@@ -12,6 +12,7 @@ import useAddMovieStore from '../../stores/addMovieStore';
 import useMovieDetailStore from '../../stores/movieDetailStore';
 import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
+import EmptyState from '../ui/EmptyState';
 import randomAudioFile from '../../assets/audio/random.MP3';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
 import useMovieStore from '../../stores/movieStore';
@@ -288,12 +289,12 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
           )}
 
           {!isLoadingPool && !hasPool && (
-            <div className="py-10 text-center text-text-muted text-sm">
-              <p className="mb-2">
-                Hiện chưa có phim trong Watchlist và không lấy được danh sách thịnh hành.
-              </p>
-              <p>Hãy thử thêm vài phim vào Watchlist hoặc kiểm tra TMDB API Key.</p>
-            </div>
+            <EmptyState
+              icon={Dice5}
+              title="Không tìm thấy phim"
+              description='Hiện chưa có phim trong Watchlist và không lấy được danh sách thịnh hành để quay ngẫu nhiên.'
+              className="py-10"
+            />
           )}
 
           {!isLoadingPool && hasPool && (

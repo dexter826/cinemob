@@ -4,6 +4,8 @@ import TMDBMovieCard from '../ui/TMDBMovieCard';
 import PersonCard from '../ui/PersonCard';
 import Loading from '../ui/Loading';
 import Pagination from '../ui/Pagination';
+import SkeletonCard from '../ui/SkeletonCard';
+import EmptyState from '../ui/EmptyState';
 import Lottie from 'lottie-react';
 import { Sparkles, Star, RotateCcw, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -50,7 +52,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   const navigate = useNavigate();
 
   if (isLoading) {
-    return <Loading fullScreen={false} size={40} className="py-20" />;
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 py-10">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -166,14 +174,21 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 />
               ))}
               {query.length > 2 && filteredResults.length === 0 && (
-                <div className="col-span-full text-center py-10 text-text-muted text-sm font-medium">
-                  Không tìm thấy kết quả nào phù hợp.
+                <div className="col-span-full">
+                  <EmptyState
+                    icon={Search}
+                    title="Không tìm thấy kết quả"
+                    description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa "${query}". Hãy thử từ khóa khác.`}
+                  />
                 </div>
               )}
               {!query && discoverMovies.length === 0 && trendingMovies.length === 0 && (
-                <div className="col-span-full flex flex-col items-center justify-center py-20 text-text-muted opacity-50">
-                  <Search size={48} className="mb-4" />
-                  <p className="text-sm px-4 text-center">Nhập tên phim hoặc nhấn "Tìm" để duyệt tất cả</p>
+                <div className="col-span-full">
+                  <EmptyState
+                    icon={Search}
+                    title="Bắt đầu khám phá"
+                    description="Nhập tên phim, diễn viên hoặc từ khóa để tìm kiếm những tác phẩm điện ảnh tuyệt vời."
+                  />
                 </div>
               )}
             </div>

@@ -7,6 +7,7 @@ import { Timestamp } from 'firebase/firestore';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import Loading from '../components/ui/Loading';
 import useMovieStore from '../stores/movieStore';
+import EmptyState from '../components/ui/EmptyState';
 
 const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 
@@ -96,7 +97,19 @@ const StatsPage: React.FC = () => {
   }, [watchedMovies, movies]);
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="h-14 w-64 bg-surface rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="h-96 bg-surface rounded-3xl animate-pulse" />
+          <div className="h-96 bg-surface rounded-3xl animate-pulse" />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -176,10 +189,12 @@ const StatsPage: React.FC = () => {
                   ))}
               </div>
             ) : (
-              <div className="h-60 flex flex-col items-center justify-center text-center text-text-muted">
-                <Globe size={48} className="opacity-10 mb-4" />
-                <p className="text-sm font-medium opacity-60">Chưa có dữ liệu quốc gia</p>
-              </div>
+              <EmptyState
+                icon={Globe}
+                title="Chưa có dữ liệu"
+                description="Thêm phim vào lịch sử để xem thống kê theo quốc gia."
+                className="py-10"
+              />
             )}
           </div>
         </div>
@@ -244,10 +259,12 @@ const StatsPage: React.FC = () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-80 flex flex-col items-center justify-center text-center text-text-muted">
-              <Film size={48} className="opacity-10 mb-4" />
-              <p className="text-sm font-medium opacity-60">Chưa có dữ liệu thể loại</p>
-            </div>
+            <EmptyState
+              icon={Film}
+              title="Chưa có dữ liệu"
+              description="Thêm phim vào lịch sử để xem thống kê theo thể loại."
+              className="py-10"
+            />
           )}
         </div>
       </div>

@@ -10,6 +10,8 @@ import Loading from '../components/ui/Loading';
 import Pagination from '../components/ui/Pagination';
 import MultiSelectDropdown from '../components/ui/MultiSelectDropdown';
 import useAddMovieStore from '../stores/addMovieStore';
+import SkeletonCard from '../components/ui/SkeletonCard';
+import EmptyState from '../components/ui/EmptyState';
 
 const PersonDetailPage: React.FC = () => {
   const { personId } = useParams<{ personId: string }>();
@@ -151,24 +153,35 @@ const PersonDetailPage: React.FC = () => {
     });
   };
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-surface animate-pulse" />
+          <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
+        </div>
+        <div className="bg-surface rounded-3xl p-8 h-80 animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (error || !person) {
     return (
-      <div className="text-text-main">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-text-main mb-4">
-              {error || 'Không tìm thấy thông tin người này'}
-            </h2>
-            <button
-              onClick={() => navigate(-1)}
-              className="bg-primary hover:bg-primary/80 text-white px-6 py-2 rounded-xl transition-colors"
-            >
-              Quay lại
-            </button>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <EmptyState
+          icon={User}
+          title={error || "Không tìm thấy nghệ sĩ"}
+          description="Thông tin chi tiết về nghệ sĩ này hiện không khả dụng."
+          action={{
+            label: "Quay lại",
+            onClick: () => navigate(-1)
+          }}
+        />
       </div>
     );
   }
@@ -414,13 +427,11 @@ const PersonDetailPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 bg-surface rounded-3xl border border-border-default shadow-premium">
-            <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-border-default">
-              <Film className="text-text-muted opacity-40" size={40} />
-            </div>
-            <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight">Không tìm thấy phim</h3>
-            <p className="text-text-muted/60 text-sm max-w-xs text-center">Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm khác</p>
-          </div>
+          <EmptyState
+            icon={Film}
+            title="Không tìm thấy phim"
+            description={searchQuery ? `Không tìm thấy phim nào của nghệ sĩ này phù hợp với "${searchQuery}"` : "Nghệ sĩ này chưa có thông tin về các bộ phim tham gia."}
+          />
         )}
       </div>
     </div>

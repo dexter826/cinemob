@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Disc3 } from 'lucide-react';
 import useInitialLoadStore from '../../stores/initialLoadStore';
 
 interface LoadingProps {
@@ -8,15 +7,14 @@ interface LoadingProps {
   fullScreen?: boolean;
   text?: string;
   className?: string;
-  mobileFriendly?: boolean;
 }
 
+/** Component hiển thị trạng thái đang tải cao cấp. */
 const Loading: React.FC<LoadingProps> = ({ 
-  size = 40, 
+  size = 48, 
   fullScreen = true, 
   text,
-  className = '',
-  mobileFriendly = false
+  className = ''
 }) => {
   const { setPageLoading } = useInitialLoadStore();
 
@@ -29,83 +27,60 @@ const Loading: React.FC<LoadingProps> = ({
     }
   }, [fullScreen, setPageLoading]);
 
-  if (fullScreen) {
-    if (mobileFriendly) {
-      return (
-        <div className={`fixed inset-0 bottom-20 md:bottom-0 bg-background flex flex-col items-center justify-center text-primary z-50 ${className}`}>
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ 
-              duration: 1, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-          >
-            <Disc3 size={size} />
-          </motion.div>
-          {text && (
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-              className="mt-4 text-text-muted"
-            >
-              {text}
-            </motion.p>
-          )}
-        </div>
-      );
-    }
-    return (
-      <div className={`fixed inset-0 bg-background flex flex-col items-center justify-center text-primary z-50 ${className}`}>
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ 
-            duration: 1, 
-            repeat: Infinity, 
-            ease: "linear" 
-          }}
-        >
-          <Disc3 size={size} />
-        </motion.div>
-        {text && (
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-            className="mt-4 text-text-muted"
-          >
-            {text}
-          </motion.p>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className={`flex flex-col items-center justify-center text-primary ${className}`}>
+  const Spinner = () => (
+    <div className="relative" style={{ width: size, height: size }}>
+      {/* Outer Ring */}
       <motion.div
+        className="absolute inset-0 border-4 border-primary/20 rounded-full"
+        style={{ width: size, height: size }}
+      />
+      {/* Animated Inner Ring */}
+      <motion.div
+        className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full"
+        style={{ width: size, height: size }}
         animate={{ rotate: 360 }}
         transition={{ 
           duration: 1, 
           repeat: Infinity, 
           ease: "linear" 
         }}
+      />
+      {/* Inner Dot */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center"
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 2, repeat: Infinity }}
       >
-        <Disc3 size={size} />
+        <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-sm shadow-primary" />
       </motion.div>
+    </div>
+  );
+
+  const content = (
+    <div className={`flex flex-col items-center justify-center ${className}`}>
+      <Spinner />
       {text && (
         <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
-          className="mt-4 text-text-muted"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-6 text-sm font-bold text-text-muted uppercase tracking-[0.2em] opacity-60"
         >
           {text}
         </motion.p>
       )}
     </div>
   );
+
+  if (fullScreen) {
+    return (
+      <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-100">
+        {content}
+      </div>
+    );
+  }
+
+  return content;
 };
 
 export default Loading;

@@ -14,6 +14,8 @@ import useMovieStore from '../stores/movieStore';
 import { formatMovieDate } from '../utils/movieUtils';
 import useMovieDetailStore from '../stores/movieDetailStore';
 import { MESSAGES } from '../constants/messages';
+import EmptyState from '../components/ui/EmptyState';
+import SkeletonCard from '../components/ui/SkeletonCard';
 
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -148,28 +150,33 @@ const AlbumDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-surface animate-pulse" />
+          <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (!album) {
     return (
-      <div className="text-text-main">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-12">
-          <button
-            type="button"
-            onClick={() => navigate('/albums')}
-            className="flex items-center gap-2 text-sm text-text-muted hover:text-text-main mb-6"
-          >
-            <ArrowLeft size={18} />
-            <span>Quay lại danh sách album</span>
-          </button>
-          <div className="border border-border-default rounded-2xl p-10 text-center">
-            <p className="text-lg font-medium mb-2">Không tìm thấy album</p>
-            <p className="text-text-muted text-sm">
-              Có thể album đã bị xóa hoặc bạn không có quyền truy cập.
-            </p>
-          </div>
-        </div>
+      <div className="max-w-3xl mx-auto px-4 py-20">
+        <EmptyState
+          icon={ArrowLeft}
+          title="Không tìm thấy album"
+          description="Có thể album đã bị xóa hoặc bạn không có quyền truy cập."
+          action={{
+            label: "Quay lại danh sách",
+            onClick: () => navigate('/albums')
+          }}
+        />
       </div>
     );
   }
@@ -276,14 +283,15 @@ const AlbumDetailPage: React.FC = () => {
           </div>
 
           {albumMovies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 sm:py-20 bg-surface rounded-3xl sm:rounded-3xl border border-border-default shadow-premium">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default">
-                <Film className="text-text-muted opacity-40 sm:w-8 sm:h-8" size={28} />
-              </div>
-              <p className="text-text-muted/60 text-xs sm:text-sm font-medium max-w-xs text-center px-4">
-                Chưa có phim nào trong album này. Hãy nhấn "Thêm phim" để bắt đầu bộ sưu tập.
-              </p>
-            </div>
+            <EmptyState
+              icon={Film}
+              title="Album đang trống"
+              description="Hãy bắt đầu thêm những bộ phim yêu thích của bạn vào album này."
+              action={!managingMovies ? {
+                label: "Thêm phim ngay",
+                onClick: () => setManagingMovies(true)
+              } : undefined}
+            />
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {albumMovies.map(movie => (
@@ -321,13 +329,18 @@ const AlbumDetailPage: React.FC = () => {
             </div>
 
             {availableMovies.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 sm:py-16 bg-surface/50 rounded-3xl sm:rounded-3xl border border-dashed border-border-default">
-                <p className="text-text-muted/60 text-xs sm:text-sm font-medium px-4 text-center">Tất cả phim trong lịch sử đều đã có trong album.</p>
-              </div>
+              <EmptyState
+                title="Đã hết phim để thêm"
+                description="Tất cả phim trong lịch sử của bạn đều đã có trong album này."
+                className="py-10"
+              />
             ) : filteredAvailableMovies.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 sm:py-16 bg-surface/50 rounded-3xl sm:rounded-3xl border border-dashed border-border-default">
-                <p className="text-text-muted/60 text-xs sm:text-sm font-medium px-4 text-center">Không tìm thấy phim phù hợp với "{searchQuery}"</p>
-              </div>
+              <EmptyState
+                icon={Search}
+                title="Không tìm thấy phim"
+                description={`Không tìm thấy phim phù hợp với từ khóa "${searchQuery}"`}
+                className="py-10"
+              />
             ) : (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">

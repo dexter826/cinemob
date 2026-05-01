@@ -4,7 +4,8 @@ import { useAuth } from '../components/providers/AuthProvider';
 import { Film, AlertTriangle } from 'lucide-react';
 import MovieCard from '../components/ui/MovieCard';
 import Pagination from '../components/ui/Pagination';
-import Loading from '../components/ui/Loading';
+import EmptyState from '../components/ui/EmptyState';
+import SkeletonCard from '../components/ui/SkeletonCard';
 import { TMDB_API_KEY } from '../constants';
 import { normalizeMovieDate } from '../utils/movieUtils';
 import { COUNTRY_TRANSLATIONS } from '../constants/countries';
@@ -72,9 +73,6 @@ const Dashboard: React.FC = () => {
       }));
   }, [movies]);
 
-  if (loading) {
-    return <Loading />;
-  }
 
   return (
     <div className="text-text-main transition-colors duration-300">
@@ -107,44 +105,33 @@ const Dashboard: React.FC = () => {
             )}
           </div>
 
-          {processedMovies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 bg-surface rounded-3xl border border-border-default shadow-premium">
-              <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-border-default">
-                <Film className="text-text-muted opacity-40" size={40} />
-              </div>
-              <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight">
-                {filters.searchQuery
-                  ? "Không tìm thấy nội dung phù hợp"
-                  : activeTab === 'history'
-                    ? "Chưa có nội dung nào trong lịch sử"
-                    : "Danh sách Sẽ xem đang trống"}
-              </h3>
-              <p className="text-text-muted/60 text-sm mb-8 max-w-xs text-center">
-                {filters.searchQuery
-                  ? "Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại."
-                  : activeTab === 'history'
-                    ? "Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên."
-                    : "Khám phá và thêm những bộ phim bạn muốn xem vào đây."}
-              </p>
-              
-              <div className="flex gap-3">
-                {filters.searchQuery || filters.rating || filters.year || filters.country || filters.contentType !== 'all' ? (
-                  <button
-                    onClick={clearFilters}
-                    className="px-6 py-3 bg-primary/10 text-primary rounded-xl font-bold text-sm hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 shadow-sm"
-                  >
-                    Xóa tất cả bộ lọc
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => navigate('/search')}
-                    className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all cursor-pointer shadow-premium"
-                  >
-                    Khám phá ngay
-                  </button>
-                )}
-              </div>
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
+          ) : processedMovies.length === 0 ? (
+            <EmptyState
+              icon={Film}
+              title={filters.searchQuery
+                ? "Không tìm thấy nội dung phù hợp"
+                : activeTab === 'history'
+                  ? "Chưa có nội dung nào trong lịch sử"
+                  : "Danh sách Sẽ xem đang trống"}
+              description={filters.searchQuery
+                ? "Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại."
+                : activeTab === 'history'
+                  ? "Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên."
+                  : "Khám phá và thêm những bộ phim bạn muốn xem vào đây."}
+              action={filters.searchQuery || filters.rating || filters.year || filters.country || filters.contentType !== 'all' ? {
+                label: "Xóa tất cả bộ lọc",
+                onClick: clearFilters
+              } : {
+                label: "Khám phá ngay",
+                onClick: () => navigate('/search')
+              }}
+            />
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">

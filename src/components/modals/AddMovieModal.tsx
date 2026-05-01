@@ -13,6 +13,7 @@ import MovieFormFields from './add-movie/MovieFormFields';
 import PosterPreview from './add-movie/PosterPreview';
 import CustomDatePicker from '../ui/CustomDatePicker';
 import CustomTimePicker from '../ui/CustomTimePicker';
+import Loading from '../ui/Loading';
 
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
@@ -95,12 +96,8 @@ const AddMovieModal: React.FC = () => {
             {/* Content */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8">
               {isLoadingDetails ? (
-                <div className="h-64 flex flex-col items-center justify-center gap-4">
-                  <div className="relative">
-                    <Loader2 className="animate-spin text-primary opacity-20" size={48} />
-                    <Loader2 className="animate-spin text-primary absolute inset-0" size={48} style={{ animationDirection: 'reverse', animationDuration: '2s' }} />
-                  </div>
-                  <p className="text-text-muted font-bold text-sm tracking-widest uppercase opacity-60">Đang đồng bộ dữ liệu...</p>
+                <div className="h-64 flex items-center justify-center">
+                  <Loading fullScreen={false} text="Đang lấy thông tin phim..." />
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">

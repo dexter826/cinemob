@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
 import { getTMDBImageUrl } from '../utils/movieUtils';
 import { MESSAGES } from '../constants/messages';
+import EmptyState from '../components/ui/EmptyState';
+import SkeletonCard from '../components/ui/SkeletonCard';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
@@ -63,7 +65,16 @@ const AlbumsPage: React.FC = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -111,15 +122,11 @@ const AlbumsPage: React.FC = () => {
         </form>
 
         {albums.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 sm:py-24 bg-surface rounded-3xl sm:rounded-3xl border border-border-default shadow-premium">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-5 sm:mb-6 border border-border-default">
-              <Folder className="text-text-muted opacity-40" size={32} />
-            </div>
-            <h3 className="text-lg sm:text-xl font-bold text-text-main mb-2 tracking-tight">Chưa có album nào</h3>
-            <p className="text-text-muted/60 text-xs sm:text-sm max-w-xs text-center px-4">
-              Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó.
-            </p>
-          </div>
+          <EmptyState
+            icon={Folder}
+            title="Chưa có album nào"
+            description="Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó."
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
             {albums.map(album => (

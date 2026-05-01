@@ -2,6 +2,7 @@ import React from 'react';
 import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '../components/providers/AuthProvider';
 import Loading from '../components/ui/Loading';
+import SkeletonCard from '../components/ui/SkeletonCard';
 import SearchHeader from '../components/search/SearchHeader';
 import SearchFilters from '../components/search/SearchFilters';
 import SearchResults from '../components/search/SearchResults';
@@ -27,7 +28,17 @@ const SearchPage: React.FC = () => {
   } = useSearch(user);
 
   if (initialLoading) {
-    return <Loading />;
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
+        <div className="h-14 bg-surface rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import Loading from '../components/ui/Loading';
-import { Tv } from 'lucide-react';
+import EmptyState from '../components/ui/EmptyState';
+import { Tv, Search } from 'lucide-react';
 
 import { useReleaseCalendar } from '../hooks/useReleaseCalendar';
 import CalendarHeader from '../components/calendar/CalendarHeader';
@@ -32,8 +33,13 @@ const ReleaseCalendarPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loading />
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="h-40 bg-surface rounded-4xl animate-pulse" />
+        <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 h-96 bg-surface rounded-4xl animate-pulse" />
+          <div className="h-96 bg-surface rounded-4xl animate-pulse" />
+        </div>
       </div>
     );
   }
@@ -63,19 +69,16 @@ const ReleaseCalendarPage: React.FC = () => {
           />
 
           {tvSeries.length === 0 ? (
-            <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-4xl p-16 text-center shadow-premium animate-in fade-in zoom-in-95 duration-500">
-              <div className="flex justify-center mb-8">
-                <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/5">
-                  <Tv size={48} className="text-primary" />
-                </div>
-              </div>
-              <h3 className="text-3xl font-bold text-text-main mb-3 tracking-tight">
-                Chưa có TV Series nào
-              </h3>
-              <p className="text-text-muted max-w-md mx-auto text-lg opacity-80 leading-relaxed">
-                Thêm các bộ phim bộ vào danh sách <strong>"Đang xem"</strong> hoặc <strong>"Sẽ xem"</strong> để theo dõi lịch phát sóng chi tiết.
-              </p>
-            </div>
+            <EmptyState
+              icon={Tv}
+              title="Chưa có TV Series nào"
+              description='Thêm các phim bộ vào danh sách "Đang xem" hoặc "Sẽ xem" để theo dõi lịch phát sóng chi tiết.'
+              action={{
+                label: "Khám phá ngay",
+                onClick: () => navigateMonth('next')
+              }}
+              className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-4xl"
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               {viewMode === 'calendar' && (
