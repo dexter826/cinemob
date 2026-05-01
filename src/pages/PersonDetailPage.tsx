@@ -12,6 +12,7 @@ import MultiSelectDropdown from '../components/ui/MultiSelectDropdown';
 import useAddMovieStore from '../stores/addMovieStore';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 const PersonDetailPage: React.FC = () => {
   const { personId } = useParams<{ personId: string }>();
@@ -156,25 +157,12 @@ const PersonDetailPage: React.FC = () => {
   return (
     <div className="text-text-main transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
-          >
-            <ArrowLeft size={22} />
-          </button>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-              <User className="text-primary" size={16} />
-            </div>
-            {loading ? (
-              <div className="h-8 w-40 bg-surface rounded-xl animate-pulse" />
-            ) : (
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{person?.name}</h1>
-            )}
-          </div>
-        </div>
+        <PageHeader 
+          onBack={() => navigate(-1)}
+          icon={User}
+          title={loading ? "Đang tải..." : person?.name || "Chi tiết nghệ sĩ"}
+          description={person?.place_of_birth ? `Nơi sinh: ${person.place_of_birth}` : "Thông tin chi tiết nghệ sĩ"}
+        />
 
         {loading ? (
           <div className="space-y-6 animate-in fade-in duration-500">

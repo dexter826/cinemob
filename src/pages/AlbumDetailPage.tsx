@@ -16,6 +16,7 @@ import useMovieDetailStore from '../stores/movieDetailStore';
 import { MESSAGES } from '../constants/messages';
 import EmptyState from '../components/ui/EmptyState';
 import SkeletonCard from '../components/ui/SkeletonCard';
+import PageHeader from '../components/ui/PageHeader';
 
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -152,34 +153,12 @@ const AlbumDetailPage: React.FC = () => {
   return (
     <div className="text-text-main transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-            <button
-              type="button"
-              onClick={() => navigate('/albums')}
-              className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
-            >
-              <ArrowLeft size={22} />
-            </button>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 sm:gap-3 mb-1">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-                  <Film className="text-primary" size={16} />
-                </div>
-                {loading ? (
-                  <div className="h-8 w-48 bg-surface rounded-xl animate-pulse" />
-                ) : (
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold truncate tracking-tight">{album?.name}</h1>
-                )}
-              </div>
-              {!loading && album && (
-                <p className="text-[10px] sm:text-xs text-text-muted font-medium opacity-60 ml-0.5">
-                  {album.movieDocIds.length} phim · Tạo ngày {formatMovieDate(album.createdAt)}
-                </p>
-              )}
-            </div>
-          </div>
-
+        <PageHeader
+          onBack={() => navigate('/albums')}
+          icon={Film}
+          title={loading ? "Đang tải..." : album?.name || "Chi tiết Album"}
+          description={!loading && album ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}` : ""}
+        >
           <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
             <button
               type="button"
@@ -214,7 +193,7 @@ const AlbumDetailPage: React.FC = () => {
               <span>{editing ? 'Hủy' : 'Sửa tên'}</span>
             </button>
           </div>
-        </div>
+        </PageHeader>
 
         {editing && (
           <form
