@@ -62,13 +62,11 @@
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: rgb(var(--color-primary) / 0.6);
-        transform: scaleY(1.1);
+        background: rgb(var(--color-text-muted) / 0.5);
     }
 
     ::-webkit-scrollbar-thumb:active {
-        background: rgb(var(--color-primary) / 0.8);
-        transform: scaleY(0.95);
+        background: rgb(var(--color-text-muted) / 0.7);
     }
 
     /* Scrollbar cho Firefox */
@@ -79,7 +77,7 @@
     }
 
     *:hover {
-        scrollbar-color: rgb(var(--color-primary) / 0.6) transparent;
+        scrollbar-color: rgb(var(--color-text-muted) / 0.5) transparent;
     }
 
     /* Dark theme scrollbar adjustments */
@@ -88,7 +86,7 @@
     }
 
     .dark ::-webkit-scrollbar-thumb:hover {
-        background: rgb(var(--color-primary) / 0.7);
+        background: rgb(var(--color-text-muted) / 0.4);
     }
 
     /* Horizontal scrollbar */
@@ -107,7 +105,7 @@
     }
 
     ::-webkit-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
-        background: rgb(var(--color-primary) / 0.5);
+        background: rgb(var(--color-text-muted) / 0.4);
     }
 
     /* High contrast mode support */

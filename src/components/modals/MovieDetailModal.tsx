@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, TMDBVideo, TMDBCredits } from '../../types';
 import { getMovieVideos, getMovieCredits } from '../../services/tmdb';
 import { PLACEHOLDER_IMAGE } from '../../constants';
-import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../../utils/movieUtils';
+import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl, getTranslatedGenres } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
 import AlbumSelectorModal from './AlbumSelectorModal';
 import useToastStore from '../../stores/toastStore';
@@ -165,7 +165,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                     {(movie.media_type === 'tv' ? (movie.seasons && movie.seasons > 0) : (movie.runtime && movie.runtime > 0)) && (
                       <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default">
                         <Clock size={14} className="text-primary" />
-                        <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Phần` : `${movie.runtime} Phút`}</span>
+                        <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Mùa` : `${movie.runtime} Phút`}</span>
                       </div>
                     )}
                     {movie.rating && movie.rating > 0 && (
@@ -206,7 +206,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default">
                         <Film size={14} className="sm:w-4 sm:h-4" />
                       </div>
-                      <span className="line-clamp-2 font-medium">{movie.genres}</span>
+                      <span className="line-clamp-2 font-medium">{getTranslatedGenres(movie.genres)}</span>
                     </div>
                   )}
 

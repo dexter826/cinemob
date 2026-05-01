@@ -1,6 +1,7 @@
 import { Movie, TMDBMovieResult } from '../types';
 import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
 import { translateCountries } from '../constants/countries';
+import { GENRE_TRANSLATIONS } from '../constants/genres';
 
 /** Lấy tiêu đề chính ưu tiên Tiếng Việt. */
 export const getMainTitle = (movie: Movie): string => {
@@ -81,4 +82,16 @@ export const getTMDBImageUrl = (path: string | null, size: string = 'w500'): str
 /** Dịch tên quốc gia sang Tiếng Việt. */
 export const getTranslatedCountries = (countryStr: string): string => {
   return translateCountries(countryStr);
+};
+
+/** Dịch danh sách thể loại sang Tiếng Việt. */
+export const getTranslatedGenres = (genreStr: string): string => {
+  if (!genreStr) return '';
+  return genreStr
+    .split(',')
+    .map(g => {
+      const trimmed = g.trim();
+      return GENRE_TRANSLATIONS[trimmed] || trimmed;
+    })
+    .join(', ');
 };

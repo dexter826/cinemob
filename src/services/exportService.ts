@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Movie } from '../types';
 import { Timestamp } from 'firebase/firestore';
-import { getTranslatedCountries } from '../utils/movieUtils';
+import { getTranslatedCountries, getTranslatedGenres } from '../utils/movieUtils';
 
 export interface ExportFilters {
   rating?: number | null;
@@ -64,8 +64,8 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
         'Ngày xem': watchedDate ? watchedDate.toLocaleDateString('vi-VN') : '',
         'Đánh giá': movie.rating || '',
         'Thời lượng (phút)': isTV ? '' : (movie.runtime || ''),
-        'Số phần': isTV ? (movie.seasons || '') : '',
-        'Thể loại': movie.genres || '',
+        'Số mùa': isTV ? (movie.seasons || '') : '',
+        'Thể loại': getTranslatedGenres(movie.genres || ''),
         'Quốc gia': getTranslatedCountries(movie.country || ''),
         'Loại': isTV ? 'TV Series' : 'Phim',
         'Trạng thái': movie.status === 'watchlist' ? 'Sẽ xem' : 'Đã xem',
@@ -85,7 +85,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
       { wch: 12 }, // Ngày xem
       { wch: 10 }, // Đánh giá
       { wch: 15 }, // Thời lượng (phút)
-      { wch: 10 }, // Số phần
+      { wch: 10 }, // Số mùa
       { wch: 20 }, // Thể loại
       { wch: 15 }, // Quốc gia
       { wch: 12 }, // Loại

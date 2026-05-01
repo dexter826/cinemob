@@ -3,6 +3,7 @@ import { Film, Globe, Calendar, Tv, Clock, AlignLeft } from 'lucide-react';
 import CustomDropdown from '../../ui/CustomDropdown';
 import CustomDatePicker from '../../ui/CustomDatePicker';
 import MultiSelectDropdown from '../../ui/MultiSelectDropdown';
+import { GENRE_TRANSLATIONS } from '../../../constants/genres';
 
 interface MovieFormFieldsProps {
   isManualMode: boolean;
@@ -113,7 +114,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
         <div className="space-y-2">
           <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
             {isTVSeries ? <Tv size={14} className="text-primary" /> : <Clock size={14} className="text-primary" />}
-            {isTVSeries ? 'Số phần' : 'Thời lượng (phút)'}
+            {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
           <div className={`transition-transform duration-500 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}>
             <input
@@ -126,7 +127,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
               className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm disabled:opacity-50"
-              placeholder={isTVSeries ? "Số phần..." : "Phút..."}
+              placeholder={isTVSeries ? "Số mùa..." : "Phút..."}
             />
           </div>
         </div>
@@ -136,7 +137,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
       <div className="space-y-2">
         <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Thể loại phim</label>
         <MultiSelectDropdown
-          options={genreOptions.map(g => ({ value: g.id, label: g.name }))}
+          options={genreOptions.map(g => ({ value: g.id, label: GENRE_TRANSLATIONS[g.name] || g.name }))}
           values={selectedGenreIds}
           onChange={(values) => {
             setSelectedGenreIds(values as number[]);
