@@ -2,7 +2,6 @@ import React from 'react';
 import { TMDBMovieResult } from '../../types';
 import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '../../utils/movieUtils';
 import { Film, Tv, Bookmark, Star, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface TMDBMovieCardProps {
   movie: TMDBMovieResult;
@@ -20,16 +19,15 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <motion.div
+    <div
       onClick={() => onClick(movie)}
-      whileTap={{ scale: 0.98 }}
       className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/30 transition-all duration-300"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
           src={getTMDBImageUrl(movie.poster_path, 'w500')}
           alt={mainTitle}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-all duration-500"
           loading="lazy"
         />
         
@@ -82,7 +80,7 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

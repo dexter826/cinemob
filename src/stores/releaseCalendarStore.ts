@@ -57,7 +57,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       return;
     }
 
-    const cacheKey = `upcoming_episodes_${userId}`;
+    const cacheKey = `upcoming_episodes_v2_${userId}`;
     const cachedData = localStorage.getItem(cacheKey);
 
     if (cachedData) {

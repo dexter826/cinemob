@@ -9,6 +9,7 @@ import SkeletonCard from '../components/ui/SkeletonCard';
 import { TMDB_API_KEY } from '../constants';
 import { normalizeMovieDate } from '../utils/movieUtils';
 import { COUNTRY_TRANSLATIONS } from '../constants/countries';
+import PageHeader from '../components/ui/PageHeader';
 
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardActions from '../components/dashboard/DashboardActions';
@@ -75,8 +76,13 @@ const Dashboard: React.FC = () => {
 
 
   return (
-    <div className="text-text-main transition-colors duration-300">
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+    <div className="text-text-main transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader 
+          icon={Film}
+          title="Thư viện điện ảnh"
+          description="Quản lý và khám phá bộ sưu tập phim cá nhân của bạn."
+        />
         
         <DashboardActions onOpenAddModal={() => openAddModal()} />
 
@@ -106,7 +112,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -124,7 +130,7 @@ const Dashboard: React.FC = () => {
                 : activeTab === 'history'
                   ? "Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên."
                   : "Khám phá và thêm những bộ phim bạn muốn xem vào đây."}
-              action={filters.searchQuery || filters.rating || filters.year || filters.country || filters.contentType !== 'all' ? {
+              action={filters.searchQuery || filters.ratingRange || filters.year || filters.country || filters.contentType !== 'all' ? {
                 label: "Xóa tất cả bộ lọc",
                 onClick: clearFilters
               } : {
@@ -134,7 +140,7 @@ const Dashboard: React.FC = () => {
             />
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
                 {processedMovies.map(movie => (
                   <MovieCard
                     key={movie.docId}
@@ -155,7 +161,7 @@ const Dashboard: React.FC = () => {
             </>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 };

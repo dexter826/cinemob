@@ -67,13 +67,13 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
 };
 
 const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[]): Promise<AIRecommendation[]> => {
-    const filteredMovies = history.filter(m => (m.rating || 0) >= 3);
+    const filteredMovies = history.filter(m => (m.rating || 0) >= 6);
     const selectedMovies = filteredMovies
         .sort(() => 0.5 - Math.random())
         .slice(0, Math.min(150, filteredMovies.length)); 
 
     const watchedList = selectedMovies
-        .map(m => `- ${m.title} (${m.rating ? m.rating + '/5 stars' : 'Liked'})`)
+        .map(m => `- ${m.title} (${m.rating ? m.rating + '/10 stars' : 'Liked'})`)
         .join('\n');
 
     const existingTitles = allMovies.map(m => m.title).join(', ');

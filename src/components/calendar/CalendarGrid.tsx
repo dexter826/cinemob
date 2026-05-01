@@ -78,7 +78,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group
             ${today ? 'bg-primary/5 border-primary/50 shadow-lg shadow-primary/10' : 'border-border-default bg-black/5 dark:bg-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
-            ${hasEp ? 'hover:scale-[1.02] active:scale-95' : ''}
+            ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
         >
           <div className={`text-[10px] sm:text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
@@ -130,7 +130,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default p-4 sm:p-6 md:p-8 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium">
+    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
           <ChevronLeft size={20} />

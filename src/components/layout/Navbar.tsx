@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className="border-b border-border-default bg-surface/50 backdrop-blur-xl sticky top-0 z-40 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div
             className="flex items-center cursor-pointer"

@@ -1,13 +1,13 @@
 import React from 'react';
 import Loading from '../components/ui/Loading';
 import EmptyState from '../components/ui/EmptyState';
-import { Tv, Search } from 'lucide-react';
+import { Tv, CalendarDays, Bell, BellOff, BellRing, Calendar, List } from 'lucide-react';
 
 import { useReleaseCalendar } from '../hooks/useReleaseCalendar';
-import CalendarHeader from '../components/calendar/CalendarHeader';
 import CalendarStats from '../components/calendar/CalendarStats';
 import CalendarGrid from '../components/calendar/CalendarGrid';
 import EpisodeList from '../components/calendar/EpisodeList';
+import PageHeader from '../components/ui/PageHeader';
 
 /** Trang Lịch phát sóng các tập phim mới của Series. */
 const ReleaseCalendarPage: React.FC = () => {
@@ -33,28 +33,93 @@ const ReleaseCalendarPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
-        <div className="h-40 bg-surface rounded-4xl animate-pulse" />
-        <div className="h-32 bg-surface rounded-3xl animate-pulse" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 h-96 bg-surface rounded-4xl animate-pulse" />
-          <div className="h-96 bg-surface rounded-4xl animate-pulse" />
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-surface rounded-2xl animate-pulse" />
+            <div className="space-y-1.5">
+              <div className="h-7 w-40 bg-surface rounded-lg animate-pulse" />
+              <div className="h-3.5 w-56 bg-surface rounded-lg animate-pulse" />
+            </div>
+          </div>
+        </div>
+        <div className="h-28 bg-surface rounded-3xl animate-pulse shadow-premium border border-border-default" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 h-80 bg-surface rounded-3xl animate-pulse shadow-premium border border-border-default" />
+          <div className="h-80 bg-surface rounded-3xl animate-pulse shadow-premium border border-border-default" />
         </div>
       </div>
     );
   }
 
   return (
-    <main className="text-text-main">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-8 sm:pt-12">
-          <CalendarHeader 
-            handlePushToggle={handlePushToggle}
-            pushLoading={pushLoading}
-            pushSubscribed={pushSubscribed}
-            notificationPermission={notificationPermission}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-          />
+    <div className="text-text-main transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+          <PageHeader 
+            icon={CalendarDays}
+            title="Lịch phát sóng"
+            description="Theo dõi các tập phim mới nhất của series bạn quan tâm"
+          >
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+              {/* View Mode Toggle */}
+              <div className="bg-surface border border-border-default p-1 rounded-2xl flex items-center shadow-premium">
+                <button
+                  onClick={() => setViewMode('calendar')}
+                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs ${
+                    viewMode === 'calendar' 
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                      : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  <Calendar size={14} />
+                  <span className="hidden xs:inline">Lịch</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs ${
+                    viewMode === 'list' 
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                      : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  <List size={14} />
+                  <span className="hidden xs:inline">Danh sách</span>
+                </button>
+              </div>
+
+              <button
+                onClick={handlePushToggle}
+                disabled={pushLoading}
+                title={pushSubscribed ? 'Tắt thông báo' : 'Bật thông báo tập phim mới'}
+                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-all flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium ${
+                  pushSubscribed
+                    ? 'bg-success text-white shadow-lg shadow-success/20'
+                    : notificationPermission === 'denied'
+                    ? 'bg-error/10 text-error border border-error/20 cursor-not-allowed'
+                    : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
+                } ${pushLoading ? 'opacity-50 cursor-wait' : ''}`}
+              >
+                {pushLoading ? (
+                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : pushSubscribed ? (
+                  <BellRing size={16} />
+                ) : notificationPermission === 'denied' ? (
+                  <BellOff size={16} />
+                ) : (
+                  <Bell size={16} />
+                )}
+                <span className="whitespace-nowrap">
+                  {pushLoading
+                    ? 'Đang xử lý...'
+                    : pushSubscribed
+                    ? 'Đã bật'
+                    : notificationPermission === 'denied'
+                    ? 'Bị chặn'
+                    : 'Thông báo'}
+                </span>
+              </button>
+            </div>
+          </PageHeader>
 
           <CalendarStats 
             tvSeriesCount={tvSeries.length}
@@ -73,14 +138,10 @@ const ReleaseCalendarPage: React.FC = () => {
               icon={Tv}
               title="Chưa có TV Series nào"
               description='Thêm các phim bộ vào danh sách "Đang xem" hoặc "Sẽ xem" để theo dõi lịch phát sóng chi tiết.'
-              action={{
-                label: "Khám phá ngay",
-                onClick: () => navigateMonth('next')
-              }}
-              className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-4xl"
+              className="bg-surface border border-border-default rounded-3xl shadow-premium py-6 sm:py-8"
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {viewMode === 'calendar' && (
                 <CalendarGrid 
                   currentDate={currentDate}
@@ -105,7 +166,7 @@ const ReleaseCalendarPage: React.FC = () => {
             </div>
           )}
         </div>
-      </main>
+    </div>
   );
 };
 

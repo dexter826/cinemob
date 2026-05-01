@@ -11,9 +11,9 @@ interface StatsCardProps {
 
 const StatsCard: React.FC<StatsCardProps> = ({ label, value, subValue, icon: Icon, colorClass }) => {
   return (
-    <div className="bg-surface border border-border-default p-6 rounded-3xl flex items-center space-x-5 hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 shadow-premium hover:shadow-premium-hover group">
-      <div className={`p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-border-default transition-transform duration-500 group-hover:scale-110 ${colorClass}`}>
-        <Icon size={28} />
+    <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl flex items-center space-x-4 hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 shadow-premium hover:shadow-premium-hover group">
+      <div className={`p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-border-default transition-all duration-300 ${colorClass}`}>
+        <Icon size={24} />
       </div>
       <div>
         <p className="text-text-muted text-xs font-bold uppercase tracking-widest mb-1 opacity-60">{label}</p>

@@ -8,7 +8,7 @@ interface DashboardFiltersProps {
     sortBy: SortOption;
     sortOrder: SortOrder;
     searchQuery: string;
-    rating: number | null;
+    ratingRange: [number, number] | null;
     year: number | null;
     country: string;
     contentType: 'all' | 'movie' | 'tv';
@@ -37,7 +37,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
   availableCountries,
   clearFilters
 }) => {
-  const hasActiveFilters = filters.rating !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all';
+  const hasActiveFilters = filters.ratingRange !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all';
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
@@ -154,20 +154,55 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               )}
 
               <div>
-                <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 block opacity-60">Đánh giá tối thiểu</label>
-                <div className="flex gap-1.5 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => updateFilter('rating', filters.rating === star ? null : star)}
-                      className={`flex-1 flex items-center justify-center p-2 rounded-lg transition-all cursor-pointer ${
-                        (filters.rating || 0) >= star ? 'text-warning bg-warning/10 shadow-sm' : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5'
-                      }`}
-                    >
-                      <Star size={15} fill={(filters.rating || 0) >= star ? "currentColor" : "none"} />
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block opacity-60">
+                    Khoảng đánh giá
+                  </label>
+                  {filters.ratingRange && (
+                    <span className="text-[10px] font-bold text-primary">
+                      {filters.ratingRange[0]} - {filters.ratingRange[1]} sao
+                    </span>
+                  )}
                 </div>
+                <div className="flex gap-1.5 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
+                    const [min, max] = filters.ratingRange || [0, 0];
+                    const isActive = filters.ratingRange && star >= min && star <= max;
+                    const isEdge = filters.ratingRange && (star === min || star === max);
+
+                    return (
+                      <button
+                        key={star}
+                        onClick={() => {
+                          if (!filters.ratingRange) {
+                            updateFilter('ratingRange', [star, star]);
+                          } else {
+                            const [currMin, currMax] = filters.ratingRange;
+                            if (star === currMin && star === currMax) {
+                              updateFilter('ratingRange', null);
+                            } else if (star < currMin) {
+                              updateFilter('ratingRange', [star, currMax]);
+                            } else if (star > currMax) {
+                              updateFilter('ratingRange', [currMin, star]);
+                            } else {
+                              updateFilter('ratingRange', [star, star]);
+                            }
+                          }
+                        }}
+                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-all cursor-pointer ${
+                          isActive 
+                            ? 'text-warning bg-warning/10 shadow-sm' 
+                            : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5'
+                        } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
+                      >
+                        <Star size={14} fill={isActive ? "currentColor" : "none"} />
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[9px] text-text-muted mt-2 opacity-50 text-center">
+                  Nhấn hai điểm khác nhau để chọn khoảng
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

@@ -155,13 +155,13 @@ const PersonDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-surface animate-pulse" />
-          <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
+          <div className="w-10 h-10 rounded-2xl bg-surface animate-pulse" />
+          <div className="h-8 w-40 bg-surface rounded-xl animate-pulse" />
         </div>
-        <div className="bg-surface rounded-3xl p-8 h-80 animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="bg-surface rounded-3xl p-5 h-64 animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {Array.from({ length: 5 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -187,31 +187,36 @@ const PersonDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="text-text-main">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+    <div className="text-text-main transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="w-12 h-12 rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
           >
             <ArrowLeft size={22} />
           </button>
-          <h1 className="text-3xl font-bold tracking-tight">{person.name}</h1>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+              <User className="text-primary" size={16} />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{person.name}</h1>
+          </div>
         </div>
 
         {/* Person Info Section */}
-        <div className="bg-surface border border-border-default rounded-3xl p-8 shadow-premium overflow-hidden relative">
-          <div className="flex flex-col md:flex-row gap-8 relative z-10">
+        <div className="bg-surface border border-border-default rounded-3xl p-5 sm:p-6 shadow-premium overflow-hidden relative">
+          <div className="flex flex-col md:flex-row gap-6 sm:gap-8 relative z-10">
             {/* Person Image */}
             <div className="flex justify-center md:justify-start shrink-0">
               <div className="relative group">
                 <img
                   src={getTMDBImageUrl(person.profile_path, 'h632')}
                   alt={person.name}
-                  className="w-56 h-80 object-cover rounded-2xl shadow-premium border border-white/10"
+                  className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-2xl shadow-premium border border-white/10"
                 />
-                <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500" />
               </div>
             </div>
 
@@ -337,7 +342,7 @@ const PersonDetailPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm phim của nghệ sĩ này..."
-                className="w-full bg-surface border border-border-default rounded-2xl py-3 pl-12 pr-10 text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 shadow-premium transition-all"
+                className="w-full bg-surface border border-border-default rounded-xl sm:rounded-2xl py-2.5 sm:py-3 pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-all"
               />
               {searchQuery && (
                 <button 
@@ -403,8 +408,8 @@ const PersonDetailPage: React.FC = () => {
 
         {/* Results */}
         {paginatedMovies.length > 0 ? (
-          <div className="space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {paginatedMovies.map((movie) => (
                 <TMDBMovieCard
                   key={`${movie.id}-${movie.media_type}`}

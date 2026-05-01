@@ -51,7 +51,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           )}
           <button
             onClick={handleSearch}
-            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-all text-sm sm:text-sm font-bold shadow-lg shadow-primary/20 active:scale-95"
+            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-all text-sm sm:text-sm font-bold shadow-lg shadow-primary/20"
           >
             Tìm
           </button>

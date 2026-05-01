@@ -8,6 +8,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import Loading from '../components/ui/Loading';
 import useMovieStore from '../stores/movieStore';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 const COLORS = ['#10b981', '#3b82f6', '#06b6d4', '#f59e0b', '#f97316', '#14b8a6', '#f43f5e', '#84cc16'];
 
@@ -27,7 +28,7 @@ const StatsPage: React.FC = () => {
         displayLabel = payload[0].payload.fullCountry;
       }
       return (
-        <div className="bg-surface/90 backdrop-blur-xl border border-border-default rounded-2xl p-4 shadow-premium animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-surface/90 backdrop-blur-xl border border-border-default rounded-2xl p-4 shadow-premium animate-in fade-in duration-200">
           <p className="text-text-main font-bold mb-1">{displayLabel}</p>
           <p className="text-primary font-bold text-sm">Số lượng: {value} phim</p>
         </div>
@@ -58,7 +59,7 @@ const StatsPage: React.FC = () => {
       ? (ratedMovies.reduce((acc, curr) => acc + (curr.rating || 0), 0) / ratedMovies.length).toFixed(1)
       : '0';
 
-    const moviesByRating: Record<string, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const moviesByRating: Record<string, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 };
     ratedMovies.forEach(m => {
       if (m.rating) moviesByRating[m.rating] = (moviesByRating[m.rating] || 0) + 1;
     });
@@ -98,15 +99,15 @@ const StatsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
-        <div className="h-14 w-64 bg-surface rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
-          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <div className="h-12 w-64 bg-surface rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+          <div className="h-28 bg-surface rounded-3xl animate-pulse" />
+          <div className="h-28 bg-surface rounded-3xl animate-pulse" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-96 bg-surface rounded-3xl animate-pulse" />
-          <div className="h-96 bg-surface rounded-3xl animate-pulse" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+          <div className="h-80 bg-surface rounded-3xl animate-pulse" />
+          <div className="h-80 bg-surface rounded-3xl animate-pulse" />
         </div>
       </div>
     );
@@ -114,13 +115,12 @@ const StatsPage: React.FC = () => {
 
   return (
     <div className="text-text-main transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
-        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3 sm:gap-4 tracking-tight">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-            <TrendingUp className="text-primary sm:w-6 sm:h-6" size={20} />
-          </div>
-          Thống kê điện ảnh
-        </h1>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader 
+          icon={TrendingUp} 
+          title="Thống kê điện ảnh" 
+          description="Cái nhìn tổng quan về thói quen xem phim của bạn."
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <StatsCard
@@ -139,14 +139,14 @@ const StatsPage: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-          <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+          <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
             <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
               <Star size={20} className="text-warning" />
               Phân bố đánh giá
             </h3>
             <div className="space-y-4 sm:space-y-5">
-              {[5, 4, 3, 2, 1].map((rating) => (
+              {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
                 <div key={rating} className="flex items-center gap-3 sm:gap-4 group">
                   <div className="flex items-center gap-1 w-12 sm:w-14 shrink-0">
                     <span className="font-bold text-base sm:text-lg text-text-main">{rating}</span>
@@ -166,7 +166,7 @@ const StatsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+          <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
             <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
               <Globe size={20} className="text-primary" />
               Top 5 Quốc gia
@@ -199,7 +199,7 @@ const StatsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-surface border border-border-default p-5 sm:p-6 md:p-8 rounded-3xl sm:rounded-3xl shadow-premium">
+        <div className="bg-surface border border-border-default p-4 sm:p-5 rounded-3xl shadow-premium">
           <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8 flex items-center gap-3 tracking-tight">
             <Film size={20} className="text-primary" />
             Phân bố thể loại

@@ -3,7 +3,8 @@ import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '../components/providers/AuthProvider';
 import Loading from '../components/ui/Loading';
 import SkeletonCard from '../components/ui/SkeletonCard';
-import SearchHeader from '../components/search/SearchHeader';
+import PageHeader from '../components/ui/PageHeader';
+import { Search } from 'lucide-react';
 import SearchFilters from '../components/search/SearchFilters';
 import SearchResults from '../components/search/SearchResults';
 
@@ -29,10 +30,10 @@ const SearchPage: React.FC = () => {
 
   if (initialLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
-        <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
-        <div className="h-14 bg-surface rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <div className="h-8 w-40 bg-surface rounded-xl animate-pulse" />
+        <div className="h-12 bg-surface rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {Array.from({ length: 10 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -43,9 +44,11 @@ const SearchPage: React.FC = () => {
 
   return (
     <div className="text-text-main transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
-        <SearchHeader 
-          hasDiscoverMovies={discoverMovies.length > 0}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader 
+          icon={Search}
+          title={discoverMovies.length > 0 ? "Khám phá điện ảnh" : "Tìm kiếm phim"}
+          description="Tìm kiếm phim, diễn viên và khám phá các gợi ý mới nhất từ TMDB."
         />
 
         <SearchFilters 

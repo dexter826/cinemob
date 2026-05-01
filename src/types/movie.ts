@@ -14,7 +14,7 @@ export interface Movie {
   source: 'tmdb' | 'manual';
   media_type?: 'movie' | 'tv';
   status?: 'history' | 'watchlist';
-  rating?: number; // 1-5
+  rating?: number;
   review?: string;
   tagline?: string;
   genres?: string;

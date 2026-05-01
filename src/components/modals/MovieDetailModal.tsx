@@ -117,7 +117,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
               <div className="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent md:bg-linear-to-r md:from-transparent md:to-surface" />
             </div>
 
-            <div className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 p-5 md:p-6 overflow-y-auto custom-scrollbar">
               {loading ? (
                 <Loading fullScreen={false} size={48} />
               ) : (
@@ -141,14 +141,9 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       </div>
                     )}
                     {movie.rating && movie.rating > 0 && (
-                      <div className="flex items-center gap-1 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star 
-                            key={star} 
-                            size={12} 
-                            className={`${star <= Math.round(movie.rating || 0) ? 'text-warning fill-warning' : 'text-warning/20'}`} 
-                          />
-                        ))}
+                      <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
+                        <Star size={14} className="text-warning fill-warning" />
+                        <span className="font-bold text-warning">{movie.rating.toFixed(1)}</span>
                       </div>
                     )}
                   </div>

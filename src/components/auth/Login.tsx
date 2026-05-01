@@ -67,7 +67,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, descriptio
     style={{ animationDelay: `${600 + index * 100}ms` }}
     role="listitem"
   >
-    <div className="shrink-0 p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+    <div className="shrink-0 p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-all duration-300">
       <Icon size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />
     </div>
     <div>
@@ -113,14 +113,14 @@ const Login: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-4 py-6 sm:py-8 z-10">
+      <div className="flex-1 flex items-center justify-center px-4 py-4 sm:py-6 z-10">
         <div className="w-full max-w-md">
           {/* Logo & Branding */}
           <div className="flex flex-col items-center space-y-4 sm:space-y-5 animate-fade-in">
             {/* Logo Container với glow effect */}
             <div className="relative group">
               <div className="absolute inset-0 bg-primary/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative bg-surface p-3 sm:p-4 rounded-2xl shadow-2xl shadow-primary/10 border border-text-main/5 transform hover:scale-105 transition-transform duration-300">
+              <div className="relative bg-surface p-3 sm:p-4 rounded-2xl shadow-2xl shadow-primary/10 border border-text-main/5 transition-all duration-300">
                 <img
                   src="/logo512.png"
                   alt=""
@@ -153,7 +153,7 @@ const Login: React.FC = () => {
               {isLoading ? (
                 <Loader2 size={22} className="animate-spin" aria-hidden="true" />
               ) : (
-                <GoogleIcon className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform duration-300" />
+                <GoogleIcon className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300" />
               )}
               <span className="text-sm sm:text-base">
                 {isLoading ? 'Đang đăng nhập...' : 'Tiếp tục với Google'}

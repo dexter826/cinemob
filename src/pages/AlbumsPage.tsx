@@ -12,6 +12,7 @@ import { getTMDBImageUrl } from '../utils/movieUtils';
 import { MESSAGES } from '../constants/messages';
 import EmptyState from '../components/ui/EmptyState';
 import SkeletonCard from '../components/ui/SkeletonCard';
+import PageHeader from '../components/ui/PageHeader';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
@@ -66,9 +67,9 @@ const AlbumsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
-        <div className="h-32 bg-surface rounded-3xl animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <div className="h-24 bg-surface rounded-3xl animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
           ))}
@@ -79,22 +80,16 @@ const AlbumsPage: React.FC = () => {
 
   return (
     <div className="text-text-main transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-              <Folder className="text-primary" size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Album phim</h1>
-              <p className="text-xs sm:text-sm text-text-muted opacity-80 font-medium">Tự tạo bộ sưu tập phim cá nhân theo ý bạn.</p>
-            </div>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader 
+          icon={Folder} 
+          title="Album phim" 
+          description="Tự tạo bộ sưu tập phim cá nhân theo ý bạn."
+        />
 
         <form
           onSubmit={handleCreate}
-          className="bg-surface border border-border-default rounded-3xl sm:rounded-3xl p-4 sm:p-6 shadow-premium"
+          className="bg-surface border border-border-default rounded-3xl p-3 sm:p-4 shadow-premium"
         >
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
             <div className="flex-1 space-y-1.5 sm:space-y-2">
@@ -113,7 +108,7 @@ const AlbumsPage: React.FC = () => {
             <button
               type="submit"
               disabled={creating}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
             >
               <Plus size={16} />
               <span>{creating ? 'Đang tạo...' : 'Tạo album'}</span>
@@ -128,7 +123,7 @@ const AlbumsPage: React.FC = () => {
             description="Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó."
           />
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {albums.map(album => (
               <div
                 key={album.docId}
@@ -141,7 +136,7 @@ const AlbumsPage: React.FC = () => {
                     <img
                       src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
                       alt={albumCoverMovies[album.docId || '']!.title}
-                      className="h-full w-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                      className="h-full w-full object-cover transition-transform duration-700"
                       loading="lazy"
                     />
                   ) : (
@@ -185,7 +180,7 @@ const AlbumsPage: React.FC = () => {
                 </div>
 
                 {/* Info bar - More compact on mobile */}
-                <div className="px-3 py-3 sm:px-5 sm:py-4 flex items-center justify-between gap-1 sm:gap-2 bg-surface/50 backdrop-blur-xl border-t border-border-default">
+                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface/50 backdrop-blur-xl border-t border-border-default">
                   <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-bold text-[9px] sm:text-[10px] uppercase tracking-wider border border-primary/20 shrink-0">
                     <Film size={12} />
                     <span>{album.movieDocIds.length} mục</span>

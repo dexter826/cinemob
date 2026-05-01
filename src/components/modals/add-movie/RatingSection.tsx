@@ -29,22 +29,22 @@ const RatingSection: React.FC<RatingSectionProps> = ({
       <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-all duration-500 shadow-sm ${
         isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : ''
       }`}>
-        <div className="flex justify-between max-w-xs mx-auto">
-          {[1, 2, 3, 4, 5].map((star) => (
+        <div className="flex justify-between mx-auto">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
             <button
               key={star}
               type="button"
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
-              className="group p-2 focus:outline-none transition-transform active:scale-90"
+              className="group p-1 sm:p-2 focus:outline-none transition-all"
             >
               <Star
-                size={28}
+                size={22}
                 className={`transition-all duration-300 ${
                   star <= (hoverRating || rating)
                     ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
-                    : 'text-text-muted/30 group-hover:text-warning/50 group-hover:scale-110'
+                    : 'text-text-muted/30 group-hover:text-warning/50'
                 }`}
               />
             </button>

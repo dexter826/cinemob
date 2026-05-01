@@ -53,7 +53,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 py-10">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 py-6 sm:py-8">
         {Array.from({ length: 10 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -91,7 +91,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               <Star className="text-primary shrink-0" size={18} />
               <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {trendingMovies.map(movie => (
                 <TMDBMovieCard
                   key={movie.id}
@@ -139,7 +139,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                   </div>
                 )}
                 {aiRecommendations.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 mb-8">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 mb-8">
                     {aiRecommendations.map(movie => (
                       <TMDBMovieCard
                         key={movie.id}
@@ -157,7 +157,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 </div>
               </>
             )}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {(query || discoverMovies.length > 0) ? filteredResults.map(movie => (
                 <TMDBMovieCard
                   key={movie.id}

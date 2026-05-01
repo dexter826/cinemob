@@ -10,7 +10,7 @@ interface FilterState {
   sortBy: SortOption;
   sortOrder: SortOrder;
   searchQuery: string;
-  rating: number | null;
+  ratingRange: [number, number] | null;
   year: number | null;
   country: string;
   contentType: 'all' | 'movie' | 'tv';
@@ -21,7 +21,7 @@ const INITIAL_FILTER_STATE: FilterState = {
   sortBy: 'date',
   sortOrder: 'desc',
   searchQuery: '',
-  rating: null,
+  ratingRange: null,
   year: null,
   country: '',
   contentType: 'all',
@@ -68,7 +68,10 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       );
     }
 
-    if (filters.rating !== null) result = result.filter(m => (m.rating || 0) >= (filters.rating || 0));
+    if (filters.ratingRange !== null) {
+      const [min, max] = filters.ratingRange;
+      result = result.filter(m => (m.rating || 0) >= min && (m.rating || 0) <= max);
+    }
     
     if (filters.year !== null) {
       result = result.filter(m => normalizeMovieDate(m.watched_at)?.getFullYear() === filters.year);

@@ -81,7 +81,7 @@ const AddMovieModal: React.FC = () => {
             className="bg-surface border border-border-default rounded-3xl sm:rounded-4xl w-full max-w-5xl h-full sm:h-auto max-h-full sm:max-h-[90vh] overflow-hidden shadow-premium flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 sm:px-8 sm:py-6 border-b border-border-default bg-surface/90 backdrop-blur-xl shrink-0">
+            <div className="flex items-center justify-between px-5 py-4 sm:px-6 sm:py-5 border-b border-border-default bg-surface/90 backdrop-blur-xl shrink-0">
               <h2 className="text-xl sm:text-2xl font-bold text-text-main tracking-tight">
                 {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
               </h2>
@@ -94,7 +94,7 @@ const AddMovieModal: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8">
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6">
               {isLoadingDetails ? (
                 <div className="h-64 flex items-center justify-center">
                   <Loading fullScreen={false} text="Đang lấy thông tin phim..." />
@@ -302,18 +302,18 @@ const AddMovieModal: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 sm:px-8 sm:py-6 border-t border-border-default bg-surface/90 backdrop-blur-xl flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 shrink-0">
+            <div className="px-5 py-4 sm:px-6 sm:py-5 border-t border-border-default bg-surface/90 backdrop-blur-xl flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={closeAddModal}
-                className="order-2 sm:order-1 px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
+                className="order-2 sm:order-1 px-5 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300"
               >
                 {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="order-1 sm:order-2 bg-primary hover:shadow-premium text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
+                className="order-1 sm:order-2 bg-primary hover:shadow-premium text-white px-5 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                 {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Cập nhật' : 'Lưu phim')}

@@ -151,7 +151,7 @@ const AlbumDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-surface animate-pulse" />
           <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
@@ -183,19 +183,19 @@ const AlbumDetailPage: React.FC = () => {
 
   return (
     <div className="text-text-main transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <button
               type="button"
               onClick={() => navigate('/albums')}
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
+              className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
             >
               <ArrowLeft size={22} />
             </button>
             <div className="min-w-0">
               <div className="flex items-center gap-2 sm:gap-3 mb-1">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
                   <Film className="text-primary" size={16} />
                 </div>
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold truncate tracking-tight">{album.name}</h1>
@@ -241,7 +241,7 @@ const AlbumDetailPage: React.FC = () => {
         {editing && (
           <form
             onSubmit={handleSaveInfo}
-            className="bg-surface border border-border-default rounded-3xl sm:rounded-3xl p-5 sm:p-6 shadow-premium animate-in fade-in slide-in-from-top-2 duration-300"
+            className="bg-surface border border-border-default rounded-3xl p-4 sm:p-5 shadow-premium animate-in fade-in slide-in-from-top-2 duration-300"
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
@@ -265,7 +265,7 @@ const AlbumDetailPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-all whitespace-nowrap"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-all whitespace-nowrap"
                 >
                   {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </button>
@@ -293,7 +293,7 @@ const AlbumDetailPage: React.FC = () => {
               } : undefined}
             />
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {albumMovies.map(movie => (
                 <MovieCard
                   key={movie.docId}
@@ -343,7 +343,7 @@ const AlbumDetailPage: React.FC = () => {
               />
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
                   {paginatedMovies.map(movie => (
                     <div key={movie.docId} className="relative group">
                       <button
@@ -359,8 +359,8 @@ const AlbumDetailPage: React.FC = () => {
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-all rounded-[20px] sm:rounded-3xl flex items-center justify-center backdrop-blur-[2px] opacity-0 group-hover:opacity-100 border border-transparent group-hover:border-primary/50">
                           <PlusCircle
-                            className="text-white drop-shadow-lg transform scale-75 sm:scale-90 group-hover:scale-100 transition-transform duration-300"
-                            size={48}
+                            className="text-white drop-shadow-lg transition-all duration-300"
+                            size={44}
                           />
                         </div>
                       </button>

@@ -122,7 +122,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
             </button>
 
             {/* Header */}
-            <div className="p-8 border-b border-border-default bg-surface/50 backdrop-blur-md">
+            <div className="p-5 sm:p-6 border-b border-border-default bg-surface/50 backdrop-blur-md">
               <div className="flex items-center gap-5">
                 <div className="w-16 h-24 rounded-2xl overflow-hidden shadow-lg border border-border-default shrink-0">
                   <img
@@ -140,7 +140,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
             </div>
 
             {/* Content */}
-            <div className="p-8 max-h-[50vh] overflow-y-auto custom-scrollbar">
+            <div className="p-5 sm:p-6 max-h-[50vh] overflow-y-auto custom-scrollbar">
               {showCreateForm ? (
                 <div className="mb-8 p-6 border border-primary/20 rounded-2xl bg-primary/5 animate-in fade-in slide-in-from-top-2">
                   <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Tạo album mới</h3>
@@ -177,7 +177,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                   className="w-full p-6 mb-6 rounded-3xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 transition-all">
                       <FolderPlus size={24} className="text-primary" />
                     </div>
                     <div className="flex-1">

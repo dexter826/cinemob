@@ -34,7 +34,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
 
   return (
     <div className={viewMode === 'calendar' ? 'lg:col-span-1' : 'lg:col-span-3'}>
-      <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 md:p-8 flex flex-col h-full min-h-[400px] lg:min-h-[600px] shadow-premium transition-all duration-300">
+      <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] lg:min-h-[600px] shadow-premium transition-all duration-300">
         <div className="flex items-center justify-between mb-5 sm:mb-6">
           <h3 className="font-bold text-text-main flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl tracking-tight">
             <Bell size={24} className="text-primary" />
@@ -97,7 +97,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                       onClick={() => handleSeriesClick(ep)}
                       className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 hover:shadow-premium transition-all duration-300 cursor-pointer border border-border-default group relative items-start overflow-hidden"
                     >
-                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 group-hover:scale-105 transition-transform duration-500">
+                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-all duration-300">
                         <img
                           src={getTMDBImageUrl(ep.posterPath)}
                           alt={ep.seriesName}

@@ -39,11 +39,32 @@ export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number
   }
 };
 
+/** 
+ * Điều chỉnh ngày chiếu dựa trên quốc gia gốc.
+ * Cộng thêm 1 ngày cho phim Âu Mỹ để khớp với giờ khả dụng tại Việt Nam.
+ */
+const adjustAirDate = (airDateStr: string, originCountries: string[] = []): string => {
+  if (!airDateStr) return '';
+  const asianCountries = ['VN', 'KR', 'JP', 'CN', 'TH', 'TW', 'HK'];
+  const isAsian = originCountries.some(c => asianCountries.includes(c));
+  
+  if (isAsian) return airDateStr;
+  
+  try {
+    const date = new Date(airDateStr);
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().split('T')[0];
+  } catch (e) {
+    return airDateStr;
+  }
+};
+
 /** Lấy danh sách các tập phim sắp phát hành. */
 export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpisode[]> => {
   const details = await tmdbFetch<any>(`tv/${tvId}`);
   if (!details || details.status === 'Ended' || details.status === 'Canceled') return [];
 
+  const originCountries = details.origin_country || [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const upcomingEpisodes: TMDBEpisode[] = [];
@@ -57,7 +78,8 @@ export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpiso
 
     for (const ep of episodes) {
       if (ep.air_date) {
-        const airDate = new Date(ep.air_date);
+        const adjustedDate = adjustAirDate(ep.air_date, originCountries);
+        const airDate = new Date(adjustedDate);
         airDate.setHours(0, 0, 0, 0);
         
         const sixtyDaysFromNow = new Date(today);
@@ -68,7 +90,7 @@ export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpiso
             id: ep.id,
             name: ep.name,
             overview: ep.overview || '',
-            air_date: ep.air_date,
+            air_date: adjustedDate,
             episode_number: ep.episode_number,
             season_number: ep.season_number,
             still_path: ep.still_path,
@@ -89,11 +111,12 @@ export const getTVShowNextEpisode = async (tvId: number): Promise<TMDBEpisode | 
   
   if (data?.next_episode_to_air) {
     const ep = data.next_episode_to_air;
+    const originCountries = data.origin_country || [];
     return {
       id: ep.id,
       name: ep.name,
       overview: ep.overview || '',
-      air_date: ep.air_date,
+      air_date: adjustAirDate(ep.air_date, originCountries),
       episode_number: ep.episode_number,
       season_number: ep.season_number,
       still_path: ep.still_path,
