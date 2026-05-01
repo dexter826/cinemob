@@ -21,20 +21,10 @@ import { ThemeProvider } from './components/providers/ThemeProvider';
 import { useAppInit } from './hooks/useAppInit';
 import ToastContainer from './components/ui/ToastContainer';
 import AlertContainer from './components/ui/AlertContainer';
+import { PAGE_VARIANTS, PAGE_TRANSITION } from './constants';
 
 import useInitialLoadStore from './stores/initialLoadStore';
 
-const pageVariants = {
-  initial: { opacity: 0 },
-  in: { opacity: 1 },
-  out: { opacity: 0 }
-};
-
-const pageTransition = {
-  type: 'tween',
-  ease: 'easeInOut',
-  duration: 0.2
-} as const;
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
@@ -46,8 +36,8 @@ const AnimatedRoutes: React.FC = () => {
         initial="initial"
         animate="in"
         exit="out"
-        variants={pageVariants}
-        transition={pageTransition}
+        variants={PAGE_VARIANTS}
+        transition={PAGE_TRANSITION}
         className="w-full"
       >
         <Routes location={location}>

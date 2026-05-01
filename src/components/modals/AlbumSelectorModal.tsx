@@ -9,7 +9,7 @@ import { updateAlbum, addAlbum } from '../../services/albumService';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
 import logoText from '../../assets/images/logo_text.png';
-import { MESSAGES } from '../../constants/messages';
+import { MESSAGES, MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
 
 interface AlbumSelectorModalProps {
@@ -98,17 +98,18 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
     <AnimatePresence>
       {isOpen && movie && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          variants={OVERLAY_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
           onClick={onClose}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            variants={MODAL_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="bg-surface w-full max-w-xl rounded-4xl overflow-hidden shadow-premium border border-border-default relative"
             onClick={(e) => e.stopPropagation()}
           >
@@ -149,7 +150,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                       value={newAlbumName}
                       onChange={(e) => setNewAlbumName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
-                      className="w-full px-5 py-3.5 rounded-2xl border border-border-default bg-surface text-text-main font-bold placeholder-text-muted focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
+                      className="w-full h-11 px-5 rounded-2xl border border-border-default bg-surface text-text-main font-bold placeholder-text-muted focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
                       autoFocus
                     />
                     <div className="flex gap-3">

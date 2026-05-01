@@ -15,6 +15,7 @@ import Loading from '../ui/Loading';
 import randomAudioFile from '../../assets/audio/random.MP3';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
 import useMovieStore from '../../stores/movieStore';
+import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
@@ -231,26 +232,24 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       {isOpen && (() => {
         return (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          variants={OVERLAY_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
         >
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
             onClick={onClose} 
           />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            variants={MODAL_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-premium border border-border-default flex flex-col gap-4"
             onTouchMove={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}

@@ -17,7 +17,7 @@ import CustomTimePicker from '../ui/CustomTimePicker';
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
-import { COUNTRY_OPTIONS } from '../../constants/countries';
+import { COUNTRY_OPTIONS, MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 
 const AddMovieModal: React.FC = () => {
   const {
@@ -66,17 +66,17 @@ const AddMovieModal: React.FC = () => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          variants={OVERLAY_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            variants={MODAL_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="bg-surface border border-border-default rounded-3xl sm:rounded-4xl w-full max-w-5xl h-full sm:h-auto max-h-full sm:max-h-[90vh] overflow-hidden shadow-premium flex flex-col"
           >
             {/* Header */}

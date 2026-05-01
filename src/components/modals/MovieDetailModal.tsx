@@ -10,36 +10,8 @@ import AlbumSelectorModal from './AlbumSelectorModal';
 import useToastStore from '../../stores/toastStore';
 import { useNavigate } from 'react-router-dom';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
-import { MESSAGES } from '../../constants/messages';
+import { MESSAGES, MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 
-// Modal animation variants
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 }
-};
-
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0,
-    transition: {
-      type: 'spring',
-      damping: 25,
-      stiffness: 300
-    } as const
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.9, 
-    y: 20,
-    transition: {
-      duration: 0.2
-    } as const
-  }
-};
 
 interface MovieDetailModalProps {
   isOpen: boolean;
@@ -117,8 +89,8 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   return (
     <AnimatePresence>
       {isOpen && (
-          <motion.div
-          variants={overlayVariants}
+        <motion.div
+          variants={OVERLAY_VARIANTS}
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -126,7 +98,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
           onClick={onClose}
         >
           <motion.div
-            variants={modalVariants}
+            variants={MODAL_VARIANTS}
             initial="hidden"
             animate="visible"
             exit="exit"

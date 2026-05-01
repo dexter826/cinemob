@@ -7,6 +7,7 @@ import useToastStore from '../../stores/toastStore';
 import { Timestamp } from 'firebase/firestore';
 import CustomDropdown from '../ui/CustomDropdown';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
+import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -106,19 +107,20 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          variants={OVERLAY_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={onClose}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            variants={MODAL_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="bg-surface border border-border-default rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-premium"
             onClick={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}

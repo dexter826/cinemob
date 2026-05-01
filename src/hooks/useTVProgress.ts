@@ -48,10 +48,7 @@ export const useTVProgress = ({ movieToEdit, tmdbId, mediaType, isTVSeries, isOp
                 setIsCompleted(m.progress.is_completed || false);
             }
         } else if (!movieToEdit && isTVSeries && tmdbId) {
-            // New TV show from TMDB - already handled by details fetch in main hook, 
-            // but we could move it here if needed.
         } else if (!movieToEdit && !tmdbId) {
-            // Reset for manual mode
             setTotalEpisodes(0);
             setEpisodesPerSeason({});
             setCurrentSeason(1);
