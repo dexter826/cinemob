@@ -10,6 +10,7 @@ import useMovieDetailStore from '../stores/movieDetailStore';
 import useExportStore from '../stores/exportStore';
 import { useDashboardFilters, ActiveTab } from './useDashboardFilters';
 import { useDashboardStats } from './useDashboardStats';
+import { MESSAGES } from '../constants/messages';
 
 /** Hook điều phối chính cho Dashboard. */
 export const useDashboard = (user: any) => {
@@ -42,9 +43,9 @@ export const useDashboard = (user: any) => {
       onConfirm: async () => {
         try {
           await deleteMovie(docId);
-          showToast("Đã xóa phim", "success");
+          showToast(MESSAGES.MOVIE.DELETE_SUCCESS, "success");
         } catch (e) {
-          showToast("Xóa phim thất bại", "error");
+          showToast(MESSAGES.MOVIE.DELETE_ERROR, "error");
         }
       }
     });

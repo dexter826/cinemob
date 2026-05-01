@@ -10,6 +10,7 @@ import AlbumSelectorModal from './AlbumSelectorModal';
 import useToastStore from '../../stores/toastStore';
 import { useNavigate } from 'react-router-dom';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
+import { MESSAGES } from '../../constants/messages';
 
 // Modal animation variants
 const overlayVariants = {
@@ -70,6 +71,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
         } catch (error) {
           setVideos([]);
           setCredits(null);
+          showToast(MESSAGES.COMMON.LOAD_ERROR, "error");
         } finally {
           setLoading(false);
         }
@@ -95,7 +97,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
   const handleAddToAlbum = () => {
     if (!canAddToAlbum) {
-      showToast('Chỉ có thể thêm phim đã xem vào album', 'error');
+      showToast(MESSAGES.ALBUM.ONLY_WATCHED, 'error');
       return;
     }
     setShowAlbumSelector(true);

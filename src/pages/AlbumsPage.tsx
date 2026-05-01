@@ -9,6 +9,7 @@ import useAlertStore from '../stores/alertStore';
 import { useNavigate } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
 import { getTMDBImageUrl } from '../utils/movieUtils';
+import { MESSAGES } from '../constants/messages';
 
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
@@ -24,7 +25,7 @@ const AlbumsPage: React.FC = () => {
     e.preventDefault();
     if (!user) return;
     if (!name.trim()) {
-      showToast('Tên album không được để trống', 'error');
+      showToast(MESSAGES.ALBUM.NAME_REQUIRED, 'error');
       return;
     }
     try {
@@ -35,9 +36,9 @@ const AlbumsPage: React.FC = () => {
         movieDocIds: [],
       });
       setName('');
-      showToast('Đã tạo album mới', 'success');
+      showToast(MESSAGES.ALBUM.CREATE_SUCCESS(name), 'success');
     } catch (error) {
-      showToast('Tạo album thất bại', 'error');
+      showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
       setCreating(false);
     }
@@ -53,9 +54,9 @@ const AlbumsPage: React.FC = () => {
       onConfirm: async () => {
         try {
           await deleteAlbum(album.docId!);
-          showToast('Đã xóa album', 'success');
+          showToast(MESSAGES.ALBUM.DELETE_SUCCESS, 'success');
         } catch (error) {
-          showToast('Xóa album thất bại', 'error');
+          showToast(MESSAGES.ALBUM.DELETE_ERROR, 'error');
         }
       },
     });

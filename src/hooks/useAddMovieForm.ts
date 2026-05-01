@@ -7,17 +7,19 @@ import { getMovieDetails, getMovieDetailsWithLanguage, getTVShowEpisodeInfo } fr
 import { addMovie, updateMovie, checkMovieExists } from '../services/movieService';
 import { Movie } from '../types';
 import { normalizeMovieDate } from '../utils/movieUtils';
-
+import { MESSAGES } from '../constants/messages';
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from './useAlbumSync';
+import { GENRE_OPTIONS } from '../constants/genres';
 
-/** Điều phối form thêm phim. */
+/** Quản lý logic form thêm/sửa phim và series. */
 export const useAddMovieForm = () => {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { isOpen, initialData, closeAddModal } = useAddMovieStore();
   const { showAlert } = useAlertStore();
 
+  // Form states
   const [formData, setFormData] = useState({
     title: '', title_vi: '', runtime: '', seasons: '', poster: '',
     date: new Date().toISOString().split('T')[0],
@@ -31,6 +33,7 @@ export const useAddMovieForm = () => {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [movieExists, setMovieExists] = useState(false);
   
+  // Validation states
   const [ratingError, setRatingError] = useState(false);
   const [errors, setErrors] = useState({ title: false, country: false, releaseDate: false, runtime: false, seasons: false });
   const [hoverRating, setHoverRating] = useState(0);
@@ -49,7 +52,6 @@ export const useAddMovieForm = () => {
   const isManualMode = !initialData?.tmdbId && !initialData?.movie && (!initialData?.movieToEdit || initialData?.movieToEdit?.source === 'manual');
   const isTVSeries = (isManualMode ? manualMediaType === 'tv' : (initialData?.mediaType === 'tv' || initialData?.movie?.media_type === 'tv' || initialData?.movieToEdit?.media_type === 'tv'));
 
-  // Sub-hooks
   const tvProgress = useTVProgress({ 
     movieToEdit: initialData?.movieToEdit, 
     tmdbId: initialData?.tmdbId || initialData?.movie?.id,
@@ -60,17 +62,7 @@ export const useAddMovieForm = () => {
 
   const albumSync = useAlbumSync({ user, movieToEdit: initialData?.movieToEdit, isOpen, showToast });
 
-  const genreOptions = [
-    { id: 28, name: 'Action' }, { id: 12, name: 'Adventure' }, { id: 16, name: 'Animation' },
-    { id: 35, name: 'Comedy' }, { id: 80, name: 'Crime' }, { id: 99, name: 'Documentary' },
-    { id: 18, name: 'Drama' }, { id: 10751, name: 'Family' }, { id: 14, name: 'Fantasy' },
-    { id: 36, name: 'History' }, { id: 27, name: 'Horror' }, { id: 10402, name: 'Music' },
-    { id: 9648, name: 'Mystery' }, { id: 10749, name: 'Romance' }, { id: 878, name: 'Science Fiction' },
-    { id: 10770, name: 'TV Movie' }, { id: 53, name: 'Thriller' }, { id: 10752, name: 'War' },
-    { id: 37, name: 'Western' }, { id: 10759, name: 'Action & Adventure' }, { id: 10762, name: 'Kids' },
-    { id: 10763, name: 'News' }, { id: 10764, name: 'Reality' }, { id: 10765, name: 'Sci-Fi & Fantasy' },
-    { id: 10766, name: 'Soap' }, { id: 10767, name: 'Talk' }, { id: 10768, name: 'War & Politics' }
-  ];
+  const genreOptions = GENRE_OPTIONS;
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
 
   useEffect(() => {
@@ -107,40 +99,47 @@ export const useAddMovieForm = () => {
         setIsLoadingDetails(true);
         try {
           if (user && id) setMovieExists(await checkMovieExists(user.uid, id));
-          if (id) {
-            const details = await getMovieDetails(Number(id), type);
-            if (details) {
-              const originalTitle = details.title || details.name || '';
-              let viTitle = '', viOverview = '';
-              try {
-                const vi = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
-                if (vi && /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(vi.title || vi.name || '')) {
-                  viTitle = vi.title || vi.name || '';
-                  viOverview = vi.overview || '';
-                }
-              } catch (e) {}
+          if (!id) return;
+          
+          const details = await getMovieDetails(Number(id), type);
+          if (!details) return;
 
-              const runtime = details.runtime || (details.episode_run_time?.[0]) || 0;
-              const seasons = details.number_of_seasons || 0;
-              
-              if (type === 'tv' && seasons > 0) {
-                const info = await getTVShowEpisodeInfo(Number(id), seasons);
-                tvProgress.setTotalEpisodes(info.total_episodes);
-                tvProgress.setEpisodesPerSeason(info.episodes_per_season);
-                tvProgress.setIsCompleted(true);
-              }
-
-              const now = new Date();
-              setFormData(prev => ({
-                ...prev, title: originalTitle, title_vi: viTitle, runtime: runtime.toString(), seasons: seasons ? seasons.toString() : '', poster: details.poster_path || '',
-                date: now.toISOString().split('T')[0], time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
-                tagline: details.tagline || '', genres: details.genres?.map(g => g.name).join(', ') || '', releaseDate: details.release_date || details.first_air_date || '',
-                country: details.production_countries?.map(c => c.name).join(', ') || '', content: viOverview || details.overview || ''
-              }));
-              setSelectedGenreIds(details.genres?.map(g => g.id) || []);
+          const originalTitle = details.title || details.name || '';
+          let viTitle = '', viOverview = '';
+          
+          try {
+            const vi = await getMovieDetailsWithLanguage(Number(id), type, 'vi-VN');
+            const hasVietnamese = /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i;
+            if (vi && hasVietnamese.test(vi.title || vi.name || '')) {
+              viTitle = vi.title || vi.name || '';
+              viOverview = vi.overview || '';
             }
+          } catch (e) { /* Bỏ qua lỗi ngôn ngữ */ }
+
+          const runtime = details.runtime || (details.episode_run_time?.[0]) || 0;
+          const seasons = details.number_of_seasons || 0;
+          
+          if (type === 'tv' && seasons > 0) {
+            const info = await getTVShowEpisodeInfo(Number(id), seasons);
+            tvProgress.setTotalEpisodes(info.total_episodes);
+            tvProgress.setEpisodesPerSeason(info.episodes_per_season);
+            tvProgress.setIsCompleted(true);
           }
-        } catch (error) { showToast("Không thể tải thông tin", "error"); } finally { setIsLoadingDetails(false); }
+
+          const now = new Date();
+          setFormData(prev => ({
+            ...prev, 
+            title: originalTitle, title_vi: viTitle, runtime: runtime.toString(), seasons: seasons ? seasons.toString() : '', poster: details.poster_path || '',
+            date: now.toISOString().split('T')[0], time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+            tagline: details.tagline || '', genres: details.genres?.map(g => g.name).join(', ') || '', releaseDate: details.release_date || details.first_air_date || '',
+            country: details.production_countries?.map(c => c.name).join(', ') || '', content: viOverview || details.overview || ''
+          }));
+          setSelectedGenreIds(details.genres?.map(g => g.id) || []);
+        } catch (error) { 
+          showToast(MESSAGES.COMMON.LOAD_ERROR, "error"); 
+        } finally { 
+          setIsLoadingDetails(false); 
+        }
       };
       fetchDetails();
     } else {
@@ -150,6 +149,7 @@ export const useAddMovieForm = () => {
     }
   }, [isOpen, initialData, user]);
 
+  // Cuộn đến vùng bị lỗi khi submit
   useEffect(() => {
     if (errorTrigger > 0) {
       const errorKey = Object.keys(errors).find(k => (errors as any)[k]) || (ratingError ? 'rating' : null);
@@ -163,6 +163,8 @@ export const useAddMovieForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Validate thủ công
     if (isManualMode) {
       const newErrors = { 
         title: !formData.title.trim(), 
@@ -171,44 +173,79 @@ export const useAddMovieForm = () => {
         seasons: isTVSeries && (!formData.seasons || parseInt(formData.seasons) <= 0),
         runtime: !isTVSeries && (!formData.runtime || parseInt(formData.runtime) <= 0)
       };
-      if (Object.values(newErrors).some(v => v)) { setErrors(newErrors); setErrorTrigger(p => p + 1); showToast("Vui lòng nhập đủ thông tin", "error"); return; }
+      if (Object.values(newErrors).some(v => v)) { 
+        setErrors(newErrors); 
+        setErrorTrigger(p => p + 1); 
+        showToast(MESSAGES.COMMON.REQUIRED_FIELDS, "error"); 
+        return; 
+      }
     }
-    if (status === 'history' && formData.rating === 0) { setRatingError(true); setErrorTrigger(p => p + 1); showToast("Vui lòng đánh giá", "error"); return; }
+    
+    if (status === 'history' && formData.rating === 0) { 
+      setRatingError(true); 
+      setErrorTrigger(p => p + 1); 
+      showToast(MESSAGES.MOVIE.REQUIRED_RATING, "error"); 
+      return; 
+    }
 
     setIsSubmitting(true);
     try {
       const [y, m, d] = formData.date.split('-').map(Number);
       const [h, min] = formData.time.split(':').map(Number);
-      const movieData: any = {
-        title: formData.title, title_vi: formData.title_vi, poster_path: formData.poster, runtime: parseInt(formData.runtime) || 0, seasons: parseInt(formData.seasons) || 0,
+      
+      const movieData: Partial<Movie> = {
+        title: formData.title,
+        title_vi: formData.title_vi,
+        poster_path: formData.poster,
+        runtime: parseInt(formData.runtime) || 0,
+        seasons: parseInt(formData.seasons) || 0,
         watched_at: status === 'history' ? new Date(y, m - 1, d, h, min, 0) : new Date(),
-        status, rating: Number(formData.rating), review: formData.review, tagline: formData.tagline, genres: formData.genres, release_date: formData.releaseDate, country: formData.country, content: formData.content
+        status,
+        rating: Number(formData.rating),
+        review: formData.review,
+        tagline: formData.tagline,
+        genres: formData.genres,
+        release_date: formData.releaseDate,
+        country: formData.country,
+        content: formData.content
       };
 
       if (isTVSeries) {
         movieData.total_episodes = tvProgress.totalEpisodes;
         movieData.progress = {
-          current_season: tvProgress.currentSeason, current_episode: tvProgress.currentEpisode,
+          current_season: tvProgress.currentSeason,
+          current_episode: tvProgress.currentEpisode,
           watched_episodes: tvProgress.calculateWatchedEpisodes(tvProgress.currentSeason, tvProgress.currentEpisode, tvProgress.isCompleted),
           is_completed: tvProgress.isCompleted
         };
       }
 
       let movieDocId = initialData?.movieToEdit?.docId;
-      if (movieDocId) await updateMovie(movieDocId, movieData);
-      else {
-        movieData.uid = user.uid; movieData.id = initialData?.tmdbId || initialData?.movie?.id || Date.now();
-        movieData.source = (initialData?.tmdbId || initialData?.movie) ? 'tmdb' : 'manual';
-        movieData.media_type = isManualMode ? manualMediaType : (initialData?.mediaType || 'movie');
-        movieDocId = await addMovie(movieData);
+      if (movieDocId) {
+        await updateMovie(movieDocId, movieData);
+      } else {
+        const docData = {
+          ...movieData,
+          uid: user.uid,
+          id: initialData?.tmdbId || initialData?.movie?.id || Date.now(),
+          source: (initialData?.tmdbId || initialData?.movie) ? 'tmdb' : 'manual' as const,
+          media_type: isManualMode ? manualMediaType : (initialData?.mediaType || 'movie' as const),
+        };
+        movieDocId = await addMovie(docData as Movie);
       }
 
-      if (status === 'history' && movieDocId) await albumSync.syncAlbums(movieDocId);
+      if (status === 'history' && movieDocId) {
+        await albumSync.syncAlbums(movieDocId);
+      }
 
-      showToast(initialData?.movieToEdit ? "Đã cập nhật" : "Đã thêm mới", "success");
-      if (initialData?.onMovieAdded) initialData.onMovieAdded(movieData.id);
+      showToast(initialData?.movieToEdit ? MESSAGES.MOVIE.UPDATE_SUCCESS : MESSAGES.MOVIE.ADD_SUCCESS, "success");
+      if (initialData?.onMovieAdded) initialData.onMovieAdded(initialData?.tmdbId || initialData?.movie?.id || Date.now());
       closeAddModal();
-    } catch (error) { showToast("Có lỗi xảy ra", "error"); } finally { setIsSubmitting(false); }
+    } catch (error) { 
+      showToast(MESSAGES.MOVIE.SAVE_ERROR, "error"); 
+    } finally { 
+      setIsSubmitting(false); 
+    }
   };
 
   const isDirty = useMemo(() => {
@@ -247,9 +284,8 @@ export const useAddMovieForm = () => {
 
   return {
     isOpen, initialData, closeAddModal, formData, setFormData, status, setStatus, manualMediaType, setManualMediaType,
-    isDirty,
-    isSubmitting, isLoadingDetails: isLoadingDetails || tvProgress.isLoading, movieExists, ratingError, setRatingError,
-    hoverRating, setHoverRating, isAnimating,
+    isDirty, isSubmitting, movieExists, ratingError, setRatingError, hoverRating, setHoverRating, isAnimating,
+    isLoadingDetails: isLoadingDetails || tvProgress.isLoading,
     currentSeason: tvProgress.currentSeason, setCurrentSeason: tvProgress.setCurrentSeason,
     currentEpisode: tvProgress.currentEpisode, setCurrentEpisode: tvProgress.setCurrentEpisode,
     isCompleted: tvProgress.isCompleted, setIsCompleted: tvProgress.setIsCompleted,

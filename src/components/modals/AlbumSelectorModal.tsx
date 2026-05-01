@@ -9,6 +9,7 @@ import { updateAlbum, addAlbum } from '../../services/albumService';
 import { getDisplayTitle } from '../../utils/movieUtils';
 import Loading from '../ui/Loading';
 import logoText from '../../assets/images/logo_text.png';
+import { MESSAGES } from '../../constants/messages';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
 
 interface AlbumSelectorModalProps {
@@ -47,13 +48,13 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
 
     // Check if movie is already in this album
     if (album.movieDocIds.includes(movie.docId)) {
-      showToast('Phim đã có trong album này', 'info');
+      showToast(MESSAGES.ALBUM.ALREADY_IN, 'info');
       return;
     }
 
     // Check if movie is watched (can only add watched movies to albums)
     if ((movie.status || 'history') !== 'history') {
-      showToast('Chỉ có thể thêm phim đã xem vào album', 'error');
+      showToast(MESSAGES.ALBUM.ONLY_WATCHED, 'error');
       return;
     }
 
@@ -61,9 +62,9 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
       setAddingToAlbum(album.docId);
       const newIds = Array.from(new Set([...(album.movieDocIds || []), movie.docId]));
       await updateAlbum(album.docId, { movieDocIds: newIds });
-      showToast('Đã thêm phim vào album thành công', 'success');
+      showToast(MESSAGES.ALBUM.ADD_MOVIE_SUCCESS, 'success');
     } catch (error) {
-      showToast('Thêm phim vào album thất bại', 'error');
+      showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
     } finally {
       setAddingToAlbum(null);
     }
@@ -79,11 +80,11 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
         name: newAlbumName.trim(),
         movieDocIds: [],
       });
-      showToast(`Đã tạo album "${newAlbumName}"`, 'success');
+      showToast(MESSAGES.ALBUM.CREATE_SUCCESS(newAlbumName), 'success');
       setNewAlbumName('');
       setShowCreateForm(false);
     } catch (error) {
-      showToast('Tạo album thất bại', 'error');
+      showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
       setCreatingAlbum(false);
     }

@@ -3,6 +3,7 @@ import { User } from 'firebase/auth';
 import { addAlbum, updateAlbum } from '../services/albumService';
 import useAlbumStore from '../stores/albumStore';
 import { Movie } from '../types';
+import { MESSAGES } from '../constants/messages';
 
 interface AlbumSyncProps {
     user: User | null;
@@ -48,12 +49,12 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
                 name: newAlbumName.trim(),
                 movieDocIds: [],
             });
-            showToast(`Đã tạo album "${newAlbumName}"`, 'success');
+            showToast(MESSAGES.ALBUM.CREATE_SUCCESS(newAlbumName), 'success');
             setSelectedAlbumIds(prev => [...prev, newAlbumId]);
             setNewAlbumName('');
             setShowCreateAlbum(false);
         } catch (error) {
-            showToast('Tạo album thất bại', 'error');
+            showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
         } finally {
             setCreatingAlbum(false);
         }

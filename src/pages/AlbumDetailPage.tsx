@@ -13,6 +13,7 @@ import { Timestamp } from 'firebase/firestore';
 import useMovieStore from '../stores/movieStore';
 import { formatMovieDate } from '../utils/movieUtils';
 import useMovieDetailStore from '../stores/movieDetailStore';
+import { MESSAGES } from '../constants/messages';
 
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -95,7 +96,7 @@ const AlbumDetailPage: React.FC = () => {
     e.preventDefault();
     if (!album || !album.docId) return;
     if (!name.trim()) {
-      showToast('Tên album không được để trống', 'error');
+      showToast(MESSAGES.ALBUM.NAME_REQUIRED, 'error');
       return;
     }
     try {
@@ -103,10 +104,10 @@ const AlbumDetailPage: React.FC = () => {
       await updateAlbum(album.docId, {
         name: name.trim(),
       });
-      showToast('Đã cập nhật album', 'success');
+      showToast(MESSAGES.ALBUM.UPDATE_SUCCESS, 'success');
       setEditing(false);
     } catch (error) {
-      showToast('Cập nhật album thất bại', 'error');
+      showToast(MESSAGES.ALBUM.UPDATE_ERROR, 'error');
     } finally {
       setSaving(false);
     }
@@ -115,15 +116,15 @@ const AlbumDetailPage: React.FC = () => {
   const handleAddMovie = async (movie: Movie) => {
     if (!album || !album.docId || !movie.docId) return;
     if ((movie.status || 'history') !== 'history') {
-      showToast('Chỉ có thể thêm phim đã xem vào album', 'error');
+      showToast(MESSAGES.ALBUM.ONLY_WATCHED, 'error');
       return;
     }
     try {
       const newIds = Array.from(new Set([...(album.movieDocIds || []), movie.docId]));
       await updateAlbum(album.docId, { movieDocIds: newIds });
-      showToast('Đã thêm phim vào album', 'success');
+      showToast(MESSAGES.ALBUM.ADD_MOVIE_SUCCESS, 'success');
     } catch (error) {
-      showToast('Thêm phim vào album thất bại', 'error');
+      showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
     }
   };
 
@@ -138,9 +139,9 @@ const AlbumDetailPage: React.FC = () => {
         try {
           const newIds = (album.movieDocIds || []).filter(id => id !== movie.docId);
           await updateAlbum(album.docId!, { movieDocIds: newIds });
-          showToast('Đã gỡ phim khỏi album', 'info');
+          showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS, 'info');
         } catch (error) {
-          showToast('Gỡ phim khỏi album thất bại', 'error');
+          showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
         }
       },
     });
