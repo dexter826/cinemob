@@ -16,7 +16,7 @@ const MobileBottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-2xl border-t border-border-default pb-safe z-40">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-3xl border-t border-border-default pb-safe z-40">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -28,19 +28,19 @@ const MobileBottomNav: React.FC = () => {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors"
+              className="relative flex flex-col items-center justify-center w-full h-full transition-all duration-300 active:scale-95"
             >
-              <div className={`relative p-1 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
-                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+              <div className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
+                <Icon size={24} strokeWidth={isActive ? 2.2 : 2} />
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute -inset-1 bg-primary/10 rounded-xl -z-10"
+                    className="absolute inset-0 bg-primary/10 rounded-2xl -z-10 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
                 )}
               </div>
-              <span className={`text-[10px] font-medium transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
+              <span className={`text-[10px] font-semibold transition-colors mt-1 ${isActive ? 'text-primary' : 'text-text-muted'}`}>
                 {item.label}
               </span>
             </button>

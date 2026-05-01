@@ -5,6 +5,7 @@ import useInitialLoadStore from '../../stores/initialLoadStore';
 interface LoadingProps {
   size?: number;
   fullScreen?: boolean;
+  contain?: boolean;
   text?: string;
   className?: string;
 }
@@ -13,19 +14,20 @@ interface LoadingProps {
 const Loading: React.FC<LoadingProps> = ({ 
   size = 48, 
   fullScreen = true, 
+  contain = false,
   text,
   className = ''
 }) => {
   const { setPageLoading } = useInitialLoadStore();
 
   useEffect(() => {
-    if (fullScreen) {
+    if (fullScreen || contain) {
       setPageLoading(true);
       return () => {
         setPageLoading(false);
       };
     }
-  }, [fullScreen, setPageLoading]);
+  }, [fullScreen, contain, setPageLoading]);
 
   const Spinner = () => (
     <div className="relative" style={{ width: size, height: size }}>
@@ -75,6 +77,14 @@ const Loading: React.FC<LoadingProps> = ({
   if (fullScreen) {
     return (
       <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-100">
+        {content}
+      </div>
+    );
+  }
+
+  if (contain) {
+    return (
+      <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-30">
         {content}
       </div>
     );

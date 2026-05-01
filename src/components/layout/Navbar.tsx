@@ -31,9 +31,9 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="border-b border-border-default bg-surface/50 backdrop-blur-xl sticky top-0 z-40 transition-colors duration-300">
+      <nav className="border-b border-border-default bg-surface/70 backdrop-blur-3xl sticky top-0 z-40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
+          {/* Brand Logo */}
           <div
             className="flex items-center cursor-pointer"
             onClick={() => navigate('/')}
@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
             <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Navigation Desktop */}
           <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
             <button
               onClick={() => navigate('/search')}
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
             </button>
           </div>
 
-          {/* Right Actions (Desktop & Mobile) */}
+          {/* Action Buttons */}
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsRandomOpen(true)}

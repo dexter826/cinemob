@@ -80,7 +80,7 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
 
   return (
     <Layout appReady={appReady}>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Loading fullScreen={false} contain={true} />}>
         <AnimatedRoutes />
         <AddMovieModal />
         <MovieDetailModal

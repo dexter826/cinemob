@@ -24,13 +24,13 @@ const StatsPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  // Chuẩn bị options cho CustomDropdown.
+  // Danh sách năm cho dropdown.
   const yearOptions = useMemo(() => 
     availableYears.map(year => ({ value: year, label: year })), 
     [availableYears]
   );
 
-  // Khởi tạo năm được chọn mặc định là năm mới nhất.
+  // Mặc định chọn năm gần nhất.
   useEffect(() => {
     if (availableYears.length > 0 && !selectedYear) {
       setSelectedYear(availableYears[0]);
@@ -44,7 +44,7 @@ const StatsPage: React.FC = () => {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  // Lấy dữ liệu tháng cho năm được chọn.
+  // Thống kê theo tháng cho năm đã chọn.
   const monthlyData = useMemo(() => {
     return selectedYear ? getMonthlyDataForYear(selectedYear) : [];
   }, [selectedYear, getMonthlyDataForYear]);
@@ -94,7 +94,7 @@ const StatsPage: React.FC = () => {
           />
         ) : (
           <>
-            {/* Thẻ thống kê tổng quát */}
+            {/* Thống kê tổng quát */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <StatsCard
                 label="Tổng nội dung"
@@ -112,7 +112,7 @@ const StatsPage: React.FC = () => {
               />
             </div>
 
-            {/* Biểu đồ hoạt động - Dòng thời gian */}
+            {/* Biểu đồ hoạt động */}
             <div className="bg-surface border border-border-default p-4 sm:p-6 rounded-3xl shadow-premium">
               <div className="flex items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-3">

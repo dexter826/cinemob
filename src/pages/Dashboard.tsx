@@ -16,7 +16,7 @@ import DashboardActions from '../components/dashboard/DashboardActions';
 import DashboardTabs from '../components/dashboard/DashboardTabs';
 import DashboardFilters from '../components/dashboard/DashboardFilters';
 
-/** Trang Dashboard trung tâm quản lý bộ sưu tập phim. */
+/** Quản lý bộ sưu tập phim. */
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
     movies
   } = useDashboard(user);
 
-  /** Lấy danh sách năm có trong dữ liệu phim để hiển thị trong bộ lọc. */
+  /** Danh sách năm cho bộ lọc. */
   const availableYears = useMemo(() => {
     return Array.from(new Set(movies.map(m => {
       const d = normalizeMovieDate(m.watched_at);
@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
       }));
   }, [movies]);
 
-  /** Lấy danh sách quốc gia có trong dữ liệu phim. */
+  /** Danh sách quốc gia cho bộ lọc. */
   const availableCountries = useMemo(() => {
     return Array.from(new Set(
       movies

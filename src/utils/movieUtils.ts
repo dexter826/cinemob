@@ -3,14 +3,14 @@ import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../constants';
 import { translateCountries } from '../constants/countries';
 import { GENRE_TRANSLATIONS } from '../constants/genres';
 
-// Lấy tiêu đề chính ưu tiên Tiếng Việt.
+// Ưu tiên tiêu đề Tiếng Việt.
 export const getMainTitle = (movie: Movie): string => {
   const country = movie.country || '';
   const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
   return isVN && movie.title_vi ? movie.title_vi : (movie.title_vi || movie.title);
 };
 
-// Lấy tiêu đề phụ (tên gốc).
+// Lấy tên gốc của phim.
 export const getSubTitle = (movie: Movie): string => {
   const country = movie.country || '';
   const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
@@ -27,7 +27,7 @@ export const getSubTitle = (movie: Movie): string => {
   return '';
 };
 
-// Lấy tiêu đề hiển thị kết hợp.
+// Tiêu đề kết hợp (Chính + Phụ).
 export const getDisplayTitle = (movie: Movie): string => {
   const main = getMainTitle(movie);
   const sub = getSubTitle(movie);
@@ -56,7 +56,7 @@ export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
   return main || sub;
 };
 
-// Chuyển đổi định dạng ngày tháng về Date object.
+// Chuẩn hóa sang đối tượng Date.
 export const normalizeMovieDate = (date: any): Date | null => {
   if (!date) return null;
   if (typeof date.toDate === 'function') return date.toDate();
@@ -65,7 +65,7 @@ export const normalizeMovieDate = (date: any): Date | null => {
   return isNaN(d.getTime()) ? null : d;
 };
 
-// Định dạng ngày chuẩn Việt Nam.
+// Định dạng dd/mm/yyyy.
 export const formatMovieDate = (date: any): string => {
   const normalized = normalizeMovieDate(date);
   if (!normalized) return 'N/A';
