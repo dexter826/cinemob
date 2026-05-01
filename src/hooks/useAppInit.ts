@@ -113,8 +113,7 @@ export const useAppInit = () => {
 
     initRecs(user.uid);
     setHistoryMovies(allMovies);
-    refreshRecommendations(user.uid);
-  }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs, refreshRecommendations]);
+  }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs]);
 
   useEffect(() => {
     setCalendarMovies(allMovies);

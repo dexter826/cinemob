@@ -26,6 +26,7 @@ interface SearchResultsProps {
   getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
   refreshRecommendations: (userId: string, force?: boolean) => void;
+  removeRecommendation: (userId: string, movieTitle: string) => Promise<void>;
   userId: string;
 }
 
@@ -46,6 +47,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   getMovieStatus,
   handleSelectMovie,
   refreshRecommendations,
+  removeRecommendation,
   userId
 }) => {
 
@@ -146,6 +148,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                         movie={movie}
                         onClick={handleSelectMovie}
                         status={getMovieStatus(movie.id)}
+                        onRemove={(m) => removeRecommendation(userId, m.title)}
                       />
                     ))}
                   </div>

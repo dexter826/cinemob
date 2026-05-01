@@ -10,6 +10,7 @@ interface SearchFilters {
   query: string;
   type: 'all' | 'movie' | 'tv';
   year: string;
+  country: string;
   sortBy: string;
 }
 
@@ -17,6 +18,7 @@ const INITIAL_FILTERS: SearchFilters = {
   query: '',
   type: 'all',
   year: '',
+  country: '',
   sortBy: 'popularity.desc',
 };
 
@@ -27,11 +29,17 @@ export const useSearch = (user: any) => {
     aiRecommendations, 
     trendingMovies, 
     isAiLoading, 
-    refreshRecommendations, 
-    historyMovies 
+    refreshRecommendations,
+    removeRecommendation,
+    historyMovies
   } = useRecommendationsStore();
 
   const { movies: savedMovies } = useMovieStore();
+
+  const filteredAiRecommendations = useMemo(() => {
+    const savedIds = new Set(savedMovies.map(m => m.id.toString()));
+    return aiRecommendations.filter(m => !savedIds.has(m.id.toString()));
+  }, [aiRecommendations, savedMovies]);
 
   const [filters, setFilters] = useState<SearchFilters>(INITIAL_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,10 +109,11 @@ export const useSearch = (user: any) => {
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage,
     discoverMovies,
-    aiRecommendations, 
+    aiRecommendations: filteredAiRecommendations, 
     trendingMovies, 
     isAiLoading, 
     refreshRecommendations,
+    removeRecommendation,
     suggestAnimation,
     filteredResults,
     handleSelectMovie, 

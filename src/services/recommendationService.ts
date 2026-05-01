@@ -51,7 +51,11 @@ export const fetchAIRecommendations = async (
 
   const tasks = aiRecs.slice(0, 22).map((rec) => async () => {
     try {
-      const searchRes = await searchMovies(rec.title);
+      const yearMatch = rec.title.match(/\((\d{4})\)$/);
+      const title = yearMatch ? rec.title.replace(/\s*\(\d{4}\)$/, '') : rec.title;
+      const year = yearMatch ? yearMatch[1] : undefined;
+      
+      const searchRes = await searchMovies(title, 1, year);
       return searchRes.results.length > 0 ? searchRes.results[0] : null;
     } catch (error) {
       console.error(`Failed to search for recommended movie: ${rec.title}`, error);
@@ -60,7 +64,12 @@ export const fetchAIRecommendations = async (
   });
 
   const tmdbResultsRaw = await withLimit(tasks, 5);
-  const tmdbResults = tmdbResultsRaw.filter(m => m !== null) as TMDBMovieResult[];
+  
+  const savedMovieIds = new Set(historyMovies.map(m => m.id.toString()));
+  const tmdbResults = tmdbResultsRaw.filter(m => 
+    m !== null && !savedMovieIds.has(m.id.toString())
+  ) as TMDBMovieResult[];
+  
   const displayResults = tmdbResults.slice(0, 20);
 
   localStorage.setItem(cacheKey, JSON.stringify({

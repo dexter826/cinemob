@@ -67,36 +67,36 @@ export const getAIRecommendations = async (history: Movie[], allMovies: Movie[],
 };
 
 const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[]): Promise<AIRecommendation[]> => {
-    const filteredMovies = history.filter(m => (m.rating || 0) >= 6);
+    const filteredMovies = history.filter(m => (m.rating || 0) >= 4);
     const selectedMovies = filteredMovies
-        .sort(() => 0.5 - Math.random())
-        .slice(0, Math.min(150, filteredMovies.length)); 
+        .sort((a, b) => {
+            const timeA = a.watched_at instanceof Date ? a.watched_at.getTime() : (a.watched_at as any)?.toMillis?.() || 0;
+            const timeB = b.watched_at instanceof Date ? b.watched_at.getTime() : (b.watched_at as any)?.toMillis?.() || 0;
+            return timeB - timeA;
+        })
+        .slice(0, 50); 
 
     const watchedList = selectedMovies
         .map(m => `- ${m.title} (${m.rating ? m.rating + '/10 stars' : 'Liked'})`)
         .join('\n');
 
-    const existingTitles = allMovies.map(m => m.title).join(', ');
-    const previouslyRecommendedTitles = excludePreviouslyRecommended.join(', ');
+    const existingTitles = allMovies.slice(0, 100).map(m => m.title).join(', ');
+    const previouslyRecommendedTitles = excludePreviouslyRecommended.slice(-100).join(', ');
 
     const prompt = `
-    You are an expert Film Curator with deep knowledge of the TMDB database, cinematography, and storytelling structures.
-    
-    TASK:
-    Analyze the user's movie history below to identify their "Taste Profile" (focus on preferred directors, narrative pacing, atmosphere, visual styles, and genres).
-    Then, recommend 22 NEW movies/series that fit this profile perfectly.
+    You are an expert Film Curator. Analyze the user's movie history to identify their taste (directors, atmosphere, genres).
+    Recommend 22 NEW movies/series that fit this profile.
 
-    USER HISTORY (Analyze this):
+    USER HISTORY (Last 50 movies):
     ${watchedList}
 
-    STRICT RULES (Must Follow):
-    1. NO DUPLICATES: You MUST NOT recommend any movie listed in the "Excluded Lists" below.
-    2. CHECK ALIASES: Even if the English/Vietnamese title differs, do not recommend it if the movie is the same.
-    3. SEARCHABILITY: The 'title' field MUST be the exact English name (or Original TMDB Title) so our API can find it.
-    4. DIVERSITY: Don't just recommend sequels. Suggest similar "vibe" movies from different years or directors.
-    5. QUALITY: Prioritize movies with good critical reception unless the user clearly loves "so bad it's good" movies.
+    STRICT RULES:
+    1. NO DUPLICATES: Do not recommend anything from the Excluded Lists.
+    2. EXACT TITLES: Use exact English/Original titles and include the RELEASE YEAR for accuracy.
+    3. SEARCHABILITY: Format: "Movie Title (Year)".
+    4. DIVERSITY: Mix genres and eras based on the user's profile.
 
-    EXCLUDED LISTS (Do NOT recommend these):
+    EXCLUDED LISTS (Do NOT recommend):
     - Collection: ${existingTitles}
     - Previously Suggested: ${previouslyRecommendedTitles}
 

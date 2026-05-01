@@ -25,6 +25,7 @@ interface RecommendationsState {
   setPreviouslyRecommendedTitles: (titles: Set<string>) => void;
   initializeForUser: (userId: string) => Promise<void>;
   refreshRecommendations: (userId: string, forceRefresh?: boolean) => Promise<void>;
+  removeRecommendation: (userId: string, movieTitle: string) => Promise<void>;
 }
 
 // Quản lý phim gợi ý từ AI và trending.
@@ -77,10 +78,11 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
         );
 
         if (result) {
-          set({
+          const newRecTitles = result.aiRecommendations.map(m => m.title);
+          set(state => ({
             aiRecommendations: result.aiRecommendations,
-            previouslyRecommendedTitles: new Set(JSON.parse(localStorage.getItem(`previously_recommended_${userId}`) || '{"titles":[]}').titles)
-          });
+            previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), ...newRecTitles])
+          }));
         } else {
           const trending = await fetchTrendingFallback();
           set({ trendingMovies: trending });
@@ -98,6 +100,18 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
 
     pendingRequests.set(pendingKey, requestPromise);
     return requestPromise;
+  },
+  removeRecommendation: async (userId: string, movieTitle: string) => {
+    set(state => ({
+      aiRecommendations: state.aiRecommendations.filter(m => m.title !== movieTitle),
+      previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), movieTitle])
+    }));
+    try {
+      const { updatePreviouslyRecommendedTitles } = await import('../services/userService');
+      await updatePreviouslyRecommendedTitles(userId, [movieTitle]);
+    } catch (error) {
+      console.error("Failed to sync removed recommendation:", error);
+    }
   },
 }));
 

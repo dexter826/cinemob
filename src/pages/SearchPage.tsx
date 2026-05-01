@@ -19,7 +19,7 @@ const SearchPage: React.FC = () => {
     totalPages,
     setCurrentPage,
     discoverMovies,
-    aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations,
+    aiRecommendations, trendingMovies, isAiLoading, refreshRecommendations, removeRecommendation,
     suggestAnimation,
     filteredResults,
     handleSelectMovie, getMovieStatus,
@@ -67,6 +67,7 @@ const SearchPage: React.FC = () => {
             getMovieStatus={getMovieStatus}
             handleSelectMovie={handleSelectMovie}
             refreshRecommendations={refreshRecommendations}
+            removeRecommendation={removeRecommendation}
             userId={user?.uid || ''}
           />
         )}

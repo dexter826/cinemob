@@ -1,7 +1,7 @@
 import React from 'react';
 import { TMDBMovieResult } from '../../types';
 import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '../../utils/movieUtils';
-import { Film, Tv, Bookmark, Star, Calendar } from 'lucide-react';
+import { Film, Tv, Bookmark, Star, Calendar, X } from 'lucide-react';
 
 interface TMDBMovieCardProps {
   movie: TMDBMovieResult;
@@ -9,9 +9,10 @@ interface TMDBMovieCardProps {
   status?: 'history' | 'watchlist' | null;
   character?: string;
   job?: string;
+  onRemove?: (movie: TMDBMovieResult) => void;
 }
 
-const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, character, job }) => {
+const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, character, job, onRemove }) => {
   const mainTitle = getMainTitleForTMDB(movie);
   const subTitle = getSubTitleForTMDB(movie);
   const year = (movie.release_date || movie.first_air_date)?.split('-')[0] || '';
@@ -55,6 +56,19 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
             <span className="ml-1">{isTV ? 'TV' : 'Phim'}</span>
           </div>
         </div>
+
+        {onRemove && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(movie);
+            }}
+            className="absolute top-2 right-2 z-20 p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-xl rounded-lg border border-white/20 text-white shadow-glass transition-all cursor-pointer"
+            title="Không quan tâm"
+          >
+            <X size={14} strokeWidth={3} />
+          </button>
+        )}
       </div>
 
       <div className="p-3 space-y-1">

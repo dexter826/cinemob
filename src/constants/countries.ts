@@ -46,6 +46,21 @@ export const COUNTRY_OPTIONS = [
   { value: 'Khác', label: 'Khác' }
 ];
 
+// ISO country codes
+export const TMDB_COUNTRY_OPTIONS = [
+  { value: '', label: 'Tất cả quốc gia' },
+  { value: 'VN', label: 'Việt Nam' },
+  { value: 'US', label: 'Mỹ' },
+  { value: 'KR', label: 'Hàn Quốc' },
+  { value: 'JP', label: 'Nhật Bản' },
+  { value: 'CN', label: 'Trung Quốc' },
+  { value: 'HK', label: 'Hồng Kông' },
+  { value: 'TH', label: 'Thái Lan' },
+  { value: 'GB', label: 'Anh' },
+  { value: 'FR', label: 'Pháp' },
+  { value: 'IN', label: 'Ấn Độ' },
+];
+
 // Hỗ trợ dịch danh sách quốc gia.
 export const translateCountries = (countriesString: string): string => {
   if (!countriesString) return '';

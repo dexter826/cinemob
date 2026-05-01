@@ -1,12 +1,14 @@
 import React from 'react';
 import { Search, X, Filter, RotateCcw } from 'lucide-react';
 import CustomDropdown from '../ui/CustomDropdown';
+import { TMDB_COUNTRY_OPTIONS } from '../../constants';
 
 interface SearchFiltersProps {
   filters: {
     query: string;
     type: 'all' | 'movie' | 'tv';
     year: string;
+    country: string;
     sortBy: string;
   };
   updateFilter: (key: any, value: any) => void;
@@ -22,7 +24,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   handleClear,
 }) => {
   const isSearchMode = filters.query.trim().length > 2;
-  const hasActiveFilters = filters.type !== 'all' || filters.year !== '' || (!isSearchMode && filters.sortBy !== 'popularity.desc');
+  const hasActiveFilters = filters.type !== 'all' || filters.year !== '' || filters.country !== '' || (!isSearchMode && filters.sortBy !== 'popularity.desc');
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4">
@@ -87,6 +89,15 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           value={filters.year}
           onChange={(value) => updateFilter('year', value as string)}
           placeholder="Chọn năm"
+          className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
+          searchable={true}
+        />
+
+        <CustomDropdown
+          options={TMDB_COUNTRY_OPTIONS}
+          value={filters.country}
+          onChange={(value) => updateFilter('country', value as string)}
+          placeholder="Quốc gia"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
           searchable={true}
         />
