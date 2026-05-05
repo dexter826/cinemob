@@ -25,7 +25,13 @@ const SearchPage: React.FC = () => {
     handleSelectMovie, getMovieStatus,
     handleClear,
     isLoading,
-    watchedMoviesCount
+    watchedMoviesCount,
+    suggestions,
+    isSuggesting,
+    showSuggestions,
+    setShowSuggestions,
+    handleSearch,
+    submittedQuery
   } = useSearch(user);
 
   return (
@@ -40,8 +46,13 @@ const SearchPage: React.FC = () => {
         <SearchFilters 
           filters={filters}
           updateFilter={updateFilter}
-          handleSearch={() => {}}
+          handleSearch={handleSearch}
           handleClear={handleClear}
+          suggestions={suggestions}
+          isSuggesting={isSuggesting}
+          showSuggestions={showSuggestions}
+          setShowSuggestions={setShowSuggestions}
+          handleSelectMovie={handleSelectMovie}
         />
 
         {initialLoading ? (
@@ -53,7 +64,7 @@ const SearchPage: React.FC = () => {
         ) : (
           <SearchResults 
             isLoading={isLoading}
-            query={filters.query}
+            query={submittedQuery}
             totalPages={totalPages}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}

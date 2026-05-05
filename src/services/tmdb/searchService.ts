@@ -1,4 +1,4 @@
-import { tmdbFetch, API_KEY } from './tmdbClient';
+import { tmdbFetch, API_KEY, withLimit } from './tmdbClient';
 import { TMDBMovieResult, TMDBPerson } from '../../types';
 
 // Tìm kiếm phim và TV show.
@@ -19,10 +19,25 @@ export const searchMovies = async (query: string, page: number = 1, year?: strin
       tmdbFetch<{ results: any[]; total_pages: number }>(`search/tv`, { ...params, first_air_date_year: year || '' })
     ]);
 
-    const movieResults = (movieData?.results || []).map((item: any) => ({ ...item, media_type: 'movie' as const }));
-    const tvResults = (tvData?.results || []).map((item: any) => ({ ...item, media_type: 'tv' as const }));
+    const rawMovies = (movieData?.results || []).map((item: any) => ({ ...item, media_type: 'movie' as const }));
+    const rawTv = (tvData?.results || []).map((item: any) => ({ ...item, media_type: 'tv' as const }));
+    
+    const moviesWithDetails = await withLimit(
+      rawMovies.map(movie => async () => {
+        try {
+          const details = await tmdbFetch<any>(`movie/${movie.id}`, { language: 'vi-VN' });
+          return {
+            ...movie,
+            origin_country: details?.production_countries?.map((c: any) => c.iso_3166_1) || []
+          };
+        } catch {
+          return movie;
+        }
+      }),
+      5
+    );
 
-    const combinedResults = [...movieResults, ...tvResults]
+    const combinedResults = [...moviesWithDetails, ...rawTv]
       .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
       .slice(0, 20);
 

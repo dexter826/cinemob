@@ -44,9 +44,11 @@ const AlertContainer: React.FC = () => {
             </button>
             <button
               onClick={handleConfirm}
-              className={`px-5 py-2.5 rounded-xl text-white font-bold text-sm transition-all shadow-premium hover:shadow-premium-hover flex items-center gap-2 cursor-pointer ${alert.type === 'danger' ? 'bg-error' :
-                'bg-primary'
-                }`}
+              className={`px-5 py-2.5 rounded-xl text-white font-bold text-sm transition-all shadow-premium hover:shadow-premium-hover flex items-center gap-2 cursor-pointer ${
+                alert.type === 'danger' ? 'bg-error shadow-error/20' :
+                alert.type === 'warning' ? 'bg-warning shadow-warning/20' :
+                'bg-primary shadow-primary/20'
+              }`}
             >
               {alert.confirmText || 'Đồng ý'}
             </button>

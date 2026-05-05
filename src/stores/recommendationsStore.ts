@@ -70,28 +70,39 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
       try {
         const { fetchAIRecommendations, fetchTrendingFallback } = await import('../services/recommendationService');
         
-        const result = await fetchAIRecommendations(
-          userId,
-          state.historyMovies,
-          state.previouslyRecommendedTitles,
-          forceRefresh
-        );
+        const [aiResult, trending] = await Promise.all([
+          fetchAIRecommendations(
+            userId,
+            state.historyMovies,
+            state.previouslyRecommendedTitles,
+            forceRefresh
+          ),
+          (state.trendingMovies.length === 0 || forceRefresh) ? fetchTrendingFallback() : Promise.resolve(null)
+        ]);
 
-        if (result) {
-          const newRecTitles = result.aiRecommendations.map(m => m.title);
+        if (trending) {
+          set({ trendingMovies: trending });
+        }
+
+        if (aiResult) {
+          const newRecTitles = aiResult.aiRecommendations.map(m => m.title);
           set(state => ({
-            aiRecommendations: result.aiRecommendations,
+            aiRecommendations: aiResult.aiRecommendations,
             previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), ...newRecTitles])
           }));
-        } else {
-          const trending = await fetchTrendingFallback();
-          set({ trendingMovies: trending });
+        } else if (!trending && state.trendingMovies.length === 0) {
+          const fallbackTrending = await fetchTrendingFallback();
+          set({ trendingMovies: fallbackTrending });
         }
       } catch (error) {
         console.error("Recommendations failed:", error);
-        const { fetchTrendingFallback } = await import('../services/recommendationService');
-        const trending = await fetchTrendingFallback();
-        set({ trendingMovies: trending });
+        try {
+          const { fetchTrendingFallback } = await import('../services/recommendationService');
+          const trending = await fetchTrendingFallback();
+          set({ trendingMovies: trending });
+        } catch (e) {
+          console.error("Critical: Failed to fetch trending fallback", e);
+        }
       } finally {
         set({ isAiLoading: false });
         pendingRequests.delete(pendingKey);

@@ -3,7 +3,7 @@ import { searchMovies, getDiscoverMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '../types';
 
 // Tìm kiếm và khám phá phim từ TMDB.
-export const useSearchTMDB = (query: string, searchPage: number, filters: any) => {
+export const useSearchTMDB = (submittedQuery: string, searchPage: number, filters: any) => {
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [totalSearchPages, setTotalSearchPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -12,14 +12,14 @@ export const useSearchTMDB = (query: string, searchPage: number, filters: any) =
   const [totalDiscoverPages, setTotalDiscoverPages] = useState(1);
   const [discoverLoading, setDiscoverLoading] = useState(false);
 
-  const isSearchMode = query.trim().length > 2;
+  const isSearchMode = submittedQuery.trim().length > 2;
 
   useEffect(() => {
     if (isSearchMode) {
-      const timer = setTimeout(async () => {
+      const fetchData = async () => {
         setLoading(true);
         try {
-          const { results: data, totalPages } = await searchMovies(query, searchPage, filters.year);
+          const { results: data, totalPages } = await searchMovies(submittedQuery, searchPage, filters.year);
           setResults(data);
           setTotalSearchPages(totalPages);
         } catch (error) {
@@ -27,13 +27,13 @@ export const useSearchTMDB = (query: string, searchPage: number, filters: any) =
         } finally {
           setLoading(false);
         }
-      }, 500);
-      return () => clearTimeout(timer);
+      };
+      fetchData();
     } else if (results.length > 0) {
       setResults([]);
       setTotalSearchPages(1);
     }
-  }, [query, searchPage, filters.year, isSearchMode]);
+  }, [submittedQuery, searchPage, filters.year, filters.country, isSearchMode]);
 
   useEffect(() => {
     if (!isSearchMode) {
@@ -66,7 +66,7 @@ export const useSearchTMDB = (query: string, searchPage: number, filters: any) =
         setTotalDiscoverPages(1);
       }
     }
-  }, [query, searchPage, filters.year, filters.country, filters.rating, filters.sortBy, filters.type, isSearchMode]);
+  }, [submittedQuery, searchPage, filters.year, filters.country, filters.rating, filters.sortBy, filters.type, isSearchMode]);
 
   return {
     results,
