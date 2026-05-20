@@ -16,7 +16,10 @@ const MobileBottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-3xl border-t border-border-default pb-safe z-40">
+    <nav 
+      className="md:hidden fixed left-4 right-4 bg-surface/80 backdrop-blur-3xl border border-border-default rounded-2xl shadow-premium z-40"
+      style={{ bottom: 'calc(12px + env(safe-area-inset-bottom, 12px))' }}
+    >
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -28,10 +31,10 @@ const MobileBottomNav: React.FC = () => {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex flex-col items-center justify-center w-full h-full transition-all duration-300 active:scale-95"
+              className="relative flex items-center justify-center w-full h-full transition-all duration-300 active:scale-95"
             >
-              <div className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
-                <Icon size={24} strokeWidth={isActive ? 2.2 : 2} />
+              <div className={`relative p-3 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
+                <Icon size={26} strokeWidth={isActive ? 2.2 : 2} />
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
@@ -40,9 +43,6 @@ const MobileBottomNav: React.FC = () => {
                   />
                 )}
               </div>
-              <span className={`text-[10px] font-semibold transition-colors mt-1 ${isActive ? 'text-primary' : 'text-text-muted'}`}>
-                {item.label}
-              </span>
             </button>
           );
         })}

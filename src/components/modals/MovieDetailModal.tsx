@@ -166,7 +166,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                         <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Mùa` : `${movie.runtime} Phút`}</span>
                       </div>
                     )}
-                    {movie.rating && movie.rating > 0 && (
+                    {!!movie.rating && movie.rating > 0 && (
                       <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
                         <Star size={14} className="text-warning fill-warning" />
                         <span className="font-bold text-warning">{movie.rating.toFixed(1)}</span>

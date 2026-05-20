@@ -80,7 +80,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
             </div>
           )}
 
-          {movie.rating && movie.rating > 0 && (
+          {!!movie.rating && movie.rating > 0 && (
             <div className="flex items-center space-x-1 px-2 py-1 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 shadow-glass">
               <Star size={10} className="text-warning" fill="currentColor" />
               <span className="text-[10px] font-bold text-white leading-none">{movie.rating.toFixed(1)}</span>

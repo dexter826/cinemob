@@ -97,10 +97,10 @@ export const useSearch = (user: any) => {
   }, []);
 
   useEffect(() => {
-    if (user?.uid && aiRecommendations.length === 0 && !isAiLoading) {
+    if (user?.uid && aiRecommendations.length === 0 && trendingMovies.length === 0 && !isAiLoading) {
       refreshRecommendations(user.uid);
     }
-  }, [user?.uid, aiRecommendations.length, isAiLoading]);
+  }, [user?.uid, aiRecommendations.length, trendingMovies.length, isAiLoading]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -119,7 +119,7 @@ export const useSearch = (user: any) => {
   const displayMovies = isSearchMode ? results : discoverMovies;
 
   const filteredResults = useMemo(() => {
-    return displayMovies.filter(movie => {
+    let result = displayMovies.filter(movie => {
       if (filters.type !== 'all' && movie.media_type !== filters.type) return false;
       
       if (isSearchMode && filters.country) {
@@ -128,7 +128,42 @@ export const useSearch = (user: any) => {
       
       return true;
     });
-  }, [displayMovies, filters.type, filters.country, isSearchMode]);
+
+    if (isSearchMode) {
+      result = [...result].sort((a, b) => {
+        switch (filters.sortBy) {
+          case 'popularity.desc':
+            return (b.popularity || 0) - (a.popularity || 0);
+          case 'vote_average.desc':
+            return (b.vote_average || 0) - (a.vote_average || 0);
+          case 'primary_release_date.desc': {
+            const dateA = new Date(a.release_date || a.first_air_date || 0).getTime();
+            const dateB = new Date(b.release_date || b.first_air_date || 0).getTime();
+            return dateB - dateA;
+          }
+          case 'primary_release_date.asc': {
+            const dateA = new Date(a.release_date || a.first_air_date || 0).getTime();
+            const dateB = new Date(b.release_date || b.first_air_date || 0).getTime();
+            return dateA - dateB;
+          }
+          case 'title.asc': {
+            const titleA = a.title || a.name || '';
+            const titleB = b.title || b.name || '';
+            return titleA.localeCompare(titleB, 'vi');
+          }
+          case 'title.desc': {
+            const titleA = a.title || a.name || '';
+            const titleB = b.title || b.name || '';
+            return titleB.localeCompare(titleA, 'vi');
+          }
+          default:
+            return 0;
+        }
+      });
+    }
+
+    return result;
+  }, [displayMovies, filters.type, filters.country, isSearchMode, filters.sortBy]);
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     openAddModal({

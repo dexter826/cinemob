@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children, appReady = true }) => {
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
       <Navbar />
-      <div className="flex-1 relative pb-20 md:pb-0 min-h-[50vh]">
+      <div className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh]">
         {children}
       </div>
       
