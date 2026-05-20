@@ -1,36 +1,45 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# Thư viện ngoài
+node_modules/
+.pnp
 .pnp.js
 
-# testing
-/coverage
+# Thư mục build
+dist/
+dist-ssr/
+build/
+dev-dist/
+*.tsbuildinfo
 
-# production
-/build
-/dist
-/dev-dist
-
-# misc
-.DS_Store
+# Biến môi trường bảo mật
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+*.pem
 
+# File log hệ thống
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# Firebase
+# Cấu hình IDE hoặc Editor
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# File hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Cấu hình Firebase
 .firebase/
 .firebaserc
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Thư mục tạm Gemini
+.gemini/
