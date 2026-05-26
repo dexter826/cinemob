@@ -21,9 +21,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   const mainTitle = getMainTitle(movie);
   const subTitle = getSubTitle(movie);
 
+  const showProgressBar = movie.status === 'history';
+
   const progressWidth = movie.media_type === 'tv'
     ? (movie.progress?.is_completed ? '100%' : `${((movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)) * 100}%`)
-    : (movie.status === 'history' ? '100%' : '0%');
+    : '100%';
 
   return (
     <div
@@ -105,12 +107,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         </div>
 
         {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
-          <div 
-            className="h-full bg-primary transition-all duration-700 ease-out"
-            style={{ width: progressWidth }}
-          />
-        </div>
+        {showProgressBar && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
+            <div 
+              className="h-full bg-primary transition-all duration-700 ease-out"
+              style={{ width: progressWidth }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="p-3 flex flex-col flex-1">

@@ -75,44 +75,43 @@ export const useAddMovieForm = () => {
         const names = m.genres.split(',').map(g => g.trim().toLowerCase());
         setSelectedGenreIds(GENRE_OPTIONS.filter(opt => names.includes(opt.name.toLowerCase())).map(opt => opt.id));
       }
-    } else if (initialData?.tmdbId || initialData?.movie) {
-      const id = initialData.tmdbId || initialData.movie?.id;
-      const type = (initialData.mediaType || initialData.movie?.media_type || 'movie') as 'movie' | 'tv';
-      
-      const initTMDB = async () => {
-        if (!id) return;
-        const details = await fetchDetails(id, type, user);
-        if (!details) return;
-
-        if (type === 'tv' && details.tvInfo) {
-          tvProgress.setTotalEpisodes(details.tvInfo.totalEpisodes);
-          tvProgress.setEpisodesPerSeason(details.tvInfo.episodesPerSeason);
-          tvProgress.setIsCompleted(true);
-        }
-
-        const now = new Date();
-        setFormData(prev => ({
-          ...prev, 
-          ...details,
-          date: now.toISOString().split('T')[0], 
-          time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
-          rating: 0, 
-          review: '',
-          is_review: false
-        }));
-        setSelectedGenreIds(details.genreIds);
-      };
-      initTMDB();
     } else {
       const now = new Date();
-      setFormData({ 
-        title: '', title_vi: '', runtime: '', seasons: '', poster: '', 
-        date: now.toISOString().split('T')[0], 
-        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`, 
+      setFormData({
+        title: '', title_vi: '', runtime: '', seasons: '', poster: '',
+        date: now.toISOString().split('T')[0],
+        time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
         rating: 0, review: '', tagline: '', genres: '', releaseDate: '', country: '', content: '',
         is_review: false
       });
-      setManualMediaType('movie'); setMovieExists(false); setStatus('history'); setSelectedGenreIds([]);
+      setManualMediaType('movie');
+      setMovieExists(false);
+      setStatus('history');
+      setSelectedGenreIds([]);
+
+      if (initialData?.tmdbId || initialData?.movie) {
+        const id = initialData.tmdbId || initialData.movie?.id;
+        const type = (initialData.mediaType || initialData.movie?.media_type || 'movie') as 'movie' | 'tv';
+        
+        const initTMDB = async () => {
+          if (!id) return;
+          const details = await fetchDetails(id, type, user);
+          if (!details) return;
+
+          if (type === 'tv' && details.tvInfo) {
+            tvProgress.setTotalEpisodes(details.tvInfo.totalEpisodes);
+            tvProgress.setEpisodesPerSeason(details.tvInfo.episodesPerSeason);
+            tvProgress.setIsCompleted(true);
+          }
+
+          setFormData(prev => ({
+            ...prev,
+            ...details
+          }));
+          setSelectedGenreIds(details.genreIds);
+        };
+        initTMDB();
+      }
     }
   }, [isOpen, initialData, user, fetchDetails]);
 

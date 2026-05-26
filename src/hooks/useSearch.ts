@@ -30,6 +30,7 @@ export const useSearch = (user: any) => {
     aiRecommendations, 
     trendingMovies, 
     isAiLoading, 
+    isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
     historyMovies
@@ -191,6 +192,7 @@ export const useSearch = (user: any) => {
     aiRecommendations: filteredAiRecommendations, 
     trendingMovies, 
     isAiLoading, 
+    isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
     suggestAnimation,

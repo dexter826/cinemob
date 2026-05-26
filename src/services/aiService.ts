@@ -166,7 +166,7 @@ const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
             "X-Title": "CineMOB",
         },
         body: JSON.stringify({
-            model: "minimax/minimax-m2.5:free",
+            model: "deepseek/deepseek-v4-flash:free",
             messages: [
                 { role: "system", content: "You are a professional movie recommendation engine. Output valid JSON only." },
                 { role: "user", content: prompt }

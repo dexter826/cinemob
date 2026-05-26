@@ -54,15 +54,11 @@ export const useDashboard = (user: any) => {
 
   const handleMarkAsWatched = (movie: Movie) => {
     const now = new Date();
-    const existingDate = movie.watched_at instanceof Timestamp
-      ? movie.watched_at.toDate()
-      : (movie.watched_at as Date | undefined);
-
     openAddModal({
       movieToEdit: {
         ...movie,
         status: 'history',
-        watched_at: existingDate || now,
+        watched_at: now,
       },
     });
   };

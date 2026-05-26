@@ -17,6 +17,7 @@ interface SearchResultsProps {
   currentPage: number;
   setCurrentPage: (page: number) => void;
   isAiLoading: boolean;
+  isTrendingLoading: boolean;
   aiRecommendations: TMDBMovieResult[];
   trendingMovies: TMDBMovieResult[];
   discoverMovies: TMDBMovieResult[];
@@ -38,6 +39,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   currentPage,
   setCurrentPage,
   isAiLoading,
+  isTrendingLoading,
   aiRecommendations,
   trendingMovies,
   discoverMovies,
@@ -94,14 +96,20 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {trendingMovies.map(movie => (
-                <TMDBMovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={handleSelectMovie}
-                  status={getMovieStatus(movie.id)}
-                />
-              ))}
+              {isTrendingLoading && trendingMovies.length === 0 ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))
+              ) : (
+                trendingMovies.map(movie => (
+                  <TMDBMovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onClick={handleSelectMovie}
+                    status={getMovieStatus(movie.id)}
+                  />
+                ))
+              )}
             </div>
           </>
         ) : (
@@ -168,7 +176,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                   onClick={handleSelectMovie}
                   status={getMovieStatus(movie.id)}
                 />
-              )) : trendingMovies.map(movie => (
+              )) : (isTrendingLoading && trendingMovies.length === 0) ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))
+              ) : trendingMovies.map(movie => (
                 <TMDBMovieCard
                   key={movie.id}
                   movie={movie}
