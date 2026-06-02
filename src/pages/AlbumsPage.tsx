@@ -133,7 +133,7 @@ const AlbumsPage: React.FC = () => {
                       loading="lazy"
                     />
                   ) : (
-                    <div className="h-full w-full bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
+                    <div className="h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-3 opacity-40">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
                           <Film size={20} className="text-white" strokeWidth={1.5} />
@@ -144,7 +144,7 @@ const AlbumsPage: React.FC = () => {
                   )}
 
                   {/* Gradient overlay - Darker for better text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
 
                   {/* Album Badge (Top Left) */}
                   <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 dark:border-white/5 shadow-glass ring-1 ring-white/5 z-10">

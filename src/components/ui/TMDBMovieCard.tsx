@@ -22,7 +22,7 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
   return (
     <div
       onClick={() => onClick(movie)}
-      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 active:scale-[0.98] active:translate-y-[1px] hover:-translate-y-1"
+      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 active:scale-[0.98] active:translate-y-px hover:-translate-y-1"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
@@ -32,7 +32,7 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
           loading="lazy"
         />
         
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
           {status && (

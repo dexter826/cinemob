@@ -30,7 +30,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   return (
     <div
       onClick={() => onClick(movie)}
-      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover active:scale-[0.98] active:translate-y-[1px] hover:-translate-y-1 relative"
+      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover active:scale-[0.98] active:translate-y-px hover:-translate-y-1 relative"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
@@ -40,7 +40,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           loading="lazy"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Action Menu */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 [@media(hover:none)]:opacity-100 group-hover:opacity-100 transition-all duration-300 translate-x-2 [@media(hover:none)]:translate-x-0 group-hover:translate-x-0 z-30">
