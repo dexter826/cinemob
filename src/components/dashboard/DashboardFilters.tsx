@@ -44,66 +44,66 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
     <div className="flex flex-col items-end gap-3 relative">
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
           <input
             type="text"
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim..."
-            className="w-full sm:w-64 h-11 bg-surface border-border-default border rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-premium"
+            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-premium ring-1 ring-black/5 dark:ring-white/5"
           />
           {filters.searchQuery && (
             <button
               onClick={() => updateFilter('searchQuery', '')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer active:scale-90"
             >
-              <X size={14} />
+              <X size={14} strokeWidth={1.5} />
             </button>
           )}
         </div>
 
         <button
           onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-300 cursor-pointer shadow-premium ${
+          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-300 cursor-pointer shadow-premium active:scale-95 ${
             showFilters 
-              ? 'bg-primary/10 border-primary/30 text-primary' 
-              : 'bg-surface border-border-default text-text-muted hover:text-text-main hover:border-primary/30'
+              ? 'bg-primary/15 border-primary/40 text-primary' 
+              : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
           }`}
         >
-          {showFilters ? <X size={18} /> : <Filter size={18} />}
+          {showFilters ? <X size={18} strokeWidth={1.5} /> : <Filter size={18} strokeWidth={1.5} />}
         </button>
       </div>
 
       {showFilters && (
-        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface/95 backdrop-blur-2xl p-4 rounded-2xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in">
+        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface/90 backdrop-blur-3xl p-5 rounded-3xl border border-border-default dark:border-white/5 shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in ring-1 ring-black/5 dark:ring-white/5">
           
           <div className="space-y-3">
             <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp</div>
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border active:scale-[0.98] ${
                   filters.sortBy === 'date' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
-                <Calendar size={13} />
+                <Calendar size={13} strokeWidth={1.5} />
                 <span>Ngày</span>
               </button>
               <button
                 onClick={() => updateFilter('sortBy', 'title')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border active:scale-[0.98] ${
                   filters.sortBy === 'title' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
-                <Type size={13} />
+                <Type size={13} strokeWidth={1.5} />
                 <span>Tên</span>
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-all cursor-pointer"
+                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-all cursor-pointer active:scale-90"
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
               >
-                {filters.sortOrder === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+                {filters.sortOrder === 'asc' ? <ArrowUp size={16} strokeWidth={1.5} /> : <ArrowDown size={16} strokeWidth={1.5} />}
               </button>
             </div>
           </div>
@@ -165,7 +165,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     </span>
                   )}
                 </div>
-                <div className="flex gap-1.5 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default">
+                <div className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
                     const [min, max] = filters.ratingRange || [0, 0];
                     const isActive = filters.ratingRange && star >= min && star <= max;
@@ -190,13 +190,13 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                             }
                           }
                         }}
-                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-all cursor-pointer ${
+                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-all cursor-pointer active:scale-90 ${
                           isActive 
-                            ? 'text-warning bg-warning/10 shadow-sm' 
-                            : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5'
+                            ? 'text-warning bg-warning/15 shadow-sm' 
+                            : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
                         } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
                       >
-                        <Star size={14} fill={isActive ? "currentColor" : "none"} />
+                        <Star size={14} fill={isActive ? "currentColor" : "none"} strokeWidth={1.5} />
                       </button>
                     );
                   })}

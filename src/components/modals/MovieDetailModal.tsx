@@ -102,14 +102,14 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default relative flex flex-col md:flex-row max-h-[90vh]"
+            className="bg-surface/90 dark:bg-surface/80 backdrop-blur-3xl w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default dark:border-white/5 relative flex flex-col md:flex-row max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-1.5 sm:p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10"
+              className="absolute top-4 right-4 z-10 p-1.5 sm:p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10 active:scale-90"
             >
-              <X size={18} className="sm:w-5 sm:h-5" />
+              <X size={18} className="sm:w-5 sm:h-5" strokeWidth={1.5} />
             </button>
 
             <div className="w-full md:w-2/5 h-48 md:h-auto relative shrink-0">
@@ -155,30 +155,30 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm text-text-muted">
                     {movie.release_date && (
-                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default">
-                        <Calendar size={14} className="text-info" />
+                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
+                        <Calendar size={14} className="text-info" strokeWidth={1.5} />
                         <span className="font-medium">{new Date(movie.release_date).getFullYear()}</span>
                       </div>
                     )}
                     {(movie.media_type === 'tv' ? (movie.seasons && movie.seasons > 0) : (movie.runtime && movie.runtime > 0)) && (
-                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default">
-                        <Clock size={14} className="text-primary" />
+                      <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
+                        <Clock size={14} className="text-primary" strokeWidth={1.5} />
                         <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Mùa` : `${movie.runtime} Phút`}</span>
                       </div>
                     )}
                     {!!movie.rating && movie.rating > 0 && (
-                      <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20">
-                        <Star size={14} className="text-warning fill-warning" />
+                      <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20 dark:border-warning/10">
+                        <Star size={14} className="text-warning fill-warning" strokeWidth={1.5} />
                         <span className="font-bold text-warning">{movie.rating.toFixed(1)}</span>
                       </div>
                     )}
                   </div>
 
                   {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
-                    <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-4 sm:p-5 border border-border-default">
+                    <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-4 sm:p-5 border border-border-default dark:border-white/5">
                       <div className="flex items-center justify-between mb-2.5">
                         <span className="text-text-muted text-xs font-bold uppercase tracking-wider">Tiến độ xem</span>
-                        {movie.progress.is_completed && <span className="text-success text-[10px] font-bold tracking-widest px-2 py-0.5 bg-success/10 rounded-md border border-success/20">✓ HOÀN THÀNH</span>}
+                        {movie.progress.is_completed && <span className="text-success text-[10px] font-bold tracking-widest px-2 py-0.5 bg-success/10 rounded-md border border-success/20 dark:border-success/10">✓ HOÀN THÀNH</span>}
                       </div>
                       <div className="text-text-main font-bold text-xl sm:text-2xl mb-4">
                         {movie.progress.is_completed ? "Đã xem hết" : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
@@ -201,8 +201,8 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   {movie.genres && (
                     <div className="flex items-center gap-2 sm:gap-2.5 text-text-muted text-xs sm:text-sm">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default">
-                        <Film size={14} className="sm:w-4 sm:h-4" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default dark:border-white/5">
+                        <Film size={14} className="sm:w-4 sm:h-4" strokeWidth={1.5} />
                       </div>
                       <span className="line-clamp-2 font-medium">{getTranslatedGenres(movie.genres)}</span>
                     </div>
@@ -214,9 +214,9 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                   </div>
 
                   {movie.review && (
-                    <div className="bg-warning/5 dark:bg-warning/5 rounded-2xl p-4 sm:p-5 border border-warning/20">
+                    <div className="bg-warning/5 dark:bg-warning/5 rounded-2xl p-4 sm:p-5 border border-warning/20 dark:border-warning/10">
                       <h3 className="text-base sm:text-lg font-bold text-text-main mb-2.5 flex items-center gap-2 tracking-tight">
-                        <Star size={16} className="text-warning fill-warning" /> 
+                        <Star size={16} className="text-warning fill-warning" strokeWidth={1.5} /> 
                         Đánh giá của bạn
                       </h3>
                       <p className="text-text-muted leading-relaxed text-xs sm:text-sm md:text-base">{movie.review}</p>
@@ -228,7 +228,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       {credits.crew && credits.crew.some(c => c.job === 'Director') && (
                         <div className="space-y-2.5">
                           <h3 className="text-base sm:text-lg font-bold text-text-main flex items-center gap-2 tracking-tight">
-                            <User size={16} className="sm:w-[18px] sm:h-[18px] text-info" /> Đạo diễn
+                            <User size={16} className="sm:w-[18px] sm:h-[18px] text-info" strokeWidth={1.5} /> Đạo diễn
                           </h3>
                           <p className="text-text-muted text-xs sm:text-sm md:text-base">
                             {credits.crew.filter(c => c.job === 'Director').map(d => d.name).join(', ')}
@@ -238,11 +238,11 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       {credits.cast && credits.cast.length > 0 && (
                         <div className="space-y-2.5">
                           <h3 className="text-base sm:text-lg font-bold text-text-main flex items-center gap-2 tracking-tight">
-                            <Users size={16} className="sm:w-[18px] sm:h-[18px] text-primary" /> Diễn viên
+                            <Users size={16} className="sm:w-[18px] sm:h-[18px] text-primary" strokeWidth={1.5} /> Diễn viên
                           </h3>
                           <div className="flex flex-wrap gap-2">
                             {credits.cast.slice(0, 8).map(actor => (
-                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-medium text-text-muted transition-all border border-border-default cursor-pointer">
+                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-medium text-text-muted transition-all border border-border-default dark:border-white/5 cursor-pointer active:scale-95">
                                 {actor.name}
                               </button>
                             ))}
@@ -254,12 +254,12 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   <div className="pt-4 flex flex-col gap-3">
                     {movie.status === 'watchlist' ? (
-                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
-                        <Play size={18} fill="currentColor" /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
+                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                        <Play size={18} fill="currentColor" strokeWidth={1.5} /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
                       </button>
                     ) : (
-                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
-                        <FolderPlus size={18} /> THÊM VÀO ALBUM
+                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                        <FolderPlus size={18} strokeWidth={1.5} /> THÊM VÀO ALBUM
                       </button>
                     )}
                   </div>

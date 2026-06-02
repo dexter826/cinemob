@@ -34,7 +34,7 @@ const MobileBottomNav: React.FC = () => {
               className="relative flex items-center justify-center w-full h-full transition-all duration-300 active:scale-95"
             >
               <div className={`relative p-3 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
-                <Icon size={26} strokeWidth={isActive ? 2.2 : 2} />
+                <Icon size={24} strokeWidth={isActive ? 1.8 : 1.5} />
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"

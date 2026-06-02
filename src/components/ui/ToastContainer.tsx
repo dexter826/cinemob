@@ -20,7 +20,7 @@ const ToastContainer: React.FC = () => {
             className={`
               flex items-center p-3.5 sm:p-4 rounded-2xl shadow-premium border backdrop-blur-xl pointer-events-auto w-full
               ${
-                toast.type === 'success' ? 'bg-success/10 border-success/20 text-success' :
+                toast.type === 'success' ? 'bg-primary/10 border-primary/20 text-primary' :
                 toast.type === 'error' ? 'bg-error/10 border-error/20 text-error' :
                 toast.type === 'warning' ? 'bg-warning/10 border-warning/20 text-warning' :
                 'bg-info/10 border-info/20 text-info'

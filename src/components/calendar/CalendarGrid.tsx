@@ -55,7 +55,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       days.push(
         <div 
           key={`prev-${day}`} 
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-[10px] font-bold text-text-muted">{day}</div>
         </div>
@@ -75,8 +75,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           onClick={() => setSelectedDate(date)}
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-all duration-300
-            hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group
-            ${today ? 'bg-primary/5 border-primary/50 shadow-lg shadow-primary/10' : 'border-border-default bg-black/5 dark:bg-white/5'}
+            hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group active:scale-95
+            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40 shadow-lg shadow-primary/10' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
@@ -104,7 +104,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             <div className="sm:hidden absolute bottom-1.5 left-1/2 transform -translate-x-1/2">
               <div className="flex gap-0.5">
                 {episodes.slice(0, 3).map((_, idx) => (
-                  <div key={idx} className="w-1 h-1 rounded-full bg-primary shadow-[0_0_3px_rgba(var(--color-primary),0.5)]"></div>
+                  <div key={idx} className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"></div>
                 ))}
               </div>
             </div>
@@ -119,7 +119,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       days.push(
         <div 
           key={`next-${day}`} 
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-[10px] font-bold text-text-muted">{day}</div>
         </div>
@@ -130,21 +130,21 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium">
+    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default dark:border-white/5 p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium ring-1 ring-black/5 dark:ring-white/5">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
-          <ChevronLeft size={20} />
+        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer active:scale-90">
+          <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight uppercase whitespace-nowrap">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all uppercase tracking-widest cursor-pointer">
+          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all uppercase tracking-widest cursor-pointer active:scale-95">
             Hôm nay
           </button>
         </div>
-        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer">
-          <ChevronRight size={20} />
+        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer active:scale-90">
+          <ChevronRight size={20} strokeWidth={1.5} />
         </button>
       </div>
 

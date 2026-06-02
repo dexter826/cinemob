@@ -33,8 +33,8 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   };
 
   return (
-    <div className={viewMode === 'calendar' ? 'lg:col-span-1' : 'lg:col-span-3'}>
-      <div className="bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] lg:min-h-[600px] shadow-premium transition-all duration-300">
+    <div className={viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'}>
+      <div className={`bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] shadow-premium transition-all duration-300 ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
         <div className="flex items-center justify-between mb-5 sm:mb-6">
           <h3 className="font-bold text-text-main flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl tracking-tight">
             <Bell size={24} className="text-primary" />

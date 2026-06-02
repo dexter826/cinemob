@@ -45,33 +45,33 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
             <button
               onClick={() => navigate('/search')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
-              <Search size={18} />
+              <Search size={18} strokeWidth={location.pathname === '/search' ? 2 : 1.5} />
               <span>Tìm phim</span>
             </button>
 
             <button
               onClick={() => navigate('/stats')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
-              <BarChart2 size={18} />
+              <BarChart2 size={18} strokeWidth={location.pathname === '/stats' ? 2 : 1.5} />
               <span>Thống kê</span>
             </button>
 
             <button
               onClick={() => navigate('/albums')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
-              <Folder size={18} />
+              <Folder size={18} strokeWidth={location.pathname.startsWith('/albums') ? 2 : 1.5} />
               <span>Album</span>
             </button>
 
             <button
               onClick={() => navigate('/calendar')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
-              <CalendarDays size={18} />
+              <CalendarDays size={18} strokeWidth={location.pathname === '/calendar' ? 2 : 1.5} />
               <span>Lịch</span>
             </button>
           </div>
@@ -80,18 +80,18 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsRandomOpen(true)}
-              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer"
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
               title="Chọn giúp tôi"
             >
-              <Dice5 size={20} />
+              <Dice5 size={20} strokeWidth={1.5} />
             </button>
 
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer"
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
               title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
             >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === 'dark' ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
             </button>
 
             <div className="relative dropdown-container">
@@ -110,17 +110,17 @@ const Navbar: React.FC = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-2xl border border-border-default rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-2xl border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
                   <div className="px-4 py-3 border-b border-border-default bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
                   </div>
 
-                  <div className="p-1">
+                  <div className="p-1.5 space-y-0.5">
                     <button
                       onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-all duration-200 cursor-pointer rounded-xl active:scale-[0.98]"
                     >
-                      <Download size={18} />
+                      <Download size={18} strokeWidth={1.5} />
                       <span>Xuất dữ liệu</span>
                     </button>
                     
@@ -136,9 +136,9 @@ const Navbar: React.FC = () => {
                         });
                         setIsDropdownOpen(false);
                       }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-colors cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-all duration-200 cursor-pointer rounded-xl active:scale-[0.98]"
                     >
-                      <LogOut size={18} />
+                      <LogOut size={18} strokeWidth={1.5} />
                       <span>Đăng xuất</span>
                     </button>
                   </div>

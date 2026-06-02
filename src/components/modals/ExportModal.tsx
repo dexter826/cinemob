@@ -121,18 +121,18 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface border border-border-default rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-premium"
+            className="bg-surface border border-border-default rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-premium"
             onClick={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border-default bg-surface/95 backdrop-blur">
+        <div className="flex items-center justify-between p-5 border-b border-border-default bg-surface/50 backdrop-blur-md shrink-0">
           <h2 className="text-xl font-bold text-text-main">Xuất dữ liệu</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-all cursor-pointer active:scale-95"
             disabled={isExporting}
           >
             <X size={20} className="text-text-muted" />
@@ -140,7 +140,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
           {/* Filters */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
                   <button
                     key={star}
                     onClick={() => setFilters(prev => ({ ...prev, rating: prev.rating === star ? null : star }))}
-                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${(filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
+                    className={`p-1.5 rounded-lg transition-all cursor-pointer active:scale-90 ${(filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                       }`}
                   >
                     <Star size={16} fill={(filters.rating || 0) >= star ? "currentColor" : "none"} />
@@ -234,41 +234,41 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
               )}
             </div>
           </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border-default">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-              disabled={isExporting}
-            >
-              Hủy
-            </button>
-            <button
-              onClick={handleExport}
-              disabled={isExporting || filteredCount === 0}
-              className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {isExporting ? (
-                <>
-                  <Loader2 className="animate-spin" size={20} />
-                  Đang xuất...
-                </>
-              ) : (
-                <>
-                  <Download size={20} />
-                  Xuất Excel
-                </>
-              )}
-            </button>
-          </div>
         </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+
+        {/* Actions / Footer */}
+        <div className="flex justify-end gap-3 p-5 border-t border-border-default bg-surface/50 backdrop-blur-md shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-95 cursor-pointer"
+            disabled={isExporting}
+          >
+            Hủy
+          </button>
+          <button
+            onClick={handleExport}
+            disabled={isExporting || filteredCount === 0}
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Đang xuất...
+              </>
+            ) : (
+              <>
+                <Download size={20} />
+                Xuất Excel
+              </>
+            )}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+);
 };
 
 export default ExportModal;

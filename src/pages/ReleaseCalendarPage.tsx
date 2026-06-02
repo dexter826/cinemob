@@ -41,29 +41,29 @@ const ReleaseCalendarPage: React.FC = () => {
           >
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {/* View Mode Toggle */}
-              <div className="bg-surface border border-border-default p-1 rounded-2xl flex items-center shadow-premium">
+              <div className="bg-surface border border-border-default dark:border-white/5 p-1 rounded-2xl flex items-center shadow-premium ring-1 ring-black/5 dark:ring-white/5">
                 <button
                   disabled={loading}
                   onClick={() => setViewMode('calendar')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs active:scale-95 cursor-pointer ${
                     viewMode === 'calendar' 
                       ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                       : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
                   } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <Calendar size={14} />
+                  <Calendar size={14} strokeWidth={1.5} />
                   <span className="hidden xs:inline">Lịch</span>
                 </button>
                 <button
                   disabled={loading}
                   onClick={() => setViewMode('list')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs active:scale-95 cursor-pointer ${
                     viewMode === 'list' 
                       ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                       : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
                   } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <List size={14} />
+                  <List size={14} strokeWidth={1.5} />
                   <span className="hidden xs:inline">Danh sách</span>
                 </button>
               </div>
@@ -72,22 +72,22 @@ const ReleaseCalendarPage: React.FC = () => {
                 onClick={handlePushToggle}
                 disabled={pushLoading || loading}
                 title={pushSubscribed ? 'Tắt thông báo' : 'Bật thông báo tập phim mới'}
-                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-all flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium ${
+                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-all flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium active:scale-[0.98] cursor-pointer ${
                   pushSubscribed
                     ? 'bg-success text-white shadow-lg shadow-success/20'
                     : notificationPermission === 'denied'
                     ? 'bg-error/10 text-error border border-error/20 cursor-not-allowed'
-                    : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
+                    : 'bg-surface border border-border-default dark:border-white/5 text-text-main hover:bg-primary/5 hover:border-primary/30'
                 } ${pushLoading || loading ? 'opacity-50 cursor-wait' : ''}`}
               >
                 {pushLoading ? (
                   <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
                 ) : pushSubscribed ? (
-                  <BellRing size={16} />
+                  <BellRing size={16} strokeWidth={1.5} />
                 ) : notificationPermission === 'denied' ? (
-                  <BellOff size={16} />
+                  <BellOff size={16} strokeWidth={1.5} />
                 ) : (
-                  <Bell size={16} />
+                  <Bell size={16} strokeWidth={1.5} />
                 )}
                 <span className="whitespace-nowrap">
                   {pushLoading

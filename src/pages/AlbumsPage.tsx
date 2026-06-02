@@ -76,18 +76,18 @@ const AlbumsPage: React.FC = () => {
 
         <form
           onSubmit={handleCreate}
-          className="bg-surface border border-border-default rounded-3xl p-3 sm:p-4 shadow-premium"
+          className="bg-surface border border-border-default dark:border-white/5 rounded-3xl p-3 sm:p-4 shadow-premium"
         >
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
             <div className="flex-1 space-y-1.5 sm:space-y-2">
               <label className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tạo Album mới</label>
               <div className="relative group">
-                <Folder className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} />
+                <Folder className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-all"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-all shadow-inner"
                   placeholder="Ví dụ: Phim Mafia Ý..."
                 />
               </div>
@@ -95,9 +95,9 @@ const AlbumsPage: React.FC = () => {
             <button
               type="submit"
               disabled={creating || loading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap active:scale-95 cursor-pointer"
             >
-              <Plus size={16} />
+              <Plus size={16} strokeWidth={1.5} />
               <span>{creating ? 'Đang tạo...' : 'Tạo album'}</span>
             </button>
           </div>
@@ -120,23 +120,23 @@ const AlbumsPage: React.FC = () => {
             {albums.map(album => (
               <div
                 key={album.docId}
-                className="group relative bg-surface rounded-3xl border border-border-default hover:border-primary/50 transition-all duration-500 shadow-premium hover:shadow-premium-hover cursor-pointer overflow-hidden"
+                className="group relative bg-surface rounded-2xl border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 shadow-premium hover:shadow-premium-hover cursor-pointer overflow-hidden active:scale-[0.98] hover:-translate-y-1"
                 onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
               >
                 {/* Cover image section */}
-                <div className="relative h-40 sm:h-48 md:h-56 w-full overflow-hidden">
+                <div className="relative h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
                   {albumCoverMovies[album.docId || '']?.poster_path ? (
                     <img
                       src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
                       alt={albumCoverMovies[album.docId || '']!.title}
-                      className="h-full w-full object-cover transition-transform duration-700"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="h-full w-full bg-linear-to-br from-slate-800 to-slate-950 flex items-center justify-center">
+                    <div className="h-full w-full bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-3 opacity-40">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
-                          <Film size={20} className="text-white" />
+                          <Film size={20} className="text-white" strokeWidth={1.5} />
                         </div>
                         <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white">Trống</span>
                       </div>
@@ -144,11 +144,11 @@ const AlbumsPage: React.FC = () => {
                   )}
 
                   {/* Gradient overlay - Darker for better text readability */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-90" />
 
                   {/* Album Badge (Top Left) */}
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 bg-black/40 backdrop-blur-xl rounded-xl border border-white/10 z-10">
-                    <Folder size={10} className="text-primary" />
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 dark:border-white/5 shadow-glass ring-1 ring-white/5 z-10">
+                    <Folder size={10} className="text-primary" strokeWidth={1.5} />
                     <span className="text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-wider">Album</span>
                   </div>
 
@@ -159,9 +159,9 @@ const AlbumsPage: React.FC = () => {
                       e.stopPropagation();
                       handleDelete(album);
                     }}
-                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/40 text-white/80 hover:bg-error hover:text-white backdrop-blur-xl transition-all border border-white/10 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 duration-300"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/40 text-white/80 hover:bg-error hover:text-white backdrop-blur-md border border-white/10 dark:border-white/5 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300 active:scale-90 cursor-pointer"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={16} strokeWidth={1.5} />
                   </button>
 
                   {/* Album name overlay */}
@@ -173,9 +173,9 @@ const AlbumsPage: React.FC = () => {
                 </div>
 
                 {/* Info bar - More compact on mobile */}
-                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface/50 backdrop-blur-xl border-t border-border-default">
+                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface/50 backdrop-blur-md border-t border-border-default dark:border-white/5">
                   <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-bold text-[9px] sm:text-[10px] uppercase tracking-wider border border-primary/20 shrink-0">
-                    <Film size={12} />
+                    <Film size={12} strokeWidth={1.5} />
                     <span>{album.movieDocIds.length} mục</span>
                   </div>
                   <span className="text-[9px] sm:text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-40 group-hover:opacity-100 transition-opacity truncate">Chi tiết →</span>

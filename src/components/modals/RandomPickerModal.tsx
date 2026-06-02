@@ -304,7 +304,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
                 {/* Left Side Card */}
                 <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-white/30 dark:border-gray-500">
+                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
                     <img
                       src={(() => {
                         if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
@@ -351,7 +351,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
                 {/* Right Side Card */}
                 <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-white/30 dark:border-gray-500">
+                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
                     <img
                       src={(() => {
                         if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
