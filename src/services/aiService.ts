@@ -166,7 +166,7 @@ const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
             "X-Title": "CineMOB",
         },
         body: JSON.stringify({
-            model: "qwen/qwen3-next-80b-a3b-instruct:free",
+            model: "openrouter/free",
             messages: [
                 { role: "system", content: "You are a professional movie recommendation engine. Output valid JSON only." },
                 { role: "user", content: prompt }
