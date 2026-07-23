@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vudovn/ag-kit": "^2026.7.18",
     "file-saver": "^2.0.5",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
