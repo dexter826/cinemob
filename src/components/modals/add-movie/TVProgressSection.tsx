@@ -36,7 +36,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
               type="checkbox"
               checked={isCompleted}
               onChange={(e) => setIsCompleted(e.target.checked)}
-              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-all duration-300 cursor-pointer"
+              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors duration-300 cursor-pointer"
             />
             <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform duration-300 pointer-events-none">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
@@ -58,7 +58,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -66,7 +66,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>
@@ -78,7 +78,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -89,7 +89,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>

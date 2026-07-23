@@ -35,7 +35,7 @@ const SearchPage: React.FC = () => {
   } = useSearch(user);
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader 
           icon={Search}

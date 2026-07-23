@@ -97,7 +97,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         className={`
           w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-all duration-300
+          hover:border-primary/30 transition-colors duration-300
           flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20 shadow-premium' : ''}
@@ -158,7 +158,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   onClick={() => handleSelect(option)}
                   className={`
                     w-full px-4 py-2.5 text-left text-sm rounded-xl
-                    transition-all duration-200 flex items-center justify-between mb-1 last:mb-0
+                    transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0
                     ${option.value === value 
                       ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' 
                       : 'text-text-main hover:bg-primary/10 hover:text-primary'

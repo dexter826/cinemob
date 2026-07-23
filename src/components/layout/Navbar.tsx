@@ -31,8 +31,8 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className="border-b border-border-default bg-surface/70 backdrop-blur-3xl sticky top-0 z-40 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+      <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
+        <nav className="pointer-events-auto w-full max-w-5xl bg-surface/50 backdrop-blur-2xl border border-border-default shadow-glass rounded-full px-4 md:px-4 h-14 flex items-center justify-between transition-colors duration-300">
           {/* Brand Logo */}
           <div
             className="flex items-center cursor-pointer"
@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
             <button
               onClick={() => navigate('/search')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
               <Search size={18} strokeWidth={location.pathname === '/search' ? 2 : 1.5} />
               <span>Tìm phim</span>
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => navigate('/stats')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
               <BarChart2 size={18} strokeWidth={location.pathname === '/stats' ? 2 : 1.5} />
               <span>Thống kê</span>
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => navigate('/albums')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
               <Folder size={18} strokeWidth={location.pathname.startsWith('/albums') ? 2 : 1.5} />
               <span>Album</span>
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => navigate('/calendar')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all cursor-pointer active:scale-[0.97] ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
             >
               <CalendarDays size={18} strokeWidth={location.pathname === '/calendar' ? 2 : 1.5} />
               <span>Lịch</span>
@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
             <div className="relative dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer min-w-9 min-h-9"
+                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
               >
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full object-cover shrink-0" />
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
                   <div className="p-1.5 space-y-0.5">
                     <button
                       onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-all duration-200 cursor-pointer rounded-xl active:scale-[0.98]"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <Download size={18} strokeWidth={1.5} />
                       <span>Xuất dữ liệu</span>
@@ -136,7 +136,7 @@ const Navbar: React.FC = () => {
                         });
                         setIsDropdownOpen(false);
                       }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-all duration-200 cursor-pointer rounded-xl active:scale-[0.98]"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <LogOut size={18} strokeWidth={1.5} />
                       <span>Đăng xuất</span>
@@ -146,8 +146,8 @@ const Navbar: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       <RandomPickerModal
         isOpen={isRandomOpen}

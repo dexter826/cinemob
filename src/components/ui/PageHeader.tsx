@@ -17,7 +17,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ icon: Icon, title, description,
         {onBack && (
           <button
             onClick={onBack}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-all shadow-premium shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors shadow-premium shrink-0"
           >
             <ArrowLeft size={22} />
           </button>

@@ -30,23 +30,23 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   return (
     <div
       onClick={() => onClick(movie)}
-      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover active:scale-[0.98] active:translate-y-px hover:-translate-y-1 relative"
+      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default hover:border-primary/40 transition-colors duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover hover:ring-1 hover:ring-primary/20 relative"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
           src={imageUrl}
           alt={mainTitle}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
 
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Action Menu */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 [@media(hover:none)]:opacity-100 group-hover:opacity-100 transition-all duration-300 translate-x-2 [@media(hover:none)]:translate-x-0 group-hover:translate-x-0 z-30">
+        <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
           <button
             onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
-            className="p-2 bg-black/40 hover:bg-error/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
+            className="p-2 bg-black/40 hover:bg-error/80 text-white rounded-xl backdrop-blur-xl transition-colors duration-200 border border-white/10 cursor-pointer"
             title="Xóa"
           >
             <Trash2 size={15} strokeWidth={1.5} />
@@ -55,7 +55,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {!onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-              className="p-2 bg-black/40 hover:bg-primary/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
+              className="p-2 bg-black/40 hover:bg-primary/80 text-white rounded-xl backdrop-blur-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Sửa"
             >
               <Edit2 size={15} strokeWidth={1.5} />
@@ -65,7 +65,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onMarkAsWatched(movie); }}
-              className="p-2 bg-black/40 hover:bg-success/80 text-white rounded-xl backdrop-blur-xl transition-all duration-200 border border-white/10 cursor-pointer"
+              className="p-2 bg-black/40 hover:bg-success/80 text-white rounded-xl backdrop-blur-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Đã xem"
             >
               <CheckCircle size={15} strokeWidth={1.5} />
@@ -110,7 +110,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         {showProgressBar && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
             <div 
-              className="h-full bg-primary transition-all duration-700 ease-out"
+              className="h-full bg-primary transition-[width] duration-700 ease-out"
               style={{ width: progressWidth }}
             />
           </div>

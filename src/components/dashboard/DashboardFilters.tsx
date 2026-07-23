@@ -50,12 +50,12 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim..."
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all shadow-premium ring-1 ring-black/5 dark:ring-white/5"
+            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
           />
           {filters.searchQuery && (
             <button
               onClick={() => updateFilter('searchQuery', '')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer active:scale-90"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer "
             >
               <X size={14} strokeWidth={1.5} />
             </button>
@@ -64,7 +64,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
         <button
           onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-300 cursor-pointer shadow-premium active:scale-95 ${
+          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-colors duration-300 cursor-pointer shadow-premium  ${
             showFilters 
               ? 'bg-primary/15 border-primary/40 text-primary' 
               : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
@@ -82,7 +82,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border active:scale-[0.98] ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border active:scale-[0.98] ${
                   filters.sortBy === 'date' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
@@ -91,7 +91,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               </button>
               <button
                 onClick={() => updateFilter('sortBy', 'title')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer border active:scale-[0.98] ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border active:scale-[0.98] ${
                   filters.sortBy === 'title' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
@@ -100,7 +100,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-all cursor-pointer active:scale-90"
+                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-colors cursor-pointer "
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
               >
                 {filters.sortOrder === 'asc' ? <ArrowUp size={16} strokeWidth={1.5} /> : <ArrowDown size={16} strokeWidth={1.5} />}
@@ -190,7 +190,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                             }
                           }
                         }}
-                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-all cursor-pointer active:scale-90 ${
+                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive 
                             ? 'text-warning bg-warning/15 shadow-sm' 
                             : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5 dark:hover:bg-white/5'

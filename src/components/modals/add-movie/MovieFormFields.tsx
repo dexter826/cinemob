@@ -126,7 +126,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               onChange={e => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm disabled:opacity-50"
+              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors shadow-sm disabled:opacity-50"
               placeholder={isTVSeries ? "Số mùa..." : "Phút..."}
             />
           </div>
@@ -163,7 +163,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
           rows={6}
           value={formData.content}
           onChange={e => setFormData({ ...formData, content: e.target.value })}
-          className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-all custom-scrollbar resize-none shadow-sm"
+          className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-colors custom-scrollbar resize-none shadow-sm"
           placeholder="Giới thiệu ngắn về cốt truyện..."
         />
       </div>

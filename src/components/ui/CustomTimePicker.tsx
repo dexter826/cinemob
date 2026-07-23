@@ -211,7 +211,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
                 <button
                     type="button"
                     onClick={setCurrentTime}
-                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-all uppercase tracking-widest border border-primary/20"
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors uppercase tracking-widest border border-primary/20"
                 >
                     Bây giờ
                 </button>
@@ -230,7 +230,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
                 className={`
           w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-all duration-200
+          hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}

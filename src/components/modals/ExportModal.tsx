@@ -132,7 +132,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
           <h2 className="text-xl font-bold text-text-main">Xuất dữ liệu</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-all cursor-pointer active:scale-95"
+            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer "
             disabled={isExporting}
           >
             <X size={20} className="text-text-muted" />
@@ -186,7 +186,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
                   <button
                     key={star}
                     onClick={() => setFilters(prev => ({ ...prev, rating: prev.rating === star ? null : star }))}
-                    className={`p-1.5 rounded-lg transition-all cursor-pointer active:scale-90 ${(filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer  ${(filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                       }`}
                   >
                     <Star size={16} fill={(filters.rating || 0) >= star ? "currentColor" : "none"} />
@@ -241,7 +241,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-95 cursor-pointer"
+            className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors  cursor-pointer"
             disabled={isExporting}
           >
             Hủy
@@ -249,7 +249,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
           <button
             onClick={handleExport}
             disabled={isExporting || filteredCount === 0}
-            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isExporting ? (
               <>

@@ -107,7 +107,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-1.5 sm:p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10 active:scale-90"
+              className="absolute top-4 right-4 z-10 p-1.5 sm:p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10 "
             >
               <X size={18} className="sm:w-5 sm:h-5" strokeWidth={1.5} />
             </button>
@@ -190,7 +190,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                       </div>
                       <div className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
                         <div
-                          className="h-full bg-primary transition-all duration-700 ease-out rounded-full"
+                          className="h-full bg-primary transition-colors duration-700 ease-out rounded-full"
                           style={{
                             width: movie.progress.is_completed ? '100%' : `${(movie.progress.watched_episodes / (movie.total_episodes || 1)) * 100}%`
                           }}
@@ -242,7 +242,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                           </h3>
                           <div className="flex flex-wrap gap-2">
                             {credits.cast.slice(0, 8).map(actor => (
-                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-medium text-text-muted transition-all border border-border-default dark:border-white/5 cursor-pointer active:scale-95">
+                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-medium text-text-muted transition-colors border border-border-default dark:border-white/5 cursor-pointer ">
                                 {actor.name}
                               </button>
                             ))}
@@ -254,11 +254,11 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   <div className="pt-4 flex flex-col gap-3">
                     {movie.status === 'watchlist' ? (
-                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-colors shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
                         <Play size={18} fill="currentColor" strokeWidth={1.5} /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
                       </button>
                     ) : (
-                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-all shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
+                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-colors shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
                         <FolderPlus size={18} strokeWidth={1.5} /> THÊM VÀO ALBUM
                       </button>
                     )}

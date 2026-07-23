@@ -78,7 +78,7 @@ const StatsPage: React.FC = () => {
   }
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader 
           icon={TrendingUp} 
@@ -189,7 +189,7 @@ const StatsPage: React.FC = () => {
                       </div>
                       <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
                         <div
-                          className="h-full bg-warning rounded-full transition-all duration-700 ease-out"
+                          className="h-full bg-warning rounded-full transition-colors duration-700 ease-out"
                           style={{ width: `${(moviesByRating[rating] / (ratedCount || 1)) * 100}%` }}
                         />
                       </div>
@@ -214,7 +214,7 @@ const StatsPage: React.FC = () => {
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 5)
                     .map(([country, count], index) => (
-                      <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-all duration-300 group">
+                      <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group">
                         <div className="flex items-center gap-4">
                           <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors">0{index + 1}</span>
                           <span className="font-bold text-sm text-text-main truncate max-w-[150px]">{country}</span>

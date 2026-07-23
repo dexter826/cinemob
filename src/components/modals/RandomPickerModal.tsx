@@ -318,7 +318,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Left movie"
-                      className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+                      className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
                     />
                     <div className="absolute inset-0 bg-black/30" />
                   </div>
@@ -339,7 +339,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Center movie"
-                      className="w-full h-full object-cover transition-all duration-200"
+                      className="w-full h-full object-cover transition-colors duration-200"
                     />
 
                     {/* Gradient overlay */}
@@ -365,7 +365,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                         return getTMDBImageUrl(m.poster_path);
                       })()}
                       alt="Right movie"
-                      className={`w-full h-full object-cover transition-all duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+                      className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
                     />
                     <div className="absolute inset-0 bg-black/30" />
                   </div>

@@ -22,13 +22,13 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
   return (
     <div
       onClick={() => onClick(movie)}
-      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default dark:border-white/5 cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 active:scale-[0.98] active:translate-y-px hover:-translate-y-1"
+      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/40 hover:ring-1 hover:ring-primary/20 transition-colors duration-300"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <img
           src={getTMDBImageUrl(movie.poster_path, 'w500')}
           alt={mainTitle}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
         
@@ -63,7 +63,7 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
               e.stopPropagation();
               onRemove(movie);
             }}
-            className="absolute top-2 right-2 z-20 p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-md rounded-lg border border-white/10 dark:border-white/5 text-white shadow-glass ring-1 ring-white/5 transition-all cursor-pointer active:scale-90"
+            className="absolute top-2 right-2 z-20 p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-md rounded-lg border border-white/10 text-white shadow-glass ring-1 ring-white/5 transition-colors cursor-pointer"
             title="Không quan tâm"
           >
             <X size={14} strokeWidth={1.5} />

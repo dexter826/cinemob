@@ -26,7 +26,7 @@ const RatingSection: React.FC<RatingSectionProps> = ({
           Đánh giá phim
         </label>
       </div>
-      <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-all duration-500 shadow-sm ${
+      <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-colors duration-500 shadow-sm ${
         isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : ''
       }`}>
         <div className="flex justify-between items-center max-w-full overflow-hidden">
@@ -37,10 +37,10 @@ const RatingSection: React.FC<RatingSectionProps> = ({
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
-              className="group p-0.5 sm:p-1.5 focus:outline-none transition-all flex-1 flex justify-center"
+              className="group p-0.5 sm:p-1.5 focus:outline-none transition-colors flex-1 flex justify-center"
             >
               <Star
-                className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 transition-all duration-300 ${
+                className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
                   star <= (hoverRating || rating)
                     ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
                     : 'text-text-muted/30 group-hover:text-warning/50'

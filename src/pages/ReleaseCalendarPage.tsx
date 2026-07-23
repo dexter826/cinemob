@@ -32,7 +32,7 @@ const ReleaseCalendarPage: React.FC = () => {
   } = useReleaseCalendar();
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
           <PageHeader 
             icon={CalendarDays}
@@ -45,7 +45,7 @@ const ReleaseCalendarPage: React.FC = () => {
                 <button
                   disabled={loading}
                   onClick={() => setViewMode('calendar')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs active:scale-95 cursor-pointer ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-bold text-[10px] sm:text-xs  cursor-pointer ${
                     viewMode === 'calendar' 
                       ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                       : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
@@ -57,7 +57,7 @@ const ReleaseCalendarPage: React.FC = () => {
                 <button
                   disabled={loading}
                   onClick={() => setViewMode('list')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-all flex items-center gap-2 font-bold text-[10px] sm:text-xs active:scale-95 cursor-pointer ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-bold text-[10px] sm:text-xs  cursor-pointer ${
                     viewMode === 'list' 
                       ? 'bg-primary text-white shadow-lg shadow-primary/20' 
                       : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
@@ -72,7 +72,7 @@ const ReleaseCalendarPage: React.FC = () => {
                 onClick={handlePushToggle}
                 disabled={pushLoading || loading}
                 title={pushSubscribed ? 'Tắt thông báo' : 'Bật thông báo tập phim mới'}
-                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-all flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium active:scale-[0.98] cursor-pointer ${
+                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-colors flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium active:scale-[0.98] cursor-pointer ${
                   pushSubscribed
                     ? 'bg-success text-white shadow-lg shadow-success/20'
                     : notificationPermission === 'denied'

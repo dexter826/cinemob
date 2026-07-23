@@ -155,7 +155,7 @@ const PersonDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader 
           onBack={() => navigate(-1)}
@@ -276,7 +276,7 @@ const PersonDetailPage: React.FC = () => {
                         {person.biography.length > 200 && (
                           <button
                             onClick={() => setShowFullBio(!showFullBio)}
-                            className="mt-3 text-primary hover:text-primary-dark font-bold text-xs uppercase tracking-widest flex items-center gap-1 transition-all cursor-pointer"
+                            className="mt-3 text-primary hover:text-primary-dark font-bold text-xs uppercase tracking-widest flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             {showFullBio ? (
                               <>Thu gọn <ChevronUp size={14} /></>
@@ -302,7 +302,7 @@ const PersonDetailPage: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm phim của nghệ sĩ này..."
-                    className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-xl sm:rounded-2xl pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-all"
+                    className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-xl sm:rounded-2xl pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-colors"
                   />
                   {searchQuery && (
                     <button 
@@ -316,7 +316,7 @@ const PersonDetailPage: React.FC = () => {
 
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-                  className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl border transition-all shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
+                  className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
                 >
                   <Filter size={20} />
                 </button>
@@ -326,13 +326,13 @@ const PersonDetailPage: React.FC = () => {
                     <div className="space-y-3">
                       <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
                       <div className="flex flex-wrap gap-2">
-                        <button onClick={() => setSortBy('year')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
+                        <button onClick={() => setSortBy('year')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                           <Calendar size={14} /> <span>Năm</span>
                         </button>
-                        <button onClick={() => setSortBy('title')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
+                        <button onClick={() => setSortBy('title')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                           <Type size={14} /> <span>Tên</span>
                         </button>
-                        <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-black/5 dark:bg-white/5 text-text-muted hover:bg-black/10 dark:hover:bg-white/10 transition-all border border-transparent cursor-pointer ml-auto">
+                        <button onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-black/5 dark:bg-white/5 text-text-muted hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto">
                           {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                           <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
                         </button>
