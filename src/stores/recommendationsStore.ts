@@ -1,14 +1,7 @@
 import { create } from 'zustand';
 import { TMDBMovieResult, Movie } from '../types';
-
-const CACHE_DURATION = {
-  AI_RECS: 7 * 24 * 60 * 60 * 1000,
-  PREVIOUSLY_RECOMMENDED: 30 * 24 * 60 * 60 * 1000
-} as const;
-
-const isExpired = (timestamp: number, duration: number): boolean => {
-  return Date.now() - timestamp > duration;
-};
+import { fetchAIRecommendations, fetchTrendingFallback } from '../services/recommendationService';
+import { getUserData, updatePreviouslyRecommendedTitles } from '../services/userService';
 
 const pendingRequests = new Map<string, Promise<any>>();
 
@@ -30,6 +23,7 @@ interface RecommendationsState {
   removeRecommendation: (userId: string, movieTitle: string) => Promise<void>;
 }
 
+// Quản lý gợi ý phim từ AI và xu hướng.
 const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   aiRecommendations: [],
   trendingMovies: [],
@@ -45,7 +39,6 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   setPreviouslyRecommendedTitles: (titles) => set({ previouslyRecommendedTitles: titles }),
   initializeForUser: async (userId: string) => {
     try {
-      const { getUserData } = await import('../services/userService');
       const userData = await getUserData(userId);
       if (userData && userData.previouslyRecommendedTitles) {
         set({ previouslyRecommendedTitles: new Set(userData.previouslyRecommendedTitles) });
@@ -60,23 +53,20 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
     }
   },
   refreshRecommendations: async (userId: string, forceRefresh = false) => {
-    const state = get();
+    const shouldFetchTrending = get().trendingMovies.length === 0 || forceRefresh;
 
-    if (state.trendingMovies.length === 0 || forceRefresh) {
+    if (shouldFetchTrending) {
       set({ isTrendingLoading: true });
-      (async () => {
-        try {
-          const { fetchTrendingFallback } = await import('../services/recommendationService');
-          const trending = await fetchTrendingFallback();
-          if (trending) {
-            set({ trendingMovies: trending });
-          }
-        } catch (e) {
-          console.error("Failed to fetch trending movies:", e);
-        } finally {
-          set({ isTrendingLoading: false });
+      try {
+        const trending = await fetchTrendingFallback();
+        if (trending) {
+          set({ trendingMovies: trending });
         }
-      })();
+      } catch (e) {
+        console.error("Failed to fetch trending movies:", e);
+      } finally {
+        set({ isTrendingLoading: false });
+      }
     }
     
     const pendingKey = `ai_${userId}`;
@@ -88,11 +78,11 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
 
     const requestPromise = (async () => {
       try {
-        const { fetchAIRecommendations } = await import('../services/recommendationService');
+        const currentState = get();
         const aiResult = await fetchAIRecommendations(
           userId,
-          state.historyMovies,
-          state.previouslyRecommendedTitles,
+          currentState.historyMovies,
+          currentState.previouslyRecommendedTitles,
           forceRefresh
         );
 
@@ -120,7 +110,6 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
       previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), movieTitle])
     }));
     try {
-      const { updatePreviouslyRecommendedTitles } = await import('../services/userService');
       await updatePreviouslyRecommendedTitles(userId, [movieTitle]);
     } catch (error) {
       console.error("Failed to sync removed recommendation:", error);

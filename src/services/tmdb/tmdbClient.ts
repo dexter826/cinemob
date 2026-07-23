@@ -2,6 +2,7 @@ import { TMDB_API_KEY, TMDB_BASE_URL } from '../../constants';
 
 // Giới hạn request đồng thời.
 export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> => {
+  if (tasks.length === 0) return Promise.resolve([]);
   return new Promise((resolve) => {
     const results: T[] = [];
     let completed = 0;

@@ -1,4 +1,5 @@
 import { Movie } from '../types';
+import { normalizeMovieDate } from '../utils/movieUtils';
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
@@ -70,8 +71,8 @@ const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePr
     const filteredMovies = history.filter(m => (m.rating || 0) >= 4);
     const selectedMovies = filteredMovies
         .sort((a, b) => {
-            const timeA = a.watched_at instanceof Date ? a.watched_at.getTime() : (a.watched_at as any)?.toMillis?.() || 0;
-            const timeB = b.watched_at instanceof Date ? b.watched_at.getTime() : (b.watched_at as any)?.toMillis?.() || 0;
+            const timeA = normalizeMovieDate(a.watched_at)?.getTime() || 0;
+            const timeB = normalizeMovieDate(b.watched_at)?.getTime() || 0;
             return timeB - timeA;
         })
         .slice(0, 50); 
@@ -176,10 +177,7 @@ const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
     });
 
 const parseAIResponse = (content: string): AIRecommendation[] => {
-    const jsonString = content
-        .replace(/^```json\s*/, "")
-        .replace(/^```\s*/, "")
-        .replace(/\s*```$/, "")
-        .trim();
-    return JSON.parse(jsonString);
-}
+    const match = content.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error("NO_JSON_ARRAY");
+    return JSON.parse(match[0]);
+};

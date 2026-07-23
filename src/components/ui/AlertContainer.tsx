@@ -19,7 +19,7 @@ const AlertContainer: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl animate-fade-in">
-      <div className="bg-surface w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-border-default transform transition-all scale-100">
+      <div className="bg-surface w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-border-default transform transition-colors scale-100">
         <div className="p-6">
           <div className="flex items-center gap-4 mb-4">
             <div className={`p-3 rounded-2xl ${alert.type === 'danger' ? 'bg-error/10 text-error' :
@@ -44,7 +44,7 @@ const AlertContainer: React.FC = () => {
             </button>
             <button
               onClick={handleConfirm}
-              className={`px-5 py-2.5 rounded-xl text-white font-bold text-sm transition-all shadow-premium hover:shadow-premium-hover flex items-center gap-2 cursor-pointer ${
+              className={`px-5 py-2.5 rounded-xl text-white font-bold text-sm transition-colors shadow-premium hover:shadow-premium-hover flex items-center gap-2 cursor-pointer ${
                 alert.type === 'danger' ? 'bg-error shadow-error/20' :
                 alert.type === 'warning' ? 'bg-warning shadow-warning/20' :
                 'bg-primary shadow-primary/20'

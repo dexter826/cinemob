@@ -146,7 +146,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         className={`
           w-full min-h-[44px] bg-surface border border-border-default rounded-2xl px-3 py-2 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-all duration-200
+          hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
@@ -235,7 +235,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                     onClick={() => handleSelect(option)}
                     className={`
                       w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl
-                      transition-all duration-150 flex items-center gap-3 mb-1 last:mb-0
+                      transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0
                       ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}
                     `}
                     role="option"

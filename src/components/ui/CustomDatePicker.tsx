@@ -280,7 +280,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                             onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
                             disabled={!item.isCurrentMonth || isDisabled}
                             className={`
-                                w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-all duration-150
+                                w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-colors duration-150
                                 flex items-center justify-center
                                 ${!item.isCurrentMonth ? 'text-text-muted/20 cursor-default' : ''}
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-main font-medium' : ''}
@@ -305,7 +305,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                         onChange(formatDateToString(today));
                         setIsOpen(false);
                     }}
-                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-all uppercase tracking-widest border border-primary/20"
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors uppercase tracking-widest border border-primary/20"
                 >
                     Hôm nay
                 </button>
@@ -324,7 +324,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 className={`
           w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-all duration-200
+          hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}

@@ -34,7 +34,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
 
   return (
     <div className={viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'}>
-      <div className={`bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] shadow-premium transition-all duration-300 ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
+      <div className={`bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] shadow-premium transition-colors duration-300 ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
         <div className="flex items-center justify-between mb-5 sm:mb-6">
           <h3 className="font-bold text-text-main flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl tracking-tight">
             <Bell size={24} className="text-primary" />
@@ -48,7 +48,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
-              className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-all cursor-pointer whitespace-nowrap"
+              className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap"
             >
               Tất cả
             </button>
@@ -95,9 +95,9 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                     <div
                       key={`${ep.seriesId}-${ep.episode.id}-${idx}`}
                       onClick={() => handleSeriesClick(ep)}
-                      className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 hover:shadow-premium transition-all duration-300 cursor-pointer border border-border-default group relative items-start overflow-hidden"
+                      className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 hover:shadow-premium transition-colors duration-300 cursor-pointer border border-border-default group relative items-start overflow-hidden"
                     >
-                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-all duration-300">
+                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
                         <img
                           src={getTMDBImageUrl(ep.posterPath)}
                           alt={ep.seriesName}
@@ -124,7 +124,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                         </p>
                       </div>
                       <div className="self-center pl-1 sm:pl-2">
-                        <ChevronRight size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 shrink-0" />
+                        <ChevronRight size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-colors duration-300 shrink-0" />
                       </div>
                     </div>
                   ))}

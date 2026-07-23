@@ -66,7 +66,7 @@ const AlbumsPage: React.FC = () => {
   };
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader 
           icon={Folder} 
@@ -87,7 +87,7 @@ const AlbumsPage: React.FC = () => {
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-all shadow-inner"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
                   placeholder="Ví dụ: Phim Mafia Ý..."
                 />
               </div>
@@ -95,7 +95,7 @@ const AlbumsPage: React.FC = () => {
             <button
               type="submit"
               disabled={creating || loading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap active:scale-95 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap  cursor-pointer"
             >
               <Plus size={16} strokeWidth={1.5} />
               <span>{creating ? 'Đang tạo...' : 'Tạo album'}</span>
@@ -120,7 +120,7 @@ const AlbumsPage: React.FC = () => {
             {albums.map(album => (
               <div
                 key={album.docId}
-                className="group relative bg-surface rounded-2xl border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-all duration-300 shadow-premium hover:shadow-premium-hover cursor-pointer overflow-hidden active:scale-[0.98] hover:-translate-y-1"
+                className="group relative bg-surface rounded-2xl border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-colors duration-300 shadow-premium hover:shadow-premium-hover cursor-pointer overflow-hidden active:scale-[0.98] hover:-translate-y-1"
                 onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
               >
                 {/* Cover image section */}
@@ -159,7 +159,7 @@ const AlbumsPage: React.FC = () => {
                       e.stopPropagation();
                       handleDelete(album);
                     }}
-                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/40 text-white/80 hover:bg-error hover:text-white backdrop-blur-md border border-white/10 dark:border-white/5 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-all duration-300 active:scale-90 cursor-pointer"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/40 text-white/80 hover:bg-error hover:text-white backdrop-blur-md border border-white/10 dark:border-white/5 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-colors duration-300  cursor-pointer"
                   >
                     <Trash2 size={16} strokeWidth={1.5} />
                   </button>

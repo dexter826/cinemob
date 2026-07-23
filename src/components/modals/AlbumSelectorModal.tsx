@@ -116,7 +116,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           >
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main transition-all cursor-pointer active:scale-95"
+              className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main transition-colors cursor-pointer "
             >
               <X size={20} />
             </button>
@@ -151,20 +151,20 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                       value={newAlbumName}
                       onChange={(e) => setNewAlbumName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
-                      className="w-full h-11 px-5 rounded-2xl border border-border-default bg-surface text-text-main font-bold placeholder-text-muted focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all shadow-sm"
+                      className="w-full h-11 px-5 rounded-2xl border border-border-default bg-surface text-text-main font-bold placeholder-text-muted focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors shadow-sm"
                       autoFocus
                     />
                     <div className="flex gap-3">
                       <button
                         onClick={handleCreateAlbum}
                         disabled={creatingAlbum || !newAlbumName.trim()}
-                        className="flex-1 px-6 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-premium disabled:opacity-40 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 cursor-pointer"
+                        className="flex-1 px-6 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-premium disabled:opacity-40 transition-colors active:scale-[0.98] shadow-lg shadow-primary/20 cursor-pointer"
                       >
                         {creatingAlbum ? 'Đang xử lý...' : 'Tạo album'}
                       </button>
                       <button
                         onClick={() => setShowCreateForm(false)}
-                        className="px-6 py-3.5 border border-border-default text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl font-bold transition-all active:scale-95 cursor-pointer"
+                        className="px-6 py-3.5 border border-border-default text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl font-bold transition-colors  cursor-pointer"
                       >
                         Hủy
                       </button>
@@ -174,10 +174,10 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
               ) : (
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="w-full p-6 mb-6 rounded-3xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 text-left group cursor-pointer active:scale-[0.99]"
+                  className="w-full p-6 mb-6 rounded-3xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-colors duration-300 text-left group cursor-pointer active:scale-[0.99]"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 transition-all">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20 transition-colors">
                       <FolderPlus size={24} className="text-primary" />
                     </div>
                     <div className="flex-1">
@@ -211,10 +211,10 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                       key={album.docId}
                       onClick={() => handleAddToAlbum(album)}
                       disabled={addingToAlbum === album.docId}
-                      className="w-full p-5 rounded-3xl border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer active:scale-[0.99]"
+                      className="w-full p-5 rounded-3xl border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer active:scale-[0.99]"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-border-default group-hover:border-primary/30 group-hover:bg-primary/10 transition-all">
+                        <div className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-border-default group-hover:border-primary/30 group-hover:bg-primary/10 transition-colors">
                           <Film size={22} className="text-text-muted group-hover:text-primary transition-colors" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -225,7 +225,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                             {album.movieDocIds.length} phim trong bộ sưu tập
                           </p>
                         </div>
-                        <div className="text-primary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                        <div className="text-primary font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-colors translate-x-2 group-hover:translate-x-0">
                           {addingToAlbum === album.docId ? 'Đang xử lý...' : 'Chọn ngay'}
                         </div>
                       </div>

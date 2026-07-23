@@ -151,7 +151,7 @@ const AlbumDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="text-text-main transition-all duration-300">
+    <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           onBack={() => navigate('/albums')}
@@ -165,7 +165,7 @@ const AlbumDetailPage: React.FC = () => {
               disabled={loading || !album}
               onClick={() => setManagingMovies(v => !v)}
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all border active:scale-95 cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border  cursor-pointer
                 ${managingMovies 
                   ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
                   : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
@@ -181,7 +181,7 @@ const AlbumDetailPage: React.FC = () => {
               disabled={loading || !album}
               onClick={() => setEditing(v => !v)}
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all border active:scale-95 cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border  cursor-pointer
                 ${editing 
                   ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
                   : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
@@ -207,7 +207,7 @@ const AlbumDetailPage: React.FC = () => {
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-all shadow-inner"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
                 />
               </div>
 
@@ -215,14 +215,14 @@ const AlbumDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-all active:scale-95 cursor-pointer"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors  cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-all whitespace-nowrap active:scale-95 cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap  cursor-pointer"
                 >
                   {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </button>
@@ -299,7 +299,7 @@ const AlbumDetailPage: React.FC = () => {
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Tìm trong lịch sử..."
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-all ring-1 ring-black/5 dark:ring-white/5"
+                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
                 </div>
                 <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default dark:border-white/5 uppercase tracking-widest whitespace-nowrap">
@@ -337,9 +337,9 @@ const AlbumDetailPage: React.FC = () => {
                           onEdit={() => {}}
                           onDelete={() => {}}
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-all rounded-[20px] sm:rounded-3xl flex items-center justify-center backdrop-blur-[2px] opacity-0 group-hover:opacity-100 border border-transparent group-hover:border-primary/40 dark:group-hover:border-primary/40">
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors rounded-[20px] sm:rounded-3xl flex items-center justify-center backdrop-blur-[2px] opacity-0 group-hover:opacity-100 border border-transparent group-hover:border-primary/40 dark:group-hover:border-primary/40">
                           <PlusCircle
-                            className="text-white drop-shadow-lg transition-all duration-300"
+                            className="text-white drop-shadow-lg transition-colors duration-300"
                             size={44}
                             strokeWidth={1.5}
                           />

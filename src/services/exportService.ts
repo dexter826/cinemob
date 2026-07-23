@@ -1,8 +1,6 @@
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 import { Movie } from '../types';
-import { Timestamp } from 'firebase/firestore';
-import { getTranslatedCountries, getTranslatedGenres } from '../utils/movieUtils';
+import { getTranslatedCountries, getTranslatedGenres, normalizeMovieDate } from '../utils/movieUtils';
 
 export interface ExportFilters {
   rating?: number | null;
@@ -22,8 +20,8 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
 
   if (filters.year !== null && filters.year !== undefined) {
     result = result.filter(movie => {
-      const date = movie.watched_at instanceof Timestamp ? movie.watched_at.toDate() : (movie.watched_at as Date);
-      return date && date.getFullYear() === filters.year;
+      const date = normalizeMovieDate(movie.watched_at);
+      return date ? date.getFullYear() === filters.year : false;
     });
   }
 
@@ -56,7 +54,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     }
 
     const excelData = filteredMovies.map(movie => {
-      const watchedDate = movie.watched_at instanceof Timestamp ? movie.watched_at.toDate() : (movie.watched_at as Date);
+      const watchedDate = normalizeMovieDate(movie.watched_at);
       const isTV = movie.media_type === 'tv';
       return {
         'Tên phim': movie.title,

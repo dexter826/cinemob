@@ -1,6 +1,7 @@
 import { TMDBMovieResult, Movie } from '../types';
 import { getAIRecommendations } from './aiService';
 import { searchMovies, getTrendingMovies, withLimit } from './tmdb';
+import { updatePreviouslyRecommendedTitles } from './userService';
 
 const CACHE_DURATION = {
   AI_RECS: 7 * 24 * 60 * 60 * 1000,
@@ -78,7 +79,6 @@ export const fetchAIRecommendations = async (
     timestamp: Date.now(),
   }));
 
-  const { updatePreviouslyRecommendedTitles } = await import('./userService');
   const newTitles = aiRecs.map(rec => rec.title);
   await updatePreviouslyRecommendedTitles(userId, newTitles);
 

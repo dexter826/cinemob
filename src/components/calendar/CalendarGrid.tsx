@@ -74,8 +74,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           key={day}
           onClick={() => setSelectedDate(date)}
           className={`
-            h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-all duration-300
-            hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group active:scale-95
+            h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
+            hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group 
             ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40 shadow-lg shadow-primary/10' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
@@ -132,18 +132,18 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   return (
     <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default dark:border-white/5 p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium ring-1 ring-black/5 dark:ring-white/5">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer active:scale-90">
+        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer ">
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight uppercase whitespace-nowrap">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-all uppercase tracking-widest cursor-pointer active:scale-95">
+          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors uppercase tracking-widest cursor-pointer ">
             Hôm nay
           </button>
         </div>
-        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-all cursor-pointer active:scale-90">
+        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer ">
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
       </div>

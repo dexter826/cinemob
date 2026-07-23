@@ -31,11 +31,10 @@ export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updat
 // Cập nhật thông tin album.
 export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
   const albumRef = doc(db, COLLECTION_NAME, docId);
-  const payload: Partial<Album & { updatedAt: Timestamp }> = {
+  await updateDoc(albumRef, {
     ...updates,
-    updatedAt: serverTimestamp() as unknown as Timestamp,
-  };
-  await updateDoc(albumRef, payload as any);
+    updatedAt: serverTimestamp(),
+  });
 };
 
 // Xóa album.

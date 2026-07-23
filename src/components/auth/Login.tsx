@@ -63,11 +63,11 @@ interface FeatureCardProps {
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description, index }) => (
   <div
-    className="group flex items-start gap-2 sm:gap-2.5 p-3 sm:p-3.5 rounded-xl bg-surface/50 backdrop-blur-sm border border-text-main/5 hover:border-primary/20 hover:bg-surface/80 transition-all duration-300"
+    className="group flex items-start gap-2 sm:gap-2.5 p-3 sm:p-3.5 rounded-xl bg-surface/50 backdrop-blur-sm border border-text-main/5 hover:border-primary/20 hover:bg-surface/80 transition-colors duration-300"
     style={{ animationDelay: `${600 + index * 100}ms` }}
     role="listitem"
   >
-    <div className="shrink-0 p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-all duration-300">
+    <div className="shrink-0 p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors duration-300">
       <Icon size={16} className="sm:w-5 sm:h-5" aria-hidden="true" />
     </div>
     <div>
@@ -120,7 +120,7 @@ const Login: React.FC = () => {
             {/* Logo Container với glow effect */}
             <div className="relative group">
               <div className="absolute inset-0 bg-primary/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative bg-surface p-3 sm:p-4 rounded-2xl shadow-2xl shadow-primary/10 border border-text-main/5 transition-all duration-300">
+              <div className="relative bg-surface p-3 sm:p-4 rounded-2xl shadow-2xl shadow-primary/10 border border-text-main/5 transition-colors duration-300">
                 <img
                   src="/logo512.png"
                   alt=""
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="group relative w-full flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 bg-surface border-2 border-text-main/10 rounded-2xl font-semibold text-text-main hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300"
+              className="group relative w-full flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 bg-surface border-2 border-text-main/10 rounded-2xl font-semibold text-text-main hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-300"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >

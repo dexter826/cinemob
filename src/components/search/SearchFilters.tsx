@@ -70,7 +70,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-11 sm:pl-12 pr-24 sm:pr-28 focus:outline-none focus:border-primary transition-all shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-main placeholder-text-muted/40"
+          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-11 sm:pl-12 pr-24 sm:pr-28 focus:outline-none focus:border-primary transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-main placeholder-text-muted/40"
           autoFocus
         />
 
@@ -140,14 +140,14 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           {filters.query && (
             <button
               onClick={() => updateFilter('query', '')}
-              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer active:scale-90"
+              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer "
             >
               <X size={20} strokeWidth={1.5} />
             </button>
           )}
           <button
             onClick={handleSearch}
-            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-all text-sm sm:text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer active:scale-95"
+            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-colors text-sm sm:text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer "
           >
             Tìm
           </button>
