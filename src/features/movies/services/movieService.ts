@@ -1,0 +1,115 @@
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  Timestamp,
+  getDocs
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Movie } from '@/types';
+
+const COLLECTION_NAME = 'movies';
+
+// Lưu phim mới vào kho cá nhân.
+export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
+  try {
+    const payload = {
+      ...movie,
+      watched_at: movie.watched_at || serverTimestamp()
+    };
+
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), payload);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding movie: ", error);
+    throw error;
+  }
+};
+
+// Cập nhật thông tin phim.
+export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
+  try {
+    const movieRef = doc(db, COLLECTION_NAME, docId);
+    await updateDoc(movieRef, updates);
+  } catch (error) {
+    console.error("Error updating movie: ", error);
+    throw error;
+  }
+};
+
+// Xóa phim khỏi danh sách.
+export const deleteMovie = async (docId: string) => {
+  try {
+    await deleteDoc(doc(db, COLLECTION_NAME, docId));
+  } catch (error) {
+    console.error("Error deleting movie: ", error);
+    throw error;
+  }
+};
+
+// Kiểm tra phim đã tồn tại chưa.
+export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
+  try {
+    const q = query(
+      collection(db, COLLECTION_NAME),
+      where("uid", "==", uid),
+      where("id", "==", movieId)
+    );
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  } catch (error) {
+    console.error("Error checking movie existence: ", error);
+    return false;
+  }
+};
+
+// Chuyển dữ liệu Firestore sang Object Movie.
+export const mapDocToMovie = (docId: string, data: any): Movie => {
+  return {
+    docId,
+    uid: data.uid,
+    id: data.id,
+    title: data.title,
+    title_vi: data.title_vi || '',
+    poster_path: data.poster_path,
+    runtime: data.runtime,
+    seasons: data.seasons || 0,
+    total_episodes: data.total_episodes || 0,
+    watched_at: data.watched_at,
+    source: data.source,
+    media_type: data.media_type || 'movie',
+    status: data.status || 'history',
+    rating: data.rating || 0,
+    review: data.review || '',
+    tagline: data.tagline || '',
+    genres: data.genres || '',
+    release_date: data.release_date || '',
+    country: data.country || '',
+    content: data.content || '',
+    progress: data.progress || undefined,
+    is_review: data.is_review || false
+  } as Movie;
+};
+
+// Theo dõi danh sách phim thời gian thực.
+export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
+  const q = query(
+    collection(db, COLLECTION_NAME),
+    where("uid", "==", uid),
+    orderBy("watched_at", "desc")
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const movies = snapshot.docs.map(doc => mapDocToMovie(doc.id, doc.data()));
+    callback(movies);
+  }, (error) => {
+    console.error("Snapshot error:", error);
+  });
+};

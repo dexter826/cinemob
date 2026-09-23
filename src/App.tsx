@@ -1,29 +1,29 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AuthProvider, useAuth } from './components/providers/AuthProvider';
-import useAddMovieStore from './stores/addMovieStore';
-import useMovieDetailStore from './stores/movieDetailStore';
-import Login from './components/auth/Login';
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const SearchPage = lazy(() => import('./pages/SearchPage'));
-const StatsPage = lazy(() => import('./pages/StatsPage'));
-const AlbumsPage = lazy(() => import('./pages/AlbumsPage'));
-const AlbumDetailPage = lazy(() => import('./pages/AlbumDetailPage'));
-const PersonDetailPage = lazy(() => import('./pages/PersonDetailPage'));
-const ReleaseCalendarPage = lazy(() => import('./pages/ReleaseCalendarPage'));
-const AddMovieModal = lazy(() => import('./components/modals/AddMovieModal'));
-const MovieDetailModal = lazy(() => import('./components/modals/MovieDetailModal'));
-import Layout from './components/layout/Layout';
-import SplashScreen from './components/ui/SplashScreen';
-import Loading from './components/ui/Loading';
-import { ThemeProvider } from './components/providers/ThemeProvider';
-import { useAppInit } from './hooks/useAppInit';
-import ToastContainer from './components/ui/ToastContainer';
-import AlertContainer from './components/ui/AlertContainer';
-import { PAGE_VARIANTS, PAGE_TRANSITION } from './constants';
+import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
+import { ThemeProvider } from '@/app/providers/ThemeProvider';
+import useAddMovieStore from '@/features/movies/stores/addMovieStore';
+import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
+import Login from '@/features/auth/components/Login';
+const Dashboard = lazy(() => import('@/features/dashboard/pages/Dashboard'));
+const SearchPage = lazy(() => import('@/features/search/pages/SearchPage'));
+const StatsPage = lazy(() => import('@/features/stats/pages/StatsPage'));
+const AlbumsPage = lazy(() => import('@/features/albums/pages/AlbumsPage'));
+const AlbumDetailPage = lazy(() => import('@/features/albums/pages/AlbumDetailPage'));
+const PersonDetailPage = lazy(() => import('@/features/search/pages/PersonDetailPage'));
+const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/ReleaseCalendarPage'));
+const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
+const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
+import Layout from '@/shared/components/layout/Layout';
+import SplashScreen from '@/shared/components/feedback/SplashScreen';
+import Loading from '@/shared/components/ui/Loading';
+import { useAppInit } from '@/shared/hooks/useAppInit';
+import ToastContainer from '@/shared/components/feedback/ToastContainer';
+import AlertContainer from '@/shared/components/feedback/AlertContainer';
+import { PAGE_VARIANTS, PAGE_TRANSITION } from '@/constants';
 
-import useInitialLoadStore from './stores/initialLoadStore';
+import useInitialLoadStore from '@/shared/stores/initialLoadStore';
 
 
 const AnimatedRoutes: React.FC = () => {

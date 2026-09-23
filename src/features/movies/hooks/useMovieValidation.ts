@@ -1,0 +1,113 @@
+import { useState, useRef, useEffect, useCallback } from 'react';
+import useToastStore from '@/shared/stores/toastStore';
+import { MESSAGES } from '@/constants/messages';
+
+export interface FormErrors {
+  title: boolean;
+  country: boolean;
+  releaseDate: boolean;
+  runtime: boolean;
+  seasons: boolean;
+}
+
+export interface FormValidationData {
+  title: string;
+  country: string;
+  releaseDate: string;
+  seasons?: string | number;
+  runtime?: string | number;
+  rating?: number;
+}
+
+export interface FormFieldRefs {
+  title: React.RefObject<HTMLInputElement | null>;
+  country: React.RefObject<HTMLDivElement | null>;
+  releaseDate: React.RefObject<HTMLDivElement | null>;
+  runtime: React.RefObject<HTMLInputElement | null>;
+  seasons: React.RefObject<HTMLInputElement | null>;
+  rating: React.RefObject<HTMLDivElement | null>;
+}
+
+// Xử lý validation và hiệu ứng lỗi cho form.
+export const useMovieValidation = () => {
+  const { showToast } = useToastStore();
+  const [ratingError, setRatingError] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({
+    title: false,
+    country: false,
+    releaseDate: false,
+    runtime: false,
+    seasons: false
+  });
+  const [errorTrigger, setErrorTrigger] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const refs: FormFieldRefs = {
+    title: useRef<HTMLInputElement>(null),
+    country: useRef<HTMLDivElement>(null),
+    releaseDate: useRef<HTMLDivElement>(null),
+    runtime: useRef<HTMLInputElement>(null),
+    seasons: useRef<HTMLInputElement>(null),
+    rating: useRef<HTMLDivElement>(null)
+  };
+
+  const clearErrors = useCallback(() => {
+    setRatingError(false);
+    setErrors({ title: false, country: false, releaseDate: false, runtime: false, seasons: false });
+    setErrorTrigger(0);
+  }, []);
+
+  useEffect(() => {
+    if (errorTrigger > 0) {
+      const errorKey = (Object.keys(errors) as Array<keyof FormErrors>).find(k => errors[k]) || (ratingError ? 'rating' : null);
+      const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
+      if (targetRef?.current) {
+        targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setIsAnimating(false);
+        setTimeout(() => setIsAnimating(true), 10);
+        setTimeout(() => setIsAnimating(false), 1010);
+      }
+    }
+  }, [errorTrigger, errors, ratingError]);
+
+  const validate = (
+    isManualMode: boolean,
+    isTVSeries: boolean,
+    status: 'history' | 'watchlist',
+    formData: FormValidationData
+  ): boolean => {
+    if (isManualMode) {
+      const newErrors = {
+        title: !formData.title.trim(),
+        country: !formData.country.trim(),
+        releaseDate: !formData.releaseDate,
+        seasons: isTVSeries && (!formData.seasons || parseInt(String(formData.seasons)) <= 0),
+        runtime: !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0)
+      };
+
+      if (Object.values(newErrors).some(v => v)) {
+        setErrors(newErrors);
+        setErrorTrigger(p => p + 1);
+        showToast(MESSAGES.COMMON.REQUIRED_FIELDS, "error");
+        return false;
+      }
+    }
+
+    if (status === 'history' && formData.rating === 0) {
+      setRatingError(true);
+      setErrorTrigger(p => p + 1);
+      showToast(MESSAGES.MOVIE.REQUIRED_RATING, "error");
+      return false;
+    }
+
+    return true;
+  };
+
+  return {
+    ratingError, setRatingError,
+    errors, setErrors,
+    errorTrigger, setErrorTrigger,
+    isAnimating, refs,
+    clearErrors, validate
+  };
+};

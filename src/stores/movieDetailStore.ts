@@ -1,19 +1,2 @@
-import { create } from 'zustand';
-import { Movie } from '../types';
-
-interface MovieDetailState {
-    isOpen: boolean;
-    movie: Movie | null;
-    openDetailModal: (movie: Movie) => void;
-    closeDetailModal: () => void;
-}
-
-// Quản lý modal chi tiết phim.
-const useMovieDetailStore = create<MovieDetailState>((set) => ({
-    isOpen: false,
-    movie: null,
-    openDetailModal: (movie) => set({ movie, isOpen: true }),
-    closeDetailModal: () => set({ isOpen: false, movie: null }),
-}));
-
-export default useMovieDetailStore;
+export * from '@/features/movies/stores/movieDetailStore';
+export { default } from '@/features/movies/stores/movieDetailStore';

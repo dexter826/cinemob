@@ -1,0 +1,166 @@
+import React, { useState } from 'react';
+import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search, CalendarDays, Settings } from 'lucide-react';
+import { useAuth } from '@/app/providers/AuthProvider';
+import { useTheme } from '@/app/providers/ThemeProvider';
+import { useNavigate, useLocation } from 'react-router-dom';
+import RandomPickerModal from '@/components/modals/RandomPickerModal';
+import ExportModal from '@/components/modals/ExportModal';
+import useExportStore from '@/stores/exportStore';
+import useAlertStore from '@/shared/stores/alertStore';
+import logoText from '@/assets/images/logo_text.png';
+
+const Navbar: React.FC = () => {
+  const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isRandomOpen, setIsRandomOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
+  const { showAlert } = useAlertStore();
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen && !(event.target as Element).closest('.dropdown-container')) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isDropdownOpen]);
+
+  return (
+    <>
+      <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
+        <nav className="pointer-events-auto w-full max-w-5xl bg-surface/50 backdrop-blur-2xl border border-border-default shadow-glass rounded-full px-4 md:px-4 h-14 flex items-center justify-between transition-colors duration-300">
+          {/* Brand Logo */}
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => navigate('/')}
+          >
+            <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
+          </div>
+
+          {/* Navigation Desktop */}
+          <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
+            <button
+              onClick={() => navigate('/search')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+            >
+              <Search size={18} strokeWidth={location.pathname === '/search' ? 2 : 1.5} />
+              <span>Tìm phim</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/stats')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+            >
+              <BarChart2 size={18} strokeWidth={location.pathname === '/stats' ? 2 : 1.5} />
+              <span>Thống kê</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/albums')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+            >
+              <Folder size={18} strokeWidth={location.pathname.startsWith('/albums') ? 2 : 1.5} />
+              <span>Album</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/calendar')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
+            >
+              <CalendarDays size={18} strokeWidth={location.pathname === '/calendar' ? 2 : 1.5} />
+              <span>Lịch</span>
+            </button>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsRandomOpen(true)}
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
+              title="Chọn giúp tôi"
+            >
+              <Dice5 size={20} strokeWidth={1.5} />
+            </button>
+
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
+              title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
+            >
+              {theme === 'dark' ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
+            </button>
+
+            <div className="relative dropdown-container">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
+              >
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                    {user?.displayName?.charAt(0) || 'U'}
+                  </div>
+                )}
+                <ChevronDown size={14} className={`hidden md:block transition-transform duration-300 shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-2xl border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
+                  <div className="px-4 py-3 border-b border-border-default bg-black/5 dark:bg-white/5">
+                    <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
+                  </div>
+
+                  <div className="p-1.5 space-y-0.5">
+                    <button
+                      onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
+                    >
+                      <Download size={18} strokeWidth={1.5} />
+                      <span>Xuất dữ liệu</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        showAlert({
+                          title: 'Xác nhận đăng xuất',
+                          message: 'Bạn có chắc chắn muốn đăng xuất?',
+                          type: 'danger',
+                          confirmText: 'Đăng xuất',
+                          cancelText: 'Hủy',
+                          onConfirm: logout,
+                        });
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-colors duration-200 cursor-pointer rounded-xl"
+                    >
+                      <LogOut size={18} strokeWidth={1.5} />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <RandomPickerModal
+        isOpen={isRandomOpen}
+        onClose={() => setIsRandomOpen(false)}
+      />
+
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        movies={movies}
+      />
+    </>
+  );
+};
+
+export default Navbar;
