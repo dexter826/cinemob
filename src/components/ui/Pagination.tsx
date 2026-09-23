@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationProps {
   currentPage: number;
@@ -52,9 +52,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         type="button"
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
+        aria-label="Trang trước"
         className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
-        <ArrowDown size={18} className="rotate-90" />
+        <ChevronLeft size={18} />
       </button>
 
       {/* Desktop Pagination */}
@@ -115,9 +116,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         type="button"
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
+        aria-label="Trang sau"
         className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
-        <ArrowDown size={18} className="-rotate-90" />
+        <ChevronRight size={18} />
       </button>
     </div>
   );

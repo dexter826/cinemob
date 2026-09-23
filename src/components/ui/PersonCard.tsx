@@ -1,7 +1,6 @@
 import React from 'react';
 import { TMDBPerson } from '../../types';
 import { getTMDBImageUrl } from '../../utils/movieUtils';
-import { User } from 'lucide-react';
 
 interface PersonCardProps {
   person: TMDBPerson;

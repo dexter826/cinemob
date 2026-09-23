@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Clock, ChevronUp, ChevronDown, X } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Clock, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 interface CustomTimePickerProps {
@@ -10,6 +10,8 @@ interface CustomTimePickerProps {
     disabled?: boolean;
     minuteStep?: number;
 }
+
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => i);
 
 const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
     value,
@@ -48,24 +50,26 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen, isMobile]);
 
-    // Scroll to selected time when opening
+    // Cuộn đến giờ phút đã chọn khi mở picker
     useEffect(() => {
-        if (isOpen) {
-            setTimeout(() => {
-                if (hourListRef.current) {
-                    const selectedHour = hourListRef.current.querySelector('[data-selected="true"]');
-                    if (selectedHour) {
-                        selectedHour.scrollIntoView({ block: 'center', behavior: 'auto' });
-                    }
+        if (!isOpen) return;
+
+        const timer = setTimeout(() => {
+            if (hourListRef.current) {
+                const selectedHour = hourListRef.current.querySelector('[data-selected="true"]');
+                if (selectedHour) {
+                    selectedHour.scrollIntoView({ block: 'center', behavior: 'auto' });
                 }
-                if (minuteListRef.current) {
-                    const selectedMinute = minuteListRef.current.querySelector('[data-selected="true"]');
-                    if (selectedMinute) {
-                        selectedMinute.scrollIntoView({ block: 'center', behavior: 'auto' });
-                    }
+            }
+            if (minuteListRef.current) {
+                const selectedMinute = minuteListRef.current.querySelector('[data-selected="true"]');
+                if (selectedMinute) {
+                    selectedMinute.scrollIntoView({ block: 'center', behavior: 'auto' });
                 }
-            }, 0);
-        }
+            }
+        }, 0);
+
+        return () => clearTimeout(timer);
     }, [isOpen]);
 
     const handleToggle = () => {
@@ -106,11 +110,6 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         handleMinuteChange(newMinute);
     };
 
-    const formatDisplayTime = (timeStr: string): string => {
-        if (!timeStr) return '';
-        return timeStr;
-    };
-
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
@@ -128,9 +127,10 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         setIsOpen(false);
     };
 
-    // Generate hour and minute options
-    const hourOptions = Array.from({ length: 24 }, (_, i) => i);
-    const minuteOptions = Array.from({ length: 60 / minuteStep }, (_, i) => i * minuteStep);
+    const minuteOptions = useMemo(
+        () => Array.from({ length: Math.floor(60 / minuteStep) }, (_, i) => i * minuteStep),
+        [minuteStep]
+    );
 
     const renderPicker = () => (
         <div
@@ -161,7 +161,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
                     className="flex-1 overflow-y-auto custom-scrollbar"
                 >
                     <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold uppercase tracking-widest">Giờ</div>
-                    {hourOptions.map((h) => (
+                    {HOUR_OPTIONS.map((h) => (
                         <button
                             key={h}
                             type="button"
@@ -241,7 +241,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
                 <div className="flex items-center gap-2">
                     <Clock size={16} className="text-text-muted" />
                     <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
-                        {value ? formatDisplayTime(value) : placeholder}
+                        {value || placeholder}
                     </span>
                 </div>
             </button>

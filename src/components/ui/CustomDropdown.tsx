@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 
 interface Option {
@@ -32,13 +32,16 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = useMemo(
+    () => options.find(option => option.value === value),
+    [options, value]
+  );
 
-  const filteredOptions = searchable && searchQuery
-    ? options.filter(option =>
-      option.label.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : options;
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchQuery.trim()) return options;
+    const lowerQuery = searchQuery.toLowerCase();
+    return options.filter(option => option.label.toLowerCase().includes(lowerQuery));
+  }, [options, searchable, searchQuery]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

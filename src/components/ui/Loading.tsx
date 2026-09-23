@@ -10,6 +10,36 @@ interface LoadingProps {
   className?: string;
 }
 
+interface SpinnerProps {
+  size: number;
+}
+
+const Spinner: React.FC<SpinnerProps> = ({ size }) => (
+  <div className="relative" style={{ width: size, height: size }}>
+    <motion.div
+      className="absolute inset-0 border-4 border-primary/20 rounded-full"
+      style={{ width: size, height: size }}
+    />
+    <motion.div
+      className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full"
+      style={{ width: size, height: size }}
+      animate={{ rotate: 360 }}
+      transition={{ 
+        duration: 1, 
+        repeat: Infinity, 
+        ease: 'linear' 
+      }}
+    />
+    <motion.div
+      className="absolute inset-0 flex items-center justify-center"
+      animate={{ opacity: [0.4, 1, 0.4] }}
+      transition={{ duration: 2, repeat: Infinity }}
+    >
+      <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-sm shadow-primary" />
+    </motion.div>
+  </div>
+);
+
 /** Component hiển thị trạng thái đang tải cao cấp. */
 const Loading: React.FC<LoadingProps> = ({ 
   size = 48, 
@@ -29,38 +59,9 @@ const Loading: React.FC<LoadingProps> = ({
     }
   }, [fullScreen, contain, setPageLoading]);
 
-  const Spinner = () => (
-    <div className="relative" style={{ width: size, height: size }}>
-      {/* Outer Ring */}
-      <motion.div
-        className="absolute inset-0 border-4 border-primary/20 rounded-full"
-        style={{ width: size, height: size }}
-      />
-      {/* Animated Inner Ring */}
-      <motion.div
-        className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full"
-        style={{ width: size, height: size }}
-        animate={{ rotate: 360 }}
-        transition={{ 
-          duration: 1, 
-          repeat: Infinity, 
-          ease: "linear" 
-        }}
-      />
-      {/* Inner Dot */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        animate={{ opacity: [0.4, 1, 0.4] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-sm shadow-primary" />
-      </motion.div>
-    </div>
-  );
-
   const content = (
     <div className={`flex flex-col items-center justify-center ${className}`}>
-      <Spinner />
+      <Spinner size={size} />
       {text && (
         <motion.p 
           initial={{ opacity: 0, y: 10 }}

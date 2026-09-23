@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
@@ -17,6 +17,19 @@ const MONTHS_VI = [
     'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
     'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
 ];
+
+const formatDateToString = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};
+
+const formatDisplayDate = (dateStr: string): string => {
+    if (!dateStr) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return `${d}/${m}/${y}`;
+};
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     value,
@@ -38,10 +51,11 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     });
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const selectedDate = value ? (() => {
+    const selectedDate = useMemo(() => {
+        if (!value) return null;
         const [y, m, d] = value.split('-').map(Number);
         return new Date(y, m - 1, d);
-    })() : null;
+    }, [value]);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -101,19 +115,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
         setIsOpen(false);
     };
 
-    const formatDateToString = (date: Date): string => {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    };
-
-    const formatDisplayDate = (dateStr: string): string => {
-        if (!dateStr) return '';
-        const [y, m, d] = dateStr.split('-').map(Number);
-        return `${d}/${m}/${y}`;
-    };
-
     const isDateDisabled = (day: number): boolean => {
         const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
         if (minDate) {
@@ -147,34 +148,30 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
         );
     };
 
-    // Generate calendar days
-    const getDaysInMonth = () => {
+    const daysInMonth = useMemo(() => {
         const year = viewDate.getFullYear();
         const month = viewDate.getMonth();
         const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const daysCount = new Date(year, month + 1, 0).getDate();
         const daysInPrevMonth = new Date(year, month, 0).getDate();
 
         const days: { day: number; isCurrentMonth: boolean }[] = [];
 
-        // Previous month days
         for (let i = firstDay - 1; i >= 0; i--) {
             days.push({ day: daysInPrevMonth - i, isCurrentMonth: false });
         }
 
-        // Current month days
-        for (let i = 1; i <= daysInMonth; i++) {
+        for (let i = 1; i <= daysCount; i++) {
             days.push({ day: i, isCurrentMonth: true });
         }
 
-        // Next month days
         const remaining = 42 - days.length;
         for (let i = 1; i <= remaining; i++) {
             days.push({ day: i, isCurrentMonth: false });
         }
 
         return days;
-    };
+    }, [viewDate]);
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -268,7 +265,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-1">
-                {getDaysInMonth().map((item, index) => {
+                {daysInMonth.map((item, index) => {
                     const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
                     const isTodayDate = item.isCurrentMonth && isToday(item.day);
                     const isSelectedDate = item.isCurrentMonth && isSelected(item.day);

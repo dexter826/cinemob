@@ -1,9 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Movie } from '../../types';
-import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '../../constants';
-import { getMainTitle, getSubTitle, formatMovieDate } from '../../utils/movieUtils';
-import { Trash2, Clock, Calendar, Star, Edit2, MessageCircle, MessageSquare, Film, Tv, CheckCircle, Info } from 'lucide-react';
+import { PLACEHOLDER_IMAGE } from '../../constants';
+import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../../utils/movieUtils';
+import { Trash2, Calendar, Star, Edit2, MessageCircle, MessageSquare, Film, Tv, CheckCircle } from 'lucide-react';
 
 interface MovieCardProps {
   movie: Movie;
@@ -15,7 +14,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick, onMarkAsWatched }) => {
   const imageUrl = movie.poster_path
-    ? (movie.source === 'tmdb' ? `${TMDB_IMAGE_BASE_URL}${movie.poster_path}` : movie.poster_path)
+    ? (movie.source === 'tmdb' ? getTMDBImageUrl(movie.poster_path, 'w500') : movie.poster_path)
     : PLACEHOLDER_IMAGE;
 
   const mainTitle = getMainTitle(movie);

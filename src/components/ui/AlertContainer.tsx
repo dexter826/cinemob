@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Check, X } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import useAlertStore from '../../stores/alertStore';
 
 const AlertContainer: React.FC = () => {

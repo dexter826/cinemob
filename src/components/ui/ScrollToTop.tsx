@@ -7,28 +7,26 @@ const ScrollToTop: React.FC = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      if (window.scrollY > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
 
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  // Check if body overflow is hidden (modal is open)
+  // Theo dõi trạng thái overflow của body
   useEffect(() => {
     const checkModal = () => {
       setHasModal(document.body.style.overflow === 'hidden');
     };
 
-    // Check initially
     checkModal();
 
-    // Use MutationObserver to watch for style changes on body
     const observer = new MutationObserver(checkModal);
     observer.observe(document.body, {
       attributes: true,
@@ -49,7 +47,9 @@ const ScrollToTop: React.FC = () => {
     <>
       {isVisible && !hasModal && (
         <button
+          type="button"
           onClick={scrollToTop}
+          aria-label="Cuộn lên đầu trang"
           className="fixed bottom-20 md:bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
         >
           <ArrowUpToLine size={24} />

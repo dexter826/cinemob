@@ -15,15 +15,20 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish, showLoad
     document.body.style.overflow = 'hidden';
     
     fetch('/data/splashscreen.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load animation');
+        return response.json();
+      })
       .then(data => setAnimationData(data))
-      .catch(error => console.error('Error fetching animation data:', error));
+      .catch(error => {
+        console.error('Error fetching animation data:', error);
+        onAnimationFinish();
+      });
 
     return () => {
-      // Restore scrolling when splash screen unmounts
       document.body.style.overflow = 'unset';
     };
-  }, []);
+  }, [onAnimationFinish]);
 
   if (!animationData) {
     return null; // Or a loading indicator
