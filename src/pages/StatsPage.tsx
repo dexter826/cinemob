@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Film, Star, TrendingUp, Globe, Calendar, ChevronDown } from 'lucide-react';
+import { Film, Star, TrendingUp, Globe, Calendar } from 'lucide-react';
 import StatsCard from '../components/ui/StatsCard';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, 

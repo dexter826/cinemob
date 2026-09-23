@@ -1,5 +1,4 @@
 import React from 'react';
-import Loading from '../components/ui/Loading';
 import EmptyState from '../components/ui/EmptyState';
 import { Tv, CalendarDays, Bell, BellOff, BellRing, Calendar, List } from 'lucide-react';
 

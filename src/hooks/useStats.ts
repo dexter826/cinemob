@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { Movie } from '../types';
 import { GENRE_TRANSLATIONS } from '../constants/genres';
 import { COUNTRY_TRANSLATIONS } from '../constants/countries';
@@ -22,7 +22,7 @@ export const useStats = (movies: Movie[]) => {
   }, [watchedMovies]);
 
   // Thống kê theo tháng cho một năm cụ thể.
-  const getMonthlyDataForYear = (year: string) => {
+  const getMonthlyDataForYear = useCallback((year: string) => {
     const months = Array.from({ length: 12 }, (_, i) => ({
       month: `Tháng ${i + 1}`,
       count: 0
@@ -37,7 +37,7 @@ export const useStats = (movies: Movie[]) => {
     });
 
     return months;
-  };
+  }, [watchedMovies]);
 
   const stats = useMemo(() => {
     // Chỉ số cơ bản.

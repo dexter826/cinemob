@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
 import { useAuth } from '../components/providers/AuthProvider';
-import Loading from '../components/ui/Loading';
 import { Album } from '../types';
 import { addAlbum, deleteAlbum } from '../services/albumService';
 import useToastStore from '../stores/toastStore';

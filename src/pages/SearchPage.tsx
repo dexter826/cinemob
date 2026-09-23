@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '../components/providers/AuthProvider';
-import Loading from '../components/ui/Loading';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import PageHeader from '../components/ui/PageHeader';
 import { Search } from 'lucide-react';

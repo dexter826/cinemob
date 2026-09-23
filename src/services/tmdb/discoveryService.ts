@@ -1,5 +1,5 @@
 import { tmdbFetch, API_KEY } from './tmdbClient';
-import { TMDBMovieResult } from '../../types';
+import { TMDBMovieResult, TMDBPerson } from '../../types';
 
 // Lấy phim đang thịnh hành.
 export const getTrendingMovies = async (page: number = 1): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
@@ -93,5 +93,30 @@ export const getDiscoverMovies = async (params: {
   } catch (error) {
     console.error("Failed to discover movies:", error);
     return { results: [], totalPages: 0 };
+  }
+};
+
+// Lấy thông tin chi tiết nghệ sĩ từ TMDB.
+export const getPersonDetails = async (personId: number | string): Promise<TMDBPerson | null> => {
+  try {
+    const personData = await tmdbFetch<TMDBPerson>(`person/${personId}`, {
+      language: 'vi'
+    });
+
+    if (!personData) return null;
+
+    if (!personData.biography) {
+      const englishData = await tmdbFetch<TMDBPerson>(`person/${personId}`, {
+        language: 'en'
+      });
+      if (englishData?.biography) {
+        personData.biography = englishData.biography;
+      }
+    }
+
+    return personData;
+  } catch (error) {
+    console.error(`Failed to fetch person details for ${personId}:`, error);
+    return null;
   }
 };

@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, Film, User, Calendar, MapPin, Users, Star, X, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Type, Filter } from 'lucide-react';
+import { Search, Film, User, Calendar, MapPin, Users, X, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Type, Filter } from 'lucide-react';
 import { PersonMovie, TMDBPerson } from '../types';
 import TMDBMovieCard from '../components/ui/TMDBMovieCard';
-import { getPersonMovieCredits } from '../services/tmdb';
-import { PLACEHOLDER_IMAGE, TMDB_API_KEY } from '../constants';
+import { getPersonMovieCredits, getPersonDetails } from '../services/tmdb';
+import { PLACEHOLDER_IMAGE } from '../constants';
 import { getTMDBImageUrl } from '../utils/movieUtils';
-import Loading from '../components/ui/Loading';
 import Pagination from '../components/ui/Pagination';
 import MultiSelectDropdown from '../components/ui/MultiSelectDropdown';
 import useAddMovieStore from '../stores/addMovieStore';
@@ -42,30 +41,16 @@ const PersonDetailPage: React.FC = () => {
       setError(null);
 
       try {
-        // Fetch person details
-        let personResponse = await fetch(
-          `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=vi`
-        );
+        const [personData, movieCredits] = await Promise.all([
+          getPersonDetails(personId),
+          getPersonMovieCredits(Number(personId))
+        ]);
 
-        if (!personResponse.ok) throw new Error('Failed to fetch person details');
-
-        let personData = await personResponse.json();
-
-        // If biography is empty, try fetching in English
-        if (!personData.biography) {
-          const englishResponse = await fetch(
-            `https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=en`
-          );
-          if (englishResponse.ok) {
-            const englishData = await englishResponse.json();
-            personData.biography = englishData.biography;
-          }
+        if (!personData) {
+          throw new Error('Failed to fetch person details');
         }
 
         setPerson(personData);
-
-        // Fetch person's movie credits
-        const movieCredits = await getPersonMovieCredits(Number(personId));
         setMovies(movieCredits);
       } catch (err) {
         console.error('Failed to fetch person data:', err);
@@ -77,6 +62,10 @@ const PersonDetailPage: React.FC = () => {
 
     fetchPersonData();
   }, [personId]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedYears, sortBy, sortOrder]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -245,7 +234,14 @@ const PersonDetailPage: React.FC = () => {
                             <div>
                               <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Tuổi</div>
                               <div className="font-bold text-sm">
-                                {new Date().getFullYear() - new Date(person.birthday).getFullYear()} tuổi
+                                {(() => {
+                                  const birth = new Date(person.birthday);
+                                  const today = new Date();
+                                  let age = today.getFullYear() - birth.getFullYear();
+                                  const m = today.getMonth() - birth.getMonth();
+                                  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+                                  return age;
+                                })()} tuổi
                               </div>
                             </div>
                           </div>

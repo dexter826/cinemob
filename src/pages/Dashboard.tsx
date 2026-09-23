@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/providers/AuthProvider';
-import { Film, AlertTriangle } from 'lucide-react';
+import { Film } from 'lucide-react';
 import MovieCard from '../components/ui/MovieCard';
 import Pagination from '../components/ui/Pagination';
 import EmptyState from '../components/ui/EmptyState';
 import SkeletonCard from '../components/ui/SkeletonCard';
-import { TMDB_API_KEY } from '../constants';
 import { normalizeMovieDate } from '../utils/movieUtils';
 import { COUNTRY_TRANSLATIONS } from '../constants/countries';
 import PageHeader from '../components/ui/PageHeader';

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Film, PlusCircle, Trash2, Edit2, X as XIcon, Search } from 'lucide-react';
-import Loading from '../components/ui/Loading';
 import { Album, Movie } from '../types';
 import { subscribeToAlbum, updateAlbum } from '../services/albumService';
 import { useAuth } from '../components/providers/AuthProvider';
@@ -9,7 +8,6 @@ import useToastStore from '../stores/toastStore';
 import useAlertStore from '../stores/alertStore';
 import MovieCard from '../components/ui/MovieCard';
 import Pagination from '../components/ui/Pagination';
-import { Timestamp } from 'firebase/firestore';
 import useMovieStore from '../stores/movieStore';
 import { formatMovieDate } from '../utils/movieUtils';
 import useMovieDetailStore from '../stores/movieDetailStore';
