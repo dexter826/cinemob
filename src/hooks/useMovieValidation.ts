@@ -10,6 +10,24 @@ export interface FormErrors {
   seasons: boolean;
 }
 
+export interface FormValidationData {
+  title: string;
+  country: string;
+  releaseDate: string;
+  seasons?: string | number;
+  runtime?: string | number;
+  rating?: number;
+}
+
+export interface FormFieldRefs {
+  title: React.RefObject<HTMLInputElement | null>;
+  country: React.RefObject<HTMLDivElement | null>;
+  releaseDate: React.RefObject<HTMLDivElement | null>;
+  runtime: React.RefObject<HTMLInputElement | null>;
+  seasons: React.RefObject<HTMLInputElement | null>;
+  rating: React.RefObject<HTMLDivElement | null>;
+}
+
 // Xử lý validation và hiệu ứng lỗi cho form.
 export const useMovieValidation = () => {
   const { showToast } = useToastStore();
@@ -24,7 +42,7 @@ export const useMovieValidation = () => {
   const [errorTrigger, setErrorTrigger] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const refs = {
+  const refs: FormFieldRefs = {
     title: useRef<HTMLInputElement>(null),
     country: useRef<HTMLDivElement>(null),
     releaseDate: useRef<HTMLDivElement>(null),
@@ -42,8 +60,9 @@ export const useMovieValidation = () => {
   useEffect(() => {
     if (errorTrigger > 0) {
       const errorKey = (Object.keys(errors) as Array<keyof FormErrors>).find(k => errors[k]) || (ratingError ? 'rating' : null);
-      if (errorKey && (refs as any)[errorKey]?.current) {
-        (refs as any)[errorKey].current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
+      if (targetRef?.current) {
+        targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setIsAnimating(false);
         setTimeout(() => setIsAnimating(true), 10);
         setTimeout(() => setIsAnimating(false), 1010);
@@ -55,15 +74,15 @@ export const useMovieValidation = () => {
     isManualMode: boolean,
     isTVSeries: boolean,
     status: 'history' | 'watchlist',
-    formData: any
+    formData: FormValidationData
   ): boolean => {
     if (isManualMode) {
       const newErrors = {
         title: !formData.title.trim(),
         country: !formData.country.trim(),
         releaseDate: !formData.releaseDate,
-        seasons: isTVSeries && (!formData.seasons || parseInt(formData.seasons) <= 0),
-        runtime: !isTVSeries && (!formData.runtime || parseInt(formData.runtime) <= 0)
+        seasons: isTVSeries && (!formData.seasons || parseInt(String(formData.seasons)) <= 0),
+        runtime: !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0)
       };
 
       if (Object.values(newErrors).some(v => v)) {

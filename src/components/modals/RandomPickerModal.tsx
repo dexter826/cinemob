@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { X, Dice5 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { Howl } from 'howler';
-import { useAuth } from '../providers/AuthProvider';
 import { getTrendingMovies } from '../../services/tmdb';
 import { Movie, TMDBMovieResult } from '../../types';
 import { PLACEHOLDER_IMAGE } from '../../constants';
 import { getTMDBImageUrl } from '../../utils/movieUtils';
 import useAddMovieStore from '../../stores/addMovieStore';
 import useMovieDetailStore from '../../stores/movieDetailStore';
-import { Timestamp } from 'firebase/firestore';
 import Loading from '../ui/Loading';
 import EmptyState from '../ui/EmptyState';
 import randomAudioFile from '../../assets/audio/random.MP3';
@@ -24,7 +22,6 @@ interface RandomPickerModalProps {
 }
 
 const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }) => {
-  const { user } = useAuth();
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
 
@@ -37,15 +34,27 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const [hasResult, setHasResult] = useState(false);
   const [confettiData, setConfettiData] = useState<any | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
+  const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   usePreventScroll(isOpen);
+
+  const clearShuffleTimers = useCallback(() => {
+    if (shuffleTimeoutRef.current) {
+      clearTimeout(shuffleTimeoutRef.current);
+      shuffleTimeoutRef.current = null;
+    }
+    if (audioStopTimeoutRef.current) {
+      clearTimeout(audioStopTimeoutRef.current);
+      audioStopTimeoutRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     fetch('/data/confetti.json')
       .then(res => res.json())
       .then(data => setConfettiData(data))
-      .catch(() => {
-      });
+      .catch(() => {});
 
     const audio = new Howl({
       src: [randomAudioFile],
@@ -55,11 +64,12 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     setRandomAudio(audio);
 
     return () => {
+      clearShuffleTimers();
       if (audio) {
         audio.stop();
       }
     };
-  }, []);
+  }, [clearShuffleTimers]);
 
   const watchlistMovies = useMemo(
     () => movies.filter(m => (m.status || 'history') === 'watchlist'),
@@ -74,6 +84,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
 
   useEffect(() => {
     if (!isOpen) {
+      clearShuffleTimers();
       setPoolType(null);
       setCurrentIndex(null);
       setIsShuffling(false);
@@ -104,7 +115,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     };
 
     preparePool();
-  }, [isOpen, watchlistMovies.length]);
+  }, [isOpen, watchlistMovies.length, clearShuffleTimers, randomAudio]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -123,6 +134,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
       return;
     }
 
+    clearShuffleTimers();
     setPoolType(source);
     setIsShuffling(true);
     setHasResult(false);
@@ -133,31 +145,32 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     }
 
     const shuffleDuration = 3150;
-    const totalDuration = 5100;
     const start = Date.now();
-    let intervalSpeed = 80;
 
-    const shuffleInterval = setInterval(() => {
+    const tick = () => {
       const now = Date.now();
       const elapsed = now - start;
-      const progress = elapsed / shuffleDuration;
+      const progress = Math.min(elapsed / shuffleDuration, 1);
 
       const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
       if (!effectivePool || effectivePool.length === 0) {
-        clearInterval(shuffleInterval);
         setIsShuffling(false);
         setHasResult(false);
         return;
       }
 
-      if (progress < 0.5) {
-        intervalSpeed = 70;
-      } else if (progress < 0.75) {
-        intervalSpeed = 120;
-      } else if (progress < 0.9) {
-        intervalSpeed = 200;
-      } else {
-        intervalSpeed = 400;
+      if (elapsed >= shuffleDuration) {
+        const finalIndex = Math.floor(Math.random() * effectivePool.length);
+        setCurrentIndex(finalIndex);
+        setIsShuffling(false);
+        setHasResult(true);
+
+        audioStopTimeoutRef.current = setTimeout(() => {
+          if (randomAudio) {
+            randomAudio.stop();
+          }
+        }, 1950);
+        return;
       }
 
       setCurrentIndex(prevIndex => {
@@ -165,20 +178,21 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         return (prevIndex + 1) % effectivePool.length;
       });
 
-      if (elapsed >= shuffleDuration) {
-        clearInterval(shuffleInterval);
-
-        const finalIndex = Math.floor(Math.random() * effectivePool.length);
-        setCurrentIndex(finalIndex);
-        setIsShuffling(false);
-        setHasResult(true);
-        setTimeout(() => {
-          if (randomAudio) {
-            randomAudio.stop();
-          }
-        }, totalDuration - shuffleDuration);
+      let nextDelay = 70;
+      if (progress < 0.5) {
+        nextDelay = 70;
+      } else if (progress < 0.75) {
+        nextDelay = 130;
+      } else if (progress < 0.9) {
+        nextDelay = 220;
+      } else {
+        nextDelay = 380;
       }
-    }, intervalSpeed);
+
+      shuffleTimeoutRef.current = setTimeout(tick, nextDelay);
+    };
+
+    shuffleTimeoutRef.current = setTimeout(tick, 70);
   };
 
   const handleRespin = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { X, Save, Loader2, ArrowLeft, Film, Star, Type, BookOpen, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
+import { X, Save, Loader2, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,7 +13,6 @@ import MovieFormFields from './add-movie/MovieFormFields';
 import PosterPreview from './add-movie/PosterPreview';
 import CustomDatePicker from '../ui/CustomDatePicker';
 import CustomTimePicker from '../ui/CustomTimePicker';
-import Loading from '../ui/Loading';
 
 // Hooks
 import { useAddMovieForm } from '../../hooks/useAddMovieForm';
@@ -56,8 +55,6 @@ const AddMovieModal: React.FC = () => {
 
 
 
-
-  const countryOptions = COUNTRY_OPTIONS;
 
   usePreventScroll(isOpen);
 
@@ -211,7 +208,7 @@ const AddMovieModal: React.FC = () => {
                           formData={formData}
                           setFormData={setFormData}
                           isTVSeries={isTVSeries}
-                          countryOptions={countryOptions}
+                          countryOptions={COUNTRY_OPTIONS}
                           genreOptions={genreOptions}
                           selectedGenreIds={selectedGenreIds}
                           setSelectedGenreIds={setSelectedGenreIds}

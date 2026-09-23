@@ -2,9 +2,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { X, Download, FileSpreadsheet, Loader2, Star, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie } from '../../types';
-import { exportToExcel, ExportFilters } from '../../services/exportService';
+import { exportToExcel, filterMoviesForExport, ExportFilters } from '../../services/exportService';
 import useToastStore from '../../stores/toastStore';
-import { Timestamp } from 'firebase/firestore';
+import { normalizeMovieDate } from '../../utils/movieUtils';
 import CustomDropdown from '../ui/CustomDropdown';
 import { usePreventScroll } from '../../hooks/usePreventScroll';
 import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '../../constants';
@@ -36,7 +36,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
   const filterOptions = useMemo(() => {
     const years = Array.from(new Set(
       movies.map(m => {
-        const d = m.watched_at instanceof Timestamp ? m.watched_at.toDate() : (m.watched_at as Date);
+        const d = normalizeMovieDate(m.watched_at);
         return d ? d.getFullYear() : null;
       }).filter(Boolean)
     )).sort((a, b) => (b as number) - (a as number));
@@ -71,36 +71,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
   };
 
   const filteredCount = useMemo(() => {
-    // Simple count based on filters (similar to filterMoviesForExport logic)
-    let count = movies.length;
-
-    if (filters.rating !== null && filters.rating !== undefined) {
-      count = movies.filter(movie => (movie.rating || 0) >= filters.rating!).length;
-    }
-
-    if (filters.year !== null && filters.year !== undefined) {
-      count = movies.filter(movie => {
-        const date = movie.watched_at instanceof Timestamp ? movie.watched_at.toDate() : (movie.watched_at as Date);
-        return date && date.getFullYear() === filters.year;
-      }).length;
-    }
-
-    if (filters.country) {
-      count = movies.filter(movie => movie.country && movie.country.toLowerCase().includes(filters.country!.toLowerCase())).length;
-    }
-
-    if (filters.contentType && filters.contentType !== 'all') {
-      count = movies.filter(movie => {
-        const mediaType = movie.media_type || 'movie';
-        return mediaType === filters.contentType;
-      }).length;
-    }
-
-    if (filters.status && filters.status !== 'all') {
-      count = movies.filter(movie => (movie.status || 'history') === filters.status).length;
-    }
-
-    return count;
+    return filterMoviesForExport(movies, filters).length;
   }, [movies, filters]);
 
   return (
