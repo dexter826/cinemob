@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { Film } from 'lucide-react';
+import { Film, Share2 } from 'lucide-react';
 import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -9,6 +9,7 @@ import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import { normalizeMovieDate } from '@/utils/movieUtils';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import PageHeader from '@/shared/components/ui/PageHeader';
+import ShareModal from '@/features/share/components/ShareModal';
 
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardActions from '../components/DashboardActions';
@@ -19,6 +20,7 @@ import DashboardFilters from '../components/DashboardFilters';
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const {
     loading,
     stats,
@@ -81,7 +83,17 @@ const Dashboard: React.FC = () => {
           icon={Film}
           title="Thư viện điện ảnh"
           description="Quản lý bộ sưu tập phim cá nhân."
-        />
+        >
+          <button
+            type="button"
+            onClick={() => setIsShareModalOpen(true)}
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-surface border border-border-default hover:border-primary/50 text-text-main hover:text-primary transition-colors shadow-premium cursor-pointer text-xs sm:text-sm font-semibold active:scale-[0.98]"
+            title="Chia sẻ thư viện qua link công khai"
+          >
+            <Share2 size={16} className="text-primary" />
+            <span>Chia sẻ</span>
+          </button>
+        </PageHeader>
         
         <DashboardActions onOpenAddModal={() => openAddModal()} />
 
@@ -161,6 +173,11 @@ const Dashboard: React.FC = () => {
           )}
         </div>
       </div>
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+      />
     </div>
   );
 };

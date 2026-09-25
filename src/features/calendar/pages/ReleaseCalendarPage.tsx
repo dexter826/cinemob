@@ -37,6 +37,7 @@ const ReleaseCalendarPage: React.FC = () => {
             icon={CalendarDays}
             title="Lịch phát sóng"
             description="Theo dõi các tập phim mới nhất của series bạn quan tâm"
+            className="flex-col sm:flex-row items-stretch sm:items-center"
           >
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {/* View Mode Toggle */}

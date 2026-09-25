@@ -156,6 +156,7 @@ const AlbumDetailPage: React.FC = () => {
           icon={Film}
           title={loading ? "Đang tải..." : album?.name || "Chi tiết Album"}
           description={!loading && album ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}` : ""}
+          className="flex-col sm:flex-row items-stretch sm:items-center"
         >
           <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
             <button
