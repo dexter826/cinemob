@@ -28,6 +28,12 @@ service cloud.firestore {
              data.movieDocIds is list;
     }
 
+    function isValidShare() {
+      let data = request.resource.data;
+      return data.isEnabled is bool &&
+             (!('movies' in data) || data.movies is list);
+    }
+
     // Movies
     match /movies/{movieId} {
       allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
@@ -45,7 +51,7 @@ service cloud.firestore {
     // Public shares - read public if enabled, write only owner
     match /public_shares/{userId} {
       allow read: if resource.data.isEnabled == true;
-      allow create, update: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isOwner(userId) && isValidShare();
       allow delete: if isSignedIn() && isOwner(userId);
     }
 
