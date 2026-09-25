@@ -22,7 +22,8 @@ const ScrollToTop: React.FC = () => {
   // Theo dõi trạng thái overflow của body
   useEffect(() => {
     const checkModal = () => {
-      setHasModal(document.body.style.overflow === 'hidden');
+      const isHidden = document.body.style.overflow === 'hidden';
+      setHasModal((prev) => (prev !== isHidden ? isHidden : prev));
     };
 
     checkModal();

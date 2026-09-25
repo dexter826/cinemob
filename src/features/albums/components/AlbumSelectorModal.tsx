@@ -92,7 +92,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80"
           onClick={onClose}
         >
           <motion.div

@@ -15,3 +15,8 @@ export const FIREBASE_CONFIG = {
 
 // Ảnh mặc định khi thiếu poster.
 export const PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale&blur=2';
+
+export const CLOUDINARY_CONFIG = {
+  cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '',
+  uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || ''
+};

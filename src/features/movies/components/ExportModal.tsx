@@ -82,10 +82,8 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75"
           onClick={onClose}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
         >
           <motion.div
             variants={MODAL_VARIANTS}
@@ -94,8 +92,6 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
             exit="exit"
             className="bg-surface border border-border-default rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-premium"
             onClick={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
           >
 
         {/* Header */}

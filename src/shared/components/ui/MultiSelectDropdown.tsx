@@ -147,7 +147,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full min-h-[44px] bg-surface border border-border-default rounded-2xl px-3 py-2 text-left
+          w-full min-h-11 bg-surface border border-border-default rounded-2xl px-3 py-2 text-left
           focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
           hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between

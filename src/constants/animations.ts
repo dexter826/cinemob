@@ -26,8 +26,14 @@ export const MODAL_VARIANTS: Variants = {
 // Hiệu ứng lớp phủ nền.
 export const OVERLAY_VARIANTS: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 }
+  visible: { 
+    opacity: 1,
+    transition: { duration: 0.15, ease: 'easeOut' }
+  },
+  exit: { 
+    opacity: 0,
+    transition: { duration: 0.1, ease: 'easeIn' }
+  }
 };
 
 // Hiệu ứng chuyển trang.

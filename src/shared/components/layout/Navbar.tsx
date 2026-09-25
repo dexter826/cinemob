@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search, CalendarDays, Settings } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search, CalendarDays, Settings, Camera } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RandomPickerModal from '@/components/modals/RandomPickerModal';
 import ExportModal from '@/components/modals/ExportModal';
+import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
 import useExportStore from '@/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import logoText from '@/assets/images/logo_text.png';
@@ -16,6 +17,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
 
@@ -120,6 +122,14 @@ const Navbar: React.FC = () => {
 
                   <div className="p-1.5 space-y-0.5">
                     <button
+                      onClick={() => { setIsAvatarModalOpen(true); setIsDropdownOpen(false); }}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
+                    >
+                      <Camera size={18} strokeWidth={1.5} />
+                      <span>Đổi ảnh đại diện</span>
+                    </button>
+
+                    <button
                       onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
@@ -161,6 +171,11 @@ const Navbar: React.FC = () => {
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         movies={movies}
+      />
+
+      <ChangeAvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
       />
     </>
   );

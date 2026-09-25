@@ -68,7 +68,7 @@ const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, c
               onRemove(movie);
             }}
             aria-label={`Bỏ qua gợi ý ${mainTitle}`}
-            className="absolute top-2 right-2 z-20 min-w-[36px] min-h-[36px] flex items-center justify-center p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-md rounded-lg border border-white/10 text-white shadow-glass ring-1 ring-white/5 transition-colors cursor-pointer"
+            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-md rounded-lg border border-white/10 text-white shadow-glass ring-1 ring-white/5 transition-colors cursor-pointer"
             title="Không quan tâm"
           >
             <X size={14} strokeWidth={1.5} />

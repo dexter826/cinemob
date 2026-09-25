@@ -18,7 +18,7 @@ const AlertContainer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl animate-fade-in">
+    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 animate-fade-in">
       <div className="bg-surface w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border border-border-default transform transition-colors scale-100">
         <div className="p-6">
           <div className="flex items-center gap-4 mb-4">

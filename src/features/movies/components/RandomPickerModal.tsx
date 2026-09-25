@@ -252,11 +252,9 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
           animate="visible"
           exit="exit"
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
         >
           <motion.div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+            className="absolute inset-0 bg-black/75" 
             onClick={onClose} 
           />
 
@@ -266,9 +264,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
             animate="visible"
             exit="exit"
             className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-premium border border-border-default flex flex-col gap-4"
-            onTouchMove={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
-      >
+          >
         {/* Confetti Layer */}
         {hasResult && confettiData && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90">

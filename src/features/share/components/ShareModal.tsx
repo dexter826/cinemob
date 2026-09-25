@@ -31,10 +31,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75"
           onClick={onClose}
-          onTouchMove={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
         >
           <motion.div
             variants={MODAL_VARIANTS}
@@ -43,8 +41,6 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
             exit="exit"
             className="bg-surface border border-border-default rounded-2xl sm:rounded-3xl w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col overflow-hidden shadow-premium"
             onClick={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border-default bg-surface shrink-0">

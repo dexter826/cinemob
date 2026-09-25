@@ -83,7 +83,7 @@ const Login: React.FC = () => {
         {/* Visual Layered Movie Showcase */}
         <div className="relative my-4 sm:my-6 flex items-center justify-center py-2 sm:py-4">
           {/* Ambient Glow Backdrop */}
-          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-gradient-to-r from-primary/15 via-secondary/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
+          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 via-secondary/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
 
           {/* Cards Stack */}
           <div className="flex items-center justify-center -space-x-8 sm:-space-x-12 lg:-space-x-14">
@@ -98,7 +98,7 @@ const Login: React.FC = () => {
                   className="w-full h-full object-cover select-none"
                   loading="eager"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
                 {/* Rating Badge */}
                 <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 backdrop-blur-md border border-white/10 text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums shadow-sm">

@@ -45,7 +45,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
           <button
             onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
-            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-black/60 hover:bg-error text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+            className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-error text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
             title="Xóa"
             aria-label="Xóa phim khỏi danh sách"
           >
@@ -55,7 +55,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {!onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
               title="Sửa"
               aria-label="Chỉnh sửa thông tin phim"
             >
@@ -66,7 +66,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
           {onMarkAsWatched && (
             <button
               onClick={(e) => { e.stopPropagation(); onMarkAsWatched(movie); }}
-              className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
               title="Đã xem"
               aria-label="Đánh dấu đã xem phim"
             >
