@@ -1,14 +1,9 @@
-import React from 'react';
-import { TMDBMovieResult, TMDBPerson } from '@/types';
+import { TMDBMovieResult } from '@/types';
 import TMDBMovieCard from './TMDBMovieCard';
-import PersonCard from './PersonCard';
-import Loading from '@/shared/components/ui/Loading';
 import Pagination from '@/shared/components/ui/Pagination';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import EmptyState from '@/shared/components/ui/EmptyState';
-import Lottie from 'lottie-react';
 import { Sparkles, Star, RotateCcw, Search } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 interface SearchResultsProps {
   isLoading: boolean;
@@ -22,7 +17,6 @@ interface SearchResultsProps {
   trendingMovies: TMDBMovieResult[];
   discoverMovies: TMDBMovieResult[];
   filteredResults: TMDBMovieResult[];
-  suggestAnimation: any;
   watchedMoviesCount: number;
   getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
@@ -32,7 +26,7 @@ interface SearchResultsProps {
 }
 
 /** Hiển thị kết quả tìm kiếm, phim thịnh hành hoặc đề xuất AI. */
-const SearchResults: React.FC<SearchResultsProps> = ({
+function SearchResults({
   isLoading,
   query,
   totalPages,
@@ -44,16 +38,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   trendingMovies,
   discoverMovies,
   filteredResults,
-  suggestAnimation,
   watchedMoviesCount,
   getMovieStatus,
   handleSelectMovie,
   refreshRecommendations,
   removeRecommendation,
   userId
-}) => {
-
-  const navigate = useNavigate();
+}: SearchResultsProps) {
 
   if (isLoading) {
     return (
@@ -65,56 +56,64 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     );
   }
 
+  const isHomeNoQuery = !query && discoverMovies.length === 0;
+  const showAiLoadingBlock = isHomeNoQuery && isAiLoading;
+  const showTrendingSkeleton = isTrendingLoading && trendingMovies.length === 0;
+  const showFiltered = Boolean(query) || discoverMovies.length > 0;
+
+  if (showAiLoadingBlock) {
+    return (
+      <>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="text-primary shrink-0" size={18} />
+            <h2 className="text-lg sm:text-xl font-bold text-primary truncate">Đề xuất cho bạn</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => refreshRecommendations(userId, true)}
+            disabled={isAiLoading}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
+          >
+            <RotateCcw size={16} />
+            <span>Làm mới</span>
+          </button>
+        </div>
+        <div className="py-6 space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+          <p className="text-sm font-medium text-text-muted text-center pt-2">Đang phân tích lịch sử xem và gợi ý phim phù hợp…</p>
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <Star className="text-primary shrink-0" size={18} />
+          <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          {showTrendingSkeleton ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))
+          ) : (
+            trendingMovies.map(movie => (
+              <TMDBMovieCard
+                key={movie.id}
+                movie={movie}
+                onClick={handleSelectMovie}
+                status={getMovieStatus(movie.id)}
+              />
+            ))
+          )}
+        </div>
+      </>
+    );
+  }
+
   return (
 
       <>
-        {!query && !discoverMovies.length && isAiLoading ? (
-          <>
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 min-w-0">
-                <Sparkles className="text-primary shrink-0" size={18} />
-                <h2 className="text-lg sm:text-xl font-bold text-primary truncate">Đề xuất cho bạn</h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => refreshRecommendations(userId, true)}
-                disabled={isAiLoading}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
-              >
-                <RotateCcw size={16} />
-                <span>Làm mới</span>
-              </button>
-            </div>
-            <div className="py-6 space-y-4">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonCard key={i} />
-                ))}
-              </div>
-              <p className="text-sm font-medium text-text-muted text-center pt-2">Đang phân tích lịch sử xem và gợi ý phim phù hợp…</p>
-            </div>
-            <div className="flex items-center gap-2 mb-4">
-              <Star className="text-primary shrink-0" size={18} />
-              <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {isTrendingLoading && trendingMovies.length === 0 ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonCard key={i} />
-                ))
-              ) : (
-                trendingMovies.map(movie => (
-                  <TMDBMovieCard
-                    key={movie.id}
-                    movie={movie}
-                    onClick={handleSelectMovie}
-                    status={getMovieStatus(movie.id)}
-                  />
-                ))
-              )}
-            </div>
-          </>
-        ) : (
           <>
             {!query && !discoverMovies.length && (
               <>
@@ -158,7 +157,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                         movie={movie}
                         onClick={handleSelectMovie}
                         status={getMovieStatus(movie.id)}
-                        onRemove={(m) => removeRecommendation(userId, m.title)}
+                        onRemove={(m) => removeRecommendation(userId, m.title ?? '')}
                       />
                     ))}
                   </div>
@@ -171,25 +170,27 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               </>
             )}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {(query || discoverMovies.length > 0) ? filteredResults.map(movie => (
-                <TMDBMovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={handleSelectMovie}
-                  status={getMovieStatus(movie.id)}
-                />
-              )) : (isTrendingLoading && trendingMovies.length === 0) ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <SkeletonCard key={i} />
+              {showFiltered
+                ? filteredResults.map(movie => (
+                  <TMDBMovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onClick={handleSelectMovie}
+                    status={getMovieStatus(movie.id)}
+                  />
                 ))
-              ) : trendingMovies.map(movie => (
-                <TMDBMovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={handleSelectMovie}
-                  status={getMovieStatus(movie.id)}
-                />
-              ))}
+                : showTrendingSkeleton ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <SkeletonCard key={i} />
+                  ))
+                ) : trendingMovies.map(movie => (
+                  <TMDBMovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onClick={handleSelectMovie}
+                    status={getMovieStatus(movie.id)}
+                  />
+                ))}
               {query.length > 2 && filteredResults.length === 0 && (
                 <div className="col-span-full">
                   <EmptyState
@@ -218,7 +219,6 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               />
             )}
           </>
-        )}
       </>
   );
 };

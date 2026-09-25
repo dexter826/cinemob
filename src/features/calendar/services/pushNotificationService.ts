@@ -28,10 +28,16 @@ export function isInstalledPWA(): boolean {
   return isIOSStandalone || isStandalone;
 }
 
+interface LegacyWindow {
+  opera?: string;
+  MSStream?: unknown;
+}
+
 export function isMobileDevice(): boolean {
-  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-  
-  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+  const legacy = window as unknown as LegacyWindow & { navigator: Navigator };
+  const userAgent: string = navigator.userAgent || navigator.vendor || legacy.opera || '';
+
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !legacy.MSStream;
   
   const isAndroid = /android/i.test(userAgent);
   
@@ -162,11 +168,8 @@ async function saveSubscriptionToFirestore(subscription: PushSubscription): Prom
     endpoint: subscriptionData.endpoint,
     keys: subscriptionData.keys,
     userId: user.uid,
-    userEmail: user.email,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    userAgent: navigator.userAgent,
-    platform: navigator.platform,
   });
 }
 

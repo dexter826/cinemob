@@ -1,9 +1,8 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, Search, Folder, BarChart2, CalendarDays } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const MobileBottomNav: React.FC = () => {
+function MobileBottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
 

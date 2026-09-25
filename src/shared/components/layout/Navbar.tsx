@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Menu, X, Dice5, Folder, Download, ChevronDown, Clapperboard, Search, CalendarDays, Settings, Camera } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
-import RandomPickerModal from '@/components/modals/RandomPickerModal';
-import ExportModal from '@/components/modals/ExportModal';
+import RandomPickerModal from '@/features/movies/components/RandomPickerModal';
+import ExportModal from '@/features/movies/components/ExportModal';
 import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
-import useExportStore from '@/stores/exportStore';
+import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import logoText from '@/assets/images/logo_text.png';
 
-const Navbar: React.FC = () => {
+function Navbar() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();

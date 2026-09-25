@@ -1,4 +1,3 @@
-import React from 'react';
 import { LucideIcon } from 'lucide-react';
 
 interface StatsCardProps {
@@ -10,7 +9,7 @@ interface StatsCardProps {
 }
 
 /** Thẻ hiển thị chỉ số thống kê tổng quan. */
-const StatsCard: React.FC<StatsCardProps> = ({ label, value, subValue, icon: Icon, colorClass }) => {
+function StatsCard({ label, value, subValue, icon: Icon, colorClass }: StatsCardProps) {
   return (
     <div className="bg-surface border border-border-default p-6 rounded-3xl flex items-center space-x-5 hover:border-primary/40 transition-colors duration-300 shadow-premium hover:shadow-premium-hover group">
       <div className={`p-4 rounded-2xl bg-black/5 border border-border-default transition-colors duration-300 ${colorClass}`}>

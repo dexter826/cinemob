@@ -1,7 +1,6 @@
-import React from 'react';
 import { Bell, Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
-import { getTMDBImageUrl } from '@/utils/movieUtils';
+import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 
 interface EpisodeListProps {
   viewMode: 'calendar' | 'list';
@@ -14,7 +13,7 @@ interface EpisodeListProps {
 }
 
 /** Hiển thị danh sách tập phim sắp phát sóng theo ngày hoặc toàn bộ. */
-const EpisodeList: React.FC<EpisodeListProps> = ({
+function EpisodeList({
   viewMode,
   selectedDate,
   setSelectedDate,
@@ -22,7 +21,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
   displayedEpisodes,
   episodesByDate,
   handleSeriesClick
-}) => {
+}: EpisodeListProps) {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('vi-VN', { 
@@ -93,10 +92,11 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                   </div>
                 </div>
                 <div className="space-y-2.5">
-                  {episodes.map((ep, idx) => (
+                  {episodes.map((ep) => (
                     <div
-                      key={`${ep.seriesId}-${ep.episode.id}-${idx}`}
+                      key={`${ep.seriesId}-${ep.episode.id}`}
                       onClick={() => handleSeriesClick(ep)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSeriesClick(ep); } }}
                       role="button"
                       tabIndex={0}
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}

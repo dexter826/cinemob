@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { AuthContextType } from '@/types';
@@ -13,7 +13,7 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -25,33 +25,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = useCallback(async () => {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Error signing in", error);
       alert("Failed to sign in. Check console for details.");
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await signOut(auth);
     } catch (error) {
       console.error("Error signing out", error);
     }
-  };
+  }, []);
 
   // Làm mới thông tin người dùng từ Firebase Auth.
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     if (auth.currentUser) {
       await auth.currentUser.reload();
       setUser(Object.assign(Object.create(Object.getPrototypeOf(auth.currentUser)), auth.currentUser));
     }
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({ user, loading, signInWithGoogle, logout, refreshUser }),
+    [user, loading, signInWithGoogle, logout, refreshUser]
+  );
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logout, refreshUser }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

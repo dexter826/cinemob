@@ -3,7 +3,7 @@ import { TMDBMovieResult, Movie } from '@/types';
 import { fetchAIRecommendations, fetchTrendingFallback } from '../services/recommendationService';
 import { getUserData, updatePreviouslyRecommendedTitles } from '@/features/auth/services/userService';
 
-const pendingRequests = new Map<string, Promise<any>>();
+const pendingRequests = new Map<string, Promise<void>>();
 
 interface RecommendationsState {
   aiRecommendations: TMDBMovieResult[];
@@ -45,8 +45,8 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
       } else {
         set({ previouslyRecommendedTitles: new Set<string>() });
       }
-    } catch (e: any) {
-      if (e?.code !== 'permission-denied') {
+    } catch (e: unknown) {
+      if ((e as { code?: string })?.code !== 'permission-denied') {
         console.error('Failed to initialize user data from Firestore:', e);
       }
       set({ previouslyRecommendedTitles: new Set<string>() });
@@ -87,7 +87,7 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
         );
 
         if (aiResult) {
-          const newRecTitles = aiResult.aiRecommendations.map(m => m.title);
+          const newRecTitles = aiResult.aiRecommendations.map(m => m.title).filter((t): t is string => typeof t === 'string');
           set(state => ({
             aiRecommendations: aiResult.aiRecommendations,
             previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), ...newRecTitles])
@@ -107,7 +107,7 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   removeRecommendation: async (userId: string, movieTitle: string) => {
     set(state => ({
       aiRecommendations: state.aiRecommendations.filter(m => m.title !== movieTitle),
-      previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), movieTitle])
+      previouslyRecommendedTitles: new Set([...state.previouslyRecommendedTitles, movieTitle])
     }));
     try {
       await updatePreviouslyRecommendedTitles(userId, [movieTitle]);

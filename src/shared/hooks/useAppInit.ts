@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieStore from '@/stores/movieStore';
+import useMovieStore from '@/features/movies/stores/movieStore';
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
-import useAlbumStore from '@/stores/albumStore';
-import useRecommendationsStore from '@/stores/recommendationsStore';
-import useReleaseCalendarStore from '@/stores/releaseCalendarStore';
-import { subscribeToAlbums } from '@/services/albumService';
+import useAlbumStore from '@/features/albums/stores/albumStore';
+import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
+import useReleaseCalendarStore from '@/features/calendar/stores/releaseCalendarStore';
+import { subscribeToAlbums } from '@/features/albums/services/albumService';
 import { Album, Movie } from '@/types';
 
 // Khởi tạo ứng dụng sau khi đăng nhập.
@@ -23,7 +23,8 @@ export const useAppInit = () => {
     setTrendingMovies,
     setHistoryMovies,
     initializeForUser: initRecs,
-    refreshRecommendations,
+    aiRecommendations,
+    trendingMovies,
     historyMovies
   } = useRecommendationsStore();
 
@@ -105,25 +106,28 @@ export const useAppInit = () => {
 
   useEffect(() => {
     if (!user) {
-      setAiRecommendations([]);
-      setTrendingMovies([]);
-      setHistoryMovies([]);
+      if (aiRecommendations.length > 0) setAiRecommendations([]);
+      if (trendingMovies.length > 0) setTrendingMovies([]);
+      if (historyMovies.length > 0) setHistoryMovies([]);
       return;
     }
 
     initRecs(user.uid);
-    setHistoryMovies(allMovies);
-  }, [user, allMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs]);
+    const prevIds = historyMovies.map(m => m.docId ?? m.id).join('|');
+    const nextIds = allMovies.map(m => m.docId ?? m.id).join('|');
+    if (prevIds !== nextIds) setHistoryMovies(allMovies);
+  }, [user, allMovies, aiRecommendations, trendingMovies, historyMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs]);
 
   useEffect(() => {
     setCalendarMovies(allMovies);
     setCalendarLoading(moviesLoading);
   }, [allMovies, moviesLoading, setCalendarMovies, setCalendarLoading]);
 
+  const movieCount = allMovies.length;
+
   useEffect(() => {
-    if (user && !calFetchedInitial && allMovies.length > 0) {
-      fetchUpcomingEpisodes(user.uid, allMovies);
-      setCalFetchedInitial(true);
-    }
-  }, [user, calFetchedInitial, allMovies, fetchUpcomingEpisodes, setCalFetchedInitial]);
+    if (!user || movieCount === 0) return;
+    fetchUpcomingEpisodes(user.uid, allMovies);
+    if (!calFetchedInitial) setCalFetchedInitial(true);
+  }, [user, movieCount, allMovies, calFetchedInitial, fetchUpcomingEpisodes, setCalFetchedInitial]);
 };

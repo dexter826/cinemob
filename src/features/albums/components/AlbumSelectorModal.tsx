@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { X, FolderPlus, Film } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, Album } from '@/types';
@@ -6,7 +6,7 @@ import { useAuth } from '@/app/providers/AuthProvider';
 import useToastStore from '@/shared/stores/toastStore';
 import useAlbumStore from '../stores/albumStore';
 import { updateAlbum, addAlbum } from '../services/albumService';
-import { getDisplayTitle } from '@/utils/movieUtils';
+import { getDisplayTitle } from '@/features/movies/utils/movieUtils';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import logoText from '@/assets/images/logo_text.png';
@@ -20,7 +20,7 @@ interface AlbumSelectorModalProps {
 }
 
 /** Modal lựa chọn hoặc tạo mới album để lưu phim. */
-const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose, movie }) => {
+function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps) {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { albums, loading } = useAlbumStore();

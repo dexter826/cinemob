@@ -1,20 +1,15 @@
-import React from 'react';
-import { Camera, Image as ImageIcon } from 'lucide-react';
-import { getTMDBImageUrl } from '@/utils/movieUtils';
+import { Image as ImageIcon } from 'lucide-react';
+import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 
 interface PosterPreviewProps {
   posterPath: string;
   title: string;
-  isManualMode: boolean;
-  onPosterClick?: () => void;
 }
 
-const PosterPreview: React.FC<PosterPreviewProps> = ({
+function PosterPreview({
   posterPath,
-  title,
-  isManualMode,
-  onPosterClick
-}) => {
+  title
+}: PosterPreviewProps) {
   return (
     <div className="w-full max-w-60 sm:max-w-none sm:md:w-80 mx-auto md:mx-0 shrink-0 space-y-4">
       <div className="relative group aspect-2/3 rounded-3xl sm:rounded-4xl overflow-hidden bg-black/5 dark:bg-white/5 border border-border-default shadow-premium">

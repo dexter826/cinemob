@@ -1,5 +1,5 @@
 import { Movie, UpcomingEpisode } from '@/types';
-import { getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage, withLimit } from '@/services/tmdb';
+import { getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage, withLimit } from '@/features/search/services/tmdb';
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
@@ -26,22 +26,24 @@ export const fetchUpcomingEpisodesForMovies = async (
 
   if (cachedData) {
     try {
-      const parsedCache = JSON.parse(cachedData);
+      const parsedCache: unknown = JSON.parse(cachedData);
       if (
-        parsedCache.timestamp &&
-        !isExpired(parsedCache.timestamp, CACHE_DURATION) &&
-        parsedCache.data
+        typeof parsedCache === 'object' && parsedCache !== null &&
+        typeof (parsedCache as { timestamp?: unknown }).timestamp === 'number' &&
+        !isExpired((parsedCache as { timestamp: number }).timestamp, CACHE_DURATION) &&
+        Array.isArray((parsedCache as { data?: unknown }).data)
       ) {
-        return parsedCache.data;
+        return (parsedCache as { data: UpcomingEpisode[] }).data;
       }
     } catch {
-      localStorage.removeItem(cacheKey);
+      try { localStorage.removeItem(cacheKey); } catch { /* quota/bị chặn: bỏ qua */ }
     }
   }
 
   const tasks = tvSeries.map(series => async () => {
     try {
       const tvId = Number(series.id);
+      if (!Number.isFinite(tvId)) return [];
       const episodes = await getTVShowUpcomingEpisodes(tvId);
 
       let seriesNameVi = series.title_vi;
@@ -61,7 +63,7 @@ export const fetchUpcomingEpisodesForMovies = async (
 
       return upcomingForSeries;
     } catch (error) {
-      console.error(`Failed to fetch episodes for ${series.title}:`, error);
+      console.error(`Failed to fetch episodes for seriesId=${series.id}:`, error);
       return [];
     }
   });
@@ -74,10 +76,14 @@ export const fetchUpcomingEpisodesForMovies = async (
 
   allUpcoming.sort((a, b) => new Date(a.episode.air_date).getTime() - new Date(b.episode.air_date).getTime());
 
-  localStorage.setItem(cacheKey, JSON.stringify({
-    data: allUpcoming,
-    timestamp: Date.now()
-  }));
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify({
+      data: allUpcoming,
+      timestamp: Date.now()
+    }));
+  } catch {
+    // QuotaExceededError Safari PWA: bỏ qua cache, vẫn trả dữ liệu.
+  }
 
   return allUpcoming;
 };

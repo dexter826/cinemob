@@ -10,14 +10,14 @@ interface RatingSectionProps {
   ratingRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const RatingSection: React.FC<RatingSectionProps> = ({
+function RatingSection({
   rating,
   hoverRating,
   isAnimating,
   setRating,
   setHoverRating,
   ratingRef
-}) => {
+}: RatingSectionProps) {
   return (
     <div ref={ratingRef} className="space-y-2">
       <div className="flex items-center justify-between">

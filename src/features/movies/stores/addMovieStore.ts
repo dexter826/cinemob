@@ -20,7 +20,7 @@ interface AddMovieState {
 const useAddMovieStore = create<AddMovieState>((set) => ({
   isOpen: false,
   initialData: null,
-  openAddModal: (data = null) => set({ initialData: data, isOpen: true }),
+  openAddModal: (data?: AddMovieInitialData) => set({ initialData: data ?? null, isOpen: true }),
   closeAddModal: () => set({ isOpen: false, initialData: null }),
 }));
 

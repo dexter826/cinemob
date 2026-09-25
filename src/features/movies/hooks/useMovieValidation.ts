@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import useToastStore from '@/shared/stores/toastStore';
 import { MESSAGES } from '@/constants/messages';
 
@@ -42,14 +42,20 @@ export const useMovieValidation = () => {
   const [errorTrigger, setErrorTrigger] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const refs: FormFieldRefs = {
-    title: useRef<HTMLInputElement>(null),
-    country: useRef<HTMLDivElement>(null),
-    releaseDate: useRef<HTMLDivElement>(null),
-    runtime: useRef<HTMLInputElement>(null),
-    seasons: useRef<HTMLInputElement>(null),
-    rating: useRef<HTMLDivElement>(null)
-  };
+  const titleRef = useRef<HTMLInputElement>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
+  const releaseDateRef = useRef<HTMLDivElement>(null);
+  const runtimeRef = useRef<HTMLInputElement>(null);
+  const seasonsRef = useRef<HTMLInputElement>(null);
+  const ratingRef = useRef<HTMLDivElement>(null);
+  const refs: FormFieldRefs = useMemo(() => ({
+    title: titleRef,
+    country: countryRef,
+    releaseDate: releaseDateRef,
+    runtime: runtimeRef,
+    seasons: seasonsRef,
+    rating: ratingRef
+  }), []);
 
   const clearErrors = useCallback(() => {
     setRatingError(false);
@@ -64,11 +70,12 @@ export const useMovieValidation = () => {
       if (targetRef?.current) {
         targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setIsAnimating(false);
-        setTimeout(() => setIsAnimating(true), 10);
-        setTimeout(() => setIsAnimating(false), 1010);
+        const t1 = setTimeout(() => setIsAnimating(true), 10);
+        const t2 = setTimeout(() => setIsAnimating(false), 1010);
+        return () => { clearTimeout(t1); clearTimeout(t2); };
       }
     }
-  }, [errorTrigger, errors, ratingError]);
+  }, [errorTrigger, errors, ratingError, refs]);
 
   const validate = (
     isManualMode: boolean,

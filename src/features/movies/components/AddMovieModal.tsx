@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import { X, Save, Loader2, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
 
@@ -19,7 +19,7 @@ import { useAddMovieForm } from '../hooks/useAddMovieForm';
 import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
 import { COUNTRY_OPTIONS, MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
 
-const AddMovieModal: React.FC = () => {
+function AddMovieModal() {
   const {
     isOpen, initialData, closeAddModal,
     formData, setFormData,
@@ -57,6 +57,13 @@ const AddMovieModal: React.FC = () => {
 
 
   usePreventScroll(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeAddModal(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, closeAddModal]);
 
   if (!isOpen) return null;
 
@@ -116,7 +123,6 @@ const AddMovieModal: React.FC = () => {
                   <PosterPreview
                     posterPath={formData.poster}
                     title={formData.title}
-                    isManualMode={isManualMode}
                   />
 
                   <div className="flex-1 space-y-6">
@@ -215,7 +221,6 @@ const AddMovieModal: React.FC = () => {
                           isAnimating={isAnimating}
                           errors={errors}
                           refs={refs}
-                          status={status}
                         />
                       </div>
                     )}

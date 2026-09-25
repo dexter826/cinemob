@@ -7,6 +7,7 @@ interface MovieState {
   loading: boolean;
   initialized: boolean;
   unsubscribe: (() => void) | null;
+  activeUid: string | null;
   initialize: (uid: string) => void;
   cleanup: () => void;
   setMovies: (movies: Movie[]) => void;
@@ -18,30 +19,34 @@ const useMovieStore = create<MovieState>((set, get) => ({
   loading: true,
   initialized: false,
   unsubscribe: null,
+  activeUid: null,
 
   initialize: (uid: string) => {
-    if (get().unsubscribe) return;
+    const { unsubscribe, activeUid } = get();
+    if (unsubscribe && activeUid === uid) return;
+    if (unsubscribe) unsubscribe();
 
     const unsub = subscribeToMovies(uid, (movies) => {
-      set({ 
-        movies, 
-        loading: false, 
-        initialized: true 
+      set({
+        movies,
+        loading: false,
+        initialized: true
       });
     });
 
-    set({ unsubscribe: unsub });
+    set({ unsubscribe: unsub, activeUid: uid });
   },
 
   cleanup: () => {
     const { unsubscribe } = get();
     if (unsubscribe) {
       unsubscribe();
-      set({ 
-        unsubscribe: null, 
-        movies: [], 
-        loading: true, 
-        initialized: false 
+      set({
+        unsubscribe: null,
+        activeUid: null,
+        movies: [],
+        loading: true,
+        initialized: false
       });
     }
   },

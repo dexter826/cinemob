@@ -7,7 +7,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const [inputValue, setInputValue] = useState(currentPage.toString());
 
   // Update input value when currentPage changes

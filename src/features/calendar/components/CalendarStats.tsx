@@ -1,6 +1,4 @@
-import React from 'react';
 import { Tv, Bell, Calendar, Clock } from 'lucide-react';
-import { UpcomingEpisode } from '@/types';
 
 interface CalendarStatsProps {
   tvSeriesCount: number;
@@ -9,12 +7,12 @@ interface CalendarStatsProps {
   thisWeekEpisodesCount: number;
 }
 
-const CalendarStats: React.FC<CalendarStatsProps> = ({
+function CalendarStats({
   tvSeriesCount,
   upcomingEpisodesCount,
   todayEpisodesCount,
   thisWeekEpisodesCount
-}) => {
+}: CalendarStatsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
       <div className="bg-surface border border-border-default rounded-2xl p-4 sm:p-5 shadow-premium group transition-colors duration-300">

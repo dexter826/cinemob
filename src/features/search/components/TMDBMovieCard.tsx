@@ -1,6 +1,5 @@
-import React from 'react';
 import { TMDBMovieResult } from '@/types';
-import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '@/utils/movieUtils';
+import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { Film, Tv, Bookmark, Star, Calendar, X } from 'lucide-react';
 
 interface TMDBMovieCardProps {
@@ -13,7 +12,7 @@ interface TMDBMovieCardProps {
 }
 
 /** Thẻ hiển thị phim từ TMDB trong kết quả tìm kiếm và khám phá. */
-const TMDBMovieCard: React.FC<TMDBMovieCardProps> = ({ movie, onClick, status, character, job, onRemove }) => {
+function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMDBMovieCardProps) {
   const mainTitle = getMainTitleForTMDB(movie);
   const subTitle = getSubTitleForTMDB(movie);
   const year = (movie.release_date || movie.first_air_date)?.split('-')[0] || '';

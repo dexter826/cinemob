@@ -17,7 +17,7 @@ interface CustomDropdownProps {
   maxHeight?: string;
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({
+function CustomDropdown({
   options,
   value,
   onChange,
@@ -26,7 +26,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   disabled = false,
   searchable = false,
   maxHeight = '200px',
-}) => {
+}: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);

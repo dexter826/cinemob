@@ -14,7 +14,8 @@ interface SpinnerProps {
   size: number;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ size }) => (
+function Spinner({ size }: SpinnerProps) {
+  return (
   <div className="relative" style={{ width: size, height: size }}>
     <motion.div
       className="absolute inset-0 border-4 border-primary/20 rounded-full"
@@ -38,16 +39,17 @@ const Spinner: React.FC<SpinnerProps> = ({ size }) => (
       <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-xs" />
     </motion.div>
   </div>
-);
+  );
+}
 
 /** Component hiển thị trạng thái đang tải cao cấp. */
-const Loading: React.FC<LoadingProps> = ({ 
+function Loading({ 
   size = 48, 
   fullScreen = true, 
   contain = false,
   text,
   className = ''
-}) => {
+}: LoadingProps) {
   const { setPageLoading } = useInitialLoadStore();
 
   useEffect(() => {

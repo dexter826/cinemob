@@ -1,10 +1,9 @@
-import React from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useToastStore from '../../stores/toastStore';
 
 /** Container hiển thị các thông báo Toast toàn cục với hiệu ứng mượt mà. */
-const ToastContainer: React.FC = () => {
+function ToastContainer() {
   const { toasts, removeToast } = useToastStore();
 
   return (

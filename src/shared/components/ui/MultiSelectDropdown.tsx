@@ -18,7 +18,7 @@ interface MultiSelectDropdownProps {
   maxDisplay?: number;
 }
 
-const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
+function MultiSelectDropdown({
   options,
   values,
   onChange,
@@ -28,7 +28,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   searchable = false,
   maxHeight = '250px',
   maxDisplay = 2,
-}) => {
+}: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);

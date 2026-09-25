@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { X, Dice5, ChevronDown } from 'lucide-react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { X, Dice5 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { Howl } from 'howler';
-import { getTrendingMovies } from '@/services/tmdb';
+import { getTrendingMovies } from '@/features/search/services/tmdb';
 import { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '../utils/movieUtils';
@@ -15,13 +15,32 @@ import randomAudioFile from '@/assets/audio/random.MP3';
 import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
 import useMovieStore from '../stores/movieStore';
 import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { PickerWheel } from './random-picker/PickerWheel';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }) => {
+type PoolMovie = Movie | TMDBMovieResult;
+
+const getPoolPoster = (movie: PoolMovie | undefined, poolType: 'watchlist' | 'trending' | null): string => {
+  if (!movie) return PLACEHOLDER_IMAGE;
+  if (poolType === 'watchlist') {
+    const m = movie as Movie;
+    return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
+  }
+  return getTMDBImageUrl((movie as TMDBMovieResult).poster_path);
+};
+
+const getWheelMovie = (
+  pool: PoolMovie[], currentIndex: number | null, offset: number
+): PoolMovie | undefined => {
+  if (pool.length === 0 || currentIndex === null) return undefined;
+  return pool[(currentIndex + offset + pool.length) % pool.length];
+};
+
+function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
 
@@ -32,7 +51,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [isShuffling, setIsShuffling] = useState(false);
   const [hasResult, setHasResult] = useState(false);
-  const [confettiData, setConfettiData] = useState<any | null>(null);
+  const [confettiData, setConfettiData] = useState<Record<string, unknown> | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +73,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     fetch('/data/confetti.json')
       .then(res => res.json())
       .then(data => setConfettiData(data))
-      .catch(() => {});
+      .catch((e) => console.warn('Confetti animation failed to load:', e));
 
     const audio = new Howl({
       src: [randomAudioFile],
@@ -115,17 +134,9 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     };
 
     preparePool();
-  }, [isOpen, watchlistMovies.length, clearShuffleTimers, randomAudio]);
+  }, [isOpen, watchlistMovies.length, trending.length, clearShuffleTimers, randomAudio]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    if (!poolType) return;
-    if (activePool.length === 0) return;
-
-    startShuffle(poolType);
-  }, [isOpen, poolType, activePool.length]);
-
-  const startShuffle = (source: 'watchlist' | 'trending') => {
+  const startShuffle = useCallback((source: 'watchlist' | 'trending') => {
     const pool = source === 'watchlist' ? watchlistMovies : trending;
     if (!pool || pool.length === 0) {
       setCurrentIndex(null);
@@ -193,7 +204,15 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     };
 
     shuffleTimeoutRef.current = setTimeout(tick, 70);
-  };
+  }, [watchlistMovies, trending, randomAudio, clearShuffleTimers]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!poolType) return;
+    if (activePool.length === 0) return;
+
+    startShuffle(poolType);
+  }, [isOpen, poolType, activePool.length, startShuffle]);
 
   const handleRespin = () => {
     if (!activePool || activePool.length === 0) return;
@@ -230,16 +249,6 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
     }
     const m = currentItem as TMDBMovieResult;
     return m.title || m.name || '';
-  };
-
-  const getPoster = () => {
-    if (!currentItem) return PLACEHOLDER_IMAGE;
-    if (poolType === 'watchlist') {
-      const m = currentItem as Movie;
-      return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
-    }
-    const m = currentItem as TMDBMovieResult;
-    return getTMDBImageUrl(m.poster_path);
   };
 
   return (
@@ -308,115 +317,16 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
           )}
 
           {!isLoadingPool && hasPool && (
-            <div className="flex flex-col items-center gap-6">
-              {/* Wheel of Fortune Layout - Fixed positions, changing content */}
-              <div className="relative w-80 h-60 flex items-center justify-center movie-wheel-container">
-
-                {/* Left Side Card */}
-                <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
-                    <img
-                      src={(() => {
-                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
-                        const leftIndex = (currentIndex - 1 + activePool.length) % activePool.length;
-                        const movie = activePool[leftIndex];
-                        if (poolType === 'watchlist') {
-                          const m = movie as Movie;
-                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
-                        }
-                        const m = movie as TMDBMovieResult;
-                        return getTMDBImageUrl(m.poster_path);
-                      })()}
-                      alt="Left movie"
-                      className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
-                    />
-                    <div className="absolute inset-0 bg-black/30" />
-                  </div>
-                </div>
-
-                {/* Center Card - Main focus */}
-                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
-                  <div className={`w-full h-full rounded-xl overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${isShuffling ? 'animate-pulse-soft' : 'animate-card-float'}`}>
-                    <img
-                      src={(() => {
-                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
-                        const movie = activePool[currentIndex];
-                        if (poolType === 'watchlist') {
-                          const m = movie as Movie;
-                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
-                        }
-                        const m = movie as TMDBMovieResult;
-                        return getTMDBImageUrl(m.poster_path);
-                      })()}
-                      alt="Center movie"
-                      className="w-full h-full object-cover transition-colors duration-200"
-                    />
-
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
-
-
-                  </div>
-                </div>
-
-                {/* Right Side Card */}
-                <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-                  <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
-                    <img
-                      src={(() => {
-                        if (!activePool || activePool.length === 0 || currentIndex === null) return PLACEHOLDER_IMAGE;
-                        const rightIndex = (currentIndex + 1) % activePool.length;
-                        const movie = activePool[rightIndex];
-                        if (poolType === 'watchlist') {
-                          const m = movie as Movie;
-                          return m.source === 'tmdb' ? getTMDBImageUrl(m.poster_path) : (m.poster_path || PLACEHOLDER_IMAGE);
-                        }
-                        const m = movie as TMDBMovieResult;
-                        return getTMDBImageUrl(m.poster_path);
-                      })()}
-                      alt="Right movie"
-                      className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
-                    />
-                    <div className="absolute inset-0 bg-black/30" />
-                  </div>
-                </div>
-
-                {/* Selection Indicator Arrow */}
-                <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 z-40 flex flex-col items-center pointer-events-none">
-                  <div className="w-7 h-7 rounded-full bg-surface border border-primary/50 flex items-center justify-center text-primary shadow-md">
-                    <ChevronDown size={16} strokeWidth={2.5} />
-                  </div>
-                </div>
-
-
-              </div>
-
-              <div className="text-center space-y-2">
-                <p className="text-xs text-primary font-semibold">
-                  {poolType === 'watchlist' ? 'Từ Watchlist của bạn' : 'Phim thịnh hành'}
-                </p>
-                {!isShuffling && currentIndex !== null && (
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-text-main line-clamp-2 font-display" title={getTitle()}>
-                      {getTitle()}
-                    </h3>
-                    <p className="text-sm text-text-muted">
-                      {hasResult ? 'Đã tìm thấy tác phẩm dành riêng cho bạn' : 'Phim được chọn ngẫu nhiên'}
-                    </p>
-                  </div>
-                )}
-                {isShuffling && (
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-text-main animate-pulse font-display">
-                      Đang chọn ngẫu nhiên…
-                    </h3>
-                    <p className="text-sm text-text-muted animate-pulse">
-                      Đang xáo trộn các đề xuất phim phù hợp
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <PickerWheel
+              leftSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, -1), poolType)}
+              centerSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 0), poolType)}
+              rightSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 1), poolType)}
+              poolLabel={poolType === 'watchlist' ? 'Từ Watchlist của bạn' : 'Phim thịnh hành'}
+              title={getTitle()}
+              isShuffling={isShuffling}
+              showTitle={!isShuffling && currentIndex !== null}
+              hasResult={hasResult}
+            />
           )}
         </div>
 

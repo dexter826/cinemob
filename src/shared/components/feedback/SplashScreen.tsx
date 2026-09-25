@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import Loading from '@/shared/components/ui/Loading';
 
@@ -7,7 +7,7 @@ interface SplashScreenProps {
   showLoading?: boolean;
 }
 
-const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationFinish, showLoading = false }) => {
+function SplashScreen({ onAnimationFinish, showLoading = false }: SplashScreenProps) {
   const [animationData, setAnimationData] = useState(null);
 
   useEffect(() => {

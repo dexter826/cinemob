@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tv } from 'lucide-react';
 
 interface TVProgressSectionProps {
@@ -13,7 +12,7 @@ interface TVProgressSectionProps {
   maxSeasons: number;
 }
 
-const TVProgressSection: React.FC<TVProgressSectionProps> = ({
+function TVProgressSection({
   isCompleted,
   setIsCompleted,
   currentSeason,
@@ -23,7 +22,7 @@ const TVProgressSection: React.FC<TVProgressSectionProps> = ({
   totalEpisodes,
   episodesPerSeason,
   maxSeasons
-}) => {
+}: TVProgressSectionProps) {
   return (
     <div className="bg-primary/5 border border-primary/20 rounded-3xl p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">

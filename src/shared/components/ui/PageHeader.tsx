@@ -11,7 +11,7 @@ interface PageHeaderProps {
 }
 
 /** Component tiêu đề trang chuẩn cho toàn bộ ứng dụng */
-const PageHeader: React.FC<PageHeaderProps> = ({ icon: Icon, title, description, children, onBack, className = '' }) => {
+function PageHeader({ icon: Icon, title, description, children, onBack, className = '' }: PageHeaderProps) {
   return (
     <div className={`flex items-center justify-between gap-3 sm:gap-6 ${className}`}>
       <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">

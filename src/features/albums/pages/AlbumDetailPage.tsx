@@ -1,28 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Trash2, Edit2, X as XIcon, Search } from 'lucide-react';
+import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-react';
 import { Album, Movie } from '@/types';
 import { subscribeToAlbum, updateAlbum } from '../services/albumService';
 import { useAuth } from '@/app/providers/AuthProvider';
 import useToastStore from '@/shared/stores/toastStore';
-import useAlertStore from '@/shared/stores/alertStore';
-import MovieCard from '@/components/ui/MovieCard';
+import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
-import useMovieStore from '@/stores/movieStore';
-import { formatMovieDate } from '@/utils/movieUtils';
-import useMovieDetailStore from '@/stores/movieDetailStore';
+import useMovieStore from '@/features/movies/stores/movieStore';
+import { formatMovieDate } from '@/features/movies/utils/movieUtils';
+import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
 /** Quản lý chi tiết album và thêm/bớt phim trong album. */
-const AlbumDetailPage: React.FC = () => {
+function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { showToast } = useToastStore();
-  const { showAlert } = useAlertStore();
 
   const { movies } = useMovieStore();
   const { openDetailModal } = useMovieDetailStore();

@@ -1,21 +1,30 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import useMovieStore from '@/stores/movieStore';
-import useRecommendationsStore from '@/stores/recommendationsStore';
-import useAddMovieStore from '@/stores/addMovieStore';
-import { useSearchPeople } from './useSearchPeople';
+import useMovieStore from '@/features/movies/stores/movieStore';
+import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
+import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import { useSearchTMDB } from './useSearchTMDB';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
+import type { User } from 'firebase/auth';
 
-interface SearchFilters {
+export type SearchSortBy =
+  | 'popularity.desc'
+  | 'vote_average.desc'
+  | 'primary_release_date.desc'
+  | 'primary_release_date.asc'
+  | 'title.asc'
+  | 'title.desc';
+
+export interface SearchFormFilters {
   query: string;
   type: 'all' | 'movie' | 'tv';
   year: string;
   country: string;
-  sortBy: string;
+  rating?: string;
+  sortBy: SearchSortBy;
 }
 
-const INITIAL_FILTERS: SearchFilters = {
+const INITIAL_FILTERS: SearchFormFilters = {
   query: '',
   type: 'all',
   year: '',
@@ -24,7 +33,7 @@ const INITIAL_FILTERS: SearchFilters = {
 };
 
 // Hook điều phối chính cho trang Tìm kiếm.
-export const useSearch = (user: any) => {
+export const useSearch = (user: User | null) => {
   const { openAddModal } = useAddMovieStore();
   const { 
     aiRecommendations, 
@@ -43,7 +52,7 @@ export const useSearch = (user: any) => {
     return aiRecommendations.filter(m => !savedIds.has(m.id.toString()));
   }, [aiRecommendations, savedMovies]);
 
-  const [filters, setFilters] = useState<SearchFilters>(INITIAL_FILTERS);
+  const [filters, setFilters] = useState<SearchFormFilters>(INITIAL_FILTERS);
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [suggestions, setSuggestions] = useState<TMDBMovieResult[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -51,9 +60,8 @@ export const useSearch = (user: any) => {
   
   const [currentPage, setCurrentPage] = useState(1);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [suggestAnimation, setSuggestAnimation] = useState(null);
 
-  const updateFilter = <K extends keyof SearchFilters>(key: K, value: SearchFilters[K]) => {
+  const updateFilter = <K extends keyof SearchFormFilters>(key: K, value: SearchFormFilters[K]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     if (key === 'query' && (value as string).trim() === '') {
       setSubmittedQuery('');
@@ -90,10 +98,6 @@ export const useSearch = (user: any) => {
   }, [filters.query, submittedQuery]);
 
   useEffect(() => {
-    fetch('/data/loading_suggest.json')
-      .then(res => res.json())
-      .then(data => setSuggestAnimation(data))
-      .catch(err => console.error('Error loading animation:', err));
     setInitialLoading(false);
   }, []);
 
@@ -101,7 +105,7 @@ export const useSearch = (user: any) => {
     if (user?.uid && aiRecommendations.length === 0 && trendingMovies.length === 0 && !isAiLoading) {
       refreshRecommendations(user.uid);
     }
-  }, [user?.uid, aiRecommendations.length, trendingMovies.length, isAiLoading]);
+  }, [user?.uid, aiRecommendations.length, trendingMovies.length, isAiLoading, refreshRecommendations]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -157,8 +161,12 @@ export const useSearch = (user: any) => {
             const titleB = b.title || b.name || '';
             return titleB.localeCompare(titleA, 'vi');
           }
-          default:
+          default: {
+            // Exhaustiveness: thêm SearchSortBy mới mà chưa xử lý sẽ lỗi biên dịch ở đây.
+            const unreachable: never = filters.sortBy;
+            console.warn('Unknown sort option:', unreachable);
             return 0;
+          }
         }
       });
     }
@@ -195,7 +203,6 @@ export const useSearch = (user: any) => {
     isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
-    suggestAnimation,
     filteredResults,
     handleSelectMovie, 
     getMovieStatus,

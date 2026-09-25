@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: reusable UI in `components/`, route-level screens in `pages/`, business logic in `hooks/`, Zustand state in `stores/`, external integrations in `services/`, and shared definitions in `types/`, `constants/`, and `utils/`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
+CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: reusable UI in `shared/components/`, feature screens in `features/*/pages/` and `features/*/components/`, business logic in `features/*/hooks/`, Zustand state in `features/*/stores/` and `shared/stores/`, external integrations in `features/*/services/`, and shared definitions in `types/`, `constants/`, plus colocated `utils/`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
 
 ## Build, Test, and Development Commands
 
@@ -11,16 +11,19 @@ CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives i
 - `npm run build` creates the optimized production bundle in `dist/`.
 - `npm run preview` serves the production bundle locally for final smoke testing.
 - `npx tsc --noEmit` runs TypeScript validation without producing files.
+- `npm run typecheck` is an alias for the above.
+- `npm test` runs Vitest once (`vitest run`) over colocated `*.test.ts` files.
+- `npm run lint` runs ESLint over `src/` (0 errors, warnings capped at 200).
 
 Copy `.env.example` to `.env` before exercising Firebase, TMDB, or OpenRouter-backed features.
 
 ## Coding Style & Naming Conventions
 
-Follow the existing TypeScript style: two-space indentation, single quotes, semicolons, and functional React components. Use `PascalCase` for components and pages (`MovieCard.tsx`), `camelCase` for functions and utilities, `useX` for hooks, and `xStore.ts` / `xService.ts` for Zustand stores and service modules. Keep rendering in components, reusable behavior in hooks, remote calls in services, and shared interfaces in `src/types`. No formatter or linter is configured; avoid unrelated formatting churn.
+Follow the existing TypeScript style: two-space indentation, single quotes, semicolons, and functional React components (no `React.FC`). Use `PascalCase` for components and pages (`MovieCard.tsx`), `camelCase` for functions and utilities, `useX` for hooks, and `xStore.ts` / `xService.ts` for Zustand stores and service modules. Keep rendering in components, reusable behavior in hooks, remote calls in services, and shared interfaces in `src/types`. ESLint (`eslint.config.js`) must stay green; avoid unrelated formatting churn.
 
 ## Testing Guidelines
 
-There is currently no automated test runner or coverage threshold. Before opening a PR, run `npx tsc --noEmit` and `npm run build`, then manually verify affected routes, responsive layouts, authentication, and relevant API failure states. If adding a test framework, include its npm script and use colocated `*.test.ts` or `*.test.tsx` files.
+Vitest is configured (`vitest.config.ts`, alias `@/`); put unit tests in colocated `*.test.ts` files next to the code they cover. Before opening a PR, run `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`, then manually verify affected routes, responsive layouts, authentication, and relevant API failure states.
 
 ## Commit & Pull Request Guidelines
 

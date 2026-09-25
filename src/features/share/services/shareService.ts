@@ -8,9 +8,26 @@ export const getPublicShare = async (uid: string): Promise<PublicShare | null> =
   const ref = doc(db, COLLECTION_NAME, uid);
   const snap = await getDoc(ref);
   if (!snap.exists()) return null;
-  const data = snap.data() as Partial<PublicShare>;
+  const raw: unknown = snap.data();
+  if (typeof raw !== 'object' || raw === null) return null;
+  const data = raw as Partial<PublicShare>;
   if (typeof data.isEnabled !== 'boolean') return null;
-  return { ...snap.data(), movies: Array.isArray(data.movies) ? data.movies : [] } as PublicShare;
+  const movies = Array.isArray(data.movies)
+    ? data.movies.filter(
+        (m): m is PublicShareMovie =>
+          typeof m === 'object' && m !== null &&
+          (typeof (m as PublicShareMovie).id === 'string' || typeof (m as PublicShareMovie).id === 'number') &&
+          typeof (m as PublicShareMovie).title === 'string'
+      )
+    : [];
+  return {
+    displayName: typeof data.displayName === 'string' ? data.displayName : '',
+    photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
+    isEnabled: data.isEnabled,
+    updatedAt: (data.updatedAt as PublicShare['updatedAt']) ?? new Date(),
+    totalCount: typeof data.totalCount === 'number' ? data.totalCount : movies.length,
+    movies,
+  };
 };
 
 export const upsertPublicShare = async (uid: string, data: Omit<PublicShare, 'updatedAt'>): Promise<void> => {

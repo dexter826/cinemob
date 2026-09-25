@@ -18,6 +18,7 @@ interface ReleaseCalendarState {
 }
 
 // Quản lý trạng thái lịch phát sóng tập phim mới.
+let calendarRequestId = 0;
 const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
   movies: [],
   upcomingEpisodes: [],
@@ -29,7 +30,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
   setLoading: (loading) => set({ loading }),
   setLoadingEpisodes: (loading) => set({ loadingEpisodes: loading }),
   setHasFetchedInitial: (fetched) => set({ hasFetchedInitial: fetched }),
-  initializeForUser: (_userId: string) => {
+  initializeForUser: () => {
     set({
       movies: [],
       upcomingEpisodes: [],
@@ -39,13 +40,15 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
     });
   },
   fetchUpcomingEpisodes: async (userId: string, movies: Movie[]) => {
+    const requestId = ++calendarRequestId;
     set({ loadingEpisodes: true });
     try {
       const episodes = await fetchUpcomingEpisodesForMovies(userId, movies);
-      set({ upcomingEpisodes: episodes, loadingEpisodes: false });
+      if (requestId === calendarRequestId) set({ upcomingEpisodes: episodes });
     } catch (error) {
       console.error('Failed to fetch upcoming episodes:', error);
-      set({ loadingEpisodes: false });
+    } finally {
+      if (requestId === calendarRequestId) set({ loadingEpisodes: false });
     }
   },
 }));

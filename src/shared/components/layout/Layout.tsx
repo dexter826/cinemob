@@ -11,7 +11,7 @@ interface LayoutProps {
   appReady?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, appReady = true }) => {
+function Layout({ children, appReady = true }: LayoutProps) {
   const { isInitialLoadComplete, isPageLoading } = useInitialLoadStore();
   
   const showFooter = appReady && isInitialLoadComplete && !isPageLoading;

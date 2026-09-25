@@ -57,16 +57,21 @@ export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
 };
 
 // Chuẩn hóa sang đối tượng Date.
-export const normalizeMovieDate = (date: any): Date | null => {
+export const normalizeMovieDate = (date: unknown): Date | null => {
   if (!date) return null;
-  if (typeof date.toDate === 'function') return date.toDate();
-  if (date instanceof Date) return date;
-  const d = new Date(date);
-  return isNaN(d.getTime()) ? null : d;
+  if (typeof date === 'object' && date !== null && typeof (date as { toDate?: unknown }).toDate === 'function') {
+    return (date as { toDate: () => Date }).toDate();
+  }
+  if (date instanceof Date) return Number.isNaN(date.getTime()) ? null : date;
+  if (typeof date === 'string' || typeof date === 'number') {
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  return null;
 };
 
 // Định dạng dd/mm/yyyy.
-export const formatMovieDate = (date: any): string => {
+export const formatMovieDate = (date: unknown): string => {
   const normalized = normalizeMovieDate(date);
   if (!normalized) return 'N/A';
   return new Intl.DateTimeFormat('vi-VN', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(normalized);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FolderPlus, Plus, X, Loader2 } from 'lucide-react';
 import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
 import { Album } from '@/types';
@@ -16,7 +15,7 @@ interface AlbumSectionProps {
   setSelectedAlbumIds: (ids: string[]) => void;
 }
 
-const AlbumSection: React.FC<AlbumSectionProps> = ({
+function AlbumSection({
   isEditMode,
   showCreateAlbum,
   setShowCreateAlbum,
@@ -27,7 +26,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
   albums,
   selectedAlbumIds,
   setSelectedAlbumIds
-}) => {
+}: AlbumSectionProps) {
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">

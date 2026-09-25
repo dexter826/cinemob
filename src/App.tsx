@@ -1,9 +1,7 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
-import { ThemeProvider } from '@/app/providers/ThemeProvider';
-import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import Login from '@/features/auth/components/Login';
 const Dashboard = lazy(() => import('@/features/dashboard/pages/Dashboard'));
@@ -19,6 +17,7 @@ const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDe
 import Layout from '@/shared/components/layout/Layout';
 import SplashScreen from '@/shared/components/feedback/SplashScreen';
 import Loading from '@/shared/components/ui/Loading';
+import ErrorBoundary from '@/shared/components/feedback/ErrorBoundary';
 import { useAppInit } from '@/shared/hooks/useAppInit';
 import ToastContainer from '@/shared/components/feedback/ToastContainer';
 import AlertContainer from '@/shared/components/feedback/AlertContainer';
@@ -33,7 +32,7 @@ const REDUCED_PAGE_VARIANTS = {
 };
 
 // Điều hướng trang kèm hỗ trợ giảm chuyển động.
-const AnimatedRoutes: React.FC = () => {
+function AnimatedRoutes() {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
   
@@ -63,7 +62,7 @@ const AnimatedRoutes: React.FC = () => {
   );
 };
 
-const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady, appReady }) => {
+function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean }) {
   const { user, loading: authLoading } = useAuth();
   const { isOpen: isDetailModalOpen, movie: selectedMovie, closeDetailModal } = useMovieDetailStore();
   const { isInitialLoadComplete } = useInitialLoadStore();
@@ -88,22 +87,26 @@ const MainApp: React.FC<{ onReady: () => void; appReady: boolean }> = ({ onReady
 
   return (
     <Layout appReady={appReady}>
-      <Suspense fallback={<Loading fullScreen={false} contain={true} />}>
-        <AnimatedRoutes />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<Loading fullScreen={false} contain={true} />}>
+          <AnimatedRoutes />
+        </Suspense>
+      </ErrorBoundary>
       <Suspense fallback={null}>
-        <AddMovieModal />
-        <MovieDetailModal
-          isOpen={isDetailModalOpen}
-          onClose={closeDetailModal}
-          movie={selectedMovie}
-        />
+        <ErrorBoundary>
+          <AddMovieModal />
+          <MovieDetailModal
+            isOpen={isDetailModalOpen}
+            onClose={closeDetailModal}
+            movie={selectedMovie}
+          />
+        </ErrorBoundary>
       </Suspense>
     </Layout>
   );
 };
 
-const App: React.FC = () => {
+function App() {
   const [shouldShowSplash, setShouldShowSplash] = useState(() => !sessionStorage.getItem('splashScreenShown'));
   const [animationFinished, setAnimationFinished] = useState(false);
   const [appReady, setAppReady] = useState(false);
@@ -128,9 +131,11 @@ const App: React.FC = () => {
         <Route
           path="/share/:uid"
           element={
-            <Suspense fallback={<Loading fullScreen />}>
-              <SharePage />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<Loading fullScreen />}>
+                <SharePage />
+              </Suspense>
+            </ErrorBoundary>
           }
         />
         <Route

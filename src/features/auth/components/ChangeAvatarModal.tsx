@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Camera, Upload, Loader2, Check, ArrowLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { X, Loader2, Check, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { updateUserAvatar, getOriginalGoogleAvatar, revertToGoogleAvatar } from '../services/avatarService';
@@ -7,6 +7,8 @@ import { getCroppedImgBlob } from '../services/cloudinaryService';
 import useToastStore from '@/shared/stores/toastStore';
 import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
 import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { AvatarPickView } from './avatar/AvatarPickView';
+import { AvatarCropView } from './avatar/AvatarCropView';
 
 interface ChangeAvatarModalProps {
   isOpen: boolean;
@@ -15,7 +17,7 @@ interface ChangeAvatarModalProps {
 
 const CROP_SIZE = 220;
 
-export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, onClose }) => {
+export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +25,7 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
 
   usePreventScroll(isOpen);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [, setSelectedFile] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageMeta, setImageMeta] = useState<{ width: number; height: number } | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -36,22 +38,8 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
   const [isDragOverPick, setIsDragOverPick] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isOpen) {
-      handleReset();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    return () => {
-      if (imageSrc) {
-        URL.revokeObjectURL(imageSrc);
-      }
-    };
-  }, [imageSrc]);
-
   // Đặt lại toàn bộ trạng thái chọn và crop ảnh.
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     if (imageSrc) {
       URL.revokeObjectURL(imageSrc);
     }
@@ -62,7 +50,21 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
     setPan({ x: 0, y: 0 });
     setErrorMessage(null);
     setIsUploading(false);
-  };
+  }, [imageSrc]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      handleReset();
+    }
+  }, [isOpen, handleReset]);
+
+  useEffect(() => {
+    return () => {
+      if (imageSrc) {
+        URL.revokeObjectURL(imageSrc);
+      }
+    };
+  }, [imageSrc]);
 
   // Tính tỷ lệ cơ sở để ảnh phủ kín khung crop tròn.
   const getBaseScale = useCallback(() => {
@@ -195,8 +197,8 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
       await refreshUser();
       showToast('Đổi ảnh đại diện thành công!', 'success');
       onClose();
-    } catch (error: any) {
-      const msg = error?.message || 'Không thể cập nhật ảnh đại diện';
+    } catch (error: unknown) {
+      const msg = error instanceof Error && error.message ? error.message : 'Không thể cập nhật ảnh đại diện';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {
@@ -216,8 +218,8 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
       await refreshUser();
       showToast('Đã khôi phục ảnh đại diện Google', 'success');
       onClose();
-    } catch (error: any) {
-      const msg = error?.message || 'Không thể khôi phục ảnh đại diện';
+    } catch (error: unknown) {
+      const msg = error instanceof Error && error.message ? error.message : 'Không thể khôi phục ảnh đại diện';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {
@@ -294,176 +296,35 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
               />
 
               {!imageSrc ? (
-                /* Màn hình chọn ảnh */
-                <>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Chọn hoặc kéo thả ảnh đại diện mới"
-                    onClick={() => fileInputRef.current?.click()}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        fileInputRef.current?.click();
-                      }
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setIsDragOverPick(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      setIsDragOverPick(false);
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setIsDragOverPick(false);
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) handleValidateFile(file);
-                    }}
-                    className={`relative w-36 h-36 rounded-full cursor-pointer select-none transition-all duration-200 outline-none group ${
-                      isDragOverPick
-                        ? 'ring-4 ring-primary scale-105 shadow-xl'
-                        : 'ring-2 ring-border-default hover:ring-primary/80 focus-visible:ring-4 focus-visible:ring-primary/40 active:scale-[0.98]'
-                    }`}
-                  >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
-                      {user?.photoURL ? (
-                        <img
-                          src={user.photoURL}
-                          alt="Ảnh đại diện"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-4xl font-bold text-primary">
-                          {user?.displayName?.charAt(0) || 'U'}
-                        </span>
-                      )}
-                    </div>
-
-                    <div
-                      className={`absolute inset-0 rounded-full flex flex-col items-center justify-center transition-all duration-200 ${
-                        isDragOverPick
-                          ? 'bg-primary/80 text-white opacity-100 backdrop-blur-xs'
-                          : 'bg-black/50 text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 backdrop-blur-xs'
-                      }`}
-                    >
-                      {isDragOverPick ? (
-                        <>
-                          <Upload size={26} className="animate-bounce" />
-                          <span className="text-xs font-semibold mt-1">Thả ảnh vào đây</span>
-                        </>
-                      ) : (
-                        <>
-                          <Camera size={24} />
-                          <span className="text-xs font-medium mt-1">Chọn ảnh</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-center flex flex-col items-center">
-                    <p className="text-xs text-text-muted">Nhấp hoặc kéo thả ảnh vào vòng tròn</p>
-                    <p className="text-[11px] text-text-muted/70 mt-1">
-                      JPG, PNG, WEBP · Tối đa 10MB
-                    </p>
-
-                    {canRevertToGoogle && (
-                      <button
-                        type="button"
-                        onClick={handleRevertToGoogle}
-                        disabled={isReverting || isUploading}
-                        className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/10 border border-border-default transition-all cursor-pointer disabled:opacity-50 active:scale-95"
-                        title="Đặt lại ảnh đại diện về ảnh gốc tài khoản Google"
-                      >
-                        {isReverting ? (
-                          <Loader2 size={13} className="animate-spin text-primary" />
-                        ) : (
-                          <RotateCcw size={13} />
-                        )}
-                        <span>Dùng lại ảnh Google</span>
-                      </button>
-                    )}
-                  </div>
-                </>
+                <AvatarPickView
+                  photoURL={user?.photoURL ?? null}
+                  displayInitial={user?.displayName?.charAt(0) || 'U'}
+                  isDragOver={isDragOverPick}
+                  isUploading={isUploading}
+                  isReverting={isReverting}
+                  canRevert={canRevertToGoogle}
+                  onPickClick={() => fileInputRef.current?.click()}
+                  onDragStateChange={setIsDragOverPick}
+                  onDropFile={handleValidateFile}
+                  onRevert={handleRevertToGoogle}
+                />
               ) : (
-                /* Màn hình Cắt & Căn chỉnh ảnh (Crop View) */
-                <div className="w-full flex flex-col items-center select-none">
-                  {/* Viewport cắt ảnh */}
-                  <div
-                    style={{ width: CROP_SIZE, height: CROP_SIZE }}
-                    onWheel={handleWheelZoom}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    className={`relative rounded-full overflow-hidden ring-4 ring-primary/40 shadow-xl touch-none bg-black/80 ${
-                      isDraggingPan ? 'cursor-grabbing' : 'cursor-grab'
-                    }`}
-                  >
-                    <img
-                      ref={imgRef}
-                      src={imageSrc}
-                      alt="Ảnh căn chỉnh"
-                      draggable={false}
-                      style={{
-                        width: renderedWidth,
-                        height: renderedHeight,
-                        transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px))`,
-                        left: '50%',
-                        top: '50%',
-                        position: 'absolute',
-                        maxWidth: 'none',
-                        userSelect: 'none'
-                      }}
-                    />
-
-                    {/* Lưới định tâm nhẹ nhàng */}
-                    <div className="absolute inset-0 pointer-events-none rounded-full border border-white/20" />
-                  </div>
-
-                  {/* Thanh điều khiển phóng to/thu nhỏ */}
-                  <div className="w-full mt-5 px-3 flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleZoomChange(zoom - 0.2)}
-                      disabled={zoom <= 1 || isUploading}
-                      aria-label="Thu nhỏ"
-                      className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
-                    >
-                      <ZoomOut size={16} />
-                    </button>
-
-                    <input
-                      type="range"
-                      min="1"
-                      max="3"
-                      step="0.05"
-                      value={zoom}
-                      onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
-                      disabled={isUploading}
-                      aria-label="Mức phóng to"
-                      className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => handleZoomChange(zoom + 0.2)}
-                      disabled={zoom >= 3 || isUploading}
-                      aria-label="Phóng to"
-                      className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
-                    >
-                      <ZoomIn size={16} />
-                    </button>
-
-                    <span className="text-xs font-mono text-text-muted w-9 text-right">
-                      {zoom.toFixed(1)}x
-                    </span>
-                  </div>
-
-                  <p className="text-[11px] text-text-muted/70 mt-2 text-center">
-                    Kéo ảnh để căn góc mặt, cuộn chuột để phóng to
-                  </p>
-                </div>
+                <AvatarCropView
+                  imageSrc={imageSrc}
+                  imgRef={imgRef}
+                  renderedWidth={renderedWidth}
+                  renderedHeight={renderedHeight}
+                  pan={pan}
+                  cropSize={CROP_SIZE}
+                  zoom={zoom}
+                  isDragging={isDraggingPan}
+                  isUploading={isUploading}
+                  onWheelZoom={handleWheelZoom}
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onZoomChange={handleZoomChange}
+                />
               )}
 
               {/* Thông báo lỗi nếu có */}

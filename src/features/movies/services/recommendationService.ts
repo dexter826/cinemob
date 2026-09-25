@@ -1,6 +1,6 @@
 import { TMDBMovieResult, Movie } from '@/types';
 import { getAIRecommendations } from './aiService';
-import { searchMovies, getTrendingMovies, withLimit } from '@/services/tmdb';
+import { searchMovies, getTrendingMovies, withLimit } from '@/features/search/services/tmdb';
 import { updatePreviouslyRecommendedTitles } from '@/features/auth/services/userService';
 
 const CACHE_DURATION = {
@@ -27,20 +27,21 @@ export const fetchAIRecommendations = async (
 
   if (cachedData && !forceRefresh) {
     try {
-      const parsedCache = JSON.parse(cachedData);
+      const parsedCache: unknown = JSON.parse(cachedData);
       if (
-        parsedCache.timestamp &&
-        !isExpired(parsedCache.timestamp, CACHE_DURATION.AI_RECS) &&
-        parsedCache.historyLength === watchedHistory.length &&
-        parsedCache.data
+        typeof parsedCache === 'object' && parsedCache !== null &&
+        typeof (parsedCache as { timestamp?: unknown }).timestamp === 'number' &&
+        !isExpired((parsedCache as { timestamp: number }).timestamp, CACHE_DURATION.AI_RECS) &&
+        (parsedCache as { historyLength?: unknown }).historyLength === watchedHistory.length &&
+        Array.isArray((parsedCache as { data?: unknown }).data)
       ) {
         return {
-          aiRecommendations: parsedCache.data,
+          aiRecommendations: (parsedCache as { data: TMDBMovieResult[] }).data,
           lastAiHistoryLength: watchedHistory.length,
         };
       }
     } catch (e) {
-      localStorage.removeItem(cacheKey);
+      try { localStorage.removeItem(cacheKey); } catch { /* bỏ qua */ }
     }
   }
 
@@ -59,7 +60,7 @@ export const fetchAIRecommendations = async (
       const searchRes = await searchMovies(title, 1, year);
       return searchRes.results.length > 0 ? searchRes.results[0] : null;
     } catch (error) {
-      console.error(`Failed to search for recommended movie: ${rec.title}`, error);
+      console.error('Failed to search for recommended movie', error);
       return null;
     }
   });
@@ -73,11 +74,15 @@ export const fetchAIRecommendations = async (
   
   const displayResults = tmdbResults.slice(0, 20);
 
-  localStorage.setItem(cacheKey, JSON.stringify({
-    historyLength: watchedHistory.length,
-    data: displayResults,
-    timestamp: Date.now(),
-  }));
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify({
+      historyLength: watchedHistory.length,
+      data: displayResults,
+      timestamp: Date.now(),
+    }));
+  } catch {
+    // QuotaExceeded: bỏ qua cache.
+  }
 
   const newTitles = aiRecs.map(rec => rec.title);
   await updatePreviouslyRecommendedTitles(userId, newTitles);

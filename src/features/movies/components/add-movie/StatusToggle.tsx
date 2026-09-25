@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 interface StatusToggleProps {
@@ -6,7 +5,7 @@ interface StatusToggleProps {
   setStatus: (status: 'history' | 'watchlist') => void;
 }
 
-const StatusToggle: React.FC<StatusToggleProps> = ({ status, setStatus }) => {
+function StatusToggle({ status, setStatus }: StatusToggleProps) {
   return (
     <div className="bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default relative flex">
       <button

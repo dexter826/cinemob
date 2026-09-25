@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, Calendar, Clock, Star, Film, FolderPlus, Play, Users, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, TMDBVideo, TMDBCredits } from '@/types';
-import { getMovieVideos, getMovieCredits } from '@/services/tmdb';
+import { getMovieVideos, getMovieCredits } from '@/features/search/services/tmdb';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl, getTranslatedGenres } from '../utils/movieUtils';
-import Loading from '@/shared/components/ui/Loading';
 import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
 import useToastStore from '@/shared/stores/toastStore';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +18,7 @@ interface MovieDetailModalProps {
   movie: Movie | null;
 }
 
-const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, movie }) => {
+function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
   const [loading, setLoading] = useState(false);
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
   const [videos, setVideos] = useState<TMDBVideo[]>([]);
@@ -28,6 +27,13 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   const navigate = useNavigate();
 
   usePreventScroll(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +63,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
     if (isOpen && movie) {
       fetchData();
     }
-  }, [isOpen, movie]);
+  }, [isOpen, movie, showToast]);
 
   if (!movie) return null;
 
@@ -76,8 +82,9 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
   };
 
   const handleWatchTrailer = () => {
-    if (videos.length > 0) {
-      window.open(`https://www.youtube.com/watch?v=${videos[0].key}`, '_blank');
+    const key = videos[0]?.key ?? '';
+    if (videos.length > 0 && /^[A-Za-z0-9_-]{6,20}$/.test(key)) {
+      window.open(`https://www.youtube.com/watch?v=${key}`, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -193,7 +200,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                         <div
                           className="h-full bg-primary transition-[width] duration-700 ease-out rounded-full"
                           style={{
-                            width: movie.progress.is_completed ? '100%' : `${(movie.progress.watched_episodes / (movie.total_episodes || 1)) * 100}%`
+                            width: movie.progress.is_completed ? '100%' : `${((movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)) * 100}%`
                           }}
                         />
                       </div>

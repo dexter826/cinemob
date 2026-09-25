@@ -1,8 +1,7 @@
-import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import useAlertStore from '../../stores/alertStore';
 
-const AlertContainer: React.FC = () => {
+function AlertContainer() {
   const { alert, hideAlert } = useAlertStore();
 
   if (!alert) return null;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import useAddMovieStore from '../stores/addMovieStore';
 import useToastStore from '@/shared/stores/toastStore';
@@ -12,13 +12,31 @@ import { GENRE_OPTIONS } from '@/constants/genres';
 import { useTMDBLookup } from '@/features/search/hooks/useTMDBLookup';
 import { useMovieValidation } from './useMovieValidation';
 
+export interface MovieFormData {
+  title: string;
+  title_vi: string;
+  runtime: string;
+  seasons: string;
+  poster: string;
+  date: string;
+  time: string;
+  rating: number;
+  review: string;
+  tagline: string;
+  genres: string;
+  releaseDate: string;
+  country: string;
+  content: string;
+  is_review: boolean;
+}
+
 // Quản lý form thêm/sửa phim và series.
 export const useAddMovieForm = () => {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { isOpen, initialData, closeAddModal } = useAddMovieStore();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<MovieFormData>({
     title: '', title_vi: '', runtime: '', seasons: '', poster: '',
     date: new Date().toISOString().split('T')[0],
     time: `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
@@ -47,6 +65,12 @@ export const useAddMovieForm = () => {
     isTVSeries, 
     isOpen 
   });
+
+  const {
+    setTotalEpisodes: setTvTotalEpisodes,
+    setEpisodesPerSeason: setTvEpisodesPerSeason,
+    setIsCompleted: setTvIsCompleted,
+  } = tvProgress;
 
   const albumSync = useAlbumSync({ user, movieToEdit: initialData?.movieToEdit, isOpen, showToast });
 
@@ -99,9 +123,9 @@ export const useAddMovieForm = () => {
           if (!details) return;
 
           if (type === 'tv' && details.tvInfo) {
-            tvProgress.setTotalEpisodes(details.tvInfo.totalEpisodes);
-            tvProgress.setEpisodesPerSeason(details.tvInfo.episodesPerSeason);
-            tvProgress.setIsCompleted(true);
+            setTvTotalEpisodes(details.tvInfo.totalEpisodes);
+            setTvEpisodesPerSeason(details.tvInfo.episodesPerSeason);
+            setTvIsCompleted(true);
           }
 
           setFormData(prev => ({
@@ -113,7 +137,7 @@ export const useAddMovieForm = () => {
         initTMDB();
       }
     }
-  }, [isOpen, initialData, user, fetchDetails]);
+  }, [isOpen, initialData, user, fetchDetails, setMovieExists, setTvTotalEpisodes, setTvEpisodesPerSeason, setTvIsCompleted]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

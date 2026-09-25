@@ -7,11 +7,14 @@ export const getUserData = async (userId: string): Promise<UserData | null> => {
   try {
     const userDoc = await getDoc(doc(db, 'users', userId));
     if (userDoc.exists()) {
-      return userDoc.data() as UserData;
+      const raw: unknown = userDoc.data();
+      if (typeof raw !== 'object' || raw === null) return null;
+      const titles = (raw as Partial<UserData>).previouslyRecommendedTitles;
+      return { previouslyRecommendedTitles: Array.isArray(titles) ? titles.filter((t): t is string => typeof t === 'string') : [] };
     }
     return null;
-  } catch (error: any) {
-    if (error?.code !== 'permission-denied') {
+  } catch (error: unknown) {
+    if ((error as { code?: string })?.code !== 'permission-denied') {
       console.error('Failed to get user data:', error);
     }
     return null;
@@ -35,5 +38,6 @@ export const updatePreviouslyRecommendedTitles = async (userId: string, titles: 
     }
   } catch (error) {
     console.error('Failed to update previously recommended titles:', error);
+    throw error;
   }
 };

@@ -13,6 +13,10 @@ export const FIREBASE_CONFIG = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:12345:web:abcde"
 };
 
+if (FIREBASE_CONFIG.apiKey === 'mock_key' || FIREBASE_CONFIG.projectId === 'mock-project') {
+  console.warn('[config] Thiếu biến môi trường Firebase (.env). App đang chạy với cấu hình mock, Auth/Firestore sẽ lỗi.');
+}
+
 // Ảnh mặc định khi thiếu poster.
 export const PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale&blur=2';
 

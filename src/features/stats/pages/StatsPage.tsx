@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Film, Star, TrendingUp, Globe, Calendar } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
 } from 'recharts';
-import useMovieStore from '@/stores/movieStore';
+import useMovieStore from '@/features/movies/stores/movieStore';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import PageHeader from '@/shared/components/ui/PageHeader';
 import { useStats } from '../hooks/useStats';
@@ -13,8 +13,26 @@ import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 
 const COLORS = ['#be123c', '#d97706', '#9a3412', '#c2410c', '#57534e', '#0f766e', '#1e3a8a', '#15803d'];
 
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: Array<{ name?: string; value?: number | string }>;
+  label?: string;
+}
+
+const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-surface/90 backdrop-blur-2xl border border-border-default dark:border-white/5 rounded-2xl p-4 shadow-premium animate-in fade-in duration-200 ring-1 ring-black/5 dark:ring-white/5">
+        <p className="text-text-main font-bold mb-1">{label || payload[0].name}</p>
+        <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 /** Thống kê hoạt động xem phim, điểm số và thể loại. */
-const StatsPage: React.FC = () => {
+function StatsPage() {
   const { movies, loading } = useMovieStore();
   const { 
     totalMovies, movieCount, tvCount, avgRating, ratedCount,
@@ -54,17 +72,20 @@ const StatsPage: React.FC = () => {
     return monthlyData.reduce((acc, curr) => acc + curr.count, 0);
   }, [monthlyData]);
 
-  const customTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-surface/90 backdrop-blur-2xl border border-border-default dark:border-white/5 rounded-2xl p-4 shadow-premium animate-in fade-in duration-200 ring-1 ring-black/5 dark:ring-white/5">
-          <p className="text-text-main font-bold mb-1">{label || payload[0].name}</p>
-          <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const topCountries = useMemo(() => {
+    return Object.entries(moviesByCountry)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+  }, [moviesByCountry]);
+
+  const genreData = useMemo(() => {
+    const entries = Object.entries(moviesByGenre).sort((a, b) => b[1] - a[1]);
+    const all = entries.map(([name, value]) => ({ name, value }));
+    if (all.length <= 8) return all;
+    const top = all.slice(0, 7);
+    const others = all.slice(7).reduce((acc, cur) => acc + cur.value, 0);
+    return [...top, { name: 'Khác', value: others }];
+  }, [moviesByGenre]);
 
   if (loading) {
     return (
@@ -159,7 +180,7 @@ const StatsPage: React.FC = () => {
                       tickLine={false} 
                       tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 700, opacity: 0.5 }}
                     />
-                    <Tooltip content={customTooltip} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
+                    <Tooltip content={<StatsTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
                     <Bar 
                       dataKey="count" 
                       fill="url(#barGradient)" 
@@ -191,11 +212,11 @@ const StatsPage: React.FC = () => {
                       <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
                         <div
                           className="h-full bg-warning rounded-full transition-colors duration-700 ease-out"
-                          style={{ width: `${(moviesByRating[rating] / (ratedCount || 1)) * 100}%` }}
+                          style={{ width: `${((moviesByRating[rating] ?? 0) / (ratedCount || 1)) * 100}%` }}
                         />
                       </div>
                       <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
-                        {moviesByRating[rating]}
+                        {moviesByRating[rating] ?? 0}
                       </span>
                     </div>
                   ))}
@@ -211,10 +232,7 @@ const StatsPage: React.FC = () => {
                   <h3 className="text-lg font-bold tracking-tight">Top 5 Quốc gia</h3>
                 </div>
                 <div className="space-y-3">
-                  {Object.entries(moviesByCountry)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5)
-                    .map(([country, count], index) => (
+                  {topCountries.map(([country, count], index) => (
                       <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group">
                         <div className="flex items-center gap-4">
                           <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">0{index + 1}</span>
@@ -243,16 +261,6 @@ const StatsPage: React.FC = () => {
               <div className="h-96">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    {(() => {
-                      const entries = Object.entries(moviesByGenre).sort((a, b) => b[1] - a[1]);
-                      let genreData = entries.map(([name, value]) => ({ name, value }));
-                      if (genreData.length > 8) {
-                        const top = genreData.slice(0, 7);
-                        const others = genreData.slice(7).reduce((acc, cur) => acc + cur.value, 0);
-                        genreData = [...top, { name: 'Khác', value: others }];
-                      }
-                      return (
-                        <>
                           <Pie
                             data={genreData}
                             cx="50%" cy="50%"
@@ -271,12 +279,9 @@ const StatsPage: React.FC = () => {
                             align="center"
                             layout="horizontal"
                             wrapperStyle={{ fontSize: 12, fontWeight: 700, paddingTop: 30, opacity: 0.8 }}
-                            formatter={(value: string, entry: any) => `${value}: ${entry.payload.value}`}
+                            formatter={(value: string, entry?: { payload?: { value?: number | string } }) => `${value}: ${entry?.payload?.value ?? ''}`}
                           />
-                        </>
-                      );
-                    })()}
-                    <Tooltip content={customTooltip} />
+                    <Tooltip content={<StatsTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { Movie } from '@/types';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
-import { normalizeMovieDate } from '@/utils/movieUtils';
+import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
 
 // Hook xử lý logic thống kê toàn diện.
 export const useStats = (movies: Movie[]) => {

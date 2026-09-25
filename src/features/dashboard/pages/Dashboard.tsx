@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Film, Share2 } from 'lucide-react';
@@ -6,7 +6,7 @@ import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import { normalizeMovieDate } from '@/utils/movieUtils';
+import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import PageHeader from '@/shared/components/ui/PageHeader';
 import ShareModal from '@/features/share/components/ShareModal';
@@ -17,16 +17,14 @@ import DashboardTabs from '../components/DashboardTabs';
 import DashboardFilters from '../components/DashboardFilters';
 
 /** Quản lý bộ sưu tập phim. */
-const Dashboard: React.FC = () => {
+function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const {
     loading,
-    stats,
     contentTypeStats,
     processedMovies,
-    allProcessedMoviesCount,
     totalPages,
     currentPage,
     setCurrentPage,
@@ -52,10 +50,10 @@ const Dashboard: React.FC = () => {
     return Array.from(new Set(movies.map(m => {
       const d = normalizeMovieDate(m.watched_at);
       return d ? d.getFullYear() : null;
-    }).filter(Boolean)))
-      .sort((a, b) => (b as number) - (a as number))
+    }).filter((y): y is number => y !== null)))
+      .sort((a, b) => b - a)
       .map(year => ({
-        value: year as number,
+        value: year,
         label: year.toString(),
       }));
   }, [movies]);
@@ -65,7 +63,7 @@ const Dashboard: React.FC = () => {
     return Array.from(new Set(
       movies
         .filter(m => m.country && m.country.trim().length > 0)
-        .flatMap(m => m.country!.split(',').map(c => c.trim()))
+        .flatMap(m => (m.country ?? '').split(',').map(c => c.trim()))
         .filter(c => c.length > 0)
     ))
       .sort()

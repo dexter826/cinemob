@@ -110,10 +110,11 @@ const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePr
     `;
 
     const response = await makeOpenRouterRequest(prompt);
-    
-    if (response.status === 429) {
+
+    if (!response.ok) {
         recordFailure();
-        throw new Error("API_RATE_LIMIT");
+        if (response.status === 429) throw new Error("API_RATE_LIMIT");
+        throw new Error(`API_ERROR_${response.status}`);
     }
 
     const data = await response.json();
@@ -157,9 +158,11 @@ const retryWithBackoff = async (
     }
 };
 
-const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
-    fetch("https://openrouter.ai/api/v1/chat/completions", {
+const makeOpenRouterRequest = (prompt: string): Promise<Response> => {
+    if (!OPENROUTER_API_KEY) throw new Error("API_KEY_MISSING");
+    return fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
+        signal: AbortSignal.timeout(15000),
         headers: {
             "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
             "Content-Type": "application/json",
@@ -175,9 +178,16 @@ const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
             temperature: 0.5,
         })
     });
+};
 
 const parseAIResponse = (content: string): AIRecommendation[] => {
     const match = content.match(/\[[\s\S]*\]/);
     if (!match) throw new Error("NO_JSON_ARRAY");
-    return JSON.parse(match[0]);
+    const parsed: unknown = JSON.parse(match[0]);
+    if (!Array.isArray(parsed)) throw new Error("NO_JSON_ARRAY");
+    return parsed.filter(
+        (item): item is AIRecommendation =>
+            typeof item === 'object' && item !== null &&
+            typeof (item as AIRecommendation).title === 'string'
+    );
 };

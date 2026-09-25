@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { X, Download, FileSpreadsheet, Loader2, Star, Filter } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { X, Download, Loader2, Star, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Movie } from '@/types';
 import { exportToExcel, filterMoviesForExport, ExportFilters } from '../services/exportService';
@@ -15,7 +15,7 @@ interface ExportModalProps {
   movies: Movie[];
 }
 
-const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) => {
+function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
   const { showToast } = useToastStore();
 
   // Prevent body scroll when modal is open
@@ -38,13 +38,13 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
       movies.map(m => {
         const d = normalizeMovieDate(m.watched_at);
         return d ? d.getFullYear() : null;
-      }).filter(Boolean)
-    )).sort((a, b) => (b as number) - (a as number));
+      }).filter((y): y is number => y !== null)
+    )).sort((a, b) => b - a);
 
     const countries = Array.from(new Set(
       movies
         .filter(m => m.country && m.country.trim().length > 0)
-        .flatMap(m => m.country!.split(',').map(c => c.trim()))
+        .flatMap(m => (m.country ?? '').split(',').map(c => c.trim()))
         .filter(c => c.length > 0)
     )).sort();
 
@@ -168,7 +168,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, movies }) =>
               <CustomDropdown
                 options={[
                   { value: '', label: 'Tất cả các năm' },
-                  ...filterOptions.years.map(year => ({ value: year as number, label: year.toString() })),
+                  ...filterOptions.years.map(year => ({ value: year, label: year.toString() })),
                 ]}
                 value={filters.year || ''}
                 onChange={(value) => setFilters(prev => ({ ...prev, year: value === '' ? null : Number(value) }))}

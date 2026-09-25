@@ -34,6 +34,20 @@ service cloud.firestore {
              (!('movies' in data) || data.movies is list);
     }
 
+    function isValidUser() {
+      let data = request.resource.data;
+      return !('previouslyRecommendedTitles' in data) ||
+             data.previouslyRecommendedTitles is list;
+    }
+
+    function isValidPushSubscription(userId) {
+      let data = request.resource.data;
+      return data.userId == userId &&
+             data.endpoint is string &&
+             data.endpoint.size() > 0 &&
+             data.keys is map;
+    }
+
     // Movies
     match /movies/{movieId} {
       allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
@@ -57,12 +71,15 @@ service cloud.firestore {
 
     // Users - stores preferences like previously recommended titles
     match /users/{userId} {
-      allow read, write: if isSignedIn() && isOwner(userId);
+      allow read: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isOwner(userId) && isValidUser();
+      allow delete: if isSignedIn() && isOwner(userId);
     }
 
     // Push Subscriptions
     match /push_subscriptions/{userId} {
-      allow read, write, delete: if isSignedIn() && isOwner(userId);
+      allow read, delete: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isOwner(userId) && isValidPushSubscription(userId);
     }
   }
 }

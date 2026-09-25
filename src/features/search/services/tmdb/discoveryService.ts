@@ -48,25 +48,25 @@ export const getDiscoverMovies = async (params: {
   };
 
   try {
-    let combinedResults: any[] = [];
+    let combinedResults: TMDBMovieResult[] = [];
     let totalPages = 1;
 
     if (params.type === 'movie') {
-      const data = await tmdbFetch<{ results: any[]; total_pages: number }>(`discover/movie`, buildParams('movie'));
-      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'movie' }));
+      const data = await tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`discover/movie`, buildParams('movie'));
+      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'movie' as const }));
       totalPages = data?.total_pages || 1;
     } else if (params.type === 'tv') {
-      const data = await tmdbFetch<{ results: any[]; total_pages: number }>(`discover/tv`, buildParams('tv'));
-      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'tv' }));
+      const data = await tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`discover/tv`, buildParams('tv'));
+      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'tv' as const }));
       totalPages = data?.total_pages || 1;
     } else {
       const [movieData, tvData] = await Promise.all([
-        tmdbFetch<{ results: any[]; total_pages: number }>(`discover/movie`, buildParams('movie')),
-        tmdbFetch<{ results: any[]; total_pages: number }>(`discover/tv`, buildParams('tv'))
+        tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`discover/movie`, buildParams('movie')),
+        tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`discover/tv`, buildParams('tv'))
       ]);
       combinedResults = [
-        ...(movieData?.results || []).map(i => ({ ...i, media_type: 'movie' })),
-        ...(tvData?.results || []).map(i => ({ ...i, media_type: 'tv' }))
+        ...(movieData?.results || []).map(i => ({ ...i, media_type: 'movie' as const })),
+        ...(tvData?.results || []).map(i => ({ ...i, media_type: 'tv' as const }))
       ];
       totalPages = Math.max(movieData?.total_pages || 1, tvData?.total_pages || 1);
     }

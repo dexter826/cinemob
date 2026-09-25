@@ -7,14 +7,13 @@ import useToastStore from '@/shared/stores/toastStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { useNavigate } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
-import { getTMDBImageUrl } from '@/utils/movieUtils';
+import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/EmptyState';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
 /** Quản lý và hiển thị danh sách các album phim cá nhân. */
-const AlbumsPage: React.FC = () => {
+function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();

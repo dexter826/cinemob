@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 
@@ -14,13 +13,13 @@ interface EmptyStateProps {
 }
 
 /** Component hiển thị trạng thái trống (không có dữ liệu). */
-const EmptyState: React.FC<EmptyStateProps> = ({
+function EmptyState({
   icon: Icon,
   title,
   description,
   action,
   className = ''
-}) => {
+}: EmptyStateProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

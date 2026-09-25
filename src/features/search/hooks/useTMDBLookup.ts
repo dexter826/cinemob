@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { getMovieDetails, getMovieDetailsWithLanguage, getTVShowEpisodeInfo } from '../services/tmdb';
-import { checkMovieExists } from '@/services/movieService';
+import { checkMovieExists } from '@/features/movies/services/movieService';
 import { translateCountries } from '@/constants/countries';
 import { MESSAGES } from '@/constants/messages';
 import useToastStore from '@/shared/stores/toastStore';
@@ -55,6 +55,7 @@ export const useTMDBLookup = () => {
           viOverview = vi.overview || '';
         }
       } catch (e) {
+        console.warn('Vietnamese title lookup failed:', e);
       }
 
       const runtime = details.runtime || (details.episode_run_time?.[0]) || 0;

@@ -4,16 +4,27 @@ import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 import CustomDatePicker from '@/shared/components/ui/CustomDatePicker';
 import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
+import type { MovieFormData } from '../../hooks/useAddMovieForm';
+
+interface GenreOption {
+  id: number;
+  name: string;
+}
+
+interface CountryOption {
+  value: string;
+  label: string;
+}
 
 interface MovieFormFieldsProps {
   isManualMode: boolean;
   manualMediaType: 'movie' | 'tv';
   setManualMediaType: (type: 'movie' | 'tv') => void;
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: MovieFormData;
+  setFormData: (data: MovieFormData | ((prev: MovieFormData) => MovieFormData)) => void;
   isTVSeries: boolean;
-  countryOptions: any[];
-  genreOptions: any[];
+  countryOptions: CountryOption[];
+  genreOptions: GenreOption[];
   selectedGenreIds: number[];
   setSelectedGenreIds: (ids: number[]) => void;
   isAnimating: boolean;
@@ -30,10 +41,9 @@ interface MovieFormFieldsProps {
     runtime: React.RefObject<HTMLInputElement | null>;
     seasons: React.RefObject<HTMLInputElement | null>;
   };
-  status: 'history' | 'watchlist';
 }
 
-const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
+function MovieFormFields({
   isManualMode,
   manualMediaType,
   setManualMediaType,
@@ -46,9 +56,8 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
   setSelectedGenreIds,
   isAnimating,
   errors,
-  refs,
-  status
-}) => {
+  refs
+}: MovieFormFieldsProps) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -66,7 +75,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               value={manualMediaType}
               onChange={(value) => {
                 setManualMediaType(value as 'movie' | 'tv');
-                setFormData((prev: any) => ({ ...prev, runtime: '', seasons: '' }));
+                setFormData((prev) => ({ ...prev, runtime: '', seasons: '' }));
               }}
               placeholder="Chọn loại"
             />
@@ -145,7 +154,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               .filter(g => values.includes(g.id))
               .map(g => g.name)
               .join(', ');
-            setFormData((prev: any) => ({ ...prev, genres: genreNames }));
+            setFormData((prev) => ({ ...prev, genres: genreNames }));
           }}
           placeholder="Tìm hoặc chọn thể loại…"
           searchable={true}

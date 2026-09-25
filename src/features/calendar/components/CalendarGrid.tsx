@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
 
@@ -16,7 +15,7 @@ const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 
 /** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
-const CalendarGrid: React.FC<CalendarGridProps> = ({
+function CalendarGrid({
   currentDate,
   navigateMonth,
   goToToday,
@@ -24,7 +23,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   getEpisodesForDate,
   setSelectedDate,
   selectedDate
-}) => {
+}: CalendarGridProps) {
   const getDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const getFirstDayOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
@@ -86,9 +85,9 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           </div>
           {hasEp && (
             <div className="hidden sm:block mt-1 space-y-1 sm:space-y-1.5 overflow-hidden">
-              {episodes.slice(0, 2).map((ep, idx) => (
+              {episodes.slice(0, 2).map((ep) => (
                 <div 
-                  key={idx} 
+                  key={`${ep.seriesId}-${ep.episode.id}`} 
                   className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
@@ -103,8 +102,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           {hasEp && (
             <div className="sm:hidden absolute bottom-1.5 left-1/2 transform -translate-x-1/2">
               <div className="flex gap-0.5">
-                {episodes.slice(0, 3).map((_, idx) => (
-                  <div key={idx} className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"></div>
+                {episodes.slice(0, 3).map((ep, dotIndex) => (
+                  <div key={`${ep.seriesId}-${ep.episode.id}-dot-${dotIndex}`} className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"></div>
                 ))}
               </div>
             </div>

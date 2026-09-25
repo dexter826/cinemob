@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Film, Share2, Star, Search, X, ArrowUpDown } from 'lucide-react';
+import { Film, Share2, Star, Search, X } from 'lucide-react';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
 ];
 
 /** Trang công khai xem danh sách phim được chia sẻ */
-const SharePage: React.FC = () => {
+function SharePage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const [data, setData] = useState<PublicShare | null>(null);

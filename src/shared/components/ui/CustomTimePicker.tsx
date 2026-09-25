@@ -13,14 +13,14 @@ interface CustomTimePickerProps {
 
 const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => i);
 
-const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
+function CustomTimePicker({
     value,
     onChange,
     placeholder = 'Chọn giờ…',
     className = '',
     disabled = false,
     minuteStep = 1,
-}) => {
+}: CustomTimePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -88,26 +88,6 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         const h = String(hours).padStart(2, '0');
         const m = String(newMinute).padStart(2, '0');
         onChange(`${h}:${m}`);
-    };
-
-    const incrementHour = () => {
-        const newHour = (hours + 1) % 24;
-        handleHourChange(newHour);
-    };
-
-    const decrementHour = () => {
-        const newHour = (hours - 1 + 24) % 24;
-        handleHourChange(newHour);
-    };
-
-    const incrementMinute = () => {
-        const newMinute = (minutes + minuteStep) % 60;
-        handleMinuteChange(newMinute);
-    };
-
-    const decrementMinute = () => {
-        const newMinute = (minutes - minuteStep + 60) % 60;
-        handleMinuteChange(newMinute);
     };
 
     const handleKeyDown = (event: React.KeyboardEvent) => {

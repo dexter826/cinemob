@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
-import { SortOption, SortOrder } from '../hooks/useDashboardFilters';
+import { SortOption, SortOrder, SourceType, type FilterUpdateFn } from '../hooks/useDashboardFilters';
 
 interface DashboardFiltersProps {
   filters: {
@@ -15,7 +15,7 @@ interface DashboardFiltersProps {
     watchStatus: 'all' | 'watching' | 'completed';
     sourceType: 'all' | 'normal' | 'review';
   };
-  updateFilter: (key: any, value: any) => void;
+  updateFilter: FilterUpdateFn;
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   filterRef: React.RefObject<HTMLDivElement | null>;
@@ -26,7 +26,7 @@ interface DashboardFiltersProps {
   clearFilters: () => void;
 }
 
-const DashboardFilters: React.FC<DashboardFiltersProps> = ({
+function DashboardFilters({
   filters,
   updateFilter,
   showFilters,
@@ -37,8 +37,20 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
   availableYears,
   availableCountries,
   clearFilters
-}) => {
+}: DashboardFiltersProps) {
   const hasActiveFilters = filters.ratingRange !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all' || filters.sourceType !== 'all';
+
+  const handleRatingSelect = (star: number) => {
+    if (!filters.ratingRange) {
+      updateFilter('ratingRange', [star, star]);
+      return;
+    }
+    const [currMin, currMax] = filters.ratingRange;
+    if (star === currMin && star === currMax) updateFilter('ratingRange', null);
+    else if (star < currMin) updateFilter('ratingRange', [star, currMax]);
+    else if (star > currMax) updateFilter('ratingRange', [currMin, star]);
+    else updateFilter('ratingRange', [star, star]);
+  };
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
@@ -77,7 +89,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
       </div>
 
       {showFilters && (
-        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface p-5 rounded-3xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in">
+        <div ref={filterRef} className="absolute top-full right-0 mt-2 z-50 bg-surface p-5 rounded-3xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in">
           
           <div className="space-y-3">
             <div className="text-xs font-semibold text-text-muted">Sắp xếp</div>
@@ -136,7 +148,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     { value: 'tv', label: 'TV Series' },
                   ]}
                   value={filters.contentType}
-                  onChange={(value) => updateFilter('contentType', value as any)}
+                  onChange={(value) => updateFilter('contentType', value as 'all' | 'movie' | 'tv')}
                   placeholder="Chọn loại"
                 />
               </div>
@@ -151,7 +163,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                       { value: 'completed', label: 'Đã hoàn thành' },
                     ]}
                     value={filters.watchStatus}
-                    onChange={(value) => updateFilter('watchStatus', value as any)}
+                    onChange={(value) => updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')}
                     placeholder="Chọn trạng thái"
                   />
                 </div>
@@ -177,22 +189,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     return (
                       <button
                         key={star}
-                        onClick={() => {
-                          if (!filters.ratingRange) {
-                            updateFilter('ratingRange', [star, star]);
-                          } else {
-                            const [currMin, currMax] = filters.ratingRange;
-                            if (star === currMin && star === currMax) {
-                              updateFilter('ratingRange', null);
-                            } else if (star < currMin) {
-                              updateFilter('ratingRange', [star, currMax]);
-                            } else if (star > currMax) {
-                              updateFilter('ratingRange', [currMin, star]);
-                            } else {
-                              updateFilter('ratingRange', [star, star]);
-                            }
-                          }
-                        }}
+                        onClick={() => handleRatingSelect(star)}
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive 
                             ? 'text-warning bg-warning/15 shadow-sm' 
@@ -218,7 +215,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     { value: 'review', label: 'Xem qua review' },
                   ]}
                   value={filters.sourceType}
-                  onChange={(value) => updateFilter('sourceType', value as any)}
+                  onChange={(value) => updateFilter('sourceType', value as SourceType)}
                   placeholder="Chọn nguồn"
                 />
               </div>

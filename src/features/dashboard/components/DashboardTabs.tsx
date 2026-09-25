@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActiveTab } from '../hooks/useDashboardFilters';
 
 interface DashboardTabsProps {
@@ -9,12 +8,12 @@ interface DashboardTabsProps {
 }
 
 /** Thanh chuyển đổi giữa tab "Đã xem" và "Sẽ xem". */
-const DashboardTabs: React.FC<DashboardTabsProps> = ({ 
+function DashboardTabs({ 
   activeTab, 
   onTabChange, 
   moviesCount, 
   tvCount 
-}) => {
+}: DashboardTabsProps) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex items-center" role="tablist" aria-label="Bộ lọc trạng thái xem phim">

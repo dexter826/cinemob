@@ -84,6 +84,7 @@ export const uploadToCloudinary = async (fileOrBlob: Blob | File, folder = 'avat
 
   const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
     method: 'POST',
+    signal: AbortSignal.timeout(15000),
     body: formData
   });
 
@@ -93,6 +94,8 @@ export const uploadToCloudinary = async (fileOrBlob: Blob | File, folder = 'avat
     throw new Error(message);
   }
 
-  const data = await response.json();
-  return data.secure_url;
+  const data: unknown = await response.json();
+  const secureUrl = typeof data === 'object' && data !== null ? (data as { secure_url?: unknown }).secure_url : undefined;
+  if (typeof secureUrl !== 'string' || secureUrl.length === 0) throw new Error('Cloudinary không trả về secure_url');
+  return secureUrl;
 };

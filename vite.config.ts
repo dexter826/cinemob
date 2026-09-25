@@ -1,8 +1,12 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig(() => {
   return {
@@ -23,7 +27,7 @@ export default defineConfig(() => {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
         },
         devOptions: {
-          enabled: true,
+          enabled: false,
           type: 'module',
         },
       })
@@ -34,13 +38,7 @@ export default defineConfig(() => {
       }
     },
     build: {
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      },
+      minify: 'esbuild',
       rollupOptions: {
         onwarn: (warning, warn) => {
           if (warning.code === 'EVAL') return;

@@ -1,19 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Search, X, Filter, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
-import { getTMDBImageUrl, getMainTitleForTMDB } from '@/utils/movieUtils';
+import { getTMDBImageUrl, getMainTitleForTMDB } from '@/features/movies/utils/movieUtils';
+import type { SearchSortBy, SearchFormFilters } from '../hooks/useSearch';
 
 interface SearchFiltersProps {
-  filters: {
-    query: string;
-    type: 'all' | 'movie' | 'tv';
-    year: string;
-    country: string;
-    sortBy: string;
-  };
-  updateFilter: (key: any, value: any) => void;
+  filters: SearchFormFilters;
+  updateFilter: <K extends keyof SearchFormFilters>(key: K, value: SearchFormFilters[K]) => void;
   handleSearch: () => void;
   handleClear: () => void;
   suggestions: TMDBMovieResult[];
@@ -24,7 +19,7 @@ interface SearchFiltersProps {
 }
 
 /** Bộ lọc và tìm kiếm cho trang Khám phá. */
-const SearchFilters: React.FC<SearchFiltersProps> = ({
+function SearchFilters({
   filters,
   updateFilter,
   handleSearch,
@@ -34,8 +29,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   showSuggestions,
   setShowSuggestions,
   handleSelectMovie
-}) => {
-  const isSearchMode = filters.query.trim().length > 2;
+}: SearchFiltersProps) {
   const hasActiveFilters = filters.type !== 'all' || filters.year !== '' || filters.country !== '' || filters.sortBy !== 'popularity.desc';
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -115,10 +109,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
                             <span>{year}</span>
                           </div>
                         )}
-                        {movie.vote_average && movie.vote_average > 0 && (
+                        {(movie.vote_average ?? 0) > 0 && (
                           <div className="flex items-center gap-1 text-xs text-warning font-bold">
                             <Star size={12} fill="currentColor" strokeWidth={1.5} />
-                            <span>{movie.vote_average.toFixed(1)}</span>
+                            <span>{(movie.vote_average ?? 0).toFixed(1)}</span>
                           </div>
                         )}
                       </div>
@@ -170,7 +164,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             { value: 'tv', label: 'TV Series' },
           ]}
           value={filters.type}
-          onChange={(value) => updateFilter('type', value as any)}
+          onChange={(value) => updateFilter('type', value as SearchFormFilters['type'])}
           placeholder="Chọn loại"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
         />
@@ -209,7 +203,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
             { value: 'title.desc', label: 'Tên Z-A' },
           ]}
           value={filters.sortBy}
-          onChange={(value) => updateFilter('sortBy', value as string)}
+          onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
           placeholder="Phù hợp"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
         />

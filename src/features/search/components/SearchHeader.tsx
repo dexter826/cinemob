@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,9 +6,9 @@ interface SearchHeaderProps {
 }
 
 /** Hiển thị tiêu đề trang tìm kiếm. */
-const SearchHeader: React.FC<SearchHeaderProps> = ({ 
+function SearchHeader({ 
   hasDiscoverMovies,
-}) => {
+}: SearchHeaderProps) {
   const navigate = useNavigate();
 
   return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +6,7 @@ interface DashboardActionsProps {
 }
 
 /** Hiển thị các nút hành động chính (Tìm kiếm và Thêm thủ công) */
-const DashboardActions: React.FC<DashboardActionsProps> = ({ onOpenAddModal }) => {
+function DashboardActions({ onOpenAddModal }: DashboardActionsProps) {
   const navigate = useNavigate();
 
   return (

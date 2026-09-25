@@ -5,6 +5,7 @@ interface InitialLoadStore {
   isPageLoading: boolean;
   markInitialLoadComplete: () => void;
   setPageLoading: (loading: boolean) => void;
+  resetOnLogout: () => void;
 }
 
 // Quản lý trạng thái tải dữ liệu lần đầu.
@@ -13,6 +14,7 @@ const useInitialLoadStore = create<InitialLoadStore>((set) => ({
   isPageLoading: false,
   markInitialLoadComplete: () => set({ isInitialLoadComplete: true }),
   setPageLoading: (loading: boolean) => set({ isPageLoading: loading }),
+  resetOnLogout: () => set({ isInitialLoadComplete: false, isPageLoading: false }),
 }));
 
 export default useInitialLoadStore;

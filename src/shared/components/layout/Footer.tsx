@@ -1,8 +1,7 @@
-import React from 'react';
 import { Facebook, Instagram, Github, Mail, Heart, HandCoins } from 'lucide-react';
 import logoText from '@/assets/images/logo_text.png';
 
-const Footer: React.FC = () => {
+function Footer() {
   const socialLinks = [
     { href: "https://www.facebook.com/ctrlkd1", icon: Facebook, label: "Facebook" },
     { href: "https://www.instagram.com/trcongminh_04/", icon: Instagram, label: "Instagram" },

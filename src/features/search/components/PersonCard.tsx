@@ -1,6 +1,5 @@
-import React from 'react';
 import { TMDBPerson } from '@/types';
-import { getTMDBImageUrl } from '@/utils/movieUtils';
+import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 
 interface PersonCardProps {
   person: TMDBPerson;
@@ -8,7 +7,7 @@ interface PersonCardProps {
 }
 
 /** Thẻ hiển thị nghệ sĩ, diễn viên trong kết quả tìm kiếm. */
-const PersonCard: React.FC<PersonCardProps> = ({ person, onClick }) => {
+function PersonCard({ person, onClick }: PersonCardProps) {
   return (
     <div
       onClick={() => onClick(person.id)}

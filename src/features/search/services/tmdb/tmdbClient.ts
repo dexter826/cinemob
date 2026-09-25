@@ -1,11 +1,10 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '@/constants';
 
-// Giới hạn request đồng thời.
-export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<T[]> => {
+// Giới hạn request đồng thời. Trả về null cho task lỗi để caller phân biệt partial-failure.
+export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<Array<T | null>> => {
   if (tasks.length === 0) return Promise.resolve([]);
   return new Promise((resolve) => {
-    const results: T[] = [];
-    let completed = 0;
+    const results: Array<T | null> = [];
     let running = 0;
     let index = 0;
 
@@ -20,16 +19,16 @@ export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promis
       try {
         results[currentIndex] = await tasks[currentIndex]();
       } catch (error) {
-        results[currentIndex] = null as any;
+        console.error('withLimit task failed:', error);
+        results[currentIndex] = null;
       } finally {
         running--;
-        completed++;
-        runNext();
+        void runNext();
       }
     };
 
     for (let i = 0; i < Math.min(limit, tasks.length); i++) {
-      runNext();
+      void runNext();
     }
   });
 };
@@ -47,9 +46,11 @@ export const tmdbFetch = async <T>(endpoint: string, params: Record<string, stri
       ...params
     });
 
-    const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams.toString()}`);
-    if (!response.ok) throw new Error(`TMDB API Error: ${response.status}`);
-    return await response.json();
+    const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams.toString()}`, {
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!response.ok) throw new Error(`TMDB API Error: ${response.status}`, { cause: { endpoint } });
+    return (await response.json()) as T;
   } catch (error) {
     console.error(`Failed to fetch from TMDB [${endpoint}]:`, error);
     return null;

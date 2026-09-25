@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Timestamp } from 'firebase/firestore';
 import { Movie } from '@/types';
 import { deleteMovie } from '@/features/movies/services/movieService';
 import useMovieStore from '@/features/movies/stores/movieStore';
@@ -13,7 +12,7 @@ import { useDashboardStats } from './useDashboardStats';
 import { MESSAGES } from '@/constants/messages';
 
 // Hook điều phối chính cho Dashboard.
-export const useDashboard = (user: any) => {
+export const useDashboard = (_user: unknown) => {
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
   const { openAddModal } = useAddMovieStore();

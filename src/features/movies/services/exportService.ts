@@ -15,7 +15,7 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
   let result = [...movies];
 
   if (filters.rating !== null && filters.rating !== undefined) {
-    result = result.filter(movie => (movie.rating || 0) >= filters.rating!);
+    result = result.filter(movie => (movie.rating ?? 0) >= (filters.rating ?? 0));
   }
 
   if (filters.year !== null && filters.year !== undefined) {
@@ -26,7 +26,8 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
   }
 
   if (filters.country) {
-    result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(filters.country!.toLowerCase()));
+    const countryFilter = filters.country.toLowerCase();
+    result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(countryFilter));
   }
 
   if (filters.contentType && filters.contentType !== 'all') {
@@ -60,7 +61,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
         'Tên phim': movie.title,
         'Năm xem': watchedDate ? watchedDate.getFullYear() : '',
         'Ngày xem': watchedDate ? watchedDate.toLocaleDateString('vi-VN') : '',
-        'Đánh giá': movie.rating || '',
+        'Đánh giá': movie.rating ?? '',
         'Thời lượng (phút)': isTV ? '' : (movie.runtime || ''),
         'Số mùa': isTV ? (movie.seasons || '') : '',
         'Thể loại': getTranslatedGenres(movie.genres || ''),

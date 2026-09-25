@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Share2, Copy, Check, ExternalLink, RefreshCw, Globe, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useShare } from '@/features/share/hooks/useShare';
@@ -11,7 +11,7 @@ interface ShareModalProps {
 }
 
 /** Modal quản lý và chia sẻ thư viện phim ra link công khai */
-const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
+function ShareModal({ isOpen, onClose }: ShareModalProps) {
   usePreventScroll(isOpen);
   const { isEnabled, loading, syncing, shareUrl, lastUpdated, toggleShare, refreshSnapshot, copyLink } = useShare();
   const [copied, setCopied] = useState(false);

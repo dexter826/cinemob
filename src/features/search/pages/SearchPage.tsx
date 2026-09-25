@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '@/app/providers/AuthProvider';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
@@ -8,7 +7,7 @@ import SearchFilters from '../components/SearchFilters';
 import SearchResults from '../components/SearchResults';
 
 /** Trang Tìm kiếm và Khám phá nội dung TMDB. */
-const SearchPage: React.FC = () => {
+function SearchPage() {
   const { user } = useAuth();
   const {
     filters,
@@ -19,7 +18,6 @@ const SearchPage: React.FC = () => {
     setCurrentPage,
     discoverMovies,
     aiRecommendations, trendingMovies, isAiLoading, isTrendingLoading, refreshRecommendations, removeRecommendation,
-    suggestAnimation,
     filteredResults,
     handleSelectMovie, getMovieStatus,
     handleClear,
@@ -73,7 +71,6 @@ const SearchPage: React.FC = () => {
             trendingMovies={trendingMovies}
             discoverMovies={discoverMovies}
             filteredResults={filteredResults}
-            suggestAnimation={suggestAnimation}
             watchedMoviesCount={watchedMoviesCount}
             getMovieStatus={getMovieStatus}
             handleSelectMovie={handleSelectMovie}

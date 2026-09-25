@@ -1,7 +1,6 @@
-import React from 'react';
 
 /** Khung xương hiển thị khi đang tải thẻ phim. */
-const SkeletonCard: React.FC = () => {
+function SkeletonCard() {
   return (
     <div className="flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default shadow-premium h-full animate-pulse">
       {/* Poster Image Area */}

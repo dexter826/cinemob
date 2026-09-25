@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import useMovieDetailStore from '@/stores/movieDetailStore';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import useReleaseCalendarStore from '../stores/releaseCalendarStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import useToastStore from '@/shared/stores/toastStore';
@@ -105,10 +105,10 @@ export const useReleaseCalendar = () => {
     setSelectedDate(new Date());
   };
 
-  const getEpisodesForDate = (date: Date) => {
+  const getEpisodesForDate = useCallback((date: Date) => {
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     return upcomingEpisodes.filter(ep => ep.episode.air_date === dateStr);
-  };
+  }, [upcomingEpisodes]);
 
   const displayedEpisodes = useMemo(() => {
     if (selectedDate) {
@@ -124,7 +124,7 @@ export const useReleaseCalendar = () => {
       const airDate = new Date(ep.episode.air_date);
       return airDate >= now && airDate <= thirtyDaysLater;
     });
-  }, [selectedDate, upcomingEpisodes]);
+  }, [selectedDate, upcomingEpisodes, getEpisodesForDate]);
 
   const episodesByDate = useMemo(() => {
     const grouped: { [key: string]: UpcomingEpisode[] } = {};

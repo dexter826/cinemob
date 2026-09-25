@@ -1,4 +1,3 @@
-import React from 'react';
 import { Movie } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../utils/movieUtils';
@@ -12,7 +11,7 @@ interface MovieCardProps {
   onMarkAsWatched?: (movie: Movie) => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick, onMarkAsWatched }) => {
+function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieCardProps) {
   const imageUrl = movie.poster_path
     ? (movie.source === 'tmdb' ? getTMDBImageUrl(movie.poster_path, 'w500') : movie.poster_path)
     : PLACEHOLDER_IMAGE;
@@ -29,6 +28,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
   return (
     <div
       onClick={() => onClick(movie)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(movie); } }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Xem chi tiết phim ${mainTitle}`}
       className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default hover:border-primary/40 transition-colors duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover relative"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
@@ -44,7 +47,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onDelete, onEdit, onClick,
         {/* Action Menu - Luôn hiển thị trên touch/mobile, hover trên desktop */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
           <button
-            onClick={(e) => { e.stopPropagation(); movie.docId && onDelete(movie.docId); }}
+            onClick={(e) => { e.stopPropagation(); if (movie.docId) onDelete(movie.docId); }}
             className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-error text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
             title="Xóa"
             aria-label="Xóa phim khỏi danh sách"

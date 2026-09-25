@@ -31,7 +31,7 @@ const formatDisplayDate = (dateStr: string): string => {
     return `${d}/${m}/${y}`;
 };
 
-const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
+function CustomDatePicker({
     value,
     onChange,
     placeholder = 'Chọn ngày…',
@@ -39,7 +39,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     disabled = false,
     minDate,
     maxDate,
-}) => {
+}: CustomDatePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [viewDate, setViewDate] = useState(() => {
@@ -265,14 +265,14 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
 
             {/* Calendar Grid */}
             <div className="grid grid-cols-7 gap-1">
-                {daysInMonth.map((item, index) => {
+                {daysInMonth.map((item) => {
                     const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
                     const isTodayDate = item.isCurrentMonth && isToday(item.day);
                     const isSelectedDate = item.isCurrentMonth && isSelected(item.day);
 
                     return (
                         <button
-                            key={index}
+                            key={`${item.isCurrentMonth ? 'cur' : 'out'}-${item.day}`}
                             type="button"
                             onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
                             disabled={!item.isCurrentMonth || isDisabled}

@@ -8,13 +8,24 @@ import {
   where,
   orderBy,
   onSnapshot,
-  serverTimestamp,
-  Timestamp
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Album } from '@/types';
 
 const COLLECTION_NAME = 'albums';
+
+const mapDocToAlbum = (docId: string, data: Record<string, unknown>): Album => {
+  const d = data as Partial<Album>;
+  return {
+    docId,
+    uid: typeof d.uid === 'string' ? d.uid : '',
+    name: typeof d.name === 'string' ? d.name : '',
+    movieDocIds: Array.isArray(d.movieDocIds) ? d.movieDocIds.filter((id): id is string => typeof id === 'string') : [],
+    createdAt: (d.createdAt as Album['createdAt']) ?? new Date(),
+    updatedAt: d.updatedAt as Album['updatedAt'],
+  };
+};
 
 // Thêm album mới vào bộ sưu tập.
 export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updatedAt'>) => {
@@ -43,7 +54,7 @@ export const deleteAlbum = async (docId: string) => {
 };
 
 // Theo dõi danh sách album theo người dùng.
-export const subscribeToAlbums = (uid: string, callback: (albums: Album[]) => void) => {
+export const subscribeToAlbums = (uid: string, callback: (albums: Album[]) => void, onError?: (error: unknown) => void) => {
   const q = query(
     collection(db, COLLECTION_NAME),
     where('uid', '==', uid),
@@ -51,18 +62,11 @@ export const subscribeToAlbums = (uid: string, callback: (albums: Album[]) => vo
   );
 
   return onSnapshot(q, snapshot => {
-    const albums: Album[] = snapshot.docs.map(d => {
-      const data = d.data();
-      return {
-        docId: d.id,
-        uid: data.uid,
-        name: data.name,
-        movieDocIds: data.movieDocIds || [],
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      } as Album;
-    });
+    const albums: Album[] = snapshot.docs.map(d => mapDocToAlbum(d.id, d.data()));
     callback(albums);
+  }, (error) => {
+    console.error('Albums snapshot error:', error);
+    onError?.(error);
   });
 };
 
@@ -79,13 +83,6 @@ export const subscribeToAlbum = (uid: string, docId: string, callback: (album: A
       callback(null);
       return;
     }
-    callback({
-      docId: snapshot.id,
-      uid: data.uid,
-      name: data.name,
-      movieDocIds: data.movieDocIds || [],
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-    } as Album);
+    callback(mapDocToAlbum(snapshot.id, data as Record<string, unknown>));
   });
 };

@@ -1,13 +1,13 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Movie } from '@/types';
-import { normalizeMovieDate, getTranslatedCountries } from '@/utils/movieUtils';
+import { normalizeMovieDate, getTranslatedCountries } from '@/features/movies/utils/movieUtils';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
 export type ActiveTab = 'history' | 'watchlist';
 export type SourceType = 'all' | 'normal' | 'review';
 
-interface FilterState {
+export interface FilterState {
   sortBy: SortOption;
   sortOrder: SortOrder;
   searchQuery: string;
@@ -18,6 +18,8 @@ interface FilterState {
   watchStatus: 'all' | 'watching' | 'completed';
   sourceType: SourceType;
 }
+
+export type FilterUpdateFn = <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
 
 const INITIAL_FILTER_STATE: FilterState = {
   sortBy: 'date',
