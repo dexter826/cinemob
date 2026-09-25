@@ -42,6 +42,13 @@ service cloud.firestore {
       allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidAlbum();
     }
 
+    // Public shares - read public if enabled, write only owner
+    match /public_shares/{userId} {
+      allow read: if resource.data.isEnabled == true;
+      allow create, update: if isSignedIn() && isOwner(userId);
+      allow delete: if isSignedIn() && isOwner(userId);
+    }
+
     // Users - stores preferences like previously recommended titles
     match /users/{userId} {
       allow read, write: if isSignedIn() && isOwner(userId);

@@ -50,3 +50,22 @@ export interface Stats {
   hours: number;
   minutes: number;
 }
+
+export interface PublicShareMovie {
+  id: string | number;
+  title: string;
+  title_vi?: string;
+  poster_path?: string;
+  media_type?: 'movie' | 'tv';
+  release_date?: string;
+  rating?: number;
+}
+
+export interface PublicShare {
+  displayName: string;
+  photoURL?: string;
+  isEnabled: boolean;
+  updatedAt: Timestamp | Date;
+  totalCount: number;
+  movies: PublicShareMovie[];
+}
