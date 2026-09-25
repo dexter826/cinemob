@@ -13,6 +13,7 @@ const AlbumsPage = lazy(() => import('@/features/albums/pages/AlbumsPage'));
 const AlbumDetailPage = lazy(() => import('@/features/albums/pages/AlbumDetailPage'));
 const PersonDetailPage = lazy(() => import('@/features/search/pages/PersonDetailPage'));
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/ReleaseCalendarPage'));
+const SharePage = lazy(() => import('@/features/share/pages/SharePage'));
 const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
 import Layout from '@/shared/components/layout/Layout';
@@ -114,20 +115,37 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      {shouldShowSplash && (
-        <SplashScreen 
-          onAnimationFinish={() => setAnimationFinished(true)} 
-          showLoading={animationFinished && !appReady}
+      <Routes>
+        <Route
+          path="/share/:uid"
+          element={
+            <Suspense fallback={<Loading fullScreen />}>
+              <SharePage />
+            </Suspense>
+          }
         />
-      )}
+        <Route
+          path="/*"
+          element={
+            <>
+              {shouldShowSplash && (
+                <SplashScreen 
+                  onAnimationFinish={() => setAnimationFinished(true)} 
+                  showLoading={animationFinished && !appReady}
+                />
+              )}
 
-      {animationFinished && (
-        <AuthProvider>
-          <MainApp onReady={handleAppReady} appReady={appReady} />
-          <ToastContainer />
-          <AlertContainer />
-        </AuthProvider>
-      )}
+              {animationFinished && (
+                <AuthProvider>
+                  <MainApp onReady={handleAppReady} appReady={appReady} />
+                  <ToastContainer />
+                  <AlertContainer />
+                </AuthProvider>
+              )}
+            </>
+          }
+        />
+      </Routes>
     </Router>
   );
 };
