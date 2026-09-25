@@ -50,7 +50,7 @@ service cloud.firestore {
 
     // Public shares - read public if enabled, write only owner
     match /public_shares/{userId} {
-      allow read: if resource.data.isEnabled == true;
+      allow read: if resource.data.isEnabled == true || (isSignedIn() && isOwner(userId));
       allow create, update: if isSignedIn() && isOwner(userId) && isValidShare();
       allow delete: if isSignedIn() && isOwner(userId);
     }

@@ -10,8 +10,7 @@ export const getPublicShare = async (uid: string): Promise<PublicShare | null> =
   if (!snap.exists()) return null;
   const data = snap.data() as Partial<PublicShare>;
   if (typeof data.isEnabled !== 'boolean') return null;
-  if (!Array.isArray(data.movies)) return null;
-  return snap.data() as PublicShare;
+  return { ...snap.data(), movies: Array.isArray(data.movies) ? data.movies : [] } as PublicShare;
 };
 
 export const upsertPublicShare = async (uid: string, data: Omit<PublicShare, 'updatedAt'>): Promise<void> => {
