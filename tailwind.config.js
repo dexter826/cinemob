@@ -9,6 +9,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
+                display: ['"Be Vietnam Pro"', 'sans-serif'],
             },
             colors: {
                 background: 'rgb(var(--color-background) / <alpha-value>)',

@@ -31,13 +31,13 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-          <FolderPlus size={14} /> {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
+        <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
+          <FolderPlus size={14} className="text-primary" /> {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
         </label>
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-          className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border ${showCreateAlbum ? 'text-error bg-error/10 border-error/20' : 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20'}`}
+          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-error bg-error/10 border-error/20' : 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20'}`}
         >
           {showCreateAlbum ? (
             <>
@@ -55,7 +55,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
         <div className="flex gap-3 animate-in fade-in slide-in-from-top-2 p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default shadow-sm">
           <input
             type="text"
-            placeholder="Tên album mới..."
+            placeholder="Tên album mới…"
             value={newAlbumName}
             onChange={(e) => setNewAlbumName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}

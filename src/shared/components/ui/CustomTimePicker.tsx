@@ -16,7 +16,7 @@ const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => i);
 const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
     value,
     onChange,
-    placeholder = 'Chọn giờ...',
+    placeholder = 'Chọn giờ…',
     className = '',
     disabled = false,
     minuteStep = 1,

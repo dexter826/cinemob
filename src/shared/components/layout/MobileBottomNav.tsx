@@ -31,14 +31,16 @@ const MobileBottomNav: React.FC = () => {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex items-center justify-center w-full h-full transition-colors duration-300 "
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
+              className="relative flex items-center justify-center w-full h-full transition-transform active:scale-95 duration-200 cursor-pointer"
             >
-              <div className={`relative p-3 transition-colors ${isActive ? 'text-primary' : 'text-text-muted'}`}>
+              <div className={`relative p-3 transition-colors ${isActive ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}>
                 <Icon size={24} strokeWidth={isActive ? 1.8 : 1.5} />
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-primary/10 rounded-2xl -z-10 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                    className="absolute inset-0 bg-primary/10 rounded-2xl -z-10 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
                 )}

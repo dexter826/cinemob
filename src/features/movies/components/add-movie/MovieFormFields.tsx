@@ -54,7 +54,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Media Type */}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+          <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
             <Film size={14} className="text-primary" /> Loại hình
           </label>
           {isManualMode ? (
@@ -71,7 +71,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               placeholder="Chọn loại"
             />
           ) : (
-            <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-muted opacity-50 shadow-sm">
+            <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-semibold text-text-muted shadow-sm">
               {isTVSeries ? 'TV Series' : 'Phim lẻ'}
             </div>
           )}
@@ -79,7 +79,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
 
         {/* Country */}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+          <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
             <Globe size={14} className="text-primary" /> Quốc gia
           </label>
           <div ref={refs.country} className={`transition-transform duration-500 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}>
@@ -89,15 +89,15 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               onChange={(value) => {
                 setFormData({ ...formData, country: value as string });
               }}
-              placeholder="Chọn quốc gia..."
+              placeholder="Chọn quốc gia…"
             />
           </div>
         </div>
 
         {/* Release Date */}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-            <Calendar size={14} className="text-primary" /> Phát hành
+          <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
+            <Calendar size={14} className="text-primary" /> Ngày phát hành
           </label>
           <div ref={refs.releaseDate} className={`transition-transform duration-500 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}>
             <CustomDatePicker
@@ -105,14 +105,14 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               onChange={(val) => {
                 setFormData({ ...formData, releaseDate: val });
               }}
-              placeholder="Chọn ngày..."
+              placeholder="Chọn ngày…"
             />
           </div>
         </div>
 
         {/* Runtime / Seasons */}
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+          <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
             {isTVSeries ? <Tv size={14} className="text-primary" /> : <Clock size={14} className="text-primary" />}
             {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
@@ -126,8 +126,8 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               onChange={e => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors shadow-sm disabled:opacity-50"
-              placeholder={isTVSeries ? "Số mùa..." : "Phút..."}
+              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-semibold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors shadow-sm disabled:opacity-50 tabular-nums"
+              placeholder={isTVSeries ? "Số mùa…" : "Phút…"}
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
 
       {/* Genres */}
       <div className="space-y-2">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Thể loại phim</label>
+        <label className="text-xs font-medium text-text-muted ml-1">Thể loại phim</label>
         <MultiSelectDropdown
           options={genreOptions.map(g => ({ value: g.id, label: GENRE_TRANSLATIONS[g.name] || g.name }))}
           values={selectedGenreIds}
@@ -147,7 +147,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
               .join(', ');
             setFormData((prev: any) => ({ ...prev, genres: genreNames }));
           }}
-          placeholder="Tìm hoặc chọn thể loại..."
+          placeholder="Tìm hoặc chọn thể loại…"
           searchable={true}
           maxDisplay={5}
           className="w-full"
@@ -156,7 +156,7 @@ const MovieFormFields: React.FC<MovieFormFieldsProps> = ({
 
       {/* Overview */}
       <div className="space-y-2">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+        <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
           <AlignLeft size={14} className="text-primary" /> Nội dung tóm tắt
         </label>
         <textarea

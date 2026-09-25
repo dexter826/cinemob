@@ -57,7 +57,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           key={`prev-${day}`} 
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
-          <div className="text-[10px] font-bold text-text-muted">{day}</div>
+          <div className="text-xs font-bold text-text-muted">{day}</div>
         </div>
       );
     }
@@ -81,7 +81,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
         >
-          <div className={`text-[10px] sm:text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
+          <div className={`text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
             {day}
           </div>
           {hasEp && (
@@ -89,14 +89,14 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               {episodes.slice(0, 2).map((ep, idx) => (
                 <div 
                   key={idx} 
-                  className="text-[8px] sm:text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
+                  className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
                 </div>
               ))}
               {episodes.length > 2 && (
-                <div className="text-[8px] sm:text-[9px] text-text-muted font-bold opacity-60 pl-1">+{episodes.length - 2}</div>
+                <div className="text-[10px] sm:text-xs text-text-muted font-bold opacity-60 pl-1">+{episodes.length - 2}</div>
               )}
             </div>
           )}
@@ -121,7 +121,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           key={`next-${day}`} 
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
-          <div className="text-[10px] font-bold text-text-muted">{day}</div>
+          <div className="text-xs font-bold text-text-muted">{day}</div>
         </div>
       );
     }
@@ -132,25 +132,37 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   return (
     <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default dark:border-white/5 p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium ring-1 ring-black/5 dark:ring-white/5">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <button onClick={() => navigateMonth('prev')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer ">
+        <button 
+          onClick={() => navigateMonth('prev')} 
+          aria-label="Tháng trước"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"
+        >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight uppercase whitespace-nowrap">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button onClick={goToToday} className="px-3 py-1 sm:px-4 sm:py-1.5 text-[8px] sm:text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors uppercase tracking-widest cursor-pointer ">
+          <button 
+            onClick={goToToday} 
+            aria-label="Về hôm nay"
+            className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors uppercase tracking-widest cursor-pointer"
+          >
             Hôm nay
           </button>
         </div>
-        <button onClick={() => navigateMonth('next')} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer ">
+        <button 
+          onClick={() => navigateMonth('next')} 
+          aria-label="Tháng sau"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"
+        >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
         {DAYS_OF_WEEK.map(day => (
-          <div key={day} className="text-center text-[8px] sm:text-[10px] font-bold text-text-muted uppercase tracking-wider sm:tracking-[0.2em] py-2 sm:py-3 opacity-60">
+          <div key={day} className="text-center text-xs font-bold text-text-muted uppercase tracking-wider sm:tracking-[0.2em] py-2 sm:py-3 opacity-60">
             {day}
           </div>
         ))}

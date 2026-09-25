@@ -35,18 +35,18 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         )}
       </div>
       
-      <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight">
+      <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight font-display">
         {title}
       </h3>
       
-      <p className="text-text-muted/60 text-sm mb-8 max-w-xs leading-relaxed">
+      <p className="text-text-muted/70 text-sm mb-8 max-w-xs leading-relaxed">
         {description}
       </p>
       
       {action && (
         <button
           onClick={action.onClick}
-          className="px-6 py-3 bg-primary text-white rounded-2xl font-bold text-sm hover:shadow-premium transition-colors shadow-lg shadow-primary/20 cursor-pointer"
+          className="px-6 py-3 bg-primary text-white rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm cursor-pointer"
         >
           {action.label}
         </button>

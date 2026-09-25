@@ -21,13 +21,13 @@ const RatingSection: React.FC<RatingSectionProps> = ({
   return (
     <div ref={ratingRef} className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
+        <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
           <Star size={14} className="text-primary" />
           Đánh giá phim
         </label>
       </div>
       <div className={`bg-black/5 dark:bg-white/5 border border-border-default rounded-xl p-4 transition-colors duration-500 shadow-sm ${
-        isAnimating ? 'scale-105 border-error/50 shadow-lg shadow-error/5' : ''
+        isAnimating ? 'scale-105 border-error/50 shadow-md' : ''
       }`}>
         <div className="flex justify-between items-center max-w-full overflow-hidden">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
@@ -37,12 +37,12 @@ const RatingSection: React.FC<RatingSectionProps> = ({
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
-              className="group p-0.5 sm:p-1.5 focus:outline-none transition-colors flex-1 flex justify-center"
+              className="group p-0.5 sm:p-1.5 focus:outline-none transition-colors flex-1 flex justify-center cursor-pointer"
             >
               <Star
                 className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
                   star <= (hoverRating || rating)
-                    ? 'fill-warning text-warning scale-110 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
+                    ? 'fill-warning text-warning scale-110 drop-shadow-sm'
                     : 'text-text-muted/30 group-hover:text-warning/50'
                 }`}
               />

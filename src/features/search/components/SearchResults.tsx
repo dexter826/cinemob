@@ -85,11 +85,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 <span>Làm mới</span>
               </button>
             </div>
-            <div className="flex flex-col items-center justify-center py-16 sm:py-20 space-y-4">
-              <div className="w-20 h-20 sm:w-24 sm:h-24">
-                {suggestAnimation && <Lottie animationData={suggestAnimation} loop={true} />}
+            <div className="py-6 space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
               </div>
-              <p className="text-base sm:text-lg font-medium text-primary animate-pulse text-center px-4">Đang gợi ý phim cho bạn...</p>
+              <p className="text-sm font-medium text-text-muted text-center pt-2">Đang phân tích lịch sử xem và gợi ý phim phù hợp…</p>
             </div>
             <div className="flex items-center gap-2 mb-4">
               <Star className="text-primary shrink-0" size={18} />

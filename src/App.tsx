@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import { ThemeProvider } from '@/app/providers/ThemeProvider';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
@@ -26,9 +26,16 @@ import { PAGE_VARIANTS, PAGE_TRANSITION } from '@/constants';
 
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
 
+const REDUCED_PAGE_VARIANTS = {
+  initial: { opacity: 0 },
+  in: { opacity: 1 },
+  out: { opacity: 0 },
+};
 
+// Điều hướng trang kèm hỗ trợ giảm chuyển động.
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
   
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -37,8 +44,8 @@ const AnimatedRoutes: React.FC = () => {
         initial="initial"
         animate="in"
         exit="out"
-        variants={PAGE_VARIANTS}
-        transition={PAGE_TRANSITION}
+        variants={shouldReduceMotion ? REDUCED_PAGE_VARIANTS : PAGE_VARIANTS}
+        transition={shouldReduceMotion ? { duration: 0.15 } : PAGE_TRANSITION}
         className="w-full"
       >
         <Routes location={location}>

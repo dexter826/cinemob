@@ -13,6 +13,7 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
+/** Quản lý và hiển thị danh sách các album phim cá nhân. */
 const AlbumsPage: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToastStore();
@@ -79,7 +80,7 @@ const AlbumsPage: React.FC = () => {
         >
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
             <div className="flex-1 space-y-1.5 sm:space-y-2">
-              <label className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tạo Album mới</label>
+              <label className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tạo Album mới</label>
               <div className="relative group">
                 <Folder className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
                 <input
@@ -94,7 +95,7 @@ const AlbumsPage: React.FC = () => {
             <button
               type="submit"
               disabled={creating || loading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap  cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
             >
               <Plus size={16} strokeWidth={1.5} />
               <span>{creating ? 'Đang tạo...' : 'Tạo album'}</span>
@@ -137,7 +138,7 @@ const AlbumsPage: React.FC = () => {
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
                           <Film size={20} className="text-white" strokeWidth={1.5} />
                         </div>
-                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white">Trống</span>
+                        <span className="text-xs font-bold uppercase tracking-widest text-white">Trống</span>
                       </div>
                     </div>
                   )}
@@ -146,38 +147,39 @@ const AlbumsPage: React.FC = () => {
                   <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
 
                   {/* Album Badge (Top Left) */}
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 dark:border-white/5 shadow-glass ring-1 ring-white/5 z-10">
-                    <Folder size={10} className="text-primary" strokeWidth={1.5} />
-                    <span className="text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-wider">Album</span>
+                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 shadow-sm z-10">
+                    <Folder size={12} className="text-primary" strokeWidth={1.5} />
+                    <span className="text-xs font-semibold text-white">Album</span>
                   </div>
 
-                  {/* Top-right delete button */}
+                  {/* Top-right delete button - Chạm được trên mobile, hover trên desktop */}
                   <button
                     type="button"
+                    aria-label={`Xóa album ${album.name}`}
                     onClick={e => {
                       e.stopPropagation();
                       handleDelete(album);
                     }}
-                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/40 text-white/80 hover:bg-error hover:text-white backdrop-blur-md border border-white/10 dark:border-white/5 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 transition-colors duration-300  cursor-pointer"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-error border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
                   >
-                    <Trash2 size={16} strokeWidth={1.5} />
+                    <Trash2 size={15} strokeWidth={1.5} />
                   </button>
 
                   {/* Album name overlay */}
                   <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-                    <h3 className="font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight drop-shadow-xl">
+                    <h3 className="font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight drop-shadow-xl font-display">
                       {album.name}
                     </h3>
                   </div>
                 </div>
 
-                {/* Info bar - More compact on mobile */}
-                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface/50 backdrop-blur-md border-t border-border-default dark:border-white/5">
-                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-bold text-[9px] sm:text-[10px] uppercase tracking-wider border border-primary/20 shrink-0">
+                {/* Info bar */}
+                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border-default">
+                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
                     <Film size={12} strokeWidth={1.5} />
-                    <span>{album.movieDocIds.length} mục</span>
+                    <span><strong className="tabular-nums">{album.movieDocIds.length}</strong> mục</span>
                   </div>
-                  <span className="text-[9px] sm:text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-40 group-hover:opacity-100 transition-opacity truncate">Chi tiết →</span>
+                  <span className="text-xs font-medium text-text-muted group-hover:text-primary transition-colors truncate">Chi tiết →</span>
                 </div>
               </div>
             ))}

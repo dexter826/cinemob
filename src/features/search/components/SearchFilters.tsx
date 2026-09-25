@@ -61,7 +61,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         </div>
         <input
           type="text"
-          placeholder="Nhập tên phim hoặc series..."
+          placeholder="Nhập tên phim hoặc series…"
           value={filters.query}
           onFocus={() => {
             if (suggestions.length > 0) setShowSuggestions(true);
@@ -76,9 +76,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         {/* Suggestion Dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-surface/90 backdrop-blur-3xl border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
             <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
-              <div className="px-4 py-2 text-[10px] font-bold text-text-muted uppercase tracking-wider border-b border-border-default dark:border-white/5 mb-1">
+              <div className="px-4 py-2 text-xs font-medium text-text-muted border-b border-border-default dark:border-white/5 mb-1">
                 Gợi ý tìm kiếm
               </div>
               {suggestions.map((movie) => {
@@ -90,6 +90,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
                   <button
                     key={movie.id}
                     onClick={() => handleSelectMovie(movie)}
+                    aria-label={`Chọn phim ${title}`}
                     className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
                   >
                     <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
@@ -104,18 +105,18 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
                         {title}
                       </h4>
                       <div className="flex items-center gap-3 mt-0.5">
-                        <div className="flex items-center gap-1 text-[11px] text-text-muted">
+                        <div className="flex items-center gap-1 text-xs text-text-muted">
                           {isTV ? <Tv size={12} className="text-info" strokeWidth={1.5} /> : <Film size={12} className="text-success" strokeWidth={1.5} />}
                           <span>{isTV ? 'TV Series' : 'Phim lẻ'}</span>
                         </div>
                         {year && (
-                          <div className="flex items-center gap-1 text-[11px] text-text-muted">
+                          <div className="flex items-center gap-1 text-xs text-text-muted">
                             <Calendar size={12} strokeWidth={1.5} />
                             <span>{year}</span>
                           </div>
                         )}
                         {movie.vote_average && movie.vote_average > 0 && (
-                          <div className="flex items-center gap-1 text-[11px] text-warning font-bold">
+                          <div className="flex items-center gap-1 text-xs text-warning font-bold">
                             <Star size={12} fill="currentColor" strokeWidth={1.5} />
                             <span>{movie.vote_average.toFixed(1)}</span>
                           </div>
@@ -140,14 +141,16 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           {filters.query && (
             <button
               onClick={() => updateFilter('query', '')}
-              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer "
+              aria-label="Xóa nội dung tìm kiếm"
+              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer"
             >
               <X size={20} strokeWidth={1.5} />
             </button>
           )}
           <button
             onClick={handleSearch}
-            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-colors text-sm sm:text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer "
+            aria-label="Tìm kiếm phim"
+            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer"
           >
             Tìm
           </button>
@@ -214,7 +217,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-wider cursor-pointer border border-transparent hover:border-border-default dark:hover:border-white/10 active:scale-[0.98]"
+            aria-label="Đặt lại toàn bộ bộ lọc"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-muted uppercase tracking-wider cursor-pointer border border-transparent hover:border-border-default dark:hover:border-white/10 active:scale-[0.98]"
           >
             <RotateCcw size={14} strokeWidth={1.5} />
             <span>Đặt lại</span>

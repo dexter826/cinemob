@@ -49,13 +49,14 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             type="text"
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
-            placeholder="Lọc phim..."
+            placeholder="Lọc phim…"
             className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
           />
           {filters.searchQuery && (
             <button
               onClick={() => updateFilter('searchQuery', '')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer "
+              aria-label="Xóa từ khóa lọc"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer p-1"
             >
               <X size={14} strokeWidth={1.5} />
             </button>
@@ -64,7 +65,8 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
         <button
           onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-colors duration-300 cursor-pointer shadow-premium  ${
+          aria-label={showFilters ? "Đóng bộ lọc nâng cao" : "Mở bộ lọc nâng cao"}
+          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-colors duration-200 cursor-pointer shadow-premium active:scale-95 ${
             showFilters 
               ? 'bg-primary/15 border-primary/40 text-primary' 
               : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
@@ -75,10 +77,10 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
       </div>
 
       {showFilters && (
-        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface/90 backdrop-blur-3xl p-5 rounded-3xl border border-border-default dark:border-white/5 shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in ring-1 ring-black/5 dark:ring-white/5">
+        <div ref={filterRef as any} className="absolute top-full right-0 mt-2 z-50 bg-surface p-5 rounded-3xl border border-border-default shadow-2xl flex flex-col gap-5 min-w-[320px] animate-fade-in">
           
           <div className="space-y-3">
-            <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp</div>
+            <div className="text-xs font-semibold text-text-muted">Sắp xếp</div>
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
@@ -100,8 +102,9 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-colors cursor-pointer "
+                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-colors cursor-pointer active:scale-95"
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
+                aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
               >
                 {filters.sortOrder === 'asc' ? <ArrowUp size={16} strokeWidth={1.5} /> : <ArrowDown size={16} strokeWidth={1.5} />}
               </button>
@@ -112,11 +115,11 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Bộ lọc</div>
+              <div className="text-xs font-semibold text-text-muted">Bộ lọc</div>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider cursor-pointer"
+                  className="text-xs font-semibold text-primary hover:underline cursor-pointer"
                 >
                   Xóa tất cả
                 </button>
@@ -125,7 +128,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 block opacity-60">Loại nội dung</label>
+                <label className="text-xs font-medium text-text-muted mb-2 block">Loại nội dung</label>
                 <CustomDropdown
                   options={[
                     { value: 'all', label: 'Tất cả nội dung' },
@@ -140,7 +143,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
               {activeTab === 'history' && (
                 <div>
-                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 block opacity-60">Trạng thái</label>
+                  <label className="text-xs font-medium text-text-muted mb-2 block">Trạng thái</label>
                   <CustomDropdown
                     options={[
                       { value: 'all', label: 'Tất cả trạng thái' },
@@ -156,11 +159,11 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block opacity-60">
+                  <label className="text-xs font-medium text-text-muted block">
                     Khoảng đánh giá
                   </label>
                   {filters.ratingRange && (
-                    <span className="text-[10px] font-bold text-primary">
+                    <span className="text-xs font-semibold text-primary tabular-nums">
                       {filters.ratingRange[0]} - {filters.ratingRange[1]} sao
                     </span>
                   )}
@@ -201,13 +204,13 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                     );
                   })}
                 </div>
-                <p className="text-[9px] text-text-muted mt-2 opacity-50 text-center">
+                <p className="text-xs text-text-muted mt-2 opacity-60 text-center">
                   Nhấn hai điểm khác nhau để chọn khoảng
                 </p>
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 block opacity-60">Nguồn nội dung</label>
+                <label className="text-xs font-medium text-text-muted mb-2 block">Nguồn nội dung</label>
                 <CustomDropdown
                   options={[
                     { value: 'all', label: 'Tất cả nguồn' },
@@ -222,7 +225,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block opacity-60">Năm xem</label>
+                  <label className="text-xs font-medium text-text-muted block">Năm xem</label>
                   <CustomDropdown
                     options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
                     value={filters.year || ''}
@@ -231,7 +234,7 @@ const DashboardFilters: React.FC<DashboardFiltersProps> = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block opacity-60">Quốc gia</label>
+                  <label className="text-xs font-medium text-text-muted block">Quốc gia</label>
                   <CustomDropdown
                     options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
                     value={filters.country}

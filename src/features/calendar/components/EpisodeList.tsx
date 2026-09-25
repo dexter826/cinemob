@@ -13,6 +13,7 @@ interface EpisodeListProps {
   handleSeriesClick: (episode: UpcomingEpisode) => void;
 }
 
+/** Hiển thị danh sách tập phim sắp phát sóng theo ngày hoặc toàn bộ. */
 const EpisodeList: React.FC<EpisodeListProps> = ({
   viewMode,
   selectedDate,
@@ -48,7 +49,8 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
-              className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap"
+              aria-label="Xem tất cả các tập sắp phát sóng"
+              className="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap"
             >
               Tất cả
             </button>
@@ -72,7 +74,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default opacity-40">
               <Info size={32} className="text-text-muted" />
             </div>
-            <p className="text-text-muted font-bold text-[10px] sm:text-xs uppercase tracking-widest opacity-60">
+            <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-60">
               {selectedDate 
                 ? 'Không có tập phim nào'
                 : 'Chưa có lịch phát sóng'
@@ -85,7 +87,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
               <div key={date} className="mb-6 last:mb-0">
                 <div className="sticky top-0 z-10 pb-3 flex justify-start">
                   <div className="bg-surface/95 backdrop-blur-md border border-border-default/80 px-3.5 py-1.5 rounded-full shadow-sm ring-1 ring-black/5 dark:ring-white/5">
-                    <h4 className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-[0.12em] whitespace-nowrap">
+                    <h4 className="text-xs font-black text-primary uppercase tracking-[0.12em] whitespace-nowrap">
                       {formatDate(date)}
                     </h4>
                   </div>
@@ -95,6 +97,9 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                     <div
                       key={`${ep.seriesId}-${ep.episode.id}-${idx}`}
                       onClick={() => handleSeriesClick(ep)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
                       className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 hover:shadow-premium transition-colors duration-300 cursor-pointer border border-border-default group relative items-start overflow-hidden"
                     >
                       <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
@@ -106,20 +111,20 @@ const EpisodeList: React.FC<EpisodeListProps> = ({
                         />
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
-                        <h5 className="font-bold text-text-main text-sm sm:text-base truncate group-hover:text-primary transition-colors tracking-tight leading-snug">
+                        <h5 className="font-bold text-text-main text-sm sm:base truncate group-hover:text-primary transition-colors tracking-tight leading-snug">
                           {ep.seriesNameVi || ep.seriesName}
                         </h5>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="text-[9px] font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 uppercase">
+                          <span className="text-xs font-black text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20 uppercase">
                             S{ep.episode.season_number}E{ep.episode.episode_number}
                           </span>
                           {ep.episode.runtime && (
-                            <span className="text-[10px] font-bold text-text-muted flex items-center gap-1 opacity-50">
-                              <Clock size={10} /> {ep.episode.runtime}m
+                            <span className="text-xs font-bold text-text-muted flex items-center gap-1 opacity-60">
+                              <Clock size={12} /> {ep.episode.runtime}m
                             </span>
                           )}
                         </div>
-                        <p className="text-[11px] sm:text-xs font-medium text-text-muted truncate mt-1.5 italic opacity-70 group-hover:opacity-100 transition-opacity">
+                        <p className="text-xs font-medium text-text-muted truncate mt-1.5 italic opacity-70 group-hover:opacity-100 transition-opacity">
                           {ep.episode.name || `Tập ${ep.episode.episode_number}`}
                         </p>
                       </div>

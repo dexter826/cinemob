@@ -18,19 +18,20 @@ const PageHeader: React.FC<PageHeaderProps> = ({ icon: Icon, title, description,
         {onBack && (
           <button
             onClick={onBack}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors shadow-premium shrink-0"
+            aria-label="Quay lại trang trước"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors shadow-sm shrink-0 active:scale-95 cursor-pointer"
           >
-            <ArrowLeft size={22} />
+            <ArrowLeft size={20} />
           </button>
         )}
         <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0 shadow-sm">
             <Icon className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-main truncate">{title}</h1>
+            <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-main truncate font-display">{title}</h1>
             {description && (
-              <p className="text-[10px] sm:text-xs md:text-sm text-text-muted opacity-60 font-bold uppercase tracking-widest truncate">{description}</p>
+              <p className="text-xs sm:text-sm text-text-muted opacity-75 font-medium truncate">{description}</p>
             )}
           </div>
         </div>

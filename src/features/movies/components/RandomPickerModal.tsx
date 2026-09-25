@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { X, Dice5 } from 'lucide-react';
+import { X, Dice5, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { Howl } from 'howler';
@@ -298,7 +298,7 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
         <div className="relative z-10">
           {isLoadingPool && (
             <div className="py-10">
-              <Loading fullScreen={false} text="Đang chuẩn bị danh sách đề xuất..." />
+              <Loading fullScreen={false} text="Đang chuẩn bị danh sách đề xuất…" />
             </div>
           )}
 
@@ -386,34 +386,36 @@ const RandomPickerModal: React.FC<RandomPickerModalProps> = ({ isOpen, onClose }
                 </div>
 
                 {/* Selection Indicator Arrow */}
-                <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-40">
-                  <div className="w-0 h-0 border-l-4 border-r-4 border-b-6 border-l-transparent border-r-transparent border-b-primary drop-shadow-lg animate-bounce"></div>
+                <div className="absolute top-1.5 left-1/2 transform -translate-x-1/2 z-40 flex flex-col items-center pointer-events-none">
+                  <div className="w-7 h-7 rounded-full bg-surface border border-primary/50 flex items-center justify-center text-primary shadow-md">
+                    <ChevronDown size={16} strokeWidth={2.5} />
+                  </div>
                 </div>
 
 
               </div>
 
               <div className="text-center space-y-2">
-                <p className="text-xs uppercase tracking-wide text-primary font-semibold">
+                <p className="text-xs text-primary font-semibold">
                   {poolType === 'watchlist' ? 'Từ Watchlist của bạn' : 'Phim thịnh hành'}
                 </p>
                 {!isShuffling && currentIndex !== null && (
                   <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-text-main line-clamp-2" title={getTitle()}>
+                    <h3 className="text-xl font-bold text-text-main line-clamp-2 font-display" title={getTitle()}>
                       {getTitle()}
                     </h3>
                     <p className="text-sm text-text-muted">
-                      {hasResult ? '🎉 Đây là lựa chọn của bạn!' : 'Phim được chọn ngẫu nhiên'}
+                      {hasResult ? 'Đã tìm thấy tác phẩm dành riêng cho bạn' : 'Phim được chọn ngẫu nhiên'}
                     </p>
                   </div>
                 )}
                 {isShuffling && (
                   <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-text-main animate-pulse">
-                      Đang quay...
+                    <h3 className="text-xl font-bold text-text-main animate-pulse font-display">
+                      Đang chọn ngẫu nhiên…
                     </h3>
                     <p className="text-sm text-text-muted animate-pulse">
-                      Chờ một chút nhé! 🎲
+                      Đang xáo trộn các đề xuất phim phù hợp
                     </p>
                   </div>
                 )}

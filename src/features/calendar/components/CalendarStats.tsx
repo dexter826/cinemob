@@ -24,7 +24,7 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight leading-none truncate">{tvSeriesCount}</p>
-            <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-1.5 sm:mt-2 opacity-60 truncate">Series</p>
+            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mt-1.5 sm:mt-2 opacity-75 truncate">Series</p>
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight leading-none truncate">{upcomingEpisodesCount}</p>
-            <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-1.5 sm:mt-2 opacity-60 truncate">Sắp chiếu</p>
+            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mt-1.5 sm:mt-2 opacity-75 truncate">Sắp chiếu</p>
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight leading-none truncate">{todayEpisodesCount}</p>
-            <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-1.5 sm:mt-2 opacity-60 truncate">Hôm nay</p>
+            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mt-1.5 sm:mt-2 opacity-75 truncate">Hôm nay</p>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@ const CalendarStats: React.FC<CalendarStatsProps> = ({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight leading-none truncate">{thisWeekEpisodesCount}</p>
-            <p className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest mt-1.5 sm:mt-2 opacity-60 truncate">Tuần này</p>
+            <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mt-1.5 sm:mt-2 opacity-75 truncate">Tuần này</p>
           </div>
         </div>
       </div>

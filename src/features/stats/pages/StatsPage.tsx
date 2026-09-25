@@ -13,6 +13,7 @@ import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 
 const COLORS = ['#be123c', '#d97706', '#9a3412', '#c2410c', '#57534e', '#0f766e', '#1e3a8a', '#15803d'];
 
+/** Thống kê hoạt động xem phim, điểm số và thể loại. */
 const StatsPage: React.FC = () => {
   const { movies, loading } = useMovieStore();
   const { 
@@ -119,12 +120,12 @@ const StatsPage: React.FC = () => {
                   <div className="p-2 bg-primary/10 rounded-xl">
                     <Calendar size={18} className="text-primary" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-lg font-bold tracking-tight">Thống kê theo</h3>
+                  <h3 className="text-lg font-bold tracking-tight">Hoạt động theo tháng</h3>
                 </div>
                 
                 <div className="flex items-center gap-3">
                   <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5">
-                    <span className="text-[11px] font-bold text-primary">{totalInYear} phim</span>
+                    <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
                   </div>
                   <CustomDropdown 
                     options={yearOptions}
@@ -184,7 +185,7 @@ const StatsPage: React.FC = () => {
                   {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
                     <div key={rating} className="flex items-center gap-4 group">
                       <div className="flex items-center gap-1 w-12 shrink-0">
-                        <span className="font-bold text-base text-text-main">{rating}</span>
+                        <span className="font-bold text-base text-text-main tabular-nums">{rating}</span>
                         <Star size={12} className="fill-warning text-warning" strokeWidth={1.5} />
                       </div>
                       <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
@@ -193,7 +194,7 @@ const StatsPage: React.FC = () => {
                           style={{ width: `${(moviesByRating[rating] / (ratedCount || 1)) * 100}%` }}
                         />
                       </div>
-                      <span className="text-[10px] font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors">
+                      <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
                         {moviesByRating[rating]}
                       </span>
                     </div>
@@ -216,10 +217,10 @@ const StatsPage: React.FC = () => {
                     .map(([country, count], index) => (
                       <div key={country} className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group">
                         <div className="flex items-center gap-4">
-                          <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors">0{index + 1}</span>
+                          <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">0{index + 1}</span>
                           <span className="font-bold text-sm text-text-main truncate max-w-[150px]">{country}</span>
                         </div>
-                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20">
+                        <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 tabular-nums">
                           {count} phim
                         </span>
                       </div>

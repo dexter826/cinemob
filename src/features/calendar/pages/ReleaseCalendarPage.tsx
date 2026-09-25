@@ -41,14 +41,17 @@ const ReleaseCalendarPage: React.FC = () => {
           >
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {/* View Mode Toggle */}
-              <div className="bg-surface border border-border-default dark:border-white/5 p-1 rounded-2xl flex items-center shadow-premium ring-1 ring-black/5 dark:ring-white/5">
+              <div role="tablist" aria-label="Chế độ hiển thị lịch chiếu" className="bg-surface border border-border-default dark:border-white/5 p-1 rounded-2xl flex items-center shadow-premium ring-1 ring-black/5 dark:ring-white/5">
                 <button
                   disabled={loading}
+                  role="tab"
+                  aria-selected={viewMode === 'calendar'}
+                  aria-label="Xem theo lịch tháng"
                   onClick={() => setViewMode('calendar')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-bold text-[10px] sm:text-xs  cursor-pointer ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer active:scale-95 ${
                     viewMode === 'calendar' 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                      : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
+                      ? 'bg-primary text-white shadow-sm' 
+                      : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
                   } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <Calendar size={14} strokeWidth={1.5} />
@@ -56,11 +59,14 @@ const ReleaseCalendarPage: React.FC = () => {
                 </button>
                 <button
                   disabled={loading}
+                  role="tab"
+                  aria-selected={viewMode === 'list'}
+                  aria-label="Xem theo danh sách"
                   onClick={() => setViewMode('list')}
-                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-bold text-[10px] sm:text-xs  cursor-pointer ${
+                  className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer active:scale-95 ${
                     viewMode === 'list' 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                      : 'text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
+                      ? 'bg-primary text-white shadow-sm' 
+                      : 'text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5'
                   } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <List size={14} strokeWidth={1.5} />
@@ -72,9 +78,10 @@ const ReleaseCalendarPage: React.FC = () => {
                 onClick={handlePushToggle}
                 disabled={pushLoading || loading}
                 title={pushSubscribed ? 'Tắt thông báo' : 'Bật thông báo tập phim mới'}
-                className={`flex-1 sm:flex-none px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-colors flex items-center justify-center gap-2 font-bold text-[10px] sm:text-xs shadow-premium active:scale-[0.98] cursor-pointer ${
+                aria-label={pushSubscribed ? 'Tắt thông báo tập phim mới' : 'Bật thông báo tập phim mới'}
+                className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-colors flex items-center justify-center gap-2 font-semibold text-xs shadow-sm active:scale-[0.98] cursor-pointer ${
                   pushSubscribed
-                    ? 'bg-success text-white shadow-lg shadow-success/20'
+                    ? 'bg-success text-white'
                     : notificationPermission === 'denied'
                     ? 'bg-error/10 text-error border border-error/20 cursor-not-allowed'
                     : 'bg-surface border border-border-default dark:border-white/5 text-text-main hover:bg-primary/5 hover:border-primary/30'

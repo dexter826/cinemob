@@ -22,7 +22,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   options,
   values,
   onChange,
-  placeholder = 'Chọn...',
+  placeholder = 'Chọn…',
   className = '',
   disabled = false,
   searchable = false,
@@ -193,7 +193,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm kiếm…"
                 className="
                   w-full bg-black/5 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-sm
                   focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted

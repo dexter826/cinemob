@@ -19,6 +19,7 @@ interface AlbumSelectorModalProps {
   movie: Movie | null;
 }
 
+/** Modal lựa chọn hoặc tạo mới album để lưu phim. */
 const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose, movie }) => {
   const { user } = useAuth();
   const { showToast } = useToastStore();
@@ -104,15 +105,16 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
           >
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main transition-colors cursor-pointer "
+              aria-label="Đóng bảng chọn album"
+              className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main transition-colors cursor-pointer"
             >
               <X size={20} />
             </button>
 
             {/* Header */}
-            <div className="p-5 sm:p-6 border-b border-border-default bg-surface/50 backdrop-blur-md">
+            <div className="p-5 sm:p-6 border-b border-border-default bg-surface">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-24 rounded-2xl overflow-hidden shadow-lg border border-border-default shrink-0">
+                <div className="w-16 h-24 rounded-2xl overflow-hidden shadow-md border border-border-default shrink-0">
                   <img
                     src={movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : logoText}
                     alt={getDisplayTitle(movie)}
@@ -120,8 +122,8 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-1 block">Thêm vào Album</span>
-                  <h2 className="text-2xl font-bold text-text-main truncate tracking-tight">{getDisplayTitle(movie)}</h2>
+                  <span className="text-xs font-semibold text-primary mb-1 block">Thêm vào Album</span>
+                  <h2 className="text-2xl font-bold text-text-main truncate tracking-tight font-display">{getDisplayTitle(movie)}</h2>
                   <p className="text-sm text-text-muted mt-1 opacity-80">Lưu giữ phim vào danh sách yêu thích của bạn</p>
                 </div>
               </div>
@@ -131,11 +133,11 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
             <div className="p-5 sm:p-6 max-h-[50vh] overflow-y-auto custom-scrollbar">
               {showCreateForm ? (
                 <div className="mb-8 p-6 border border-primary/20 rounded-2xl bg-primary/5 animate-in fade-in slide-in-from-top-2">
-                  <h3 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Tạo album mới</h3>
+                  <h3 className="text-sm font-semibold text-text-main mb-3">Tạo album mới</h3>
                   <div className="space-y-4">
                     <input
                       type="text"
-                      placeholder="Nhập tên album..."
+                      placeholder="Nhập tên album…"
                       value={newAlbumName}
                       onChange={(e) => setNewAlbumName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
@@ -146,13 +148,13 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                       <button
                         onClick={handleCreateAlbum}
                         disabled={creatingAlbum || !newAlbumName.trim()}
-                        className="flex-1 px-6 py-3.5 bg-primary text-white rounded-2xl font-bold hover:shadow-premium disabled:opacity-40 transition-colors active:scale-[0.98] shadow-lg shadow-primary/20 cursor-pointer"
+                        className="flex-1 px-6 py-3.5 bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-40 transition-colors active:scale-[0.98] shadow-sm cursor-pointer"
                       >
-                        {creatingAlbum ? 'Đang xử lý...' : 'Tạo album'}
+                        {creatingAlbum ? 'Đang xử lý…' : 'Tạo album'}
                       </button>
                       <button
                         onClick={() => setShowCreateForm(false)}
-                        className="px-6 py-3.5 border border-border-default text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl font-bold transition-colors  cursor-pointer"
+                        className="px-6 py-3.5 border border-border-default text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl font-bold transition-colors cursor-pointer"
                       >
                         Hủy
                       </button>
@@ -179,7 +181,7 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-12 gap-4">
                   <Loading size={40} fullScreen={false} />
-                  <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest animate-pulse">Đang tải album...</p>
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-widest animate-pulse">Đang tải album...</p>
                 </div>
               ) : availableAlbums.length === 0 ? (
                 <EmptyState
@@ -193,12 +195,13 @@ const AlbumSelectorModal: React.FC<AlbumSelectorModalProps> = ({ isOpen, onClose
                 />
               ) : (
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Chọn Album</h3>
+                  <h3 className="text-xs font-bold text-text-muted uppercase tracking-widest ml-1 opacity-60">Chọn Album</h3>
                   {availableAlbums.map(album => (
                     <button
                       key={album.docId}
                       onClick={() => handleAddToAlbum(album)}
                       disabled={addingToAlbum === album.docId}
+                      aria-label={`Thêm phim vào album ${album.name}`}
                       className="w-full p-5 rounded-3xl border border-border-default hover:border-primary/50 hover:bg-primary/5 hover:shadow-premium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-left group cursor-pointer active:scale-[0.99]"
                     >
                       <div className="flex items-center gap-4">

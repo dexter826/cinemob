@@ -21,7 +21,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
   value,
   onChange,
-  placeholder = 'Chọn...',
+  placeholder = 'Chọn…',
   className = '',
   disabled = false,
   searchable = false,
@@ -134,7 +134,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm kiếm…"
                 className="
                   w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-sm
                   focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted/50

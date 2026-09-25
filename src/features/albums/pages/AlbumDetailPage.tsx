@@ -16,6 +16,7 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
+/** Quản lý chi tiết album và thêm/bớt phim trong album. */
 const AlbumDetailPage: React.FC = () => {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
@@ -129,23 +130,15 @@ const AlbumDetailPage: React.FC = () => {
     }
   };
 
-  const handleRemoveMovie = (movie: Movie) => {
+  const handleRemoveMovie = async (movie: Movie) => {
     if (!album || !album.docId || !movie.docId) return;
-    showAlert({
-      title: 'Xóa phim khỏi album',
-      message: 'Phim sẽ được gỡ khỏi album này nhưng vẫn giữ lại trong lịch sử xem.',
-      confirmText: 'Gỡ phim',
-      type: 'warning',
-      onConfirm: async () => {
-        try {
-          const newIds = (album.movieDocIds || []).filter(id => id !== movie.docId);
-          await updateAlbum(album.docId!, { movieDocIds: newIds });
-          showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS, 'info');
-        } catch (error) {
-          showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
-        }
-      },
-    });
+    try {
+      const newIds = (album.movieDocIds || []).filter(id => id !== movie.docId);
+      await updateAlbum(album.docId, { movieDocIds: newIds });
+      showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS, 'info');
+    } catch (error) {
+      showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
+    }
   };
 
   return (
@@ -154,7 +147,7 @@ const AlbumDetailPage: React.FC = () => {
         <PageHeader
           onBack={() => navigate('/albums')}
           icon={Film}
-          title={loading ? "Đang tải..." : album?.name || "Chi tiết Album"}
+          title={loading ? "Đang tải…" : album?.name || "Chi tiết Album"}
           description={!loading && album ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}` : ""}
           className="flex-col sm:flex-row items-stretch sm:items-center"
         >
@@ -163,8 +156,9 @@ const AlbumDetailPage: React.FC = () => {
               type="button"
               disabled={loading || !album}
               onClick={() => setManagingMovies(v => !v)}
+              aria-label={managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'}
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border  cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${managingMovies 
                   ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
                   : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
@@ -179,8 +173,9 @@ const AlbumDetailPage: React.FC = () => {
               type="button"
               disabled={loading || !album}
               onClick={() => setEditing(v => !v)}
+              aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border  cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${editing 
                   ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
                   : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
@@ -201,7 +196,7 @@ const AlbumDetailPage: React.FC = () => {
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
-                <label className="text-[10px] sm:text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tên album mới</label>
+                <label className="text-xs font-medium text-text-muted ml-1">Tên album mới</label>
                 <input
                   type="text"
                   value={name}
@@ -214,16 +209,16 @@ const AlbumDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors  cursor-pointer"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap  cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
                 >
-                  {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+                  {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>
               </div>
             </div>
@@ -247,7 +242,7 @@ const AlbumDetailPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
               {!loading && (
-                <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default uppercase tracking-widest">
+                <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -297,11 +292,11 @@ const AlbumDetailPage: React.FC = () => {
                     type="text"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    placeholder="Tìm trong lịch sử..."
+                    placeholder="Tìm trong lịch sử…"
                     className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
                 </div>
-                <span className="text-[10px] sm:text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default dark:border-white/5 uppercase tracking-widest whitespace-nowrap">
+                <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>
@@ -328,6 +323,7 @@ const AlbumDetailPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleAddMovie(movie)}
+                        aria-label={`Thêm phim ${movie.title} vào album`}
                         className="w-full text-left"
                       >
                         <MovieCard

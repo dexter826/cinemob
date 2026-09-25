@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
-        <nav className="pointer-events-auto w-full max-w-5xl bg-surface/50 backdrop-blur-2xl border border-border-default shadow-glass rounded-full px-4 md:px-4 h-14 flex items-center justify-between transition-colors duration-300">
+        <nav className="pointer-events-auto w-full max-w-5xl bg-surface border border-border-default shadow-md rounded-2xl sm:rounded-full px-4 md:px-5 h-14 flex items-center justify-between transition-colors duration-200">
           {/* Brand Logo */}
           <div
             className="flex items-center cursor-pointer"
@@ -80,6 +80,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsRandomOpen(true)}
+              aria-label="Chọn ngẫu nhiên phim"
               className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
               title="Chọn giúp tôi"
             >
@@ -88,6 +89,7 @@ const Navbar: React.FC = () => {
 
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              aria-label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
               className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
               title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
             >
@@ -97,6 +99,7 @@ const Navbar: React.FC = () => {
             <div className="relative dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                aria-label="Mở menu người dùng"
                 className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
               >
                 {user?.photoURL ? (
@@ -110,7 +113,7 @@ const Navbar: React.FC = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-surface/90 backdrop-blur-2xl border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
+                <div className="absolute right-0 mt-2 w-56 bg-surface border border-border-default rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-3 border-b border-border-default bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
                   </div>

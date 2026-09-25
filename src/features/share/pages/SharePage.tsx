@@ -148,7 +148,7 @@ const SharePage: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm phim theo tên tiếng Anh hoặc tiếng Việt..."
+                  placeholder="Tìm phim theo tên tiếng Anh hoặc tiếng Việt…"
                   className="w-full bg-surface border border-border-default rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors shadow-sm"
                 />
                 {searchQuery && (
@@ -168,7 +168,7 @@ const SharePage: React.FC = () => {
                     options={SORT_OPTIONS}
                     value={sortBy}
                     onChange={(val) => setSortBy(val as SortOption)}
-                    placeholder="Sắp xếp..."
+                    placeholder="Sắp xếp…"
                   />
                 </div>
               </div>
@@ -210,7 +210,7 @@ const SharePage: React.FC = () => {
                       key={String(movie.id)}
                       className="bg-surface border border-border-default rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors duration-200 flex flex-col group"
                     >
-                      <div className="aspect-[2/3] bg-black/5 dark:bg-white/5 overflow-hidden">
+                      <div className="aspect-2/3 bg-black/5 dark:bg-white/5 overflow-hidden">
                         <img
                           src={poster}
                           alt={movie.title}

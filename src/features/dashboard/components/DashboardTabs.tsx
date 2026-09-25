@@ -17,15 +17,17 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
 }) => {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div className="flex items-center">
+      <div className="flex items-center" role="tablist" aria-label="Bộ lọc trạng thái xem phim">
         <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden">
           <div
-            className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-lg shadow-primary/30 transition-transform duration-300 ease-out ${
+            className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-sm transition-transform duration-300 ease-out ${
               activeTab === 'history' ? 'translate-x-0' : 'translate-x-full'
             }`}
           />
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'history'}
             onClick={() => onTabChange('history')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'history' ? 'text-white' : 'text-text-muted hover:text-text-main'
@@ -35,6 +37,8 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'watchlist'}
             onClick={() => onTabChange('watchlist')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'watchlist' ? 'text-white' : 'text-text-muted hover:text-text-main'
@@ -45,7 +49,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         </div>
       </div>
 
-      <span className="text-sm text-text-muted">
+      <span className="text-sm text-text-muted font-medium tabular-nums">
         ({moviesCount} phim / {tvCount} series)
       </span>
     </div>

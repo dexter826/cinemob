@@ -47,14 +47,14 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
             onWheel={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border-default bg-surface/50 backdrop-blur-md shrink-0">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border-default bg-surface shrink-0">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 pr-2">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                   <Share2 size={18} className="sm:w-5 sm:h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight truncate">Chia sẻ thư viện</h2>
-                  <p className="text-[11px] sm:text-xs text-text-muted truncate">Quản lý link xem công khai bộ sưu tập</p>
+                  <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight truncate font-display">Chia sẻ thư viện</h2>
+                  <p className="text-xs text-text-muted truncate">Quản lý link xem công khai bộ sưu tập</p>
                 </div>
               </div>
               <button
@@ -74,18 +74,18 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
                   <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span className="text-xs sm:text-sm font-bold text-text-main">Trạng thái chia sẻ</span>
                     <span
-                      className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
                         isEnabled
                           ? 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10'
                           : 'text-text-muted border-border-default bg-black/5 dark:bg-white/5'
                       }`}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${isEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-text-muted'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isEnabled ? 'bg-emerald-500' : 'bg-text-muted'}`} />
                       {isEnabled ? 'Đang bật' : 'Đang tắt'}
                     </span>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-text-muted leading-tight">
-                    {loading ? 'Đang tải trạng thái...' : isEnabled ? 'Bất kỳ ai có đường link đều có thể xem' : 'Chỉ mình bạn xem được thư viện này'}
+                  <p className="text-xs text-text-muted leading-tight">
+                    {loading ? 'Đang tải trạng thái…' : isEnabled ? 'Bất kỳ ai có đường link đều có thể xem' : 'Chỉ mình bạn xem được thư viện này'}
                   </p>
                 </div>
 
@@ -113,7 +113,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
               {isEnabled ? (
                 <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="block text-[11px] sm:text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5 sm:mb-2">
+                    <label className="block text-xs font-medium text-text-muted mb-1.5 sm:mb-2">
                       Đường dẫn công khai
                     </label>
                     <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 border border-border-default rounded-xl sm:rounded-2xl p-1.5 sm:p-2 pl-2.5 sm:pl-3">
@@ -127,7 +127,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
                       <button
                         onClick={handleCopy}
                         disabled={busy}
-                        className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-primary text-white text-[11px] sm:text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer shrink-0 active:scale-95"
+                        aria-label={copied ? "Đã sao chép đường dẫn" : "Sao chép đường dẫn chia sẻ"}
+                        className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer shrink-0 active:scale-95"
                       >
                         {copied ? <Check size={14} /> : <Copy size={14} />}
                         <span className="hidden xs:inline">{copied ? 'Đã sao chép' : 'Sao chép'}</span>
@@ -154,12 +155,12 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
                       className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl sm:rounded-2xl border border-border-default text-xs sm:text-sm font-semibold text-text-main hover:border-primary/50 hover:text-primary transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-center active:scale-[0.98]"
                     >
                       <RefreshCw size={15} className={`shrink-0 ${syncing ? 'animate-spin' : ''}`} />
-                      <span className="truncate">{syncing ? 'Đang đồng bộ...' : 'Cập nhật dữ liệu mới'}</span>
+                      <span className="truncate">{syncing ? 'Đang đồng bộ…' : 'Cập nhật dữ liệu mới'}</span>
                     </button>
                   </div>
 
                   {lastUpdated && (
-                    <p className="text-[10px] sm:text-[11px] text-text-muted text-center pt-0.5">
+                    <p className="text-xs text-text-muted text-center pt-0.5">
                       Dữ liệu công khai cập nhật lúc: {lastUpdated.toLocaleString('vi-VN')}
                     </p>
                   )}
@@ -169,7 +170,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose }) => {
                   <ShieldAlert size={18} className="text-amber-500 shrink-0 mt-0.5" />
                   <div className="space-y-0.5 sm:space-y-1">
                     <p className="text-xs sm:text-sm font-semibold text-text-main">Chưa bật chia sẻ</p>
-                    <p className="text-[11px] sm:text-xs text-text-muted leading-relaxed">
+                    <p className="text-xs text-text-muted leading-relaxed">
                       Khi bật, hệ thống sẽ tạo một bản snapshot công khai chứa danh sách phim bạn đã xem. Bạn có thể tắt tính năng bất cứ lúc nào để ngắt quyền truy cập.
                     </p>
                   </div>

@@ -34,7 +34,7 @@ const formatDisplayDate = (dateStr: string): string => {
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     value,
     onChange,
-    placeholder = 'Chọn ngày...',
+    placeholder = 'Chọn ngày…',
     className = '',
     disabled = false,
     minDate,
@@ -256,7 +256,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
                 {DAYS_VI.map((day) => (
                     <div
                         key={day}
-                        className="text-center text-[10px] sm:text-xs font-bold text-text-muted/60 py-1 uppercase"
+                        className="text-center text-xs font-bold text-text-muted/60 py-1 uppercase"
                     >
                         {day}
                     </div>

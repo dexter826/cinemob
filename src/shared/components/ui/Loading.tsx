@@ -35,7 +35,7 @@ const Spinner: React.FC<SpinnerProps> = ({ size }) => (
       animate={{ opacity: [0.4, 1, 0.4] }}
       transition={{ duration: 2, repeat: Infinity }}
     >
-      <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-sm shadow-primary" />
+      <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-xs" />
     </motion.div>
   </div>
 );
@@ -67,7 +67,7 @@ const Loading: React.FC<LoadingProps> = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-6 text-sm font-bold text-text-muted uppercase tracking-[0.2em] opacity-60"
+          className="mt-4 text-xs font-medium text-text-muted"
         >
           {text}
         </motion.p>

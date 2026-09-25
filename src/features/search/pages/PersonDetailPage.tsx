@@ -13,6 +13,7 @@ import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
+/** Chi tiết nghệ sĩ, diễn viên và danh sách phim liên quan. */
 const PersonDetailPage: React.FC = () => {
   const { personId } = useParams<{ personId: string }>();
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ const PersonDetailPage: React.FC = () => {
         <PageHeader 
           onBack={() => navigate(-1)}
           icon={User}
-          title={loading ? "Đang tải..." : person?.name || "Chi tiết nghệ sĩ"}
+          title={loading ? "Đang tải…" : person?.name || "Chi tiết nghệ sĩ"}
           description={person?.place_of_birth ? `Nơi sinh: ${person.place_of_birth}` : "Thông tin chi tiết nghệ sĩ"}
         />
 
@@ -206,7 +207,7 @@ const PersonDetailPage: React.FC = () => {
                               <Calendar size={18} className="text-primary" />
                             </div>
                             <div>
-                              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Ngày sinh</div>
+                              <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Ngày sinh</div>
                               <div className="font-bold text-sm">{new Date(person.birthday).toLocaleDateString('vi-VN')}</div>
                             </div>
                           </div>
@@ -218,7 +219,7 @@ const PersonDetailPage: React.FC = () => {
                               <Calendar size={18} className="text-error" />
                             </div>
                             <div>
-                              <div className="text-[10px] font-bold text-error uppercase tracking-widest opacity-60">Ngày mất</div>
+                              <div className="text-xs font-bold text-error uppercase tracking-widest opacity-60">Ngày mất</div>
                               <div className="font-bold text-sm text-error">{new Date(person.deathday).toLocaleDateString('vi-VN')}</div>
                             </div>
                           </div>
@@ -232,7 +233,7 @@ const PersonDetailPage: React.FC = () => {
                               <Users size={18} className="text-primary" />
                             </div>
                             <div>
-                              <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Tuổi</div>
+                              <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Tuổi</div>
                               <div className="font-bold text-sm">
                                 {(() => {
                                   const birth = new Date(person.birthday);
@@ -255,7 +256,7 @@ const PersonDetailPage: React.FC = () => {
                           <MapPin size={18} className="text-primary" />
                         </div>
                         <div>
-                          <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Nơi sinh</div>
+                          <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Nơi sinh</div>
                           <div className="font-bold text-sm">{person.place_of_birth}</div>
                         </div>
                       </div>
@@ -297,13 +298,14 @@ const PersonDetailPage: React.FC = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Tìm phim của nghệ sĩ này..."
+                    placeholder="Tìm phim của nghệ sĩ này…"
                     className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-xl sm:rounded-2xl pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-colors"
                   />
                   {searchQuery && (
                     <button 
                       onClick={() => setSearchQuery('')} 
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-muted transition-colors"
+                      aria-label="Xóa từ khóa tìm kiếm"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-muted transition-colors cursor-pointer"
                     >
                       <X size={14} />
                     </button>
@@ -312,6 +314,7 @@ const PersonDetailPage: React.FC = () => {
 
                 <button
                   onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
+                  aria-label={showFilters ? "Đóng bộ lọc nâng cao" : "Mở bộ lọc nâng cao"}
                   className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
                 >
                   <Filter size={20} />
@@ -320,7 +323,7 @@ const PersonDetailPage: React.FC = () => {
                 {showFilters && (
                   <div ref={filterRef} className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface/95 backdrop-blur-2xl p-6 rounded-3xl border border-border-default shadow-premium flex flex-col gap-6 md:min-w-[320px] animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="space-y-3">
-                      <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
+                      <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
                       <div className="flex flex-wrap gap-2">
                         <button onClick={() => setSortBy('year')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                           <Calendar size={14} /> <span>Năm</span>
@@ -338,9 +341,9 @@ const PersonDetailPage: React.FC = () => {
                     <div className="h-px bg-border-default" />
 
                     <div className="space-y-4">
-                      <div className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-60">Lọc nâng cao</div>
+                      <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Lọc nâng cao</div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1">Năm phát hành</label>
+                        <label className="text-xs font-bold text-text-muted uppercase tracking-widest ml-1">Năm phát hành</label>
                         <MultiSelectDropdown
                           options={availableYears.map(year => ({ value: year, label: year }))}
                           values={selectedYears}
@@ -355,7 +358,7 @@ const PersonDetailPage: React.FC = () => {
 
               {paginatedMovies.length > 0 && (
                 <div className="flex items-center justify-end">
-                  <span className="text-[10px] font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest">
+                  <span className="text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest">
                     Hiển thị {paginatedMovies.length} / {filteredMovies.length} mục
                   </span>
                 </div>

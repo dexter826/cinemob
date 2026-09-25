@@ -102,12 +102,13 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-surface/90 dark:bg-surface/80 backdrop-blur-3xl w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default dark:border-white/5 relative flex flex-col md:flex-row max-h-[90vh]"
+            className="bg-surface w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default relative flex flex-col md:flex-row max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-1.5 sm:p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer border border-white/10 "
+              className="absolute top-4 right-4 z-20 p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors border border-white/10 cursor-pointer active:scale-95 shadow-md"
+              aria-label="Đóng chi tiết phim"
             >
               <X size={18} className="sm:w-5 sm:h-5" strokeWidth={1.5} />
             </button>
@@ -149,7 +150,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
               ) : (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-main mb-1 tracking-tight">{mainTitle}</h2>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-main mb-1 tracking-tight font-display">{mainTitle}</h2>
                     {subTitle && movie.title_vi !== mainTitle && <p className="text-text-muted text-base sm:text-lg mb-2 italic">{subTitle}</p>}
                   </div>
 
@@ -157,19 +158,19 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                     {movie.release_date && (
                       <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
                         <Calendar size={14} className="text-info" strokeWidth={1.5} />
-                        <span className="font-medium">{new Date(movie.release_date).getFullYear()}</span>
+                        <span className="font-medium tabular-nums">{new Date(movie.release_date).getFullYear()}</span>
                       </div>
                     )}
                     {(movie.media_type === 'tv' ? (movie.seasons && movie.seasons > 0) : (movie.runtime && movie.runtime > 0)) && (
                       <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
                         <Clock size={14} className="text-primary" strokeWidth={1.5} />
-                        <span className="font-medium">{movie.media_type === 'tv' ? `${movie.seasons} Mùa` : `${movie.runtime} Phút`}</span>
+                        <span className="font-medium tabular-nums">{movie.media_type === 'tv' ? `${movie.seasons} Mùa` : `${movie.runtime} Phút`}</span>
                       </div>
                     )}
                     {!!movie.rating && movie.rating > 0 && (
                       <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20 dark:border-warning/10">
                         <Star size={14} className="text-warning fill-warning" strokeWidth={1.5} />
-                        <span className="font-bold text-warning">{movie.rating.toFixed(1)}</span>
+                        <span className="font-bold text-warning tabular-nums">{movie.rating.toFixed(1)}</span>
                       </div>
                     )}
                   </div>
@@ -177,20 +178,20 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                   {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
                     <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-4 sm:p-5 border border-border-default dark:border-white/5">
                       <div className="flex items-center justify-between mb-2.5">
-                        <span className="text-text-muted text-xs font-bold uppercase tracking-wider">Tiến độ xem</span>
-                        {movie.progress.is_completed && <span className="text-success text-[10px] font-bold tracking-widest px-2 py-0.5 bg-success/10 rounded-md border border-success/20 dark:border-success/10">✓ HOÀN THÀNH</span>}
+                        <span className="text-text-muted text-xs font-semibold">Tiến độ xem</span>
+                        {movie.progress.is_completed && <span className="text-success text-xs font-semibold tracking-wide px-2 py-0.5 bg-success/10 rounded-md border border-success/20 dark:border-success/10">✓ Hoàn thành</span>}
                       </div>
-                      <div className="text-text-main font-bold text-xl sm:text-2xl mb-4">
+                      <div className="text-text-main font-bold text-xl sm:text-2xl mb-4 font-display">
                         {movie.progress.is_completed ? "Đã xem hết" : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
                         {!movie.progress.is_completed && movie.total_episodes && (
-                          <span className="text-text-muted font-normal text-sm ml-2">
+                          <span className="text-text-muted font-normal text-sm ml-2 tabular-nums">
                             ({movie.progress.watched_episodes}/{movie.total_episodes} tập)
                           </span>
                         )}
                       </div>
                       <div className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
                         <div
-                          className="h-full bg-primary transition-colors duration-700 ease-out rounded-full"
+                          className="h-full bg-primary transition-[width] duration-700 ease-out rounded-full"
                           style={{
                             width: movie.progress.is_completed ? '100%' : `${(movie.progress.watched_episodes / (movie.total_episodes || 1)) * 100}%`
                           }}
@@ -242,7 +243,11 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
                           </h3>
                           <div className="flex flex-wrap gap-2">
                             {credits.cast.slice(0, 8).map(actor => (
-                              <button key={actor.id} onClick={() => handlePersonClick(actor.id)} className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-medium text-text-muted transition-colors border border-border-default dark:border-white/5 cursor-pointer ">
+                              <button
+                                key={actor.id}
+                                onClick={() => handlePersonClick(actor.id)}
+                                className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-xl text-xs font-medium text-text-muted transition-colors border border-border-default dark:border-white/5 cursor-pointer active:scale-95"
+                              >
                                 {actor.name}
                               </button>
                             ))}
@@ -254,19 +259,40 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({ isOpen, onClose, mo
 
                   <div className="pt-4 flex flex-col gap-3">
                     {movie.status === 'watchlist' ? (
-                      <button onClick={handleWatchTrailer} disabled={videos.length === 0} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-colors shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${videos.length > 0 ? 'bg-error text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
-                        <Play size={18} fill="currentColor" strokeWidth={1.5} /> {videos.length > 0 ? 'XEM TRAILER' : 'KHÔNG CÓ TRAILER'}
+                      <button
+                        onClick={handleWatchTrailer}
+                        disabled={videos.length === 0}
+                        aria-label={videos.length > 0 ? "Xem trailer phim trên YouTube" : "Phim không có video trailer"}
+                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors shadow-sm active:scale-[0.98] cursor-pointer ${
+                          videos.length > 0
+                            ? 'bg-red-600 hover:bg-red-500 text-white'
+                            : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'
+                        }`}
+                      >
+                        <Play size={18} fill="currentColor" strokeWidth={1.5} />
+                        <span>{videos.length > 0 ? 'Xem Trailer' : 'Không có trailer'}</span>
                       </button>
                     ) : (
-                      <button onClick={handleAddToAlbum} disabled={!canAddToAlbum} className={`w-full flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold transition-colors shadow-premium hover:shadow-premium-hover active:scale-[0.98] cursor-pointer ${canAddToAlbum ? 'bg-primary text-white' : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'}`}>
-                        <FolderPlus size={18} strokeWidth={1.5} /> THÊM VÀO ALBUM
+                      <button
+                        onClick={handleAddToAlbum}
+                        disabled={!canAddToAlbum}
+                        aria-label="Thêm phim vào album cá nhân"
+                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors shadow-sm active:scale-[0.98] cursor-pointer ${
+                          canAddToAlbum
+                            ? 'bg-primary hover:bg-primary/90 text-white'
+                            : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'
+                        }`}
+                      >
+                        <FolderPlus size={18} strokeWidth={1.5} />
+                        <span>Thêm vào Album</span>
                       </button>
                     )}
                   </div>
 
                   {movie.status !== 'watchlist' && (
-                    <div className="pt-4 text-[8px] sm:text-[10px] uppercase tracking-wider text-text-muted font-bold opacity-60">
-                      <span>ĐÃ XEM: {formatMovieDate(movie.watched_at)}</span>
+                    <div className="pt-2 text-xs uppercase tracking-wider text-text-muted font-medium flex items-center gap-1.5 opacity-80">
+                      <Calendar size={13} className="text-text-muted" strokeWidth={1.5} />
+                      <span>Đã xem: {formatMovieDate(movie.watched_at)}</span>
                     </div>
                   )}
                 </div>
