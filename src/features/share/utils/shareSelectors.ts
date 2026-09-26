@@ -19,3 +19,18 @@ export function filterAndSortSharedMovies(movies: PublicShareMovie[], query: str
     return 0;
   });
 }
+
+export function getVisibleSharedMovies(movies: PublicShareMovie[], visibleCount: number): PublicShareMovie[] {
+  return movies.slice(0, Math.max(0, visibleCount));
+}
+
+export function getSharedMovieTypeCounts(movies: PublicShareMovie[]): { movieCount: number; tvCount: number } {
+  return movies.reduce(
+    (counts, movie) => {
+      if (movie.media_type === 'tv') counts.tvCount += 1;
+      else counts.movieCount += 1;
+      return counts;
+    },
+    { movieCount: 0, tvCount: 0 },
+  );
+}

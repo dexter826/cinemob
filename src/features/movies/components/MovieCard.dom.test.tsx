@@ -34,4 +34,22 @@ describe('MovieCard', () => {
 
     expect(onSelect).toHaveBeenCalledWith(movie);
   });
+
+  it('keeps rating and review metadata below the title instead of stacking them on the poster', () => {
+    const { container } = render(
+      <MovieCard
+        movie={{ ...movie, rating: 8, is_review: true }}
+        onDelete={vi.fn()}
+        onEdit={vi.fn()}
+        onClick={vi.fn()}
+      />,
+    );
+
+    const posterBadges = container.querySelector('.absolute.top-2.left-2');
+    expect(posterBadges).toHaveTextContent('Phim');
+    expect(posterBadges).not.toHaveTextContent('8.0');
+    expect(posterBadges).not.toHaveTextContent('Review');
+    expect(screen.getByText('8.0')).toBeInTheDocument();
+    expect(screen.getByText('Review')).toBeInTheDocument();
+  });
 });

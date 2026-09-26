@@ -3,7 +3,7 @@ import { useAuth } from '@/app/providers/AuthProvider';
 import useMovieStore from '@/features/movies/stores/movieStore';
 import useToastStore from '@/shared/stores/toastStore';
 import { buildShareMovies, getPublicShare, setShareEnabled, upsertPublicShare } from '../services/shareService';
-export const useShare = () => {
+export const useShare = (isOpen = true) => {
   const { user } = useAuth();
   const { movies } = useMovieStore();
   const { showToast } = useToastStore();
@@ -14,6 +14,11 @@ export const useShare = () => {
   const uid = user?.uid || '';
   const shareUrl = uid ? `${window.location.origin}/share/${uid}` : '';
   useEffect(() => {
+    if (!isOpen) {
+      setLoading(false);
+      return;
+    }
+
     setIsEnabled(false);
     setLastUpdated(null);
     setLoading(true);
@@ -30,7 +35,7 @@ export const useShare = () => {
       finally { setLoading(false); }
     };
     load();
-  }, [uid, showToast]);
+  }, [isOpen, uid, showToast]);
   const refreshSnapshot = useCallback(async () => {
     if (!user) return;
     if (syncing) return;
@@ -38,8 +43,8 @@ export const useShare = () => {
     try {
       const shareMovies = buildShareMovies(movies);
       await upsertPublicShare(user.uid, { displayName: user.displayName || 'CineMOB User', photoURL: user.photoURL || '', isEnabled: true, totalCount: shareMovies.length, movies: shareMovies });
-      setIsEnabled(true); setLastUpdated(new Date()); showToast('Đã cập nhật link chia sẻ', 'success');
-    } catch { showToast('Cập nhật link thất bại', 'error'); }
+      setIsEnabled(true); setLastUpdated(new Date()); showToast('Đã bật chia sẻ công khai', 'success');
+    } catch { showToast('Không thể bật chia sẻ công khai', 'error'); }
     finally { setSyncing(false); }
   }, [movies, showToast, user, syncing]);
   const toggleShare = useCallback(async () => {
@@ -59,5 +64,5 @@ export const useShare = () => {
       showToast('Đã copy link chia sẻ', 'success');
     }
   }, [shareUrl, showToast]);
-  return { isEnabled, loading, syncing, shareUrl, lastUpdated, toggleShare, refreshSnapshot, copyLink };
+  return { isEnabled, loading, syncing, shareUrl, lastUpdated, toggleShare, copyLink };
 };

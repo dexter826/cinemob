@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Film, Share2, Star, Search, X } from 'lucide-react';
+import { Film, Share2, Star, Search, Tv, X } from 'lucide-react';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
@@ -9,14 +9,16 @@ import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { getPublicShare } from '@/features/share/services/shareService';
 import type { PublicShare } from '@/types';
-import { filterAndSortSharedMovies, type ShareSortOption } from '../utils/shareSelectors';
+import { filterAndSortSharedMovies, getSharedMovieTypeCounts, getVisibleSharedMovies, type ShareSortOption } from '../utils/shareSelectors';
 
 const SORT_OPTIONS = [
-  { value: 'default', label: 'Thứ tự mặc định' },
+  { value: 'default', label: 'Mới xem gần đây' },
   { value: 'rating-desc', label: 'Đánh giá cao nhất' },
-  { value: 'year-desc', label: 'Năm phát hành (Mới nhất)' },
-  { value: 'year-asc', label: 'Năm phát hành (Cũ nhất)' },
+  { value: 'year-desc', label: 'Năm phát hành (mới nhất)' },
+  { value: 'year-asc', label: 'Năm phát hành (cũ nhất)' },
 ];
+
+const LOAD_MORE_SIZE = 40;
 
 /** Trang công khai xem danh sách phim được chia sẻ */
 function SharePage() {
@@ -27,6 +29,7 @@ function SharePage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<ShareSortOption>('default');
+  const [visibleCount, setVisibleCount] = useState(LOAD_MORE_SIZE);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,10 +63,24 @@ function SharePage() {
     return Array.isArray(data?.movies) ? data.movies : [];
   }, [data]);
 
+  const { movieCount, tvCount } = useMemo(
+    () => getSharedMovieTypeCounts(rawMovies),
+    [rawMovies],
+  );
+
   const filteredMovies = useMemo(
     () => filterAndSortSharedMovies(rawMovies, searchQuery, sortBy),
     [rawMovies, searchQuery, sortBy],
   );
+
+  const visibleMovies = useMemo(
+    () => getVisibleSharedMovies(filteredMovies, visibleCount),
+    [filteredMovies, visibleCount],
+  );
+
+  useEffect(() => {
+    setVisibleCount(LOAD_MORE_SIZE);
+  }, [searchQuery, sortBy]);
 
   if (loading) return <Loading fullScreen />;
 
@@ -103,7 +120,11 @@ function SharePage() {
             )}
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-text-main tracking-tight">{data.displayName}</h1>
-              <p className="text-xs sm:text-sm text-text-muted">{data.totalCount} phim đã xem</p>
+              <p className="text-xs sm:text-sm text-text-muted">
+                {movieCount > 0 && `${movieCount} phim`}
+                {movieCount > 0 && tvCount > 0 && <span className="mx-1.5">·</span>}
+                {tvCount > 0 && `${tvCount} series`}
+              </p>
             </div>
           </div>
 
@@ -136,7 +157,7 @@ function SharePage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm phim theo tên tiếng Anh hoặc tiếng Việt…"
+                  placeholder="Tìm theo tên phim…"
                   className="w-full bg-surface border border-border rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors"
                 />
                 {searchQuery && (
@@ -156,26 +177,35 @@ function SharePage() {
                     options={SORT_OPTIONS}
                     value={sortBy}
                     onChange={(val) => setSortBy(val as ShareSortOption)}
-                    placeholder="Sắp xếp…"
+                    placeholder="Sắp xếp"
                   />
                 </div>
               </div>
             </div>
 
             {/* Results Count */}
-            {searchQuery.trim() && (
-              <div className="flex items-center justify-between text-xs text-text-muted px-1">
-                <span>
-                  Tìm thấy <strong className="text-primary font-bold">{filteredMovies.length}</strong> / {rawMovies.length} phim
-                </span>
+            <div className="flex items-center justify-between gap-3 text-xs text-text-muted px-1">
+              <span>
+                {searchQuery.trim() ? (
+                  <>
+                    Tìm thấy <strong className="text-primary font-bold">{filteredMovies.length}</strong> nội dung · đang hiển thị{' '}
+                    <strong className="text-primary font-bold">{visibleMovies.length}</strong>
+                  </>
+                ) : (
+                  <>
+                    Đang hiển thị <strong className="text-primary font-bold">{visibleMovies.length}</strong> / {filteredMovies.length} nội dung
+                  </>
+                )}
+              </span>
+              {searchQuery.trim() && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="text-primary hover:underline font-semibold cursor-pointer"
+                  className="text-primary hover:underline font-semibold cursor-pointer shrink-0"
                 >
                   Xóa bộ lọc
                 </button>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Movie Grid or Empty Search */}
             {filteredMovies.length === 0 ? (
@@ -190,21 +220,26 @@ function SharePage() {
               />
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-                {filteredMovies.map((movie) => {
+                {visibleMovies.map((movie) => {
                   const poster = movie.poster_path ? getTMDBImageUrl(movie.poster_path, 'w500') : PLACEHOLDER_IMAGE;
                   const year = movie.release_date ? movie.release_date.slice(0, 4) : '';
+                  const isTvSeries = movie.media_type === 'tv';
                   return (
                     <div
                       key={String(movie.id)}
                       className="bg-surface border border-border rounded-2xl overflow-hidden flex flex-col"
                     >
-                      <div className="aspect-2/3 bg-black/5 dark:bg-white/5 overflow-hidden">
+                      <div className="relative aspect-2/3 bg-black/5 dark:bg-white/5 overflow-hidden">
                         <img
                           src={poster}
                           alt={movie.title}
                           loading="lazy"
                           className="w-full h-full object-cover"
                         />
+                        <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
+                          {isTvSeries ? <Tv size={11} aria-hidden="true" /> : <Film size={11} aria-hidden="true" />}
+                          {isTvSeries ? 'Series' : 'Phim'}
+                        </span>
                       </div>
                       <div className="p-3 flex-1 flex flex-col justify-between">
                         <div>
@@ -230,6 +265,18 @@ function SharePage() {
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {visibleMovies.length < filteredMovies.length && (
+              <div className="flex justify-center pt-2">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((current) => current + LOAD_MORE_SIZE)}
+                  className="px-5 py-2.5 rounded-xl border border-border bg-surface text-sm font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+                >
+                  Xem thêm
+                </button>
               </div>
             )}
           </>

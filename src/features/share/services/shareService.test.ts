@@ -5,6 +5,7 @@ import {
   buildShareMovies,
   getPublicShare,
   setShareEnabled,
+  syncPublicShareIfEnabled,
   upsertPublicShare,
 } from './shareService';
 
@@ -129,5 +130,52 @@ describe('shareService', () => {
       { isEnabled: false, updatedAt: 'SERVER_TIMESTAMP' },
       { merge: true },
     );
+  });
+
+  it('không ghi lại public share khi danh sách hiện tại không thay đổi', async () => {
+    vi.mocked(getDoc).mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({
+        displayName: 'User',
+        photoURL: '',
+        isEnabled: true,
+        movies: [
+          { id: 1, title: 'Movie', title_vi: '', poster_path: '', media_type: 'movie', release_date: '', rating: 0 },
+        ],
+      }),
+    } as never);
+
+    await expect(
+      syncPublicShareIfEnabled('u1', { displayName: 'User', photoURL: '' }, [createMovie({ id: 1 })]),
+    ).resolves.toBe(false);
+
+    expect(setDoc).not.toHaveBeenCalled();
+  });
+
+  it('tự cập nhật dữ liệu mới nhưng không ghi đè trạng thái bật tắt', async () => {
+    vi.mocked(getDoc).mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({
+        displayName: 'User',
+        photoURL: '',
+        isEnabled: true,
+        movies: [],
+      }),
+    } as never);
+
+    await expect(
+      syncPublicShareIfEnabled('u1', { displayName: 'User', photoURL: '' }, [createMovie({ id: 1 })]),
+    ).resolves.toBe(true);
+
+    expect(setDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        totalCount: 1,
+        movies: [expect.objectContaining({ id: 1, title: 'Movie' })],
+        updatedAt: 'SERVER_TIMESTAMP',
+      }),
+      { merge: true },
+    );
+    expect(vi.mocked(setDoc).mock.calls[0][1]).not.toHaveProperty('isEnabled');
   });
 });

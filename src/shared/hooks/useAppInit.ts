@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import useMovieStore from '@/features/movies/stores/movieStore';
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
+import useToastStore from '@/shared/stores/toastStore';
 import useAlbumStore from '@/features/albums/stores/albumStore';
 import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
 import useReleaseCalendarStore from '@/features/calendar/stores/releaseCalendarStore';
 import { subscribeToAlbums } from '@/features/albums/services/albumService';
+import { syncPublicShareIfEnabled } from '@/features/share/services/shareService';
 import { Album, Movie } from '@/types';
 
 // Khởi tạo ứng dụng sau khi đăng nhập.
@@ -15,6 +17,7 @@ export const useAppInit = () => {
   
   const { initialize: initMovies, cleanup: cleanupMovies, initialized: moviesInitialized, movies: allMovies, loading: moviesLoading } = useMovieStore();
   const { markInitialLoadComplete } = useInitialLoadStore();
+  const { showToast } = useToastStore();
 
   const { albums, loading: albumsLoading, setAlbums, setLoading: setAlbumsLoading, setAlbumCoverMovies } = useAlbumStore();
   const coverMovieIdsRef = useRef<Record<string, string>>({});
@@ -122,6 +125,28 @@ export const useAppInit = () => {
     setCalendarMovies(allMovies);
     setCalendarLoading(moviesLoading);
   }, [allMovies, moviesLoading, setCalendarMovies, setCalendarLoading]);
+
+  useEffect(() => {
+    if (!user || moviesLoading || !moviesInitialized) return;
+
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void syncPublicShareIfEnabled(
+        user.uid,
+        { displayName: user.displayName || 'CineMOB User', photoURL: user.photoURL || '' },
+        allMovies,
+      ).catch((error) => {
+        if (cancelled) return;
+        console.error('Public share sync error:', error);
+        showToast('Không thể tự cập nhật danh sách chia sẻ', 'error');
+      });
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [allMovies, moviesInitialized, moviesLoading, showToast, user]);
 
   const movieCount = allMovies.length;
 

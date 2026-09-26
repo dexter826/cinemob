@@ -104,20 +104,6 @@ function MovieCard(props: MovieCardProps) {
 
         {/* Badges Stack */}
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
-          {movie.is_review && (
-            <div className="flex items-center space-x-1 px-2.5 py-1 bg-primary text-white rounded-lg border border-white/10 shadow-sm">
-              <MessageSquare size={10} className="text-white" fill="currentColor" strokeWidth={1.5} />
-              <span className="text-[10px] font-semibold text-white leading-none uppercase tracking-wider">Review</span>
-            </div>
-          )}
-
-          {!!movie.rating && movie.rating > 0 && (
-            <div className="flex items-center space-x-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 shadow-sm">
-              <Star size={10} className="text-warning" fill="currentColor" strokeWidth={1.5} />
-              <span className="text-[10px] font-semibold text-white leading-none tabular-nums">{movie.rating.toFixed(1)}</span>
-            </div>
-          )}
-
           <div className="flex items-center space-x-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 shadow-sm">
             {movie.media_type === 'tv' ? (
               <>
@@ -154,6 +140,22 @@ function MovieCard(props: MovieCardProps) {
           <p className="text-[11px] text-text-muted truncate mt-0.5 italic" title={subTitle || ''}>
             {subTitle || '\u00A0'}
           </p>
+        </div>
+
+        <div className="min-h-5 mb-2 flex items-center gap-2 text-[10px] font-medium">
+          {!!movie.rating && movie.rating > 0 && (
+            <span className="inline-flex items-center gap-1 text-text-main" title="Đánh giá">
+              <Star size={11} className="text-warning" fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+              <span className="tabular-nums">{movie.rating.toFixed(1)}</span>
+            </span>
+          )}
+
+          {movie.is_review && (
+            <span className="inline-flex items-center gap-1 text-primary" title="Đã xem review">
+              <MessageSquare size={11} strokeWidth={1.5} aria-hidden="true" />
+              <span>Review</span>
+            </span>
+          )}
         </div>
 
         <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-muted">

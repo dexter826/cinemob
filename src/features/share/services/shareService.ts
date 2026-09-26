@@ -35,6 +35,39 @@ export const upsertPublicShare = async (uid: string, data: Omit<PublicShare, 'up
   await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge: true });
 };
 
+interface ShareProfile {
+  displayName: string;
+  photoURL: string;
+}
+
+export const syncPublicShareIfEnabled = async (
+  uid: string,
+  profile: ShareProfile,
+  movies: Movie[],
+): Promise<boolean> => {
+  const current = await getPublicShare(uid);
+  if (!current?.isEnabled) return false;
+
+  const shareMovies = buildShareMovies(movies);
+  const moviesChanged = current.totalCount !== shareMovies.length || JSON.stringify(current.movies) !== JSON.stringify(shareMovies);
+  const profileChanged = current.displayName !== profile.displayName || (current.photoURL || '') !== profile.photoURL;
+  if (!moviesChanged && !profileChanged) return false;
+
+  const ref = doc(db, COLLECTION_NAME, uid);
+  await setDoc(
+    ref,
+    {
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+      totalCount: shareMovies.length,
+      movies: shareMovies,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+  return true;
+};
+
 export const setShareEnabled = async (uid: string, enabled: boolean): Promise<void> => {
   const ref = doc(db, COLLECTION_NAME, uid);
   await setDoc(ref, { isEnabled: enabled, updatedAt: serverTimestamp() }, { merge: true });
