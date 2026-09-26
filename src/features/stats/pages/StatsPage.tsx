@@ -10,6 +10,8 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import PageHeader from '@/shared/components/ui/PageHeader';
 import { useStats } from '../hooks/useStats';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { buildGenreChartData, topEntries } from '../utils/statsSelectors';
 
 const COLORS = ['#be123c', '#d97706', '#9a3412', '#c2410c', '#57534e', '#0f766e', '#1e3a8a', '#15803d'];
 
@@ -41,7 +43,7 @@ function StatsPage() {
   } = useStats(movies);
 
   const [selectedYear, setSelectedYear] = useState<string>('');
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width: 639px)');
 
   // Danh sách năm cho dropdown.
   const yearOptions = useMemo(() => 
@@ -56,13 +58,6 @@ function StatsPage() {
     }
   }, [availableYears, selectedYear]);
 
-  useEffect(() => {
-    const update = () => setIsSmallScreen(window.innerWidth < 640);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
   // Thống kê theo tháng cho năm đã chọn.
   const monthlyData = useMemo(() => {
     return selectedYear ? getMonthlyDataForYear(selectedYear) : [];
@@ -73,18 +68,11 @@ function StatsPage() {
   }, [monthlyData]);
 
   const topCountries = useMemo(() => {
-    return Object.entries(moviesByCountry)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5);
+    return topEntries(moviesByCountry, 5);
   }, [moviesByCountry]);
 
   const genreData = useMemo(() => {
-    const entries = Object.entries(moviesByGenre).sort((a, b) => b[1] - a[1]);
-    const all = entries.map(([name, value]) => ({ name, value }));
-    if (all.length <= 8) return all;
-    const top = all.slice(0, 7);
-    const others = all.slice(7).reduce((acc, cur) => acc + cur.value, 0);
-    return [...top, { name: 'Khác', value: others }];
+    return buildGenreChartData(moviesByGenre);
   }, [moviesByGenre]);
 
   if (loading) {

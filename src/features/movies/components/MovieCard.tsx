@@ -3,7 +3,8 @@ import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../utils/movieUtils';
 import { Trash2, Calendar, Star, Edit2, MessageCircle, MessageSquare, Film, Tv, CheckCircle } from 'lucide-react';
 
-interface MovieCardProps {
+interface MovieCardLibraryProps {
+  mode?: 'library';
   movie: Movie;
   onDelete: (id: string) => void;
   onEdit: (movie: Movie) => void;
@@ -11,7 +12,17 @@ interface MovieCardProps {
   onMarkAsWatched?: (movie: Movie) => void;
 }
 
-function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieCardProps) {
+interface MovieCardSelectProps {
+  mode: 'select';
+  movie: Movie;
+  onSelect: (movie: Movie) => void;
+}
+
+export type MovieCardProps = MovieCardLibraryProps | MovieCardSelectProps;
+
+function MovieCard(props: MovieCardProps) {
+  const { movie } = props;
+  const isSelectMode = props.mode === 'select';
   const imageUrl = movie.poster_path
     ? (movie.source === 'tmdb' ? getTMDBImageUrl(movie.poster_path, 'w500') : movie.poster_path)
     : PLACEHOLDER_IMAGE;
@@ -32,8 +43,10 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <button
           type="button"
-          onClick={() => onClick(movie)}
-          aria-label={`Xem chi tiết phim ${mainTitle}`}
+          onClick={() => isSelectMode ? props.onSelect(movie) : props.onClick(movie)}
+          aria-label={isSelectMode
+            ? `Thêm phim ${mainTitle} vào album`
+            : `Xem chi tiết phim ${mainTitle}`}
           className="absolute inset-0 w-full h-full cursor-pointer rounded-none"
         >
           <img
@@ -47,9 +60,10 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         {/* Independent actions, siblings of the detail button, never nested */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
+        {!isSelectMode && <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
           <button
-            onClick={() => { if (movie.docId) onDelete(movie.docId); }}
+            type="button"
+            onClick={() => { if (movie.docId) props.onDelete(movie.docId); }}
             className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
             title="Xóa"
             aria-label="Xóa phim khỏi danh sách"
@@ -57,9 +71,10 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
             <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
 
-          {!onMarkAsWatched && (
+          {!props.onMarkAsWatched && (
             <button
-              onClick={() => onEdit(movie)}
+              type="button"
+              onClick={() => props.onEdit(movie)}
               className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Sửa"
               aria-label="Chỉnh sửa thông tin phim"
@@ -68,9 +83,10 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
             </button>
           )}
 
-          {onMarkAsWatched && (
+          {props.onMarkAsWatched && (
             <button
-              onClick={() => onMarkAsWatched(movie)}
+              type="button"
+              onClick={() => props.onMarkAsWatched?.(movie)}
               className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Đã xem"
               aria-label="Đánh dấu đã xem phim"
@@ -78,7 +94,13 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
               <CheckCircle size={15} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
-        </div>
+        </div>}
+
+        {isSelectMode && (
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none border border-transparent group-hover:border-primary/40 rounded-2xl">
+            <CheckCircle className="text-white drop-shadow-lg" size={44} strokeWidth={1.5} aria-hidden="true" />
+          </div>
+        )}
 
         {/* Badges Stack */}
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">

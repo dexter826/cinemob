@@ -43,3 +43,6 @@ Thumbs.db
 
 # Thư mục tạm Gemini
 .gemini/
+
+# Cache cục bộ tạo bởi npm khi kiểm tra lockfile
+.npm-cache/

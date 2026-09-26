@@ -1,67 +1,24 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
-import { PersonMovie, TMDBPerson } from '@/types';
-import { getPersonMovieCredits, getPersonDetails } from '../services/tmdb';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
 import { PersonMovieSection } from '../components/person/PersonMovieSection';
+import { usePersonDetail } from '../hooks/usePersonDetail';
 
 /** Chi tiết nghệ sĩ, diễn viên và danh sách phim liên quan. */
 function PersonDetailPage() {
   const { personId } = useParams<{ personId: string }>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [person, setPerson] = useState<TMDBPerson | null>(null);
-  const [movies, setMovies] = useState<PersonMovie[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  // Filter and sort states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<'title' | 'year'>('year');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    loading, person, error, searchQuery, setSearchQuery, selectedYears, setSelectedYears,
+    sortBy, setSortBy, sortOrder, setSortOrder, currentPage, setCurrentPage,
+    showFilters, setShowFilters, availableYears, paginatedMovies, filteredMovies, totalPages,
+  } = usePersonDetail(personId);
   const [showFullBio, setShowFullBio] = useState(false);
-  const itemsPerPage = 20;
-  const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchPersonData = async () => {
-      if (!personId) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const [personData, movieCredits] = await Promise.all([
-          getPersonDetails(personId),
-          getPersonMovieCredits(Number(personId))
-        ]);
-
-        if (!personData) {
-          throw new Error('Failed to fetch person details');
-        }
-
-        setPerson(personData);
-        setMovies(movieCredits);
-      } catch (err) {
-        console.error('Failed to fetch person data:', err);
-        setError('Không thể tải thông tin người này');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPersonData();
-  }, [personId]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedYears, sortBy, sortOrder]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -76,55 +33,7 @@ function PersonDetailPage() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showFilters]);
-
-  const availableYears = useMemo(() => {
-    const years = new Set<string>();
-    movies.forEach(movie => {
-      const date = movie.release_date || movie.first_air_date;
-      if (date) {
-        years.add(new Date(date).getFullYear().toString());
-      }
-    });
-    return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
-  }, [movies]);
-
-  // Filter and sort movies
-  const filteredMovies = useMemo(() => {
-    const result = movies.filter(movie => {
-      const matchesSearch = !searchQuery ||
-        (movie.title || movie.name || '').toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesYear = selectedYears.length === 0 ||
-        selectedYears.some(year => (movie.release_date || movie.first_air_date || '').startsWith(year));
-
-      return matchesSearch && matchesYear;
-    });
-
-    // Sort
-    result.sort((a, b) => {
-      let comparison = 0;
-
-      if (sortBy === 'title') {
-        comparison = (a.title || a.name || '').localeCompare(b.title || b.name || '');
-      } else {
-        // Year sort
-        const yearA = new Date(a.release_date || a.first_air_date || '1900-01-01').getFullYear();
-        const yearB = new Date(b.release_date || b.first_air_date || '1900-01-01').getFullYear();
-        comparison = yearA - yearB;
-      }
-
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
-
-    return result;
-  }, [movies, searchQuery, selectedYears, sortBy, sortOrder]);
-
-  const totalPages = Math.ceil(filteredMovies.length / itemsPerPage);
-  const paginatedMovies = filteredMovies.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  }, [showFilters, setShowFilters]);
 
   return (
     <div className="text-text-main transition-colors duration-300">

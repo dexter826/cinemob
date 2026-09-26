@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ChevronDown, Check, X } from 'lucide-react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Check, ChevronDown, X } from 'lucide-react';
 
 interface Option {
   value: string | number;
@@ -16,6 +16,10 @@ interface MultiSelectDropdownProps {
   searchable?: boolean;
   maxHeight?: string;
   maxDisplay?: number;
+  id?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
 }
 
 function MultiSelectDropdown({
@@ -28,18 +32,25 @@ function MultiSelectDropdown({
   searchable = false,
   maxHeight = '250px',
   maxDisplay = 2,
+  id,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
 }: MultiSelectDropdownProps) {
+  const generatedId = useId();
+  const controlId = id ?? `multiselect-${generatedId}`;
+  const listboxId = `${controlId}-listbox`;
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listboxId = useRef(`multiselect-listbox-${Math.random().toString(36).slice(2, 8)}`);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const selectedOptions = useMemo(
     () => options.filter(option => values.includes(option.value)),
-    [options, values]
+    [options, values],
   );
 
   const filteredOptions = useMemo(() => {
@@ -53,49 +64,18 @@ function MultiSelectDropdown({
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setSearchQuery('');
+        setActiveIndex(-1);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
+    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen && searchable && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isOpen, searchable]);
-
-  const handleToggle = () => {
-    if (!disabled) {
-      setIsOpen(!isOpen);
-      if (!isOpen) {
-        setSearchQuery('');
-      }
-    }
-  };
-
-  const handleSelect = (option: Option) => {
-    const isSelected = values.includes(option.value);
-    if (isSelected) {
-      onChange(values.filter(v => v !== option.value));
-    } else {
-      onChange([...values, option.value]);
-    }
-  };
-
-  const handleRemove = (value: string | number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onChange(values.filter(v => v !== value));
-  };
-
-  const handleClearAll = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onChange([]);
-  };
+    if (!isOpen) return;
+    if (activeIndex >= 0) optionRefs.current[activeIndex]?.focus();
+    else if (searchable) inputRef.current?.focus();
+  }, [activeIndex, isOpen, searchable, filteredOptions.length]);
 
   const closeAndRestoreFocus = () => {
     setIsOpen(false);
@@ -104,196 +84,166 @@ function MultiSelectDropdown({
     triggerRef.current?.focus();
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
+  const openAt = (index: number) => {
+    setSearchQuery('');
+    setIsOpen(true);
+    setActiveIndex(index);
+  };
+
+  const moveTo = (index: number) => {
+    if (filteredOptions.length === 0) return;
+    setActiveIndex(Math.max(0, Math.min(filteredOptions.length - 1, index)));
+  };
+
+  const toggleOption = (option: Option) => {
+    const nextValues = values.includes(option.value)
+      ? values.filter(value => value !== option.value)
+      : [...values, option.value];
+    onChange(nextValues);
+  };
+
+  const handleNavigationKey = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      if (isOpen) {
+        event.preventDefault();
+        closeAndRestoreFocus();
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      const nextIndex = event.key === 'ArrowDown'
+        ? activeIndex + 1
+        : event.key === 'ArrowUp'
+          ? (activeIndex < 0 ? filteredOptions.length - 1 : activeIndex - 1)
+          : event.key === 'Home'
+            ? 0
+            : filteredOptions.length - 1;
+      if (!isOpen) openAt(nextIndex);
+      else moveTo(nextIndex);
+      return;
+    }
+
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      if (!isOpen) {
-        setIsOpen(true);
-        setActiveIndex(0);
-      } else if (activeIndex >= 0 && filteredOptions[activeIndex]) {
-        handleSelect(filteredOptions[activeIndex]);
-      } else {
-        handleToggle();
-      }
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      if (isOpen) closeAndRestoreFocus();
-    } else if (isOpen && event.key === 'ArrowDown') {
-      event.preventDefault();
-      setActiveIndex((prev) => Math.min(filteredOptions.length - 1, prev + 1));
-    } else if (isOpen && event.key === 'ArrowUp') {
-      event.preventDefault();
-      setActiveIndex((prev) => Math.max(0, prev - 1));
+      if (!isOpen) openAt(searchable ? -1 : 0);
+      else if (activeIndex >= 0 && filteredOptions[activeIndex]) toggleOption(filteredOptions[activeIndex]);
     }
   };
 
-  const renderSelectedDisplay = () => {
-    if (selectedOptions.length === 0) {
-      return <span className="text-text-muted text-sm">{placeholder}</span>;
-    }
-
-    const displayOptions = selectedOptions.slice(0, maxDisplay);
-    const remainingCount = selectedOptions.length - maxDisplay;
-
-    return (
-      <div className="flex flex-wrap gap-1 flex-1 min-w-0">
-        {displayOptions.map(option => (
-          <span
-            key={option.value}
-            className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium"
-          >
-            <span className="truncate max-w-20">{option.label}</span>
-            <button
-              type="button"
-              onClick={(e) => handleRemove(option.value, e)}
-              className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
-            >
-              <X size={12} />
-            </button>
-          </span>
-        ))}
-        {remainingCount > 0 && (
-          <span className="inline-flex items-center px-2 py-0.5 bg-black/10 dark:bg-white/10 text-text-muted rounded-md text-xs font-medium">
-            +{remainingCount}
-          </span>
-        )}
-      </div>
-    );
-  };
+  const displayOptions = selectedOptions.slice(0, maxDisplay);
+  const remainingCount = selectedOptions.length - displayOptions.length;
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={handleToggle}
-        onKeyDown={handleKeyDown}
-        disabled={disabled}
-        className={`
-          w-full min-h-11 bg-surface border border-border-default rounded-2xl px-3 py-2 text-left
-          focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
-          hover:border-primary/30 transition-colors duration-200
-          flex items-center justify-between
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
-        `}
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        aria-controls={listboxId.current}
-      >
-        {renderSelectedDisplay()}
-        <div className="flex items-center gap-1 shrink-0">
-          {values.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="p-0.5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors"
-              title="Xóa tất cả"
-            >
-              <X size={14} className="text-text-muted" />
-            </button>
-          )}
-          <ChevronDown
-            size={16}
-            className={`text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          />
-        </div>
-      </button>
-
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div
-          id={listboxId.current}
-          className="
-            absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border
-            rounded-xl shadow-elevated z-50
-          "
-          role="listbox"
+      <div className={`flex min-h-11 bg-surface border border-border-default rounded-2xl transition-colors duration-200 ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}>
+        <button
+          id={controlId}
+          ref={triggerRef}
+          type="button"
+          onClick={() => isOpen ? closeAndRestoreFocus() : openAt(-1)}
+          onKeyDown={handleNavigationKey}
+          disabled={disabled}
+          className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-2xl focus:outline-none focus:ring-1 focus:ring-primary/20 disabled:cursor-not-allowed"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-controls={listboxId}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={ariaInvalid}
         >
-          {/* Search Input */}
+          {displayOptions.length === 0 ? (
+            <span className="text-text-muted text-sm">{placeholder}</span>
+          ) : (
+            <span className="flex flex-wrap gap-1 flex-1 min-w-0">
+              {displayOptions.map(option => (
+                <span key={option.value} className="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium truncate max-w-28">
+                  {option.label}
+                </span>
+              ))}
+              {remainingCount > 0 && (
+                <span className="inline-flex items-center px-2 py-0.5 bg-black/10 dark:bg-white/10 text-text-muted rounded-md text-xs font-medium">
+                  +{remainingCount}
+                </span>
+              )}
+            </span>
+          )}
+          <ChevronDown size={16} aria-hidden="true" className={`text-text-muted shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {values.length > 0 && (
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            disabled={disabled}
+            aria-label="Xóa tất cả lựa chọn"
+            className="self-center mr-2 p-1.5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus:outline-none focus:ring-1 focus:ring-primary/40"
+          >
+            <X size={14} className="text-text-muted" aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-xl shadow-elevated z-50 overflow-hidden">
           {searchable && (
             <div className="p-2 border-b border-border-default">
               <input
                 ref={inputRef}
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(event) => {
+                  setSearchQuery(event.target.value);
+                  setActiveIndex(-1);
+                }}
+                onKeyDown={handleNavigationKey}
                 placeholder="Tìm kiếm…"
-                className="
-                  w-full bg-black/5 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-sm
-                  focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted
-                "
-                onClick={(e) => e.stopPropagation()}
+                aria-label="Tìm kiếm tùy chọn"
+                className="w-full bg-black/5 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted"
               />
             </div>
           )}
 
-          {/* Selected Count */}
           {values.length > 0 && (
             <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
-              <span className="text-xs text-text-muted">
-                Đã chọn {values.length} mục
-              </span>
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="text-xs text-primary hover:text-primary/80 transition-colors"
-              >
+              <span className="text-xs text-text-muted">Đã chọn {values.length} mục</span>
+              <button type="button" onClick={() => onChange([])} className="text-xs text-primary hover:text-primary/80 transition-colors">
                 Xóa tất cả
               </button>
             </div>
           )}
 
-          {/* Options List */}
-          <div
-            className="overflow-y-auto custom-scrollbar p-2"
-            style={{ maxHeight }}
-          >
+          <div id={listboxId} role="listbox" aria-multiselectable="true" className="overflow-y-auto custom-scrollbar p-2" style={{ maxHeight }}>
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-3 text-sm text-text-muted text-center">
                 {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
               </div>
-            ) : (
-              filteredOptions.map((option) => {
-                const isSelected = values.includes(option.value);
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => handleSelect(option)}
-                    className={`
-                      w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl
-                      transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0
-                      ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}
-                    `}
-                    role="option"
-                    aria-selected={isSelected}
-                  >
-                    {/* Checkbox */}
-                    <div
-                      className={`
-                        w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors
-                        ${isSelected 
-                          ? 'bg-primary border-primary' 
-                          : 'border-black/20 dark:border-white/20'
-                        }
-                      `}
-                    >
-                      {isSelected && <Check size={12} className="text-white" />}
-                    </div>
-                    <span className={isSelected ? 'text-primary font-medium' : 'text-text-main'}>
-                      {option.label}
-                    </span>
-                  </button>
-                );
-              })
-            )}
+            ) : filteredOptions.map((option, index) => {
+              const isSelected = values.includes(option.value);
+              return (
+                <button
+                  key={option.value}
+                  ref={(element) => { optionRefs.current[index] = element; }}
+                  type="button"
+                  onClick={() => toggleOption(option)}
+                  onKeyDown={handleNavigationKey}
+                  className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}`}
+                  role="option"
+                  aria-selected={isSelected}
+                >
+                  <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}>
+                    {isSelected && <Check size={12} className="text-white" aria-hidden="true" />}
+                  </span>
+                  <span className={isSelected ? 'text-primary font-medium' : 'text-text-main'}>{option.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default MultiSelectDropdown;

@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
+import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import Login from '@/features/auth/components/Login';
 const Dashboard = lazy(() => import('@/features/dashboard/pages/Dashboard'));
 const SearchPage = lazy(() => import('@/features/search/pages/SearchPage'));
@@ -43,6 +44,7 @@ function AnimatedRoutes() {
 function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean }) {
   const { user, loading: authLoading } = useAuth();
   const { isOpen: isDetailModalOpen, movie: selectedMovie, closeDetailModal } = useMovieDetailStore();
+  const { isOpen: isAddMovieOpen } = useAddMovieStore();
   const { isInitialLoadComplete } = useInitialLoadStore();
 
   useAppInit();
@@ -72,12 +74,14 @@ function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean
       </ErrorBoundary>
       <Suspense fallback={null}>
         <ErrorBoundary>
-          <AddMovieModal />
-          <MovieDetailModal
-            isOpen={isDetailModalOpen}
-            onClose={closeDetailModal}
-            movie={selectedMovie}
-          />
+          {isAddMovieOpen && <AddMovieModal />}
+          {isDetailModalOpen && (
+            <MovieDetailModal
+              isOpen
+              onClose={closeDetailModal}
+              movie={selectedMovie}
+            />
+          )}
         </ErrorBoundary>
       </Suspense>
     </Layout>

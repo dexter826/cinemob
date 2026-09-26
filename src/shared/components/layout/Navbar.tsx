@@ -1,16 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { lazy, Suspense, useRef, useState } from 'react';
 import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera, Home } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
-import RandomPickerModal from '@/features/movies/components/RandomPickerModal';
-import ExportModal from '@/features/movies/components/ExportModal';
 import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { NAV_ITEMS, isNavItemActive } from './navigation';
 import { IconButton } from '../ui/IconButton';
 import logoText from '@/assets/images/logo_text.png';
+
+const RandomPickerModal = lazy(() => import('@/features/movies/components/RandomPickerModal'));
+const ExportModal = lazy(() => import('@/features/movies/components/ExportModal'));
 
 const NAV_ICONS: Record<string, React.ReactNode> = {
   '/': <Home size={18} strokeWidth={1.5} aria-hidden="true" />,
@@ -73,6 +74,7 @@ function Navbar() {
               const active = isNavItemActive(location.pathname, item);
               return (
                 <button
+                  type="button"
                   key={item.to}
                   onClick={() => navigate(item.to)}
                   aria-current={active ? 'page' : undefined}
@@ -108,6 +110,7 @@ function Navbar() {
 
             <div className="relative dropdown-container">
               <button
+                type="button"
                 ref={triggerRef}
                 onClick={() => (isDropdownOpen ? closeAndRestoreFocus() : setIsDropdownOpen(true))}
                 aria-label="Mở menu người dùng"
@@ -133,6 +136,7 @@ function Navbar() {
 
                   <div className="p-1.5 space-y-0.5">
                     <button
+                      type="button"
                       role="menuitem"
                       onClick={() => { setIsAvatarModalOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
@@ -142,6 +146,7 @@ function Navbar() {
                     </button>
 
                     <button
+                      type="button"
                       role="menuitem"
                       onClick={() => { setIsExportModalOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
@@ -151,6 +156,7 @@ function Navbar() {
                     </button>
 
                     <button
+                      type="button"
                       role="menuitem"
                       onClick={() => {
                         showAlert({
@@ -176,16 +182,17 @@ function Navbar() {
         </nav>
       </div>
 
-      <RandomPickerModal
-        isOpen={isRandomOpen}
-        onClose={() => setIsRandomOpen(false)}
-      />
+      {isRandomOpen && (
+        <Suspense fallback={null}>
+          <RandomPickerModal isOpen onClose={() => setIsRandomOpen(false)} />
+        </Suspense>
+      )}
 
-      <ExportModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-        movies={movies}
-      />
+      {isExportModalOpen && (
+        <Suspense fallback={null}>
+          <ExportModal isOpen onClose={() => setIsExportModalOpen(false)} movies={movies} />
+        </Suspense>
+      )}
 
       <ChangeAvatarModal
         isOpen={isAvatarModalOpen}

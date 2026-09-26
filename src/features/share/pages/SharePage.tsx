@@ -9,8 +9,7 @@ import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { getPublicShare } from '@/features/share/services/shareService';
 import type { PublicShare } from '@/types';
-
-type SortOption = 'default' | 'rating-desc' | 'year-desc' | 'year-asc';
+import { filterAndSortSharedMovies, type ShareSortOption } from '../utils/shareSelectors';
 
 const SORT_OPTIONS = [
   { value: 'default', label: 'Thứ tự mặc định' },
@@ -27,7 +26,7 @@ function SharePage() {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<SortOption>('default');
+  const [sortBy, setSortBy] = useState<ShareSortOption>('default');
 
   useEffect(() => {
     let cancelled = false;
@@ -61,28 +60,10 @@ function SharePage() {
     return Array.isArray(data?.movies) ? data.movies : [];
   }, [data]);
 
-  const filteredMovies = useMemo(() => {
-    let result = [...rawMovies];
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (m) =>
-          m.title.toLowerCase().includes(q) ||
-          (m.title_vi && m.title_vi.toLowerCase().includes(q))
-      );
-    }
-
-    if (sortBy === 'rating-desc') {
-      result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (sortBy === 'year-desc') {
-      result.sort((a, b) => (b.release_date || '').localeCompare(a.release_date || ''));
-    } else if (sortBy === 'year-asc') {
-      result.sort((a, b) => (a.release_date || '').localeCompare(b.release_date || ''));
-    }
-
-    return result;
-  }, [rawMovies, searchQuery, sortBy]);
+  const filteredMovies = useMemo(
+    () => filterAndSortSharedMovies(rawMovies, searchQuery, sortBy),
+    [rawMovies, searchQuery, sortBy],
+  );
 
   if (loading) return <Loading fullScreen />;
 
@@ -174,7 +155,7 @@ function SharePage() {
                   <CustomDropdown
                     options={SORT_OPTIONS}
                     value={sortBy}
-                    onChange={(val) => setSortBy(val as SortOption)}
+                    onChange={(val) => setSortBy(val as ShareSortOption)}
                     placeholder="Sắp xếp…"
                   />
                 </div>

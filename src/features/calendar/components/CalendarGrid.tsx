@@ -69,9 +69,12 @@ function CalendarGrid({
       const selected = isSelected(date);
 
       days.push(
-        <div
+        <button
           key={day}
           onClick={() => setSelectedDate(date)}
+          type="button"
+          aria-current={today ? 'date' : undefined}
+          aria-pressed={selected}
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
             hover:bg-primary/10 relative rounded-xl sm:rounded-2xl flex flex-col justify-between group 
@@ -108,7 +111,7 @@ function CalendarGrid({
               </div>
             </div>
           )}
-        </div>
+        </button>
       );
     }
 
@@ -131,7 +134,8 @@ function CalendarGrid({
   return (
     <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-3xl flex flex-col h-full">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <button 
+        <button
+          type="button"
           onClick={() => navigateMonth('prev')} 
           aria-label="Tháng trước"
           className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"
@@ -143,6 +147,7 @@ function CalendarGrid({
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
           <button
+            type="button"
             onClick={goToToday}
             aria-label="Về hôm nay"
             className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors cursor-pointer"
@@ -150,7 +155,8 @@ function CalendarGrid({
             Hôm nay
           </button>
         </div>
-        <button 
+        <button
+          type="button"
           onClick={() => navigateMonth('next')} 
           aria-label="Tháng sau"
           className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"

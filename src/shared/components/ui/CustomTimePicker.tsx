@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { Clock, X } from 'lucide-react';
-import { createPortal } from 'react-dom';
+import { Dialog } from './Dialog';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
 interface CustomTimePickerProps {
     value: string; // HH:mm format
@@ -9,6 +10,10 @@ interface CustomTimePickerProps {
     className?: string;
     disabled?: boolean;
     minuteStep?: number;
+    id?: string;
+    'aria-labelledby'?: string;
+    'aria-describedby'?: string;
+    'aria-invalid'?: boolean | 'true' | 'false';
 }
 
 const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => i);
@@ -20,22 +25,22 @@ function CustomTimePicker({
     className = '',
     disabled = false,
     minuteStep = 1,
+    id,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
 }: CustomTimePickerProps) {
+    const generatedId = useId();
+    const controlId = id ?? `time-picker-${generatedId}`;
+    const dialogTitleId = `${controlId}-title`;
     const [isOpen, setIsOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const isMobile = useMediaQuery('(max-width: 639px)');
     const dropdownRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const hourListRef = useRef<HTMLDivElement>(null);
     const minuteListRef = useRef<HTMLDivElement>(null);
 
     const [hours, minutes] = value ? value.split(':').map(Number) : [0, 0];
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 640);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -51,6 +56,18 @@ function CustomTimePicker({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen, isMobile]);
 
+    useEffect(() => {
+        if (!isOpen || isMobile) return undefined;
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closePicker();
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [isOpen, isMobile]);
+
     // Cuộn đến giờ phút đã chọn khi mở picker
     useEffect(() => {
         if (!isOpen) return;
@@ -58,13 +75,13 @@ function CustomTimePicker({
         const timer = setTimeout(() => {
             if (hourListRef.current) {
                 const selectedHour = hourListRef.current.querySelector('[data-selected="true"]');
-                if (selectedHour) {
+                if (selectedHour && 'scrollIntoView' in selectedHour) {
                     selectedHour.scrollIntoView({ block: 'center', behavior: 'auto' });
                 }
             }
             if (minuteListRef.current) {
                 const selectedMinute = minuteListRef.current.querySelector('[data-selected="true"]');
-                if (selectedMinute) {
+                if (selectedMinute && 'scrollIntoView' in selectedMinute) {
                     selectedMinute.scrollIntoView({ block: 'center', behavior: 'auto' });
                 }
             }
@@ -73,9 +90,15 @@ function CustomTimePicker({
         return () => clearTimeout(timer);
     }, [isOpen]);
 
+    const closePicker = () => {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+    };
+
     const handleToggle = () => {
         if (!disabled) {
-            setIsOpen(!isOpen);
+            if (isOpen) closePicker();
+            else setIsOpen(true);
         }
     };
 
@@ -98,8 +121,7 @@ function CustomTimePicker({
         } else if (event.key === 'Escape') {
             event.preventDefault();
             if (isOpen) {
-                setIsOpen(false);
-                triggerRef.current?.focus();
+                closePicker();
             }
         }
     };
@@ -109,7 +131,7 @@ function CustomTimePicker({
         const h = String(now.getHours()).padStart(2, '0');
         const m = String(now.getMinutes()).padStart(2, '0');
         onChange(`${h}:${m}`);
-        setIsOpen(false);
+        closePicker();
     };
 
     const minuteOptions = useMemo(
@@ -122,20 +144,20 @@ function CustomTimePicker({
             className={`
                 bg-surface border border-border-default rounded-2xl shadow-2xl p-4
                 ${isMobile
-                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[280px] mx-auto'
+                    ? 'relative w-full max-w-[280px] mx-auto'
                     : 'absolute top-full left-0 mt-1 z-50 w-56'}
             `}
-            role="dialog"
-            aria-label="Chọn giờ"
+            role={isMobile ? undefined : 'dialog'}
+            aria-label={isMobile ? undefined : 'Chọn giờ'}
             onClick={(e) => isMobile && e.stopPropagation()}
         >
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-                    <span className="text-sm font-bold text-text-main">Chọn giờ</span>
+                    <span id={dialogTitleId} className="text-sm font-bold text-text-main">Chọn giờ</span>
                     <button
                         type="button"
                         aria-label="Đóng bảng chọn giờ"
-                        onClick={() => setIsOpen(false)}
+                        onClick={closePicker}
                         className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
                     >
                         <X size={20} className="text-text-muted" aria-hidden="true" />
@@ -213,6 +235,7 @@ function CustomTimePicker({
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
             <button
+                id={controlId}
                 ref={triggerRef}
                 type="button"
                 onClick={handleToggle}
@@ -228,6 +251,10 @@ function CustomTimePicker({
         `}
                 aria-haspopup="dialog"
                 aria-expanded={isOpen}
+                aria-controls={`${controlId}-dialog`}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+                aria-invalid={ariaInvalid}
             >
                 <div className="flex items-center gap-2">
                     <Clock size={16} className="text-text-muted" />
@@ -240,16 +267,16 @@ function CustomTimePicker({
             {/* Picker UI */}
             {isOpen && (
                 isMobile ? (
-                    createPortal(
-                        <div 
-                            className="fixed inset-0 z-60 flex items-center justify-center p-4"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-                            {renderPicker()}
-                        </div>,
-                        document.body
-                    )
+                    <Dialog
+                        open={isOpen}
+                        onClose={closePicker}
+                        titleId={dialogTitleId}
+                        presentation="dialog"
+                        size="sm"
+                        className="bg-transparent shadow-none overflow-visible"
+                    >
+                        <div id={`${controlId}-dialog`}>{renderPicker()}</div>
+                    </Dialog>
                 ) : renderPicker()
             )}
         </div>

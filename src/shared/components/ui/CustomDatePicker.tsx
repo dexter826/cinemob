@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
-import { createPortal } from 'react-dom';
+import { Dialog } from './Dialog';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
 interface CustomDatePickerProps {
     value: string; // YYYY-MM-DD format
@@ -10,6 +11,10 @@ interface CustomDatePickerProps {
     disabled?: boolean;
     minDate?: string;
     maxDate?: string;
+    id?: string;
+    'aria-labelledby'?: string;
+    'aria-describedby'?: string;
+    'aria-invalid'?: boolean | 'true' | 'false';
 }
 
 const DAYS_VI = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -39,9 +44,16 @@ function CustomDatePicker({
     disabled = false,
     minDate,
     maxDate,
+    id,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
 }: CustomDatePickerProps) {
+    const generatedId = useId();
+    const controlId = id ?? `date-picker-${generatedId}`;
+    const dialogTitleId = `${controlId}-title`;
     const [isOpen, setIsOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const isMobile = useMediaQuery('(max-width: 639px)');
     const [viewDate, setViewDate] = useState(() => {
         if (value) {
             const [y, m] = value.split('-').map(Number);
@@ -59,13 +71,6 @@ function CustomDatePicker({
     }, [value]);
 
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 640);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
@@ -79,6 +84,18 @@ function CustomDatePicker({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen, isMobile]);
 
+    useEffect(() => {
+        if (!isOpen || isMobile) return undefined;
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closePicker();
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [isOpen, isMobile]);
+
     // Update viewDate when value changes externally
     useEffect(() => {
         if (value) {
@@ -87,9 +104,15 @@ function CustomDatePicker({
         }
     }, [value]);
 
+    const closePicker = () => {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+    };
+
     const handleToggle = () => {
         if (!disabled) {
-            setIsOpen(!isOpen);
+            if (isOpen) closePicker();
+            else setIsOpen(true);
         }
     };
 
@@ -113,7 +136,7 @@ function CustomDatePicker({
         const newDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
         const dateStr = formatDateToString(newDate);
         onChange(dateStr);
-        setIsOpen(false);
+        closePicker();
     };
 
     const isDateDisabled = (day: number): boolean => {
@@ -192,20 +215,20 @@ function CustomDatePicker({
             className={`
                 bg-surface border border-border-default rounded-2xl shadow-2xl p-4
                 ${isMobile
-                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[320px] mx-auto'
+                    ? 'relative w-full max-w-[320px] mx-auto'
                     : 'absolute top-full left-0 mt-1 z-50 w-72'}
             `}
-            role="dialog"
-            aria-label="Chọn ngày"
+            role={isMobile ? undefined : 'dialog'}
+            aria-label={isMobile ? undefined : 'Chọn ngày'}
             onClick={(e) => isMobile && e.stopPropagation()}
         >
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-                    <span className="text-sm font-bold text-text-main">Chọn ngày</span>
+                    <span id={dialogTitleId} className="text-sm font-bold text-text-main">Chọn ngày</span>
                     <button
                         type="button"
                         aria-label="Đóng bảng chọn ngày"
-                        onClick={() => setIsOpen(false)}
+                        onClick={closePicker}
                         className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
                     >
                         <X size={20} className="text-text-muted" aria-hidden="true" />
@@ -286,6 +309,8 @@ function CustomDatePicker({
                             type="button"
                             onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
                             disabled={!item.isCurrentMonth || isDisabled}
+                            aria-current={isTodayDate ? 'date' : undefined}
+                            aria-pressed={isSelectedDate}
                             className={`
                                 w-9 h-9 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-colors duration-150
                                 flex items-center justify-center cursor-pointer
@@ -310,7 +335,7 @@ function CustomDatePicker({
                         const today = new Date();
                         setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
                         onChange(formatDateToString(today));
-                        setIsOpen(false);
+                        closePicker();
                     }}
                     className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20"
                 >
@@ -324,6 +349,7 @@ function CustomDatePicker({
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
             <button
+                id={controlId}
                 ref={triggerRef}
                 type="button"
                 onClick={handleToggle}
@@ -339,6 +365,10 @@ function CustomDatePicker({
         `}
                 aria-haspopup="dialog"
                 aria-expanded={isOpen}
+                aria-controls={`${controlId}-dialog`}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+                aria-invalid={ariaInvalid}
             >
                 <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-text-muted" />
@@ -351,16 +381,16 @@ function CustomDatePicker({
             {/* Calendar UI */}
             {isOpen && (
                 isMobile ? (
-                    createPortal(
-                        <div 
-                            className="fixed inset-0 z-60 flex items-center justify-center p-4"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-                            {renderCalendar()}
-                        </div>,
-                        document.body
-                    )
+                    <Dialog
+                        open={isOpen}
+                        onClose={closePicker}
+                        titleId={dialogTitleId}
+                        presentation="dialog"
+                        size="sm"
+                        className="bg-transparent shadow-none overflow-visible"
+                    >
+                        <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
+                    </Dialog>
                 ) : renderCalendar()
             )}
         </div>
