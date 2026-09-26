@@ -1,5 +1,6 @@
 import { tmdbFetch, withLimit } from './tmdbClient';
 import { TMDBEpisode } from '@/types';
+import { decodeTVDetails, decodeTVSeason, decodeTVSeasonEpisodes } from './tmdbDecoders';
 
 interface TVSeasonResponse {
   episodes?: Array<{ id: number }>;
@@ -27,20 +28,20 @@ interface TVSeasonEpisodesResponse {
 }
 
 // Lấy thông tin mùa phim.
-export const getTVSeasonDetails = async (tvId: number, seasonNumber: number): Promise<{ episode_count: number } | null> => {
-  const data = await tmdbFetch<TVSeasonResponse>(`tv/${tvId}/season/${seasonNumber}`);
+export const getTVSeasonDetails = async (tvId: number, seasonNumber: number, signal?: AbortSignal): Promise<{ episode_count: number } | null> => {
+  const data = await tmdbFetch<TVSeasonResponse>(`tv/${tvId}/season/${seasonNumber}`, {}, decodeTVSeason, signal);
   return data ? { episode_count: data.episodes?.length || 0 } : null;
 };
 
 // Lấy tổng số tập phim theo mùa.
-export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number): Promise<{
+export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number, signal?: AbortSignal): Promise<{
   total_episodes: number;
   episodes_per_season: { [season: number]: number };
 }> => {
   try {
     const seasonPromises: (() => Promise<{ episode_count: number } | null>)[] = [];
     for (let i = 1; i <= numberOfSeasons; i++) {
-      seasonPromises.push(() => getTVSeasonDetails(tvId, i));
+      seasonPromises.push(() => getTVSeasonDetails(tvId, i, signal));
     }
 
     const seasons = await withLimit(seasonPromises, 3);
@@ -81,8 +82,8 @@ export const parseLocalDate = (dateStr: string): Date | null => {
 };
 
 // Lấy danh sách tập phim sắp chiếu.
-export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpisode[]> => {
-  const details = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`);
+export const getTVShowUpcomingEpisodes = async (tvId: number, signal?: AbortSignal): Promise<TMDBEpisode[]> => {
+  const details = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
   if (!details || details.status === 'Ended' || details.status === 'Canceled') return [];
 
   const today = new Date();
@@ -93,7 +94,7 @@ export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpiso
   const seasonsToCheck = numberOfSeasons > 0 ? (numberOfSeasons > 1 ? [numberOfSeasons, numberOfSeasons - 1] : [numberOfSeasons]) : [];
 
   for (const seasonNum of seasonsToCheck) {
-    const seasonData = await tmdbFetch<TVSeasonEpisodesResponse>(`tv/${tvId}/season/${seasonNum}`);
+    const seasonData = await tmdbFetch<TVSeasonEpisodesResponse>(`tv/${tvId}/season/${seasonNum}`, {}, decodeTVSeasonEpisodes, signal);
     const episodes = seasonData?.episodes || [];
 
     for (const ep of episodes) {
@@ -126,8 +127,8 @@ export const getTVShowUpcomingEpisodes = async (tvId: number): Promise<TMDBEpiso
 };
 
 // Lấy thông tin tập phim tiếp theo.
-export const getTVShowNextEpisode = async (tvId: number): Promise<TMDBEpisode | null> => {
-  const data = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, { append_to_response: 'next_episode_to_air' });
+export const getTVShowNextEpisode = async (tvId: number, signal?: AbortSignal): Promise<TMDBEpisode | null> => {
+  const data = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, { append_to_response: 'next_episode_to_air' }, decodeTVDetails, signal);
   
   if (data?.next_episode_to_air) {
     const ep = data.next_episode_to_air;

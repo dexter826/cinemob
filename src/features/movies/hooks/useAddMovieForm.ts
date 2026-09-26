@@ -83,6 +83,7 @@ export const useAddMovieForm = () => {
 
   useEffect(() => {
     if (!isOpen) return;
+    const controller = new AbortController();
 
     if (initialData?.movieToEdit) {
       const m = initialData.movieToEdit;
@@ -119,7 +120,7 @@ export const useAddMovieForm = () => {
         
         const initTMDB = async () => {
           if (!id) return;
-          const details = await fetchDetails(id, type, user);
+          const details = await fetchDetails(id, type, user, controller.signal);
           if (!details) return;
 
           if (type === 'tv' && details.tvInfo) {
@@ -137,6 +138,7 @@ export const useAddMovieForm = () => {
         initTMDB();
       }
     }
+    return () => controller.abort();
   }, [isOpen, initialData, user, fetchDetails, setMovieExists, setTvTotalEpisodes, setTvEpisodesPerSeason, setTvIsCompleted]);
 
   const handleSubmit = async (e: React.FormEvent) => {

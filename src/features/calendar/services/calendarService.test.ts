@@ -5,7 +5,7 @@ import {
   getTVShowUpcomingEpisodes,
   withLimit,
 } from '@/features/search/services/tmdb';
-import { fetchUpcomingEpisodesForMovies } from './calendarService';
+import { createCalendarFingerprint, fetchUpcomingEpisodesForMovies } from './calendarService';
 
 vi.mock('@/features/search/services/tmdb', () => ({
   getMovieDetailsWithLanguage: vi.fn(),
@@ -79,6 +79,16 @@ describe('calendarService', () => {
     expect(getTVShowUpcomingEpisodes).not.toHaveBeenCalled();
   });
 
+  it('creates an order-independent fingerprint that changes with cached series metadata', () => {
+    const first = createMovie({ id: 10, docId: 'a', title: 'A' });
+    const second = createMovie({ id: 20, docId: 'b', title: 'B' });
+
+    expect(createCalendarFingerprint([first, second])).toBe(createCalendarFingerprint([second, first]));
+    expect(createCalendarFingerprint([first])).not.toBe(createCalendarFingerprint([
+      createMovie({ id: 10, docId: 'a', title: 'Changed' }),
+    ]));
+  });
+
   it('dùng cache còn hạn và không gọi lại TMDB', async () => {
     const cached: UpcomingEpisode[] = [{
       seriesId: 10,
@@ -88,20 +98,25 @@ describe('calendarService', () => {
       episode: createEpisode(),
       docId: 'doc-1',
     }];
-    storage.set('upcoming_episodes_v2_u1', JSON.stringify({
+    const movie = createMovie();
+    storage.set('upcoming_episodes_v3_u1', JSON.stringify({
       data: cached,
+      version: 3,
+      fingerprint: createCalendarFingerprint([movie]),
       timestamp: Date.now(),
     }));
 
-    await expect(fetchUpcomingEpisodesForMovies('u1', [createMovie()])).resolves.toEqual(cached);
+    await expect(fetchUpcomingEpisodesForMovies('u1', [movie])).resolves.toEqual(cached);
 
     expect(withLimit).not.toHaveBeenCalled();
     expect(getTVShowUpcomingEpisodes).not.toHaveBeenCalled();
   });
 
   it('refresh cache hết hạn, bổ sung tên tiếng Việt và sắp xếp tập theo ngày chiếu', async () => {
-    storage.set('upcoming_episodes_v2_u1', JSON.stringify({
+    storage.set('upcoming_episodes_v3_u1', JSON.stringify({
       data: [],
+      version: 3,
+      fingerprint: createCalendarFingerprint([createMovie()]),
       timestamp: Date.now() - (25 * 60 * 60 * 1000),
     }));
     vi.mocked(getTVShowUpcomingEpisodes).mockResolvedValueOnce([
@@ -122,7 +137,7 @@ describe('calendarService', () => {
     expect(result.every((item) => item.seriesNameVi === 'Tên tiếng Việt')).toBe(true);
     expect(getMovieDetailsWithLanguage).toHaveBeenCalledWith(10, 'tv', 'vi-VN');
 
-    const refreshed = storage.get('upcoming_episodes_v2_u1');
+    const refreshed = storage.get('upcoming_episodes_v3_u1');
     expect(refreshed).toBeTruthy();
     expect(JSON.parse(refreshed as string).data).toHaveLength(2);
   });

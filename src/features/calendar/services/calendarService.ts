@@ -2,10 +2,24 @@ import { Movie, UpcomingEpisode } from '@/types';
 import { getTVShowUpcomingEpisodes, getMovieDetailsWithLanguage, withLimit } from '@/features/search/services/tmdb';
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
+const CACHE_VERSION = 3;
 
 const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
 };
+
+export const createCalendarFingerprint = (movies: Movie[]): string => JSON.stringify(
+  movies
+    .filter(movie => movie.media_type === 'tv' && movie.source === 'tmdb')
+    .map(movie => ({
+      id: String(movie.id),
+      docId: movie.docId ?? '',
+      title: movie.title,
+      titleVi: movie.title_vi ?? '',
+      posterPath: movie.poster_path,
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id) || a.docId.localeCompare(b.docId)),
+);
 
 // Tải lịch chiếu tập mới từ TMDB kèm bộ nhớ tạm.
 export const fetchUpcomingEpisodesForMovies = async (
@@ -21,7 +35,8 @@ export const fetchUpcomingEpisodesForMovies = async (
     return [];
   }
 
-  const cacheKey = `upcoming_episodes_v2_${userId}`;
+  const cacheKey = `upcoming_episodes_v3_${userId}`;
+  const fingerprint = createCalendarFingerprint(tvSeries);
   const cachedData = localStorage.getItem(cacheKey);
 
   if (cachedData) {
@@ -29,6 +44,8 @@ export const fetchUpcomingEpisodesForMovies = async (
       const parsedCache: unknown = JSON.parse(cachedData);
       if (
         typeof parsedCache === 'object' && parsedCache !== null &&
+        (parsedCache as { version?: unknown }).version === CACHE_VERSION &&
+        (parsedCache as { fingerprint?: unknown }).fingerprint === fingerprint &&
         typeof (parsedCache as { timestamp?: unknown }).timestamp === 'number' &&
         !isExpired((parsedCache as { timestamp: number }).timestamp, CACHE_DURATION) &&
         Array.isArray((parsedCache as { data?: unknown }).data)
@@ -79,6 +96,8 @@ export const fetchUpcomingEpisodesForMovies = async (
   try {
     localStorage.setItem(cacheKey, JSON.stringify({
       data: allUpcoming,
+      version: CACHE_VERSION,
+      fingerprint,
       timestamp: Date.now()
     }));
   } catch {

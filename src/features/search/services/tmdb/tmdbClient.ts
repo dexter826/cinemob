@@ -1,8 +1,12 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '@/constants';
+import type { Decoder } from './tmdbDecoders';
 
 // Giới hạn request đồng thời. Trả về null cho task lỗi để caller phân biệt partial-failure.
 export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<Array<T | null>> => {
   if (tasks.length === 0) return Promise.resolve([]);
+  if (!Number.isInteger(limit) || limit <= 0) {
+    return Promise.reject(new RangeError('limit must be a positive integer'));
+  }
   return new Promise((resolve) => {
     const results: Array<T | null> = [];
     let running = 0;
@@ -37,7 +41,12 @@ export const BASE_URL = TMDB_BASE_URL;
 export const API_KEY = TMDB_API_KEY;
 
 // Gọi API từ TMDB.
-export const tmdbFetch = async <T>(endpoint: string, params: Record<string, string> = {}): Promise<T | null> => {
+export const tmdbFetch = async <T>(
+  endpoint: string,
+  params: Record<string, string>,
+  decode: Decoder<T>,
+  signal?: AbortSignal,
+): Promise<T | null> => {
   if (!API_KEY) return null;
 
   try {
@@ -46,11 +55,19 @@ export const tmdbFetch = async <T>(endpoint: string, params: Record<string, stri
       ...params
     });
 
+    const timeoutSignal = AbortSignal.timeout(10000);
+    const requestSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
     const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams.toString()}`, {
-      signal: AbortSignal.timeout(10000),
+      signal: requestSignal,
     });
     if (!response.ok) throw new Error(`TMDB API Error: ${response.status}`, { cause: { endpoint } });
-    return (await response.json()) as T;
+    const raw: unknown = await response.json();
+    const decoded = decode(raw);
+    if (decoded === null) {
+      console.error(`Invalid TMDB response [${endpoint}]`);
+      return null;
+    }
+    return decoded;
   } catch (error) {
     console.error(`Failed to fetch from TMDB [${endpoint}]:`, error);
     return null;

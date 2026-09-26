@@ -1,23 +1,13 @@
 import { tmdbFetch } from './tmdbClient';
 import { TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie } from '@/types';
 import { API_KEY } from './tmdbClient';
-
-interface TMDBCreditItem {
-  id: number;
-  title?: string;
-  name?: string;
-  poster_path?: string | null;
-  release_date?: string;
-  first_air_date?: string;
-  character?: string;
-  job?: string;
-  department?: string;
-}
-
-interface TMDBCreditResponse {
-  cast?: TMDBCreditItem[];
-  crew?: TMDBCreditItem[];
-}
+import {
+  decodeCreditResponse,
+  decodeCredits,
+  decodeMovieDetail,
+  decodeVideoResults,
+  type TMDBCreditItem,
+} from './tmdbDecoders';
 
 const toPersonMovie = (item: TMDBCreditItem, media_type: 'movie' | 'tv'): PersonMovie => ({
   id: item.id,
@@ -33,34 +23,34 @@ const toPersonMovie = (item: TMDBCreditItem, media_type: 'movie' | 'tv'): Person
 });
 
 // Lấy thông tin chi tiết phim.
-export const getMovieDetails = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBMovieDetail | null> => {
-  return tmdbFetch<TMDBMovieDetail>(`${mediaType}/${id}`);
+export const getMovieDetails = async (id: number, mediaType: 'movie' | 'tv' = 'movie', signal?: AbortSignal): Promise<TMDBMovieDetail | null> => {
+  return tmdbFetch(`${mediaType}/${id}`, {}, decodeMovieDetail, signal);
 };
 
 // Lấy thông tin chi tiết phim theo ngôn ngữ.
-export const getMovieDetailsWithLanguage = async (id: number, mediaType: 'movie' | 'tv' = 'movie', language: string = 'vi-VN'): Promise<TMDBMovieDetail | null> => {
-  return tmdbFetch<TMDBMovieDetail>(`${mediaType}/${id}`, { language });
+export const getMovieDetailsWithLanguage = async (id: number, mediaType: 'movie' | 'tv' = 'movie', language: string = 'vi-VN', signal?: AbortSignal): Promise<TMDBMovieDetail | null> => {
+  return tmdbFetch(`${mediaType}/${id}`, { language }, decodeMovieDetail, signal);
 };
 
 // Lấy danh sách trailer/video.
-export const getMovieVideos = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBVideo[]> => {
-  const data = await tmdbFetch<{ results: TMDBVideo[] }>(`${mediaType}/${id}/videos`);
+export const getMovieVideos = async (id: number, mediaType: 'movie' | 'tv' = 'movie', signal?: AbortSignal): Promise<TMDBVideo[]> => {
+  const data = await tmdbFetch(`${mediaType}/${id}/videos`, {}, decodeVideoResults, signal);
   return (data?.results || []).filter((video: TMDBVideo) => video.type === 'Trailer' && video.site === 'YouTube');
 };
 
 // Lấy danh sách diễn viên và đoàn phim.
-export const getMovieCredits = async (id: number, mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBCredits | null> => {
-  return tmdbFetch<TMDBCredits>(`${mediaType}/${id}/credits`);
+export const getMovieCredits = async (id: number, mediaType: 'movie' | 'tv' = 'movie', signal?: AbortSignal): Promise<TMDBCredits | null> => {
+  return tmdbFetch(`${mediaType}/${id}/credits`, {}, decodeCredits, signal);
 };
 
 // Lấy phim theo diễn viên.
-export const getPersonMovieCredits = async (personId: number): Promise<PersonMovie[]> => {
+export const getPersonMovieCredits = async (personId: number, signal?: AbortSignal): Promise<PersonMovie[]> => {
   if (!API_KEY) return [];
 
   try {
     const [movieData, tvData] = await Promise.all([
-      tmdbFetch<TMDBCreditResponse>(`person/${personId}/movie_credits`),
-      tmdbFetch<TMDBCreditResponse>(`person/${personId}/tv_credits`)
+      tmdbFetch(`person/${personId}/movie_credits`, {}, decodeCreditResponse, signal),
+      tmdbFetch(`person/${personId}/tv_credits`, {}, decodeCreditResponse, signal)
     ]);
 
     const movies: PersonMovie[] = [...(movieData?.cast || []), ...(movieData?.crew || [])].map((item) =>

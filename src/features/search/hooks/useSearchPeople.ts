@@ -10,21 +10,30 @@ export const useSearchPeople = (query: string, searchPage: number) => {
 
   useEffect(() => {
     if (query.trim().length > 2) {
+      let ignore = false;
+      const controller = new AbortController();
       const timer = setTimeout(async () => {
         setLoading(true);
         try {
-          const { results, totalPages } = await searchPeople(query, searchPage);
-          setPeopleResults(results);
-          setTotalPeoplePages(totalPages);
+          const { results, totalPages } = await searchPeople(query, searchPage, controller.signal);
+          if (!ignore) {
+            setPeopleResults(results);
+            setTotalPeoplePages(totalPages);
+          }
         } catch (error) {
-          console.error("Error searching people:", error);
+          if (!ignore) console.error("Error searching people:", error);
         } finally {
-          setLoading(false);
+          if (!ignore) setLoading(false);
         }
       }, 500);
-      return () => clearTimeout(timer);
+      return () => {
+        ignore = true;
+        clearTimeout(timer);
+        controller.abort();
+      };
     } else {
       setPeopleResults([]);
+      setLoading(false);
     }
   }, [query, searchPage]);
 

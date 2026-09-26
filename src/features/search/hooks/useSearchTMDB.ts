@@ -22,7 +22,7 @@ export const useSearchTMDB = (submittedQuery: string, searchPage: number, filter
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { results: data, totalPages } = await searchMovies(submittedQuery, searchPage, filters.year);
+        const { results: data, totalPages } = await searchMovies(submittedQuery, searchPage, filters.year, controller.signal);
         if (!ignore) {
           setResults(data);
           setTotalSearchPages(totalPages);
@@ -45,6 +45,7 @@ export const useSearchTMDB = (submittedQuery: string, searchPage: number, filter
 
     if (!hasFilters) return;
     let ignore = false;
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
       setDiscoverLoading(true);
       try {
@@ -55,7 +56,7 @@ export const useSearchTMDB = (submittedQuery: string, searchPage: number, filter
           rating,
           sortBy,
           type,
-        });
+        }, controller.signal);
         if (!ignore) {
           setDiscoverMovies(data);
           setTotalDiscoverPages(totalPages);
@@ -66,7 +67,7 @@ export const useSearchTMDB = (submittedQuery: string, searchPage: number, filter
         if (!ignore) setDiscoverLoading(false);
       }
     }, 300);
-    return () => { ignore = true; clearTimeout(timer); };
+    return () => { ignore = true; clearTimeout(timer); controller.abort(); };
   }, [submittedQuery, searchPage, year, country, rating, sortBy, type, isSearchMode]);
 
   return {

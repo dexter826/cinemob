@@ -1,8 +1,9 @@
 import { tmdbFetch, API_KEY, withLimit } from './tmdbClient';
 import { TMDBMovieResult, TMDBPerson, TMDBMovieDetail } from '@/types';
+import { decodeMovieDetail, decodeMovieResultPage, decodePersonPage } from './tmdbDecoders';
 
 // Tìm kiếm phim và TV show.
-export const searchMovies = async (query: string, page: number = 1, year?: string): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
+export const searchMovies = async (query: string, page: number = 1, year?: string, signal?: AbortSignal): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!query || !API_KEY) return { results: [], totalPages: 0 };
 
   try {
@@ -15,8 +16,8 @@ export const searchMovies = async (query: string, page: number = 1, year?: strin
     if (year) params.primary_release_year = year;
 
     const [movieData, tvData] = await Promise.all([
-      tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`search/movie`, params),
-      tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`search/tv`, { ...params, first_air_date_year: year || '' })
+      tmdbFetch(`search/movie`, params, decodeMovieResultPage, signal),
+      tmdbFetch(`search/tv`, { ...params, first_air_date_year: year || '' }, decodeMovieResultPage, signal)
     ]);
 
     const rawMovies = (movieData?.results || []).map((item) => ({ ...item, media_type: 'movie' as const }));
@@ -25,7 +26,7 @@ export const searchMovies = async (query: string, page: number = 1, year?: strin
     const moviesWithDetails = await withLimit(
       rawMovies.map(movie => async () => {
         try {
-          const details = await tmdbFetch<TMDBMovieDetail>(`movie/${movie.id}`, { language: 'vi-VN' });
+          const details = await tmdbFetch<TMDBMovieDetail>(`movie/${movie.id}`, { language: 'vi-VN' }, decodeMovieDetail, signal);
           return {
             ...movie,
             origin_country: details?.production_countries?.map((c) => c.iso_3166_1) || []
@@ -52,11 +53,11 @@ export const searchMovies = async (query: string, page: number = 1, year?: strin
 };
 
 // Tìm kiếm người nổi tiếng.
-export const searchPeople = async (query: string, page: number = 1): Promise<{ results: TMDBPerson[]; totalPages: number }> => {
-  const data = await tmdbFetch<{ results: TMDBPerson[]; total_pages: number }>(`search/person`, {
+export const searchPeople = async (query: string, page: number = 1, signal?: AbortSignal): Promise<{ results: TMDBPerson[]; totalPages: number }> => {
+  const data = await tmdbFetch(`search/person`, {
     query,
     include_adult: 'false',
     page: page.toString()
-  });
+  }, decodePersonPage, signal);
   return { results: data?.results || [], totalPages: data?.total_pages || 1 };
 };
