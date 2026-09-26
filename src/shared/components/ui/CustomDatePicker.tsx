@@ -202,8 +202,13 @@ function CustomDatePicker({
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
                     <span className="text-sm font-bold text-text-main">Chọn ngày</span>
-                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
-                        <X size={20} className="text-text-muted" />
+                    <button
+                        type="button"
+                        aria-label="Đóng bảng chọn ngày"
+                        onClick={() => setIsOpen(false)}
+                        className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
+                    >
+                        <X size={20} className="text-text-muted" aria-hidden="true" />
                     </button>
                 </div>
             )}
@@ -282,8 +287,8 @@ function CustomDatePicker({
                             onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
                             disabled={!item.isCurrentMonth || isDisabled}
                             className={`
-                                w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-colors duration-150
-                                flex items-center justify-center
+                                w-9 h-9 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-colors duration-150
+                                flex items-center justify-center cursor-pointer
                                 ${!item.isCurrentMonth ? 'text-text-muted/20 cursor-default' : ''}
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-main font-medium' : ''}
                                 ${isDisabled ? 'text-text-muted/20 cursor-not-allowed' : ''}

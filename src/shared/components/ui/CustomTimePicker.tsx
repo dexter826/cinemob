@@ -132,8 +132,13 @@ function CustomTimePicker({
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
                     <span className="text-sm font-bold text-text-main">Chọn giờ</span>
-                    <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
-                        <X size={20} className="text-text-muted" />
+                    <button
+                        type="button"
+                        aria-label="Đóng bảng chọn giờ"
+                        onClick={() => setIsOpen(false)}
+                        className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
+                    >
+                        <X size={20} className="text-text-muted" aria-hidden="true" />
                     </button>
                 </div>
             )}

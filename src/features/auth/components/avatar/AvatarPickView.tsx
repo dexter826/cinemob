@@ -31,16 +31,28 @@ export function AvatarPickView({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         setIsMenuOpen(false);
       }
     };
 
     if (isMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isMenuOpen]);
 
   const handleAvatarClick = () => {
@@ -58,6 +70,8 @@ export function AvatarPickView({
         <button
           type="button"
           aria-label={canDelete ? 'Tùy chọn ảnh đại diện' : 'Chọn ảnh đại diện'}
+          aria-haspopup={canDelete ? 'menu' : undefined}
+          aria-expanded={canDelete ? isMenuOpen : undefined}
           onClick={handleAvatarClick}
           onDragOver={(e) => {
             e.preventDefault();
@@ -73,7 +87,7 @@ export function AvatarPickView({
             const file = e.dataTransfer.files?.[0];
             if (file) onDropFile(file);
           }}
-          className={`relative w-36 h-36 rounded-full cursor-pointer select-none transition-all p-0 bg-transparent border-0 overflow-hidden ${
+          className={`relative group w-36 h-36 rounded-full cursor-pointer select-none transition-all p-0 bg-transparent border-0 overflow-hidden ${
             isDragOver
               ? 'ring-4 ring-primary scale-[1.02]'
               : 'ring-2 ring-border hover:ring-primary/80'
@@ -118,6 +132,8 @@ export function AvatarPickView({
         <button
           type="button"
           aria-label={canDelete ? 'Tùy chọn ảnh đại diện' : 'Tải ảnh lên'}
+          aria-haspopup={canDelete ? 'menu' : undefined}
+          aria-expanded={canDelete ? isMenuOpen : undefined}
           onClick={handleAvatarClick}
           disabled={isUploading || isDeleting}
           className="absolute bottom-1 right-1 p-2.5 rounded-full bg-surface-elevated text-text-primary border border-border shadow-elevated hover:bg-primary hover:text-on-primary hover:border-primary transition-all cursor-pointer disabled:opacity-50"
@@ -126,11 +142,11 @@ export function AvatarPickView({
         </button>
       </div>
 
-      <div className="w-full min-h-[76px] mt-3.5 flex flex-col items-center justify-center">
+      <div className="w-full min-h-[82px] mt-3.5 flex flex-col items-center justify-center">
         {isMenuOpen ? (
           <div
             role="menu"
-            className="w-full max-w-[200px] py-1 bg-surface-elevated rounded-2xl border border-border shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+            className="w-full max-w-[210px] py-1 bg-surface-elevated rounded-2xl border border-border shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
           >
             <button
               type="button"
@@ -139,7 +155,7 @@ export function AvatarPickView({
                 setIsMenuOpen(false);
                 onPickClick();
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
             >
               <Upload size={14} className="text-primary shrink-0" />
               <span>Tải ảnh mới</span>
@@ -154,7 +170,7 @@ export function AvatarPickView({
                   onDelete();
                 }}
                 disabled={isDeleting}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
               >
                 <Trash2 size={14} className="shrink-0" />
                 <span>Xóa ảnh</span>
