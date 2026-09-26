@@ -22,6 +22,21 @@ export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Pro
   return secureUrl;
 };
 
+// Xóa ảnh đại diện đưa về mặc định.
+export const removeUserAvatar = async (user: User): Promise<void> => {
+  await updateProfile(user, { photoURL: '' });
+
+  try {
+    const shareRef = doc(db, 'public_shares', user.uid);
+    const shareSnap = await getDoc(shareRef);
+    if (shareSnap.exists()) {
+      await updateDoc(shareRef, { photoURL: '' });
+    }
+  } catch (error) {
+    console.error('Không thể cập nhật avatar trong public share:', error);
+  }
+};
+
 // Lấy ảnh đại diện gốc từ nhà cung cấp Google.
 export const getOriginalGoogleAvatar = (user: User): string | null => {
   const googleProvider = user.providerData.find((p) => p.providerId === 'google.com');

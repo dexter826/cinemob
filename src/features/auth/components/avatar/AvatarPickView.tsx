@@ -1,116 +1,180 @@
-import { Camera, Loader2, RotateCcw, Upload } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, Trash2, Upload } from 'lucide-react';
 
 interface AvatarPickViewProps {
   photoURL: string | null;
   displayInitial: string;
   isDragOver: boolean;
   isUploading: boolean;
-  isReverting: boolean;
-  canRevert: boolean;
+  isDeleting: boolean;
+  canDelete: boolean;
   onPickClick: () => void;
   onDragStateChange: (over: boolean) => void;
   onDropFile: (file: File) => void;
-  onRevert: () => void;
+  onDelete: () => void;
 }
 
-// Màn hình chọn ảnh đại diện (nhấp / kéo thả / dùng lại ảnh Google).
+// Quản lý ảnh đại diện qua menu hành động.
 export function AvatarPickView({
   photoURL,
   displayInitial,
   isDragOver,
   isUploading,
-  isReverting,
-  canRevert,
+  isDeleting,
+  canDelete,
   onPickClick,
   onDragStateChange,
   onDropFile,
-  onRevert,
+  onDelete,
 }: AvatarPickViewProps) {
-  return (
-    <>
-      <button
-        type="button"
-        aria-label="Chọn hoặc kéo thả ảnh đại diện mới"
-        onClick={onPickClick}
-        onDragOver={(e) => {
-          e.preventDefault();
-          onDragStateChange(true);
-        }}
-        onDragLeave={(e) => {
-          e.preventDefault();
-          onDragStateChange(false);
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          onDragStateChange(false);
-          const file = e.dataTransfer.files?.[0];
-          if (file) onDropFile(file);
-        }}
-        className={`relative w-36 h-36 rounded-full cursor-pointer select-none transition-colors group p-0 bg-transparent border-0 ${
-          isDragOver
-            ? 'ring-4 ring-primary'
-            : 'ring-2 ring-border hover:ring-primary/80'
-        }`}
-      >
-        <div className="w-full h-full rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
-          {photoURL ? (
-            <img
-              src={photoURL}
-              alt="Ảnh đại diện"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-4xl font-bold text-primary">
-              {displayInitial}
-            </span>
-          )}
-        </div>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-        <div
-          aria-hidden="true"
-          className={`absolute inset-0 rounded-full flex flex-col items-center justify-center transition-opacity ${
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMenuOpen]);
+
+  const handleAvatarClick = () => {
+    if (isUploading || isDeleting) return;
+    if (canDelete) {
+      setIsMenuOpen((prev) => !prev);
+    } else {
+      onPickClick();
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative flex flex-col items-center">
+      <div className="relative">
+        <button
+          type="button"
+          aria-label={canDelete ? 'Tùy chọn ảnh đại diện' : 'Chọn ảnh đại diện'}
+          onClick={handleAvatarClick}
+          onDragOver={(e) => {
+            e.preventDefault();
+            onDragStateChange(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            onDragStateChange(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            onDragStateChange(false);
+            const file = e.dataTransfer.files?.[0];
+            if (file) onDropFile(file);
+          }}
+          className={`relative w-36 h-36 rounded-full cursor-pointer select-none transition-all p-0 bg-transparent border-0 overflow-hidden ${
             isDragOver
-              ? 'bg-primary/80 text-white opacity-100'
-              : 'bg-black/50 text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'
+              ? 'ring-4 ring-primary scale-[1.02]'
+              : 'ring-2 ring-border hover:ring-primary/80'
           }`}
         >
-          {isDragOver ? (
-            <>
-              <Upload size={26} />
-              <span className="text-xs font-semibold mt-1">Thả ảnh vào đây</span>
-            </>
-          ) : (
-            <>
-              <Camera size={24} />
-              <span className="text-xs font-medium mt-1">Chọn ảnh</span>
-            </>
-          )}
-        </div>
-      </button>
-
-      <div className="mt-4 text-center flex flex-col items-center">
-        <p className="text-xs text-text-muted">Nhấp hoặc kéo thả ảnh vào vòng tròn</p>
-        <p className="text-[11px] text-text-muted/70 mt-1">
-          JPG, PNG, WEBP · Tối đa 10MB
-        </p>
-
-        {canRevert && (
-          <button
-            type="button"
-            onClick={onRevert}
-            disabled={isReverting || isUploading}
-            className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/10 border border-border transition-colors cursor-pointer disabled:opacity-50"
-            title="Đặt lại ảnh đại diện về ảnh gốc tài khoản Google"
-          >
-            {isReverting ? (
-              <Loader2 size={13} className="animate-spin text-primary" />
+          <div className="w-full h-full rounded-full overflow-hidden bg-primary/10 flex items-center justify-center">
+            {photoURL ? (
+              <img
+                src={photoURL}
+                alt="Ảnh đại diện"
+                className="w-full h-full object-cover"
+              />
             ) : (
-              <RotateCcw size={13} />
+              <span className="text-4xl font-bold text-primary">
+                {displayInitial}
+              </span>
             )}
-            <span>Dùng lại ảnh Google</span>
-          </button>
+          </div>
+
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 rounded-full flex flex-col items-center justify-center transition-opacity backdrop-blur-[1px] ${
+              isDragOver
+                ? 'bg-primary/85 text-white opacity-100'
+                : 'bg-black/50 text-white opacity-0 group-hover:opacity-100'
+            }`}
+          >
+            {isDragOver ? (
+              <>
+                <Upload size={26} />
+                <span className="text-xs font-semibold mt-1">Thả ảnh vào đây</span>
+              </>
+            ) : (
+              <>
+                <Camera size={24} />
+                <span className="text-xs font-medium mt-1">Thay đổi ảnh</span>
+              </>
+            )}
+          </div>
+        </button>
+
+        <button
+          type="button"
+          aria-label={canDelete ? 'Tùy chọn ảnh đại diện' : 'Tải ảnh lên'}
+          onClick={handleAvatarClick}
+          disabled={isUploading || isDeleting}
+          className="absolute bottom-1 right-1 p-2.5 rounded-full bg-surface-elevated text-text-primary border border-border shadow-elevated hover:bg-primary hover:text-on-primary hover:border-primary transition-all cursor-pointer disabled:opacity-50"
+        >
+          <Camera size={16} />
+        </button>
+      </div>
+
+      <div className="w-full min-h-[76px] mt-3.5 flex flex-col items-center justify-center">
+        {isMenuOpen ? (
+          <div
+            role="menu"
+            className="w-full max-w-[200px] py-1 bg-surface-elevated rounded-2xl border border-border shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+          >
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setIsMenuOpen(false);
+                onPickClick();
+              }}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+            >
+              <Upload size={14} className="text-primary shrink-0" />
+              <span>Tải ảnh mới</span>
+            </button>
+
+            {canDelete && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onDelete();
+                }}
+                disabled={isDeleting}
+                className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+              >
+                <Trash2 size={14} className="shrink-0" />
+                <span>Xóa ảnh</span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-xs text-text-secondary font-medium">
+              Nhấp vào ảnh để thay đổi
+            </p>
+            <p className="text-[11px] text-text-muted mt-0.5">
+              Hỗ trợ JPG, PNG, WEBP · Tối đa 10MB
+            </p>
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
+
+
+

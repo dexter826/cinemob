@@ -19,6 +19,7 @@ interface DialogProps {
   closeOnOverlay?: boolean;
   children: React.ReactNode;
   className?: string;
+  overlayClassName?: string;
 }
 
 const sizeClasses: Record<DialogSize, string> = {
@@ -58,6 +59,7 @@ export function Dialog({
   closeOnOverlay = true,
   children,
   className = '',
+  overlayClassName,
 }: DialogProps) {
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
@@ -70,7 +72,10 @@ export function Dialog({
         <motion.div
           key="dialog-overlay"
           role="presentation"
-          className="fixed inset-0 z-50 flex flex-col bg-black/60 p-0 sm:p-4"
+          className={classNames(
+            'fixed inset-0 flex flex-col bg-black/60 p-0 sm:p-4',
+            overlayClassName || 'z-50'
+          )}
           variants={OVERLAY_VARIANTS}
           initial="closed"
           animate="open"

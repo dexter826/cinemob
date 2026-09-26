@@ -29,6 +29,7 @@ function AlertContainer() {
       descriptionId={DESCRIPTION_ID}
       presentation="dialog"
       initialFocusRef={safestActionRef}
+      overlayClassName="z-70"
     >
       {alert && (
         <>

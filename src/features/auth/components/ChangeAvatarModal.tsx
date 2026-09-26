@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Loader2, Check, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { updateUserAvatar, getOriginalGoogleAvatar, revertToGoogleAvatar } from '../services/avatarService';
+import { updateUserAvatar, revertToGoogleAvatar, getOriginalGoogleAvatar } from '../services/avatarService';
 import { getCroppedImgBlob } from '../services/cloudinaryService';
 import useToastStore from '@/shared/stores/toastStore';
+import useAlertStore from '@/shared/stores/alertStore';
 import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
 import { IconButton } from '@/shared/components/ui/IconButton';
@@ -20,6 +21,7 @@ const CROP_SIZE = 220;
 export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
+  const { showAlert } = useAlertStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -32,7 +34,7 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
   const dragStartRef = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
 
   const [isUploading, setIsUploading] = useState(false);
-  const [isReverting, setIsReverting] = useState(false);
+  const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [isDragOverPick, setIsDragOverPick] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -204,25 +206,33 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
     }
   };
 
-  // Khôi phục avatar về ảnh gốc của Google.
-  const handleRevertToGoogle = async () => {
-    if (!user || isReverting || isUploading) return;
+  // Xác nhận và xóa ảnh tùy chỉnh để khôi phục ảnh Google.
+  const handleDeleteAvatar = () => {
+    if (!user || isDeletingAvatar || isUploading) return;
 
-    setIsReverting(true);
-    setErrorMessage(null);
+    showAlert({
+      title: 'Xóa ảnh đại diện',
+      message: 'Bạn có chắc chắn muốn xóa ảnh này? Ảnh đại diện sẽ được khôi phục về ảnh gốc từ tài khoản Google.',
+      type: 'danger',
+      confirmText: 'Xóa ảnh',
+      cancelText: 'Hủy',
+      onConfirm: async () => {
+        setIsDeletingAvatar(true);
+        setErrorMessage(null);
 
-    try {
-      await revertToGoogleAvatar(user);
-      await refreshUser();
-      showToast('Đã khôi phục ảnh đại diện Google', 'success');
-      onClose();
-    } catch (error: unknown) {
-      const msg = error instanceof Error && error.message ? error.message : 'Không thể khôi phục ảnh đại diện';
-      setErrorMessage(msg);
-      showToast(msg, 'error');
-    } finally {
-      setIsReverting(false);
-    }
+        try {
+          await revertToGoogleAvatar(user);
+          await refreshUser();
+          showToast('Đã khôi phục ảnh đại diện Google', 'success');
+        } catch (error: unknown) {
+          const msg = error instanceof Error && error.message ? error.message : 'Không thể xóa ảnh đại diện';
+          setErrorMessage(msg);
+          showToast(msg, 'error');
+        } finally {
+          setIsDeletingAvatar(false);
+        }
+      },
+    });
   };
 
   const googleAvatarUrl = user ? getOriginalGoogleAvatar(user) : null;
@@ -258,19 +268,19 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
                 )}
                 <div className="min-w-0">
                   <h2 id="change-avatar-title" className="text-base font-semibold text-text-primary">
-                    {imageSrc ? 'Căn chỉnh ảnh đại diện' : 'Đổi ảnh đại diện'}
+                    {imageSrc ? 'Căn chỉnh ảnh đại diện' : 'Ảnh đại diện'}
                   </h2>
                   <p id="change-avatar-description" className="text-xs text-text-secondary">
-                    {imageSrc ? 'Kéo để căn góc, cuộn để phóng to.' : 'Chọn ảnh JPG, PNG hoặc WEBP tối đa 10MB.'}
+                    {imageSrc ? 'Kéo để căn góc, cuộn để phóng to.' : 'Tải lên hoặc xóa ảnh đại diện tài khoản.'}
                   </p>
                 </div>
               </div>
-              <IconButton label="Đóng hộp thoại đổi ảnh" onClick={onClose} disabled={isUploading} size="sm">
+              <IconButton label="Đóng hộp thoại ảnh đại diện" onClick={onClose} disabled={isUploading || isDeletingAvatar} size="sm">
                 <span aria-hidden="true" className="text-lg leading-none">×</span>
               </IconButton>
             </div>
 
-            <DialogBody>
+            <DialogBody className="overflow-hidden">
               <div className="flex flex-col items-center">
               <input
                 ref={fileInputRef}
@@ -286,12 +296,12 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
                   displayInitial={user?.displayName?.charAt(0) || 'U'}
                   isDragOver={isDragOverPick}
                   isUploading={isUploading}
-                  isReverting={isReverting}
-                  canRevert={canRevertToGoogle}
+                  isDeleting={isDeletingAvatar}
+                  canDelete={canRevertToGoogle}
                   onPickClick={() => fileInputRef.current?.click()}
                   onDragStateChange={setIsDragOverPick}
                   onDropFile={handleValidateFile}
-                  onRevert={handleRevertToGoogle}
+                  onDelete={handleDeleteAvatar}
                 />
               ) : (
                 <AvatarCropView
@@ -324,10 +334,10 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
               <div className="flex items-center justify-end gap-2">
                 <Button
                   variant="ghost"
-                  onClick={onClose}
-                  disabled={isUploading}
+                  onClick={imageSrc ? handleReset : onClose}
+                  disabled={isUploading || isDeletingAvatar}
                 >
-                  Hủy
+                  {imageSrc ? 'Hủy' : 'Đóng'}
                 </Button>
 
                 {imageSrc && (
