@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: reusable UI in `shared/components/`, feature screens in `features/*/pages/` and `features/*/components/`, business logic in `features/*/hooks/`, Zustand state in `features/*/stores/` and `shared/stores/`, external integrations in `features/*/services/`, and shared definitions in `types/`, `constants/`, plus colocated `utils/`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
+CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: reusable UI in `shared/components/`, feature screens in `features/*/pages/` and `features/*/components/`, business logic in `features/*/hooks/`, Zustand state in `features/*/stores/` and `shared/stores/`, third-party initializations in `lib/`, external integrations in `features/*/services/`, and shared definitions in `types/`, `constants/`, plus colocated `utils/`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
 
 ## Build, Test, and Development Commands
 

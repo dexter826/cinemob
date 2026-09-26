@@ -1,6 +1,6 @@
 # CineMOB Design System
 
-Source of truth for the Neon Cinema Lounge refinement.
+Source of truth for the CineMOB Neon Cinema Lounge design system.
 
 ## Creative North Star
 
@@ -17,7 +17,7 @@ Mandatory:
 - Dark is flagship; light is complete.
 - Be Vietnam Pro is display; Inter is interface/body.
 - CineMOB name and logo remain recognizable.
-- SplashScreen artwork and Random Picker confetti artwork are never replaced in this initiative.
+- SplashScreen artwork and Random Picker confetti artwork are protected brand assets.
 - Poster-led imagery stays central; cinematic screens may use stronger composition.
 
 ## Experience Principles
@@ -217,20 +217,18 @@ Implementation must pause for owner approval before:
 - Adding a UI, animation, accessibility, or test dependency.
 - Changing a route, feature, business rule, or user flow.
 - Changing splash or confetti artwork, or the approved splash/confetti triggers.
-- Deleting any production file (deletion requires an evidence-backed manifest;
-  never list Splash or confetti assets as candidates).
+- Deleting any production file (deletion requires an evidence-backed manifest).
 - Replacing the approved font or primary brand color.
 - Changing the supported browser scope.
 - Accepting a known WCAG AA failure in a primary flow.
 - Setting final numeric performance budgets after baseline measurement.
-- No dependency or deletion without a decision gate.
 
 Supported scope: current Chrome/Edge, Firefox, Safari, Android PWA, and iOS PWA
 within platform limits. Glass requires a usable opaque fallback.
 
 ## Review Checklist
 
-For every phase, verify:
+Before releasing or merging changes, verify:
 
 - Scope and design-contract alignment; no unapproved expansion.
 - Visual hierarchy and brand preservation (emerald, posters, logo, Splash, confetti intact).
@@ -241,8 +239,7 @@ For every phase, verify:
 - State and edge-case coverage (loading, empty, error, offline, abnormal content).
 - Public share entry: /share/:uid bypasses auth and splash, handles invalid/disabled
   links without leaking private data, retains CineMOB branding in both themes.
-- Documentation accuracy (`DESIGN.md` matches implementation; splash/confetti never
-  listed as cleanup targets).
+- Documentation accuracy (`DESIGN.md` matches implementation).
 - Automated: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`.
 - Manual: mouse, keyboard, touch, reduced motion, browser/PWA matrix, modal lifecycle,
   flicker-free route/tab changes.
