@@ -26,54 +26,56 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
     : '100%';
 
   return (
-    <div
-      onClick={() => onClick(movie)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(movie); } }}
-      role="button"
-      tabIndex={0}
-      aria-label={`Xem chi tiết phim ${mainTitle}`}
-      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border-default hover:border-primary/40 transition-colors duration-300 cursor-pointer shadow-premium hover:shadow-premium-hover relative"
+    <article
+      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
-        <img
-          src={imageUrl}
-          alt={mainTitle}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        <button
+          type="button"
+          onClick={() => onClick(movie)}
+          aria-label={`Xem chi tiết phim ${mainTitle}`}
+          className="absolute inset-0 w-full h-full cursor-pointer rounded-none"
+        >
+          <img
+            src={imageUrl}
+            alt={mainTitle}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </button>
 
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-        {/* Action Menu - Luôn hiển thị trên touch/mobile, hover trên desktop */}
+        {/* Independent actions, siblings of the detail button, never nested */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
           <button
-            onClick={(e) => { e.stopPropagation(); if (movie.docId) onDelete(movie.docId); }}
-            className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-error text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+            onClick={() => { if (movie.docId) onDelete(movie.docId); }}
+            className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
             title="Xóa"
             aria-label="Xóa phim khỏi danh sách"
           >
-            <Trash2 size={15} strokeWidth={1.5} />
+            <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
-          
+
           {!onMarkAsWatched && (
             <button
-              onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+              onClick={() => onEdit(movie)}
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Sửa"
               aria-label="Chỉnh sửa thông tin phim"
             >
-              <Edit2 size={15} strokeWidth={1.5} />
+              <Edit2 size={15} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
-          
+
           {onMarkAsWatched && (
             <button
-              onClick={(e) => { e.stopPropagation(); onMarkAsWatched(movie); }}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer active:scale-95"
+              onClick={() => onMarkAsWatched(movie)}
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Đã xem"
               aria-label="Đánh dấu đã xem phim"
             >
-              <CheckCircle size={15} strokeWidth={1.5} />
+              <CheckCircle size={15} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -153,7 +155,7 @@ function MovieCard({ movie, onDelete, onEdit, onClick, onMarkAsWatched }: MovieC
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

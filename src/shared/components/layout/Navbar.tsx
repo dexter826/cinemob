@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera, Home } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -8,7 +8,17 @@ import ExportModal from '@/features/movies/components/ExportModal';
 import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
+import { NAV_ITEMS, isNavItemActive } from './navigation';
+import { IconButton } from '../ui/IconButton';
 import logoText from '@/assets/images/logo_text.png';
+
+const NAV_ICONS: Record<string, React.ReactNode> = {
+  '/': <Home size={18} strokeWidth={1.5} aria-hidden="true" />,
+  '/search': <Search size={18} strokeWidth={1.5} aria-hidden="true" />,
+  '/stats': <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />,
+  '/albums': <Folder size={18} strokeWidth={1.5} aria-hidden="true" />,
+  '/calendar': <CalendarDays size={18} strokeWidth={1.5} aria-hidden="true" />,
+};
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -18,91 +28,92 @@ function Navbar() {
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
+
+  const closeDropdown = () => setIsDropdownOpen(false);
+  const closeAndRestoreFocus = () => {
+    setIsDropdownOpen(false);
+    triggerRef.current?.focus();
+  };
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isDropdownOpen && !(event.target as Element).closest('.dropdown-container')) {
-        setIsDropdownOpen(false);
+        closeDropdown();
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isDropdownOpen) closeAndRestoreFocus();
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isDropdownOpen]);
 
   return (
     <>
       <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
-        <nav className="pointer-events-auto w-full max-w-5xl bg-surface border border-border-default shadow-md rounded-2xl sm:rounded-full px-4 md:px-5 h-14 flex items-center justify-between transition-colors duration-200">
-          {/* Brand Logo */}
-          <div
-            className="flex items-center cursor-pointer"
+        <nav aria-label="Điều hướng chính" className="pointer-events-auto w-full max-w-5xl bg-surface border border-border rounded-2xl sm:rounded-full px-4 md:px-5 h-14 flex items-center justify-between">
+          <button
+            type="button"
+            className="flex items-center cursor-pointer rounded-control"
             onClick={() => navigate('/')}
+            aria-label="Về Thư viện CineMOB"
           >
             <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
-          </div>
+          </button>
 
-          {/* Navigation Desktop */}
           <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
-            <button
-              onClick={() => navigate('/search')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/search' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
-            >
-              <Search size={18} strokeWidth={location.pathname === '/search' ? 2 : 1.5} />
-              <span>Tìm phim</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/stats')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/stats' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
-            >
-              <BarChart2 size={18} strokeWidth={location.pathname === '/stats' ? 2 : 1.5} />
-              <span>Thống kê</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/albums')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname.startsWith('/albums') ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
-            >
-              <Folder size={18} strokeWidth={location.pathname.startsWith('/albums') ? 2 : 1.5} />
-              <span>Album</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/calendar')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${location.pathname === '/calendar' ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-main'}`}
-            >
-              <CalendarDays size={18} strokeWidth={location.pathname === '/calendar' ? 2 : 1.5} />
-              <span>Lịch</span>
-            </button>
+            {NAV_ITEMS.map((item) => {
+              const active = isNavItemActive(location.pathname, item);
+              return (
+                <button
+                  key={item.to}
+                  onClick={() => navigate(item.to)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${
+                    active ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-primary'
+                  }`}
+                >
+                  {NAV_ICONS[item.to]}
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setIsRandomOpen(true)}
-              aria-label="Chọn ngẫu nhiên phim"
-              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
+            <IconButton
+              label="Chọn ngẫu nhiên phim"
               title="Chọn giúp tôi"
+              onClick={() => setIsRandomOpen(true)}
             >
-              <Dice5 size={20} strokeWidth={1.5} />
-            </button>
+              <Dice5 size={20} strokeWidth={1.5} aria-hidden="true" />
+            </IconButton>
 
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              aria-label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
-              className="p-2 hover:bg-primary/10 hover:text-primary rounded-xl transition-colors text-text-main cursor-pointer active:scale-[0.95]"
+            <IconButton
+              label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
               title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             >
-              {theme === 'dark' ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
-            </button>
+              {theme === 'dark'
+                ? <Sun size={20} strokeWidth={1.5} aria-hidden="true" />
+                : <Moon size={20} strokeWidth={1.5} aria-hidden="true" />}
+            </IconButton>
 
             <div className="relative dropdown-container">
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                ref={triggerRef}
+                onClick={() => (isDropdownOpen ? closeAndRestoreFocus() : setIsDropdownOpen(true))}
                 aria-label="Mở menu người dùng"
-                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border-default hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
+                aria-expanded={isDropdownOpen}
+                aria-controls="account-menu"
+                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
               >
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full object-cover shrink-0" />
@@ -111,18 +122,19 @@ function Navbar() {
                     {user?.displayName?.charAt(0) || 'U'}
                   </div>
                 )}
-                <ChevronDown size={14} className={`hidden md:block transition-transform duration-300 shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`hidden md:block transition-colors shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-surface border border-border-default rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="px-4 py-3 border-b border-border-default bg-black/5 dark:bg-white/5">
-                    <p className="text-sm font-semibold text-text-main truncate">{user?.displayName}</p>
+                <div id="account-menu" role="menu" className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
+                    <p className="text-sm font-semibold text-text-primary truncate">{user?.displayName}</p>
                   </div>
 
                   <div className="p-1.5 space-y-0.5">
                     <button
-                      onClick={() => { setIsAvatarModalOpen(true); setIsDropdownOpen(false); }}
+                      role="menuitem"
+                      onClick={() => { setIsAvatarModalOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <Camera size={18} strokeWidth={1.5} />
@@ -130,14 +142,16 @@ function Navbar() {
                     </button>
 
                     <button
-                      onClick={() => { setIsExportModalOpen(true); setIsDropdownOpen(false); }}
+                      role="menuitem"
+                      onClick={() => { setIsExportModalOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <Download size={18} strokeWidth={1.5} />
                       <span>Xuất dữ liệu</span>
                     </button>
-                    
+
                     <button
+                      role="menuitem"
                       onClick={() => {
                         showAlert({
                           title: 'Xác nhận đăng xuất',
@@ -147,9 +161,9 @@ function Navbar() {
                           cancelText: 'Hủy',
                           onConfirm: logout,
                         });
-                        setIsDropdownOpen(false);
+                        closeDropdown();
                       }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-red-500/10 text-red-500 transition-colors duration-200 cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <LogOut size={18} strokeWidth={1.5} />
                       <span>Đăng xuất</span>
@@ -179,6 +193,6 @@ function Navbar() {
       />
     </>
   );
-};
+}
 
 export default Navbar;

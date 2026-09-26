@@ -96,9 +96,9 @@ export function PersonMovieSection({
           </button>
 
           {showFilters && (
-            <div ref={filterRef} className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface/95 backdrop-blur-2xl p-6 rounded-3xl border border-border-default shadow-premium flex flex-col gap-6 md:min-w-[320px] animate-in fade-in slide-in-from-top-4 duration-300">
+            <div ref={filterRef} className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-3xl border border-border shadow-elevated flex flex-col gap-6 md:min-w-[320px]">
               <div className="space-y-3">
-                <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Sắp xếp theo</div>
+                <div className="text-xs font-semibold text-text-secondary">Sắp xếp theo</div>
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => onSortByChange('year')} className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}>
                     <Calendar size={14} /> <span>Năm</span>
@@ -116,9 +116,9 @@ export function PersonMovieSection({
               <div className="h-px bg-border-default" />
 
               <div className="space-y-4">
-                <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Lọc nâng cao</div>
+                <div className="text-xs font-semibold text-text-secondary">Lọc nâng cao</div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-text-muted uppercase tracking-widest ml-1">Năm phát hành</label>
+                  <label className="text-xs font-semibold text-text-secondary ml-1">Năm phát hành</label>
                   <MultiSelectDropdown
                     options={availableYears.map(year => ({ value: year, label: year }))}
                     values={selectedYears}
@@ -133,7 +133,7 @@ export function PersonMovieSection({
 
         {paginatedMovies.length > 0 && (
           <div className="flex items-center justify-end">
-            <span className="text-xs font-bold text-text-muted bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border-default uppercase tracking-widest">
+            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border">
               Hiển thị {paginatedMovies.length} / {filteredCount} mục
             </span>
           </div>

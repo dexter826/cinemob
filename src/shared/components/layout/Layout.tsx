@@ -1,5 +1,4 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import MobileBottomNav from './MobileBottomNav';
@@ -23,17 +22,7 @@ function Layout({ children, appReady = true }: LayoutProps) {
         {children}
       </div>
       
-      <AnimatePresence>
-        {showFooter && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Footer />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showFooter && <Footer />}
 
       <MobileBottomNav />
       <ScrollToTop />

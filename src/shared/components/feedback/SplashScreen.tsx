@@ -1,37 +1,70 @@
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import Loading from '@/shared/components/ui/Loading';
+import logoText from '@/assets/images/logo_text.png';
 
 interface SplashScreenProps {
   onAnimationFinish: () => void;
   showLoading?: boolean;
+  staticMode?: boolean;
 }
 
-function SplashScreen({ onAnimationFinish, showLoading = false }: SplashScreenProps) {
+const SPLASH_FETCH_TIMEOUT_MS = 8000;
+
+function StaticBrandFrame({ showLoading }: { showLoading: boolean }) {
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 z-150 bg-background overflow-hidden">
+      <img src={logoText} alt="CineMOB" className="h-10 w-auto" />
+      {showLoading && <Loading fullScreen={false} size={40} />}
+    </div>
+  );
+}
+
+function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = false }: SplashScreenProps) {
   const [animationData, setAnimationData] = useState(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    // Prevent scrolling on body when splash screen is active
     document.body.style.overflow = 'hidden';
-    
-    fetch('/data/splashscreen.json')
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  useEffect(() => {
+    if (staticMode) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), SPLASH_FETCH_TIMEOUT_MS);
+
+    fetch('/data/splashscreen.json', { signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error('Failed to load animation');
         return response.json();
       })
       .then(data => setAnimationData(data))
-      .catch(error => {
-        console.error('Error fetching animation data:', error);
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn('Splash animation timed out, using static brand frame');
+        } else {
+          console.warn('Splash animation failed to load, using static brand frame');
+        }
+        setFailed(true);
         onAnimationFinish();
-      });
+      })
+      .finally(() => clearTimeout(timeout));
 
     return () => {
-      document.body.style.overflow = 'unset';
+      clearTimeout(timeout);
+      controller.abort();
     };
-  }, [onAnimationFinish]);
+  }, [staticMode, onAnimationFinish]);
+
+  if (staticMode || failed) {
+    return <StaticBrandFrame showLoading={showLoading} />;
+  }
 
   if (!animationData) {
-    return null; // Or a loading indicator
+    return null;
   }
 
   return (
@@ -50,6 +83,6 @@ function SplashScreen({ onAnimationFinish, showLoading = false }: SplashScreenPr
       </div>
     </div>
   );
-};
+}
 
 export default SplashScreen;

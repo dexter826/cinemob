@@ -4,6 +4,7 @@ import { Film, Share2, Star, Search, X } from 'lucide-react';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import logoText from '@/assets/images/logo_text.png';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { getPublicShare } from '@/features/share/services/shareService';
@@ -99,10 +100,14 @@ function SharePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text-main transition-colors duration-300">
+    <div className="min-h-screen bg-background text-text-primary">
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <header className="flex items-center gap-2">
+          <img src={logoText} alt="CineMOB" className="h-7 w-auto" />
+          <span className="text-xs font-semibold text-text-secondary">Chia sẻ công khai</span>
+        </header>
         {/* User Profile Header */}
-        <div className="bg-surface border border-border-default rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="bg-surface border border-border rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 w-full sm:w-auto">
             {data.photoURL ? (
               <img
@@ -144,12 +149,14 @@ function SharePage() {
                   size={16}
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
                 />
+                <label htmlFor="share-search" className="sr-only">Tìm phim trong danh sách được chia sẻ</label>
                 <input
+                  id="share-search"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tìm phim theo tên tiếng Anh hoặc tiếng Việt…"
-                  className="w-full bg-surface border border-border-default rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors shadow-sm"
+                  className="w-full bg-surface border border-border rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors"
                 />
                 {searchQuery && (
                   <button
@@ -208,19 +215,19 @@ function SharePage() {
                   return (
                     <div
                       key={String(movie.id)}
-                      className="bg-surface border border-border-default rounded-2xl overflow-hidden shadow-sm hover:border-primary/50 transition-colors duration-200 flex flex-col group"
+                      className="bg-surface border border-border rounded-2xl overflow-hidden flex flex-col"
                     >
                       <div className="aspect-2/3 bg-black/5 dark:bg-white/5 overflow-hidden">
                         <img
                           src={poster}
                           alt={movie.title}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="p-3 flex-1 flex flex-col justify-between">
                         <div>
-                          <p className="text-sm font-bold text-text-main line-clamp-1 group-hover:text-primary transition-colors">
+                          <p className="text-sm font-bold text-text-primary line-clamp-1">
                             {movie.title}
                           </p>
                           {movie.title_vi && movie.title_vi !== movie.title && (

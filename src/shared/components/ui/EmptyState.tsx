@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
+import { Button } from './Button';
+import { classNames } from '@/shared/utils/classNames';
 
 interface EmptyStateProps {
   icon?: LucideIcon;
@@ -9,49 +10,47 @@ interface EmptyStateProps {
     label: string;
     onClick: () => void;
   };
+  compact?: boolean;
   className?: string;
 }
 
-/** Component hiển thị trạng thái trống (không có dữ liệu). */
 function EmptyState({
   icon: Icon,
   title,
   description,
   action,
+  compact = false,
   className = ''
 }: EmptyStateProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`flex flex-col items-center justify-center py-20 px-4 text-center ${className}`}
+    <div
+      className={classNames(
+        'flex flex-col items-center justify-center px-4 text-center',
+        compact ? 'py-8' : 'py-20',
+        className
+      )}
     >
-      <div className="w-20 h-20 bg-black/5 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-border-default shadow-sm group hover:border-primary/30 transition-colors">
-        {Icon ? (
-          <Icon className="text-text-muted group-hover:text-primary transition-colors opacity-40 group-hover:opacity-100" size={40} />
-        ) : (
-          <div className="w-10 h-10 bg-primary/20 rounded-full animate-pulse" />
-        )}
-      </div>
-      
-      <h3 className="text-xl font-bold text-text-main mb-2 tracking-tight font-display">
+      {Icon && (
+        <span
+          aria-hidden="true"
+          className="flex items-center justify-center mb-4 border border-border text-text-secondary bg-surface rounded-card w-14 h-14"
+        >
+          <Icon size={28} />
+        </span>
+      )}
+      <h3 className="text-lg font-bold text-text-primary tracking-tight font-display">
         {title}
       </h3>
-      
-      <p className="text-text-muted/70 text-sm mb-8 max-w-xs leading-relaxed">
+      <p className="text-text-secondary text-sm mb-6 max-w-xs leading-relaxed mt-1">
         {description}
       </p>
-      
       {action && (
-        <button
-          onClick={action.onClick}
-          className="px-6 py-3 bg-primary text-white rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm cursor-pointer"
-        >
+        <Button variant="primary" size={compact ? 'sm' : 'md'} onClick={action.onClick}>
           {action.label}
-        </button>
+        </Button>
       )}
-    </motion.div>
+    </div>
   );
-};
+}
 
 export default EmptyState;

@@ -1,4 +1,4 @@
-import { Bell, Info, Clock, ChevronRight } from 'lucide-react';
+import { Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 
@@ -34,22 +34,19 @@ function EpisodeList({
 
   return (
     <div className={viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'}>
-      <div className={`bg-surface/50 backdrop-blur-xl border border-border-default rounded-3xl sm:rounded-4xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] shadow-premium transition-colors duration-300 ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
-        <div className="flex items-center justify-between mb-5 sm:mb-6">
-          <h3 className="font-bold text-text-main flex items-center gap-2.5 sm:gap-3 text-lg sm:text-xl tracking-tight">
-            <Bell size={24} className="text-primary" />
-            <span className="truncate">
-              {selectedDate 
-                ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}`
-                : 'Sắp chiếu'
-              }
-            </span>
+      <div className={`bg-surface border border-border rounded-3xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
+        <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
+          <h3 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
+            {selectedDate
+              ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}`
+              : 'Sắp chiếu'
+            }
           </h3>
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
               aria-label="Xem tất cả các tập sắp phát sóng"
-              className="text-xs font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap"
+              className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               Tất cả
             </button>
@@ -73,7 +70,7 @@ function EpisodeList({
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default opacity-40">
               <Info size={32} className="text-text-muted" />
             </div>
-            <p className="text-text-muted font-bold text-xs uppercase tracking-widest opacity-60">
+            <p className="text-text-secondary font-semibold text-xs">
               {selectedDate 
                 ? 'Không có tập phim nào'
                 : 'Chưa có lịch phát sóng'
@@ -85,22 +82,20 @@ function EpisodeList({
             {Object.entries(episodesByDate).map(([date, episodes]) => (
               <div key={date} className="mb-6 last:mb-0">
                 <div className="sticky top-0 z-10 pb-3 flex justify-start">
-                  <div className="bg-surface/95 backdrop-blur-md border border-border-default/80 px-3.5 py-1.5 rounded-full shadow-sm ring-1 ring-black/5 dark:ring-white/5">
-                    <h4 className="text-xs font-black text-primary uppercase tracking-[0.12em] whitespace-nowrap">
+                  <div className="bg-surface border border-border px-3.5 py-1.5 rounded-full">
+                    <h4 className="text-xs font-bold text-primary whitespace-nowrap">
                       {formatDate(date)}
                     </h4>
                   </div>
                 </div>
                 <div className="space-y-2.5">
                   {episodes.map((ep) => (
-                    <div
+                    <button
                       key={`${ep.seriesId}-${ep.episode.id}`}
+                      type="button"
                       onClick={() => handleSeriesClick(ep)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSeriesClick(ep); } }}
-                      role="button"
-                      tabIndex={0}
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
-                      className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 hover:shadow-premium transition-colors duration-300 cursor-pointer border border-border-default group relative items-start overflow-hidden"
+                      className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
                     >
                       <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
                         <img
@@ -111,7 +106,7 @@ function EpisodeList({
                         />
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
-                        <h5 className="font-bold text-text-main text-sm sm:base truncate group-hover:text-primary transition-colors tracking-tight leading-snug">
+                        <h5 className="font-bold text-text-primary text-sm truncate tracking-tight leading-snug">
                           {ep.seriesNameVi || ep.seriesName}
                         </h5>
                         <div className="flex items-center gap-2 mt-1.5">
@@ -124,14 +119,14 @@ function EpisodeList({
                             </span>
                           )}
                         </div>
-                        <p className="text-xs font-medium text-text-muted truncate mt-1.5 italic opacity-70 group-hover:opacity-100 transition-opacity">
+                        <p className="text-xs font-medium text-text-secondary truncate mt-1.5 italic">
                           {ep.episode.name || `Tập ${ep.episode.episode_number}`}
                         </p>
                       </div>
-                      <div className="self-center pl-1 sm:pl-2">
-                        <ChevronRight size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-colors duration-300 shrink-0" />
+                      <div className="self-center pl-1 sm:pl-2" aria-hidden="true">
+                        <ChevronRight size={16} className="text-text-secondary shrink-0" />
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

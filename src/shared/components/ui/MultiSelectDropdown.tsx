@@ -31,8 +31,11 @@ function MultiSelectDropdown({
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeIndex, setActiveIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listboxId = useRef(`multiselect-listbox-${Math.random().toString(36).slice(2, 8)}`);
 
   const selectedOptions = useMemo(
     () => options.filter(option => values.includes(option.value)),
@@ -94,13 +97,33 @@ function MultiSelectDropdown({
     onChange([]);
   };
 
+  const closeAndRestoreFocus = () => {
+    setIsOpen(false);
+    setSearchQuery('');
+    setActiveIndex(-1);
+    triggerRef.current?.focus();
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      handleToggle();
+      if (!isOpen) {
+        setIsOpen(true);
+        setActiveIndex(0);
+      } else if (activeIndex >= 0 && filteredOptions[activeIndex]) {
+        handleSelect(filteredOptions[activeIndex]);
+      } else {
+        handleToggle();
+      }
     } else if (event.key === 'Escape') {
-      setIsOpen(false);
-      setSearchQuery('');
+      event.preventDefault();
+      if (isOpen) closeAndRestoreFocus();
+    } else if (isOpen && event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActiveIndex((prev) => Math.min(filteredOptions.length - 1, prev + 1));
+    } else if (isOpen && event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActiveIndex((prev) => Math.max(0, prev - 1));
     }
   };
 
@@ -142,6 +165,7 @@ function MultiSelectDropdown({
     <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Trigger Button */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
@@ -156,6 +180,7 @@ function MultiSelectDropdown({
         `}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-controls={listboxId.current}
       >
         {renderSelectedDisplay()}
         <div className="flex items-center gap-1 shrink-0">
@@ -179,9 +204,10 @@ function MultiSelectDropdown({
       {/* Dropdown Menu */}
       {isOpen && (
         <div
+          id={listboxId.current}
           className="
-            absolute top-full left-0 right-0 mt-1 bg-surface border border-border-default
-            rounded-xl shadow-lg z-50
+            absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border
+            rounded-xl shadow-elevated z-50
           "
           role="listbox"
         >

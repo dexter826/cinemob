@@ -24,6 +24,7 @@ function CustomTimePicker({
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
     const hourListRef = useRef<HTMLDivElement>(null);
     const minuteListRef = useRef<HTMLDivElement>(null);
 
@@ -95,7 +96,11 @@ function CustomTimePicker({
             event.preventDefault();
             handleToggle();
         } else if (event.key === 'Escape') {
-            setIsOpen(false);
+            event.preventDefault();
+            if (isOpen) {
+                setIsOpen(false);
+                triggerRef.current?.focus();
+            }
         }
     };
 
@@ -116,8 +121,8 @@ function CustomTimePicker({
         <div
             className={`
                 bg-surface border border-border-default rounded-2xl shadow-2xl p-4
-                ${isMobile 
-                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[280px] mx-auto animate-in zoom-in-95 duration-200' 
+                ${isMobile
+                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[280px] mx-auto'
                     : 'absolute top-full left-0 mt-1 z-50 w-56'}
             `}
             role="dialog"
@@ -126,7 +131,7 @@ function CustomTimePicker({
         >
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-                    <span className="text-sm font-bold text-text-main uppercase tracking-widest">Chọn giờ</span>
+                    <span className="text-sm font-bold text-text-main">Chọn giờ</span>
                     <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
                         <X size={20} className="text-text-muted" />
                     </button>
@@ -140,7 +145,7 @@ function CustomTimePicker({
                     ref={hourListRef}
                     className="flex-1 overflow-y-auto custom-scrollbar"
                 >
-                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold uppercase tracking-widest">Giờ</div>
+                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold">Giờ</div>
                     {HOUR_OPTIONS.map((h) => (
                         <button
                             key={h}
@@ -165,7 +170,7 @@ function CustomTimePicker({
                     ref={minuteListRef}
                     className="flex-1 overflow-y-auto custom-scrollbar"
                 >
-                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold uppercase tracking-widest">Phút</div>
+                    <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold">Phút</div>
                     {minuteOptions.map((m) => (
                         <button
                             key={m}
@@ -191,7 +196,7 @@ function CustomTimePicker({
                 <button
                     type="button"
                     onClick={setCurrentTime}
-                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors uppercase tracking-widest border border-primary/20"
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20"
                 >
                     Bây giờ
                 </button>
@@ -203,6 +208,7 @@ function CustomTimePicker({
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
             <button
+                ref={triggerRef}
                 type="button"
                 onClick={handleToggle}
                 onKeyDown={handleKeyDown}
@@ -231,7 +237,7 @@ function CustomTimePicker({
                 isMobile ? (
                     createPortal(
                         <div 
-                            className="fixed inset-0 z-60 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                            className="fixed inset-0 z-60 flex items-center justify-center p-4"
                             onClick={() => setIsOpen(false)}
                         >
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />

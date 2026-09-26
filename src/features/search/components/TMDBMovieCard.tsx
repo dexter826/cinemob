@@ -20,57 +20,58 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <div
-      onClick={() => onClick(movie)}
-      role="button"
-      tabIndex={0}
-      aria-label={`Xem chi tiết phim ${mainTitle}`}
-      className="group relative bg-surface rounded-2xl overflow-hidden border border-border-default cursor-pointer shadow-premium hover:shadow-premium-hover hover:border-primary/40 hover:ring-1 hover:ring-primary/20 transition-colors duration-300"
+    <article
+      className="group relative bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300"
     >
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
-        <img
-          src={getTMDBImageUrl(movie.poster_path, 'w500')}
-          alt={mainTitle}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-        
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <button
+          type="button"
+          onClick={() => onClick(movie)}
+          aria-label={`Xem chi tiết phim ${mainTitle}`}
+          className="absolute inset-0 w-full h-full cursor-pointer rounded-none"
+        >
+          <img
+            src={getTMDBImageUrl(movie.poster_path, 'w500')}
+            alt={mainTitle}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </button>
 
-        <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+        <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
           {status && (
-            <div className={`flex items-center gap-1 px-2.5 py-1 backdrop-blur-md rounded-lg border border-white/10 dark:border-white/5 text-xs font-bold text-white shadow-glass ring-1 ring-white/10 ${
-              status === 'history' ? 'bg-success/70' : 'bg-primary/70'
+            <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold text-white ${
+              status === 'history' ? 'bg-success' : 'bg-primary'
             }`}>
-              <Bookmark size={10} className="fill-white" strokeWidth={1.5} />
-              <span>{status === 'history' ? 'ĐÃ XEM' : 'SẼ XEM'}</span>
+              <Bookmark size={10} className="fill-white" strokeWidth={1.5} aria-hidden="true" />
+              <span>{status === 'history' ? 'Đã xem' : 'Sẽ xem'}</span>
             </div>
           )}
-          
+
           {rating && (
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 dark:border-white/5 text-xs font-bold text-warning shadow-glass ring-1 ring-white/5">
-              <Star size={10} fill="currentColor" strokeWidth={1.5} />
+            <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-warning">
+              <Star size={10} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
               <span>{rating}</span>
             </div>
           )}
 
-          <div className="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 dark:border-white/5 text-xs font-bold text-white uppercase shadow-glass ring-1 ring-white/5">
-            {isTV ? <Tv size={10} className="text-info" strokeWidth={1.5} /> : <Film size={10} className="text-success" strokeWidth={1.5} />}
+          <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-white">
+            {isTV ? <Tv size={10} className="text-info" strokeWidth={1.5} aria-hidden="true" /> : <Film size={10} className="text-success" strokeWidth={1.5} aria-hidden="true" />}
             <span>{isTV ? 'TV' : 'Phim'}</span>
           </div>
         </div>
 
         {onRemove && (
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove(movie);
-            }}
+            type="button"
+            onClick={() => onRemove(movie)}
             aria-label={`Bỏ qua gợi ý ${mainTitle}`}
-            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-red-500/90 backdrop-blur-md rounded-lg border border-white/10 text-white shadow-glass ring-1 ring-white/5 transition-colors cursor-pointer"
+            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-danger text-white rounded-lg border border-white/10 transition-colors cursor-pointer"
             title="Không quan tâm"
           >
-            <X size={14} strokeWidth={1.5} />
+            <X size={14} strokeWidth={1.5} aria-hidden="true" />
           </button>
         )}
       </div>
@@ -98,7 +99,7 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
           </p>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

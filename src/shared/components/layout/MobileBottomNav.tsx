@@ -1,55 +1,51 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, Search, Folder, BarChart2, CalendarDays } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { NAV_ITEMS, isNavItemActive } from './navigation';
+
+const NAV_ICONS: Record<string, typeof Home> = {
+  '/': Home,
+  '/search': Search,
+  '/albums': Folder,
+  '/stats': BarChart2,
+  '/calendar': CalendarDays,
+};
 
 function MobileBottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navItems = [
-    { icon: Home, label: 'Trang chủ', path: '/' },
-    { icon: Search, label: 'Tìm kiếm', path: '/search' },
-    { icon: Folder, label: 'Album', path: '/albums' },
-    { icon: BarChart2, label: 'Thống kê', path: '/stats' },
-    { icon: CalendarDays, label: 'Lịch', path: '/calendar' },
-  ];
-
   return (
-    <nav 
-      className="md:hidden fixed left-4 right-4 bg-surface/80 backdrop-blur-3xl border border-border-default rounded-2xl shadow-premium z-40"
+    <nav
+      aria-label="Điều hướng chính"
+      className="md:hidden fixed left-4 right-4 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-40"
       style={{ bottom: 'calc(12px + env(safe-area-inset-bottom, 12px))' }}
     >
       <div className="flex justify-around items-center h-16">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = item.path === '/' 
-            ? location.pathname === '/' 
-            : location.pathname.startsWith(item.path);
+        {NAV_ITEMS.map((item) => {
+          const Icon = NAV_ICONS[item.to] ?? Home;
+          const isActive = isNavItemActive(location.pathname, item);
 
           return (
             <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
+              key={item.to}
+              onClick={() => navigate(item.to)}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
-              className="relative flex items-center justify-center w-full h-full transition-transform active:scale-95 duration-200 cursor-pointer"
+              className="relative flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-16 px-1 cursor-pointer"
             >
-              <div className={`relative p-3 transition-colors ${isActive ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}>
-                <Icon size={24} strokeWidth={isActive ? 1.8 : 1.5} />
-                {isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-primary/10 rounded-2xl -z-10 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </div>
+              <span className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-secondary'}`}>
+                <Icon size={24} strokeWidth={isActive ? 2 : 1.5} aria-hidden="true" />
+              </span>
+              <span
+                aria-hidden="true"
+                className={`h-1 w-6 rounded-full transition-colors ${isActive ? 'bg-primary' : 'bg-transparent'}`}
+              />
             </button>
           );
         })}
       </div>
     </nav>
   );
-};
+}
 
 export default MobileBottomNav;

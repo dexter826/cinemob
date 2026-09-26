@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { X, Dice5 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Dice5 } from 'lucide-react';
 import Lottie from 'lottie-react';
+import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import { Movie, TMDBMovieResult } from '@/types';
@@ -12,9 +12,10 @@ import useMovieDetailStore from '../stores/movieDetailStore';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import randomAudioFile from '@/assets/audio/random.MP3';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
 import useMovieStore from '../stores/movieStore';
-import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { Dialog } from '@/shared/components/ui/Dialog';
+import { Button } from '@/shared/components/ui/Button';
+import { IconButton } from '@/shared/components/ui/IconButton';
 import { PickerWheel } from './random-picker/PickerWheel';
 
 interface RandomPickerModalProps {
@@ -55,8 +56,8 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  usePreventScroll(isOpen);
+  const confettiFetchedRef = useRef(false);
+  const reducedMotion = useReducedMotion() ?? false;
 
   const clearShuffleTimers = useCallback(() => {
     if (shuffleTimeoutRef.current) {
@@ -69,12 +70,18 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     }
   }, []);
 
-  useEffect(() => {
+  // Celebration assets load only when needed (picker open), cached per mount.
+  // A fetch failure still shows the selected movie and actions.
+  const ensureConfetti = useCallback(() => {
+    if (confettiFetchedRef.current) return;
+    confettiFetchedRef.current = true;
     fetch('/data/confetti.json')
       .then(res => res.json())
       .then(data => setConfettiData(data))
       .catch((e) => console.warn('Confetti animation failed to load:', e));
+  }, []);
 
+  useEffect(() => {
     const audio = new Howl({
       src: [randomAudioFile],
       volume: 0.3,
@@ -84,11 +91,13 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
 
     return () => {
       clearShuffleTimers();
-      if (audio) {
-        audio.stop();
-      }
+      audio.stop();
     };
   }, [clearShuffleTimers]);
+
+  useEffect(() => {
+    if (isOpen) ensureConfetti();
+  }, [isOpen, ensureConfetti]);
 
   const watchlistMovies = useMemo(
     () => movies.filter(m => (m.status || 'history') === 'watchlist'),
@@ -146,14 +155,24 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     }
 
     clearShuffleTimers();
+    ensureConfetti();
     setPoolType(source);
-    setIsShuffling(true);
     setHasResult(false);
 
     if (randomAudio) {
       randomAudio.stop();
       randomAudio.play();
     }
+
+    // Reduced motion: skip wheel cycling, land directly on the result.
+    if (reducedMotion) {
+      setCurrentIndex(Math.floor(Math.random() * pool.length));
+      setIsShuffling(false);
+      setHasResult(true);
+      return;
+    }
+
+    setIsShuffling(true);
 
     const shuffleDuration = 3150;
     const start = Date.now();
@@ -204,7 +223,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     };
 
     shuffleTimeoutRef.current = setTimeout(tick, 70);
-  }, [watchlistMovies, trending, randomAudio, clearShuffleTimers]);
+  }, [watchlistMovies, trending, randomAudio, clearShuffleTimers, ensureConfetti, reducedMotion]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -251,53 +270,37 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     return m.title || m.name || '';
   };
 
-  return (
-    <AnimatePresence>
-      {isOpen && (() => {
-        return (
-        <motion.div
-          variants={OVERLAY_VARIANTS}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center px-4"
-        >
-          <motion.div 
-            className="absolute inset-0 bg-black/75" 
-            onClick={onClose} 
-          />
+  const showConfetti = hasResult && !reducedMotion && confettiData !== null;
 
-          <motion.div
-            variants={MODAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="relative bg-surface rounded-3xl max-w-lg w-full p-6 shadow-premium border border-border-default flex flex-col gap-4"
-          >
-        {/* Confetti Layer */}
-        {hasResult && confettiData && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90">
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      titleId="random-picker-title"
+      descriptionId="random-picker-description"
+      presentation="dialog"
+    >
+      <div className="relative flex flex-col gap-4 p-6">
+        {showConfetti && (
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90">
             <Lottie animationData={confettiData} loop={false} />
           </div>
         )}
 
-        <div className="flex items-center justify-between mb-2 relative z-10">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+        <div className="flex items-center justify-between gap-2 relative z-10">
+          <div className="flex items-center gap-2 min-w-0">
+            <div aria-hidden="true" className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
               <Dice5 size={18} />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-text-main">Không biết xem gì?</h2>
-              <p className="text-xs text-text-muted">Để CineMOB chọn ngẫu nhiên cho bạn</p>
+            <div className="min-w-0">
+              <h2 id="random-picker-title" className="text-lg font-semibold text-text-primary">Không biết xem gì?</h2>
+              <p id="random-picker-description" className="text-xs text-text-secondary">Để CineMOB chọn ngẫu nhiên cho bạn</p>
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-text-muted cursor-pointer z-10"
-          >
-            <X size={18} />
-          </button>
+          <IconButton label="Đóng chọn phim ngẫu nhiên" onClick={onClose} variant="ghost">
+            <span aria-hidden="true" className="text-lg leading-none">×</span>
+          </IconButton>
         </div>
 
         <div className="relative z-10">
@@ -311,8 +314,8 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
             <EmptyState
               icon={Dice5}
               title="Không tìm thấy phim"
-              description='Hiện chưa có phim trong Watchlist và không lấy được danh sách thịnh hành để quay ngẫu nhiên.'
-              className="py-10"
+              description="Hiện chưa có phim trong watchlist và không lấy được danh sách thịnh hành để quay ngẫu nhiên."
+              compact
             />
           )}
 
@@ -330,29 +333,28 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
           )}
         </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row gap-3 relative z-10">
-          <button
+        <div className="flex flex-col sm:flex-row gap-2 relative z-10">
+          <Button
+            variant="secondary"
             onClick={handleRespin}
             disabled={!hasPool || isLoadingPool || isShuffling}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border-default bg-black/5 dark:bg-white/5 text-text-main text-sm font-medium hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            leadingIcon={<Dice5 size={18} aria-hidden="true" />}
+            className="flex-1"
           >
-            <Dice5 size={18} />
-            <span>Quay lại</span>
-          </button>
+            Quay lại
+          </Button>
 
-          <button
+          <Button
+            variant="primary"
             onClick={handleWatchNow}
             disabled={!hasPool || isLoadingPool || currentIndex === null || isShuffling}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1"
           >
             Xem ngay
-          </button>
+          </Button>
         </div>
-          </motion.div>
-        </motion.div>
-        );
-      })()}
-    </AnimatePresence>
+      </div>
+    </Dialog>
   );
 };
 

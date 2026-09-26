@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 interface StatusToggleProps {
   status: 'history' | 'watchlist';
   setStatus: (status: 'history' | 'watchlist') => void;
@@ -7,41 +5,31 @@ interface StatusToggleProps {
 
 function StatusToggle({ status, setStatus }: StatusToggleProps) {
   return (
-    <div className="bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default relative flex">
+    <div role="radiogroup" aria-label="Trạng thái phim" className="bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border relative flex">
       <button
         type="button"
+        role="radio"
+        aria-checked={status === 'history'}
         onClick={() => setStatus('history')}
-        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 uppercase tracking-widest ${
-          status === 'history' ? 'text-white' : 'text-text-muted hover:text-text-main'
+        className={`flex-1 py-2.5 text-xs font-bold transition-colors rounded-xl cursor-pointer ${
+          status === 'history' ? 'bg-primary text-white' : 'text-text-secondary hover:text-text-primary'
         }`}
       >
-        <span>Đã xem</span>
-        {status === 'history' && (
-          <motion.div
-            layoutId="activeStatus"
-            className="absolute inset-0 bg-primary rounded-xl z-[-1] shadow-lg shadow-primary/30"
-            transition={{ type: 'spring', bounce: 0.15, duration: 0.5 }}
-          />
-        )}
+        Đã xem
       </button>
       <button
         type="button"
+        role="radio"
+        aria-checked={status === 'watchlist'}
         onClick={() => setStatus('watchlist')}
-        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 uppercase tracking-widest ${
-          status === 'watchlist' ? 'text-white' : 'text-text-muted hover:text-text-main'
+        className={`flex-1 py-2.5 text-xs font-bold transition-colors rounded-xl cursor-pointer ${
+          status === 'watchlist' ? 'bg-primary text-white' : 'text-text-secondary hover:text-text-primary'
         }`}
       >
-        <span>Sẽ xem</span>
-        {status === 'watchlist' && (
-          <motion.div
-            layoutId="activeStatus"
-            className="absolute inset-0 bg-primary rounded-xl z-[-1] shadow-lg shadow-primary/30"
-            transition={{ type: 'spring', bounce: 0.15, duration: 0.5 }}
-          />
-        )}
+        Sẽ xem
       </button>
     </div>
   );
-};
+}
 
 export default StatusToggle;

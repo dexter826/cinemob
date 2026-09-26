@@ -2,7 +2,6 @@ import { useSearch } from '../hooks/useSearch';
 import { useAuth } from '@/app/providers/AuthProvider';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
-import { Search } from 'lucide-react';
 import SearchFilters from '../components/SearchFilters';
 import SearchResults from '../components/SearchResults';
 
@@ -32,10 +31,8 @@ function SearchPage() {
   } = useSearch(user);
 
   return (
-    <div className="text-text-main transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader 
-          icon={Search}
+    <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader
           title={discoverMovies.length > 0 ? "Khám phá điện ảnh" : "Tìm kiếm phim"}
           description="Tìm kiếm phim, series và khám phá các gợi ý mới nhất từ TMDB."
         />
@@ -79,8 +76,7 @@ function SearchPage() {
             userId={user?.uid || ''}
           />
         )}
-      </div>
-    </div>
+    </main>
   );
 };
 

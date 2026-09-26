@@ -70,7 +70,7 @@ function SearchFilters({
 
         {/* Suggestion Dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border-default dark:border-white/5 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-black/5 dark:ring-white/5">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden">
             <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
               <div className="px-4 py-2 text-xs font-medium text-text-muted border-b border-border-default dark:border-white/5 mb-1">
                 Gợi ý tìm kiếm
@@ -122,7 +122,7 @@ function SearchFilters({
               })}
               <button
                 onClick={handleSearch}
-                className="w-full py-3 px-4 mt-1 border-t border-border-default dark:border-white/5 text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Search size={14} strokeWidth={1.5} />
                 Xem tất cả kết quả cho "{filters.query}"
@@ -154,7 +154,7 @@ function SearchFilters({
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default dark:border-white/5 rounded-2xl px-3 h-11">
           <Filter size={16} className="text-text-muted" strokeWidth={1.5} />
-          <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Lọc theo</span>
+          <span className="text-xs font-bold text-text-secondary">Lọc theo</span>
         </div>
 
         <CustomDropdown
@@ -212,7 +212,7 @@ function SearchFilters({
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-muted uppercase tracking-wider cursor-pointer border border-transparent hover:border-border-default dark:hover:border-white/10 active:scale-[0.98]"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
           >
             <RotateCcw size={14} strokeWidth={1.5} />
             <span>Đặt lại</span>

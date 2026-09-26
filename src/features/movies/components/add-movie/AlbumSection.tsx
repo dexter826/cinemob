@@ -51,7 +51,7 @@ function AlbumSection({
       </div>
 
       {showCreateAlbum && (
-        <div className="flex gap-3 animate-in fade-in slide-in-from-top-2 p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default shadow-sm">
+        <div className="flex gap-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-border">
           <input
             type="text"
             placeholder="Tên album mới…"

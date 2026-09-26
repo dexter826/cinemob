@@ -46,7 +46,7 @@ function Footer() {
         <div className="flex-1 text-xs text-text-muted flex items-center justify-center md:justify-end gap-1">
           <span>© {new Date().getFullYear()}</span>
           <span>• Made with</span>
-          <Heart className="w-3 h-3 text-primary inline-block animate-pulse" />
+          <Heart className="w-3 h-3 text-primary inline-block" aria-hidden="true" />
           <span>by</span>
           <a
             href="https://github.com/dexter826"

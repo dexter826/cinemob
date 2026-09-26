@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 import useInitialLoadStore from '../../stores/initialLoadStore';
 
 interface LoadingProps {
@@ -10,76 +10,67 @@ interface LoadingProps {
   className?: string;
 }
 
-interface SpinnerProps {
-  size: number;
-}
-
-function Spinner({ size }: SpinnerProps) {
+function Spinner({ size }: { size: number }) {
+  const reducedMotion = useReducedMotion();
+  if (reducedMotion) {
+    return (
+      <div
+        role="status"
+        aria-label="Đang tải"
+        className="rounded-full border-4 border-border"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
-  <div className="relative" style={{ width: size, height: size }}>
-    <motion.div
-      className="absolute inset-0 border-4 border-primary/20 rounded-full"
-      style={{ width: size, height: size }}
-    />
-    <motion.div
-      className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full"
-      style={{ width: size, height: size }}
-      animate={{ rotate: 360 }}
-      transition={{ 
-        duration: 1, 
-        repeat: Infinity, 
-        ease: 'linear' 
-      }}
-    />
-    <motion.div
-      className="absolute inset-0 flex items-center justify-center"
-      animate={{ opacity: [0.4, 1, 0.4] }}
-      transition={{ duration: 2, repeat: Infinity }}
-    >
-      <div className="w-1.5 h-1.5 bg-primary rounded-full shadow-xs" />
-    </motion.div>
-  </div>
+    <div className="relative" style={{ width: size, height: size }} aria-hidden="true">
+      <div
+        className="absolute inset-0 border-4 border-primary/20 rounded-full"
+        style={{ width: size, height: size }}
+      />
+      <div
+        className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"
+        style={{ width: size, height: size, animationDuration: '1s' }}
+      />
+    </div>
   );
 }
 
-/** Component hiển thị trạng thái đang tải cao cấp. */
-function Loading({ 
-  size = 48, 
-  fullScreen = true, 
+/** Contained + fullscreen loading. Fullscreen only for true app blocking. */
+function Loading({
+  size = 48,
+  fullScreen = true,
   contain = false,
   text,
   className = ''
 }: LoadingProps) {
   const { setPageLoading } = useInitialLoadStore();
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (fullScreen || contain) {
+    if (fullScreen) {
       setPageLoading(true);
       return () => {
         setPageLoading(false);
       };
     }
-  }, [fullScreen, contain, setPageLoading]);
+  }, [fullScreen, setPageLoading]);
 
+  const label = text ?? 'Đang tải…';
   const content = (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       <Spinner size={size} />
       {text && (
-        <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-4 text-xs font-medium text-text-muted"
-        >
-          {text}
-        </motion.p>
+        <p className="mt-4 text-xs font-medium text-text-secondary">
+          {reducedMotion ? label : text}
+        </p>
       )}
     </div>
   );
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center z-100">
+      <div role="status" aria-label={label} className="fixed inset-0 bg-background flex items-center justify-center z-100">
         {content}
       </div>
     );
@@ -87,13 +78,17 @@ function Loading({
 
   if (contain) {
     return (
-      <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-30">
+      <div role="status" aria-label={label} className="absolute inset-0 bg-background/50 flex items-center justify-center z-30">
         {content}
       </div>
     );
   }
 
-  return content;
-};
+  return (
+    <span role="status" aria-label={label} className={`inline-flex ${className}`}>
+      {content}
+    </span>
+  );
+}
 
 export default Loading;

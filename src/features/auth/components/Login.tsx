@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { Shield, Loader2, Star, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Shield, Loader2, Star, CheckCircle2 } from 'lucide-react';
 import logoText from '@/assets/images/logo_text.png';
 
 function GoogleIcon({ className }: { className?: string }) {
@@ -32,7 +32,6 @@ const SHOWCASE_FILMS = [
     tiltClass: 'rotate-0 translate-y-0',
     zIndex: 'z-20',
     scaleClass: 'scale-100 sm:scale-105 shadow-primary/20',
-    featuredBadge: 'Kiệt tác điện ảnh',
   },
   {
     title: 'Dune: Part Two',
@@ -73,11 +72,11 @@ function Login() {
 
           <div className="mt-6 sm:mt-8 lg:mt-10 max-w-xl space-y-2 sm:space-y-3">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.15] text-text-main font-display">
-              Ghi lại từng thước phim bạn từng sống cùng.
+              Mỗi bộ phim bạn xem, xứng đáng được nhớ.
             </h1>
 
             <p className="text-xs sm:text-sm lg:text-base text-text-muted leading-relaxed font-normal max-w-lg">
-              CineMOB giúp bạn quản lý kho phim cá nhân, đón lịch chiếu tập mới và khám phá những kiệt tác tiếp theo mà không bị xao nhãng.
+              CineMOB là cuốn sổ tay điện ảnh của riêng bạn, lưu lại từng tác phẩm, theo dõi từng series và tìm ra phim hay tiếp theo.
             </p>
           </div>
         </div>
@@ -87,28 +86,27 @@ function Login() {
           {/* Ambient Glow Backdrop */}
           <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 via-secondary/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
 
-          {/* Cards Stack */}
-          <div className="flex items-center justify-center -space-x-8 sm:-space-x-12 lg:-space-x-14">
+          {/* Decorative poster showcase, not interactive */}
+          <div aria-hidden="true" className="flex items-center justify-center -space-x-8 sm:-space-x-12 lg:-space-x-14">
             {SHOWCASE_FILMS.map((film) => (
               <div
                 key={film.title}
-                className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-300 hover:scale-110 hover:z-30 hover:-translate-y-2 cursor-pointer w-28 sm:w-36 lg:w-44 aspect-2/3 shrink-0 bg-surface ${film.tiltClass} ${film.zIndex} ${film.scaleClass}`}
+                className={`relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl w-28 sm:w-36 lg:w-44 aspect-2/3 shrink-0 bg-surface ${film.tiltClass} ${film.zIndex} ${film.scaleClass}`}
               >
                 <img
                   src={film.poster}
-                  alt={film.title}
+                  alt=""
                   className="w-full h-full object-cover select-none"
                   loading="eager"
+                  draggable={false}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
-                {/* Rating Badge */}
-                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 backdrop-blur-md border border-white/10 text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums shadow-sm">
+                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums">
                   <Star size={10} className="fill-secondary text-secondary" />
                   <span>{film.rating}</span>
                 </div>
 
-                {/* Movie Meta */}
                 <div className="absolute bottom-2.5 left-2.5 right-2.5">
                   <p className="text-white text-xs sm:text-sm font-bold truncate leading-tight">
                     {film.title}
@@ -116,12 +114,6 @@ function Login() {
                   <p className="text-white/60 text-[10px] sm:text-[11px] mt-0.5 font-medium">
                     {film.year}
                   </p>
-                  {film.featuredBadge && (
-                    <span className="inline-flex items-center gap-1 mt-1 text-[9px] sm:text-[10px] font-semibold text-primary bg-primary/20 backdrop-blur-md px-1.5 py-0.5 rounded border border-primary/30">
-                      <Sparkles size={9} />
-                      {film.featuredBadge}
-                    </span>
-                  )}
                 </div>
               </div>
             ))}
@@ -131,7 +123,7 @@ function Login() {
         {/* Bottom Tagline */}
         <div className="pt-2 hidden sm:block">
           <p className="text-xs text-text-muted">
-            Không gian lưu giữ và kết nối cảm xúc điện ảnh.
+            Rạp phim của riêng bạn, mở cửa mọi lúc.
           </p>
         </div>
       </div>
@@ -141,10 +133,10 @@ function Login() {
         <div className="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto space-y-6 sm:space-y-8">
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-main font-display">
-              Bắt đầu hành trình
+              Bắt đầu
             </h2>
             <p className="text-xs sm:text-sm text-text-muted">
-              Đồng bộ dữ liệu an toàn trên đám mây để xem trên điện thoại hoặc máy tính.
+              Đăng nhập để đồng bộ thư viện trên mọi thiết bị.
             </p>
           </div>
 
@@ -152,14 +144,14 @@ function Login() {
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-2xl bg-surface border border-border-default hover:border-primary/40 hover:bg-black/5 dark:hover:bg-white/5 font-semibold text-text-main transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] shadow-sm group"
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-2xl bg-surface border border-border hover:border-primary/40 hover:bg-black/5 dark:hover:bg-white/5 font-semibold text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >
               {isLoading ? (
                 <Loader2 size={20} className="animate-spin text-primary" aria-hidden="true" />
               ) : (
-                <GoogleIcon className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
+                <GoogleIcon className="w-5 h-5 shrink-0" />
               )}
               <span className="text-sm font-semibold">
                 {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
@@ -176,15 +168,15 @@ function Login() {
           <div className="pt-4 border-t border-border-default space-y-2 text-xs text-text-muted">
             <div className="flex items-center gap-2">
               <CheckCircle2 size={13} className="text-primary shrink-0" />
-              <span>Đồng bộ lịch sử xem phim đa thiết bị tức thì</span>
+              <span>Đồng bộ tức thì trên mọi thiết bị</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 size={13} className="text-primary shrink-0" />
-              <span>Lịch phát sóng tự động các TV Series yêu thích</span>
+              <span>Nhắc lịch tập mới của series đang theo dõi</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 size={13} className="text-primary shrink-0" />
-              <span>Hoàn toàn miễn phí, không quảng cáo chen ngang</span>
+              <span>Miễn phí, không quảng cáo</span>
             </div>
           </div>
         </div>

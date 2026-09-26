@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 
 import { X, Save, Loader2, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
+import { Button } from '@/shared/components/ui/Button';
+import { IconButton } from '@/shared/components/ui/IconButton';
 
 // Sub-components
 import StatusToggle from './add-movie/StatusToggle';
@@ -16,8 +18,7 @@ import CustomTimePicker from '@/shared/components/ui/CustomTimePicker';
 
 // Hooks
 import { useAddMovieForm } from '../hooks/useAddMovieForm';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
-import { COUNTRY_OPTIONS, MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { COUNTRY_OPTIONS } from '@/constants';
 
 function AddMovieModal() {
   const {
@@ -53,312 +54,297 @@ function AddMovieModal() {
     }
   }, [errors]);
 
-
-
-
-  usePreventScroll(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeAddModal(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, closeAddModal]);
-
-  if (!isOpen) return null;
+  const isEditMode = !!initialData?.movieToEdit;
+  const submitDisabled = isSubmitting || !isDirty || (movieExists && !isEditMode);
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          variants={OVERLAY_VARIANTS}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
-        >
-          <motion.div
-            variants={MODAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="bg-surface border border-border-default rounded-3xl sm:rounded-4xl w-full max-w-5xl h-full sm:h-auto max-h-full sm:max-h-[90vh] overflow-hidden shadow-premium flex flex-col"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 sm:px-6 sm:py-5 border-b border-border-default bg-surface/90 backdrop-blur-xl shrink-0">
-              <h2 className="text-xl sm:text-2xl font-bold text-text-main tracking-tight">
-                {initialData?.movieToEdit ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
-              </h2>
-              <button
-                onClick={closeAddModal}
-                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default rounded-xl text-text-muted hover:text-text-main hover:border-primary/30 transition-colors cursor-pointer"
-              >
-                <X size={18} className="sm:w-5 sm:h-5" />
-              </button>
+    <Dialog
+      open={isOpen}
+      onClose={closeAddModal}
+      titleId="add-movie-title"
+      descriptionId="add-movie-description"
+      presentation="fullscreen-mobile"
+      size="4xl"
+    >
+      <div className="flex items-center justify-between px-5 py-4 sm:px-6 sm:py-5 border-b border-border shrink-0">
+        <div className="min-w-0">
+          <h2 id="add-movie-title" className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate font-display">
+            {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
+          </h2>
+          <p id="add-movie-description" className="text-xs sm:text-sm text-text-secondary mt-0.5">
+            {isEditMode ? 'Cập nhật thông tin phim trong thư viện.' : 'Lưu phim vào thư viện cá nhân.'}
+          </p>
+        </div>
+        <IconButton label="Đóng hộp thoại thêm phim" onClick={closeAddModal} variant="secondary">
+          <X size={18} aria-hidden="true" />
+        </IconButton>
+      </div>
+
+      <DialogBody className="p-5 sm:p-6 lg:p-7">
+        {isLoadingDetails ? (
+          <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
+            <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 bg-black/5 dark:bg-white/5 rounded-2xl sm:rounded-3xl animate-pulse shrink-0 mx-auto md:mx-0" />
+            <div className="flex-1 w-full space-y-6">
+              <div className="h-11 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                </div>
+                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
+            <div className="w-full md:w-56 lg:w-64 shrink-0 flex flex-col items-center md:items-stretch space-y-3">
+              <PosterPreview
+                posterPath={formData.poster}
+                title={formData.title}
+              />
+              <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none text-center">
+                <p className="text-xs font-semibold text-text-primary line-clamp-2">
+                  {formData.title || 'Chưa nhập tên phim'}
+                </p>
+                {formData.title_vi && (
+                  <p className="text-[11px] text-text-secondary line-clamp-1 italic mt-0.5">
+                    {formData.title_vi}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6">
-              {isLoadingDetails ? (
-                <div className="flex flex-col md:flex-row gap-6 animate-in fade-in duration-500">
-                  <div className="w-full md:w-1/3 aspect-2/3 bg-black/5 dark:bg-white/5 rounded-3xl animate-pulse shrink-0" />
-                  <div className="flex-1 space-y-6">
-                    <div className="h-10 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
-                        <div className="h-20 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
-                      </div>
-                      <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
-                      <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl w-full animate-pulse" />
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
-                        <div className="h-12 bg-black/5 dark:bg-white/5 rounded-2xl animate-pulse" />
-                      </div>
+            <div className="flex-1 min-w-0 w-full space-y-6">
+              <div role="tablist" aria-label="Phần của biểu mẫu" className="flex bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'info'}
+                  onClick={() => setActiveTab('info')}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                >
+                  <Film size={15} aria-hidden="true" />
+                  <span>Thông tin phim</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'review'}
+                  onClick={() => setActiveTab('review')}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                >
+                  <Star size={15} aria-hidden="true" />
+                  <span>Đánh giá & Trải nghiệm</span>
+                </button>
+              </div>
+
+              {activeTab === 'info' && (
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="add-movie-title-input" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                        <Type size={14} className="text-primary" aria-hidden="true" />
+                        Tiêu đề gốc
+                      </label>
+                      <input
+                        id="add-movie-title-input"
+                        ref={refs.title}
+                        type="text"
+                        required
+                        aria-invalid={errors.title ? true : undefined}
+                        value={formData.title}
+                        onChange={e => setFormData({ ...formData, title: e.target.value })}
+                        className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-bold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+                        placeholder="Tên gốc của phim..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="add-movie-title-vi" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                        <Type size={14} className="text-primary" aria-hidden="true" />
+                        Tiêu đề tiếng Việt
+                      </label>
+                      <input
+                        id="add-movie-title-vi"
+                        type="text"
+                        value={formData.title_vi}
+                        onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
+                        className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-bold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50"
+                        placeholder="Tên tiếng Việt..."
+                      />
                     </div>
                   </div>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
-                  <PosterPreview
-                    posterPath={formData.poster}
-                    title={formData.title}
-                  />
 
-                  <div className="flex-1 space-y-6">
-                    {/* Tabs Navigation */}
-                    <div className="flex bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default relative">
+                  <div className="space-y-2">
+                    <label htmlFor="add-movie-poster" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                      <Image size={14} className="text-primary" aria-hidden="true" />
+                      URL ảnh poster
+                    </label>
+                    <input
+                      id="add-movie-poster"
+                      type="text"
+                      value={formData.poster}
+                      onChange={e => setFormData({ ...formData, poster: e.target.value })}
+                      className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-medium text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
+                      placeholder="https://..."
+                    />
+                  </div>
+
+                  <MovieFormFields
+                    isManualMode={isManualMode}
+                    manualMediaType={manualMediaType}
+                    setManualMediaType={setManualMediaType}
+                    formData={formData}
+                    setFormData={setFormData}
+                    isTVSeries={isTVSeries}
+                    countryOptions={COUNTRY_OPTIONS}
+                    genreOptions={genreOptions}
+                    selectedGenreIds={selectedGenreIds}
+                    setSelectedGenreIds={setSelectedGenreIds}
+                    isAnimating={isAnimating}
+                    errors={errors}
+                    refs={refs}
+                  />
+                </div>
+              )}
+
+              {activeTab === 'review' && (
+                <div className="space-y-5">
+                  <StatusToggle status={status} setStatus={setStatus} />
+
+                  {status === 'history' && (
+                    <div className="flex items-center justify-between gap-3 p-4 bg-black/5 dark:bg-white/5 border border-border rounded-2xl">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div aria-hidden="true" className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors shrink-0 ${formData.is_review ? 'bg-primary/20 text-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}>
+                          <MessageSquare size={20} />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-bold text-text-primary">Xem qua review</h4>
+                          <p className="text-xs text-text-secondary font-medium">Đánh dấu nếu bạn xem bản tóm tắt phim</p>
+                        </div>
+                      </div>
                       <button
                         type="button"
-                        onClick={() => setActiveTab('info')}
-                        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}
+                        role="switch"
+                        aria-checked={!!formData.is_review}
+                        aria-label="Xem qua review"
+                        onClick={() => setFormData({ ...formData, is_review: !formData.is_review })}
+                        className={`relative w-12 h-6 rounded-full transition-colors shrink-0 cursor-pointer ${formData.is_review ? 'bg-primary' : 'bg-black/20 dark:bg-white/10'}`}
                       >
-                        <Film size={14} />
-                        <span className="uppercase tracking-widest">Thông tin</span>
-                        {activeTab === 'info' && (
-                          <motion.div
-                            layoutId="activeTab"
-                            className="absolute inset-0 bg-surface border border-border-default shadow-premium rounded-xl z-[-1]"
-                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                          />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab('review')}
-                        className={`flex-1 relative z-10 py-2.5 text-xs font-bold transition-colors duration-300 cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'text-primary' : 'text-text-muted hover:text-text-main'}`}
-                      >
-                        <Star size={14} />
-                        <span className="uppercase tracking-widest">Đánh giá</span>
-                        {activeTab === 'review' && (
-                          <motion.div
-                            layoutId="activeTab"
-                            className="absolute inset-0 bg-surface border border-border-default shadow-premium rounded-xl z-[-1]"
-                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                          />
-                        )}
+                        <span aria-hidden="true" className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`} />
                       </button>
                     </div>
+                  )}
+                  {status === 'history' && (
+                    <RatingSection
+                      rating={formData.rating}
+                      hoverRating={hoverRating}
+                      isAnimating={isAnimating && ratingError}
+                      setRating={(r) => { setFormData({ ...formData, rating: r }); setRatingError(false); }}
+                      setHoverRating={setHoverRating}
+                      ratingRef={refs.rating}
+                    />
+                  )}
 
-                    {activeTab === 'info' && (
-                      <div className="space-y-5">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                              <Type size={14} className="text-primary" />
-                              Tiêu đề gốc
-                            </label>
-                            <input
-                              ref={refs.title}
-                              type="text"
-                              required
-                              value={formData.title}
-                              onChange={e => setFormData({ ...formData, title: e.target.value })}
-                              className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'scale-[1.02] border-error/50' : ''}`}
-                              placeholder="Tên gốc của phim..."
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                              <Type size={14} className="text-primary" />
-                              Tiêu đề tiếng Việt
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.title_vi}
-                              onChange={e => setFormData({ ...formData, title_vi: e.target.value })}
-                              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-bold text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50"
-                              placeholder="Tên tiếng Việt..."
-                            />
-                          </div>
-                        </div>
+                  {status === 'history' && (
+                    <div className="space-y-2">
+                      <label htmlFor="add-movie-review" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                        <MessageSquare size={14} className="text-primary" aria-hidden="true" />
+                        Review và cảm nhận
+                      </label>
+                      <textarea
+                        id="add-movie-review"
+                        rows={4}
+                        value={formData.review}
+                        onChange={e => setFormData({ ...formData, review: e.target.value })}
+                        className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-colors resize-none"
+                        placeholder="Bạn thấy phim này thế nào?"
+                      />
+                    </div>
+                  )}
 
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                            <Image size={14} className="text-primary" />
-                            URL Ảnh Poster
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.poster}
-                            onChange={e => setFormData({ ...formData, poster: e.target.value })}
-                            className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-sm font-medium text-text-main focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
-                            placeholder="https://..."
-                          />
-                        </div>
-
-                        <MovieFormFields
-                          isManualMode={isManualMode}
-                          manualMediaType={manualMediaType}
-                          setManualMediaType={setManualMediaType}
-                          formData={formData}
-                          setFormData={setFormData}
-                          isTVSeries={isTVSeries}
-                          countryOptions={COUNTRY_OPTIONS}
-                          genreOptions={genreOptions}
-                          selectedGenreIds={selectedGenreIds}
-                          setSelectedGenreIds={setSelectedGenreIds}
-                          isAnimating={isAnimating}
-                          errors={errors}
-                          refs={refs}
+                  {status === 'history' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label htmlFor="add-movie-date" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                          <Calendar size={14} className="text-primary" aria-hidden="true" />
+                          Ngày xem
+                        </label>
+                        <CustomDatePicker
+                          value={formData.date}
+                          onChange={(val) => setFormData({ ...formData, date: val })}
+                          placeholder="Chọn ngày..."
                         />
                       </div>
-                    )}
-
-                    {activeTab === 'review' && (
-                      <div className="space-y-5">
-                        <StatusToggle status={status} setStatus={setStatus} />
-                        
-                        {status === 'history' && (
-                          <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl group hover:border-primary/30 transition-colors cursor-pointer" 
-                            onClick={() => setFormData({ ...formData, is_review: !formData.is_review })}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${formData.is_review ? 'bg-primary/20 text-primary' : 'bg-black/10 dark:bg-white/5 text-text-muted'}`}>
-                                <MessageSquare size={20} />
-                              </div>
-                              <div>
-                                <h4 className="text-sm font-bold text-text-main">Xem qua review</h4>
-                                <p className="text-[10px] text-text-muted font-medium opacity-60">Đánh dấu nếu bạn xem bản tóm tắt phim</p>
-                              </div>
-                            </div>
-                            <div className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${formData.is_review ? 'bg-primary' : 'bg-black/20 dark:bg-white/10'}`}>
-                              <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-colors duration-300 shadow-sm ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`} />
-                            </div>
-                          </div>
-                        )}
-                        {status === 'history' && (
-                          <RatingSection
-                            rating={formData.rating}
-                            hoverRating={hoverRating}
-                            isAnimating={isAnimating && ratingError}
-                            setRating={(r) => { setFormData({ ...formData, rating: r }); setRatingError(false); }}
-                            setHoverRating={setHoverRating}
-                            ratingRef={refs.rating}
-                          />
-                        )}
-
-                        {status === 'history' && (
-                          <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                              <MessageSquare size={14} className="text-primary" />
-                              Review & Cảm nhận
-                            </label>
-                            <textarea
-                              rows={4}
-                              value={formData.review}
-                              onChange={e => setFormData({ ...formData, review: e.target.value })}
-                              className="w-full bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 py-3 text-sm font-medium text-text-main placeholder-text-muted focus:border-primary/50 focus:ring-4 focus:ring-primary/5 outline-none transition-colors custom-scrollbar resize-none hover:border-border-default/80 shadow-sm"
-                              placeholder="Bạn thấy phim này thế nào?"
-                            />
-                          </div>
-                        )}
-
-                        {status === 'history' && (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                                <Calendar size={14} className="text-primary" />
-                                Ngày xem
-                              </label>
-                              <CustomDatePicker
-                                value={formData.date}
-                                onChange={(val) => setFormData({ ...formData, date: val })}
-                                placeholder="Chọn ngày..."
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2 ml-1 opacity-60">
-                                <Clock size={14} className="text-primary" />
-                                Giờ xem
-                              </label>
-                              <CustomTimePicker
-                                value={formData.time}
-                                onChange={(val) => setFormData({ ...formData, time: val })}
-                                placeholder="Chọn giờ..."
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {status === 'history' && isTVSeries && (
-                          <TVProgressSection
-                            isCompleted={isCompleted}
-                            setIsCompleted={setIsCompleted}
-                            currentSeason={currentSeason}
-                            setCurrentSeason={setCurrentSeason}
-                            currentEpisode={currentEpisode}
-                            setCurrentEpisode={setCurrentEpisode}
-                            totalEpisodes={totalEpisodes}
-                            episodesPerSeason={episodesPerSeason}
-                            maxSeasons={parseInt(formData.seasons) || 1}
-                          />
-                        )}
-
-                        {status === 'history' && (
-                          <AlbumSection
-                            isEditMode={!!initialData?.movieToEdit}
-                            showCreateAlbum={showCreateAlbum}
-                            setShowCreateAlbum={setShowCreateAlbum}
-                            newAlbumName={newAlbumName}
-                            setNewAlbumName={setNewAlbumName}
-                            handleCreateAlbum={handleCreateAlbum}
-                            creatingAlbum={creatingAlbum}
-                            albums={albums}
-                            selectedAlbumIds={selectedAlbumIds}
-                            setSelectedAlbumIds={setSelectedAlbumIds}
-                          />
-                        )}
+                      <div className="space-y-2">
+                        <label htmlFor="add-movie-time" className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+                          <Clock size={14} className="text-primary" aria-hidden="true" />
+                          Giờ xem
+                        </label>
+                        <CustomTimePicker
+                          value={formData.time}
+                          onChange={(val) => setFormData({ ...formData, time: val })}
+                          placeholder="Chọn giờ..."
+                        />
                       </div>
-                    )}
-                  </div>
-                </form>
+                    </div>
+                  )}
+
+                  {status === 'history' && isTVSeries && (
+                    <TVProgressSection
+                      isCompleted={isCompleted}
+                      setIsCompleted={setIsCompleted}
+                      currentSeason={currentSeason}
+                      setCurrentSeason={setCurrentSeason}
+                      currentEpisode={currentEpisode}
+                      setCurrentEpisode={setCurrentEpisode}
+                      totalEpisodes={totalEpisodes}
+                      episodesPerSeason={episodesPerSeason}
+                      maxSeasons={parseInt(formData.seasons) || 1}
+                    />
+                  )}
+
+                  {status === 'history' && (
+                    <AlbumSection
+                      isEditMode={isEditMode}
+                      showCreateAlbum={showCreateAlbum}
+                      setShowCreateAlbum={setShowCreateAlbum}
+                      newAlbumName={newAlbumName}
+                      setNewAlbumName={setNewAlbumName}
+                      handleCreateAlbum={handleCreateAlbum}
+                      creatingAlbum={creatingAlbum}
+                      albums={albums}
+                      selectedAlbumIds={selectedAlbumIds}
+                      setSelectedAlbumIds={setSelectedAlbumIds}
+                    />
+                  )}
+                </div>
               )}
             </div>
+          </form>
+        )}
+      </DialogBody>
 
-            {/* Footer */}
-            <div className="px-5 py-4 sm:px-6 sm:py-5 border-t border-border-default bg-surface/90 backdrop-blur-xl flex flex-row items-center justify-end gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={closeAddModal}
-                className="flex-1 sm:flex-none px-5 sm:px-8 py-3 rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-300"
-              >
-                {(movieExists && !initialData?.movieToEdit) ? 'Đóng' : 'Hủy bỏ'}
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={isSubmitting || !isDirty || (movieExists && !initialData?.movieToEdit)}
-                className="flex-2 sm:flex-none bg-primary hover:shadow-premium text-white px-5 sm:px-8 py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors duration-300 disabled:opacity-40 shadow-lg shadow-primary/20 cursor-pointer"
-              >
-                {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-                {(movieExists && !initialData?.movieToEdit) ? 'Đã có trong thư viện' : (initialData?.movieToEdit ? 'Cập nhật' : 'Lưu phim')}
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      <div className="px-5 py-4 sm:px-6 border-t border-border flex flex-row items-center justify-end gap-2 shrink-0 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <Button variant="ghost" onClick={closeAddModal}>
+          {(movieExists && !isEditMode) ? 'Đóng' : 'Hủy bỏ'}
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={submitDisabled}
+          loading={isSubmitting}
+          leadingIcon={isSubmitting ? <Loader2 className="animate-spin" size={16} aria-hidden="true" /> : <Save size={16} aria-hidden="true" />}
+        >
+          {(movieExists && !isEditMode) ? 'Đã có trong thư viện' : (isEditMode ? 'Cập nhật' : 'Lưu phim')}
+        </Button>
+      </div>
+    </Dialog>
   );
-};
+}
 
 export default AddMovieModal;

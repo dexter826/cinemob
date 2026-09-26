@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
-import { X, Download, Loader2, Star, Filter } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Download, Loader2, Star, Filter } from 'lucide-react';
 import { Movie } from '@/types';
 import { exportToExcel, filterMoviesForExport, ExportFilters } from '../services/exportService';
 import useToastStore from '@/shared/stores/toastStore';
 import { normalizeMovieDate } from '../utils/movieUtils';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
-import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/Dialog';
+import { Button } from '@/shared/components/ui/Button';
+import { IconButton } from '@/shared/components/ui/IconButton';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -17,9 +17,6 @@ interface ExportModalProps {
 
 function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
   const { showToast } = useToastStore();
-
-  // Prevent body scroll when modal is open
-  usePreventScroll(isOpen);
 
   const [isExporting, setIsExporting] = useState(false);
 
@@ -75,39 +72,21 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
   }, [movies, filters]);
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          variants={OVERLAY_VARIANTS}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75"
-          onClick={onClose}
-        >
-          <motion.div
-            variants={MODAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="bg-surface border border-border-default rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-premium"
-            onClick={(e) => e.stopPropagation()}
-          >
-
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-border-default bg-surface/50 backdrop-blur-md shrink-0">
-          <h2 className="text-xl font-bold text-text-main">Xuất dữ liệu</h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors cursor-pointer "
-            disabled={isExporting}
-          >
-            <X size={20} className="text-text-muted" />
-          </button>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      titleId="export-modal-title"
+      presentation="dialog"
+    >
+        <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
+          <h2 id="export-modal-title" className="text-xl font-bold text-text-primary">Xuất dữ liệu</h2>
+          <IconButton label="Đóng hộp thoại xuất dữ liệu" onClick={onClose} variant="ghost">
+            <span aria-hidden="true" className="text-lg leading-none">×</span>
+          </IconButton>
         </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+        <DialogBody>
+          <div className="space-y-6">
           {/* Filters */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -192,49 +171,40 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
             </div>
           </div>
 
-          {/* Summary */}
           <div className="bg-black/5 dark:bg-white/5 rounded-lg p-4">
-            <div className="text-sm text-text-muted">
+            <p className="text-sm text-text-secondary">
               Sẽ xuất <span className="font-medium text-primary">{filteredCount}</span> phim
               {filteredCount !== movies.length && (
                 <span> (từ tổng số {movies.length})</span>
               )}
-            </div>
+            </p>
           </div>
-        </div>
+          </div>
+        </DialogBody>
 
-        {/* Actions / Footer */}
-        <div className="flex justify-end gap-3 p-5 border-t border-border-default bg-surface/50 backdrop-blur-md shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-6 py-2.5 rounded-xl text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors  cursor-pointer"
-            disabled={isExporting}
-          >
-            Hủy
-          </button>
-          <button
-            onClick={handleExport}
-            disabled={isExporting || filteredCount === 0}
-            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {isExporting ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                Đang xuất...
-              </>
-            ) : (
-              <>
-                <Download size={20} />
-                Xuất Excel
-              </>
-            )}
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+        <DialogFooter>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              onClick={onClose}
+              disabled={isExporting}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleExport}
+              disabled={isExporting || filteredCount === 0}
+              loading={isExporting}
+              leadingIcon={isExporting
+                ? <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+                : <Download size={20} aria-hidden="true" />}
+            >
+              {isExporting ? 'Đang xuất…' : 'Xuất Excel'}
+            </Button>
+          </div>
+        </DialogFooter>
+    </Dialog>
 );
 };
 

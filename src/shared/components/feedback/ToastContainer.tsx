@@ -1,54 +1,65 @@
+import { useRef } from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION } from '@/constants/animations';
 import useToastStore from '../../stores/toastStore';
+import { IconButton } from '../ui/IconButton';
 
-/** Container hiển thị các thông báo Toast toàn cục với hiệu ứng mượt mà. */
-function ToastContainer() {
+const toastTransition = { duration: MOTION_DURATION.standard, ease: 'easeOut' as const };
+
+function ToastIcon({ type }: { type: string }) {
+  const iconClass = 'mr-3 shrink-0';
+  if (type === 'success') return <CheckCircle size={18} className={`${iconClass} text-success`} aria-hidden="true" />;
+  if (type === 'error') return <AlertCircle size={18} className={`${iconClass} text-danger`} aria-hidden="true" />;
+  if (type === 'warning') return <AlertTriangle size={18} className={`${iconClass} text-warning`} aria-hidden="true" />;
+  return <Info size={18} className={`${iconClass} text-info`} aria-hidden="true" />;
+}
+
+function ToastList({ types, role, ariaLive }: { types: Array<string>; role: string; ariaLive: 'polite' | 'assertive' }) {
   const { toasts, removeToast } = useToastStore();
-
+  const reducedMotion = useReducedMotion() ?? false;
+  const items = toasts.filter((t) => types.includes(t.type));
+  if (items.length === 0) return null;
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-100 flex flex-col gap-3 items-center pointer-events-none w-full max-w-[90vw] sm:max-w-md">
+    <div role={role} aria-live={ariaLive} className="flex flex-col gap-3 items-center w-full">
       <AnimatePresence mode="popLayout">
-        {toasts.map(toast => (
+        {items.map((toast) => (
           <motion.div
             key={toast.id}
-            layout
-            initial={{ opacity: 0, y: -20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-            className={`
-              flex items-center p-3.5 sm:p-4 rounded-2xl shadow-premium border backdrop-blur-xl pointer-events-auto w-full
-              ${
-                toast.type === 'success' ? 'bg-primary/10 border-primary/20 text-primary' :
-                toast.type === 'error' ? 'bg-error/10 border-error/20 text-error' :
-                toast.type === 'warning' ? 'bg-warning/10 border-warning/20 text-warning' :
-                'bg-info/10 border-info/20 text-info'
-              }
-            `}
+            layout={!reducedMotion}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            animate={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8, transition: { duration: MOTION_DURATION.fast } }}
+            transition={toastTransition}
+            aria-atomic="true"
+            className="flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
           >
-            <div className="shrink-0">
-              {toast.type === 'success' && <CheckCircle size={18} className="mr-3" />}
-              {toast.type === 'error' && <AlertCircle size={18} className="mr-3" />}
-              {toast.type === 'warning' && <AlertTriangle size={18} className="mr-3" />}
-              {toast.type === 'info' && <Info size={18} className="mr-3" />}
-            </div>
-            
-            <span className="text-xs sm:text-sm font-bold flex-1 tracking-tight mr-4 leading-tight">
+            <ToastIcon type={toast.type} />
+            <span className="text-xs sm:text-sm font-semibold flex-1 tracking-tight mr-4 leading-tight">
               {toast.message}
             </span>
-            
-            <button
-              onClick={() => removeToast(toast.id)}
-              className="hover:bg-black/10 dark:hover:bg-white/10 rounded-full p-1.5 transition-colors cursor-pointer shrink-0"
-              aria-label="Đóng thông báo"
-            >
-              <X size={14} />
-            </button>
+            <IconButton label="Đóng thông báo" size="sm" onClick={() => removeToast(toast.id)}>
+              <X size={14} aria-hidden="true" />
+            </IconButton>
           </motion.div>
         ))}
       </AnimatePresence>
     </div>
   );
-};
+}
+
+/** Tiered toast announcements. Store API (`showToast`) unchanged. */
+function ToastContainer() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  return (
+    <div
+      ref={containerRef}
+      className="fixed top-6 left-1/2 -translate-x-1/2 z-100 flex flex-col gap-3 items-center pointer-events-none w-full max-w-[90vw] sm:max-w-md"
+    >
+      <ToastList types={['success', 'info']} role="status" ariaLive="polite" />
+      <ToastList types={['warning', 'error']} role="alert" ariaLive="assertive" />
+    </div>
+  );
+}
 
 export default ToastContainer;

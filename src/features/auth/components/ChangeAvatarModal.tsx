@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Loader2, Check, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Check, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { updateUserAvatar, getOriginalGoogleAvatar, revertToGoogleAvatar } from '../services/avatarService';
 import { getCroppedImgBlob } from '../services/cloudinaryService';
 import useToastStore from '@/shared/stores/toastStore';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
-import { MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/Dialog';
+import { Button } from '@/shared/components/ui/Button';
+import { IconButton } from '@/shared/components/ui/IconButton';
 import { AvatarPickView } from './avatar/AvatarPickView';
 import { AvatarCropView } from './avatar/AvatarCropView';
 
@@ -22,8 +22,6 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
   const { showToast } = useToastStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-
-  usePreventScroll(isOpen);
 
   const [, setSelectedFile] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -238,55 +236,42 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
   const renderedHeight = imageMeta ? imageMeta.height * currentScale : CROP_SIZE;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          variants={OVERLAY_VARIANTS}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75"
-          onClick={onClose}
-        >
-          <motion.div
-            variants={MODAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="bg-surface border border-border-default rounded-3xl w-full max-w-sm overflow-hidden shadow-premium"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4.5 border-b border-border-default bg-surface/50 backdrop-blur-md">
-              <div className="flex items-center gap-2">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      titleId="change-avatar-title"
+      descriptionId="change-avatar-description"
+      presentation="dialog"
+      className="sm:max-w-sm"
+    >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
                 {imageSrc && (
-                  <button
-                    type="button"
+                  <IconButton
+                    label="Chọn lại ảnh"
                     onClick={handleReset}
                     disabled={isUploading}
-                    aria-label="Chọn lại ảnh"
-                    className="p-1 -ml-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-50"
+                    size="sm"
                   >
-                    <ArrowLeft size={16} />
-                  </button>
+                    <ArrowLeft size={16} aria-hidden="true" />
+                  </IconButton>
                 )}
-                <h2 className="text-base font-semibold text-text-main">
-                  {imageSrc ? 'Căn chỉnh ảnh đại diện' : 'Đổi ảnh đại diện'}
-                </h2>
+                <div className="min-w-0">
+                  <h2 id="change-avatar-title" className="text-base font-semibold text-text-primary">
+                    {imageSrc ? 'Căn chỉnh ảnh đại diện' : 'Đổi ảnh đại diện'}
+                  </h2>
+                  <p id="change-avatar-description" className="text-xs text-text-secondary">
+                    {imageSrc ? 'Kéo để căn góc, cuộn để phóng to.' : 'Chọn ảnh JPG, PNG hoặc WEBP tối đa 10MB.'}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isUploading}
-                aria-label="Đóng hộp thoại"
-                className="p-1.5 -mr-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-50"
-              >
-                <X size={18} />
-              </button>
+              <IconButton label="Đóng hộp thoại đổi ảnh" onClick={onClose} disabled={isUploading} size="sm">
+                <span aria-hidden="true" className="text-lg leading-none">×</span>
+              </IconButton>
             </div>
 
-            {/* Body */}
-            <div className="p-6 flex flex-col items-center">
+            <DialogBody>
+              <div className="flex flex-col items-center">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -327,49 +312,39 @@ export function ChangeAvatarModal({ isOpen, onClose }: ChangeAvatarModalProps) {
                 />
               )}
 
-              {/* Thông báo lỗi nếu có */}
               {errorMessage && (
-                <div className="w-full mt-4 p-2.5 text-xs rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-center animate-in fade-in">
+                <p role="alert" className="w-full mt-4 p-2.5 text-xs rounded-xl bg-danger/10 border border-danger/20 text-danger text-center">
                   {errorMessage}
-                </div>
+                </p>
               )}
-            </div>
+              </div>
+            </DialogBody>
 
-            {/* Footer */}
-            <div className="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-border-default bg-surface/50 backdrop-blur-md">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={isUploading}
-                className="px-4 py-2 text-xs font-medium rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-50"
-              >
-                Hủy
-              </button>
-
-              {imageSrc && (
-                <button
-                  type="button"
-                  onClick={handleSaveCropped}
+            <DialogFooter>
+              <div className="flex items-center justify-end gap-2">
+                <Button
+                  variant="ghost"
+                  onClick={onClose}
                   disabled={isUploading}
-                  className="inline-flex items-center gap-1.5 px-4.5 py-2 text-xs font-semibold rounded-xl bg-primary text-white hover:bg-primary-hover active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-sm"
                 >
-                  {isUploading ? (
-                    <>
-                      <Loader2 size={14} className="animate-spin" />
-                      <span>Đang tải lên...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check size={14} />
-                      <span>Lưu ảnh</span>
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+                  Hủy
+                </Button>
+
+                {imageSrc && (
+                  <Button
+                    variant="primary"
+                    onClick={handleSaveCropped}
+                    disabled={isUploading}
+                    loading={isUploading}
+                    leadingIcon={isUploading
+                      ? <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+                      : <Check size={14} aria-hidden="true" />}
+                  >
+                    {isUploading ? 'Đang tải lên…' : 'Lưu ảnh'}
+                  </Button>
+                )}
+              </div>
+            </DialogFooter>
+    </Dialog>
   );
 };

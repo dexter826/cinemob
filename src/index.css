@@ -9,41 +9,75 @@
     :root {
         --color-background: 250 250 250; /* zinc-50 */
         --color-surface: 255 255 255; /* white */
+        --color-surface-elevated: 255 255 255; /* white */
         --color-primary: 16 185 129; /* emerald-500 */
-        --color-secondary: 245 158 11; /* amber-500 */
+        --color-primary-hover: 5 150 105; /* emerald-600 */
+        --color-on-primary: 255 255 255; /* white */
+        --color-text-primary: 9 9 11; /* zinc-950 */
+        --color-text-secondary: 82 82 91; /* zinc-600 */
+        --color-border: 228 228 231; /* zinc-200 */
+        --color-focus: 5 150 105; /* emerald-600 */
         --color-success: 34 197 94; /* green-500 */
         --color-warning: 245 158 11; /* amber-500 */
-        --color-error: 239 68 68; /* red-500 */
+        --color-danger: 239 68 68; /* red-500 */
         --color-info: 14 165 233; /* sky-500 */
+        --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+        --radius-control: 12px;
+        --radius-card: 16px;
+        --radius-dialog: 24px;
+        /* Legacy aliases, remove only after rg proves zero consumers. */
         --color-text-main: 9 9 11; /* zinc-950 */
         --color-text-muted: 113 113 122; /* zinc-500 */
+        --color-error: 239 68 68; /* red-500, alias of danger */
         --border-default: rgb(9 9 11 / 0.06);
     }
 
     .dark {
         --color-background: 9 9 11; /* zinc-950 */
         --color-surface: 20 20 23; /* zinc-900 deep */
+        --color-surface-elevated: 28 28 32; /* raised zinc */
         --color-primary: 16 185 129; /* emerald-500 */
-        --color-secondary: 251 191 36; /* amber-400 */
+        --color-primary-hover: 52 211 153; /* emerald-400 */
+        --color-on-primary: 255 255 255; /* white */
+        --color-text-primary: 250 250 250; /* zinc-50 */
+        --color-text-secondary: 161 161 170; /* zinc-400 */
+        --color-border: 39 39 42; /* zinc-800 */
+        --color-focus: 52 211 153; /* emerald-400 */
         --color-success: 34 197 94;
         --color-warning: 245 158 11;
-        --color-error: 239 68 68;
+        --color-danger: 239 68 68;
         --color-info: 14 165 233;
+        --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        --radius-control: 12px;
+        --radius-card: 16px;
+        --radius-dialog: 24px;
+        /* Legacy aliases, remove only after rg proves zero consumers. */
         --color-text-main: 250 250 250; /* zinc-50 */
         --color-text-muted: 161 161 170; /* zinc-400 */
+        --color-error: 239 68 68; /* red-500, alias of danger */
         --border-default: rgb(250 250 250 / 0.06);
     }
 
-    button,
-    button[type="submit"],
-    button[type="button"] {
-        outline: none;
-        border: none;
+    button {
         -webkit-appearance: none;
-        -webkit-tap-highlight-color: transparent;
-        -moz-appearance: none;
         appearance: none;
-        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    :where(button, a, input, textarea, select, [role='button'], [tabindex]):focus-visible {
+        outline: 2px solid rgb(var(--color-focus));
+        outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            scroll-behavior: auto !important;
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 
     /* Custom Scrollbar Styles */

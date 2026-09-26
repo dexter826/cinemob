@@ -65,11 +65,9 @@ function AlbumsPage() {
   };
 
   return (
-    <div className="text-text-main transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader 
-          icon={Folder} 
-          title="Album phim" 
+    <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader
+          title="Album phim"
           description="Tự tạo bộ sưu tập phim cá nhân theo ý bạn."
         />
 
@@ -79,10 +77,11 @@ function AlbumsPage() {
         >
           <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
             <div className="flex-1 space-y-1.5 sm:space-y-2">
-              <label className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60 ml-1">Tạo Album mới</label>
+              <label htmlFor="create-album-name" className="text-xs font-semibold text-text-secondary ml-1">Tạo album mới</label>
               <div className="relative group">
                 <Folder className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
                 <input
+                  id="create-album-name"
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -103,7 +102,7 @@ function AlbumsPage() {
         </form>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 animate-in fade-in duration-500">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
             ))}
@@ -117,75 +116,69 @@ function AlbumsPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {albums.map(album => (
-              <div
+              <article
                 key={album.docId}
-                className="group relative bg-surface rounded-2xl border border-border-default dark:border-white/5 hover:border-primary/40 dark:hover:border-primary/40 transition-colors duration-300 shadow-premium hover:shadow-premium-hover cursor-pointer overflow-hidden active:scale-[0.98] hover:-translate-y-1"
-                onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
+                className="group relative bg-surface rounded-2xl border border-border overflow-hidden"
               >
-                {/* Cover image section */}
-                <div className="relative h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
-                  {albumCoverMovies[album.docId || '']?.poster_path ? (
-                    <img
-                      src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
-                      alt={albumCoverMovies[album.docId || '']!.title}
-                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 flex items-center justify-center">
-                      <div className="flex flex-col items-center gap-3 opacity-40">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
-                          <Film size={20} className="text-white" strokeWidth={1.5} />
-                        </div>
-                        <span className="text-xs font-bold uppercase tracking-widest text-white">Trống</span>
-                      </div>
-                    </div>
-                  )}
+                <button
+                  type="button"
+                  onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
+                  aria-label={`Mở album ${album.name}, ${album.movieDocIds.length} mục`}
+                  className="block w-full text-left cursor-pointer rounded-none"
+                >
+                  <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
+                    {albumCoverMovies[album.docId || '']?.poster_path ? (
+                      <img
+                        src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
+                        <span className="flex flex-col items-center gap-3 opacity-40">
+                          <Film size={20} className="text-white" strokeWidth={1.5} aria-hidden="true" />
+                          <span className="text-xs font-bold text-white">Trống</span>
+                        </span>
+                      </span>
+                    )}
 
-                  {/* Gradient overlay - Darker for better text readability */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
+                    <span aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
 
-                  {/* Album Badge (Top Left) */}
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 shadow-sm z-10">
-                    <Folder size={12} className="text-primary" strokeWidth={1.5} />
-                    <span className="text-xs font-semibold text-white">Album</span>
-                  </div>
+                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 z-10">
+                      <Folder size={12} className="text-primary" strokeWidth={1.5} aria-hidden="true" />
+                      <span className="text-xs font-semibold text-white">Album</span>
+                    </span>
 
-                  {/* Top-right delete button - Chạm được trên mobile, hover trên desktop */}
-                  <button
-                    type="button"
-                    aria-label={`Xóa album ${album.name}`}
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleDelete(album);
-                    }}
-                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-error border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
-                  >
-                    <Trash2 size={15} strokeWidth={1.5} />
-                  </button>
+                    <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+                      <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
+                        {album.name}
+                      </span>
+                    </span>
+                  </span>
+                </button>
 
-                  {/* Album name overlay */}
-                  <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-                    <h3 className="font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight drop-shadow-xl font-display">
-                      {album.name}
-                    </h3>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  aria-label={`Xóa album ${album.name}`}
+                  onClick={() => handleDelete(album)}
+                  className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
+                >
+                  <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
+                </button>
 
-                {/* Info bar */}
-                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border-default">
+                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
                   <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
-                    <Film size={12} strokeWidth={1.5} />
+                    <Film size={12} strokeWidth={1.5} aria-hidden="true" />
                     <span><strong className="tabular-nums">{album.movieDocIds.length}</strong> mục</span>
                   </div>
-                  <span className="text-xs font-medium text-text-muted group-hover:text-primary transition-colors truncate">Chi tiết →</span>
+                  <span aria-hidden="true" className="text-xs font-medium text-text-secondary truncate">Chi tiết →</span>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
-      </div>
-    </div>
+    </main>
   );
 };
 

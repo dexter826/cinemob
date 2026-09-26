@@ -9,22 +9,25 @@ interface PersonCardProps {
 /** Thẻ hiển thị nghệ sĩ, diễn viên trong kết quả tìm kiếm. */
 function PersonCard({ person, onClick }: PersonCardProps) {
   return (
-    <div
-      onClick={() => onClick(person.id)}
-      role="button"
-      tabIndex={0}
-      aria-label={`Xem thông tin nghệ sĩ ${person.name}`}
-      className="group relative bg-surface rounded-3xl overflow-hidden border border-border-default cursor-pointer hover:shadow-premium transition-colors duration-500"
+    <article
+      className="group relative bg-surface rounded-3xl overflow-hidden border border-border"
     >
-      <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
-        <img
-          src={getTMDBImageUrl(person.profile_path, 'h632')}
-          alt={person.name}
-          className="w-full h-full object-cover transition-colors duration-700"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </div>
+      <button
+        type="button"
+        onClick={() => onClick(person.id)}
+        aria-label={`Xem thông tin nghệ sĩ ${person.name}`}
+        className="block w-full text-left cursor-pointer rounded-none"
+      >
+        <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
+          <img
+            src={getTMDBImageUrl(person.profile_path, 'h632')}
+            alt={person.name}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        </div>
+      </button>
       <div className="p-4 bg-surface border-t border-border-default">
         <h3 className="font-bold text-sm line-clamp-1 tracking-tight text-text-main group-hover:text-primary transition-colors font-display" title={person.name}>
           {person.name}
@@ -38,7 +41,7 @@ function PersonCard({ person, onClick }: PersonCardProps) {
           </p>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

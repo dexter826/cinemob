@@ -1,48 +1,64 @@
 import React from 'react';
-import { LucideIcon, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LucideIcon } from 'lucide-react';
+import { IconButton } from './IconButton';
 
 interface PageHeaderProps {
-  icon: LucideIcon;
   title: string;
   description?: string;
-  children?: React.ReactNode;
+  eyebrow?: string;
   onBack?: () => void;
+  actions?: React.ReactNode;
+  leading?: React.ReactNode;
   className?: string;
+  /** @deprecated Use `leading` instead. Rendered as an unboxed icon for migration. Remove in Task 23. */
+  icon?: LucideIcon;
+  /** @deprecated Use `actions` instead. Remove in Task 23. */
+  children?: React.ReactNode;
 }
 
-/** Component tiêu đề trang chuẩn cho toàn bộ ứng dụng */
-function PageHeader({ icon: Icon, title, description, children, onBack, className = '' }: PageHeaderProps) {
+function PageHeader({
+  title,
+  description,
+  eyebrow,
+  onBack,
+  actions,
+  leading,
+  className = '',
+  icon: LegacyIcon,
+  children,
+}: PageHeaderProps) {
+  const resolvedActions = actions ?? children;
+  const resolvedLeading = leading ?? (LegacyIcon
+    ? <LegacyIcon className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
+    : undefined);
   return (
-    <div className={`flex items-center justify-between gap-3 sm:gap-6 ${className}`}>
-      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+    <div className={`flex items-start justify-between gap-3 sm:gap-6 ${className}`}>
+      <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
         {onBack && (
-          <button
-            onClick={onBack}
-            aria-label="Quay lại trang trước"
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface border border-border-default flex items-center justify-center text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors shadow-sm shrink-0 active:scale-95 cursor-pointer"
-          >
-            <ArrowLeft size={20} />
-          </button>
+          <IconButton label="Quay lại trang trước" onClick={onBack} variant="secondary" size="md">
+            <ArrowLeft size={20} aria-hidden="true" />
+          </IconButton>
         )}
-        <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0 shadow-sm">
-            <Icon className="text-primary w-5 h-5 sm:w-6 sm:h-6" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-main truncate font-display">{title}</h1>
-            {description && (
-              <p className="text-xs sm:text-sm text-text-muted opacity-75 font-medium truncate">{description}</p>
-            )}
-          </div>
+        {resolvedLeading && (
+          <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>
+        )}
+        <div className="min-w-0">
+          {eyebrow && (
+            <p className="text-xs font-semibold text-text-secondary mb-1">{eyebrow}</p>
+          )}
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-primary truncate font-display">{title}</h1>
+          {description && (
+            <p className="text-xs sm:text-sm text-text-secondary font-medium truncate mt-0.5">{description}</p>
+          )}
         </div>
       </div>
-      {children && (
+      {resolvedActions && (
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {children}
+          {resolvedActions}
         </div>
       )}
     </div>
   );
-};
+}
 
 export default PageHeader;

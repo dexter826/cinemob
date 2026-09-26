@@ -88,7 +88,7 @@ function CalendarGrid({
               {episodes.slice(0, 2).map((ep) => (
                 <div 
                   key={`${ep.seriesId}-${ep.episode.id}`} 
-                  className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20 uppercase tracking-tighter"
+                  className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
@@ -129,7 +129,7 @@ function CalendarGrid({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-border-default dark:border-white/5 p-4 sm:p-6 rounded-3xl sm:rounded-4xl flex flex-col h-full shadow-premium ring-1 ring-black/5 dark:ring-white/5">
+    <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-3xl flex flex-col h-full">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button 
           onClick={() => navigateMonth('prev')} 
@@ -139,13 +139,13 @@ function CalendarGrid({
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-main tracking-tight uppercase whitespace-nowrap">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-primary tracking-tight whitespace-nowrap">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
-          <button 
-            onClick={goToToday} 
+          <button
+            onClick={goToToday}
             aria-label="Về hôm nay"
-            className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors uppercase tracking-widest cursor-pointer"
+            className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors cursor-pointer"
           >
             Hôm nay
           </button>
@@ -161,7 +161,7 @@ function CalendarGrid({
 
       <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
         {DAYS_OF_WEEK.map(day => (
-          <div key={day} className="text-center text-xs font-bold text-text-muted uppercase tracking-wider sm:tracking-[0.2em] py-2 sm:py-3 opacity-60">
+          <div key={day} className="text-center text-xs font-semibold text-text-secondary py-2 sm:py-3">
             {day}
           </div>
         ))}

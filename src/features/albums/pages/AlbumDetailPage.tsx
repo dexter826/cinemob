@@ -190,7 +190,7 @@ function AlbumDetailPage() {
         {editing && (
           <form
             onSubmit={handleSaveInfo}
-            className="bg-surface border border-border-default dark:border-white/5 rounded-3xl p-4 sm:p-5 shadow-premium animate-in fade-in slide-in-from-top-2 duration-300"
+            className="bg-surface border border-border rounded-3xl p-4 sm:p-5"
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
@@ -280,7 +280,7 @@ function AlbumDetailPage() {
 
 
         {managingMovies && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">

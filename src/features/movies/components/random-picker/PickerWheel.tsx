@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 interface PickerWheelProps {
@@ -22,6 +23,8 @@ export function PickerWheel({
   showTitle,
   hasResult,
 }: PickerWheelProps) {
+  const reducedMotion = useReducedMotion() ?? false;
+  const animateCards = isShuffling && !reducedMotion;
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Wheel of Fortune Layout - Fixed positions, changing content */}
@@ -32,8 +35,8 @@ export function PickerWheel({
           <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
             <img
               src={leftSrc}
-              alt="Left movie"
-              className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+              alt=""
+              className={`w-full h-full object-cover ${animateCards ? 'animate-pulse-soft' : ''}`}
             />
             <div className="absolute inset-0 bg-black/30" />
           </div>
@@ -41,11 +44,11 @@ export function PickerWheel({
 
         {/* Center Card - Main focus */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
-          <div className={`w-full h-full rounded-xl overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${isShuffling ? 'animate-pulse-soft' : 'animate-card-float'}`}>
+          <div className={`w-full h-full rounded-xl overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${animateCards ? 'animate-pulse-soft' : ''}`}>
             <img
               src={centerSrc}
-              alt="Center movie"
-              className="w-full h-full object-cover transition-colors duration-200"
+              alt=""
+              className="w-full h-full object-cover"
             />
 
             {/* Gradient overlay */}
@@ -60,8 +63,8 @@ export function PickerWheel({
           <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
             <img
               src={rightSrc}
-              alt="Right movie"
-              className={`w-full h-full object-cover transition-colors duration-200 ${isShuffling ? 'animate-pulse-soft' : ''}`}
+              alt=""
+              className={`w-full h-full object-cover ${animateCards ? 'animate-pulse-soft' : ''}`}
             />
             <div className="absolute inset-0 bg-black/30" />
           </div>
@@ -83,20 +86,20 @@ export function PickerWheel({
         </p>
         {showTitle && (
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-text-main line-clamp-2 font-display" title={title}>
+            <h3 className="text-xl font-bold text-text-primary line-clamp-2 font-display" title={title}>
               {title}
             </h3>
-            <p className="text-sm text-text-muted">
+            <p className="text-sm text-text-secondary">
               {hasResult ? 'Đã tìm thấy tác phẩm dành riêng cho bạn' : 'Phim được chọn ngẫu nhiên'}
             </p>
           </div>
         )}
         {isShuffling && (
-          <div className="space-y-1">
-            <h3 className="text-xl font-bold text-text-main animate-pulse font-display">
+          <div className="space-y-1" aria-live="polite">
+            <h3 className={`text-xl font-bold text-text-primary font-display ${animateCards ? 'animate-pulse' : ''}`}>
               Đang chọn ngẫu nhiên…
             </h3>
-            <p className="text-sm text-text-muted animate-pulse">
+            <p className={`text-sm text-text-secondary ${animateCards ? 'animate-pulse' : ''}`}>
               Đang xáo trộn các đề xuất phim phù hợp
             </p>
           </div>

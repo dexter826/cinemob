@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { X, Calendar, Clock, Star, Film, FolderPlus, Play, Users, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Movie, TMDBVideo, TMDBCredits } from '@/types';
 import { getMovieVideos, getMovieCredits } from '@/features/search/services/tmdb';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -8,8 +7,9 @@ import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl, getTransla
 import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
 import useToastStore from '@/shared/stores/toastStore';
 import { useNavigate } from 'react-router-dom';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
-import { MESSAGES, MODAL_VARIANTS, OVERLAY_VARIANTS } from '@/constants';
+import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
+import { IconButton } from '@/shared/components/ui/IconButton';
+import { MESSAGES } from '@/constants';
 
 
 interface MovieDetailModalProps {
@@ -25,15 +25,6 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
   const [credits, setCredits] = useState<TMDBCredits | null>(null);
   const { showToast } = useToastStore();
   const navigate = useNavigate();
-
-  usePreventScroll(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,40 +85,29 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          variants={OVERLAY_VARIANTS}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
-          onClick={onClose}
-        >
-          <motion.div
-            variants={MODAL_VARIANTS}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="bg-surface w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-border-default relative flex flex-col md:flex-row max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 z-20 p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-colors border border-white/10 cursor-pointer active:scale-95 shadow-md"
-              aria-label="Đóng chi tiết phim"
-            >
-              <X size={18} className="sm:w-5 sm:h-5" strokeWidth={1.5} />
-            </button>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      titleId="movie-detail-title"
+      presentation="fullscreen-mobile"
+      size="4xl"
+    >
+      <div className="relative flex flex-col md:flex-row flex-1 min-h-0">
+        <div className="absolute top-4 right-4 z-20">
+          <IconButton label="Đóng chi tiết phim" onClick={onClose} variant="secondary">
+            <X size={18} strokeWidth={1.5} aria-hidden="true" />
+          </IconButton>
+        </div>
 
-            <div className="w-full md:w-2/5 h-48 md:h-auto relative shrink-0">
-              <img src={posterUrl} alt={mainTitle} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent md:bg-linear-to-r md:from-transparent md:to-surface" />
-            </div>
+        <div className="w-full md:w-2/5 h-48 md:h-auto relative shrink-0">
+          <img src={posterUrl} alt={mainTitle} className="w-full h-full object-cover" />
+          <div aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-surface-elevated via-transparent to-transparent md:bg-linear-to-r md:from-transparent md:to-surface-elevated" />
+        </div>
 
-            <div className="flex-1 p-5 md:p-6 overflow-y-auto custom-scrollbar">
-              {loading ? (
-                <div className="space-y-6 animate-in fade-in duration-500">
+        <DialogBody>
+          <div className="flex-1">
+            {loading ? (
+              <div className="space-y-6">
                   <div className="space-y-2">
                     <div className="h-10 bg-black/5 dark:bg-white/5 rounded-2xl w-3/4 animate-pulse" />
                     <div className="h-6 bg-black/5 dark:bg-white/5 rounded-xl w-1/2 animate-pulse" />
@@ -157,7 +137,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
               ) : (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-main mb-1 tracking-tight font-display">{mainTitle}</h2>
+                    <h2 id="movie-detail-title" className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-1 tracking-tight font-display">{mainTitle}</h2>
                     {subTitle && movie.title_vi !== mainTitle && <p className="text-text-muted text-base sm:text-lg mb-2 italic">{subTitle}</p>}
                   </div>
 
@@ -253,7 +233,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                               <button
                                 key={actor.id}
                                 onClick={() => handlePersonClick(actor.id)}
-                                className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-xl text-xs font-medium text-text-muted transition-colors border border-border-default dark:border-white/5 cursor-pointer active:scale-95"
+                                className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-xl text-xs font-medium text-text-secondary transition-colors border border-border cursor-pointer"
                               >
                                 {actor.name}
                               </button>
@@ -270,10 +250,10 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         onClick={handleWatchTrailer}
                         disabled={videos.length === 0}
                         aria-label={videos.length > 0 ? "Xem trailer phim trên YouTube" : "Phim không có video trailer"}
-                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors shadow-sm active:scale-[0.98] cursor-pointer ${
+                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors cursor-pointer ${
                           videos.length > 0
                             ? 'bg-red-600 hover:bg-red-500 text-white'
-                            : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'
+                            : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
                         }`}
                       >
                         <Play size={18} fill="currentColor" strokeWidth={1.5} />
@@ -284,10 +264,10 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         onClick={handleAddToAlbum}
                         disabled={!canAddToAlbum}
                         aria-label="Thêm phim vào album cá nhân"
-                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors shadow-sm active:scale-[0.98] cursor-pointer ${
+                        className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors cursor-pointer ${
                           canAddToAlbum
-                            ? 'bg-primary hover:bg-primary/90 text-white'
-                            : 'bg-black/5 dark:bg-white/5 text-text-muted cursor-not-allowed opacity-50'
+                            ? 'bg-primary hover:bg-primary-hover text-on-primary'
+                            : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
                         }`}
                       >
                         <FolderPlus size={18} strokeWidth={1.5} />
@@ -297,19 +277,18 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                   </div>
 
                   {movie.status !== 'watchlist' && (
-                    <div className="pt-2 text-xs uppercase tracking-wider text-text-muted font-medium flex items-center gap-1.5 opacity-80">
-                      <Calendar size={13} className="text-text-muted" strokeWidth={1.5} />
+                    <div className="pt-2 text-xs text-text-secondary font-medium flex items-center gap-1.5">
+                      <Calendar size={13} aria-hidden="true" strokeWidth={1.5} />
                       <span>Đã xem: {formatMovieDate(movie.watched_at)}</span>
                     </div>
                   )}
                 </div>
               )}
-            </div>
-            <AlbumSelectorModal isOpen={showAlbumSelector} onClose={() => setShowAlbumSelector(false)} movie={movie} />
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </DialogBody>
+      </div>
+      <AlbumSelectorModal isOpen={showAlbumSelector} onClose={() => setShowAlbumSelector(false)} movie={movie} />
+    </Dialog>
   );
 };
 

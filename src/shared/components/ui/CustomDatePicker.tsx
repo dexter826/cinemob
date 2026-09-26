@@ -50,6 +50,7 @@ function CustomDatePicker({
         return new Date();
     });
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
 
     const selectedDate = useMemo(() => {
         if (!value) return null;
@@ -178,7 +179,11 @@ function CustomDatePicker({
             event.preventDefault();
             handleToggle();
         } else if (event.key === 'Escape') {
-            setIsOpen(false);
+            event.preventDefault();
+            if (isOpen) {
+                setIsOpen(false);
+                triggerRef.current?.focus();
+            }
         }
     };
 
@@ -186,8 +191,8 @@ function CustomDatePicker({
         <div
             className={`
                 bg-surface border border-border-default rounded-2xl shadow-2xl p-4
-                ${isMobile 
-                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[320px] mx-auto animate-in zoom-in-95 duration-200' 
+                ${isMobile
+                    ? 'fixed inset-x-4 top-1/2 -translate-y-1/2 z-70 w-auto max-w-[320px] mx-auto'
                     : 'absolute top-full left-0 mt-1 z-50 w-72'}
             `}
             role="dialog"
@@ -196,7 +201,7 @@ function CustomDatePicker({
         >
             {isMobile && (
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-                    <span className="text-sm font-bold text-text-main uppercase tracking-widest">Chọn ngày</span>
+                    <span className="text-sm font-bold text-text-main">Chọn ngày</span>
                     <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg">
                         <X size={20} className="text-text-muted" />
                     </button>
@@ -302,7 +307,7 @@ function CustomDatePicker({
                         onChange(formatDateToString(today));
                         setIsOpen(false);
                     }}
-                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors uppercase tracking-widest border border-primary/20"
+                    className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20"
                 >
                     Hôm nay
                 </button>
@@ -314,6 +319,7 @@ function CustomDatePicker({
         <div className={`relative ${className}`} ref={dropdownRef}>
             {/* Trigger Button */}
             <button
+                ref={triggerRef}
                 type="button"
                 onClick={handleToggle}
                 onKeyDown={handleKeyDown}
@@ -342,7 +348,7 @@ function CustomDatePicker({
                 isMobile ? (
                     createPortal(
                         <div 
-                            className="fixed inset-0 z-60 flex items-center justify-center p-4 animate-in fade-in duration-200"
+                            className="fixed inset-0 z-60 flex items-center justify-center p-4"
                             onClick={() => setIsOpen(false)}
                         >
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />

@@ -137,7 +137,7 @@ function PersonDetailPage() {
         />
 
         {loading ? (
-          <div className="space-y-6 animate-in fade-in duration-500">
+          <div className="space-y-6">
             <div className="bg-surface border border-border-default rounded-3xl p-5 sm:p-6 shadow-premium h-96 animate-pulse" />
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {Array.from({ length: 10 }).map((_, i) => (
@@ -189,7 +189,7 @@ function PersonDetailPage() {
                               <Calendar size={18} className="text-primary" />
                             </div>
                             <div>
-                              <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Ngày sinh</div>
+                              <div className="text-xs font-semibold text-text-secondary">Ngày sinh</div>
                               <div className="font-bold text-sm">{new Date(person.birthday).toLocaleDateString('vi-VN')}</div>
                             </div>
                           </div>
@@ -201,7 +201,7 @@ function PersonDetailPage() {
                               <Calendar size={18} className="text-error" />
                             </div>
                             <div>
-                              <div className="text-xs font-bold text-error uppercase tracking-widest opacity-60">Ngày mất</div>
+                              <div className="text-xs font-semibold text-danger">Ngày mất</div>
                               <div className="font-bold text-sm text-error">{new Date(person.deathday).toLocaleDateString('vi-VN')}</div>
                             </div>
                           </div>
@@ -215,7 +215,7 @@ function PersonDetailPage() {
                               <Users size={18} className="text-primary" />
                             </div>
                             <div>
-                              <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Tuổi</div>
+                              <div className="text-xs font-semibold text-text-secondary">Tuổi</div>
                               <div className="font-bold text-sm">
                                 {(() => {
                                   const birth = new Date(person.birthday);
@@ -239,7 +239,7 @@ function PersonDetailPage() {
                           <MapPin size={18} className="text-primary" />
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-text-muted uppercase tracking-widest opacity-60">Nơi sinh</div>
+                          <div className="text-xs font-semibold text-text-secondary">Nơi sinh</div>
                           <div className="font-bold text-sm">{person.place_of_birth}</div>
                         </div>
                       </div>
@@ -256,7 +256,7 @@ function PersonDetailPage() {
                         {person.biography.length > 200 && (
                           <button
                             onClick={() => setShowFullBio(!showFullBio)}
-                            className="mt-3 text-primary hover:text-primary-dark font-bold text-xs uppercase tracking-widest flex items-center gap-1 transition-colors cursor-pointer"
+                            className="mt-3 text-primary hover:text-primary-hover font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             {showFullBio ? (
                               <>Thu gọn <ChevronUp size={14} /></>

@@ -22,6 +22,7 @@ import ToastContainer from '@/shared/components/feedback/ToastContainer';
 import AlertContainer from '@/shared/components/feedback/AlertContainer';
 
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
+import { getSplashMode, SplashMode } from '@/shared/utils/splashPolicy';
 
 // Điều hướng trang không animate toàn màn hình để tránh nháy composite layer.
 function AnimatedRoutes() {
@@ -84,21 +85,22 @@ function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean
 };
 
 function App() {
-  const [shouldShowSplash, setShouldShowSplash] = useState(() => !sessionStorage.getItem('splashScreenShown'));
-  const [animationFinished, setAnimationFinished] = useState(false);
+  // Splash mode is decided once from the initial entry pathname: full splash on
+  // app start/reload, never on internal navigation or the public /share/:uid route.
+  const [splashMode] = useState<SplashMode>(() =>
+    getSplashMode(
+      window.location.pathname,
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+  );
+  const [shouldShowSplash, setShouldShowSplash] = useState(() => splashMode !== 'none');
+  const [animationFinished, setAnimationFinished] = useState(() => splashMode === 'none');
   const [appReady, setAppReady] = useState(false);
-
-  useEffect(() => {
-    if (!shouldShowSplash) {
-      setAnimationFinished(true);
-    }
-  }, [shouldShowSplash]);
 
   const handleAppReady = () => {
     setAppReady(true);
     if (shouldShowSplash) {
       setShouldShowSplash(false);
-      sessionStorage.setItem('splashScreenShown', 'true');
     }
   };
 
@@ -120,9 +122,10 @@ function App() {
           element={
             <>
               {shouldShowSplash && (
-                <SplashScreen 
-                  onAnimationFinish={() => setAnimationFinished(true)} 
+                <SplashScreen
+                  onAnimationFinish={() => setAnimationFinished(true)}
                   showLoading={animationFinished && !appReady}
+                  staticMode={splashMode === 'static'}
                 />
               )}
 

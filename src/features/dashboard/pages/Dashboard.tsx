@@ -75,27 +75,27 @@ function Dashboard() {
 
 
   return (
-    <div className="text-text-main transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader 
-          icon={Film}
+    <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <PageHeader
           title="Thư viện điện ảnh"
           description="Quản lý bộ sưu tập phim cá nhân."
-        >
-          <button
-            type="button"
-            onClick={() => setIsShareModalOpen(true)}
-            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-surface border border-border-default hover:border-primary/50 text-text-main hover:text-primary transition-colors shadow-premium cursor-pointer text-xs sm:text-sm font-semibold active:scale-[0.98]"
-            title="Chia sẻ thư viện qua link công khai"
-          >
-            <Share2 size={16} className="text-primary" />
-            <span>Chia sẻ</span>
-          </button>
-        </PageHeader>
-        
+          actions={(
+            <button
+              type="button"
+              onClick={() => setIsShareModalOpen(true)}
+              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-surface border border-border hover:border-primary/50 text-text-primary hover:text-primary transition-colors cursor-pointer text-xs sm:text-sm font-semibold"
+              title="Chia sẻ thư viện qua link công khai"
+            >
+              <Share2 size={16} className="text-primary" aria-hidden="true" />
+              <span>Chia sẻ</span>
+            </button>
+          )}
+        />
+
         <DashboardActions onOpenAddModal={() => openAddModal()} />
 
-        <div className="space-y-4">
+        <section aria-labelledby="library-content-title" className="space-y-4">
+          <h2 id="library-content-title" className="sr-only">Nội dung thư viện</h2>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <DashboardTabs 
               activeTab={activeTab}
@@ -169,14 +169,13 @@ function Dashboard() {
               />
             </>
           )}
-        </div>
-      </div>
+        </section>
 
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
       />
-    </div>
+    </main>
   );
 };
 
