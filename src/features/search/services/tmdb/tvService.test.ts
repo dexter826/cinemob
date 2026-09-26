@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { adjustAirDate, parseLocalDate } from './tvService';
-import { withLimit } from './tmdbClient';
 
 describe('adjustAirDate', () => {
   it('giữ nguyên ngày YYYY-MM-DD', () => {
@@ -28,22 +27,5 @@ describe('parseLocalDate', () => {
   it('trả null cho chuỗi invalid', () => {
     expect(parseLocalDate('')).toBeNull();
     expect(parseLocalDate('not-a-date')).toBeNull();
-  });
-});
-
-describe('withLimit', () => {
-  it('giữ thứ tự kết quả và đánh dấu task lỗi thành null', async () => {
-    const tasks = [
-      async () => 1,
-      async () => {
-        throw new Error('boom');
-      },
-      async () => 3,
-    ];
-    await expect(withLimit(tasks, 2)).resolves.toEqual([1, null, 3]);
-  });
-
-  it('trả mảng rỗng khi không có task', async () => {
-    await expect(withLimit([], 3)).resolves.toEqual([]);
   });
 });

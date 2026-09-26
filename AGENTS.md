@@ -23,7 +23,9 @@ Follow the existing TypeScript style: two-space indentation, single quotes, semi
 
 ## Testing Guidelines
 
-Vitest is configured (`vitest.config.ts`, alias `@/`); put unit tests in colocated `*.test.ts` files next to the code they cover. Before opening a PR, run `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`, then manually verify affected routes, responsive layouts, authentication, and relevant API failure states.
+Vitest is configured for colocated Node-based `src/**/*.test.ts` tests with the `@/` alias. Testing is risk-based rather than one-test-file-per-production-file: add automated tests for pure utilities, business rules, parsers/normalizers, data mapping/validation, and service behavior with meaningful cache, retry, error, privacy, or state semantics. Keep tests beside the module that owns the behavior; do not place another module's contract tests in an unrelated test file. Trivial constants/types and presentation-only components do not require unit tests solely for coverage.
+
+The current suite does not include a DOM/component runner, browser E2E framework, or Firestore emulator test dependency. Verify component interaction, responsive/theme behavior, authentication flows, PWA/browser behavior, and other browser-only contracts manually until the project explicitly adopts the appropriate test layer. Firestore security rules require emulator-backed verification rather than mocked client tests. Before opening a PR, run `npm run typecheck`, `npm run lint`, `npm test`, and `npm run build`, then perform the manual checks relevant to the affected scope.
 
 ## Commit & Pull Request Guidelines
 

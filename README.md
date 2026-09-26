@@ -108,24 +108,26 @@ graph TD
 | `npm run dev` | Khởi chạy Vite development server tại cổng `3000` (hỗ trợ chế độ PWA dev). |
 | `npm run build` | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`. |
 | `npm run preview` | Khởi chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
-| `npx tsc --noEmit` | Kiểm tra tính toàn vẹn kiểu dữ liệu TypeScript (không tạo file đầu ra). |
+| `npm run typecheck` | Kiểm tra tính toàn vẹn kiểu dữ liệu TypeScript mà không tạo file đầu ra. |
+| `npm run lint` | Chạy ESLint trên mã nguồn trong `src/`. |
+| `npm test` | Chạy bộ kiểm thử Vitest một lần trên các file `src/**/*.test.ts`. |
 
 ---
 
 ## Kiểm tra chất lượng mã nguồn
 
-Repository hiện chưa thiết lập test runner tự động. Trước khi mở Pull Request hoặc bàn giao thay đổi, cần thực hiện kiểm tra chất lượng thủ công:
+Repository sử dụng Vitest cho các kiểm thử tự động chạy trong môi trường Node. Chiến lược hiện tại ưu tiên test cho logic thuần, business rule, mapping/validation và service behavior có rủi ro regression; không yêu cầu mỗi production file phải có một test file tương ứng. Component interaction và các contract phụ thuộc trình duyệt vẫn được kiểm tra thủ công cho đến khi dự án chủ động bổ sung test layer phù hợp.
 
-1. **Kiểm tra kiểu dữ liệu:**
-   ```bash
-   npx tsc --noEmit
-   ```
-2. **Kiểm tra quy trình build production:**
-   ```bash
-   npm run build
-   ```
-3. **Kiểm tra giao diện và tính năng:**
-   Chạy `npm run preview` để kiểm tra trực tiếp các luồng đăng nhập, tra cứu phim, thêm phim vào danh sách và khả năng đáp ứng trên các kích thước màn hình.
+Trước khi mở Pull Request hoặc bàn giao thay đổi, chạy:
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
+
+Sau đó dùng `npm run preview` để kiểm tra các luồng bị ảnh hưởng trên trình duyệt, bao gồm responsive/theme, authentication, API failure states và PWA behavior khi có liên quan.
 
 ---
 
