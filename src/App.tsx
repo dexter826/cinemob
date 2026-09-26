@@ -1,6 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import Login from '@/features/auth/components/Login';
@@ -21,44 +20,22 @@ import ErrorBoundary from '@/shared/components/feedback/ErrorBoundary';
 import { useAppInit } from '@/shared/hooks/useAppInit';
 import ToastContainer from '@/shared/components/feedback/ToastContainer';
 import AlertContainer from '@/shared/components/feedback/AlertContainer';
-import { PAGE_VARIANTS, PAGE_TRANSITION } from '@/constants';
 
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
 
-const REDUCED_PAGE_VARIANTS = {
-  initial: { opacity: 0 },
-  in: { opacity: 1 },
-  out: { opacity: 0 },
-};
-
-// Điều hướng trang kèm hỗ trợ giảm chuyển động.
+// Điều hướng trang không animate toàn màn hình để tránh nháy composite layer.
 function AnimatedRoutes() {
-  const location = useLocation();
-  const shouldReduceMotion = useReducedMotion();
-  
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location.pathname}
-        initial="initial"
-        animate="in"
-        exit="out"
-        variants={shouldReduceMotion ? REDUCED_PAGE_VARIANTS : PAGE_VARIANTS}
-        transition={shouldReduceMotion ? { duration: 0.15 } : PAGE_TRANSITION}
-        className="w-full"
-      >
-        <Routes location={location}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/stats" element={<StatsPage />} />
-          <Route path="/albums" element={<AlbumsPage />} />
-          <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
-          <Route path="/person/:personId" element={<PersonDetailPage />} />
-          <Route path="/calendar" element={<ReleaseCalendarPage />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/search" element={<SearchPage />} />
+      <Route path="/stats" element={<StatsPage />} />
+      <Route path="/albums" element={<AlbumsPage />} />
+      <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
+      <Route path="/person/:personId" element={<PersonDetailPage />} />
+      <Route path="/calendar" element={<ReleaseCalendarPage />} />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 

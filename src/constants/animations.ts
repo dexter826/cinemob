@@ -1,50 +1,15 @@
 import { Variants } from 'framer-motion';
 
-// Hiệu ứng chuyển động cho Modal.
+// Modal xuất hiện ngay để tránh nháy do browser phải composite nhiều lớp lớn.
 export const MODAL_VARIANTS: Variants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0,
-    transition: {
-      type: 'spring',
-      damping: 25,
-      stiffness: 300
-    }
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.9, 
-    y: 20,
-    transition: {
-      duration: 0.2
-    }
-  }
+  hidden: { opacity: 1, scale: 1, y: 0 },
+  visible: { opacity: 1, scale: 1, y: 0 },
+  exit: { opacity: 1, scale: 1, y: 0 }
 };
 
-// Hiệu ứng lớp phủ nền.
+// Lớp phủ cũng không fade để tránh chớp toàn viewport khi mở modal.
 export const OVERLAY_VARIANTS: Variants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { duration: 0.15, ease: 'easeOut' }
-  },
-  exit: { 
-    opacity: 0,
-    transition: { duration: 0.1, ease: 'easeIn' }
-  }
+  hidden: { opacity: 1 },
+  visible: { opacity: 1 },
+  exit: { opacity: 1 }
 };
-
-// Hiệu ứng chuyển trang.
-export const PAGE_VARIANTS: Variants = {
-  initial: { opacity: 0 },
-  in: { opacity: 1 },
-  out: { opacity: 0 }
-};
-
-export const PAGE_TRANSITION = {
-  type: 'tween',
-  ease: 'easeInOut',
-  duration: 0.2
-} as const;
