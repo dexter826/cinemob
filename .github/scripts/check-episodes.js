@@ -6,6 +6,7 @@
 
 import admin from 'firebase-admin';
 import webpush from 'web-push';
+import { getPushSubscriptionForUser, removeExpiredSubscription } from './notification-targets.js';
 
 // ============ Configuration ============
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -73,21 +74,9 @@ const getWatchlistFromFirestore = async () => {
 
 const getPushSubscriptions = async () => {
     const db = admin.firestore();
-    const snapshot = await db.collection('push_subscriptions').get();
+    const subscriptions = await getPushSubscriptionForUser(db, USER_UID);
 
-    const subscriptions = [];
-    snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.endpoint && data.keys) {
-            subscriptions.push({
-                id: doc.id,
-                endpoint: data.endpoint,
-                keys: data.keys,
-            });
-        }
-    });
-
-    console.log(`📱 Found ${subscriptions.length} push subscription(s)`);
+    console.log(`📱 Found ${subscriptions.length} push subscription(s) for configured user`);
     return subscriptions;
 };
 
@@ -168,7 +157,7 @@ const sendWebPushNotification = async (subscription, payload) => {
         if (error.statusCode === 404 || error.statusCode === 410) {
             console.log(`🗑️ Removing expired subscription ${subscription.id}`);
             const db = admin.firestore();
-            await db.collection('push_subscriptions').doc(subscription.id).delete();
+            await removeExpiredSubscription(db, subscription.id, error.statusCode);
         }
 
         return false;

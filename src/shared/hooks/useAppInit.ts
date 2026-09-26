@@ -11,6 +11,7 @@ import { Album, Movie } from '@/types';
 // Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
   const { user } = useAuth();
+  const userId = user?.uid;
   
   const { initialize: initMovies, cleanup: cleanupMovies, initialized: moviesInitialized, movies: allMovies, loading: moviesLoading } = useMovieStore();
   const { markInitialLoadComplete } = useInitialLoadStore();
@@ -19,12 +20,9 @@ export const useAppInit = () => {
   const coverMovieIdsRef = useRef<Record<string, string>>({});
 
   const {
-    setAiRecommendations,
-    setTrendingMovies,
     setHistoryMovies,
+    reset: resetRecommendations,
     initializeForUser: initRecs,
-    aiRecommendations,
-    trendingMovies,
     historyMovies
   } = useRecommendationsStore();
 
@@ -105,18 +103,20 @@ export const useAppInit = () => {
   }, [albums, albumsLoading, moviesInitialized, allMovies, setAlbumCoverMovies]);
 
   useEffect(() => {
-    if (!user) {
-      if (aiRecommendations.length > 0) setAiRecommendations([]);
-      if (trendingMovies.length > 0) setTrendingMovies([]);
-      if (historyMovies.length > 0) setHistoryMovies([]);
+    if (!userId) {
+      resetRecommendations();
       return;
     }
 
-    initRecs(user.uid);
+    void initRecs(userId);
+  }, [userId, initRecs, resetRecommendations]);
+
+  useEffect(() => {
+    if (!userId) return;
     const prevIds = historyMovies.map(m => m.docId ?? m.id).join('|');
     const nextIds = allMovies.map(m => m.docId ?? m.id).join('|');
     if (prevIds !== nextIds) setHistoryMovies(allMovies);
-  }, [user, allMovies, aiRecommendations, trendingMovies, historyMovies, setAiRecommendations, setTrendingMovies, setHistoryMovies, initRecs]);
+  }, [userId, allMovies, historyMovies, setHistoryMovies]);
 
   useEffect(() => {
     setCalendarMovies(allMovies);

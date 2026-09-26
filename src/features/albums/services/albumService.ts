@@ -8,7 +8,10 @@ import {
   where,
   orderBy,
   onSnapshot,
-  serverTimestamp
+  serverTimestamp,
+  writeBatch,
+  arrayRemove,
+  arrayUnion,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Album } from '@/types';
@@ -46,6 +49,38 @@ export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
     ...updates,
     updatedAt: serverTimestamp(),
   });
+};
+
+export const syncMovieAlbums = async (
+  movieDocId: string,
+  previousAlbumIds: string[],
+  selectedAlbumIds: string[],
+) => {
+  const previous = new Set(previousAlbumIds);
+  const selected = new Set(selectedAlbumIds);
+  const removedIds = [...previous].filter(id => !selected.has(id));
+  const addedIds = [...selected].filter(id => !previous.has(id));
+  const operationCount = removedIds.length + addedIds.length;
+
+  if (operationCount === 0) return;
+  if (operationCount > 500) {
+    throw new Error('Too many album changes for an atomic update');
+  }
+
+  const batch = writeBatch(db);
+  removedIds.forEach((albumId) => {
+    batch.update(doc(db, COLLECTION_NAME, albumId), {
+      movieDocIds: arrayRemove(movieDocId),
+      updatedAt: serverTimestamp(),
+    });
+  });
+  addedIds.forEach((albumId) => {
+    batch.update(doc(db, COLLECTION_NAME, albumId), {
+      movieDocIds: arrayUnion(movieDocId),
+      updatedAt: serverTimestamp(),
+    });
+  });
+  await batch.commit();
 };
 
 // Xóa album.

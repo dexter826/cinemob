@@ -1,12 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getDocs } from 'firebase/firestore';
-import { checkMovieExists, mapDocToMovie } from './movieService';
+import { arrayRemove, getDocs, writeBatch } from 'firebase/firestore';
+import { checkMovieExists, deleteMovie, mapDocToMovie } from './movieService';
+
+const batch = {
+  update: vi.fn(),
+  delete: vi.fn(),
+  commit: vi.fn(),
+};
 
 vi.mock('firebase/firestore', () => ({
   addDoc: vi.fn(),
+  arrayRemove: vi.fn((value) => ({ arrayRemove: value })),
   collection: vi.fn(() => ({})),
   deleteDoc: vi.fn(),
-  doc: vi.fn(() => ({})),
+  doc: vi.fn((_db, collectionName, id) => ({ path: `${collectionName}/${id}` })),
   getDocs: vi.fn(),
   onSnapshot: vi.fn(),
   orderBy: vi.fn(() => ({})),
@@ -14,6 +21,7 @@ vi.mock('firebase/firestore', () => ({
   serverTimestamp: vi.fn(),
   updateDoc: vi.fn(),
   where: vi.fn(() => ({})),
+  writeBatch: vi.fn(() => batch),
 }));
 
 vi.mock('@/lib/firebase', () => ({
@@ -23,6 +31,7 @@ vi.mock('@/lib/firebase', () => ({
 describe('movieService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    batch.commit.mockResolvedValue(undefined);
   });
 
   it('map Firestore data hợp lệ sang Movie và giữ các enum được hỗ trợ', () => {
@@ -102,5 +111,22 @@ describe('movieService', () => {
     await expect(checkMovieExists('u1', 42)).rejects.toBe(error);
 
     errorSpy.mockRestore();
+  });
+
+  it('removes the movie id from owned albums and deletes the movie in one batch', async () => {
+    const albumRef = { path: 'albums/album-1' };
+    vi.mocked(getDocs).mockResolvedValueOnce({
+      docs: [{ ref: albumRef }],
+    } as never);
+
+    await deleteMovie('user-a', 'movie-1');
+
+    expect(arrayRemove).toHaveBeenCalledWith('movie-1');
+    expect(batch.update).toHaveBeenCalledWith(albumRef, {
+      movieDocIds: { arrayRemove: 'movie-1' },
+    });
+    expect(batch.delete).toHaveBeenCalledWith({ path: 'movies/movie-1' });
+    expect(batch.commit).toHaveBeenCalledOnce();
+    expect(writeBatch).toHaveBeenCalledOnce();
   });
 });

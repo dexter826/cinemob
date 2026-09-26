@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { addAlbum, updateAlbum } from '../services/albumService';
+import { addAlbum, syncMovieAlbums } from '../services/albumService';
 import useAlbumStore from '../stores/albumStore';
 import { Movie } from '@/types';
 import { MESSAGES } from '@/constants/messages';
@@ -61,24 +61,12 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
     };
 
     const syncAlbums = async (movieDocId: string) => {
-        const previousAlbums = albums.filter(album => album.movieDocIds?.includes(movieDocId));
-        
-        for (const album of previousAlbums) {
-            if (album.docId && !selectedAlbumIds.includes(album.docId)) {
-                await updateAlbum(album.docId, { 
-                    movieDocIds: album.movieDocIds?.filter(id => id !== movieDocId) 
-                });
-            }
-        }
-        
-        for (const albumId of selectedAlbumIds) {
-            const album = albums.find(a => a.docId === albumId);
-            if (album && album.docId && !album.movieDocIds?.includes(movieDocId)) {
-                await updateAlbum(album.docId, { 
-                    movieDocIds: [...(album.movieDocIds || []), movieDocId] 
-                });
-            }
-        }
+        const previousAlbumIds = albums
+            .filter(album => album.movieDocIds?.includes(movieDocId))
+            .map(album => album.docId)
+            .filter((id): id is string => Boolean(id));
+
+        await syncMovieAlbums(movieDocId, previousAlbumIds, selectedAlbumIds);
     };
 
     return {

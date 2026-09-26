@@ -10,9 +10,10 @@ import useExportStore from '@/features/movies/stores/exportStore';
 import { useDashboardFilters, ActiveTab } from './useDashboardFilters';
 import { useDashboardStats } from './useDashboardStats';
 import { MESSAGES } from '@/constants/messages';
+import type { User } from 'firebase/auth';
 
 // Hook điều phối chính cho Dashboard.
-export const useDashboard = (_user: unknown) => {
+export const useDashboard = (user: User | null) => {
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
   const { openAddModal } = useAddMovieStore();
@@ -38,7 +39,8 @@ export const useDashboard = (_user: unknown) => {
       confirmText: "Xóa",
       onConfirm: async () => {
         try {
-          await deleteMovie(docId);
+          if (!user) return;
+          await deleteMovie(user.uid, docId);
           showToast(MESSAGES.MOVIE.DELETE_SUCCESS, "success");
         } catch (e) {
           showToast(MESSAGES.MOVIE.DELETE_ERROR, "error");

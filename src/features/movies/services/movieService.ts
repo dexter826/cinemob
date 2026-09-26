@@ -1,7 +1,6 @@
 import {
   collection,
   addDoc,
-  deleteDoc,
   updateDoc,
   doc,
   query,
@@ -9,7 +8,9 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
-  getDocs
+  getDocs,
+  writeBatch,
+  arrayRemove,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Movie } from '@/types';
@@ -44,9 +45,24 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
 };
 
 // Xóa phim khỏi danh sách.
-export const deleteMovie = async (docId: string) => {
+export const deleteMovie = async (uid: string, docId: string) => {
   try {
-    await deleteDoc(doc(db, COLLECTION_NAME, docId));
+    const albumsQuery = query(
+      collection(db, 'albums'),
+      where('uid', '==', uid),
+      where('movieDocIds', 'array-contains', docId),
+    );
+    const albumsSnapshot = await getDocs(albumsQuery);
+    if (albumsSnapshot.docs.length > 499) {
+      throw new Error('Movie belongs to too many albums for an atomic delete');
+    }
+
+    const batch = writeBatch(db);
+    albumsSnapshot.docs.forEach((albumDoc) => {
+      batch.update(albumDoc.ref, { movieDocIds: arrayRemove(docId) });
+    });
+    batch.delete(doc(db, COLLECTION_NAME, docId));
+    await batch.commit();
   } catch (error) {
     console.error("Error deleting movie: ", error);
     throw error;
