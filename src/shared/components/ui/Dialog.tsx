@@ -38,11 +38,20 @@ const getPresentationClasses = (presentation: NonNullable<DialogProps['presentat
 
   switch (presentation) {
     case 'dialog':
-      return classNames('m-auto w-full max-h-[90vh]', chosenSize || 'max-w-lg');
+      return classNames(
+        'm-auto w-[calc(100%-2rem)] max-h-[90vh] rounded-dialog sm:w-full',
+        chosenSize || 'max-w-lg'
+      );
     case 'sheet':
-      return classNames('mt-auto w-full sm:m-auto sm:max-h-[90vh]', chosenSize || 'sm:max-w-lg');
+      return classNames(
+        'mt-auto w-full max-h-[90vh] rounded-t-dialog rounded-b-none sm:m-auto sm:rounded-dialog',
+        chosenSize || 'sm:max-w-lg'
+      );
     case 'fullscreen-mobile':
-      return classNames('m-0 w-full h-full sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh]', chosenSize || 'sm:max-w-2xl');
+      return classNames(
+        'm-0 w-full h-full rounded-none sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh] sm:rounded-dialog',
+        chosenSize || 'sm:max-w-2xl'
+      );
     default:
       return '';
   }
@@ -94,7 +103,6 @@ export function Dialog({
             tabIndex={-1}
             className={classNames(
               'flex flex-col overflow-hidden bg-surface-elevated text-text-primary shadow-elevated',
-              'rounded-none sm:rounded-dialog',
               getPresentationClasses(presentation, size),
               className
             )}

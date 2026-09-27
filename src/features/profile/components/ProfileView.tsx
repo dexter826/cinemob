@@ -170,39 +170,38 @@ export function ProfileView({
         >
           <Camera size={16} aria-hidden="true" />
         </button>
-      </div>
-
-      {isAvatarMenuOpen && (
-        <div
-          ref={avatarMenuRef}
-          role="menu"
-          onKeyDown={handleMenuKeyDown}
-          className="w-full max-w-[220px] py-1 mt-3 bg-surface-elevated rounded-2xl border border-border shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-        >
-          <button
-            ref={firstMenuItemRef}
-            type="button"
-            role="menuitem"
-            onClick={pickAvatarFromMenu}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+        {isAvatarMenuOpen && (
+          <div
+            ref={avatarMenuRef}
+            role="menu"
+            onKeyDown={handleMenuKeyDown}
+            className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border border-border bg-surface-elevated py-1 shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
           >
-            <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
-            <span>Tải ảnh mới</span>
-          </button>
-
-          {canDeleteAvatar && (
             <button
+              ref={firstMenuItemRef}
               type="button"
               role="menuitem"
-              onClick={deleteAvatarFromMenu}
-              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+              onClick={pickAvatarFromMenu}
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
             >
-              <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
-              <span>Khôi phục ảnh gốc</span>
+              <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
+              <span>Tải ảnh mới</span>
             </button>
-          )}
-        </div>
-      )}
+
+            {canDeleteAvatar && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={deleteAvatarFromMenu}
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+              >
+                <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
+                <span>Khôi phục ảnh gốc</span>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {avatarError && (
         <p
@@ -216,7 +215,7 @@ export function ProfileView({
       <div className="mt-3 w-full">
         {!isEditingName ? (
           <div className="flex items-center justify-center gap-2 min-w-0">
-            <p className="text-lg font-bold text-text-primary truncate font-display">{displayName}</p>
+            <p className="min-w-0 max-w-full text-lg font-bold text-text-primary truncate font-display">{displayName}</p>
             <IconButton label="Sửa tên hiển thị" onClick={startNameEdit} size="sm">
               <Pencil size={14} aria-hidden="true" />
             </IconButton>
