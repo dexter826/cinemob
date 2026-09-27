@@ -71,21 +71,25 @@ graph TD
 ## Khởi chạy cục bộ
 
 1. **Clone repository:**
+
    ```bash
    git clone https://github.com/dexter826/cinemetrics.git
    cd cinemetrics
    ```
 
 2. **Cài đặt dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Cấu hình biến môi trường:**
    Tạo file `.env` tại thư mục gốc từ mẫu `.env.example`:
+
    ```bash
    cp .env.example .env
    ```
+
    Cập nhật các giá trị tương ứng trong file `.env`:
    - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
@@ -104,25 +108,23 @@ graph TD
 
 ## Các lệnh chính
 
-| Lệnh | Mô tả |
-| :--- | :--- |
-| `npm run dev` | Khởi chạy Vite development server tại cổng `3000` (hỗ trợ chế độ PWA dev). |
-| `npm run build` | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`. |
-| `npm run preview` | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
-| `npm run typecheck` | Kiểm tra kiểu dữ liệu TypeScript không xuất file. |
-| `npm run lint` | Chạy ESLint kiểm tra mã nguồn trong `src/`. |
-| `npm test` | Chạy kiểm thử tự động với Vitest trên các file `src/**/*.test.ts`. |
+| Lệnh                | Mô tả                                                                      |
+| :------------------ | :------------------------------------------------------------------------- |
+| `npm run dev`       | Khởi chạy Vite development server tại cổng `3000` (hỗ trợ chế độ PWA dev). |
+| `npm run build`     | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.           |
+| `npm run preview`   | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`.          |
+| `npm run typecheck` | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                          |
+| `npm run lint`      | Chạy ESLint kiểm tra mã nguồn trong `src/`.                                |
 
 ---
 
 ## Kiểm tra chất lượng mã nguồn
 
-Dự án dùng Vitest cho unit test và ESLint để kiểm tra chuẩn mã nguồn. Trước khi mở Pull Request hoặc bàn giao thay đổi, hãy chạy bộ lệnh:
+Dự án dùng ESLint để kiểm tra chuẩn mã nguồn. Trước khi mở Pull Request hoặc bàn giao thay đổi, hãy chạy bộ lệnh:
 
 ```bash
 npm run typecheck
 npm run lint
-npm test
 npm run build
 ```
 
