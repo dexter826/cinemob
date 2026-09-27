@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pencil, Check, X, Camera, User, Mail, CalendarDays } from 'lucide-react';
+import { Pencil, Check, X, Camera, Mail, CalendarDays } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
 import { IconButton } from '@/shared/components/ui/IconButton';
@@ -146,14 +146,9 @@ export function ProfileModal({ isOpen, onClose, onChangeAvatar }: ProfileModalPr
             <Mail size={13} className="shrink-0" aria-hidden="true" />
             <span className="truncate">{user.email}</span>
           </p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 border border-border rounded-full px-2.5 py-1">
-              <User size={12} aria-hidden="true" /> Google
-            </span>
-            <span className="inline-flex items-center gap-1 text-xs text-text-secondary">
-              <CalendarDays size={12} aria-hidden="true" /> Tham gia {joinDate}
-            </span>
-          </div>
+          <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-text-secondary">
+            <CalendarDays size={12} aria-hidden="true" /> Tham gia {joinDate}
+          </p>
         </div>
       </DialogBody>
     </Dialog>
