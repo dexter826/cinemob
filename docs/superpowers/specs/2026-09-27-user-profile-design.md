@@ -19,7 +19,7 @@ Không thuộc phạm vi: Card thống kê, quản lý public share link, xóa t
 
 ## 3. Quyết định đã chốt với user
 
-- Scope: xem/sửa avatar + tên, xem email + ngày tham gia + badge Google. Không stats, không Card hành động, không fields mở rộng.
+- Scope: xem/sửa avatar + tên, xem email + ngày tham gia. Không stats, không Card hành động, không fields mở rộng.
 - Kiểu hiển thị: `ProfileModal` mở từ menu Hồ sơ trong Navbar (đã đổi từ trang `/profile` sang modal vì nội dung hiện tại quá ít cho 1 trang; route `/profile` và `ProfilePage` đã xóa).
 - Sửa tên: có đồng bộ lên link share công khai.
 - Hướng triển khai: service thuần `profileService` dùng Auth sẵn, không collection mới.
@@ -37,7 +37,7 @@ Không thuộc phạm vi: Card thống kê, quản lý public share link, xóa t
 
 ## 5. Components & luồng
 
-`ProfileModal` (`sm:max-w-sm`, theo mẫu `ChangeAvatarModal`): avatar + nút camera overlay, tên + sửa inline, email, badge Google + ngày tham gia, không nút hành động nào khác:
+`ProfileModal` (`sm:max-w-sm`, theo mẫu `ChangeAvatarModal`): avatar + nút camera overlay, tên + sửa inline, email, ngày tham gia, không nút hành động nào khác:
 
 - Avatar: `w-20`, ring `primary/20`; nút camera mở `ChangeAvatarModal` (đóng modal hồ sơ trước, đóng avatar xong mở lại).
 - Tên: `font-display`, sửa inline pencil, Enter/lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading + `showToast`, giữ giá trị cũ khi lỗi. Không hiển thị UID.
