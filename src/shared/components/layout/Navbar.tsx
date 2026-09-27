@@ -1,9 +1,8 @@
 import React, { lazy, Suspense, useRef, useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera, Home, User } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Home, User } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { NAV_ITEMS, isNavItemActive } from './navigation';
@@ -28,7 +27,6 @@ function Navbar() {
   const location = useLocation();
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
@@ -147,16 +145,6 @@ function Navbar() {
                     <button
                       type="button"
                       role="menuitem"
-                      onClick={() => { setIsAvatarModalOpen(true); closeDropdown(); }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
-                    >
-                      <Camera size={18} strokeWidth={1.5} />
-                      <span>Đổi ảnh đại diện</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      role="menuitem"
                       onClick={() => { setIsExportModalOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
@@ -202,11 +190,6 @@ function Navbar() {
           <ExportModal isOpen onClose={() => setIsExportModalOpen(false)} movies={movies} />
         </Suspense>
       )}
-
-      <ChangeAvatarModal
-        isOpen={isAvatarModalOpen}
-        onClose={() => setIsAvatarModalOpen(false)}
-      />
     </>
   );
 }

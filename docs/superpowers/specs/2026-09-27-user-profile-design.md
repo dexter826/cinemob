@@ -7,7 +7,7 @@ Trạng thái: Đã duyệt thiết kế, chờ implementation plan
 
 Hiện tại phân hệ hồ sơ chỉ có đổi avatar trong menu Navbar (`src/shared/components/layout/Navbar.tsx:138-146` + `src/features/auth/components/ChangeAvatarModal.tsx:21`). Mục tiêu là có trang Hồ sơ riêng để xem/sửa thông tin cơ bản, tái dùng luồng avatar hiện tại, và gom các hành động tài khoản (xuất dữ liệu, đăng xuất) vào một chỗ.
 
-Không thuộc phạm vi: Card thống kê (user đã yêu cầu bỏ), quản lý public share link, xóa tài khoản, sửa email, bio/preferences mở rộng, thêm collection Firestore mới.
+Không thuộc phạm vi: Card thống kê, quản lý public share link, xóa tài khoản, sửa email, bio/ngày sinh/các trường users collection mở rộng (đã đề xuất và hủy), thêm collection Firestore mới.
 
 ## 2. Bối cảnh hiện tại
 
@@ -31,24 +31,23 @@ Không thuộc phạm vi: Card thống kê (user đã yêu cầu bỏ), quản l
   - `pages/ProfilePage.tsx`: trang chính.
   - `services/profileService.ts`: `validateDisplayName(name)`, `updateDisplayName(user, name)` — pattern giống `avatarService.ts:7`.
   - `services/profileService.test.ts`: unit cho validate + sync share.
-- `Navbar.tsx:131-179`: thêm mục Hồ sơ (icon User) lên đầu menu, `navigate('/profile')` + đóng dropdown. Giữ nguyên mục Đổi ảnh đại diện để không phá thói quen.
+- `Navbar.tsx:131-179`: menu chỉ còn Hồ sơ + Xuất dữ liệu + Đăng xuất. Mục Đổi ảnh đại diện đã bỏ khỏi menu (đổi avatar chỉ trong `/profile` qua nút camera trên avatar). `ChangeAvatarModal` chỉ mount trong `ProfilePage`, `ExportModal` chỉ mount trong `Navbar`.
 - Không thêm collection Firestore, không đổi `firestore.rules`. Chỉ ghi đè `displayName` trong `public_shares/{uid}` nếu doc đã tồn tại (giống cách `avatarService.ts:12-20` làm với `photoURL`).
 - Dữ liệu đọc trực tiếp: `useAuth()` cho `displayName/photoURL/email/metadata`, không thêm store mới.
 
 ## 5. Components & luồng
 
-`ProfilePage` gồm 2 Cards (đã bỏ Card stats theo yêu cầu):
+`ProfilePage` chỉ 1 Card thông tin (không Card hành động — mỗi tính năng một nơi: Export/Đăng xuất ở menu Navbar, Thống kê/Albums ở nav chính):
 
-- Card 1 Thông tin cơ bản: avatar lớn (tái dùng style `Navbar.tsx:121-127`), `displayName` + nút sửa inline (pencil), `email` readonly + badge Google, ngày tham gia từ `user.metadata.creationTime` format vi-VN. Không hiển thị UID (đã bỏ cho gọn).
-  - Sửa tên inline: click pencil -> input, Enter/blur lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading state + `showToast` thành công/thất bại. Giữ giá trị cũ khi lỗi.
-- Card 2 Hành động: Đổi avatar (mở `ChangeAvatarModal` hiện tại), Xuất dữ liệu (mở `ExportModal` qua `useExportStore`), Đăng xuất (confirm qua `useAlertStore` giống `Navbar.tsx:161-171`), link nhanh Xem thống kê (`/stats`) và Xem albums (`/albums`) thay cho Card stats đã bỏ.
+- Card Thông tin cơ bản: avatar lớn + nút camera overlay mở `ChangeAvatarModal`, `displayName` + nút sửa inline (pencil), `email` readonly + badge Google, ngày tham gia từ `user.metadata.creationTime` format vi-VN. Không hiển thị UID.
+  - Sửa tên inline: click pencil -> input, Enter/lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading state + `showToast` thành công/thất bại. Giữ giá trị cũ khi lỗi.
 - Tái dùng `PageHeader`, `Button`, `Dialog`, `ToastContainer`/`AlertContainer` hiện tại. Responsive + dark/light theo design tokens, kiểm tra 320px.
 
 Luồng chính:
 1. User mở menu Navbar -> Hồ sơ -> `/profile`.
 2. User sửa tên -> `validateDisplayName` -> `updateProfile({ displayName })` -> sync `public_shares` nếu có -> `refreshUser()` -> toast.
-3. User đổi avatar -> mở `ChangeAvatarModal` cũ, xong `refreshUser`, ProfilePage tự cập nhật qua `useAuth`.
-4. User xuất/đăng xuất như cũ, chỉ khác entry point.
+3. User bấm nút camera trên avatar -> mở `ChangeAvatarModal`, xong `refreshUser`, ProfilePage tự cập nhật qua `useAuth`.
+4. Xuất dữ liệu và Đăng xuất chỉ dùng từ menu Navbar như cũ.
 
 ## 6. Edge cases & bảo mật
 
