@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import type { DragEvent } from 'react';
-import { CalendarDays, Camera, Check, Mail, Pencil, Upload, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import type { DragEvent, KeyboardEvent } from 'react';
+import { CalendarDays, Camera, Check, Mail, Pencil, RotateCcw, Upload, X } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { IconButton } from '@/shared/components/ui/IconButton';
 import useToastStore from '@/shared/stores/toastStore';
@@ -44,9 +44,53 @@ export function ProfileView({
   const [draftName, setDraftName] = useState('');
   const [nameError, setNameError] = useState<string | null>(null);
   const [isSavingName, setIsSavingName] = useState(false);
+  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const avatarMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+  const firstMenuItemRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isAvatarMenuOpen) return;
+
+    const closeOnOutsideClick = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
+      const isInsideButton = avatarMenuButtonRef.current?.contains(target) ?? false;
+      const isInsideMenu = avatarMenuRef.current?.contains(target) ?? false;
+      if (!isInsideButton && !isInsideMenu) setIsAvatarMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', closeOnOutsideClick);
+    document.addEventListener('touchstart', closeOnOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsideClick);
+      document.removeEventListener('touchstart', closeOnOutsideClick);
+    };
+  }, [isAvatarMenuOpen]);
+
+  useEffect(() => {
+    if (isAvatarMenuOpen) firstMenuItemRef.current?.focus();
+  }, [isAvatarMenuOpen]);
 
   if (!user) return null;
   const displayName = user.displayName || FALLBACK_DISPLAY_NAME;
+
+  // useFocusTrap bắt Escape ở tầng document, phải chặn trước khi sự kiện nổi lên đó.
+  const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Escape') return;
+    event.stopPropagation();
+    setIsAvatarMenuOpen(false);
+    avatarMenuButtonRef.current?.focus();
+  };
+
+  const pickAvatarFromMenu = () => {
+    setIsAvatarMenuOpen(false);
+    onPickAvatar();
+  };
+
+  const deleteAvatarFromMenu = () => {
+    setIsAvatarMenuOpen(false);
+    onDeleteAvatar();
+  };
 
   const startNameEdit = () => {
     setDraftName(displayName);
@@ -88,24 +132,19 @@ export function ProfileView({
   return (
     <div className="flex flex-col items-center text-center">
       <div className="relative shrink-0">
-        <button
-          type="button"
-          onClick={onPickAvatar}
+        <div
           onDragOver={onAvatarDragOver}
           onDragLeave={onAvatarDragLeave}
           onDrop={onAvatarDrop}
-          disabled={isAvatarBusy}
-          aria-label="Chọn ảnh đại diện"
           className={classNames(
-            'relative block w-20 h-20 rounded-full overflow-hidden cursor-pointer transition-shadow',
-            isDragOverAvatar ? 'ring-4 ring-primary' : 'ring-4 ring-primary/20',
-            isAvatarBusy && 'opacity-50 cursor-not-allowed'
+            'relative w-28 h-28 rounded-full overflow-hidden transition-shadow',
+            isDragOverAvatar ? 'ring-4 ring-primary' : 'ring-4 ring-primary/20'
           )}
         >
           {user.photoURL ? (
             <img src={user.photoURL} alt="Ảnh đại diện" className="w-full h-full object-cover" />
           ) : (
-            <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-2xl font-bold">
+            <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-3xl font-bold">
               {displayName.charAt(0).toUpperCase()}
             </span>
           )}
@@ -114,31 +153,55 @@ export function ProfileView({
               aria-hidden="true"
               className="absolute inset-0 flex items-center justify-center bg-primary/85 text-white"
             >
-              <Upload size={22} />
+              <Upload size={26} />
             </span>
           )}
-        </button>
+        </div>
 
         <button
+          ref={avatarMenuButtonRef}
           type="button"
-          onClick={onPickAvatar}
+          onClick={() => setIsAvatarMenuOpen((prev) => !prev)}
           disabled={isAvatarBusy}
-          aria-label="Đổi ảnh đại diện"
-          className="absolute bottom-0 right-0 z-10 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-elevated hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Tuỳ chọn ảnh đại diện"
+          aria-haspopup="menu"
+          aria-expanded={isAvatarMenuOpen}
+          className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-elevated hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Camera size={14} aria-hidden="true" />
+          <Camera size={16} aria-hidden="true" />
         </button>
       </div>
 
-      {canDeleteAvatar && (
-        <button
-          type="button"
-          onClick={onDeleteAvatar}
-          disabled={isAvatarBusy}
-          className="mt-2 text-xs font-medium text-danger hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      {isAvatarMenuOpen && (
+        <div
+          ref={avatarMenuRef}
+          role="menu"
+          onKeyDown={handleMenuKeyDown}
+          className="w-full max-w-[220px] py-1 mt-3 bg-surface-elevated rounded-2xl border border-border shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         >
-          Xóa ảnh đại diện
-        </button>
+          <button
+            ref={firstMenuItemRef}
+            type="button"
+            role="menuitem"
+            onClick={pickAvatarFromMenu}
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+          >
+            <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
+            <span>Tải ảnh mới</span>
+          </button>
+
+          {canDeleteAvatar && (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={deleteAvatarFromMenu}
+              className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+            >
+              <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
+              <span>Khôi phục ảnh gốc</span>
+            </button>
+          )}
+        </div>
       )}
 
       {avatarError && (
