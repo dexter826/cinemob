@@ -19,35 +19,34 @@ Không thuộc phạm vi: Card thống kê, quản lý public share link, xóa t
 
 ## 3. Quyết định đã chốt với user
 
-- Scope: Mức 2 rút gọn — avatar + tên + email, không Card stats (user đổi ý sau khi chọn Mức 2, yêu cầu bỏ Card stats).
-- Kiểu hiển thị: Trang riêng `/profile` (đã chọn thay vì modal toàn màn hình hay chỉ mở rộng dropdown).
-- Sửa tên: có đồng bộ lên link share công khai (đã chọn thay vì không đồng bộ hay stats đầy đủ).
-- Hướng triển khai: A — nhẹ, dùng Auth sẵn (đã chọn thay vì thêm collection `users` hay modal-based).
+- Scope: xem/sửa avatar + tên, xem email + ngày tham gia + badge Google. Không stats, không Card hành động, không fields mở rộng.
+- Kiểu hiển thị: `ProfileModal` mở từ menu Hồ sơ trong Navbar (đã đổi từ trang `/profile` sang modal vì nội dung hiện tại quá ít cho 1 trang; route `/profile` và `ProfilePage` đã xóa).
+- Sửa tên: có đồng bộ lên link share công khai.
+- Hướng triển khai: service thuần `profileService` dùng Auth sẵn, không collection mới.
 
 ## 4. Kiến trúc & dữ liệu
 
 - Route mới `/profile` lazy-loaded trong `AnimatedRoutes` (`src/App.tsx:29-42`), yêu cầu login như các route cũ. Không chạm route public `/share/:uid`.
-- Module mới `src/features/profile/`:
-  - `pages/ProfilePage.tsx`: trang chính.
+- Module `src/features/profile/`:
+  - `components/ProfileModal.tsx`: modal hồ sơ (`isOpen`, `onClose`, `onChangeAvatar`).
   - `services/profileService.ts`: `validateDisplayName(name)`, `updateDisplayName(user, name)` — pattern giống `avatarService.ts:7`.
   - `services/profileService.test.ts`: unit cho validate + sync share.
-- `Navbar.tsx:131-179`: menu chỉ còn Hồ sơ + Xuất dữ liệu + Đăng xuất. Mục Đổi ảnh đại diện đã bỏ khỏi menu (đổi avatar chỉ trong `/profile` qua nút camera trên avatar). `ChangeAvatarModal` chỉ mount trong `ProfilePage`, `ExportModal` chỉ mount trong `Navbar`.
+- `Navbar.tsx:131-179`: menu Hồ sơ + Xuất dữ liệu + Đăng xuất. Mục Hồ sơ mở `ProfileModal`; nút camera trong modal đóng modal hồ sơ rồi mở `ChangeAvatarModal` cũ, đóng avatar modal thì mở lại modal hồ sơ. Không còn route `/profile`.
 - Không thêm collection Firestore, không đổi `firestore.rules`. Chỉ ghi đè `displayName` trong `public_shares/{uid}` nếu doc đã tồn tại (giống cách `avatarService.ts:12-20` làm với `photoURL`).
 - Dữ liệu đọc trực tiếp: `useAuth()` cho `displayName/photoURL/email/metadata`, không thêm store mới.
 
 ## 5. Components & luồng
 
-`ProfilePage` dùng container `max-w-7xl` như mọi trang, gồm hero identity + section Vừa xem gần đây (poster-led, đúng brand; không Card hành động — mỗi tính năng một nơi):
+`ProfileModal` (`sm:max-w-sm`, theo mẫu `ChangeAvatarModal`): avatar + nút camera overlay, tên + sửa inline, email, badge Google + ngày tham gia, không nút hành động nào khác:
 
-- Hero: avatar lớn (`w-24 sm:w-28`, ring `primary/20`) + nút camera overlay mở `ChangeAvatarModal`, tên cỡ display (`font-display`, `tracking-tight`) + nút sửa inline (pencil), meta hàng icon (email, ngày tham gia vi-VN, badge Google), glow `primary/10` góc hero. Không hiển thị UID.
-  - Sửa tên inline: click pencil -> input, Enter/lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading state + `showToast` thành công/thất bại. Giữ giá trị cũ khi lỗi.
-- Section Vừa xem gần đây: 10 phim `status=history` mới nhất từ `useMovieStore` (sort `watched_at` desc), strip ngang `snap-x`, poster `aspect-2/3` bấm mở `MovieDetailModal` global qua `openDetailModal`, link Xem tất cả về `/`. Loading: skeleton; trống: `EmptyState` compact.
+- Avatar: `w-20`, ring `primary/20`; nút camera mở `ChangeAvatarModal` (đóng modal hồ sơ trước, đóng avatar xong mở lại).
+- Tên: `font-display`, sửa inline pencil, Enter/lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading + `showToast`, giữ giá trị cũ khi lỗi. Không hiển thị UID.
 - Tái dùng `PageHeader`, `Button`, `Dialog`, `ToastContainer`/`AlertContainer` hiện tại. Responsive + dark/light theo design tokens, kiểm tra 320px.
 
 Luồng chính:
-1. User mở menu Navbar -> Hồ sơ -> `/profile`.
+1. User mở menu Navbar -> Hồ sơ -> `ProfileModal`.
 2. User sửa tên -> `validateDisplayName` -> `updateProfile({ displayName })` -> sync `public_shares` nếu có -> `refreshUser()` -> toast.
-3. User bấm nút camera trên avatar -> mở `ChangeAvatarModal`, xong `refreshUser`, ProfilePage tự cập nhật qua `useAuth`.
+3. User bấm nút camera -> đóng modal hồ sơ, mở `ChangeAvatarModal`; xong/đóng avatar -> mở lại modal hồ sơ.
 4. Xuất dữ liệu và Đăng xuất chỉ dùng từ menu Navbar như cũ.
 
 ## 6. Edge cases & bảo mật

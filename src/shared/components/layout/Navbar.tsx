@@ -3,6 +3,8 @@ import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Sea
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ChangeAvatarModal } from '@/features/auth/components/ChangeAvatarModal';
+import { ProfileModal } from '@/features/profile/components/ProfileModal';
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { NAV_ITEMS, isNavItemActive } from './navigation';
@@ -27,6 +29,8 @@ function Navbar() {
   const location = useLocation();
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
@@ -136,7 +140,7 @@ function Navbar() {
                     <button
                       type="button"
                       role="menuitem"
-                      onClick={() => { navigate('/profile'); closeDropdown(); }}
+                      onClick={() => { setIsProfileOpen(true); closeDropdown(); }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <User size={18} strokeWidth={1.5} />
@@ -190,6 +194,17 @@ function Navbar() {
           <ExportModal isOpen onClose={() => setIsExportModalOpen(false)} movies={movies} />
         </Suspense>
       )}
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        onChangeAvatar={() => { setIsProfileOpen(false); setIsAvatarModalOpen(true); }}
+      />
+
+      <ChangeAvatarModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => { setIsAvatarModalOpen(false); setIsProfileOpen(true); }}
+      />
     </>
   );
 }
