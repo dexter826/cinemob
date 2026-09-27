@@ -12,6 +12,7 @@ const AlbumDetailPage = lazy(() => import('@/features/albums/pages/AlbumDetailPa
 const PersonDetailPage = lazy(() => import('@/features/search/pages/PersonDetailPage'));
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/ReleaseCalendarPage'));
 const SharePage = lazy(() => import('@/features/share/pages/SharePage'));
+const ProfilePage = lazy(() => import('@/features/profile/pages/ProfilePage'));
 const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
 import Layout from '@/shared/components/layout/Layout';
@@ -36,6 +37,7 @@ function AnimatedRoutes() {
       <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
       <Route path="/person/:personId" element={<PersonDetailPage />} />
       <Route path="/calendar" element={<ReleaseCalendarPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

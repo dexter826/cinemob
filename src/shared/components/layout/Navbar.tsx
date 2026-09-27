@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useRef, useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera, Home } from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Camera, Home, User } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -135,6 +135,15 @@ function Navbar() {
                   </div>
 
                   <div className="p-1.5 space-y-0.5">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => { navigate('/profile'); closeDropdown(); }}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
+                    >
+                      <User size={18} strokeWidth={1.5} />
+                      <span>Hồ sơ</span>
+                    </button>
                     <button
                       type="button"
                       role="menuitem"
