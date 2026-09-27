@@ -1,0 +1,43 @@
+import { updateProfile } from 'firebase/auth';
+import type { User } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
+export const DISPLAY_NAME_MIN = 2;
+export const DISPLAY_NAME_MAX = 50;
+export const FALLBACK_DISPLAY_NAME = 'CineMOB User';
+
+export type ValidateResult =
+  | { ok: true; value: string }
+  | { ok: false; error: string };
+
+export function validateDisplayName(raw: string): ValidateResult {
+  const value = raw.trim();
+  if (value.length < DISPLAY_NAME_MIN) {
+    return { ok: false, error: 'Tên hiển thị tối thiểu 2 ký tự' };
+  }
+  if (value.length > DISPLAY_NAME_MAX) {
+    return { ok: false, error: 'Tên hiển thị tối đa 50 ký tự' };
+  }
+  return { ok: true, value };
+}
+
+// Cập nhật displayName Auth + đồng bộ public_shares nếu doc đã có.
+export const updateDisplayName = async (user: User, rawName: string): Promise<string> => {
+  const checked = validateDisplayName(rawName);
+  if (!checked.ok) {
+    throw new Error(checked.error);
+  }
+  const displayName = checked.value;
+  await updateProfile(user, { displayName });
+  try {
+    const shareRef = doc(db, 'public_shares', user.uid);
+    const shareSnap = await getDoc(shareRef);
+    if (shareSnap.exists()) {
+      await updateDoc(shareRef, { displayName });
+    }
+  } catch (error) {
+    console.error('Không thể cập nhật tên trong public share:', error);
+  }
+  return displayName;
+};

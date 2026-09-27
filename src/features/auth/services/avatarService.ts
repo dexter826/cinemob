@@ -1,4 +1,5 @@
-import { updateProfile, User } from 'firebase/auth';
+import { updateProfile } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { uploadToCloudinary } from './cloudinaryService';
