@@ -4,38 +4,27 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { uploadToCloudinary } from './cloudinaryService';
 
+// Đồng bộ ảnh đại diện sang bản chia sẻ công khai. Lỗi ở đây không chặn việc đổi ảnh.
+const syncPublicSharePhotoURL = async (uid: string, photoURL: string): Promise<void> => {
+  try {
+    const shareRef = doc(db, 'public_shares', uid);
+    const shareSnap = await getDoc(shareRef);
+    if (shareSnap.exists()) {
+      await updateDoc(shareRef, { photoURL });
+    }
+  } catch (error) {
+    console.error('Không thể cập nhật avatar trong public share:', error);
+  }
+};
+
 // Tải ảnh lên Cloudinary và đồng bộ thông tin người dùng.
 export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Promise<string> => {
   const secureUrl = await uploadToCloudinary(fileOrBlob, 'avatars');
 
   await updateProfile(user, { photoURL: secureUrl });
-
-  try {
-    const shareRef = doc(db, 'public_shares', user.uid);
-    const shareSnap = await getDoc(shareRef);
-    if (shareSnap.exists()) {
-      await updateDoc(shareRef, { photoURL: secureUrl });
-    }
-  } catch (error) {
-    console.error('Không thể cập nhật avatar trong public share:', error);
-  }
+  await syncPublicSharePhotoURL(user.uid, secureUrl);
 
   return secureUrl;
-};
-
-// Xóa ảnh đại diện đưa về mặc định.
-export const removeUserAvatar = async (user: User): Promise<void> => {
-  await updateProfile(user, { photoURL: '' });
-
-  try {
-    const shareRef = doc(db, 'public_shares', user.uid);
-    const shareSnap = await getDoc(shareRef);
-    if (shareSnap.exists()) {
-      await updateDoc(shareRef, { photoURL: '' });
-    }
-  } catch (error) {
-    console.error('Không thể cập nhật avatar trong public share:', error);
-  }
 };
 
 // Lấy ảnh đại diện gốc từ nhà cung cấp Google.
@@ -49,16 +38,7 @@ export const revertToGoogleAvatar = async (user: User): Promise<string | null> =
   const originalPhotoURL = getOriginalGoogleAvatar(user);
 
   await updateProfile(user, { photoURL: originalPhotoURL });
-
-  try {
-    const shareRef = doc(db, 'public_shares', user.uid);
-    const shareSnap = await getDoc(shareRef);
-    if (shareSnap.exists()) {
-      await updateDoc(shareRef, { photoURL: originalPhotoURL || '' });
-    }
-  } catch (error) {
-    console.error('Không thể cập nhật avatar trong public share:', error);
-  }
+  await syncPublicSharePhotoURL(user.uid, originalPhotoURL || '');
 
   return originalPhotoURL;
 };

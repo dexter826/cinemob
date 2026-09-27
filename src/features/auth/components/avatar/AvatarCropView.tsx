@@ -1,5 +1,6 @@
 import type { PointerEvent as RPointerEvent, RefObject, WheelEvent as RWheelEvent } from 'react';
 import { ZoomIn, ZoomOut } from 'lucide-react';
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '@/features/profile/constants/avatarEditor';
 
 interface AvatarCropViewProps {
   imageSrc: string;
@@ -72,8 +73,8 @@ export function AvatarCropView({
       <div className="w-full mt-5 px-3 flex items-center gap-3">
         <button
           type="button"
-          onClick={() => onZoomChange(zoom - 0.2)}
-          disabled={zoom <= 1 || isUploading}
+          onClick={() => onZoomChange(zoom - ZOOM_STEP)}
+          disabled={zoom <= MIN_ZOOM || isUploading}
           aria-label="Thu nhỏ"
           className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
         >
@@ -82,8 +83,8 @@ export function AvatarCropView({
 
         <input
           type="range"
-          min="1"
-          max="3"
+          min={MIN_ZOOM}
+          max={MAX_ZOOM}
           step="0.05"
           value={zoom}
           onChange={(e) => onZoomChange(parseFloat(e.target.value))}
@@ -94,8 +95,8 @@ export function AvatarCropView({
 
         <button
           type="button"
-          onClick={() => onZoomChange(zoom + 0.2)}
-          disabled={zoom >= 3 || isUploading}
+          onClick={() => onZoomChange(zoom + ZOOM_STEP)}
+          disabled={zoom >= MAX_ZOOM || isUploading}
           aria-label="Phóng to"
           className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
         >
