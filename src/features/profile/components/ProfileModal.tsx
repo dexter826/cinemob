@@ -122,7 +122,7 @@ export function ProfileModal({ isOpen, onClose, onChangeAvatar }: ProfileModalPr
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveEdit();
+                      if (e.key === 'Enter') void saveEdit();
                       if (e.key === 'Escape') cancelEdit();
                     }}
                     maxLength={50}
@@ -130,7 +130,7 @@ export function ProfileModal({ isOpen, onClose, onChangeAvatar }: ProfileModalPr
                     aria-label="Tên hiển thị mới"
                     className="flex-1 min-w-0 px-3 h-10 rounded-xl border border-border bg-surface-elevated text-sm text-text-primary outline-none focus:border-primary text-center"
                   />
-                  <IconButton label="Lưu tên" onClick={saveEdit} disabled={isSaving} size="sm">
+                  <IconButton label="Lưu tên" onClick={() => void saveEdit()} disabled={isSaving} size="sm">
                     <Check size={14} aria-hidden="true" />
                   </IconButton>
                   <IconButton label="Hủy sửa tên" onClick={cancelEdit} disabled={isSaving} size="sm">
@@ -144,7 +144,7 @@ export function ProfileModal({ isOpen, onClose, onChangeAvatar }: ProfileModalPr
 
           <p className="mt-2 flex items-center gap-1.5 text-sm text-text-secondary max-w-full">
             <Mail size={13} className="shrink-0" aria-hidden="true" />
-            <span className="truncate">{user.email}</span>
+            <span className="truncate">{user.email || 'Chưa có email'}</span>
           </p>
           <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-text-secondary">
             <CalendarDays size={12} aria-hidden="true" /> Tham gia {joinDate}
