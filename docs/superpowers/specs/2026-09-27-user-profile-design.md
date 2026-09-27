@@ -37,10 +37,11 @@ Không thuộc phạm vi: Card thống kê, quản lý public share link, xóa t
 
 ## 5. Components & luồng
 
-`ProfilePage` chỉ 1 Card thông tin (không Card hành động — mỗi tính năng một nơi: Export/Đăng xuất ở menu Navbar, Thống kê/Albums ở nav chính):
+`ProfilePage` dùng container `max-w-7xl` như mọi trang, gồm hero identity + section Vừa xem gần đây (poster-led, đúng brand; không Card hành động — mỗi tính năng một nơi):
 
-- Card Thông tin cơ bản: avatar lớn + nút camera overlay mở `ChangeAvatarModal`, `displayName` + nút sửa inline (pencil), `email` readonly + badge Google, ngày tham gia từ `user.metadata.creationTime` format vi-VN. Không hiển thị UID.
+- Hero: avatar lớn (`w-24 sm:w-28`, ring `primary/20`) + nút camera overlay mở `ChangeAvatarModal`, tên cỡ display (`font-display`, `tracking-tight`) + nút sửa inline (pencil), meta hàng icon (email, ngày tham gia vi-VN, badge Google), glow `primary/10` góc hero. Không hiển thị UID.
   - Sửa tên inline: click pencil -> input, Enter/lưu, Esc hủy. Validate `2-50 ký tự` sau `trim`. Loading state + `showToast` thành công/thất bại. Giữ giá trị cũ khi lỗi.
+- Section Vừa xem gần đây: 10 phim `status=history` mới nhất từ `useMovieStore` (sort `watched_at` desc), strip ngang `snap-x`, poster `aspect-2/3` bấm mở `MovieDetailModal` global qua `openDetailModal`, link Xem tất cả về `/`. Loading: skeleton; trống: `EmptyState` compact.
 - Tái dùng `PageHeader`, `Button`, `Dialog`, `ToastContainer`/`AlertContainer` hiện tại. Responsive + dark/light theo design tokens, kiểm tra 320px.
 
 Luồng chính:
