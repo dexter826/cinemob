@@ -1,28 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Lottie from 'lottie-react';
-import Loading from '@/shared/components/ui/Loading';
 import logoText from '@/assets/images/logo_text.png';
 
 interface SplashScreenProps {
   onAnimationFinish: () => void;
-  showLoading?: boolean;
   staticMode?: boolean;
 }
 
 const SPLASH_FETCH_TIMEOUT_MS = 8000;
 
-function StaticBrandFrame({ showLoading }: { showLoading: boolean }) {
+function StaticBrandFrame() {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 z-150 bg-background overflow-hidden">
       <img src={logoText} alt="CineMOB" className="h-10 w-auto" />
-      {showLoading && <Loading fullScreen={false} size={40} />}
     </div>
   );
 }
 
-function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = false }: SplashScreenProps) {
+function SplashScreen({ onAnimationFinish, staticMode = false }: SplashScreenProps) {
   const [animationData, setAnimationData] = useState(null);
   const [failed, setFailed] = useState(false);
+  const completionNotifiedRef = useRef(false);
+
+  const notifyAnimationFinish = useCallback(() => {
+    if (completionNotifiedRef.current) return;
+    completionNotifiedRef.current = true;
+    onAnimationFinish();
+  }, [onAnimationFinish]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -32,9 +36,17 @@ function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = fal
   }, []);
 
   useEffect(() => {
+    if (staticMode) notifyAnimationFinish();
+  }, [notifyAnimationFinish, staticMode]);
+
+  useEffect(() => {
     if (staticMode) return;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), SPLASH_FETCH_TIMEOUT_MS);
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, SPLASH_FETCH_TIMEOUT_MS);
 
     fetch('/data/splashscreen.json', { signal: controller.signal })
       .then(response => {
@@ -43,13 +55,14 @@ function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = fal
       })
       .then(data => setAnimationData(data))
       .catch((error: unknown) => {
-        if (error instanceof Error && error.name === 'AbortError') {
-          console.warn('Splash animation timed out, using static brand frame');
-        } else {
-          console.warn('Splash animation failed to load, using static brand frame');
-        }
+        const isAbortError = typeof error === 'object'
+          && error !== null
+          && 'name' in error
+          && error.name === 'AbortError';
+        if (isAbortError && !timedOut) return;
+        console.warn('Splash animation failed to load, using static brand frame');
         setFailed(true);
-        onAnimationFinish();
+        notifyAnimationFinish();
       })
       .finally(() => clearTimeout(timeout));
 
@@ -57,10 +70,10 @@ function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = fal
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [staticMode, onAnimationFinish]);
+  }, [notifyAnimationFinish, staticMode]);
 
   if (staticMode || failed) {
-    return <StaticBrandFrame showLoading={showLoading} />;
+    return <StaticBrandFrame />;
   }
 
   if (!animationData) {
@@ -73,13 +86,8 @@ function SplashScreen({ onAnimationFinish, showLoading = false, staticMode = fal
         <Lottie
           animationData={animationData}
           loop={false}
-          onComplete={onAnimationFinish}
+          onComplete={notifyAnimationFinish}
         />
-        {showLoading && (
-          <div className="absolute bottom-32 md:bottom-40 left-1/2 -translate-x-1/2 z-10">
-            <Loading fullScreen={false} size={40} />
-          </div>
-        )}
       </div>
     </div>
   );

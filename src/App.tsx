@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
@@ -98,15 +98,15 @@ function App() {
     )
   );
   const [shouldShowSplash, setShouldShowSplash] = useState(() => splashMode !== 'none');
-  const [animationFinished, setAnimationFinished] = useState(() => splashMode === 'none');
   const [appReady, setAppReady] = useState(false);
 
-  const handleAppReady = () => {
+  const handleAppReady = useCallback(() => {
     setAppReady(true);
-    if (shouldShowSplash) {
-      setShouldShowSplash(false);
-    }
-  };
+  }, []);
+
+  const handleSplashFinish = useCallback(() => {
+    setShouldShowSplash(false);
+  }, []);
 
   return (
     <Router>
@@ -124,23 +124,18 @@ function App() {
         <Route
           path="/*"
           element={
-            <>
+            <AuthProvider>
               {shouldShowSplash && (
                 <SplashScreen
-                  onAnimationFinish={() => setAnimationFinished(true)}
-                  showLoading={animationFinished && !appReady}
+                  onAnimationFinish={handleSplashFinish}
                   staticMode={splashMode === 'static'}
                 />
               )}
 
-              {animationFinished && (
-                <AuthProvider>
-                  <MainApp onReady={handleAppReady} appReady={appReady} />
-                  <ToastContainer />
-                  <AlertContainer />
-                </AuthProvider>
-              )}
-            </>
+              <MainApp onReady={handleAppReady} appReady={appReady} />
+              <ToastContainer />
+              <AlertContainer />
+            </AuthProvider>
           }
         />
       </Routes>
