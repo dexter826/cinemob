@@ -22,7 +22,12 @@ const syncProfilePhotoURL = async (uid: string, photoURL: string): Promise<void>
 export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Promise<string> => {
   const secureUrl = await uploadToCloudinary(fileOrBlob, 'avatars');
 
-  await updateProfile(user, { photoURL: secureUrl });
+  try {
+    await updateProfile(user, { photoURL: secureUrl });
+  } catch (error) {
+    console.error('Không thể cập nhật ảnh đại diện:', error);
+    throw new Error('Không thể cập nhật ảnh đại diện, vui lòng thử lại');
+  }
   await syncProfilePhotoURL(user.uid, secureUrl);
 
   return secureUrl;
@@ -38,7 +43,12 @@ export const getOriginalGoogleAvatar = (user: User): string | null => {
 export const revertToGoogleAvatar = async (user: User): Promise<string | null> => {
   const originalPhotoURL = getOriginalGoogleAvatar(user);
 
-  await updateProfile(user, { photoURL: originalPhotoURL });
+  try {
+    await updateProfile(user, { photoURL: originalPhotoURL });
+  } catch (error) {
+    console.error('Không thể khôi phục ảnh đại diện:', error);
+    throw new Error('Không thể khôi phục ảnh đại diện, vui lòng thử lại');
+  }
   await syncProfilePhotoURL(user.uid, originalPhotoURL || '');
 
   return originalPhotoURL;

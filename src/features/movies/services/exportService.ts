@@ -104,6 +104,6 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     XLSX.writeFile(wb, fileName);
   } catch (error) {
     console.error('Error exporting to Excel:', error);
-    throw error;
+    throw new Error('Không thể xuất file Excel, vui lòng thử lại');
   }
 };

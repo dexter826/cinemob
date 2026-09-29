@@ -88,16 +88,26 @@ export const uploadToCloudinary = async (
   formData.append('upload_preset', uploadPreset);
   formData.append('folder', folder);
 
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: 'POST',
-    signal: AbortSignal.timeout(15000),
-    body: formData,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      signal: AbortSignal.timeout(15000),
+      body: formData,
+    });
+  } catch (error) {
+    console.error('Không thể kết nối Cloudinary:', error);
+    throw new Error('Không thể tải ảnh lên, vui lòng thử lại');
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    const message = errorData?.error?.message || 'Tải ảnh lên Cloudinary thất bại';
-    throw new Error(message);
+    console.error('Cloudinary từ chối ảnh tải lên:', errorData);
+    const rawMessage = errorData?.error?.message;
+    if (typeof rawMessage === 'string' && rawMessage.toLowerCase().includes('size')) {
+      throw new Error('Ảnh vượt dung lượng cho phép, vui lòng chọn ảnh nhỏ hơn');
+    }
+    throw new Error('Không thể tải ảnh lên, vui lòng thử lại');
   }
 
   const data: unknown = await response.json();

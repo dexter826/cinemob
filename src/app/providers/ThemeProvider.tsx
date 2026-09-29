@@ -56,8 +56,7 @@ export function ThemeProvider({
     (nextTheme: Theme) => {
       try {
         localStorage.setItem(storageKey, nextTheme);
-      } catch {
-      }
+      } catch {}
       setTheme(nextTheme);
     },
     [storageKey],

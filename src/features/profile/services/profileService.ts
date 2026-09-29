@@ -28,7 +28,12 @@ export const updateDisplayName = async (user: User, rawName: string): Promise<st
     throw new Error(checked.error);
   }
   const displayName = checked.value;
-  await updateProfile(user, { displayName });
+  try {
+    await updateProfile(user, { displayName });
+  } catch (error) {
+    console.error('Không thể cập nhật tên hiển thị:', error);
+    throw new Error('Không thể cập nhật tên hiển thị, vui lòng thử lại');
+  }
   try {
     const profileRef = doc(db, MEMBER_PROFILE_COLLECTION, user.uid);
     const profileSnap = await getDoc(profileRef);

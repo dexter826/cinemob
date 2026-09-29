@@ -27,5 +27,4 @@ export const CLOUDINARY_CONFIG = {
   uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '',
 };
 
-export const AI_PROXY_URL =
-  import.meta.env.VITE_AI_PROXY_URL || '';
+export const AI_PROXY_URL = import.meta.env.VITE_AI_PROXY_URL || '';
