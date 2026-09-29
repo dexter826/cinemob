@@ -78,23 +78,29 @@ export const useSearch = (user: User | null) => {
   useEffect(() => {
     const query = filters.query.trim();
     if (query.length > 2 && query !== submittedQuery) {
+      let ignore = false;
       const timer = setTimeout(async () => {
         setIsSuggesting(true);
         try {
           const { results: data } = await searchMovies(query, 1);
-          setSuggestions(data.slice(0, 6));
-          setShowSuggestions(true);
+          if (!ignore) {
+            setSuggestions(data.slice(0, 6));
+            setShowSuggestions(true);
+          }
         } catch (error) {
           console.error('Error fetching suggestions:', error);
         } finally {
-          setIsSuggesting(false);
+          if (!ignore) setIsSuggesting(false);
         }
       }, 300);
-      return () => clearTimeout(timer);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
+      return () => {
+        ignore = true;
+        clearTimeout(timer);
+      };
     }
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setIsSuggesting(false);
   }, [filters.query, submittedQuery]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User } from 'firebase/auth';
 import { addAlbum, syncMovieAlbums } from '../services/albumService';
 import useAlbumStore from '../stores/albumStore';
@@ -19,25 +19,28 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
   const [showCreateAlbum, setShowCreateAlbum] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
+  const syncedRef = useRef(false);
 
   useEffect(() => {
     if (!isOpen) {
       setShowCreateAlbum(false);
       setNewAlbumName('');
+      syncedRef.current = false;
       return;
     }
+    if (syncedRef.current) return;
+    syncedRef.current = true;
 
-    if (movieToEdit && albums.length > 0) {
-      const movieDocId = movieToEdit.docId;
-      if (movieDocId) {
-        const albumsContainingMovie = albums
-          .filter((album) => album.movieDocIds?.includes(movieDocId))
-          .map((album) => album.docId || '');
-        setSelectedAlbumIds(albumsContainingMovie);
-      }
-    } else if (!movieToEdit) {
+    const movieDocId = movieToEdit?.docId;
+    if (!movieDocId) {
       setSelectedAlbumIds([]);
+      return;
     }
+    setSelectedAlbumIds(
+      albums
+        .filter((album) => album.movieDocIds?.includes(movieDocId))
+        .map((album) => album.docId || ''),
+    );
   }, [isOpen, movieToEdit, albums]);
 
   const handleCreateAlbum = async () => {

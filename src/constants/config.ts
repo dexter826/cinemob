@@ -26,3 +26,6 @@ export const CLOUDINARY_CONFIG = {
   cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '',
   uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '',
 };
+
+export const AI_PROXY_URL =
+  import.meta.env.VITE_AI_PROXY_URL || '';

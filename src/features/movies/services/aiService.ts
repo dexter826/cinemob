@@ -1,7 +1,6 @@
 import { Movie } from '@/types';
+import { AI_PROXY_URL } from '@/constants';
 import { normalizeMovieDate } from '../utils/movieUtils';
-
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 interface AIRecommendation {
   title: string;
@@ -170,17 +169,11 @@ const retryWithBackoff = async (
   }
 };
 
-const makeOpenRouterRequest = (prompt: string): Promise<Response> => {
-  if (!OPENROUTER_API_KEY) throw new Error('API_KEY_MISSING');
-  return fetch('https://openrouter.ai/api/v1/chat/completions', {
+const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
+  fetch(`${AI_PROXY_URL}/v1/chat/completions`, {
     method: 'POST',
     signal: AbortSignal.timeout(15000),
-    headers: {
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': window.location.origin,
-      'X-Title': 'CineMOB',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'openrouter/free',
       messages: [
@@ -193,7 +186,6 @@ const makeOpenRouterRequest = (prompt: string): Promise<Response> => {
       temperature: 0.5,
     }),
   });
-};
 
 const parseAIResponse = (content: string): AIRecommendation[] => {
   const match = content.match(/\[[\s\S]*\]/);
