@@ -1,5 +1,6 @@
 import { deleteField, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
 // Collection Firestore của hồ sơ thành viên.
@@ -152,7 +153,16 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
       media_type: m.media_type ?? ('movie' as const),
       release_date: m.release_date ?? '',
       rating: m.rating ?? 0,
+      watched_at: m.watched_at,
+      is_review: m.is_review || false,
     }));
+};
+
+// So ngày xem bất kể Timestamp hay Date, một bên thiếu là khác.
+const sameWatchedAt = (a?: ProfileMovie['watched_at'], b?: ProfileMovie['watched_at']): boolean => {
+  if (!a !== !b) return false;
+  if (!a) return true;
+  return (normalizeMovieDate(a)?.getTime() ?? null) === (normalizeMovieDate(b)?.getTime() ?? null);
 };
 
 // Hai danh sách phim hồ sơ giống nhau từng trường; tránh stringify mỗi lần sync.
@@ -167,5 +177,7 @@ const sameProfileMovies = (a: ProfileMovie[] | undefined, b: ProfileMovie[]): bo
       m.poster_path === b[i].poster_path &&
       m.media_type === b[i].media_type &&
       m.release_date === b[i].release_date &&
-      m.rating === b[i].rating,
+      m.rating === b[i].rating &&
+      m.is_review === b[i].is_review &&
+      sameWatchedAt(m.watched_at, b[i].watched_at),
   );

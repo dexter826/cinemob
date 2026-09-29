@@ -7,7 +7,7 @@ import {
   Star,
   Edit2,
   MessageCircle,
-  MessageSquare,
+  Eye,
   Film,
   Tv,
   CheckCircle,
@@ -145,6 +145,14 @@ function MovieCard(props: MovieCardProps) {
           </div>
         </div>
 
+        {/* Review badge */}
+        {movie.is_review && (
+          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
+            <Eye size={11} aria-hidden="true" />
+            <span className="hidden sm:inline">Xem qua </span>Review
+          </span>
+        )}
+
         {/* Progress Bar */}
         {showProgressBar && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
@@ -169,28 +177,6 @@ function MovieCard(props: MovieCardProps) {
           </p>
         </div>
 
-        <div className="min-h-5 mb-2 flex items-center gap-2 text-[10px] font-medium">
-          {!!movie.rating && movie.rating > 0 && (
-            <span className="inline-flex items-center gap-1 text-text-main" title="Đánh giá">
-              <Star
-                size={11}
-                className="text-warning"
-                fill="currentColor"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-              <span className="tabular-nums">{movie.rating.toFixed(1)}</span>
-            </span>
-          )}
-
-          {movie.is_review && (
-            <span className="inline-flex items-center gap-1 text-primary" title="Đã xem review">
-              <MessageSquare size={11} strokeWidth={1.5} aria-hidden="true" />
-              <span>Review</span>
-            </span>
-          )}
-        </div>
-
         <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-muted">
           <div className="flex items-center flex-wrap gap-1.5 font-medium">
             {movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed && (
@@ -205,14 +191,31 @@ function MovieCard(props: MovieCardProps) {
             </div>
           </div>
 
-          {movie.review && (
-            <div
-              className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0"
-              title="Có đánh giá"
-            >
-              <MessageCircle size={11} strokeWidth={1.5} />
-            </div>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            {!!movie.rating && movie.rating > 0 && (
+              <span
+                className="flex items-center gap-1 font-semibold text-text-main"
+                title="Đánh giá"
+              >
+                <Star
+                  size={11}
+                  className="text-warning"
+                  fill="currentColor"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <span className="tabular-nums">{movie.rating.toFixed(1)}</span>
+              </span>
+            )}
+            {movie.review && (
+              <div
+                className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0"
+                title="Có đánh giá"
+              >
+                <MessageCircle size={11} strokeWidth={1.5} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </article>

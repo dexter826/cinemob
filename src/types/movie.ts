@@ -55,6 +55,8 @@ export interface ProfileMovie {
   media_type?: 'movie' | 'tv';
   release_date?: string;
   rating?: number;
+  watched_at?: Timestamp | Date;
+  is_review?: boolean;
 }
 
 export type MemberGender = 'male' | 'female' | 'other';
