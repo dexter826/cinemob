@@ -26,7 +26,7 @@
 - **Khám phá & Tra cứu:** Tìm kiếm phim, TV show, diễn viên, xem trailer và đánh giá chi tiết từ TMDB.
 - **Quản lý danh sách xem:** Phân loại theo trạng thái (Đang xem, Đã xem, Muốn xem) và tạo album theo chủ đề riêng.
 - **Lịch phát sóng:** Theo dõi lịch chiếu tập mới theo tuần/tháng để không bỏ lỡ các series yêu thích.
-- **Gợi ý phim thông minh:** Đề xuất phim phù hợp ngữ cảnh và sở thích người dùng qua AI (OpenRouter).
+- **Gợi ý phim thông minh:** Đề xuất phim phù hợp ngữ cảnh và sở thích người dùng
 - **Thống kê & Xuất báo cáo:** Trực quan hóa thói quen giải trí qua biểu đồ (Recharts) và hỗ trợ xuất danh sách ra file Excel (.xlsx).
 - **Hỗ trợ PWA:** Cài đặt nhanh chóng trên thiết bị di động và máy tính, hoạt động mượt mà ngay cả khi kết nối mạng không ổn định.
 
@@ -34,7 +34,7 @@
 
 - **Dữ liệu điện ảnh:** Lấy thông tin phim, TV show, diễn viên và lịch chiếu từ [TMDB API](https://www.themoviedb.org/documentation/api).
 - **Xác thực & Lưu trữ:** Sử dụng Firebase v12 (Google Sign-In qua Firebase Auth và đồng bộ dữ liệu thời gian thực qua Cloud Firestore).
-- **Trợ lý gợi ý:** Tích hợp [OpenRouter API](https://openrouter.ai/) để đề xuất phim theo ngữ cảnh và sở thích người xem.
+- **Trợ lý gợi ý:** Đề xuất phim theo ngữ cảnh và sở thích người xem qua [OpenRouter API](https://openrouter.ai/), gọi trung gian qua Cloudflare Worker cineproxy để giữ API key phía server.
 - **Thống kê & Xuất dữ liệu:** Trực quan hóa dữ liệu bằng [Recharts](https://recharts.org/) và hỗ trợ xuất danh sách phim ra file Excel (.xlsx) với SheetJS.
 
 ### Kiến trúc ứng dụng
@@ -45,6 +45,7 @@ graph TD
 
     subgraph External_Services["Dịch vụ bên ngoài"]
         TMDB["TMDB API<br/>(Thông tin phim, TV Show, Diễn viên)"]
+        AIProxy["CineProxy<br/>(Cloudflare Worker)"]
         OpenRouter["OpenRouter API<br/>(Gợi ý phim qua AI)"]
     end
 
@@ -54,7 +55,8 @@ graph TD
     end
 
     Client <-->|Truy vấn dữ liệu phim| TMDB
-    Client <-->|Nhận gợi ý phim| OpenRouter
+    Client <-->|Gửi ngữ cảnh, nhận gợi ý phim| AIProxy
+    AIProxy <-->|Gọi AI với key server-side| OpenRouter
     Client <-->|Xác thực phiên đăng nhập| Auth
     Client <-->|Đồng bộ dữ liệu thời gian thực| Firestore
 ```
@@ -73,8 +75,8 @@ graph TD
 1. **Clone repository:**
 
    ```bash
-   git clone https://github.com/dexter826/cinemetrics.git
-   cd cinemetrics
+   git clone https://github.com/dexter826/cinemob.git
+   cd cinemob
    ```
 
 2. **Cài đặt dependencies:**
@@ -93,7 +95,8 @@ graph TD
    Cập nhật các giá trị tương ứng trong file `.env`:
    - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
-   - `VITE_OPENROUTER_API_KEY`: API Key lấy từ OpenRouter.
+   - `VITE_AI_PROXY_URL`: URL Cloudflare Worker cineproxy dùng cho gợi ý phim qua AI.
+   - `VITE_CLOUDINARY_CLOUD_NAME` / `VITE_CLOUDINARY_UPLOAD_PRESET`: Cấu hình Cloudinary dùng cho upload ảnh hồ sơ.
 
    > [!NOTE]
    > Các biến có tiền tố `VITE_` sẽ được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt. Không đưa các khóa bí mật mang quyền quản trị vào các biến này.
@@ -108,13 +111,13 @@ graph TD
 
 ## Các lệnh chính
 
-| Lệnh                | Mô tả                                                                      |
-| :------------------ | :------------------------------------------------------------------------- |
-| `npm run dev`       | Khởi chạy Vite development server tại cổng `3000` (hỗ trợ chế độ PWA dev). |
-| `npm run build`     | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.           |
-| `npm run preview`   | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`.          |
-| `npm run typecheck` | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                          |
-| `npm run lint`      | Chạy ESLint kiểm tra mã nguồn trong `src/`.                                |
+| Lệnh                | Mô tả                                                             |
+| :------------------ | :---------------------------------------------------------------- |
+| `npm run dev`       | Khởi chạy Vite development server tại cổng `3000`.                |
+| `npm run build`     | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.  |
+| `npm run preview`   | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
+| `npm run typecheck` | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                 |
+| `npm run lint`      | Chạy ESLint kiểm tra mã nguồn trong `src/`.                       |
 
 ---
 
@@ -141,12 +144,12 @@ Cấu trúc các thư mục và tập tin chính trong dự án:
 ├── docs/                 # Tài liệu dự án và hình ảnh minh họa (logo, mockup)
 ├── public/               # Tài nguyên tĩnh phục vụ trực tiếp (manifest, icons, lottie data)
 ├── src/                  # Toàn bộ mã nguồn ứng dụng
-│   ├── app/              # Cấu hình ứng dụng và định tuyến (router)
+│   ├── app/              # Providers dùng chung (Auth, Theme)
 │   ├── assets/           # Tài nguyên hình ảnh, âm thanh nội bộ
 │   ├── constants/        # Hằng số hệ thống và danh sách routes
 │   ├── features/         # Các module tính năng (auth, movies, albums, calendar, ...)
 │   ├── lib/              # Khởi tạo và cấu hình thư viện ngoài (Firebase, ...)
-│   ├── shared/           # Components, hooks, stores và utilities dùng chung
+│   ├── shared/           # Components, hooks, pages, stores và utilities dùng chung
 │   └── types/            # Khai báo interfaces và types TypeScript
 ├── .env.example          # Danh sách biến môi trường mẫu
 ├── DESIGN.md             # Đặc tả hệ thống thiết kế (Design System)
