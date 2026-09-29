@@ -114,37 +114,40 @@ export const getTVShowUpcomingEpisodes = async (
         : [numberOfSeasons]
       : [];
 
-  for (const seasonNum of seasonsToCheck) {
-    const seasonData = await tmdbFetch<TVSeasonEpisodesResponse>(
-      `tv/${tvId}/season/${seasonNum}`,
-      {},
-      decodeTVSeasonEpisodes,
-      signal,
-    );
-    const episodes = seasonData?.episodes || [];
+  // Hai mùa độc lập nên tải song song cho nhanh.
+  const seasonResults = await Promise.all(
+    seasonsToCheck.map((seasonNum) =>
+      tmdbFetch<TVSeasonEpisodesResponse>(
+        `tv/${tvId}/season/${seasonNum}`,
+        {},
+        decodeTVSeasonEpisodes,
+        signal,
+      ),
+    ),
+  );
 
-    for (const ep of episodes) {
-      if (ep.air_date) {
-        const adjustedDate = adjustAirDate(ep.air_date);
-        const airDate = parseLocalDate(adjustedDate);
-        if (!airDate) continue;
+  const sixtyDaysFromNow = new Date(today);
+  sixtyDaysFromNow.setDate(sixtyDaysFromNow.getDate() + 60);
 
-        const sixtyDaysFromNow = new Date(today);
-        sixtyDaysFromNow.setDate(sixtyDaysFromNow.getDate() + 60);
+  for (const seasonData of seasonResults) {
+    for (const ep of seasonData?.episodes || []) {
+      if (!ep.air_date) continue;
+      const adjustedDate = adjustAirDate(ep.air_date);
+      const airDate = parseLocalDate(adjustedDate);
+      if (!airDate) continue;
 
-        if (airDate >= today && airDate <= sixtyDaysFromNow) {
-          upcomingEpisodes.push({
-            id: ep.id,
-            name: ep.name,
-            overview: ep.overview || '',
-            air_date: adjustedDate,
-            episode_number: ep.episode_number,
-            season_number: ep.season_number,
-            still_path: ep.still_path,
-            vote_average: ep.vote_average || 0,
-            runtime: ep.runtime,
-          });
-        }
+      if (airDate >= today && airDate <= sixtyDaysFromNow) {
+        upcomingEpisodes.push({
+          id: ep.id,
+          name: ep.name,
+          overview: ep.overview || '',
+          air_date: adjustedDate,
+          episode_number: ep.episode_number,
+          season_number: ep.season_number,
+          still_path: ep.still_path,
+          vote_average: ep.vote_average || 0,
+          runtime: ep.runtime,
+        });
       }
     }
   }

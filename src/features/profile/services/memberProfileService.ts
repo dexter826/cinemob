@@ -81,7 +81,7 @@ export const syncMemberProfile = async (
   const profileMovies = buildProfileMovies(movies);
   const moviesChanged =
     current?.totalCount !== profileMovies.length ||
-    JSON.stringify(current?.movies) !== JSON.stringify(profileMovies);
+    !sameProfileMovies(current?.movies, profileMovies);
   const identityChanged =
     current?.displayName !== identity.displayName ||
     (current?.photoURL || '') !== identity.photoURL ||
@@ -154,3 +154,18 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
       rating: m.rating ?? 0,
     }));
 };
+
+// Hai danh sách phim hồ sơ giống nhau từng trường; tránh stringify mỗi lần sync.
+const sameProfileMovies = (a: ProfileMovie[] | undefined, b: ProfileMovie[]): boolean =>
+  !!a &&
+  a.length === b.length &&
+  a.every(
+    (m, i) =>
+      m.id === b[i].id &&
+      m.title === b[i].title &&
+      m.title_vi === b[i].title_vi &&
+      m.poster_path === b[i].poster_path &&
+      m.media_type === b[i].media_type &&
+      m.release_date === b[i].release_date &&
+      m.rating === b[i].rating,
+  );

@@ -33,13 +33,14 @@ const INITIAL_FILTER_STATE: FilterState = {
   sourceType: 'all',
 };
 
+const MOVIES_PER_PAGE = 20;
+
 // Xử lý lọc và sắp xếp danh sách phim.
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTER_STATE);
   const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 20;
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -131,10 +132,10 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     return result;
   }, [currentTabMovies, filters, activeTab]);
 
-  const totalPages = Math.ceil(processedMovies.length / moviesPerPage);
+  const totalPages = Math.ceil(processedMovies.length / MOVIES_PER_PAGE);
   const paginatedMovies = useMemo(() => {
-    const start = (currentPage - 1) * moviesPerPage;
-    return processedMovies.slice(start, start + moviesPerPage);
+    const start = (currentPage - 1) * MOVIES_PER_PAGE;
+    return processedMovies.slice(start, start + MOVIES_PER_PAGE);
   }, [processedMovies, currentPage]);
 
   return {

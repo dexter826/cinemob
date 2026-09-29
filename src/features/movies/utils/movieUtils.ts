@@ -3,17 +3,19 @@ import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '@/constants';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 
+// Phim có quốc gia Việt Nam hay không, dùng để chọn tiêu đề chính/phụ.
+const isVietnameseOrigin = (country: string): boolean =>
+  ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
+
 // Ưu tiên tiêu đề Tiếng Việt.
 export const getMainTitle = (movie: Movie): string => {
-  const country = movie.country || '';
-  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
+  const isVN = isVietnameseOrigin(movie.country || '');
   return isVN && movie.title_vi ? movie.title_vi : movie.title_vi || movie.title;
 };
 
 // Lấy tên gốc của phim.
 export const getSubTitle = (movie: Movie): string => {
-  const country = movie.country || '';
-  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
+  const isVN = isVietnameseOrigin(movie.country || '');
   const mainTitle = getMainTitle(movie);
 
   if (!isVN && movie.title_vi && movie.title_vi !== movie.title) {

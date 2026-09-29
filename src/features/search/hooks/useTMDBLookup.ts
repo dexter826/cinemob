@@ -53,15 +53,13 @@ export const useTMDBLookup = () => {
 
       setIsLoading(true);
       try {
-        if (user && id) {
-          const exists = await checkMovieExists(user.uid, id);
-          if (!isCurrent()) return null;
-          setMovieExists(exists);
-        }
-
-        const details = await getMovieDetails(Number(id), type, controller.signal);
-        if (!details) return null;
+        const [exists, details] = await Promise.all([
+          user && id ? checkMovieExists(user.uid, id) : Promise.resolve(false),
+          getMovieDetails(Number(id), type, controller.signal),
+        ]);
         if (!isCurrent()) return null;
+        setMovieExists(exists);
+        if (!details) return null;
 
         const originalTitle = details.title || details.name || '';
         let viTitle = '',

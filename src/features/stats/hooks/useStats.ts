@@ -73,7 +73,10 @@ export const useStats = (movies: Movie[]) => {
       10: 0,
     };
     ratedMovies.forEach((m) => {
-      if (m.rating) moviesByRating[m.rating] = (moviesByRating[m.rating] || 0) + 1;
+      if (!m.rating) return;
+      // Làm tròn về số nguyên để khớp bucket 1-10.
+      const bucket = Math.round(m.rating);
+      moviesByRating[bucket] = (moviesByRating[bucket] || 0) + 1;
     });
 
     // Top Quốc gia.
