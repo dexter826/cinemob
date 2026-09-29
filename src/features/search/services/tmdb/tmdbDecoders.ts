@@ -206,7 +206,7 @@ const decodeEpisode: Decoder<TMDBEpisode> = (value) => {
   )
     return null;
   if (
-    typeof value.air_date !== 'string' ||
+    !isNullableString(value.air_date) ||
     typeof value.episode_number !== 'number' ||
     typeof value.season_number !== 'number'
   )
@@ -219,6 +219,7 @@ const decodeEpisode: Decoder<TMDBEpisode> = (value) => {
   if (!isOptionalNumber(value.runtime)) return null;
   return {
     ...value,
+    air_date: typeof value.air_date === 'string' ? value.air_date : '',
     vote_average: typeof value.vote_average === 'number' ? value.vote_average : 0,
   } as TMDBEpisode;
 };
