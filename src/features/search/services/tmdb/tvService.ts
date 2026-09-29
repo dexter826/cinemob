@@ -28,13 +28,26 @@ interface TVSeasonEpisodesResponse {
 }
 
 // Lấy thông tin mùa phim.
-export const getTVSeasonDetails = async (tvId: number, seasonNumber: number, signal?: AbortSignal): Promise<{ episode_count: number } | null> => {
-  const data = await tmdbFetch<TVSeasonResponse>(`tv/${tvId}/season/${seasonNumber}`, {}, decodeTVSeason, signal);
+export const getTVSeasonDetails = async (
+  tvId: number,
+  seasonNumber: number,
+  signal?: AbortSignal,
+): Promise<{ episode_count: number } | null> => {
+  const data = await tmdbFetch<TVSeasonResponse>(
+    `tv/${tvId}/season/${seasonNumber}`,
+    {},
+    decodeTVSeason,
+    signal,
+  );
   return data ? { episode_count: data.episodes?.length || 0 } : null;
 };
 
 // Lấy tổng số tập phim theo mùa.
-export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number, signal?: AbortSignal): Promise<{
+export const getTVShowEpisodeInfo = async (
+  tvId: number,
+  numberOfSeasons: number,
+  signal?: AbortSignal,
+): Promise<{
   total_episodes: number;
   episodes_per_season: { [season: number]: number };
 }> => {
@@ -60,7 +73,7 @@ export const getTVShowEpisodeInfo = async (tvId: number, numberOfSeasons: number
 
     return { total_episodes: totalEpisodes, episodes_per_season: episodesPerSeason };
   } catch (error) {
-    console.error("Failed to get TV show episode info:", error);
+    console.error('Failed to get TV show episode info:', error);
     return { total_episodes: 0, episodes_per_season: {} };
   }
 };
@@ -82,7 +95,10 @@ export const parseLocalDate = (dateStr: string): Date | null => {
 };
 
 // Lấy danh sách tập phim sắp chiếu.
-export const getTVShowUpcomingEpisodes = async (tvId: number, signal?: AbortSignal): Promise<TMDBEpisode[]> => {
+export const getTVShowUpcomingEpisodes = async (
+  tvId: number,
+  signal?: AbortSignal,
+): Promise<TMDBEpisode[]> => {
   const details = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
   if (!details || details.status === 'Ended' || details.status === 'Canceled') return [];
 
@@ -91,10 +107,20 @@ export const getTVShowUpcomingEpisodes = async (tvId: number, signal?: AbortSign
   const upcomingEpisodes: TMDBEpisode[] = [];
 
   const numberOfSeasons = details.number_of_seasons || 0;
-  const seasonsToCheck = numberOfSeasons > 0 ? (numberOfSeasons > 1 ? [numberOfSeasons, numberOfSeasons - 1] : [numberOfSeasons]) : [];
+  const seasonsToCheck =
+    numberOfSeasons > 0
+      ? numberOfSeasons > 1
+        ? [numberOfSeasons, numberOfSeasons - 1]
+        : [numberOfSeasons]
+      : [];
 
   for (const seasonNum of seasonsToCheck) {
-    const seasonData = await tmdbFetch<TVSeasonEpisodesResponse>(`tv/${tvId}/season/${seasonNum}`, {}, decodeTVSeasonEpisodes, signal);
+    const seasonData = await tmdbFetch<TVSeasonEpisodesResponse>(
+      `tv/${tvId}/season/${seasonNum}`,
+      {},
+      decodeTVSeasonEpisodes,
+      signal,
+    );
     const episodes = seasonData?.episodes || [];
 
     for (const ep of episodes) {
@@ -102,10 +128,10 @@ export const getTVShowUpcomingEpisodes = async (tvId: number, signal?: AbortSign
         const adjustedDate = adjustAirDate(ep.air_date);
         const airDate = parseLocalDate(adjustedDate);
         if (!airDate) continue;
-        
+
         const sixtyDaysFromNow = new Date(today);
         sixtyDaysFromNow.setDate(sixtyDaysFromNow.getDate() + 60);
-        
+
         if (airDate >= today && airDate <= sixtyDaysFromNow) {
           upcomingEpisodes.push({
             id: ep.id,
@@ -116,20 +142,30 @@ export const getTVShowUpcomingEpisodes = async (tvId: number, signal?: AbortSign
             season_number: ep.season_number,
             still_path: ep.still_path,
             vote_average: ep.vote_average || 0,
-            runtime: ep.runtime
+            runtime: ep.runtime,
           });
         }
       }
     }
   }
 
-  return upcomingEpisodes.sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime());
+  return upcomingEpisodes.sort(
+    (a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime(),
+  );
 };
 
 // Lấy thông tin tập phim tiếp theo.
-export const getTVShowNextEpisode = async (tvId: number, signal?: AbortSignal): Promise<TMDBEpisode | null> => {
-  const data = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, { append_to_response: 'next_episode_to_air' }, decodeTVDetails, signal);
-  
+export const getTVShowNextEpisode = async (
+  tvId: number,
+  signal?: AbortSignal,
+): Promise<TMDBEpisode | null> => {
+  const data = await tmdbFetch<TVDetailsResponse>(
+    `tv/${tvId}`,
+    { append_to_response: 'next_episode_to_air' },
+    decodeTVDetails,
+    signal,
+  );
+
   if (data?.next_episode_to_air) {
     const ep = data.next_episode_to_air;
     return {
@@ -141,7 +177,7 @@ export const getTVShowNextEpisode = async (tvId: number, signal?: AbortSignal): 
       season_number: ep.season_number,
       still_path: ep.still_path,
       vote_average: ep.vote_average || 0,
-      runtime: ep.runtime
+      runtime: ep.runtime,
     };
   }
 

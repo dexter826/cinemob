@@ -47,14 +47,14 @@ function CustomDropdown({
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const selectedOption = useMemo(
-    () => options.find(option => option.value === value),
+    () => options.find((option) => option.value === value),
     [options, value],
   );
 
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery.trim()) return options;
     const lowerQuery = searchQuery.toLowerCase();
-    return options.filter(option => option.label.toLowerCase().includes(lowerQuery));
+    return options.filter((option) => option.label.toLowerCase().includes(lowerQuery));
   }, [options, searchable, searchQuery]);
 
   useEffect(() => {
@@ -107,15 +107,23 @@ function CustomDropdown({
       return;
     }
 
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
+    ) {
       event.preventDefault();
-      const nextIndex = event.key === 'ArrowDown'
-        ? activeIndex + 1
-        : event.key === 'ArrowUp'
-          ? (activeIndex < 0 ? filteredOptions.length - 1 : activeIndex - 1)
-          : event.key === 'Home'
-            ? 0
-            : filteredOptions.length - 1;
+      const nextIndex =
+        event.key === 'ArrowDown'
+          ? activeIndex + 1
+          : event.key === 'ArrowUp'
+            ? activeIndex < 0
+              ? filteredOptions.length - 1
+              : activeIndex - 1
+            : event.key === 'Home'
+              ? 0
+              : filteredOptions.length - 1;
       if (!isOpen) openAt(nextIndex);
       else moveTo(nextIndex);
       return;
@@ -124,7 +132,7 @@ function CustomDropdown({
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       if (!isOpen) {
-        const selectedIndex = filteredOptions.findIndex(option => option.value === value);
+        const selectedIndex = filteredOptions.findIndex((option) => option.value === value);
         openAt(searchable ? -1 : Math.max(0, selectedIndex));
       } else if (activeIndex >= 0 && filteredOptions[activeIndex]) {
         handleSelect(filteredOptions[activeIndex]);
@@ -138,7 +146,7 @@ function CustomDropdown({
         id={controlId}
         ref={triggerRef}
         type="button"
-        onClick={() => isOpen ? closeAndRestoreFocus() : openAt(-1)}
+        onClick={() => (isOpen ? closeAndRestoreFocus() : openAt(-1))}
         onKeyDown={handleNavigationKey}
         disabled={disabled}
         className={`
@@ -156,10 +164,16 @@ function CustomDropdown({
         aria-describedby={ariaDescribedBy}
         aria-invalid={ariaInvalid}
       >
-        <span className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}>
+        <span
+          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown size={16} aria-hidden="true" className={`text-text-muted transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
+        <ChevronDown
+          size={16}
+          aria-hidden="true"
+          className={`text-text-muted transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`}
+        />
       </button>
 
       {isOpen && (
@@ -182,26 +196,37 @@ function CustomDropdown({
             </div>
           )}
 
-          <div id={listboxId} role="listbox" className="overflow-y-auto custom-scrollbar p-2" style={{ maxHeight }}>
+          <div
+            id={listboxId}
+            role="listbox"
+            className="overflow-y-auto custom-scrollbar p-2"
+            style={{ maxHeight }}
+          >
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-4 text-sm text-text-muted text-center italic opacity-60">
                 {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
               </div>
-            ) : filteredOptions.map((option, index) => (
-              <button
-                key={option.value}
-                ref={(element) => { optionRefs.current[index] = element; }}
-                type="button"
-                onClick={() => handleSelect(option)}
-                onKeyDown={handleNavigationKey}
-                className={`w-full px-4 py-2.5 text-left text-sm rounded-xl transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' : 'text-text-main hover:bg-primary/10 hover:text-primary'}`}
-                role="option"
-                aria-selected={option.value === value}
-              >
-                <span>{option.label}</span>
-                {option.value === value && <Check size={16} className="text-white" aria-hidden="true" />}
-              </button>
-            ))}
+            ) : (
+              filteredOptions.map((option, index) => (
+                <button
+                  key={option.value}
+                  ref={(element) => {
+                    optionRefs.current[index] = element;
+                  }}
+                  type="button"
+                  onClick={() => handleSelect(option)}
+                  onKeyDown={handleNavigationKey}
+                  className={`w-full px-4 py-2.5 text-left text-sm rounded-xl transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' : 'text-text-main hover:bg-primary/10 hover:text-primary'}`}
+                  role="option"
+                  aria-selected={option.value === value}
+                >
+                  <span>{option.label}</span>
+                  {option.value === value && (
+                    <Check size={16} className="text-white" aria-hidden="true" />
+                  )}
+                </button>
+              ))
+            )}
           </div>
         </div>
       )}

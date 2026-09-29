@@ -15,8 +15,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-hover border border-transparent',
-  secondary: 'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
-  ghost: 'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+  secondary:
+    'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
+  ghost:
+    'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
   danger: 'bg-danger text-white hover:brightness-95 border border-transparent',
 };
 
@@ -52,13 +54,21 @@ export function Button({
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],
-        className ?? ''
+        className ?? '',
       )}
       {...rest}
     >
-      {leadingIcon && <span aria-hidden="true" className="inline-flex shrink-0">{leadingIcon}</span>}
+      {leadingIcon && (
+        <span aria-hidden="true" className="inline-flex shrink-0">
+          {leadingIcon}
+        </span>
+      )}
       <span className="truncate">{children}</span>
-      {trailingIcon && <span aria-hidden="true" className="inline-flex shrink-0">{trailingIcon}</span>}
+      {trailingIcon && (
+        <span aria-hidden="true" className="inline-flex shrink-0">
+          {trailingIcon}
+        </span>
+      )}
     </button>
   );
 }

@@ -33,24 +33,27 @@ const sizeClasses: Record<DialogSize, string> = {
   '5xl': 'sm:max-w-5xl',
 };
 
-const getPresentationClasses = (presentation: NonNullable<DialogProps['presentation']>, size?: DialogSize) => {
+const getPresentationClasses = (
+  presentation: NonNullable<DialogProps['presentation']>,
+  size?: DialogSize,
+) => {
   const chosenSize = size ? sizeClasses[size] : null;
 
   switch (presentation) {
     case 'dialog':
       return classNames(
         'm-auto w-[calc(100%-2rem)] max-h-[90vh] rounded-dialog sm:w-full',
-        chosenSize || 'max-w-lg'
+        chosenSize || 'max-w-lg',
       );
     case 'sheet':
       return classNames(
         'mt-auto w-full max-h-[90vh] rounded-t-dialog rounded-b-none sm:m-auto sm:rounded-dialog',
-        chosenSize || 'sm:max-w-lg'
+        chosenSize || 'sm:max-w-lg',
       );
     case 'fullscreen-mobile':
       return classNames(
         'm-0 w-full h-full rounded-none sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh] sm:rounded-dialog',
-        chosenSize || 'sm:max-w-2xl'
+        chosenSize || 'sm:max-w-2xl',
       );
     default:
       return '';
@@ -83,7 +86,7 @@ export function Dialog({
           role="presentation"
           className={classNames(
             'fixed inset-0 flex flex-col bg-black/60 p-0 sm:p-4',
-            overlayClassName || 'z-50'
+            overlayClassName || 'z-50',
           )}
           variants={OVERLAY_VARIANTS}
           initial="closed"
@@ -104,7 +107,7 @@ export function Dialog({
             className={classNames(
               'flex flex-col overflow-hidden bg-surface-elevated text-text-primary shadow-elevated',
               getPresentationClasses(presentation, size),
-              className
+              className,
             )}
             variants={DIALOG_VARIANTS}
             initial="closed"
@@ -117,11 +120,17 @@ export function Dialog({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }
 
-export function DialogHeader({ titleId, title, descriptionId, description, onClose }: {
+export function DialogHeader({
+  titleId,
+  title,
+  descriptionId,
+  description,
+  onClose,
+}: {
   titleId: string;
   title: string;
   descriptionId?: string;
@@ -132,9 +141,16 @@ export function DialogHeader({ titleId, title, descriptionId, description, onClo
     <div className="shrink-0 border-b border-border px-4 py-3 sm:px-6 sm:py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 id={titleId} className="text-base sm:text-lg font-bold tracking-tight font-display truncate">{title}</h2>
+          <h2
+            id={titleId}
+            className="text-base sm:text-lg font-bold tracking-tight font-display truncate"
+          >
+            {title}
+          </h2>
           {description && (
-            <p id={descriptionId} className="text-xs sm:text-sm text-text-secondary mt-0.5">{description}</p>
+            <p id={descriptionId} className="text-xs sm:text-sm text-text-secondary mt-0.5">
+              {description}
+            </p>
           )}
         </div>
         {onClose && (
@@ -144,7 +160,9 @@ export function DialogHeader({ titleId, title, descriptionId, description, onClo
             aria-label="Đóng hộp thoại"
             className="inline-flex w-9 h-9 items-center justify-center rounded-control text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer shrink-0"
           >
-            <span aria-hidden="true" className="text-lg leading-none">×</span>
+            <span aria-hidden="true" className="text-lg leading-none">
+              ×
+            </span>
           </button>
         )}
       </div>
@@ -152,7 +170,13 @@ export function DialogHeader({ titleId, title, descriptionId, description, onClo
   );
 }
 
-export function DialogBody({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+export function DialogBody({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={classNames('flex-1 overflow-y-auto px-4 py-4 sm:px-6', className)}>
       {children}
@@ -160,13 +184,19 @@ export function DialogBody({ children, className = '' }: { children: React.React
   );
 }
 
-export function DialogFooter({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+export function DialogFooter({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div
       className={classNames(
         'shrink-0 border-t border-border bg-surface-elevated px-4 py-3 sm:px-6 sm:py-4',
         'pb-[calc(0.75rem+env(safe-area-inset-bottom))]',
-        className
+        className,
       )}
     >
       {children}

@@ -7,10 +7,7 @@ interface PosterPreviewProps {
 }
 
 // Xem trước poster phim
-function PosterPreview({
-  posterPath,
-  title
-}: PosterPreviewProps) {
+function PosterPreview({ posterPath, title }: PosterPreviewProps) {
   return (
     <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-full mx-auto shrink-0">
       <div className="relative group aspect-2/3 rounded-2xl sm:rounded-3xl overflow-hidden bg-black/5 dark:bg-white/5 border border-border shadow-card transition-shadow hover:shadow-elevated">
@@ -28,12 +25,14 @@ function PosterPreview({
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border">
               <ImageIcon size={32} className="opacity-30 text-text-secondary" />
             </div>
-            <span className="text-[11px] font-bold opacity-60 uppercase tracking-wider">Chưa có ảnh</span>
+            <span className="text-[11px] font-bold opacity-60 uppercase tracking-wider">
+              Chưa có ảnh
+            </span>
           </div>
         )}
       </div>
     </div>
   );
-};
+}
 
 export default PosterPreview;

@@ -15,13 +15,15 @@ export const useDashboardStats = (currentTabMovies: Movie[]) => {
   }, [currentTabMovies]);
 
   const contentTypeStats = useMemo(() => {
-    const moviesCount = currentTabMovies.filter(m => m.media_type === 'movie' || !m.media_type).length;
-    const tvCount = currentTabMovies.filter(m => m.media_type === 'tv').length;
+    const moviesCount = currentTabMovies.filter(
+      (m) => m.media_type === 'movie' || !m.media_type,
+    ).length;
+    const tvCount = currentTabMovies.filter((m) => m.media_type === 'tv').length;
     return { moviesCount, tvCount };
   }, [currentTabMovies]);
 
   return {
     stats,
-    contentTypeStats
+    contentTypeStats,
   };
 };

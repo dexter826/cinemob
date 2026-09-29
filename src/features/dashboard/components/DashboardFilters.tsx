@@ -1,7 +1,12 @@
 import React from 'react';
 import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
 import CustomDropdown from '@/shared/components/ui/CustomDropdown';
-import { SortOption, SortOrder, SourceType, type FilterUpdateFn } from '../hooks/useDashboardFilters';
+import {
+  SortOption,
+  SortOrder,
+  SourceType,
+  type FilterUpdateFn,
+} from '../hooks/useDashboardFilters';
 
 interface DashboardFiltersProps {
   filters: {
@@ -36,9 +41,15 @@ function DashboardFilters({
   activeTab,
   availableYears,
   availableCountries,
-  clearFilters
+  clearFilters,
 }: DashboardFiltersProps) {
-  const hasActiveFilters = filters.ratingRange !== null || filters.year !== null || filters.country || filters.contentType !== 'all' || filters.watchStatus !== 'all' || filters.sourceType !== 'all';
+  const hasActiveFilters =
+    filters.ratingRange !== null ||
+    filters.year !== null ||
+    filters.country ||
+    filters.contentType !== 'all' ||
+    filters.watchStatus !== 'all' ||
+    filters.sourceType !== 'all';
 
   const handleRatingSelect = (star: number) => {
     if (!filters.ratingRange) {
@@ -56,7 +67,11 @@ function DashboardFilters({
     <div className="flex flex-col items-end gap-3 relative">
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
+          <Search
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+            size={16}
+            strokeWidth={1.5}
+          />
           <input
             type="text"
             value={filters.searchQuery}
@@ -77,11 +92,14 @@ function DashboardFilters({
         </div>
 
         <button
-          onClick={(e) => { e.stopPropagation(); setShowFilters(!showFilters); }}
-          aria-label={showFilters ? "Đóng bộ lọc nâng cao" : "Mở bộ lọc nâng cao"}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowFilters(!showFilters);
+          }}
+          aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
           className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-colors duration-200 cursor-pointer ${
-            showFilters 
-              ? 'bg-primary/15 border-primary/40 text-primary' 
+            showFilters
+              ? 'bg-primary/15 border-primary/40 text-primary'
               : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
           }`}
         >
@@ -90,15 +108,19 @@ function DashboardFilters({
       </div>
 
       {showFilters && (
-        <div ref={filterRef} className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-3xl border border-border shadow-elevated flex flex-col gap-5 min-w-[320px]">
-          
+        <div
+          ref={filterRef}
+          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-3xl border border-border shadow-elevated flex flex-col gap-5 min-w-[320px]"
+        >
           <div className="space-y-3">
             <div className="text-xs font-semibold text-text-muted">Sắp xếp</div>
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
-                  filters.sortBy === 'date' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
+                  filters.sortBy === 'date'
+                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
                 <Calendar size={13} strokeWidth={1.5} />
@@ -107,7 +129,9 @@ function DashboardFilters({
               <button
                 onClick={() => updateFilter('sortBy', 'title')}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
-                  filters.sortBy === 'title' ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
+                  filters.sortBy === 'title'
+                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
                 <Type size={13} strokeWidth={1.5} />
@@ -119,7 +143,11 @@ function DashboardFilters({
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
                 aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
               >
-                {filters.sortOrder === 'asc' ? <ArrowUp size={16} strokeWidth={1.5} /> : <ArrowDown size={16} strokeWidth={1.5} />}
+                {filters.sortOrder === 'asc' ? (
+                  <ArrowUp size={16} strokeWidth={1.5} />
+                ) : (
+                  <ArrowDown size={16} strokeWidth={1.5} />
+                )}
               </button>
             </div>
           </div>
@@ -141,12 +169,14 @@ function DashboardFilters({
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-text-muted mb-2 block">Loại nội dung</label>
+                <label className="text-xs font-medium text-text-muted mb-2 block">
+                  Loại nội dung
+                </label>
                 <CustomDropdown
                   options={[
                     { value: 'all', label: 'Tất cả nội dung' },
-                    { value: 'movie', label: 'Phim điện ảnh' },
-                    { value: 'tv', label: 'TV Series' },
+                    { value: 'movie', label: 'Phim lẻ' },
+                    { value: 'tv', label: 'Series' },
                   ]}
                   value={filters.contentType}
                   onChange={(value) => updateFilter('contentType', value as 'all' | 'movie' | 'tv')}
@@ -156,7 +186,9 @@ function DashboardFilters({
 
               {activeTab === 'history' && (
                 <div>
-                  <label className="text-xs font-medium text-text-muted mb-2 block">Trạng thái</label>
+                  <label className="text-xs font-medium text-text-muted mb-2 block">
+                    Trạng thái
+                  </label>
                   <CustomDropdown
                     options={[
                       { value: 'all', label: 'Tất cả trạng thái' },
@@ -164,7 +196,9 @@ function DashboardFilters({
                       { value: 'completed', label: 'Đã hoàn thành' },
                     ]}
                     value={filters.watchStatus}
-                    onChange={(value) => updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')}
+                    onChange={(value) =>
+                      updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')
+                    }
                     placeholder="Chọn trạng thái"
                   />
                 </div>
@@ -192,12 +226,16 @@ function DashboardFilters({
                         key={star}
                         onClick={() => handleRatingSelect(star)}
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
-                          isActive 
-                            ? 'text-warning bg-warning/15 shadow-sm' 
+                          isActive
+                            ? 'text-warning bg-warning/15 shadow-sm'
                             : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
                         } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
                       >
-                        <Star size={14} fill={isActive ? "currentColor" : "none"} strokeWidth={1.5} />
+                        <Star
+                          size={14}
+                          fill={isActive ? 'currentColor' : 'none'}
+                          strokeWidth={1.5}
+                        />
                       </button>
                     );
                   })}
@@ -208,7 +246,9 @@ function DashboardFilters({
               </div>
 
               <div>
-                <label className="text-xs font-medium text-text-muted mb-2 block">Nguồn nội dung</label>
+                <label className="text-xs font-medium text-text-muted mb-2 block">
+                  Nguồn nội dung
+                </label>
                 <CustomDropdown
                   options={[
                     { value: 'all', label: 'Tất cả nguồn' },
@@ -248,6 +288,6 @@ function DashboardFilters({
       )}
     </div>
   );
-};
+}
 
 export default DashboardFilters;

@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
@@ -11,7 +11,8 @@ const AlbumsPage = lazy(() => import('@/features/albums/pages/AlbumsPage'));
 const AlbumDetailPage = lazy(() => import('@/features/albums/pages/AlbumDetailPage'));
 const PersonDetailPage = lazy(() => import('@/features/search/pages/PersonDetailPage'));
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/ReleaseCalendarPage'));
-const SharePage = lazy(() => import('@/features/share/pages/SharePage'));
+const MemberProfilePage = lazy(() => import('@/features/profile/pages/MemberProfilePage'));
+const NotFoundPage = lazy(() => import('@/shared/pages/NotFoundPage'));
 const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
 import Layout from '@/shared/components/layout/Layout';
@@ -36,14 +37,19 @@ function AnimatedRoutes() {
       <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
       <Route path="/person/:personId" element={<PersonDetailPage />} />
       <Route path="/calendar" element={<ReleaseCalendarPage />} />
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/profile/:uid" element={<MemberProfilePage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
-};
+}
 
 function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean }) {
   const { user, loading: authLoading } = useAuth();
-  const { isOpen: isDetailModalOpen, movie: selectedMovie, closeDetailModal } = useMovieDetailStore();
+  const {
+    isOpen: isDetailModalOpen,
+    movie: selectedMovie,
+    closeDetailModal,
+  } = useMovieDetailStore();
   const { isOpen: isAddMovieOpen } = useAddMovieStore();
   const { isInitialLoadComplete } = useInitialLoadStore();
 
@@ -76,26 +82,19 @@ function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean
         <ErrorBoundary>
           {isAddMovieOpen && <AddMovieModal />}
           {isDetailModalOpen && (
-            <MovieDetailModal
-              isOpen
-              onClose={closeDetailModal}
-              movie={selectedMovie}
-            />
+            <MovieDetailModal isOpen onClose={closeDetailModal} movie={selectedMovie} />
           )}
         </ErrorBoundary>
       </Suspense>
     </Layout>
   );
-};
+}
 
 function App() {
-  // Splash mode is decided once from the initial entry pathname: full splash on
-  // app start/reload, never on internal navigation or the public /share/:uid route.
+  // Splash mode is decided once at startup: full splash on app start/reload,
+  // static when reduced motion is requested.
   const [splashMode] = useState<SplashMode>(() =>
-    getSplashMode(
-      window.location.pathname,
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    )
+    getSplashMode(window.matchMedia('(prefers-reduced-motion: reduce)').matches),
   );
   const [shouldShowSplash, setShouldShowSplash] = useState(() => splashMode !== 'none');
   const [appReady, setAppReady] = useState(false);
@@ -111,16 +110,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/share/:uid"
-          element={
-            <ErrorBoundary>
-              <Suspense fallback={<Loading fullScreen />}>
-                <SharePage />
-              </Suspense>
-            </ErrorBoundary>
-          }
-        />
         <Route
           path="/*"
           element={
@@ -141,6 +130,6 @@ function App() {
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;

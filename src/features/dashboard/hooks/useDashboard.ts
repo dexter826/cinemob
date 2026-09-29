@@ -19,12 +19,12 @@ export const useDashboard = (user: User | null) => {
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
   const { setMovies: setExportMovies } = useExportStore();
-  
+
   const { movies, loading } = useMovieStore();
   const [activeTab, setActiveTab] = useState<ActiveTab>('history');
 
   const filters = useDashboardFilters(movies, activeTab);
-  
+
   const { stats, contentTypeStats } = useDashboardStats(filters.currentTabMovies);
 
   useEffect(() => {
@@ -33,19 +33,20 @@ export const useDashboard = (user: User | null) => {
 
   const handleDelete = async (docId: string) => {
     showAlert({
-      title: "Xóa phim",
-      message: "Bạn có chắc chắn muốn xóa phim này khỏi lịch sử không? Hành động này không thể hoàn tác.",
-      type: "danger",
-      confirmText: "Xóa",
+      title: 'Xóa phim',
+      message:
+        'Bạn có chắc chắn muốn xóa phim này khỏi lịch sử không? Hành động này không thể hoàn tác.',
+      type: 'danger',
+      confirmText: 'Xóa',
       onConfirm: async () => {
         try {
           if (!user) return;
           await deleteMovie(user.uid, docId);
-          showToast(MESSAGES.MOVIE.DELETE_SUCCESS, "success");
+          showToast(MESSAGES.MOVIE.DELETE_SUCCESS, 'success');
         } catch (e) {
-          showToast(MESSAGES.MOVIE.DELETE_ERROR, "error");
+          showToast(MESSAGES.MOVIE.DELETE_ERROR, 'error');
         }
-      }
+      },
     });
   };
 
@@ -76,6 +77,6 @@ export const useDashboard = (user: User | null) => {
     handleMarkAsWatched,
     handleMovieClick: openDetailModal,
     openAddModal,
-    ...filters
+    ...filters,
   };
 };

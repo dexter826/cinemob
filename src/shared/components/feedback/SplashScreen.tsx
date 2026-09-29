@@ -49,16 +49,17 @@ function SplashScreen({ onAnimationFinish, staticMode = false }: SplashScreenPro
     }, SPLASH_FETCH_TIMEOUT_MS);
 
     fetch('/data/splashscreen.json', { signal: controller.signal })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) throw new Error('Failed to load animation');
         return response.json();
       })
-      .then(data => setAnimationData(data))
+      .then((data) => setAnimationData(data))
       .catch((error: unknown) => {
-        const isAbortError = typeof error === 'object'
-          && error !== null
-          && 'name' in error
-          && error.name === 'AbortError';
+        const isAbortError =
+          typeof error === 'object' &&
+          error !== null &&
+          'name' in error &&
+          error.name === 'AbortError';
         if (isAbortError && !timedOut) return;
         console.warn('Splash animation failed to load, using static brand frame');
         setFailed(true);
@@ -83,11 +84,7 @@ function SplashScreen({ onAnimationFinish, staticMode = false }: SplashScreenPro
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-150 bg-background overflow-hidden">
       <div className="w-80 h-80 md:w-96 md:h-96 shrink-0 relative">
-        <Lottie
-          animationData={animationData}
-          loop={false}
-          onComplete={notifyAnimationFinish}
-        />
+        <Lottie animationData={animationData} loop={false} onComplete={notifyAnimationFinish} />
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ export function AvatarCropView({
             top: '50%',
             position: 'absolute',
             maxWidth: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
           }}
         />
         {/* Lưới định tâm nhẹ nhàng */}
@@ -103,9 +103,7 @@ export function AvatarCropView({
           <ZoomIn size={16} />
         </button>
 
-        <span className="text-xs font-mono text-text-muted w-9 text-right">
-          {zoom.toFixed(1)}x
-        </span>
+        <span className="text-xs font-mono text-text-muted w-9 text-right">{zoom.toFixed(1)}x</span>
       </div>
 
       <p className="text-[11px] text-text-muted/70 mt-2 text-center">

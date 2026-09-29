@@ -2,7 +2,10 @@ import { TMDB_API_KEY, TMDB_BASE_URL } from '@/constants';
 import type { Decoder } from './tmdbDecoders';
 
 // Giới hạn request đồng thời. Trả về null cho task lỗi để caller phân biệt partial-failure.
-export const withLimit = <T>(tasks: (() => Promise<T>)[], limit: number): Promise<Array<T | null>> => {
+export const withLimit = <T>(
+  tasks: (() => Promise<T>)[],
+  limit: number,
+): Promise<Array<T | null>> => {
   if (tasks.length === 0) return Promise.resolve([]);
   if (!Number.isInteger(limit) || limit <= 0) {
     return Promise.reject(new RangeError('limit must be a positive integer'));
@@ -52,7 +55,7 @@ export const tmdbFetch = async <T>(
   try {
     const queryParams = new URLSearchParams({
       api_key: API_KEY,
-      ...params
+      ...params,
     });
 
     const timeoutSignal = AbortSignal.timeout(10000);
@@ -60,7 +63,8 @@ export const tmdbFetch = async <T>(
     const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams.toString()}`, {
       signal: requestSignal,
     });
-    if (!response.ok) throw new Error(`TMDB API Error: ${response.status}`, { cause: { endpoint } });
+    if (!response.ok)
+      throw new Error(`TMDB API Error: ${response.status}`, { cause: { endpoint } });
     const raw: unknown = await response.json();
     const decoded = decode(raw);
     if (decoded === null) {

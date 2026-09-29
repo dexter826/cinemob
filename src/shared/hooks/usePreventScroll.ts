@@ -28,7 +28,8 @@ export const usePreventScroll = (isOpen: boolean) => {
       if (remainingCount === 0) {
         document.body.removeAttribute('data-modal-count');
         document.body.style.overflow = document.body.getAttribute('data-modal-overflow') ?? '';
-        document.body.style.paddingRight = document.body.getAttribute('data-modal-padding-right') ?? '';
+        document.body.style.paddingRight =
+          document.body.getAttribute('data-modal-padding-right') ?? '';
         document.body.removeAttribute('data-modal-overflow');
         document.body.removeAttribute('data-modal-padding-right');
       } else {

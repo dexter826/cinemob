@@ -49,14 +49,14 @@ function MultiSelectDropdown({
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const selectedOptions = useMemo(
-    () => options.filter(option => values.includes(option.value)),
+    () => options.filter((option) => values.includes(option.value)),
     [options, values],
   );
 
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery.trim()) return options;
     const lowerQuery = searchQuery.toLowerCase();
-    return options.filter(option => option.label.toLowerCase().includes(lowerQuery));
+    return options.filter((option) => option.label.toLowerCase().includes(lowerQuery));
   }, [options, searchable, searchQuery]);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function MultiSelectDropdown({
 
   const toggleOption = (option: Option) => {
     const nextValues = values.includes(option.value)
-      ? values.filter(value => value !== option.value)
+      ? values.filter((value) => value !== option.value)
       : [...values, option.value];
     onChange(nextValues);
   };
@@ -111,15 +111,23 @@ function MultiSelectDropdown({
       return;
     }
 
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
+    ) {
       event.preventDefault();
-      const nextIndex = event.key === 'ArrowDown'
-        ? activeIndex + 1
-        : event.key === 'ArrowUp'
-          ? (activeIndex < 0 ? filteredOptions.length - 1 : activeIndex - 1)
-          : event.key === 'Home'
-            ? 0
-            : filteredOptions.length - 1;
+      const nextIndex =
+        event.key === 'ArrowDown'
+          ? activeIndex + 1
+          : event.key === 'ArrowUp'
+            ? activeIndex < 0
+              ? filteredOptions.length - 1
+              : activeIndex - 1
+            : event.key === 'Home'
+              ? 0
+              : filteredOptions.length - 1;
       if (!isOpen) openAt(nextIndex);
       else moveTo(nextIndex);
       return;
@@ -128,7 +136,8 @@ function MultiSelectDropdown({
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       if (!isOpen) openAt(searchable ? -1 : 0);
-      else if (activeIndex >= 0 && filteredOptions[activeIndex]) toggleOption(filteredOptions[activeIndex]);
+      else if (activeIndex >= 0 && filteredOptions[activeIndex])
+        toggleOption(filteredOptions[activeIndex]);
     }
   };
 
@@ -137,12 +146,14 @@ function MultiSelectDropdown({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <div className={`flex min-h-11 bg-surface border border-border-default rounded-2xl transition-colors duration-200 ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}>
+      <div
+        className={`flex min-h-11 bg-surface border border-border-default rounded-2xl transition-colors duration-200 ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}
+      >
         <button
           id={controlId}
           ref={triggerRef}
           type="button"
-          onClick={() => isOpen ? closeAndRestoreFocus() : openAt(-1)}
+          onClick={() => (isOpen ? closeAndRestoreFocus() : openAt(-1))}
           onKeyDown={handleNavigationKey}
           disabled={disabled}
           className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-2xl focus:outline-none focus:ring-1 focus:ring-primary/20 disabled:cursor-not-allowed"
@@ -157,8 +168,11 @@ function MultiSelectDropdown({
             <span className="text-text-muted text-sm">{placeholder}</span>
           ) : (
             <span className="flex flex-wrap gap-1 flex-1 min-w-0">
-              {displayOptions.map(option => (
-                <span key={option.value} className="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium truncate max-w-28">
+              {displayOptions.map((option) => (
+                <span
+                  key={option.value}
+                  className="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium truncate max-w-28"
+                >
                   {option.label}
                 </span>
               ))}
@@ -169,7 +183,11 @@ function MultiSelectDropdown({
               )}
             </span>
           )}
-          <ChevronDown size={16} aria-hidden="true" className={`text-text-muted shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown
+            size={16}
+            aria-hidden="true"
+            className={`text-text-muted shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          />
         </button>
 
         {values.length > 0 && (
@@ -208,37 +226,55 @@ function MultiSelectDropdown({
           {values.length > 0 && (
             <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
               <span className="text-xs text-text-muted">Đã chọn {values.length} mục</span>
-              <button type="button" onClick={() => onChange([])} className="text-xs text-primary hover:text-primary/80 transition-colors">
+              <button
+                type="button"
+                onClick={() => onChange([])}
+                className="text-xs text-primary hover:text-primary/80 transition-colors"
+              >
                 Xóa tất cả
               </button>
             </div>
           )}
 
-          <div id={listboxId} role="listbox" aria-multiselectable="true" className="overflow-y-auto custom-scrollbar p-2" style={{ maxHeight }}>
+          <div
+            id={listboxId}
+            role="listbox"
+            aria-multiselectable="true"
+            className="overflow-y-auto custom-scrollbar p-2"
+            style={{ maxHeight }}
+          >
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-3 text-sm text-text-muted text-center">
                 {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
               </div>
-            ) : filteredOptions.map((option, index) => {
-              const isSelected = values.includes(option.value);
-              return (
-                <button
-                  key={option.value}
-                  ref={(element) => { optionRefs.current[index] = element; }}
-                  type="button"
-                  onClick={() => toggleOption(option)}
-                  onKeyDown={handleNavigationKey}
-                  className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}`}
-                  role="option"
-                  aria-selected={isSelected}
-                >
-                  <span className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}>
-                    {isSelected && <Check size={12} className="text-white" aria-hidden="true" />}
-                  </span>
-                  <span className={isSelected ? 'text-primary font-medium' : 'text-text-main'}>{option.label}</span>
-                </button>
-              );
-            })}
+            ) : (
+              filteredOptions.map((option, index) => {
+                const isSelected = values.includes(option.value);
+                return (
+                  <button
+                    key={option.value}
+                    ref={(element) => {
+                      optionRefs.current[index] = element;
+                    }}
+                    type="button"
+                    onClick={() => toggleOption(option)}
+                    onKeyDown={handleNavigationKey}
+                    className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-xl transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-main'}`}
+                    role="option"
+                    aria-selected={isSelected}
+                  >
+                    <span
+                      className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
+                    >
+                      {isSelected && <Check size={12} className="text-white" aria-hidden="true" />}
+                    </span>
+                    <span className={isSelected ? 'text-primary font-medium' : 'text-text-main'}>
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       )}

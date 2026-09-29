@@ -16,7 +16,7 @@ export function ErrorState({
   retry,
   compact = false,
   blocking = false,
-  className = ''
+  className = '',
 }: ErrorStateProps) {
   return (
     <div
@@ -24,12 +24,10 @@ export function ErrorState({
       className={classNames(
         'flex flex-col items-center justify-center px-4 text-center',
         compact ? 'py-8' : 'py-20',
-        className
+        className,
       )}
     >
-      <h3 className="text-lg font-bold text-text-primary tracking-tight font-display">
-        {title}
-      </h3>
+      <h3 className="text-lg font-bold text-text-primary tracking-tight font-display">{title}</h3>
       <p className="text-text-secondary text-sm mb-6 max-w-xs leading-relaxed mt-1">
         {description}
       </p>

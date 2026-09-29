@@ -1,4 +1,4 @@
-import { 
+import {
   collection,
   addDoc,
   deleteDoc,
@@ -24,7 +24,9 @@ const mapDocToAlbum = (docId: string, data: Record<string, unknown>): Album => {
     docId,
     uid: typeof d.uid === 'string' ? d.uid : '',
     name: typeof d.name === 'string' ? d.name : '',
-    movieDocIds: Array.isArray(d.movieDocIds) ? d.movieDocIds.filter((id): id is string => typeof id === 'string') : [],
+    movieDocIds: Array.isArray(d.movieDocIds)
+      ? d.movieDocIds.filter((id): id is string => typeof id === 'string')
+      : [],
     createdAt: (d.createdAt as Album['createdAt']) ?? new Date(),
     updatedAt: d.updatedAt as Album['updatedAt'],
   };
@@ -58,8 +60,8 @@ export const syncMovieAlbums = async (
 ) => {
   const previous = new Set(previousAlbumIds);
   const selected = new Set(selectedAlbumIds);
-  const removedIds = [...previous].filter(id => !selected.has(id));
-  const addedIds = [...selected].filter(id => !previous.has(id));
+  const removedIds = [...previous].filter((id) => !selected.has(id));
+  const addedIds = [...selected].filter((id) => !previous.has(id));
   const operationCount = removedIds.length + addedIds.length;
 
   if (operationCount === 0) return;
@@ -89,26 +91,38 @@ export const deleteAlbum = async (docId: string) => {
 };
 
 // Theo dõi danh sách album theo người dùng.
-export const subscribeToAlbums = (uid: string, callback: (albums: Album[]) => void, onError?: (error: unknown) => void) => {
+export const subscribeToAlbums = (
+  uid: string,
+  callback: (albums: Album[]) => void,
+  onError?: (error: unknown) => void,
+) => {
   const q = query(
     collection(db, COLLECTION_NAME),
     where('uid', '==', uid),
-    orderBy('createdAt', 'desc')
+    orderBy('createdAt', 'desc'),
   );
 
-  return onSnapshot(q, snapshot => {
-    const albums: Album[] = snapshot.docs.map(d => mapDocToAlbum(d.id, d.data()));
-    callback(albums);
-  }, (error) => {
-    console.error('Albums snapshot error:', error);
-    onError?.(error);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const albums: Album[] = snapshot.docs.map((d) => mapDocToAlbum(d.id, d.data()));
+      callback(albums);
+    },
+    (error) => {
+      console.error('Albums snapshot error:', error);
+      onError?.(error);
+    },
+  );
 };
 
 // Theo dõi chi tiết một album.
-export const subscribeToAlbum = (uid: string, docId: string, callback: (album: Album | null) => void) => {
+export const subscribeToAlbum = (
+  uid: string,
+  docId: string,
+  callback: (album: Album | null) => void,
+) => {
   const ref = doc(db, COLLECTION_NAME, docId);
-  return onSnapshot(ref, snapshot => {
+  return onSnapshot(ref, (snapshot) => {
     if (!snapshot.exists()) {
       callback(null);
       return;

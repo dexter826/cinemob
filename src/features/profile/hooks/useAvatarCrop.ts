@@ -8,7 +8,11 @@ import type {
 } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { getCroppedImgBlob } from '@/features/auth/services/cloudinaryService';
-import { getOriginalGoogleAvatar, revertToGoogleAvatar, updateUserAvatar } from '@/features/auth/services/avatarService';
+import {
+  getOriginalGoogleAvatar,
+  revertToGoogleAvatar,
+  updateUserAvatar,
+} from '@/features/auth/services/avatarService';
 import useAlertStore from '@/shared/stores/alertStore';
 import useToastStore from '@/shared/stores/toastStore';
 import {
@@ -124,7 +128,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
         y: Math.max(-maxPanY, Math.min(maxPanY, y)),
       };
     },
-    [imageMeta]
+    [imageMeta],
   );
 
   // Kiểm tra tệp hợp lệ rồi nạp vào khung crop.
@@ -158,7 +162,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       };
       probe.src = objectUrl;
     },
-    [releaseImage]
+    [releaseImage],
   );
 
   const openFilePicker = useCallback(() => {
@@ -172,7 +176,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       if (file) selectFile(file);
       event.target.value = '';
     },
-    [selectFile]
+    [selectFile],
   );
 
   const handleDragOver = useCallback((event: DragEvent<HTMLElement>) => {
@@ -192,7 +196,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       const file = event.dataTransfer.files?.[0];
       if (file) selectFile(file);
     },
-    [selectFile]
+    [selectFile],
   );
 
   const pickAnother = useCallback(() => {
@@ -210,7 +214,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       setIsDraggingPan(true);
       panDragOriginRef.current = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y };
     },
-    [isBusy, pan.x, pan.y]
+    [isBusy, pan.x, pan.y],
   );
 
   const handlePointerMove = useCallback(
@@ -218,20 +222,25 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       if (!isDraggingPan) return;
       const dx = event.clientX - panDragOriginRef.current.x;
       const dy = event.clientY - panDragOriginRef.current.y;
-      setPan(clampPan(panDragOriginRef.current.panX + dx, panDragOriginRef.current.panY + dy, zoom));
+      setPan(
+        clampPan(panDragOriginRef.current.panX + dx, panDragOriginRef.current.panY + dy, zoom),
+      );
     },
-    [isDraggingPan, clampPan, zoom]
+    [isDraggingPan, clampPan, zoom],
   );
 
-  const handlePointerUp = useCallback((event: ReactPointerEvent) => {
-    if (!isDraggingPan) return;
-    try {
-      (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
-    } catch {
-      // Bỏ qua lỗi trình duyệt nếu con trỏ đã tự động nhả.
-    }
-    setIsDraggingPan(false);
-  }, [isDraggingPan]);
+  const handlePointerUp = useCallback(
+    (event: ReactPointerEvent) => {
+      if (!isDraggingPan) return;
+      try {
+        (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
+      } catch {
+        // Bỏ qua lỗi trình duyệt nếu con trỏ đã tự động nhả.
+      }
+      setIsDraggingPan(false);
+    },
+    [isDraggingPan],
+  );
 
   const handleZoomChange = useCallback(
     (newZoom: number) => {
@@ -239,7 +248,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       setZoom(clampedZoom);
       setPan((prev) => clampPan(prev.x, prev.y, clampedZoom));
     },
-    [clampPan]
+    [clampPan],
   );
 
   const handleWheelZoom = useCallback(
@@ -248,7 +257,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       const delta = event.deltaY < 0 ? WHEEL_ZOOM_STEP : -WHEEL_ZOOM_STEP;
       handleZoomChange(zoom + delta);
     },
-    [handleZoomChange, zoom]
+    [handleZoomChange, zoom],
   );
 
   const handleSave = useCallback(async () => {
@@ -314,7 +323,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
 
   const googleAvatarUrl = user ? getOriginalGoogleAvatar(user) : null;
   const canRevertToGoogle = Boolean(
-    googleAvatarUrl && user?.photoURL && user.photoURL !== googleAvatarUrl
+    googleAvatarUrl && user?.photoURL && user.photoURL !== googleAvatarUrl,
   );
 
   const currentScale = getBaseScale(imageMeta) * zoom;

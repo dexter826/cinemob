@@ -2,18 +2,19 @@ import { updateProfile } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { MEMBER_PROFILE_COLLECTION } from '@/features/profile/services/memberProfileService';
 import { uploadToCloudinary } from './cloudinaryService';
 
-// Đồng bộ ảnh đại diện sang bản chia sẻ công khai. Lỗi ở đây không chặn việc đổi ảnh.
-const syncPublicSharePhotoURL = async (uid: string, photoURL: string): Promise<void> => {
+// Đồng bộ ảnh đại diện sang hồ sơ thành viên. Lỗi ở đây không chặn việc đổi ảnh.
+const syncProfilePhotoURL = async (uid: string, photoURL: string): Promise<void> => {
   try {
-    const shareRef = doc(db, 'public_shares', uid);
-    const shareSnap = await getDoc(shareRef);
-    if (shareSnap.exists()) {
-      await updateDoc(shareRef, { photoURL });
+    const profileRef = doc(db, MEMBER_PROFILE_COLLECTION, uid);
+    const profileSnap = await getDoc(profileRef);
+    if (profileSnap.exists()) {
+      await updateDoc(profileRef, { photoURL });
     }
   } catch (error) {
-    console.error('Không thể cập nhật avatar trong public share:', error);
+    console.error('Không thể cập nhật avatar trong hồ sơ thành viên:', error);
   }
 };
 
@@ -22,7 +23,7 @@ export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Pro
   const secureUrl = await uploadToCloudinary(fileOrBlob, 'avatars');
 
   await updateProfile(user, { photoURL: secureUrl });
-  await syncPublicSharePhotoURL(user.uid, secureUrl);
+  await syncProfilePhotoURL(user.uid, secureUrl);
 
   return secureUrl;
 };
@@ -38,7 +39,7 @@ export const revertToGoogleAvatar = async (user: User): Promise<string | null> =
   const originalPhotoURL = getOriginalGoogleAvatar(user);
 
   await updateProfile(user, { photoURL: originalPhotoURL });
-  await syncPublicSharePhotoURL(user.uid, originalPhotoURL || '');
+  await syncProfilePhotoURL(user.uid, originalPhotoURL || '');
 
   return originalPhotoURL;
 };

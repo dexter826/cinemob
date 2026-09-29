@@ -8,7 +8,8 @@ interface SurfaceProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const toneClasses: Record<NonNullable<SurfaceProps['tone']>, string> = {
   base: 'bg-surface border border-border',
-  interactive: 'bg-surface border border-border hover:border-primary/50 transition-colors cursor-pointer',
+  interactive:
+    'bg-surface border border-border hover:border-primary/50 transition-colors cursor-pointer',
   elevated: 'bg-surface-elevated border border-border shadow-elevated',
 };
 
@@ -19,15 +20,15 @@ const paddingClasses: Record<NonNullable<SurfaceProps['padding']>, string> = {
   lg: 'p-6',
 };
 
-export function Surface({
-  tone = 'base',
-  padding = 'md',
-  className,
-  ...rest
-}: SurfaceProps) {
+export function Surface({ tone = 'base', padding = 'md', className, ...rest }: SurfaceProps) {
   return (
     <div
-      className={classNames('rounded-card', toneClasses[tone], paddingClasses[padding], className ?? '')}
+      className={classNames(
+        'rounded-card',
+        toneClasses[tone],
+        paddingClasses[padding],
+        className ?? '',
+      )}
       {...rest}
     />
   );

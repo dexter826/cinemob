@@ -26,24 +26,30 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
     year: null,
     country: '',
     contentType: 'all',
-    status: 'all'
+    status: 'all',
   });
 
   // Get unique years and countries for filter options
   const filterOptions = useMemo(() => {
-    const years = Array.from(new Set(
-      movies.map(m => {
-        const d = normalizeMovieDate(m.watched_at);
-        return d ? d.getFullYear() : null;
-      }).filter((y): y is number => y !== null)
-    )).sort((a, b) => b - a);
+    const years = Array.from(
+      new Set(
+        movies
+          .map((m) => {
+            const d = normalizeMovieDate(m.watched_at);
+            return d ? d.getFullYear() : null;
+          })
+          .filter((y): y is number => y !== null),
+      ),
+    ).sort((a, b) => b - a);
 
-    const countries = Array.from(new Set(
-      movies
-        .filter(m => m.country && m.country.trim().length > 0)
-        .flatMap(m => (m.country ?? '').split(',').map(c => c.trim()))
-        .filter(c => c.length > 0)
-    )).sort();
+    const countries = Array.from(
+      new Set(
+        movies
+          .filter((m) => m.country && m.country.trim().length > 0)
+          .flatMap((m) => (m.country ?? '').split(',').map((c) => c.trim()))
+          .filter((c) => c.length > 0),
+      ),
+    ).sort();
 
     return { years, countries };
   }, [movies]);
@@ -72,21 +78,20 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
   }, [movies, filters]);
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      titleId="export-modal-title"
-      presentation="dialog"
-    >
-        <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
-          <h2 id="export-modal-title" className="text-xl font-bold text-text-primary">Xuất dữ liệu</h2>
-          <IconButton label="Đóng hộp thoại xuất dữ liệu" onClick={onClose} variant="ghost">
-            <span aria-hidden="true" className="text-lg leading-none">×</span>
-          </IconButton>
-        </div>
+    <Dialog open={isOpen} onClose={onClose} titleId="export-modal-title" presentation="dialog">
+      <div className="flex items-center justify-between p-5 border-b border-border shrink-0">
+        <h2 id="export-modal-title" className="text-xl font-bold text-text-primary">
+          Xuất dữ liệu
+        </h2>
+        <IconButton label="Đóng hộp thoại xuất dữ liệu" onClick={onClose} variant="ghost">
+          <span aria-hidden="true" className="text-lg leading-none">
+            ×
+          </span>
+        </IconButton>
+      </div>
 
-        <DialogBody>
-          <div className="space-y-6">
+      <DialogBody>
+        <div className="space-y-6">
           {/* Filters */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -104,7 +109,12 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                   { value: 'watchlist', label: 'Sẽ xem' },
                 ]}
                 value={filters.status || 'all'}
-                onChange={(value) => setFilters(prev => ({ ...prev, status: value as 'all' | 'history' | 'watchlist' }))}
+                onChange={(value) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    status: value as 'all' | 'history' | 'watchlist',
+                  }))
+                }
                 placeholder="Chọn trạng thái"
               />
             </div>
@@ -115,11 +125,13 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <CustomDropdown
                 options={[
                   { value: 'all', label: 'Tất cả' },
-                  { value: 'movie', label: 'Phim' },
-                  { value: 'tv', label: 'TV Series' },
+                  { value: 'movie', label: 'Phim lẻ' },
+                  { value: 'tv', label: 'Series' },
                 ]}
                 value={filters.contentType || 'all'}
-                onChange={(value) => setFilters(prev => ({ ...prev, contentType: value as 'all' | 'movie' | 'tv' }))}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, contentType: value as 'all' | 'movie' | 'tv' }))
+                }
                 placeholder="Chọn loại"
               />
             </div>
@@ -131,11 +143,22 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
-                    onClick={() => setFilters(prev => ({ ...prev, rating: prev.rating === star ? null : star }))}
-                    className={`p-1.5 rounded-lg transition-colors cursor-pointer  ${(filters.rating || 0) >= star ? 'text-yellow-500 bg-yellow-500/10' : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
-                      }`}
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        rating: prev.rating === star ? null : star,
+                      }))
+                    }
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer  ${
+                      (filters.rating || 0) >= star
+                        ? 'text-yellow-500 bg-yellow-500/10'
+                        : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
+                    }`}
                   >
-                    <Star size={16} fill={(filters.rating || 0) >= star ? "currentColor" : "none"} />
+                    <Star
+                      size={16}
+                      fill={(filters.rating || 0) >= star ? 'currentColor' : 'none'}
+                    />
                   </button>
                 ))}
               </div>
@@ -147,10 +170,12 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <CustomDropdown
                 options={[
                   { value: '', label: 'Tất cả các năm' },
-                  ...filterOptions.years.map(year => ({ value: year, label: year.toString() })),
+                  ...filterOptions.years.map((year) => ({ value: year, label: year.toString() })),
                 ]}
                 value={filters.year || ''}
-                onChange={(value) => setFilters(prev => ({ ...prev, year: value === '' ? null : Number(value) }))}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, year: value === '' ? null : Number(value) }))
+                }
                 placeholder="Chọn năm"
               />
             </div>
@@ -161,10 +186,10 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <CustomDropdown
                 options={[
                   { value: '', label: 'Tất cả quốc gia' },
-                  ...filterOptions.countries.map(country => ({ value: country, label: country })),
+                  ...filterOptions.countries.map((country) => ({ value: country, label: country })),
                 ]}
                 value={filters.country || ''}
-                onChange={(value) => setFilters(prev => ({ ...prev, country: value as string }))}
+                onChange={(value) => setFilters((prev) => ({ ...prev, country: value as string }))}
                 placeholder="Chọn quốc gia"
                 searchable={true}
               />
@@ -174,38 +199,36 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
           <div className="bg-black/5 dark:bg-white/5 rounded-lg p-4">
             <p className="text-sm text-text-secondary">
               Sẽ xuất <span className="font-medium text-primary">{filteredCount}</span> phim
-              {filteredCount !== movies.length && (
-                <span> (từ tổng số {movies.length})</span>
-              )}
+              {filteredCount !== movies.length && <span> (từ tổng số {movies.length})</span>}
             </p>
           </div>
-          </div>
-        </DialogBody>
+        </div>
+      </DialogBody>
 
-        <DialogFooter>
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              disabled={isExporting}
-            >
-              Hủy
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleExport}
-              disabled={isExporting || filteredCount === 0}
-              loading={isExporting}
-              leadingIcon={isExporting
-                ? <Loader2 className="animate-spin" size={20} aria-hidden="true" />
-                : <Download size={20} aria-hidden="true" />}
-            >
-              {isExporting ? 'Đang xuất…' : 'Xuất Excel'}
-            </Button>
-          </div>
-        </DialogFooter>
+      <DialogFooter>
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" onClick={onClose} disabled={isExporting}>
+            Hủy
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleExport}
+            disabled={isExporting || filteredCount === 0}
+            loading={isExporting}
+            leadingIcon={
+              isExporting ? (
+                <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+              ) : (
+                <Download size={20} aria-hidden="true" />
+              )
+            }
+          >
+            {isExporting ? 'Đang xuất…' : 'Xuất Excel'}
+          </Button>
+        </div>
+      </DialogFooter>
     </Dialog>
-);
-};
+  );
+}
 
 export default ExportModal;

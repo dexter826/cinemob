@@ -12,7 +12,20 @@ interface CalendarGridProps {
 }
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-const MONTHS = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+const MONTHS = [
+  'Tháng 1',
+  'Tháng 2',
+  'Tháng 3',
+  'Tháng 4',
+  'Tháng 5',
+  'Tháng 6',
+  'Tháng 7',
+  'Tháng 8',
+  'Tháng 9',
+  'Tháng 10',
+  'Tháng 11',
+  'Tháng 12',
+];
 
 /** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
@@ -22,23 +35,29 @@ function CalendarGrid({
   loadingEpisodes,
   getEpisodesForDate,
   setSelectedDate,
-  selectedDate
+  selectedDate,
 }: CalendarGridProps) {
-  const getDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  const getFirstDayOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  const getDaysInMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const getFirstDayOfMonth = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
   const isToday = (date: Date) => {
     const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   };
 
   const isSelected = (date: Date) => {
     if (!selectedDate) return false;
-    return date.getDate() === selectedDate.getDate() &&
-           date.getMonth() === selectedDate.getMonth() &&
-           date.getFullYear() === selectedDate.getFullYear();
+    return (
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear()
+    );
   };
 
   const renderCalendarDays = () => {
@@ -52,12 +71,12 @@ function CalendarGrid({
     for (let i = firstDay - 1; i >= 0; i--) {
       const day = daysInPrevMonth - i;
       days.push(
-        <div 
-          key={`prev-${day}`} 
+        <div
+          key={`prev-${day}`}
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-muted">{day}</div>
-        </div>
+        </div>,
       );
     }
 
@@ -83,14 +102,16 @@ function CalendarGrid({
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
         >
-          <div className={`text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}>
+          <div
+            className={`text-xs font-bold ${today ? 'text-primary' : 'text-text-main opacity-60'}`}
+          >
             {day}
           </div>
           {hasEp && (
             <div className="hidden sm:block mt-1 space-y-1 sm:space-y-1.5 overflow-hidden">
               {episodes.slice(0, 2).map((ep) => (
-                <div 
-                  key={`${ep.seriesId}-${ep.episode.id}`} 
+                <div
+                  key={`${ep.seriesId}-${ep.episode.id}`}
                   className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
@@ -98,7 +119,9 @@ function CalendarGrid({
                 </div>
               ))}
               {episodes.length > 2 && (
-                <div className="text-[10px] sm:text-xs text-text-muted font-bold opacity-60 pl-1">+{episodes.length - 2}</div>
+                <div className="text-[10px] sm:text-xs text-text-muted font-bold opacity-60 pl-1">
+                  +{episodes.length - 2}
+                </div>
               )}
             </div>
           )}
@@ -106,12 +129,15 @@ function CalendarGrid({
             <div className="sm:hidden absolute bottom-1.5 left-1/2 transform -translate-x-1/2">
               <div className="flex gap-0.5">
                 {episodes.slice(0, 3).map((ep, dotIndex) => (
-                  <div key={`${ep.seriesId}-${ep.episode.id}-dot-${dotIndex}`} className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"></div>
+                  <div
+                    key={`${ep.seriesId}-${ep.episode.id}-dot-${dotIndex}`}
+                    className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"
+                  ></div>
                 ))}
               </div>
             </div>
           )}
-        </button>
+        </button>,
       );
     }
 
@@ -119,12 +145,12 @@ function CalendarGrid({
     const nextMonthDaysNeeded = 42 - totalCells;
     for (let day = 1; day <= nextMonthDaysNeeded; day++) {
       days.push(
-        <div 
-          key={`next-${day}`} 
+        <div
+          key={`next-${day}`}
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-xl sm:rounded-2xl flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-muted">{day}</div>
-        </div>
+        </div>,
       );
     }
 
@@ -136,7 +162,7 @@ function CalendarGrid({
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button
           type="button"
-          onClick={() => navigateMonth('prev')} 
+          onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
           className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"
         >
@@ -157,7 +183,7 @@ function CalendarGrid({
         </div>
         <button
           type="button"
-          onClick={() => navigateMonth('next')} 
+          onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
           className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-xl hover:bg-primary/10 hover:border-primary/30 text-text-muted hover:text-primary transition-colors cursor-pointer"
         >
@@ -166,8 +192,11 @@ function CalendarGrid({
       </div>
 
       <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
-        {DAYS_OF_WEEK.map(day => (
-          <div key={day} className="text-center text-xs font-semibold text-text-secondary py-2 sm:py-3">
+        {DAYS_OF_WEEK.map((day) => (
+          <div
+            key={day}
+            className="text-center text-xs font-semibold text-text-secondary py-2 sm:py-3"
+          >
             {day}
           </div>
         ))}
@@ -176,16 +205,17 @@ function CalendarGrid({
       {loadingEpisodes ? (
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {Array.from({ length: 42 }).map((_, idx) => (
-            <div key={idx} className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-xl sm:rounded-2xl animate-pulse bg-black/5 dark:bg-white/5" />
+            <div
+              key={idx}
+              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-xl sm:rounded-2xl animate-pulse bg-black/5 dark:bg-white/5"
+            />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {renderCalendarDays()}
-        </div>
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">{renderCalendarDays()}</div>
       )}
     </div>
   );
-};
+}
 
 export default CalendarGrid;

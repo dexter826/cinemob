@@ -11,16 +11,27 @@ interface FormFieldProps {
   className?: string;
 }
 
-export function FormField({ id, label, hint, error, required = false, children, className = '' }: FormFieldProps) {
+export function FormField({
+  id,
+  label,
+  hint,
+  error,
+  required = false,
+  children,
+  className = '',
+}: FormFieldProps) {
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
-  const describedBy = [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(' ') || undefined;
+  const describedBy =
+    [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(' ') || undefined;
   return (
     <div className={classNames('flex flex-col gap-1.5 min-w-0', className)}>
       <label htmlFor={id} className="text-sm font-semibold text-text-primary">
         {label}
         {required && (
-          <span aria-hidden="true" className="text-danger ml-1">*</span>
+          <span aria-hidden="true" className="text-danger ml-1">
+            *
+          </span>
         )}
       </label>
       {React.isValidElement(children)
@@ -32,10 +43,14 @@ export function FormField({ id, label, hint, error, required = false, children, 
           })
         : children}
       {hint && !error && (
-        <p id={hintId} className="text-xs text-text-secondary">{hint}</p>
+        <p id={hintId} className="text-xs text-text-secondary">
+          {hint}
+        </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-xs font-medium text-danger">{error}</p>
+        <p id={errorId} role="alert" className="text-xs font-medium text-danger">
+          {error}
+        </p>
       )}
     </div>
   );

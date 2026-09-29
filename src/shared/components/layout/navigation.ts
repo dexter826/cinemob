@@ -12,7 +12,10 @@ export const NAV_ITEMS: NavigationItem[] = [
   { to: '/calendar', label: 'Lịch', match: 'exact' },
 ];
 
-export function isNavItemActive(pathname: string, item: Pick<NavigationItem, 'to' | 'match'>): boolean {
+export function isNavItemActive(
+  pathname: string,
+  item: Pick<NavigationItem, 'to' | 'match'>,
+): boolean {
   if (item.match === 'exact') return pathname === item.to;
   return pathname === item.to || pathname.startsWith(`${item.to}/`);
 }

@@ -16,7 +16,7 @@ function RatingSection({
   isAnimating,
   setRating,
   setHoverRating,
-  ratingRef
+  ratingRef,
 }: RatingSectionProps) {
   const displayRating = hoverRating || rating;
 
@@ -33,7 +33,10 @@ function RatingSection({
   return (
     <div ref={ratingRef} className="space-y-2">
       <div className="flex items-center justify-between">
-        <span id="add-movie-rating-label" className="text-sm font-semibold text-text-primary flex items-center gap-1.5 ml-1">
+        <span
+          id="add-movie-rating-label"
+          className="text-sm font-semibold text-text-primary flex items-center gap-1.5 ml-1"
+        >
           <Star size={14} className="text-primary" aria-hidden="true" />
           Đánh giá phim
         </span>
@@ -41,9 +44,11 @@ function RatingSection({
           {displayRating > 0 ? `${displayRating}/10` : 'Chưa đánh giá'}
         </span>
       </div>
-      <div className={`bg-black/5 dark:bg-white/5 border border-border rounded-xl p-4 transition-colors shadow-sm ${
-        isAnimating ? 'border-danger/50' : ''
-      }`}>
+      <div
+        className={`bg-black/5 dark:bg-white/5 border border-border rounded-xl p-4 transition-colors shadow-sm ${
+          isAnimating ? 'border-danger/50' : ''
+        }`}
+      >
         <div
           role="radiogroup"
           aria-labelledby="add-movie-rating-label"
@@ -67,9 +72,7 @@ function RatingSection({
               <Star
                 aria-hidden="true"
                 className={`w-4 h-4 sm:w-6 sm:h-6 transition-colors ${
-                  star <= displayRating
-                    ? 'fill-warning text-warning'
-                    : 'text-text-secondary/40'
+                  star <= displayRating ? 'fill-warning text-warning' : 'text-text-secondary/40'
                 }`}
               />
             </button>

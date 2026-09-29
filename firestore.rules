@@ -28,9 +28,13 @@ service cloud.firestore {
              data.movieDocIds is list;
     }
 
-    function isValidShare() {
+    function isValidProfile() {
       let data = request.resource.data;
-      return data.isEnabled is bool &&
+      return data.isMovieListHidden is bool &&
+             data.displayName is string && data.displayName.size() > 0 &&
+             (!('bio' in data) || (data.bio is string && data.bio.size() <= 300)) &&
+             (!('gender' in data) || data.gender in ['male', 'female', 'other']) &&
+             (!('dob' in data) || (data.dob is string && data.dob.matches('^\\d{4}-\\d{2}-\\d{2}$'))) &&
              (!('movies' in data) || data.movies is list);
     }
 
@@ -62,10 +66,10 @@ service cloud.firestore {
       allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidAlbum();
     }
 
-    // Public shares - read public if enabled, write only owner
-    match /public_shares/{userId} {
-      allow read: if resource.data.isEnabled == true || (isSignedIn() && isOwner(userId));
-      allow create, update: if isSignedIn() && isOwner(userId) && isValidShare();
+    // Member profiles - mọi thành viên đọc được hồ sơ của nhau, chỉ chủ hồ sơ ghi
+    match /member_profiles/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isOwner(userId) && isValidProfile();
       allow delete: if isSignedIn() && isOwner(userId);
     }
 

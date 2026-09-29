@@ -6,76 +6,79 @@ import { Movie } from '@/types';
 import { MESSAGES } from '@/constants/messages';
 
 interface AlbumSyncProps {
-    user: User | null;
-    movieToEdit?: Movie;
-    isOpen: boolean;
-    showToast: (message: string, type: 'success' | 'error') => void;
+  user: User | null;
+  movieToEdit?: Movie;
+  isOpen: boolean;
+  showToast: (message: string, type: 'success' | 'error') => void;
 }
 
 // Quản lý việc thêm phim vào Album.
 export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSyncProps) => {
-    const { albums } = useAlbumStore();
-    const [selectedAlbumIds, setSelectedAlbumIds] = useState<string[]>([]);
-    const [showCreateAlbum, setShowCreateAlbum] = useState(false);
-    const [newAlbumName, setNewAlbumName] = useState('');
-    const [creatingAlbum, setCreatingAlbum] = useState(false);
+  const { albums } = useAlbumStore();
+  const [selectedAlbumIds, setSelectedAlbumIds] = useState<string[]>([]);
+  const [showCreateAlbum, setShowCreateAlbum] = useState(false);
+  const [newAlbumName, setNewAlbumName] = useState('');
+  const [creatingAlbum, setCreatingAlbum] = useState(false);
 
-    useEffect(() => {
-        if (!isOpen) {
-            setShowCreateAlbum(false);
-            setNewAlbumName('');
-            return;
-        }
+  useEffect(() => {
+    if (!isOpen) {
+      setShowCreateAlbum(false);
+      setNewAlbumName('');
+      return;
+    }
 
-        if (movieToEdit && albums.length > 0) {
-            const movieDocId = movieToEdit.docId;
-            if (movieDocId) {
-                const albumsContainingMovie = albums
-                    .filter(album => album.movieDocIds?.includes(movieDocId))
-                    .map(album => album.docId || '');
-                setSelectedAlbumIds(albumsContainingMovie);
-            }
-        } else if (!movieToEdit) {
-            setSelectedAlbumIds([]);
-        }
-    }, [isOpen, movieToEdit, albums]);
+    if (movieToEdit && albums.length > 0) {
+      const movieDocId = movieToEdit.docId;
+      if (movieDocId) {
+        const albumsContainingMovie = albums
+          .filter((album) => album.movieDocIds?.includes(movieDocId))
+          .map((album) => album.docId || '');
+        setSelectedAlbumIds(albumsContainingMovie);
+      }
+    } else if (!movieToEdit) {
+      setSelectedAlbumIds([]);
+    }
+  }, [isOpen, movieToEdit, albums]);
 
-    const handleCreateAlbum = async () => {
-        if (!newAlbumName.trim() || !user) return;
-        try {
-            setCreatingAlbum(true);
-            const newAlbumId = await addAlbum({
-                uid: user.uid,
-                name: newAlbumName.trim(),
-                movieDocIds: [],
-            });
-            showToast(MESSAGES.ALBUM.CREATE_SUCCESS(newAlbumName), 'success');
-            setSelectedAlbumIds(prev => [...prev, newAlbumId]);
-            setNewAlbumName('');
-            setShowCreateAlbum(false);
-        } catch (error) {
-            showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
-        } finally {
-            setCreatingAlbum(false);
-        }
-    };
+  const handleCreateAlbum = async () => {
+    if (!newAlbumName.trim() || !user) return;
+    try {
+      setCreatingAlbum(true);
+      const newAlbumId = await addAlbum({
+        uid: user.uid,
+        name: newAlbumName.trim(),
+        movieDocIds: [],
+      });
+      showToast(MESSAGES.ALBUM.CREATE_SUCCESS(newAlbumName), 'success');
+      setSelectedAlbumIds((prev) => [...prev, newAlbumId]);
+      setNewAlbumName('');
+      setShowCreateAlbum(false);
+    } catch (error) {
+      showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
+    } finally {
+      setCreatingAlbum(false);
+    }
+  };
 
-    const syncAlbums = async (movieDocId: string) => {
-        const previousAlbumIds = albums
-            .filter(album => album.movieDocIds?.includes(movieDocId))
-            .map(album => album.docId)
-            .filter((id): id is string => Boolean(id));
+  const syncAlbums = async (movieDocId: string) => {
+    const previousAlbumIds = albums
+      .filter((album) => album.movieDocIds?.includes(movieDocId))
+      .map((album) => album.docId)
+      .filter((id): id is string => Boolean(id));
 
-        await syncMovieAlbums(movieDocId, previousAlbumIds, selectedAlbumIds);
-    };
+    await syncMovieAlbums(movieDocId, previousAlbumIds, selectedAlbumIds);
+  };
 
-    return {
-        selectedAlbumIds, setSelectedAlbumIds,
-        showCreateAlbum, setShowCreateAlbum,
-        newAlbumName, setNewAlbumName,
-        creatingAlbum,
-        handleCreateAlbum,
-        syncAlbums,
-        albums
-    };
+  return {
+    selectedAlbumIds,
+    setSelectedAlbumIds,
+    showCreateAlbum,
+    setShowCreateAlbum,
+    newAlbumName,
+    setNewAlbumName,
+    creatingAlbum,
+    handleCreateAlbum,
+    syncAlbums,
+    albums,
+  };
 };

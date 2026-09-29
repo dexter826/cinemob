@@ -10,7 +10,11 @@ export const getUserData = async (userId: string): Promise<UserData | null> => {
       const raw: unknown = userDoc.data();
       if (typeof raw !== 'object' || raw === null) return null;
       const titles = (raw as Partial<UserData>).previouslyRecommendedTitles;
-      return { previouslyRecommendedTitles: Array.isArray(titles) ? titles.filter((t): t is string => typeof t === 'string') : [] };
+      return {
+        previouslyRecommendedTitles: Array.isArray(titles)
+          ? titles.filter((t): t is string => typeof t === 'string')
+          : [],
+      };
     }
     return null;
   } catch (error: unknown) {
@@ -22,18 +26,21 @@ export const getUserData = async (userId: string): Promise<UserData | null> => {
 };
 
 // Cập nhật danh sách phim đã gợi ý.
-export const updatePreviouslyRecommendedTitles = async (userId: string, titles: string[]): Promise<void> => {
+export const updatePreviouslyRecommendedTitles = async (
+  userId: string,
+  titles: string[],
+): Promise<void> => {
   try {
     const userRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userRef);
-    
+
     if (userDoc.exists()) {
       await updateDoc(userRef, {
-        previouslyRecommendedTitles: arrayUnion(...titles)
+        previouslyRecommendedTitles: arrayUnion(...titles),
       });
     } else {
       await setDoc(userRef, {
-        previouslyRecommendedTitles: titles
+        previouslyRecommendedTitles: titles,
       });
     }
   } catch (error) {

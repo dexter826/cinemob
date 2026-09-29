@@ -25,13 +25,14 @@ function AlbumSection({
   creatingAlbum,
   albums,
   selectedAlbumIds,
-  setSelectedAlbumIds
+  setSelectedAlbumIds,
 }: AlbumSectionProps) {
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
-          <FolderPlus size={14} className="text-primary" /> {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
+          <FolderPlus size={14} className="text-primary" />{' '}
+          {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
         </label>
         <button
           type="button"
@@ -73,7 +74,7 @@ function AlbumSection({
       )}
 
       <MultiSelectDropdown
-        options={albums.map(album => ({ value: album.docId || '', label: album.name }))}
+        options={albums.map((album) => ({ value: album.docId || '', label: album.name }))}
         values={selectedAlbumIds}
         onChange={(values) => setSelectedAlbumIds(values as string[])}
         placeholder="Tìm hoặc chọn album..."
@@ -83,6 +84,6 @@ function AlbumSection({
       />
     </div>
   );
-};
+}
 
 export default AlbumSection;

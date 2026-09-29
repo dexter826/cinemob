@@ -51,7 +51,7 @@ export interface Stats {
   minutes: number;
 }
 
-export interface PublicShareMovie {
+export interface ProfileMovie {
   id: string | number;
   title: string;
   title_vi?: string;
@@ -61,11 +61,18 @@ export interface PublicShareMovie {
   rating?: number;
 }
 
-export interface PublicShare {
+export type MemberGender = 'male' | 'female' | 'other';
+
+export interface MemberProfile {
   displayName: string;
   photoURL?: string;
-  isEnabled: boolean;
+  email?: string;
+  bio?: string;
+  gender?: MemberGender;
+  dob?: string;
+  // true = chủ hồ sơ gỡ danh sách phim khỏi Firestore, không ai đọc được kể cả qua API.
+  isMovieListHidden: boolean;
   updatedAt: Timestamp | Date;
   totalCount: number;
-  movies: PublicShareMovie[];
+  movies: ProfileMovie[];
 }

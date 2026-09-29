@@ -1,6 +1,10 @@
 import * as XLSX from 'xlsx';
 import { Movie } from '@/types';
-import { getTranslatedCountries, getTranslatedGenres, normalizeMovieDate } from '../utils/movieUtils';
+import {
+  getTranslatedCountries,
+  getTranslatedGenres,
+  normalizeMovieDate,
+} from '../utils/movieUtils';
 
 export interface ExportFilters {
   rating?: number | null;
@@ -15,11 +19,11 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
   let result = [...movies];
 
   if (filters.rating !== null && filters.rating !== undefined) {
-    result = result.filter(movie => (movie.rating ?? 0) >= (filters.rating ?? 0));
+    result = result.filter((movie) => (movie.rating ?? 0) >= (filters.rating ?? 0));
   }
 
   if (filters.year !== null && filters.year !== undefined) {
-    result = result.filter(movie => {
+    result = result.filter((movie) => {
       const date = normalizeMovieDate(movie.watched_at);
       return date ? date.getFullYear() === filters.year : false;
     });
@@ -27,23 +31,24 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
 
   if (filters.country) {
     const countryFilter = filters.country.toLowerCase();
-    result = result.filter(movie => movie.country && movie.country.toLowerCase().includes(countryFilter));
+    result = result.filter(
+      (movie) => movie.country && movie.country.toLowerCase().includes(countryFilter),
+    );
   }
 
   if (filters.contentType && filters.contentType !== 'all') {
-    result = result.filter(movie => {
+    result = result.filter((movie) => {
       const mediaType = movie.media_type || 'movie';
       return mediaType === filters.contentType;
     });
   }
 
   if (filters.status && filters.status !== 'all') {
-    result = result.filter(movie => (movie.status || 'history') === filters.status);
+    result = result.filter((movie) => (movie.status || 'history') === filters.status);
   }
 
   return result;
 };
-
 
 // Xuất danh sách phim ra Excel.
 export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Promise<void> => {
@@ -54,7 +59,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
       throw new Error('Không có dữ liệu để xuất');
     }
 
-    const excelData = filteredMovies.map(movie => {
+    const excelData = filteredMovies.map((movie) => {
       const watchedDate = normalizeMovieDate(movie.watched_at);
       const isTV = movie.media_type === 'tv';
       return {
@@ -62,15 +67,15 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
         'Năm xem': watchedDate ? watchedDate.getFullYear() : '',
         'Ngày xem': watchedDate ? watchedDate.toLocaleDateString('vi-VN') : '',
         'Đánh giá': movie.rating ?? '',
-        'Thời lượng (phút)': isTV ? '' : (movie.runtime || ''),
-        'Số mùa': isTV ? (movie.seasons || '') : '',
+        'Thời lượng (phút)': isTV ? '' : movie.runtime || '',
+        'Số mùa': isTV ? movie.seasons || '' : '',
         'Thể loại': getTranslatedGenres(movie.genres || ''),
         'Quốc gia': getTranslatedCountries(movie.country || ''),
-        'Loại': isTV ? 'TV Series' : 'Phim',
+        Loại: isTV ? 'Series' : 'Phim lẻ',
         'Trạng thái': movie.status === 'watchlist' ? 'Sẽ xem' : 'Đã xem',
         'Đánh giá chi tiết': movie.review || '',
-        'Tagline': movie.tagline || '',
-        'Nội dung': movie.content || ''
+        Tagline: movie.tagline || '',
+        'Nội dung': movie.content || '',
       };
     });
 
@@ -91,13 +96,12 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
       { wch: 10 },
       { wch: 30 },
       { wch: 25 },
-      { wch: 40 }
+      { wch: 40 },
     ];
     ws['!cols'] = colWidths;
 
     const fileName = `cinemob_export_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
-
   } catch (error) {
     console.error('Error exporting to Excel:', error);
     throw error;

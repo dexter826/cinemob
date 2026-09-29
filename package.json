@@ -8,7 +8,9 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --max-warnings=200"
+    "lint": "eslint src --max-warnings=200",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@vudovn/ag-kit": "^2026.7.18",
@@ -36,6 +38,7 @@
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "postcss": "^8.5.6",
+    "prettier": "^3.9.9",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.70.1",

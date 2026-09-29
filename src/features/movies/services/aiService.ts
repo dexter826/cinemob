@@ -4,87 +4,100 @@ import { normalizeMovieDate } from '../utils/movieUtils';
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 interface AIRecommendation {
-    title: string;
-    reason: string;
+  title: string;
+  reason: string;
 }
 
 interface CircuitBreakerState {
-    failCount: number;
-    lastFailTime: number;
-    state: 'CLOSED' | 'OPEN';
+  failCount: number;
+  lastFailTime: number;
+  state: 'CLOSED' | 'OPEN';
 }
 
 const CIRCUIT_CONFIG = {
-    FAIL_THRESHOLD: 5,
-    RECOVERY_TIME: 60000,
+  FAIL_THRESHOLD: 5,
+  RECOVERY_TIME: 60000,
 } as const;
 
 const RETRY_CONFIG = {
-    MAX_RETRIES: 3,
-    BASE_DELAY: 2000,
+  MAX_RETRIES: 3,
+  BASE_DELAY: 2000,
 } as const;
 
 let circuitBreaker: CircuitBreakerState = {
-    failCount: 0,
-    lastFailTime: 0,
-    state: 'CLOSED',
+  failCount: 0,
+  lastFailTime: 0,
+  state: 'CLOSED',
 };
 
 const isCircuitOpen = (): boolean => {
-    if (circuitBreaker.state === 'CLOSED') return false;
-    
-    const timeSinceFail = Date.now() - circuitBreaker.lastFailTime;
-    if (timeSinceFail > CIRCUIT_CONFIG.RECOVERY_TIME) {
-        circuitBreaker = { failCount: 0, lastFailTime: 0, state: 'CLOSED' };
-        return false;
-    }
-    return true;
+  if (circuitBreaker.state === 'CLOSED') return false;
+
+  const timeSinceFail = Date.now() - circuitBreaker.lastFailTime;
+  if (timeSinceFail > CIRCUIT_CONFIG.RECOVERY_TIME) {
+    circuitBreaker = { failCount: 0, lastFailTime: 0, state: 'CLOSED' };
+    return false;
+  }
+  return true;
 };
 
 const recordFailure = (): void => {
-    circuitBreaker.failCount++;
-    circuitBreaker.lastFailTime = Date.now();
-    
-    if (circuitBreaker.failCount >= CIRCUIT_CONFIG.FAIL_THRESHOLD) {
-        circuitBreaker.state = 'OPEN';
-    }
+  circuitBreaker.failCount++;
+  circuitBreaker.lastFailTime = Date.now();
+
+  if (circuitBreaker.failCount >= CIRCUIT_CONFIG.FAIL_THRESHOLD) {
+    circuitBreaker.state = 'OPEN';
+  }
 };
 
 const recordSuccess = (): void => {
-    circuitBreaker.failCount = 0;
-    circuitBreaker.state = 'CLOSED';
+  circuitBreaker.failCount = 0;
+  circuitBreaker.state = 'CLOSED';
 };
 
 // Lấy phim gợi ý từ AI theo lịch sử.
-export const getAIRecommendations = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[] = []): Promise<AIRecommendation[]> => {
-    if (!history || history.length === 0) return [];
+export const getAIRecommendations = async (
+  history: Movie[],
+  allMovies: Movie[],
+  excludePreviouslyRecommended: string[] = [],
+): Promise<AIRecommendation[]> => {
+  if (!history || history.length === 0) return [];
 
-    if (isCircuitOpen()) {
-        console.warn("Circuit breaker OPEN: Too many API failures. Skipping AI recommendations.");
-        throw new Error("CIRCUIT_BREAKER_OPEN");
-    }
+  if (isCircuitOpen()) {
+    console.warn('Circuit breaker OPEN: Too many API failures. Skipping AI recommendations.');
+    throw new Error('CIRCUIT_BREAKER_OPEN');
+  }
 
-    return retryWithBackoff(() => callOpenRouterAPI(history, allMovies, excludePreviouslyRecommended));
+  return retryWithBackoff(() =>
+    callOpenRouterAPI(history, allMovies, excludePreviouslyRecommended),
+  );
 };
 
-const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePreviouslyRecommended: string[]): Promise<AIRecommendation[]> => {
-    const filteredMovies = history.filter(m => (m.rating || 0) >= 4);
-    const selectedMovies = filteredMovies
-        .sort((a, b) => {
-            const timeA = normalizeMovieDate(a.watched_at)?.getTime() || 0;
-            const timeB = normalizeMovieDate(b.watched_at)?.getTime() || 0;
-            return timeB - timeA;
-        })
-        .slice(0, 50); 
+const callOpenRouterAPI = async (
+  history: Movie[],
+  allMovies: Movie[],
+  excludePreviouslyRecommended: string[],
+): Promise<AIRecommendation[]> => {
+  const filteredMovies = history.filter((m) => (m.rating || 0) >= 4);
+  const selectedMovies = filteredMovies
+    .sort((a, b) => {
+      const timeA = normalizeMovieDate(a.watched_at)?.getTime() || 0;
+      const timeB = normalizeMovieDate(b.watched_at)?.getTime() || 0;
+      return timeB - timeA;
+    })
+    .slice(0, 50);
 
-    const watchedList = selectedMovies
-        .map(m => `- ${m.title} (${m.rating ? m.rating + '/10 stars' : 'Liked'})`)
-        .join('\n');
+  const watchedList = selectedMovies
+    .map((m) => `- ${m.title} (${m.rating ? m.rating + '/10 stars' : 'Liked'})`)
+    .join('\n');
 
-    const existingTitles = allMovies.slice(0, 100).map(m => m.title).join(', ');
-    const previouslyRecommendedTitles = excludePreviouslyRecommended.slice(-100).join(', ');
+  const existingTitles = allMovies
+    .slice(0, 100)
+    .map((m) => m.title)
+    .join(', ');
+  const previouslyRecommendedTitles = excludePreviouslyRecommended.slice(-100).join(', ');
 
-    const prompt = `
+  const prompt = `
     You are an expert Film Curator. Analyze the user's movie history to identify their taste (directors, atmosphere, genres).
     Recommend 22 NEW movies/series that fit this profile.
 
@@ -109,85 +122,88 @@ const callOpenRouterAPI = async (history: Movie[], allMovies: Movie[], excludePr
     ]
     `;
 
-    const response = await makeOpenRouterRequest(prompt);
+  const response = await makeOpenRouterRequest(prompt);
 
-    if (!response.ok) {
-        recordFailure();
-        if (response.status === 429) throw new Error("API_RATE_LIMIT");
-        throw new Error(`API_ERROR_${response.status}`);
-    }
+  if (!response.ok) {
+    recordFailure();
+    if (response.status === 429) throw new Error('API_RATE_LIMIT');
+    throw new Error(`API_ERROR_${response.status}`);
+  }
 
-    const data = await response.json();
+  const data = await response.json();
 
-    if (data.error) {
-        recordFailure();
-        throw new Error(data.error.message || "API_ERROR");
-    }
+  if (data.error) {
+    recordFailure();
+    throw new Error(data.error.message || 'API_ERROR');
+  }
 
-    if (!data.choices?.length) {
-        recordFailure();
-        return [];
-    }
+  if (!data.choices?.length) {
+    recordFailure();
+    return [];
+  }
 
-    try {
-        const recommendations = parseAIResponse(data.choices[0].message.content);
-        recordSuccess();
-        return recommendations;
-    } catch (error) {
-        recordFailure();
-        throw new Error("PARSE_ERROR");
-    }
+  try {
+    const recommendations = parseAIResponse(data.choices[0].message.content);
+    recordSuccess();
+    return recommendations;
+  } catch (error) {
+    recordFailure();
+    throw new Error('PARSE_ERROR');
+  }
 };
 
-const sleep = (ms: number): Promise<void> => 
-    new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 const retryWithBackoff = async (
-    fn: () => Promise<AIRecommendation[]>,
-    retries: number = RETRY_CONFIG.MAX_RETRIES
+  fn: () => Promise<AIRecommendation[]>,
+  retries: number = RETRY_CONFIG.MAX_RETRIES,
 ): Promise<AIRecommendation[]> => {
-    try {
-        return await fn();
-    } catch (error) {
-        const shouldRetry = (error as Error).message === "API_RATE_LIMIT" && retries > 0;
-        if (!shouldRetry) throw error;
+  try {
+    return await fn();
+  } catch (error) {
+    const shouldRetry = (error as Error).message === 'API_RATE_LIMIT' && retries > 0;
+    if (!shouldRetry) throw error;
 
-        const delayMs = RETRY_CONFIG.BASE_DELAY * Math.pow(2, RETRY_CONFIG.MAX_RETRIES - retries);
-        await sleep(delayMs);
-        return retryWithBackoff(fn, retries - 1);
-    }
+    const delayMs = RETRY_CONFIG.BASE_DELAY * Math.pow(2, RETRY_CONFIG.MAX_RETRIES - retries);
+    await sleep(delayMs);
+    return retryWithBackoff(fn, retries - 1);
+  }
 };
 
 const makeOpenRouterRequest = (prompt: string): Promise<Response> => {
-    if (!OPENROUTER_API_KEY) throw new Error("API_KEY_MISSING");
-    return fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        signal: AbortSignal.timeout(15000),
-        headers: {
-            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": window.location.origin,
-            "X-Title": "CineMOB",
+  if (!OPENROUTER_API_KEY) throw new Error('API_KEY_MISSING');
+  return fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    signal: AbortSignal.timeout(15000),
+    headers: {
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'CineMOB',
+    },
+    body: JSON.stringify({
+      model: 'openrouter/free',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a professional movie recommendation engine. Output valid JSON only.',
         },
-        body: JSON.stringify({
-            model: "openrouter/free",
-            messages: [
-                { role: "system", content: "You are a professional movie recommendation engine. Output valid JSON only." },
-                { role: "user", content: prompt }
-            ],
-            temperature: 0.5,
-        })
-    });
+        { role: 'user', content: prompt },
+      ],
+      temperature: 0.5,
+    }),
+  });
 };
 
 const parseAIResponse = (content: string): AIRecommendation[] => {
-    const match = content.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error("NO_JSON_ARRAY");
-    const parsed: unknown = JSON.parse(match[0]);
-    if (!Array.isArray(parsed)) throw new Error("NO_JSON_ARRAY");
-    return parsed.filter(
-        (item): item is AIRecommendation =>
-            typeof item === 'object' && item !== null &&
-            typeof (item as AIRecommendation).title === 'string'
-    );
+  const match = content.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error('NO_JSON_ARRAY');
+  const parsed: unknown = JSON.parse(match[0]);
+  if (!Array.isArray(parsed)) throw new Error('NO_JSON_ARRAY');
+  return parsed.filter(
+    (item): item is AIRecommendation =>
+      typeof item === 'object' &&
+      item !== null &&
+      typeof (item as AIRecommendation).title === 'string',
+  );
 };

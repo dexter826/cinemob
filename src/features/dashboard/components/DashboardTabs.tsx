@@ -8,12 +8,7 @@ interface DashboardTabsProps {
 }
 
 /** Thanh chuyển đổi giữa tab "Đã xem" và "Sẽ xem". */
-function DashboardTabs({ 
-  activeTab, 
-  onTabChange, 
-  moviesCount, 
-  tvCount 
-}: DashboardTabsProps) {
+function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: DashboardTabsProps) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex items-center" role="tablist" aria-label="Bộ lọc trạng thái xem phim">
@@ -53,6 +48,6 @@ function DashboardTabs({
       </span>
     </div>
   );
-};
+}
 
 export default DashboardTabs;

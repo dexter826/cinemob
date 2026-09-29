@@ -37,7 +37,7 @@ export const useMovieValidation = () => {
     country: false,
     releaseDate: false,
     runtime: false,
-    seasons: false
+    seasons: false,
   });
   const [errorTrigger, setErrorTrigger] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -48,14 +48,17 @@ export const useMovieValidation = () => {
   const runtimeRef = useRef<HTMLInputElement>(null);
   const seasonsRef = useRef<HTMLInputElement>(null);
   const ratingRef = useRef<HTMLDivElement>(null);
-  const refs: FormFieldRefs = useMemo(() => ({
-    title: titleRef,
-    country: countryRef,
-    releaseDate: releaseDateRef,
-    runtime: runtimeRef,
-    seasons: seasonsRef,
-    rating: ratingRef
-  }), []);
+  const refs: FormFieldRefs = useMemo(
+    () => ({
+      title: titleRef,
+      country: countryRef,
+      releaseDate: releaseDateRef,
+      runtime: runtimeRef,
+      seasons: seasonsRef,
+      rating: ratingRef,
+    }),
+    [],
+  );
 
   const clearErrors = useCallback(() => {
     setRatingError(false);
@@ -65,14 +68,19 @@ export const useMovieValidation = () => {
 
   useEffect(() => {
     if (errorTrigger > 0) {
-      const errorKey = (Object.keys(errors) as Array<keyof FormErrors>).find(k => errors[k]) || (ratingError ? 'rating' : null);
+      const errorKey =
+        (Object.keys(errors) as Array<keyof FormErrors>).find((k) => errors[k]) ||
+        (ratingError ? 'rating' : null);
       const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
       if (targetRef?.current) {
         targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setIsAnimating(false);
         const t1 = setTimeout(() => setIsAnimating(true), 10);
         const t2 = setTimeout(() => setIsAnimating(false), 1010);
-        return () => { clearTimeout(t1); clearTimeout(t2); };
+        return () => {
+          clearTimeout(t1);
+          clearTimeout(t2);
+        };
       }
     }
   }, [errorTrigger, errors, ratingError, refs]);
@@ -81,7 +89,7 @@ export const useMovieValidation = () => {
     isManualMode: boolean,
     isTVSeries: boolean,
     status: 'history' | 'watchlist',
-    formData: FormValidationData
+    formData: FormValidationData,
   ): boolean => {
     if (isManualMode) {
       const newErrors = {
@@ -89,21 +97,21 @@ export const useMovieValidation = () => {
         country: !formData.country.trim(),
         releaseDate: !formData.releaseDate,
         seasons: isTVSeries && (!formData.seasons || parseInt(String(formData.seasons)) <= 0),
-        runtime: !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0)
+        runtime: !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0),
       };
 
-      if (Object.values(newErrors).some(v => v)) {
+      if (Object.values(newErrors).some((v) => v)) {
         setErrors(newErrors);
-        setErrorTrigger(p => p + 1);
-        showToast(MESSAGES.COMMON.REQUIRED_FIELDS, "error");
+        setErrorTrigger((p) => p + 1);
+        showToast(MESSAGES.COMMON.REQUIRED_FIELDS, 'error');
         return false;
       }
     }
 
     if (status === 'history' && formData.rating === 0) {
       setRatingError(true);
-      setErrorTrigger(p => p + 1);
-      showToast(MESSAGES.MOVIE.REQUIRED_RATING, "error");
+      setErrorTrigger((p) => p + 1);
+      showToast(MESSAGES.MOVIE.REQUIRED_RATING, 'error');
       return false;
     }
 
@@ -111,10 +119,15 @@ export const useMovieValidation = () => {
   };
 
   return {
-    ratingError, setRatingError,
-    errors, setErrors,
-    errorTrigger, setErrorTrigger,
-    isAnimating, refs,
-    clearErrors, validate
+    ratingError,
+    setRatingError,
+    errors,
+    setErrors,
+    errorTrigger,
+    setErrorTrigger,
+    isAnimating,
+    refs,
+    clearErrors,
+    validate,
   };
 };

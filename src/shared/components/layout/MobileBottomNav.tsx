@@ -33,7 +33,9 @@ function MobileBottomNav() {
               aria-current={isActive ? 'page' : undefined}
               className="relative flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-16 px-1 cursor-pointer"
             >
-              <span className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-secondary'}`}>
+              <span
+                className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-secondary'}`}
+              >
                 <Icon size={24} strokeWidth={isActive ? 2 : 1.5} aria-hidden="true" />
               </span>
               <span

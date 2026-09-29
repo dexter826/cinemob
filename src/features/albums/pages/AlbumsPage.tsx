@@ -50,7 +50,8 @@ function AlbumsPage() {
     if (!album.docId) return;
     showAlert({
       title: 'Xóa album',
-      message: 'Bạn có chắc chắn muốn xóa album này? Hành động này không xóa phim đã xem, chỉ xóa album.',
+      message:
+        'Bạn có chắc chắn muốn xóa album này? Hành động này không xóa phim đã xem, chỉ xóa album.',
       type: 'danger',
       confirmText: 'Xóa',
       onConfirm: async () => {
@@ -66,120 +67,149 @@ function AlbumsPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader
-          title="Album phim"
-          description="Tự tạo bộ sưu tập phim cá nhân theo ý bạn."
-        />
+      <PageHeader title="Album phim" description="Tạo album riêng để nhóm phim đã xem." />
 
-        <form
-          onSubmit={handleCreate}
-          className="bg-surface border border-border-default dark:border-white/5 rounded-3xl p-3 sm:p-4 shadow-premium"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
-            <div className="flex-1 space-y-1.5 sm:space-y-2">
-              <label htmlFor="create-album-name" className="text-xs font-semibold text-text-secondary ml-1">Tạo album mới</label>
-              <div className="relative group">
-                <Folder className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
-                <input
-                  id="create-album-name"
-                  type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
-                  placeholder="Ví dụ: Phim Mafia Ý..."
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={creating || loading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+      <form
+        onSubmit={handleCreate}
+        className="bg-surface border border-border-default dark:border-white/5 rounded-3xl p-3 sm:p-4 shadow-premium"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
+          <div className="flex-1 space-y-1.5 sm:space-y-2">
+            <label
+              htmlFor="create-album-name"
+              className="text-xs font-semibold text-text-secondary ml-1"
             >
-              <Plus size={16} strokeWidth={1.5} />
-              <span>{creating ? 'Đang tạo...' : 'Tạo album'}</span>
-            </button>
+              Tạo album mới
+            </label>
+            <div className="relative group">
+              <Folder
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+                size={16}
+                strokeWidth={1.5}
+              />
+              <input
+                id="create-album-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                placeholder="Ví dụ: Phim Mafia Ý…"
+              />
+            </div>
           </div>
-        </form>
+          <button
+            type="submit"
+            disabled={creating || loading}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+          >
+            <Plus size={16} strokeWidth={1.5} />
+            <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>
+          </button>
+        </div>
+      </form>
 
-        {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
-            ))}
-          </div>
-        ) : albums.length === 0 ? (
-          <EmptyState
-            icon={Folder}
-            title="Chưa có album nào"
-            description="Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó."
-          />
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-            {albums.map(album => (
-              <article
-                key={album.docId}
-                className="group relative bg-surface rounded-2xl border border-border overflow-hidden"
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
+          ))}
+        </div>
+      ) : albums.length === 0 ? (
+        <EmptyState
+          icon={Folder}
+          title="Chưa có album nào"
+          description="Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó."
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+          {albums.map((album) => (
+            <article
+              key={album.docId}
+              className="group relative bg-surface rounded-2xl border border-border overflow-hidden"
+            >
+              <button
+                type="button"
+                onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
+                aria-label={`Mở album ${album.name}, ${album.movieDocIds.length} mục`}
+                className="block w-full text-left cursor-pointer rounded-none"
               >
-                <button
-                  type="button"
-                  onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
-                  aria-label={`Mở album ${album.name}, ${album.movieDocIds.length} mục`}
-                  className="block w-full text-left cursor-pointer rounded-none"
-                >
-                  <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
-                    {albumCoverMovies[album.docId || '']?.poster_path ? (
-                      <img
-                        src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
-                        alt=""
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
-                        <span className="flex flex-col items-center gap-3 opacity-40">
-                          <Film size={20} className="text-white" strokeWidth={1.5} aria-hidden="true" />
-                          <span className="text-xs font-bold text-white">Trống</span>
-                        </span>
+                <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
+                  {albumCoverMovies[album.docId || '']?.poster_path ? (
+                    <img
+                      src={getTMDBImageUrl(
+                        albumCoverMovies[album.docId || '']!.poster_path,
+                        'w500',
+                      )}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
+                      <span className="flex flex-col items-center gap-3 opacity-40">
+                        <Film
+                          size={20}
+                          className="text-white"
+                          strokeWidth={1.5}
+                          aria-hidden="true"
+                        />
+                        <span className="text-xs font-bold text-white">Trống</span>
                       </span>
-                    )}
-
-                    <span aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90" />
-
-                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 z-10">
-                      <Folder size={12} className="text-primary" strokeWidth={1.5} aria-hidden="true" />
-                      <span className="text-xs font-semibold text-white">Album</span>
                     </span>
+                  )}
 
-                    <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-                      <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
-                        {album.name}
-                      </span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90"
+                  />
+
+                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 z-10">
+                    <Folder
+                      size={12}
+                      className="text-primary"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <span className="text-xs font-semibold text-white">Album</span>
+                  </span>
+
+                  <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+                    <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
+                      {album.name}
                     </span>
                   </span>
-                </button>
+                </span>
+              </button>
 
-                <button
-                  type="button"
-                  aria-label={`Xóa album ${album.name}`}
-                  onClick={() => handleDelete(album)}
-                  className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
-                >
-                  <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
-                </button>
+              <button
+                type="button"
+                aria-label={`Xóa album ${album.name}`}
+                onClick={() => handleDelete(album)}
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
+              >
+                <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
+              </button>
 
-                <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
-                  <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
-                    <Film size={12} strokeWidth={1.5} aria-hidden="true" />
-                    <span><strong className="tabular-nums">{album.movieDocIds.length}</strong> mục</span>
-                  </div>
-                  <span aria-hidden="true" className="text-xs font-medium text-text-secondary truncate">Chi tiết →</span>
+              <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
+                <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
+                  <Film size={12} strokeWidth={1.5} aria-hidden="true" />
+                  <span>
+                    <strong className="tabular-nums">{album.movieDocIds.length}</strong> mục
+                  </span>
                 </div>
-              </article>
-            ))}
-          </div>
-        )}
+                <span
+                  aria-hidden="true"
+                  className="text-xs font-medium text-text-secondary truncate"
+                >
+                  Chi tiết →
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </main>
   );
-};
+}
 
 export default AlbumsPage;

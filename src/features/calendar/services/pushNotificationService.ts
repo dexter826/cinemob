@@ -2,7 +2,9 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 
 // Khớp với key trong GitHub Actions.
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BFBK097ne-pKAkExp7CqZtA9sPf9VdrwazPIFktU753xdoUMM2Rw2gZpxmugVoX-anvHb7T8KVj-rZQwar7vPp8';
+const VAPID_PUBLIC_KEY =
+  import.meta.env.VITE_VAPID_PUBLIC_KEY ||
+  'BFBK097ne-pKAkExp7CqZtA9sPf9VdrwazPIFktU753xdoUMM2Rw2gZpxmugVoX-anvHb7T8KVj-rZQwar7vPp8';
 
 // Định dạng khóa VAPID cho Web Push.
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -23,7 +25,8 @@ export function isPushSupported(): boolean {
 }
 
 export function isInstalledPWA(): boolean {
-  const isIOSStandalone = (window.navigator as unknown as { standalone?: boolean }).standalone === true;
+  const isIOSStandalone =
+    (window.navigator as unknown as { standalone?: boolean }).standalone === true;
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
   return isIOSStandalone || isStandalone;
 }
@@ -38,9 +41,9 @@ export function isMobileDevice(): boolean {
   const userAgent: string = navigator.userAgent || navigator.vendor || legacy.opera || '';
 
   const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !legacy.MSStream;
-  
+
   const isAndroid = /android/i.test(userAgent);
-  
+
   return isIOS || isAndroid;
 }
 
@@ -58,14 +61,14 @@ export function getNotificationPermission(): NotificationPermission {
 async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
   if ('serviceWorker' in navigator) {
     const registrations = await navigator.serviceWorker.getRegistrations();
-    
+
     if (registrations.length > 0) {
       return registrations[0];
     }
-    
+
     return navigator.serviceWorker.ready;
   }
-  
+
   throw new Error('Service Worker not supported');
 }
 
@@ -86,9 +89,9 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     const registration = await Promise.race([
       registerPushServiceWorker(),
-      new Promise<ServiceWorkerRegistration>((_, reject) => 
-        setTimeout(() => reject(new Error('Service worker registration timeout')), 10000)
-      )
+      new Promise<ServiceWorkerRegistration>((_, reject) =>
+        setTimeout(() => reject(new Error('Service worker registration timeout')), 10000),
+      ),
     ]);
 
     if (!registration.active) {
@@ -109,7 +112,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
     return subscription;
   } catch (error) {
     console.error('Failed to subscribe to push notifications:', error);
-    
+
     if (error instanceof Error) {
       if (error.message.includes('not active')) {
         throw new Error('Service worker chưa sẵn sàng. Vui lòng refresh trang và thử lại.');
@@ -119,7 +122,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
         throw new Error('Push notification không được hỗ trợ trên thiết bị này hoặc cần HTTPS.');
       }
     }
-    
+
     throw error;
   }
 }
@@ -179,4 +182,3 @@ async function removeSubscriptionFromFirestore(): Promise<void> {
 
   await deleteDoc(doc(db, 'push_subscriptions', user.uid));
 }
-

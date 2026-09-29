@@ -1,7 +1,17 @@
 import { Movie } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../utils/movieUtils';
-import { Trash2, Calendar, Star, Edit2, MessageCircle, MessageSquare, Film, Tv, CheckCircle } from 'lucide-react';
+import {
+  Trash2,
+  Calendar,
+  Star,
+  Edit2,
+  MessageCircle,
+  MessageSquare,
+  Film,
+  Tv,
+  CheckCircle,
+} from 'lucide-react';
 
 interface MovieCardLibraryProps {
   mode?: 'library';
@@ -24,7 +34,9 @@ function MovieCard(props: MovieCardProps) {
   const { movie } = props;
   const isSelectMode = props.mode === 'select';
   const imageUrl = movie.poster_path
-    ? (movie.source === 'tmdb' ? getTMDBImageUrl(movie.poster_path, 'w500') : movie.poster_path)
+    ? movie.source === 'tmdb'
+      ? getTMDBImageUrl(movie.poster_path, 'w500')
+      : movie.poster_path
     : PLACEHOLDER_IMAGE;
 
   const mainTitle = getMainTitle(movie);
@@ -32,21 +44,22 @@ function MovieCard(props: MovieCardProps) {
 
   const showProgressBar = movie.status === 'history';
 
-  const progressWidth = movie.media_type === 'tv'
-    ? (movie.progress?.is_completed ? '100%' : `${((movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)) * 100}%`)
-    : '100%';
+  const progressWidth =
+    movie.media_type === 'tv'
+      ? movie.progress?.is_completed
+        ? '100%'
+        : `${((movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)) * 100}%`
+      : '100%';
 
   return (
-    <article
-      className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative"
-    >
+    <article className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative">
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <button
           type="button"
-          onClick={() => isSelectMode ? props.onSelect(movie) : props.onClick(movie)}
-          aria-label={isSelectMode
-            ? `Thêm phim ${mainTitle} vào album`
-            : `Xem chi tiết phim ${mainTitle}`}
+          onClick={() => (isSelectMode ? props.onSelect(movie) : props.onClick(movie))}
+          aria-label={
+            isSelectMode ? `Thêm phim ${mainTitle} vào album` : `Xem chi tiết phim ${mainTitle}`
+          }
           className="absolute inset-0 w-full h-full cursor-pointer rounded-none"
         >
           <img
@@ -60,45 +73,54 @@ function MovieCard(props: MovieCardProps) {
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         {/* Independent actions, siblings of the detail button, never nested */}
-        {!isSelectMode && <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
-          <button
-            type="button"
-            onClick={() => { if (movie.docId) props.onDelete(movie.docId); }}
-            className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
-            title="Xóa"
-            aria-label="Xóa phim khỏi danh sách"
-          >
-            <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
-          </button>
-
-          {!props.onMarkAsWatched && (
+        {!isSelectMode && (
+          <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200 z-30">
             <button
               type="button"
-              onClick={() => props.onEdit(movie)}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
-              title="Sửa"
-              aria-label="Chỉnh sửa thông tin phim"
+              onClick={() => {
+                if (movie.docId) props.onDelete(movie.docId);
+              }}
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+              title="Xóa"
+              aria-label="Xóa phim khỏi danh sách"
             >
-              <Edit2 size={15} strokeWidth={1.5} aria-hidden="true" />
+              <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
             </button>
-          )}
 
-          {props.onMarkAsWatched && (
-            <button
-              type="button"
-              onClick={() => props.onMarkAsWatched?.(movie)}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
-              title="Đã xem"
-              aria-label="Đánh dấu đã xem phim"
-            >
-              <CheckCircle size={15} strokeWidth={1.5} aria-hidden="true" />
-            </button>
-          )}
-        </div>}
+            {!props.onMarkAsWatched && (
+              <button
+                type="button"
+                onClick={() => props.onEdit(movie)}
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+                title="Sửa"
+                aria-label="Chỉnh sửa thông tin phim"
+              >
+                <Edit2 size={15} strokeWidth={1.5} aria-hidden="true" />
+              </button>
+            )}
+
+            {props.onMarkAsWatched && (
+              <button
+                type="button"
+                onClick={() => props.onMarkAsWatched?.(movie)}
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+                title="Đã xem"
+                aria-label="Đánh dấu đã xem phim"
+              >
+                <CheckCircle size={15} strokeWidth={1.5} aria-hidden="true" />
+              </button>
+            )}
+          </div>
+        )}
 
         {isSelectMode && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none border border-transparent group-hover:border-primary/40 rounded-2xl">
-            <CheckCircle className="text-white drop-shadow-lg" size={44} strokeWidth={1.5} aria-hidden="true" />
+            <CheckCircle
+              className="text-white drop-shadow-lg"
+              size={44}
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
           </div>
         )}
 
@@ -115,7 +137,9 @@ function MovieCard(props: MovieCardProps) {
             ) : (
               <>
                 <Film size={11} className="text-success" strokeWidth={1.5} />
-                <span className="text-[10px] font-semibold text-white tracking-wider uppercase">Phim</span>
+                <span className="text-[10px] font-semibold text-white tracking-wider uppercase">
+                  Phim
+                </span>
               </>
             )}
           </div>
@@ -124,7 +148,7 @@ function MovieCard(props: MovieCardProps) {
         {/* Progress Bar */}
         {showProgressBar && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
-            <div 
+            <div
               className="h-full bg-primary transition-[width] duration-700 ease-out"
               style={{ width: progressWidth }}
             />
@@ -134,7 +158,10 @@ function MovieCard(props: MovieCardProps) {
 
       <div className="p-3 flex flex-col flex-1">
         <div className="min-h-10 mb-2">
-          <h3 className="font-bold text-sm md:text-[15px] leading-tight text-text-main line-clamp-1 group-hover:text-primary transition-colors duration-200" title={mainTitle}>
+          <h3
+            className="font-bold text-sm md:text-[15px] leading-tight text-text-main line-clamp-1 group-hover:text-primary transition-colors duration-200"
+            title={mainTitle}
+          >
             {mainTitle}
           </h3>
           <p className="text-[11px] text-text-muted truncate mt-0.5 italic" title={subTitle || ''}>
@@ -145,7 +172,13 @@ function MovieCard(props: MovieCardProps) {
         <div className="min-h-5 mb-2 flex items-center gap-2 text-[10px] font-medium">
           {!!movie.rating && movie.rating > 0 && (
             <span className="inline-flex items-center gap-1 text-text-main" title="Đánh giá">
-              <Star size={11} className="text-warning" fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+              <Star
+                size={11}
+                className="text-warning"
+                fill="currentColor"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
               <span className="tabular-nums">{movie.rating.toFixed(1)}</span>
             </span>
           )}
@@ -171,9 +204,12 @@ function MovieCard(props: MovieCardProps) {
               <span>{formatMovieDate(movie.watched_at)}</span>
             </div>
           </div>
-          
+
           {movie.review && (
-            <div className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0" title="Có đánh giá">
+            <div
+              className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0"
+              title="Có đánh giá"
+            >
               <MessageCircle size={11} strokeWidth={1.5} />
             </div>
           )}
@@ -181,6 +217,6 @@ function MovieCard(props: MovieCardProps) {
       </div>
     </article>
   );
-};
+}
 
 export default MovieCard;

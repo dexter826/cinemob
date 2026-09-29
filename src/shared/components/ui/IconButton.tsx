@@ -1,7 +1,10 @@
 import React from 'react';
 import { classNames } from '@/shared/utils/classNames';
 
-interface IconButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label'> {
+interface IconButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-label'
+> {
   label: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'ghost' | 'secondary' | 'danger';
@@ -14,8 +17,10 @@ const sizeClasses: Record<NonNullable<IconButtonProps['size']>, string> = {
 };
 
 const variantClasses: Record<NonNullable<IconButtonProps['variant']>, string> = {
-  ghost: 'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
-  secondary: 'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
+  ghost:
+    'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+  secondary:
+    'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
   danger: 'bg-transparent text-danger border border-transparent hover:bg-danger/10',
 };
 
@@ -39,7 +44,7 @@ export function IconButton({
         'disabled:opacity-50 disabled:cursor-not-allowed',
         sizeClasses[size],
         variantClasses[variant],
-        className ?? ''
+        className ?? '',
       )}
       {...rest}
     />

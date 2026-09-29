@@ -42,7 +42,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const moviesPerPage = 20;
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   useEffect(() => {
@@ -59,52 +59,59 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     setCurrentPage(1);
   }, [filters, activeTab]);
 
-  const currentTabMovies = useMemo(() => 
-    movies.filter(m => (m.status || 'history') === activeTab),
-  [movies, activeTab]);
+  const currentTabMovies = useMemo(
+    () => movies.filter((m) => (m.status || 'history') === activeTab),
+    [movies, activeTab],
+  );
 
   const processedMovies = useMemo(() => {
     let result = [...currentTabMovies];
 
     if (filters.searchQuery.trim()) {
       const q = filters.searchQuery.toLowerCase();
-      result = result.filter(m => 
-        m.title.toLowerCase().includes(q) || 
-        (m.title_vi && m.title_vi.toLowerCase().includes(q))
+      result = result.filter(
+        (m) =>
+          m.title.toLowerCase().includes(q) || (m.title_vi && m.title_vi.toLowerCase().includes(q)),
       );
     }
 
     if (filters.ratingRange !== null) {
       const [min, max] = filters.ratingRange;
-      result = result.filter(m => (m.rating || 0) >= min && (m.rating || 0) <= max);
+      result = result.filter((m) => (m.rating || 0) >= min && (m.rating || 0) <= max);
     }
-    
+
     if (filters.year !== null) {
-      result = result.filter(m => normalizeMovieDate(m.watched_at)?.getFullYear() === filters.year);
+      result = result.filter(
+        (m) => normalizeMovieDate(m.watched_at)?.getFullYear() === filters.year,
+      );
     }
 
     if (filters.country) {
       const q = filters.country.toLowerCase();
-      result = result.filter(m => {
+      result = result.filter((m) => {
         const translatedCountry = getTranslatedCountries(m.country || '').toLowerCase();
         return translatedCountry.includes(q);
       });
     }
 
     if (filters.contentType !== 'all') {
-      result = result.filter(m => (m.media_type || 'movie') === filters.contentType);
+      result = result.filter((m) => (m.media_type || 'movie') === filters.contentType);
     }
 
     if (activeTab === 'history' && filters.watchStatus !== 'all') {
-      result = result.filter(m => {
-        if (filters.watchStatus === 'watching') return m.media_type === 'tv' && m.progress && !m.progress.is_completed;
-        if (filters.watchStatus === 'completed') return m.media_type === 'movie' || !m.media_type || (m.progress && m.progress.is_completed);
+      result = result.filter((m) => {
+        if (filters.watchStatus === 'watching')
+          return m.media_type === 'tv' && m.progress && !m.progress.is_completed;
+        if (filters.watchStatus === 'completed')
+          return (
+            m.media_type === 'movie' || !m.media_type || (m.progress && m.progress.is_completed)
+          );
         return true;
       });
     }
 
     if (filters.sourceType !== 'all') {
-      result = result.filter(m => {
+      result = result.filter((m) => {
         if (filters.sourceType === 'review') return m.is_review === true;
         return !m.is_review;
       });
@@ -141,7 +148,12 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     totalPages,
     processedMovies: paginatedMovies,
     allProcessedMoviesCount: processedMovies.length,
-    clearFilters: () => setFilters(prev => ({ ...INITIAL_FILTER_STATE, sortBy: prev.sortBy, sortOrder: prev.sortOrder })),
+    clearFilters: () =>
+      setFilters((prev) => ({
+        ...INITIAL_FILTER_STATE,
+        sortBy: prev.sortBy,
+        sortOrder: prev.sortOrder,
+      })),
     currentTabMovies,
     toggleSortOrder: () => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc'),
   };

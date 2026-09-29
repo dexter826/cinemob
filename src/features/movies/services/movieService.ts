@@ -22,13 +22,13 @@ export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   try {
     const payload = {
       ...movie,
-      watched_at: movie.watched_at || serverTimestamp()
+      watched_at: movie.watched_at || serverTimestamp(),
     };
 
     const docRef = await addDoc(collection(db, COLLECTION_NAME), payload);
     return docRef.id;
   } catch (error) {
-    console.error("Error adding movie: ", error);
+    console.error('Error adding movie: ', error);
     throw error;
   }
 };
@@ -39,7 +39,7 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
     const movieRef = doc(db, COLLECTION_NAME, docId);
     await updateDoc(movieRef, updates);
   } catch (error) {
-    console.error("Error updating movie: ", error);
+    console.error('Error updating movie: ', error);
     throw error;
   }
 };
@@ -64,7 +64,7 @@ export const deleteMovie = async (uid: string, docId: string) => {
     batch.delete(doc(db, COLLECTION_NAME, docId));
     await batch.commit();
   } catch (error) {
-    console.error("Error deleting movie: ", error);
+    console.error('Error deleting movie: ', error);
     throw error;
   }
 };
@@ -74,13 +74,13 @@ export const checkMovieExists = async (uid: string, movieId: string | number): P
   try {
     const q = query(
       collection(db, COLLECTION_NAME),
-      where("uid", "==", uid),
-      where("id", "==", movieId)
+      where('uid', '==', uid),
+      where('id', '==', movieId),
     );
     const snapshot = await getDocs(q);
     return !snapshot.empty;
   } catch (error) {
-    console.error("Error checking movie existence: ", error);
+    console.error('Error checking movie existence: ', error);
     throw error;
   }
 };
@@ -110,7 +110,7 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     country: typeof d.country === 'string' ? d.country : '',
     content: typeof d.content === 'string' ? d.content : '',
     progress: d.progress as Movie['progress'],
-    is_review: d.is_review === true
+    is_review: d.is_review === true,
   };
 };
 
@@ -118,15 +118,21 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
 export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
   const q = query(
     collection(db, COLLECTION_NAME),
-    where("uid", "==", uid),
-    orderBy("watched_at", "desc")
+    where('uid', '==', uid),
+    orderBy('watched_at', 'desc'),
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const movies = snapshot.docs.map(doc => mapDocToMovie(doc.id, doc.data() as Record<string, unknown>));
-    callback(movies);
-  }, (error) => {
-    console.error("Snapshot error:", error);
-    callback([]);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const movies = snapshot.docs.map((doc) =>
+        mapDocToMovie(doc.id, doc.data() as Record<string, unknown>),
+      );
+      callback(movies);
+    },
+    (error) => {
+      console.error('Snapshot error:', error);
+      callback([]);
+    },
+  );
 };

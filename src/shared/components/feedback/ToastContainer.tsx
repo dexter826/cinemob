@@ -9,13 +9,24 @@ const toastTransition = { duration: MOTION_DURATION.standard, ease: 'easeOut' as
 
 function ToastIcon({ type }: { type: string }) {
   const iconClass = 'mr-3 shrink-0';
-  if (type === 'success') return <CheckCircle size={18} className={`${iconClass} text-success`} aria-hidden="true" />;
-  if (type === 'error') return <AlertCircle size={18} className={`${iconClass} text-danger`} aria-hidden="true" />;
-  if (type === 'warning') return <AlertTriangle size={18} className={`${iconClass} text-warning`} aria-hidden="true" />;
+  if (type === 'success')
+    return <CheckCircle size={18} className={`${iconClass} text-success`} aria-hidden="true" />;
+  if (type === 'error')
+    return <AlertCircle size={18} className={`${iconClass} text-danger`} aria-hidden="true" />;
+  if (type === 'warning')
+    return <AlertTriangle size={18} className={`${iconClass} text-warning`} aria-hidden="true" />;
   return <Info size={18} className={`${iconClass} text-info`} aria-hidden="true" />;
 }
 
-function ToastList({ types, role, ariaLive }: { types: Array<string>; role: string; ariaLive: 'polite' | 'assertive' }) {
+function ToastList({
+  types,
+  role,
+  ariaLive,
+}: {
+  types: Array<string>;
+  role: string;
+  ariaLive: 'polite' | 'assertive';
+}) {
   const { toasts, removeToast } = useToastStore();
   const reducedMotion = useReducedMotion() ?? false;
   const items = toasts.filter((t) => types.includes(t.type));
@@ -29,7 +40,11 @@ function ToastList({ types, role, ariaLive }: { types: Array<string>; role: stri
             layout={!reducedMotion}
             initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
             animate={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8, transition: { duration: MOTION_DURATION.fast } }}
+            exit={
+              reducedMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: -8, transition: { duration: MOTION_DURATION.fast } }
+            }
             transition={toastTransition}
             aria-atomic="true"
             className="flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"

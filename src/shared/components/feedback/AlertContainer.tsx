@@ -38,14 +38,19 @@ function AlertContainer() {
               <span
                 aria-hidden="true"
                 className={`p-3 rounded-card ${
-                  alert.type === 'danger' ? 'bg-danger/10 text-danger' :
-                  alert.type === 'warning' ? 'bg-warning/10 text-warning' :
-                  'bg-info/10 text-info'
+                  alert.type === 'danger'
+                    ? 'bg-danger/10 text-danger'
+                    : alert.type === 'warning'
+                      ? 'bg-warning/10 text-warning'
+                      : 'bg-info/10 text-info'
                 }`}
               >
                 {alert.type === 'info' ? <Info size={24} /> : <AlertTriangle size={24} />}
               </span>
-              <h2 id={TITLE_ID} className="text-xl font-bold text-text-primary tracking-tight font-display">
+              <h2
+                id={TITLE_ID}
+                className="text-xl font-bold text-text-primary tracking-tight font-display"
+              >
                 {alert.title}
               </h2>
             </div>
@@ -57,11 +62,7 @@ function AlertContainer() {
           </DialogBody>
           <DialogFooter>
             <div className="flex justify-end gap-2">
-              <Button
-                ref={safestActionRef}
-                variant="ghost"
-                onClick={handleCancel}
-              >
+              <Button ref={safestActionRef} variant="ghost" onClick={handleCancel}>
                 {alert.cancelText || 'Hủy'}
               </Button>
               <Button

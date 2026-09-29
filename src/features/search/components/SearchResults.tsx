@@ -43,9 +43,8 @@ function SearchResults({
   handleSelectMovie,
   refreshRecommendations,
   removeRecommendation,
-  userId
+  userId,
 }: SearchResultsProps) {
-
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 py-6 sm:py-8">
@@ -85,105 +84,104 @@ function SearchResults({
               <SkeletonCard key={i} />
             ))}
           </div>
-          <p className="text-sm font-medium text-text-muted text-center pt-2">Đang phân tích lịch sử xem và gợi ý phim phù hợp…</p>
+          <p className="text-sm font-medium text-text-muted text-center pt-2">
+            Đang phân tích lịch sử xem và gợi ý phim phù hợp…
+          </p>
         </div>
         <div className="flex items-center gap-2 mb-4">
           <Star className="text-primary shrink-0" size={18} />
           <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {showTrendingSkeleton ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))
-          ) : (
-            trendingMovies.map(movie => (
-              <TMDBMovieCard
-                key={movie.id}
-                movie={movie}
-                onClick={handleSelectMovie}
-                status={getMovieStatus(movie.id)}
-              />
-            ))
-          )}
+          {showTrendingSkeleton
+            ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
+            : trendingMovies.map((movie) => (
+                <TMDBMovieCard
+                  key={movie.id}
+                  movie={movie}
+                  onClick={handleSelectMovie}
+                  status={getMovieStatus(movie.id)}
+                />
+              ))}
         </div>
       </>
     );
   }
 
   return (
-
+    <>
       <>
+        {!query && !discoverMovies.length && (
           <>
-            {!query && !discoverMovies.length && (
-              <>
-                {watchedMoviesCount >= 3 && (
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Sparkles className="text-primary shrink-0" size={18} />
-                      <h2 className="text-lg sm:text-xl font-bold text-primary truncate">Đề xuất cho bạn</h2>
-                    </div>
-
-                    {aiRecommendations.length === 0 && !isAiLoading ? (
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="hidden sm:inline text-xs text-text-muted">Không thể tải. </span>
-                        <button
-                          type="button"
-                          onClick={() => refreshRecommendations(userId, true)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
-                        >
-                          <RotateCcw size={14} />
-                          <span>Thử lại</span>
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => refreshRecommendations(userId, true)}
-                        disabled={isAiLoading}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
-                      >
-                        <RotateCcw size={16} />
-                        <span>Làm mới</span>
-                      </button>
-                    )}
-                  </div>
-                )}
-                {aiRecommendations.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 mb-8">
-                    {aiRecommendations.map(movie => (
-                      <TMDBMovieCard
-                        key={movie.id}
-                        movie={movie}
-                        onClick={handleSelectMovie}
-                        status={getMovieStatus(movie.id)}
-                        onRemove={(m) => removeRecommendation(userId, m.title ?? '')}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 mb-4">
-                  <Star className="text-primary shrink-0" size={18} />
-                  <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
+            {watchedMoviesCount >= 3 && (
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Sparkles className="text-primary shrink-0" size={18} />
+                  <h2 className="text-lg sm:text-xl font-bold text-primary truncate">
+                    Đề xuất cho bạn
+                  </h2>
                 </div>
-              </>
+
+                {aiRecommendations.length === 0 && !isAiLoading ? (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="hidden sm:inline text-xs text-text-muted">
+                      Không thể tải.{' '}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => refreshRecommendations(userId, true)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
+                    >
+                      <RotateCcw size={14} />
+                      <span>Thử lại</span>
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => refreshRecommendations(userId, true)}
+                    disabled={isAiLoading}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
+                  >
+                    <RotateCcw size={16} />
+                    <span>Làm mới</span>
+                  </button>
+                )}
+              </div>
             )}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {showFiltered
-                ? filteredResults.map(movie => (
+            {aiRecommendations.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 mb-8">
+                {aiRecommendations.map((movie) => (
                   <TMDBMovieCard
                     key={movie.id}
                     movie={movie}
                     onClick={handleSelectMovie}
                     status={getMovieStatus(movie.id)}
+                    onRemove={(m) => removeRecommendation(userId, m.title ?? '')}
                   />
-                ))
-                : showTrendingSkeleton ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <SkeletonCard key={i} />
-                  ))
-                ) : trendingMovies.map(movie => (
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="text-primary shrink-0" size={18} />
+              <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
+            </div>
+          </>
+        )}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          {showFiltered
+            ? filteredResults.map((movie) => (
+                <TMDBMovieCard
+                  key={movie.id}
+                  movie={movie}
+                  onClick={handleSelectMovie}
+                  status={getMovieStatus(movie.id)}
+                />
+              ))
+            : showTrendingSkeleton
+              ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
+              : trendingMovies.map((movie) => (
                   <TMDBMovieCard
                     key={movie.id}
                     movie={movie}
@@ -191,37 +189,36 @@ function SearchResults({
                     status={getMovieStatus(movie.id)}
                   />
                 ))}
-              {query.length > 2 && filteredResults.length === 0 && (
-                <div className="col-span-full">
-                  <EmptyState
-                    icon={Search}
-                    title="Không tìm thấy kết quả"
-                    description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa "${query}". Hãy thử từ khóa khác.`}
-                  />
-                </div>
-              )}
-              {!query && discoverMovies.length === 0 && trendingMovies.length === 0 && (
-                <div className="col-span-full">
-                  <EmptyState
-                    icon={Search}
-                    title="Bắt đầu khám phá"
-                    description="Nhập tên phim, diễn viên hoặc từ khóa để tìm kiếm những tác phẩm điện ảnh tuyệt vời."
-                  />
-                </div>
-              )}
-            </div>
-
-            {!isLoading && filteredResults.length > 0 && totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
+          {query.length > 2 && filteredResults.length === 0 && (
+            <div className="col-span-full">
+              <EmptyState
+                icon={Search}
+                title="Không tìm thấy kết quả"
+                description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa "${query}". Hãy thử từ khóa khác.`}
               />
-            )}
-          </>
-      </>
-  );
-};
+            </div>
+          )}
+          {!query && discoverMovies.length === 0 && trendingMovies.length === 0 && (
+            <div className="col-span-full">
+              <EmptyState
+                icon={Search}
+                title="Bắt đầu khám phá"
+                description="Nhập tên phim, diễn viên hoặc từ khóa để tìm kiếm những tác phẩm điện ảnh tuyệt vời."
+              />
+            </div>
+          )}
+        </div>
 
+        {!isLoading && filteredResults.length > 0 && totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
+      </>
+    </>
+  );
+}
 
 export default SearchResults;

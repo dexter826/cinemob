@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { PersonMovie, TMDBPerson } from '@/types';
 import { getPersonDetails, getPersonMovieCredits } from '../services/tmdb';
-import { filterAndSortPersonMovies, getPersonAvailableYears, paginatePersonMovies, type PersonSortBy, type SortOrder } from '../utils/personSelectors';
+import {
+  filterAndSortPersonMovies,
+  getPersonAvailableYears,
+  paginatePersonMovies,
+  type PersonSortBy,
+  type SortOrder,
+} from '../utils/personSelectors';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -30,14 +36,17 @@ export function usePersonDetail(personId?: string) {
 
     setLoading(true);
     setError(null);
-    Promise.all([getPersonDetails(personId, controller.signal), getPersonMovieCredits(Number(personId), controller.signal)])
+    Promise.all([
+      getPersonDetails(personId, controller.signal),
+      getPersonMovieCredits(Number(personId), controller.signal),
+    ])
       .then(([personData, movieCredits]) => {
         if (controller.signal.aborted || sequence !== requestSequence.current) return;
         if (!personData) throw new Error('Failed to fetch person details');
         setPerson(personData);
         setMovies(movieCredits);
       })
-      .catch(error => {
+      .catch((error) => {
         if (controller.signal.aborted || sequence !== requestSequence.current) return;
         console.error('Failed to fetch person data:', error);
         setError('Không thể tải thông tin người này');
@@ -63,9 +72,25 @@ export function usePersonDetail(personId?: string) {
   );
 
   return {
-    loading, person, movies, error, searchQuery, setSearchQuery,
-    selectedYears, setSelectedYears, sortBy, setSortBy, sortOrder, setSortOrder,
-    currentPage, setCurrentPage, showFilters, setShowFilters, availableYears,
-    filteredMovies, paginatedMovies, totalPages: Math.ceil(filteredMovies.length / ITEMS_PER_PAGE),
+    loading,
+    person,
+    movies,
+    error,
+    searchQuery,
+    setSearchQuery,
+    selectedYears,
+    setSelectedYears,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    currentPage,
+    setCurrentPage,
+    showFilters,
+    setShowFilters,
+    availableYears,
+    filteredMovies,
+    paginatedMovies,
+    totalPages: Math.ceil(filteredMovies.length / ITEMS_PER_PAGE),
   };
 }

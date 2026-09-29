@@ -31,12 +31,12 @@ export default defineConfig(() => {
           enabled: false,
           type: 'module',
         },
-      })
+      }),
     ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-      }
+      },
     },
     build: {
       minify: 'esbuild',
@@ -51,11 +51,11 @@ export default defineConfig(() => {
             firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
             charts: ['recharts'],
             lottie: ['lottie-react'],
-            utils: ['xlsx', 'file-saver']
-          }
-        }
+            utils: ['xlsx', 'file-saver'],
+          },
+        },
       },
-      chunkSizeWarningLimit: 2000
-    }
+      chunkSizeWarningLimit: 2000,
+    },
   };
 });

@@ -1,9 +1,23 @@
-import React, { lazy, Suspense, useRef, useState } from 'react';
-import { LogOut, Sun, Moon, BarChart2, Dice5, Folder, Download, ChevronDown, Search, CalendarDays, Home, User } from 'lucide-react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import {
+  LogOut,
+  Sun,
+  Moon,
+  BarChart2,
+  Dice5,
+  Folder,
+  Download,
+  ChevronDown,
+  Search,
+  CalendarDays,
+  Home,
+  User,
+  Users,
+} from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ProfileModal } from '@/features/profile/components/ProfileModal';
+
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { NAV_ITEMS, isNavItemActive } from './navigation';
@@ -12,6 +26,9 @@ import logoText from '@/assets/images/logo_text.png';
 
 const RandomPickerModal = lazy(() => import('@/features/movies/components/RandomPickerModal'));
 const ExportModal = lazy(() => import('@/features/movies/components/ExportModal'));
+const MemberSearchModal = lazy(
+  () => import('@/features/profile/components/user/MemberSearchModal'),
+);
 
 const NAV_ICONS: Record<string, React.ReactNode> = {
   '/': <Home size={18} strokeWidth={1.5} aria-hidden="true" />,
@@ -23,12 +40,18 @@ const NAV_ICONS: Record<string, React.ReactNode> = {
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const [isAvatarLoadFailed, setIsAvatarLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setIsAvatarLoadFailed(false);
+  }, [user?.photoURL]);
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isRandomOpen, setIsRandomOpen] = useState(false);
+  const [isMemberSearchOpen, setIsMemberSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
@@ -59,7 +82,10 @@ function Navbar() {
   return (
     <>
       <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
-        <nav aria-label="Điều hướng chính" className="pointer-events-auto w-full max-w-5xl bg-surface border border-border rounded-2xl sm:rounded-full px-4 md:px-5 h-14 flex items-center justify-between">
+        <nav
+          aria-label="Điều hướng chính"
+          className="pointer-events-auto w-full max-w-6xl bg-surface border border-border rounded-2xl sm:rounded-full px-3 md:px-4 h-14 flex items-center justify-between"
+        >
           <button
             type="button"
             className="flex items-center cursor-pointer rounded-control"
@@ -69,7 +95,7 @@ function Navbar() {
             <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
           </button>
 
-          <div className="hidden md:flex items-center justify-center flex-1 mx-8 space-x-1">
+          <div className="hidden md:flex items-center justify-center flex-1 mx-4 md:mx-6 space-x-1">
             {NAV_ITEMS.map((item) => {
               const active = isNavItemActive(location.pathname, item);
               return (
@@ -77,19 +103,26 @@ function Navbar() {
                   type="button"
                   key={item.to}
                   onClick={() => navigate(item.to)}
+                  aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors cursor-pointer ${
-                    active ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-primary/5 text-text-primary'
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl transition-colors cursor-pointer whitespace-nowrap ${
+                    active
+                      ? 'bg-primary/10 text-primary font-semibold'
+                      : 'hover:bg-primary/5 text-text-primary'
                   }`}
                 >
                   {NAV_ICONS[item.to]}
-                  <span>{item.label}</span>
+                  <span className="hidden xl:inline">{item.label}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
+            <IconButton label="Tìm thành viên" onClick={() => setIsMemberSearchOpen(true)}>
+              <Users size={20} strokeWidth={1.5} aria-hidden="true" />
+            </IconButton>
+
             <IconButton
               label="Chọn ngẫu nhiên phim"
               title="Chọn giúp tôi"
@@ -103,9 +136,11 @@ function Navbar() {
               title={theme === 'dark' ? 'Chế độ sáng' : 'Chế độ tối'}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             >
-              {theme === 'dark'
-                ? <Sun size={20} strokeWidth={1.5} aria-hidden="true" />
-                : <Moon size={20} strokeWidth={1.5} aria-hidden="true" />}
+              {theme === 'dark' ? (
+                <Sun size={20} strokeWidth={1.5} aria-hidden="true" />
+              ) : (
+                <Moon size={20} strokeWidth={1.5} aria-hidden="true" />
+              )}
             </IconButton>
 
             <div className="relative dropdown-container">
@@ -118,27 +153,44 @@ function Navbar() {
                 aria-controls="account-menu"
                 className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
               >
-                {user?.photoURL ? (
-                  <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                {user?.photoURL && !isAvatarLoadFailed ? (
+                  <img
+                    src={user.photoURL}
+                    alt="Avatar"
+                    onError={() => setIsAvatarLoadFailed(true)}
+                    className="w-7 h-7 rounded-full object-cover shrink-0"
+                  />
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold shrink-0">
                     {user?.displayName?.charAt(0) || 'U'}
                   </div>
                 )}
-                <ChevronDown size={14} className={`hidden md:block transition-colors shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  size={14}
+                  className={`hidden md:block transition-colors shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                />
               </button>
 
               {isDropdownOpen && (
-                <div id="account-menu" role="menu" className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden">
+                <div
+                  id="account-menu"
+                  role="menu"
+                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden"
+                >
                   <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
-                    <p className="text-sm font-semibold text-text-primary truncate">{user?.displayName}</p>
+                    <p className="text-sm font-semibold text-text-primary truncate">
+                      {user?.displayName}
+                    </p>
                   </div>
 
                   <div className="p-1.5 space-y-0.5">
                     <button
                       type="button"
                       role="menuitem"
-                      onClick={() => { setIsProfileOpen(true); closeDropdown(); }}
+                      onClick={() => {
+                        closeDropdown();
+                        navigate(user ? `/profile/${user.uid}` : '/');
+                      }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <User size={18} strokeWidth={1.5} />
@@ -147,7 +199,10 @@ function Navbar() {
                     <button
                       type="button"
                       role="menuitem"
-                      onClick={() => { setIsExportModalOpen(true); closeDropdown(); }}
+                      onClick={() => {
+                        setIsExportModalOpen(true);
+                        closeDropdown();
+                      }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <Download size={18} strokeWidth={1.5} />
@@ -187,13 +242,17 @@ function Navbar() {
         </Suspense>
       )}
 
+      {isMemberSearchOpen && (
+        <Suspense fallback={null}>
+          <MemberSearchModal isOpen onClose={() => setIsMemberSearchOpen(false)} />
+        </Suspense>
+      )}
+
       {isExportModalOpen && (
         <Suspense fallback={null}>
           <ExportModal isOpen onClose={() => setIsExportModalOpen(false)} movies={movies} />
         </Suspense>
       )}
-
-      <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </>
   );
 }

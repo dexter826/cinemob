@@ -42,7 +42,7 @@ function Loading({
   fullScreen = true,
   contain = false,
   text,
-  className = ''
+  className = '',
 }: LoadingProps) {
   const { setPageLoading } = useInitialLoadStore();
   const reducedMotion = useReducedMotion();
@@ -70,7 +70,11 @@ function Loading({
 
   if (fullScreen) {
     return (
-      <div role="status" aria-label={label} className="fixed inset-0 bg-background flex items-center justify-center z-100">
+      <div
+        role="status"
+        aria-label={label}
+        className="fixed inset-0 bg-background flex items-center justify-center z-100"
+      >
         {content}
       </div>
     );
@@ -78,7 +82,11 @@ function Loading({
 
   if (contain) {
     return (
-      <div role="status" aria-label={label} className="absolute inset-0 bg-background/50 flex items-center justify-center z-30">
+      <div
+        role="status"
+        aria-label={label}
+        className="absolute inset-0 bg-background/50 flex items-center justify-center z-30"
+      >
         {content}
       </div>
     );

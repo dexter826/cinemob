@@ -12,7 +12,7 @@ interface LayoutProps {
 
 function Layout({ children, appReady = true }: LayoutProps) {
   const { isInitialLoadComplete, isPageLoading } = useInitialLoadStore();
-  
+
   const showFooter = appReady && isInitialLoadComplete && !isPageLoading;
 
   return (
@@ -21,14 +21,13 @@ function Layout({ children, appReady = true }: LayoutProps) {
       <div className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh]">
         {children}
       </div>
-      
+
       {showFooter && <Footer />}
 
       <MobileBottomNav />
       <ScrollToTop />
     </div>
   );
-};
+}
 
 export default Layout;
-

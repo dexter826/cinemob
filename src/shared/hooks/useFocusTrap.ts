@@ -20,11 +20,16 @@ interface FocusTrapOptions {
 
 function getFocusable(container: HTMLElement): Array<HTMLElement> {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (el) => el.offsetParent !== null || el === document.activeElement
+    (el) => el.offsetParent !== null || el === document.activeElement,
   );
 }
 
-export function useFocusTrap({ active, containerRef, initialFocusRef, onEscape }: FocusTrapOptions) {
+export function useFocusTrap({
+  active,
+  containerRef,
+  initialFocusRef,
+  onEscape,
+}: FocusTrapOptions) {
   const tokenRef = React.useRef<symbol | null>(null);
   const savedFocusRef = React.useRef<HTMLElement | null>(null);
   const onEscapeRef = React.useRef(onEscape);
@@ -38,7 +43,8 @@ export function useFocusTrap({ active, containerRef, initialFocusRef, onEscape }
     const token = Symbol('focus-trap');
     tokenRef.current = token;
     trapStack.push(token);
-    savedFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    savedFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     const focusTarget = () => {
       const initial = initialFocusRef?.current;

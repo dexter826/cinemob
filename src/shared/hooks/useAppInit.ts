@@ -7,26 +7,39 @@ import useAlbumStore from '@/features/albums/stores/albumStore';
 import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
 import useReleaseCalendarStore from '@/features/calendar/stores/releaseCalendarStore';
 import { subscribeToAlbums } from '@/features/albums/services/albumService';
-import { syncPublicShareIfEnabled } from '@/features/share/services/shareService';
+import { syncMemberProfile } from '@/features/profile/services/memberProfileService';
+import { clearPublicProfileCache } from '@/features/profile/hooks/useUserSearch';
 import { Album, Movie } from '@/types';
 
 // Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
   const { user } = useAuth();
   const userId = user?.uid;
-  
-  const { initialize: initMovies, cleanup: cleanupMovies, initialized: moviesInitialized, movies: allMovies, loading: moviesLoading } = useMovieStore();
+
+  const {
+    initialize: initMovies,
+    cleanup: cleanupMovies,
+    initialized: moviesInitialized,
+    movies: allMovies,
+    loading: moviesLoading,
+  } = useMovieStore();
   const { markInitialLoadComplete } = useInitialLoadStore();
   const { showToast } = useToastStore();
 
-  const { albums, loading: albumsLoading, setAlbums, setLoading: setAlbumsLoading, setAlbumCoverMovies } = useAlbumStore();
+  const {
+    albums,
+    loading: albumsLoading,
+    setAlbums,
+    setLoading: setAlbumsLoading,
+    setAlbumCoverMovies,
+  } = useAlbumStore();
   const coverMovieIdsRef = useRef<Record<string, string>>({});
 
   const {
     setHistoryMovies,
     reset: resetRecommendations,
     initializeForUser: initRecs,
-    historyMovies
+    historyMovies,
   } = useRecommendationsStore();
 
   const {
@@ -72,7 +85,7 @@ export const useAppInit = () => {
     const updates: Record<string, Movie | null> = {};
     let hasUpdates = false;
 
-    albums.forEach(album => {
+    albums.forEach((album) => {
       const albumId = album.docId;
       if (!albumId) return;
 
@@ -90,7 +103,7 @@ export const useAppInit = () => {
         coverMovieIdsRef.current[albumId] = selectedMovieId;
       }
 
-      const movieData = allMovies.find(m => m.docId === selectedMovieId);
+      const movieData = allMovies.find((m) => m.docId === selectedMovieId);
       if (movieData) {
         updates[albumId] = movieData;
         hasUpdates = true;
@@ -116,8 +129,8 @@ export const useAppInit = () => {
 
   useEffect(() => {
     if (!userId) return;
-    const prevIds = historyMovies.map(m => m.docId ?? m.id).join('|');
-    const nextIds = allMovies.map(m => m.docId ?? m.id).join('|');
+    const prevIds = historyMovies.map((m) => m.docId ?? m.id).join('|');
+    const nextIds = allMovies.map((m) => m.docId ?? m.id).join('|');
     if (prevIds !== nextIds) setHistoryMovies(allMovies);
   }, [userId, allMovies, historyMovies, setHistoryMovies]);
 
@@ -131,15 +144,23 @@ export const useAppInit = () => {
 
     let cancelled = false;
     const timer = window.setTimeout(() => {
-      void syncPublicShareIfEnabled(
+      void syncMemberProfile(
         user.uid,
-        { displayName: user.displayName || 'CineMOB User', photoURL: user.photoURL || '' },
+        {
+          displayName: user.displayName || 'CineMOB User',
+          photoURL: user.photoURL || '',
+          email: user.email || '',
+        },
         allMovies,
-      ).catch((error) => {
-        if (cancelled) return;
-        console.error('Public share sync error:', error);
-        showToast('Không thể tự cập nhật danh sách chia sẻ', 'error');
-      });
+      )
+        .then((changed) => {
+          if (changed) clearPublicProfileCache();
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          console.error('Member profile sync error:', error);
+          showToast('Không thể tự cập nhật hồ sơ thành viên', 'error');
+        });
     }, 500);
 
     return () => {

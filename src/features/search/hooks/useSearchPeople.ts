@@ -21,7 +21,7 @@ export const useSearchPeople = (query: string, searchPage: number) => {
             setTotalPeoplePages(totalPages);
           }
         } catch (error) {
-          if (!ignore) console.error("Error searching people:", error);
+          if (!ignore) console.error('Error searching people:', error);
         } finally {
           if (!ignore) setLoading(false);
         }

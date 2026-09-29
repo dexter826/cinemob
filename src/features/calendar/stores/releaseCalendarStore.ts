@@ -36,7 +36,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
       upcomingEpisodes: [],
       loading: true,
       loadingEpisodes: false,
-      hasFetchedInitial: false
+      hasFetchedInitial: false,
     });
   },
   fetchUpcomingEpisodes: async (userId: string, movies: Movie[]) => {

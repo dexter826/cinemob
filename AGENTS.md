@@ -13,16 +13,17 @@ CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives i
 - `npx tsc --noEmit` runs TypeScript validation without producing files.
 - `npm run typecheck` is an alias for the above.
 - `npm run lint` runs ESLint over `src/` (0 errors, warnings capped at 200).
+- `npm run format` formats the whole repo with Prettier; `npm run format:check` only verifies.
 
 Copy `.env.example` to `.env` before exercising Firebase, TMDB, or OpenRouter-backed features.
 
 ## Coding Style & Naming Conventions
 
-Follow the existing TypeScript style: two-space indentation, single quotes, semicolons, and functional React components (no `React.FC`). Use `PascalCase` for components and pages (`MovieCard.tsx`), `camelCase` for functions and utilities, `useX` for hooks, and `xStore.ts` / `xService.ts` for Zustand stores and service modules. Keep rendering in components, reusable behavior in hooks, remote calls in services, and shared interfaces in `src/types`. ESLint (`eslint.config.js`) must stay green; avoid unrelated formatting churn.
+Follow the existing TypeScript style: two-space indentation, single quotes, semicolons, and functional React components (no `React.FC`). Formatting itself is enforced by Prettier (`.prettierrc.json`, print width 100); ESLint (`eslint.config.js`) owns code quality and contains no formatting rules, so the two never conflict. Use `PascalCase` for components and pages (`MovieCard.tsx`), `camelCase` for functions and utilities, `useX` for hooks, and `xStore.ts` / `xService.ts` for Zustand stores and service modules. Keep rendering in components, reusable behavior in hooks, remote calls in services, and shared interfaces in `src/types`. ESLint (`eslint.config.js`) must stay green; avoid unrelated formatting churn.
 
 ## Validation Guidelines
 
-Before opening a PR, run `npm run typecheck`, `npm run lint`, and `npm run build`, then perform the manual checks relevant to the affected scope.
+Before opening a PR, run `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`, then perform the manual checks relevant to the affected scope.
 
 ## Commit & Pull Request Guidelines
 

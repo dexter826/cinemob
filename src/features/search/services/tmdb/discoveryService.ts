@@ -3,28 +3,41 @@ import { TMDBMovieResult, TMDBPerson } from '@/types';
 import { decodeMovieResultPage, decodePerson } from './tmdbDecoders';
 
 // Lấy phim đang thịnh hành.
-export const getTrendingMovies = async (page: number = 1, signal?: AbortSignal): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
-  const data = await tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(`trending/all/week`, {
-    page: page.toString(),
-    language: 'vi-VN'
-  }, decodeMovieResultPage, signal);
-  
-  let results = (data?.results || []).filter((item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv');
+export const getTrendingMovies = async (
+  page: number = 1,
+  signal?: AbortSignal,
+): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
+  const data = await tmdbFetch<{ results: TMDBMovieResult[]; total_pages: number }>(
+    `trending/all/week`,
+    {
+      page: page.toString(),
+      language: 'vi-VN',
+    },
+    decodeMovieResultPage,
+    signal,
+  );
+
+  let results = (data?.results || []).filter(
+    (item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv',
+  );
   results = results.slice(0, 22);
 
   return { results, totalPages: data?.total_pages || 1 };
 };
 
 // Khám phá phim với bộ lọc.
-export const getDiscoverMovies = async (params: {
-  page?: number;
-  genres?: string[];
-  year?: string;
-  country?: string;
-  rating?: string;
-  sortBy?: string;
-  type?: 'all' | 'movie' | 'tv';
-} = {}, signal?: AbortSignal): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
+export const getDiscoverMovies = async (
+  params: {
+    page?: number;
+    genres?: string[];
+    year?: string;
+    country?: string;
+    rating?: string;
+    sortBy?: string;
+    type?: 'all' | 'movie' | 'tv';
+  } = {},
+  signal?: AbortSignal,
+): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!API_KEY) return { results: [], totalPages: 0 };
 
   const page = params.page || 1;
@@ -39,7 +52,8 @@ export const getDiscoverMovies = async (params: {
       language: 'vi-VN',
     };
     if (params.genres?.length) p.with_genres = params.genres.join(',');
-    if (params.year) p[type === 'movie' ? 'primary_release_year' : 'first_air_date_year'] = params.year;
+    if (params.year)
+      p[type === 'movie' ? 'primary_release_year' : 'first_air_date_year'] = params.year;
     if (params.country) p.with_origin_country = params.country;
     if (params.rating) {
       p['vote_average.gte'] = params.rating;
@@ -53,21 +67,26 @@ export const getDiscoverMovies = async (params: {
     let totalPages = 1;
 
     if (params.type === 'movie') {
-      const data = await tmdbFetch(`discover/movie`, buildParams('movie'), decodeMovieResultPage, signal);
-      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'movie' as const }));
+      const data = await tmdbFetch(
+        `discover/movie`,
+        buildParams('movie'),
+        decodeMovieResultPage,
+        signal,
+      );
+      combinedResults = (data?.results || []).map((i) => ({ ...i, media_type: 'movie' as const }));
       totalPages = data?.total_pages || 1;
     } else if (params.type === 'tv') {
       const data = await tmdbFetch(`discover/tv`, buildParams('tv'), decodeMovieResultPage, signal);
-      combinedResults = (data?.results || []).map(i => ({ ...i, media_type: 'tv' as const }));
+      combinedResults = (data?.results || []).map((i) => ({ ...i, media_type: 'tv' as const }));
       totalPages = data?.total_pages || 1;
     } else {
       const [movieData, tvData] = await Promise.all([
         tmdbFetch(`discover/movie`, buildParams('movie'), decodeMovieResultPage, signal),
-        tmdbFetch(`discover/tv`, buildParams('tv'), decodeMovieResultPage, signal)
+        tmdbFetch(`discover/tv`, buildParams('tv'), decodeMovieResultPage, signal),
       ]);
       combinedResults = [
-        ...(movieData?.results || []).map(i => ({ ...i, media_type: 'movie' as const })),
-        ...(tvData?.results || []).map(i => ({ ...i, media_type: 'tv' as const }))
+        ...(movieData?.results || []).map((i) => ({ ...i, media_type: 'movie' as const })),
+        ...(tvData?.results || []).map((i) => ({ ...i, media_type: 'tv' as const })),
       ];
       totalPages = Math.max(movieData?.total_pages || 1, tvData?.total_pages || 1);
     }
@@ -92,24 +111,37 @@ export const getDiscoverMovies = async (params: {
 
     return { results: combinedResults, totalPages };
   } catch (error) {
-    console.error("Failed to discover movies:", error);
+    console.error('Failed to discover movies:', error);
     return { results: [], totalPages: 0 };
   }
 };
 
 // Lấy thông tin chi tiết nghệ sĩ từ TMDB.
-export const getPersonDetails = async (personId: number | string, signal?: AbortSignal): Promise<TMDBPerson | null> => {
+export const getPersonDetails = async (
+  personId: number | string,
+  signal?: AbortSignal,
+): Promise<TMDBPerson | null> => {
   try {
-    const personData = await tmdbFetch<TMDBPerson>(`person/${personId}`, {
-      language: 'vi'
-    }, decodePerson, signal);
+    const personData = await tmdbFetch<TMDBPerson>(
+      `person/${personId}`,
+      {
+        language: 'vi',
+      },
+      decodePerson,
+      signal,
+    );
 
     if (!personData) return null;
 
     if (!personData.biography) {
-      const englishData = await tmdbFetch<TMDBPerson>(`person/${personId}`, {
-        language: 'en'
-      }, decodePerson, signal);
+      const englishData = await tmdbFetch<TMDBPerson>(
+        `person/${personId}`,
+        {
+          language: 'en',
+        },
+        decodePerson,
+        signal,
+      );
       if (englishData?.biography) {
         personData.biography = englishData.biography;
       }

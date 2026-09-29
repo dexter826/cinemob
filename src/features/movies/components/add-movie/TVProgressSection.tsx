@@ -21,7 +21,7 @@ function TVProgressSection({
   setCurrentEpisode,
   totalEpisodes,
   episodesPerSeason,
-  maxSeasons
+  maxSeasons,
 }: TVProgressSectionProps) {
   return (
     <div className="bg-primary/5 border border-primary/20 rounded-3xl p-5 space-y-4 shadow-sm">
@@ -61,7 +61,9 @@ function TVProgressSection({
               >
                 -
               </button>
-              <div className="flex-1 text-center font-bold text-sm text-text-main">{currentSeason}</div>
+              <div className="flex-1 text-center font-bold text-sm text-text-main">
+                {currentSeason}
+              </div>
               <button
                 type="button"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
@@ -72,7 +74,7 @@ function TVProgressSection({
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-text-secondary ml-1">Tập (Episode)</label>
+            <label className="text-xs font-semibold text-text-secondary ml-1">Tập</label>
             <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default">
               <button
                 type="button"
@@ -81,7 +83,9 @@ function TVProgressSection({
               >
                 -
               </button>
-              <div className="flex-1 text-center font-bold text-sm text-text-main">{currentEpisode}</div>
+              <div className="flex-1 text-center font-bold text-sm text-text-main">
+                {currentEpisode}
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -99,11 +103,12 @@ function TVProgressSection({
 
       {totalEpisodes > 0 && !isCompleted && (
         <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-primary/20">
-          Tổng {totalEpisodes} tập • Mùa {currentSeason}: {episodesPerSeason[currentSeason] || '?'} tập
+          Tổng {totalEpisodes} tập • Mùa {currentSeason}: {episodesPerSeason[currentSeason] || '?'}{' '}
+          tập
         </div>
       )}
     </div>
   );
-};
+}
 
 export default TVProgressSection;

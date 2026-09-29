@@ -20,27 +20,30 @@ function EpisodeList({
   loadingEpisodes,
   displayedEpisodes,
   episodesByDate,
-  handleSeriesClick
+  handleSeriesClick,
 }: EpisodeListProps) {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('vi-VN', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('vi-VN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
 
   return (
-    <div className={viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'}>
-      <div className={`bg-surface border border-border rounded-3xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}>
+    <div
+      className={
+        viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'
+      }
+    >
+      <div
+        className={`bg-surface border border-border rounded-3xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}
+      >
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
           <h3 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
-            {selectedDate
-              ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}`
-              : 'Sắp chiếu'
-            }
+            {selectedDate ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}` : 'Sắp chiếu'}
           </h3>
           {selectedDate && (
             <button
@@ -56,7 +59,10 @@ function EpisodeList({
         {loadingEpisodes ? (
           <div className="space-y-4 flex-1">
             {Array.from({ length: 4 }).map((_, idx) => (
-              <div key={idx} className="flex gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl animate-pulse">
+              <div
+                key={idx}
+                className="flex gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl animate-pulse"
+              >
                 <div className="w-12 h-16 sm:w-14 sm:h-20 bg-black/10 dark:bg-white/10 rounded-xl" />
                 <div className="flex-1 space-y-3 py-1">
                   <div className="h-4 bg-black/10 dark:bg-white/10 rounded-lg w-3/4" />
@@ -71,10 +77,7 @@ function EpisodeList({
               <Info size={32} className="text-text-muted" />
             </div>
             <p className="text-text-secondary font-semibold text-xs">
-              {selectedDate 
-                ? 'Không có tập phim nào'
-                : 'Chưa có lịch phát sóng'
-              }
+              {selectedDate ? 'Không có tập phim nào' : 'Chưa có lịch phát sóng'}
             </p>
           </div>
         ) : (
@@ -136,6 +139,6 @@ function EpisodeList({
       </div>
     </div>
   );
-};
+}
 
 export default EpisodeList;

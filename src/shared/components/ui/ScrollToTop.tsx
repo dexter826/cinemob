@@ -31,7 +31,7 @@ function ScrollToTop() {
     const observer = new MutationObserver(checkModal);
     observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['style']
+      attributeFilter: ['style'],
     });
 
     return () => observer.disconnect();
@@ -40,7 +40,7 @@ function ScrollToTop() {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   };
 
@@ -58,6 +58,6 @@ function ScrollToTop() {
       )}
     </>
   );
-};
+}
 
 export default ScrollToTop;

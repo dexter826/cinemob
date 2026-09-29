@@ -1,17 +1,25 @@
 import type { Movie } from '@/types';
 
 export function normalizeVietnamese(value: string): string {
-  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
-export function filterAvailableAlbumMovies(movies: Movie[], selectedIds: string[], query: string): Movie[] {
+export function filterAvailableAlbumMovies(
+  movies: Movie[],
+  selectedIds: string[],
+  query: string,
+): Movie[] {
   const selected = new Set(selectedIds);
-  const available = movies.filter(movie => movie.docId && !selected.has(movie.docId));
+  const available = movies.filter((movie) => movie.docId && !selected.has(movie.docId));
   const normalizedQuery = normalizeVietnamese(query.trim());
   if (!normalizedQuery) return available;
-  return available.filter(movie =>
-    normalizeVietnamese(movie.title || '').includes(normalizedQuery) ||
-    normalizeVietnamese(movie.title_vi || '').includes(normalizedQuery),
+  return available.filter(
+    (movie) =>
+      normalizeVietnamese(movie.title || '').includes(normalizedQuery) ||
+      normalizeVietnamese(movie.title_vi || '').includes(normalizedQuery),
   );
 }
 

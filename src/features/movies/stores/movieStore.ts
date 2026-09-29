@@ -30,7 +30,7 @@ const useMovieStore = create<MovieState>((set, get) => ({
       set({
         movies,
         loading: false,
-        initialized: true
+        initialized: true,
       });
     });
 
@@ -46,12 +46,12 @@ const useMovieStore = create<MovieState>((set, get) => ({
         activeUid: null,
         movies: [],
         loading: true,
-        initialized: false
+        initialized: false,
       });
     }
   },
 
-  setMovies: (movies) => set({ movies })
+  setMovies: (movies) => set({ movies }),
 }));
 
 export default useMovieStore;

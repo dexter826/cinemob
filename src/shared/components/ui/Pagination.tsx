@@ -60,7 +60,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
       {/* Desktop Pagination */}
       <div className="hidden md:flex items-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
           const isActive = currentPage === page;
           const showPage =
             page === 1 ||
@@ -83,10 +83,11 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
               key={page}
               type="button"
               onClick={() => handlePageChange(page)}
-              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold transition-colors cursor-pointer ${isActive
-                ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
-                }`}
+              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold transition-colors cursor-pointer ${
+                isActive
+                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                  : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
+              }`}
             >
               {page}
             </button>
@@ -123,6 +124,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       </button>
     </div>
   );
-};
+}
 
 export default Pagination;

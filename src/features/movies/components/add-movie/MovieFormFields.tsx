@@ -57,7 +57,7 @@ function MovieFormFields({
   setSelectedGenreIds,
   isAnimating,
   errors,
-  refs
+  refs,
 }: MovieFormFieldsProps) {
   return (
     <div className="space-y-5">
@@ -72,7 +72,7 @@ function MovieFormFields({
             <CustomDropdown
               options={[
                 { value: 'movie', label: 'Phim lẻ' },
-                { value: 'tv', label: 'TV Series' },
+                { value: 'tv', label: 'Series' },
               ]}
               value={manualMediaType}
               onChange={(value) => {
@@ -83,7 +83,7 @@ function MovieFormFields({
             />
           ) : (
             <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-semibold text-text-secondary">
-              {isTVSeries ? 'TV Series' : 'Phim lẻ'}
+              {isTVSeries ? 'Series' : 'Phim lẻ'}
             </div>
           )}
         </div>
@@ -94,7 +94,10 @@ function MovieFormFields({
             <Globe size={14} className="text-primary" aria-hidden="true" />
             Quốc gia
           </label>
-          <div ref={refs.country} className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}>
+          <div
+            ref={refs.country}
+            className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
+          >
             <CustomDropdown
               options={countryOptions}
               value={formData.country}
@@ -112,7 +115,10 @@ function MovieFormFields({
             <Calendar size={14} className="text-primary" aria-hidden="true" />
             Ngày phát hành
           </label>
-          <div ref={refs.releaseDate} className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}>
+          <div
+            ref={refs.releaseDate}
+            className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
+          >
             <CustomDatePicker
               value={formData.releaseDate}
               onChange={(val) => {
@@ -126,21 +132,27 @@ function MovieFormFields({
         {/* Runtime / Seasons */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
-            {isTVSeries ? <Tv size={14} className="text-primary" aria-hidden="true" /> : <Clock size={14} className="text-primary" aria-hidden="true" />}
+            {isTVSeries ? (
+              <Tv size={14} className="text-primary" aria-hidden="true" />
+            ) : (
+              <Clock size={14} className="text-primary" aria-hidden="true" />
+            )}
             {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
-          <div className={`transition-transform duration-300 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}>
+          <div
+            className={`transition-transform duration-300 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
+          >
             <input
               ref={isTVSeries ? refs.seasons : refs.runtime}
               type="number"
               required
               disabled={!isManualMode}
               value={isTVSeries ? formData.seasons : formData.runtime}
-              onChange={e => {
+              onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
               className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-semibold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
-              placeholder={isTVSeries ? "Số mùa…" : "Phút…"}
+              placeholder={isTVSeries ? 'Số mùa…' : 'Phút…'}
             />
           </div>
         </div>
@@ -153,13 +165,16 @@ function MovieFormFields({
           Thể loại phim
         </label>
         <MultiSelectDropdown
-          options={genreOptions.map(g => ({ value: g.id, label: GENRE_TRANSLATIONS[g.name] || g.name }))}
+          options={genreOptions.map((g) => ({
+            value: g.id,
+            label: GENRE_TRANSLATIONS[g.name] || g.name,
+          }))}
           values={selectedGenreIds}
           onChange={(values) => {
             setSelectedGenreIds(values as number[]);
             const genreNames = genreOptions
-              .filter(g => values.includes(g.id))
-              .map(g => g.name)
+              .filter((g) => values.includes(g.id))
+              .map((g) => g.name)
               .join(', ');
             setFormData((prev) => ({ ...prev, genres: genreNames }));
           }}
@@ -179,13 +194,13 @@ function MovieFormFields({
         <textarea
           rows={5}
           value={formData.content}
-          onChange={e => setFormData({ ...formData, content: e.target.value })}
+          onChange={(e) => setFormData({ ...formData, content: e.target.value })}
           className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors resize-none"
           placeholder="Giới thiệu ngắn về cốt truyện..."
         />
       </div>
     </div>
   );
-};
+}
 
 export default MovieFormFields;

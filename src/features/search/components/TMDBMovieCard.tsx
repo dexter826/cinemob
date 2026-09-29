@@ -1,5 +1,9 @@
 import { TMDBMovieResult } from '@/types';
-import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import {
+  getMainTitleForTMDB,
+  getSubTitleForTMDB,
+  getTMDBImageUrl,
+} from '@/features/movies/utils/movieUtils';
 import { Film, Tv, Bookmark, Star, Calendar, X } from 'lucide-react';
 
 interface TMDBMovieCardProps {
@@ -20,9 +24,7 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <article
-      className="group relative bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300"
-    >
+    <article className="group relative bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300">
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <button
           type="button"
@@ -42,9 +44,11 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
 
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
           {status && (
-            <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold text-white ${
-              status === 'history' ? 'bg-success' : 'bg-primary'
-            }`}>
+            <div
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold text-white ${
+                status === 'history' ? 'bg-success' : 'bg-primary'
+              }`}
+            >
               <Bookmark size={10} className="fill-white" strokeWidth={1.5} aria-hidden="true" />
               <span>{status === 'history' ? 'Đã xem' : 'Sẽ xem'}</span>
             </div>
@@ -58,7 +62,11 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
           )}
 
           <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-white">
-            {isTV ? <Tv size={10} className="text-info" strokeWidth={1.5} aria-hidden="true" /> : <Film size={10} className="text-success" strokeWidth={1.5} aria-hidden="true" />}
+            {isTV ? (
+              <Tv size={10} className="text-info" strokeWidth={1.5} aria-hidden="true" />
+            ) : (
+              <Film size={10} className="text-success" strokeWidth={1.5} aria-hidden="true" />
+            )}
             <span>{isTV ? 'TV' : 'Phim'}</span>
           </div>
         </div>
@@ -77,10 +85,13 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
       </div>
 
       <div className="p-3 space-y-1">
-        <h3 className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-main group-hover:text-primary transition-colors duration-200" title={mainTitle}>
+        <h3
+          className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-main group-hover:text-primary transition-colors duration-200"
+          title={mainTitle}
+        >
           {mainTitle}
         </h3>
-        
+
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs text-text-muted truncate flex-1 italic" title={subTitle}>
             {subTitle || '\u00A0'}
@@ -101,6 +112,6 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
       </div>
     </article>
   );
-};
+}
 
 export default TMDBMovieCard;

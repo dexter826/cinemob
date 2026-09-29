@@ -35,21 +35,21 @@ const INITIAL_FILTERS: SearchFormFilters = {
 // Hook điều phối chính cho trang Tìm kiếm.
 export const useSearch = (user: User | null) => {
   const { openAddModal } = useAddMovieStore();
-  const { 
-    aiRecommendations, 
-    trendingMovies, 
-    isAiLoading, 
+  const {
+    aiRecommendations,
+    trendingMovies,
+    isAiLoading,
     isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
-    historyMovies
+    historyMovies,
   } = useRecommendationsStore();
 
   const { movies: savedMovies } = useMovieStore();
 
   const filteredAiRecommendations = useMemo(() => {
-    const savedIds = new Set(savedMovies.map(m => m.id.toString()));
-    return aiRecommendations.filter(m => !savedIds.has(m.id.toString()));
+    const savedIds = new Set(savedMovies.map((m) => m.id.toString()));
+    return aiRecommendations.filter((m) => !savedIds.has(m.id.toString()));
   }, [aiRecommendations, savedMovies]);
 
   const [filters, setFilters] = useState<SearchFormFilters>(INITIAL_FILTERS);
@@ -57,12 +57,12 @@ export const useSearch = (user: User | null) => {
   const [suggestions, setSuggestions] = useState<TMDBMovieResult[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [initialLoading, setInitialLoading] = useState(true);
 
   const updateFilter = <K extends keyof SearchFormFilters>(key: K, value: SearchFormFilters[K]) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
     if (key === 'query' && (value as string).trim() === '') {
       setSubmittedQuery('');
       setSuggestions([]);
@@ -85,7 +85,7 @@ export const useSearch = (user: User | null) => {
           setSuggestions(data.slice(0, 6));
           setShowSuggestions(true);
         } catch (error) {
-          console.error("Error fetching suggestions:", error);
+          console.error('Error fetching suggestions:', error);
         } finally {
           setIsSuggesting(false);
         }
@@ -102,35 +102,46 @@ export const useSearch = (user: User | null) => {
   }, []);
 
   useEffect(() => {
-    if (user?.uid && aiRecommendations.length === 0 && trendingMovies.length === 0 && !isAiLoading) {
+    if (
+      user?.uid &&
+      aiRecommendations.length === 0 &&
+      trendingMovies.length === 0 &&
+      !isAiLoading
+    ) {
       refreshRecommendations(user.uid);
     }
-  }, [user?.uid, aiRecommendations.length, trendingMovies.length, isAiLoading, refreshRecommendations]);
+  }, [
+    user?.uid,
+    aiRecommendations.length,
+    trendingMovies.length,
+    isAiLoading,
+    refreshRecommendations,
+  ]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [filters.type, filters.year, filters.country, filters.sortBy]);
 
-  const { 
-    results, 
-    totalSearchPages, 
-    isSearchLoading, 
-    discoverMovies, 
-    totalDiscoverPages, 
-    isDiscoverLoading, 
-    isSearchMode 
+  const {
+    results,
+    totalSearchPages,
+    isSearchLoading,
+    discoverMovies,
+    totalDiscoverPages,
+    isDiscoverLoading,
+    isSearchMode,
   } = useSearchTMDB(submittedQuery, currentPage, filters);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
 
   const filteredResults = useMemo(() => {
-    let result = displayMovies.filter(movie => {
+    let result = displayMovies.filter((movie) => {
       if (filters.type !== 'all' && movie.media_type !== filters.type) return false;
-      
+
       if (isSearchMode && filters.country) {
         if (!movie.origin_country || !movie.origin_country.includes(filters.country)) return false;
       }
-      
+
       return true;
     });
 
@@ -177,16 +188,19 @@ export const useSearch = (user: User | null) => {
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     openAddModal({
       movie: movie,
-      mediaType: (movie.media_type === 'tv' || movie.media_type === 'movie') 
-        ? movie.media_type 
-        : (filters.type === 'tv' ? 'tv' : 'movie'),
+      mediaType:
+        movie.media_type === 'tv' || movie.media_type === 'movie'
+          ? movie.media_type
+          : filters.type === 'tv'
+            ? 'tv'
+            : 'movie',
     });
     setShowSuggestions(false);
   };
 
   const getMovieStatus = (movieId: number) => {
-    const movie = savedMovies.find(m => m.id === movieId);
-    return movie ? (movie.status || 'history') : null;
+    const movie = savedMovies.find((m) => m.id === movieId);
+    return movie ? movie.status || 'history' : null;
   };
 
   return {
@@ -197,14 +211,14 @@ export const useSearch = (user: User | null) => {
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage,
     discoverMovies,
-    aiRecommendations: filteredAiRecommendations, 
-    trendingMovies, 
-    isAiLoading, 
+    aiRecommendations: filteredAiRecommendations,
+    trendingMovies,
+    isAiLoading,
     isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
     filteredResults,
-    handleSelectMovie, 
+    handleSelectMovie,
     getMovieStatus,
     handleClear: () => {
       setFilters(INITIAL_FILTERS);
@@ -213,13 +227,13 @@ export const useSearch = (user: User | null) => {
       setCurrentPage(1);
     },
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
-    watchedMoviesCount: historyMovies.filter(m => (m.status || 'history') === 'history').length,
+    watchedMoviesCount: historyMovies.filter((m) => (m.status || 'history') === 'history').length,
     // Search states
     submittedQuery,
     suggestions,
     isSuggesting,
     showSuggestions,
     setShowSuggestions,
-    handleSearch
+    handleSearch,
   };
 };

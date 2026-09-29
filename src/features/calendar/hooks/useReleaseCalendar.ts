@@ -8,19 +8,14 @@ import {
   getNotificationPermission,
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
-  isSubscribedToPush
+  isSubscribedToPush,
 } from '../services/pushNotificationService';
 import { UpcomingEpisode } from '@/types';
 
 // Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { openDetailModal } = useMovieDetailStore();
-  const {
-    movies,
-    upcomingEpisodes,
-    loading,
-    loadingEpisodes
-  } = useReleaseCalendarStore();
+  const { movies, upcomingEpisodes, loading, loadingEpisodes } = useReleaseCalendarStore();
   const { showAlert } = useAlertStore();
   const { showToast } = useToastStore();
 
@@ -31,13 +26,14 @@ export const useReleaseCalendar = () => {
   const [pushSupported, setPushSupported] = useState(false);
   const [pushSubscribed, setPushSubscribed] = useState(false);
   const [pushLoading, setPushLoading] = useState(false);
-  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission>('default');
 
   useEffect(() => {
     const checkPushStatus = async () => {
       const usable = isPushUsable();
       setPushSupported(usable);
-      
+
       if (usable) {
         setNotificationPermission(getNotificationPermission());
         const subscribed = await isSubscribedToPush();
@@ -51,9 +47,10 @@ export const useReleaseCalendar = () => {
     if (!pushSupported) {
       showAlert({
         title: 'Thông báo',
-        message: 'Tính năng thông báo đẩy chỉ khả dụng trên mobile khi ứng dụng được cài đặt dưới dạng PWA (Thêm vào Màn hình chính)',
+        message:
+          'Tính năng thông báo đẩy chỉ khả dụng trên mobile khi ứng dụng được cài đặt dưới dạng PWA (Thêm vào Màn hình chính)',
         type: 'info',
-        onConfirm: () => {}
+        onConfirm: () => {},
       });
       return;
     }
@@ -68,7 +65,10 @@ export const useReleaseCalendar = () => {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          showToast('Đã bật thông báo! Bạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.', 'success');
+          showToast(
+            'Đã bật thông báo! Bạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.',
+            'success',
+          );
         }
       }
       setNotificationPermission(getNotificationPermission());
@@ -85,11 +85,11 @@ export const useReleaseCalendar = () => {
   };
 
   const tvSeries = useMemo(() => {
-    return movies.filter(m => m.media_type === 'tv' && m.source === 'tmdb');
+    return movies.filter((m) => m.media_type === 'tv' && m.source === 'tmdb');
   }, [movies]);
 
   const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentDate(prev => {
+    setCurrentDate((prev) => {
       const newDate = new Date(prev);
       if (direction === 'prev') {
         newDate.setMonth(newDate.getMonth() - 1);
@@ -105,22 +105,25 @@ export const useReleaseCalendar = () => {
     setSelectedDate(new Date());
   };
 
-  const getEpisodesForDate = useCallback((date: Date) => {
-    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    return upcomingEpisodes.filter(ep => ep.episode.air_date === dateStr);
-  }, [upcomingEpisodes]);
+  const getEpisodesForDate = useCallback(
+    (date: Date) => {
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      return upcomingEpisodes.filter((ep) => ep.episode.air_date === dateStr);
+    },
+    [upcomingEpisodes],
+  );
 
   const displayedEpisodes = useMemo(() => {
     if (selectedDate) {
       return getEpisodesForDate(selectedDate);
     }
-    
+
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const thirtyDaysLater = new Date();
     thirtyDaysLater.setDate(now.getDate() + 30);
-    
-    return upcomingEpisodes.filter(ep => {
+
+    return upcomingEpisodes.filter((ep) => {
       const airDate = new Date(ep.episode.air_date);
       return airDate >= now && airDate <= thirtyDaysLater;
     });
@@ -128,7 +131,7 @@ export const useReleaseCalendar = () => {
 
   const episodesByDate = useMemo(() => {
     const grouped: { [key: string]: UpcomingEpisode[] } = {};
-    displayedEpisodes.forEach(ep => {
+    displayedEpisodes.forEach((ep) => {
       if (!grouped[ep.episode.air_date]) {
         grouped[ep.episode.air_date] = [];
       }
@@ -138,7 +141,7 @@ export const useReleaseCalendar = () => {
   }, [displayedEpisodes]);
 
   const handleSeriesClick = (episode: UpcomingEpisode) => {
-    const movie = movies.find(m => Number(m.id) === episode.seriesId);
+    const movie = movies.find((m) => Number(m.id) === episode.seriesId);
     if (movie) {
       openDetailModal(movie);
     }
@@ -151,8 +154,10 @@ export const useReleaseCalendar = () => {
     loadingEpisodes,
     tvSeries,
     currentDate,
-    selectedDate, setSelectedDate,
-    viewMode, setViewMode,
+    selectedDate,
+    setSelectedDate,
+    viewMode,
+    setViewMode,
     pushSupported,
     pushSubscribed,
     pushLoading,
@@ -163,6 +168,6 @@ export const useReleaseCalendar = () => {
     getEpisodesForDate,
     displayedEpisodes,
     episodesByDate,
-    handleSeriesClick
+    handleSeriesClick,
   };
 };

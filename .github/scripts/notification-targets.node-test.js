@@ -15,7 +15,10 @@ test('reads only the push subscription document owned by the requested user', as
               return {
                 exists: true,
                 id,
-                data: () => ({ endpoint: 'https://push.example', keys: { auth: 'a', p256dh: 'p' } }),
+                data: () => ({
+                  endpoint: 'https://push.example',
+                  keys: { auth: 'a', p256dh: 'p' },
+                }),
               };
             },
           };
@@ -26,13 +29,18 @@ test('reads only the push subscription document owned by the requested user', as
 
   await assert.doesNotReject(async () => {
     const result = await getPushSubscriptionForUser(db, 'user-a');
-    assert.deepEqual(result, [{
-      id: 'user-a',
-      endpoint: 'https://push.example',
-      keys: { auth: 'a', p256dh: 'p' },
-    }]);
+    assert.deepEqual(result, [
+      {
+        id: 'user-a',
+        endpoint: 'https://push.example',
+        keys: { auth: 'a', p256dh: 'p' },
+      },
+    ]);
   });
-  assert.deepEqual(calls, [['collection', 'push_subscriptions'], ['doc', 'user-a']]);
+  assert.deepEqual(calls, [
+    ['collection', 'push_subscriptions'],
+    ['doc', 'user-a'],
+  ]);
 });
 
 test('returns no target for a missing or malformed subscription', async () => {

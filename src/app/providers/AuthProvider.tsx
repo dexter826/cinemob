@@ -29,8 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Error signing in", error);
-      alert("Failed to sign in. Check console for details.");
+      console.error('Error signing in', error);
+      alert('Failed to sign in. Check console for details.');
     }
   }, []);
 
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signOut(auth);
     } catch (error) {
-      console.error("Error signing out", error);
+      console.error('Error signing out', error);
     }
   }, []);
 
@@ -46,18 +46,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = useCallback(async () => {
     if (auth.currentUser) {
       await auth.currentUser.reload();
-      setUser(Object.assign(Object.create(Object.getPrototypeOf(auth.currentUser)), auth.currentUser));
+      setUser(
+        Object.assign(Object.create(Object.getPrototypeOf(auth.currentUser)), auth.currentUser),
+      );
     }
   }, []);
 
   const value = useMemo(
     () => ({ user, loading, signInWithGoogle, logout, refreshUser }),
-    [user, loading, signInWithGoogle, logout, refreshUser]
+    [user, loading, signInWithGoogle, logout, refreshUser],
   );
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

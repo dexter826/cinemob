@@ -26,7 +26,7 @@ export function useAlbumDetail(albumId?: string) {
   useEffect(() => {
     if (!albumId || !user) return;
     setLoading(true);
-    const unsubscribe = subscribeToAlbum(user.uid, albumId, data => {
+    const unsubscribe = subscribeToAlbum(user.uid, albumId, (data) => {
       setAlbum(data);
       if (data) setName(data.name);
       setLoading(false);
@@ -35,14 +35,14 @@ export function useAlbumDetail(albumId?: string) {
   }, [albumId, user]);
 
   const watchedMovies = useMemo(
-    () => movies.filter(movie => (movie.status || 'history') === 'history'),
+    () => movies.filter((movie) => (movie.status || 'history') === 'history'),
     [movies],
   );
 
   const albumMovies = useMemo(() => {
     if (!album) return [];
     const ids = new Set(album.movieDocIds || []);
-    return watchedMovies.filter(movie => movie.docId && ids.has(movie.docId));
+    return watchedMovies.filter((movie) => movie.docId && ids.has(movie.docId));
   }, [album, watchedMovies]);
 
   const availableMovies = useMemo(
@@ -98,7 +98,7 @@ export function useAlbumDetail(albumId?: string) {
   const handleRemoveMovie = async (movie: Movie) => {
     if (!album?.docId || !movie.docId) return;
     try {
-      const newIds = (album.movieDocIds || []).filter(id => id !== movie.docId);
+      const newIds = (album.movieDocIds || []).filter((id) => id !== movie.docId);
       await updateAlbum(album.docId, { movieDocIds: newIds });
       showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS, 'info');
     } catch {

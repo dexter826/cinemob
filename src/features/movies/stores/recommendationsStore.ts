@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { TMDBMovieResult, Movie } from '@/types';
 import { fetchAIRecommendations, fetchTrendingFallback } from '../services/recommendationService';
-import { getUserData, updatePreviouslyRecommendedTitles } from '@/features/auth/services/userService';
+import {
+  getUserData,
+  updatePreviouslyRecommendedTitles,
+} from '@/features/auth/services/userService';
 
 const pendingRequests = new Map<string, { requestId: number; promise: Promise<void> }>();
 let userGeneration = 0;
@@ -102,18 +105,27 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
       set({ isTrendingLoading: true });
       try {
         const trending = await fetchTrendingFallback();
-        if (trending && get().activeUserId === userId && generation === userGeneration && requestId === trendingRequestId) {
+        if (
+          trending &&
+          get().activeUserId === userId &&
+          generation === userGeneration &&
+          requestId === trendingRequestId
+        ) {
           set({ trendingMovies: trending });
         }
       } catch (e) {
-        console.error("Failed to fetch trending movies:", e);
+        console.error('Failed to fetch trending movies:', e);
       } finally {
-        if (get().activeUserId === userId && generation === userGeneration && requestId === trendingRequestId) {
+        if (
+          get().activeUserId === userId &&
+          generation === userGeneration &&
+          requestId === trendingRequestId
+        ) {
           set({ isTrendingLoading: false });
         }
       }
     }
-    
+
     const pendingKey = `ai_${userId}`;
     if (pendingRequests.has(pendingKey) && !forceRefresh) {
       return pendingRequests.get(pendingKey)?.promise;
@@ -129,20 +141,34 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
           userId,
           currentState.historyMovies,
           currentState.previouslyRecommendedTitles,
-          forceRefresh
+          forceRefresh,
         );
 
-        if (aiResult && get().activeUserId === userId && generation === userGeneration && requestId === aiRequestId) {
-          const newRecTitles = aiResult.aiRecommendations.map(m => m.title).filter((t): t is string => typeof t === 'string');
-          set(state => ({
+        if (
+          aiResult &&
+          get().activeUserId === userId &&
+          generation === userGeneration &&
+          requestId === aiRequestId
+        ) {
+          const newRecTitles = aiResult.aiRecommendations
+            .map((m) => m.title)
+            .filter((t): t is string => typeof t === 'string');
+          set((state) => ({
             aiRecommendations: aiResult.aiRecommendations,
-            previouslyRecommendedTitles: new Set([...Array.from(state.previouslyRecommendedTitles), ...newRecTitles])
+            previouslyRecommendedTitles: new Set([
+              ...Array.from(state.previouslyRecommendedTitles),
+              ...newRecTitles,
+            ]),
           }));
         }
       } catch (error) {
-        console.error("AI Recommendations failed:", error);
+        console.error('AI Recommendations failed:', error);
       } finally {
-        if (get().activeUserId === userId && generation === userGeneration && requestId === aiRequestId) {
+        if (
+          get().activeUserId === userId &&
+          generation === userGeneration &&
+          requestId === aiRequestId
+        ) {
           set({ isAiLoading: false });
         }
         if (pendingRequests.get(pendingKey)?.requestId === requestId) {
@@ -156,14 +182,14 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => ({
   },
   removeRecommendation: async (userId: string, movieTitle: string) => {
     if (get().activeUserId !== userId) return;
-    set(state => ({
-      aiRecommendations: state.aiRecommendations.filter(m => m.title !== movieTitle),
-      previouslyRecommendedTitles: new Set([...state.previouslyRecommendedTitles, movieTitle])
+    set((state) => ({
+      aiRecommendations: state.aiRecommendations.filter((m) => m.title !== movieTitle),
+      previouslyRecommendedTitles: new Set([...state.previouslyRecommendedTitles, movieTitle]),
     }));
     try {
       await updatePreviouslyRecommendedTitles(userId, [movieTitle]);
     } catch (error) {
-      console.error("Failed to sync removed recommendation:", error);
+      console.error('Failed to sync removed recommendation:', error);
     }
   },
 }));

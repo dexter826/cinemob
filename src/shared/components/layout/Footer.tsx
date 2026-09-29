@@ -3,10 +3,10 @@ import logoText from '@/assets/images/logo_text.png';
 
 function Footer() {
   const socialLinks = [
-    { href: "https://www.facebook.com/ctrlkd1", icon: Facebook, label: "Facebook" },
-    { href: "https://www.instagram.com/trcongminh_04/", icon: Instagram, label: "Instagram" },
-    { href: "https://github.com/dexter826", icon: Github, label: "GitHub" },
-    { href: "mailto:tcongminh1604@gmail.com", icon: Mail, label: "Email" }
+    { href: 'https://www.facebook.com/ctrlkd1', icon: Facebook, label: 'Facebook' },
+    { href: 'https://www.instagram.com/trcongminh_04/', icon: Instagram, label: 'Instagram' },
+    { href: 'https://github.com/dexter826', icon: Github, label: 'GitHub' },
+    { href: 'mailto:tcongminh1604@gmail.com', icon: Mail, label: 'Email' },
   ];
 
   return (
@@ -60,6 +60,6 @@ function Footer() {
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;

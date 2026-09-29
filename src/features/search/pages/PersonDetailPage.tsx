@@ -13,9 +13,25 @@ function PersonDetailPage() {
   const { personId } = useParams<{ personId: string }>();
   const navigate = useNavigate();
   const {
-    loading, person, error, searchQuery, setSearchQuery, selectedYears, setSelectedYears,
-    sortBy, setSortBy, sortOrder, setSortOrder, currentPage, setCurrentPage,
-    showFilters, setShowFilters, availableYears, paginatedMovies, filteredMovies, totalPages,
+    loading,
+    person,
+    error,
+    searchQuery,
+    setSearchQuery,
+    selectedYears,
+    setSelectedYears,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    currentPage,
+    setCurrentPage,
+    showFilters,
+    setShowFilters,
+    availableYears,
+    paginatedMovies,
+    filteredMovies,
+    totalPages,
   } = usePersonDetail(personId);
   const [showFullBio, setShowFullBio] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -38,11 +54,15 @@ function PersonDetailPage() {
   return (
     <div className="text-text-main transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader 
+        <PageHeader
           onBack={() => navigate(-1)}
           icon={User}
-          title={loading ? "Đang tải…" : person?.name || "Chi tiết nghệ sĩ"}
-          description={person?.place_of_birth ? `Nơi sinh: ${person.place_of_birth}` : "Thông tin chi tiết nghệ sĩ"}
+          title={loading ? 'Đang tải…' : person?.name || 'Chi tiết nghệ sĩ'}
+          description={
+            person?.place_of_birth
+              ? `Nơi sinh: ${person.place_of_birth}`
+              : 'Thông tin chi tiết nghệ sĩ'
+          }
         />
 
         {loading ? (
@@ -58,11 +78,11 @@ function PersonDetailPage() {
           <div className="max-w-7xl mx-auto py-20">
             <EmptyState
               icon={User}
-              title={error || "Không tìm thấy nghệ sĩ"}
+              title={error || 'Không tìm thấy nghệ sĩ'}
               description="Thông tin chi tiết về nghệ sĩ này hiện không khả dụng."
               action={{
-                label: "Quay lại",
-                onClick: () => navigate(-1)
+                label: 'Quay lại',
+                onClick: () => navigate(-1),
               }}
             />
           </div>
@@ -87,9 +107,11 @@ function PersonDetailPage() {
                 <div className="flex-1 space-y-6">
                   <div>
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold text-text-main tracking-tight">Thông tin cá nhân</h2>
+                      <h2 className="text-xl font-bold text-text-main tracking-tight">
+                        Thông tin cá nhân
+                      </h2>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         {person.birthday && (
@@ -98,8 +120,12 @@ function PersonDetailPage() {
                               <Calendar size={18} className="text-primary" />
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-text-secondary">Ngày sinh</div>
-                              <div className="font-bold text-sm">{new Date(person.birthday).toLocaleDateString('vi-VN')}</div>
+                              <div className="text-xs font-semibold text-text-secondary">
+                                Ngày sinh
+                              </div>
+                              <div className="font-bold text-sm">
+                                {new Date(person.birthday).toLocaleDateString('vi-VN')}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -111,7 +137,9 @@ function PersonDetailPage() {
                             </div>
                             <div>
                               <div className="text-xs font-semibold text-danger">Ngày mất</div>
-                              <div className="font-bold text-sm text-error">{new Date(person.deathday).toLocaleDateString('vi-VN')}</div>
+                              <div className="font-bold text-sm text-error">
+                                {new Date(person.deathday).toLocaleDateString('vi-VN')}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -132,9 +160,11 @@ function PersonDetailPage() {
                                   const today = new Date();
                                   let age = today.getFullYear() - birth.getFullYear();
                                   const m = today.getMonth() - birth.getMonth();
-                                  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+                                  if (m < 0 || (m === 0 && today.getDate() < birth.getDate()))
+                                    age--;
                                   return age;
-                                })()} tuổi
+                                })()}{' '}
+                                tuổi
                               </div>
                             </div>
                           </div>
@@ -157,7 +187,9 @@ function PersonDetailPage() {
 
                   {person.biography && (
                     <div className="pt-4 border-t border-border-default">
-                      <h2 className="text-lg font-bold text-text-main mb-3 tracking-tight">Tiểu sử</h2>
+                      <h2 className="text-lg font-bold text-text-main mb-3 tracking-tight">
+                        Tiểu sử
+                      </h2>
                       <div className="text-text-muted leading-relaxed text-sm">
                         <p className={showFullBio ? 'whitespace-pre-wrap' : 'line-clamp-4'}>
                           {person.biography}
@@ -168,9 +200,13 @@ function PersonDetailPage() {
                             className="mt-3 text-primary hover:text-primary-hover font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             {showFullBio ? (
-                              <>Thu gọn <ChevronUp size={14} /></>
+                              <>
+                                Thu gọn <ChevronUp size={14} />
+                              </>
                             ) : (
-                              <>Xem thêm <ChevronDown size={14} /></>
+                              <>
+                                Xem thêm <ChevronDown size={14} />
+                              </>
                             )}
                           </button>
                         )}
@@ -203,10 +239,9 @@ function PersonDetailPage() {
             />
           </>
         )}
-
       </div>
     </div>
   );
-};
+}
 
 export default PersonDetailPage;

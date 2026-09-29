@@ -6,24 +6,24 @@ import { GENRE_TRANSLATIONS } from '@/constants/genres';
 // Ưu tiên tiêu đề Tiếng Việt.
 export const getMainTitle = (movie: Movie): string => {
   const country = movie.country || '';
-  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
-  return isVN && movie.title_vi ? movie.title_vi : (movie.title_vi || movie.title);
+  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
+  return isVN && movie.title_vi ? movie.title_vi : movie.title_vi || movie.title;
 };
 
 // Lấy tên gốc của phim.
 export const getSubTitle = (movie: Movie): string => {
   const country = movie.country || '';
-  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some(c => country.includes(c));
+  const isVN = ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
   const mainTitle = getMainTitle(movie);
-  
+
   if (!isVN && movie.title_vi && movie.title_vi !== movie.title) {
     return movie.title;
   }
-  
+
   if (movie.title_vi && movie.title_vi !== movie.title && mainTitle !== movie.title) {
     return movie.title;
   }
-  
+
   return '';
 };
 
@@ -43,15 +43,16 @@ export const getMainTitleForTMDB = (movie: TMDBMovieResult): string => {
 export const getSubTitleForTMDB = (movie: TMDBMovieResult): string => {
   const main = getMainTitleForTMDB(movie);
   const original = movie.original_title || movie.original_name || '';
-  return (original && original !== main) ? original : '';
+  return original && original !== main ? original : '';
 };
 
 // Lấy tiêu đề hiển thị chuẩn cho TMDB.
 export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
   const main = getMainTitleForTMDB(movie);
   const sub = getSubTitleForTMDB(movie);
-  const hasVietnamese = /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(main);
-  
+  const hasVietnamese =
+    /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(main);
+
   if (sub && hasVietnamese) return `${main} (${sub})`;
   return main || sub;
 };
@@ -59,7 +60,11 @@ export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
 // Chuẩn hóa sang đối tượng Date.
 export const normalizeMovieDate = (date: unknown): Date | null => {
   if (!date) return null;
-  if (typeof date === 'object' && date !== null && typeof (date as { toDate?: unknown }).toDate === 'function') {
+  if (
+    typeof date === 'object' &&
+    date !== null &&
+    typeof (date as { toDate?: unknown }).toDate === 'function'
+  ) {
     return (date as { toDate: () => Date }).toDate();
   }
   if (date instanceof Date) return Number.isNaN(date.getTime()) ? null : date;
@@ -74,7 +79,11 @@ export const normalizeMovieDate = (date: unknown): Date | null => {
 export const formatMovieDate = (date: unknown): string => {
   const normalized = normalizeMovieDate(date);
   if (!normalized) return 'N/A';
-  return new Intl.DateTimeFormat('vi-VN', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(normalized);
+  return new Intl.DateTimeFormat('vi-VN', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(normalized);
 };
 
 // Lấy URL ảnh đầy đủ từ TMDB.
@@ -94,7 +103,7 @@ export const getTranslatedGenres = (genreStr: string): string => {
   if (!genreStr) return '';
   return genreStr
     .split(',')
-    .map(g => {
+    .map((g) => {
       const trimmed = g.trim();
       return GENRE_TRANSLATIONS[trimmed] || trimmed;
     })

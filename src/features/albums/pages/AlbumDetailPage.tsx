@@ -16,11 +16,27 @@ function AlbumDetailPage() {
   const navigate = useNavigate();
   const { openDetailModal } = useMovieDetailStore();
   const {
-    album, loading, editing, setEditing, name, setName, saving,
-    managingMovies, setManagingMovies, searchQuery, setSearchQuery,
-    currentPage, setCurrentPage, albumMovies, availableMovies,
-    filteredAvailableMovies, paginatedMovies, totalPages,
-    handleSaveInfo, handleAddMovie, handleRemoveMovie,
+    album,
+    loading,
+    editing,
+    setEditing,
+    name,
+    setName,
+    saving,
+    managingMovies,
+    setManagingMovies,
+    searchQuery,
+    setSearchQuery,
+    currentPage,
+    setCurrentPage,
+    albumMovies,
+    availableMovies,
+    filteredAvailableMovies,
+    paginatedMovies,
+    totalPages,
+    handleSaveInfo,
+    handleAddMovie,
+    handleRemoveMovie,
   } = useAlbumDetail(albumId);
 
   return (
@@ -29,23 +45,30 @@ function AlbumDetailPage() {
         <PageHeader
           onBack={() => navigate('/albums')}
           icon={Film}
-          title={loading ? "Đang tải…" : album?.name || "Chi tiết Album"}
-          description={!loading && album ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}` : ""}
+          title={loading ? 'Đang tải…' : album?.name || 'Chi tiết album'}
+          description={
+            !loading && album
+              ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}`
+              : ''
+          }
           className="flex-col sm:flex-row items-stretch sm:items-center"
         >
           <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
             <button
               type="button"
               disabled={loading || !album}
-              onClick={() => setManagingMovies(v => !v)}
-              aria-label={managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'}
+              onClick={() => setManagingMovies((v) => !v)}
+              aria-label={
+                managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'
+              }
               className={`
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
-                ${managingMovies 
-                  ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
-                  : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
+                ${
+                  managingMovies
+                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
                 }
-                ${(loading || !album) ? 'opacity-50 cursor-not-allowed' : ''}
+                ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
             >
               <PlusCircle size={18} strokeWidth={1.5} />
@@ -54,18 +77,23 @@ function AlbumDetailPage() {
             <button
               type="button"
               disabled={loading || !album}
-              onClick={() => setEditing(v => !v)}
+              onClick={() => setEditing((v) => !v)}
               aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
               className={`
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
-                ${editing 
-                  ? 'bg-primary/10 border-primary/30 text-primary shadow-inner' 
-                  : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
+                ${
+                  editing
+                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
                 }
-                ${(loading || !album) ? 'opacity-50 cursor-not-allowed' : ''}
+                ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
             >
-              {editing ? <XIcon size={18} strokeWidth={1.5} /> : <Edit2 size={18} strokeWidth={1.5} />}
+              {editing ? (
+                <XIcon size={18} strokeWidth={1.5} />
+              ) : (
+                <Edit2 size={18} strokeWidth={1.5} />
+              )}
               <span>{editing ? 'Hủy' : 'Sửa tên'}</span>
             </button>
           </div>
@@ -78,12 +106,14 @@ function AlbumDetailPage() {
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
-                <label htmlFor="album-name" className="text-xs font-medium text-text-muted ml-1">Tên album mới</label>
+                <label htmlFor="album-name" className="text-xs font-medium text-text-muted ml-1">
+                  Tên album mới
+                </label>
                 <input
                   id="album-name"
                   type="text"
                   value={name}
-                  onChange={e => setName(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
                 />
               </div>
@@ -115,8 +145,8 @@ function AlbumDetailPage() {
               title="Không tìm thấy album"
               description="Có thể album đã bị xóa hoặc bạn không có quyền truy cập."
               action={{
-                label: "Quay lại danh sách",
-                onClick: () => navigate('/albums')
+                label: 'Quay lại danh sách',
+                onClick: () => navigate('/albums'),
               }}
             />
           </div>
@@ -141,15 +171,19 @@ function AlbumDetailPage() {
               <EmptyState
                 icon={Film}
                 title="Album đang trống"
-                description="Hãy bắt đầu thêm những bộ phim yêu thích của bạn vào album này."
-                action={!managingMovies ? {
-                  label: "Thêm phim ngay",
-                  onClick: () => setManagingMovies(true)
-                } : undefined}
+                description="Thêm phim đã xem vào album này."
+                action={
+                  !managingMovies
+                    ? {
+                        label: 'Thêm phim ngay',
+                        onClick: () => setManagingMovies(true),
+                      }
+                    : undefined
+                }
               />
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-                {albumMovies.map(movie => (
+                {albumMovies.map((movie) => (
                   <MovieCard
                     key={movie.docId}
                     movie={movie}
@@ -163,18 +197,21 @@ function AlbumDetailPage() {
           </div>
         )}
 
-
         {managingMovies && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="relative group flex-1 md:w-80">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors" size={16} strokeWidth={1.5} />
+                  <Search
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+                    size={16}
+                    strokeWidth={1.5}
+                  />
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm trong lịch sử…"
                     className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
@@ -201,7 +238,7 @@ function AlbumDetailPage() {
             ) : (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-                  {paginatedMovies.map(movie => (
+                  {paginatedMovies.map((movie) => (
                     <MovieCard
                       key={movie.docId}
                       mode="select"
@@ -225,6 +262,6 @@ function AlbumDetailPage() {
       </div>
     </div>
   );
-};
+}
 
 export default AlbumDetailPage;

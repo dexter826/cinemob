@@ -16,10 +16,10 @@ export const fetchAIRecommendations = async (
   userId: string,
   historyMovies: Movie[],
   previouslyRecommendedTitles: Set<string>,
-  forceRefresh: boolean = false
+  forceRefresh: boolean = false,
 ): Promise<{ aiRecommendations: TMDBMovieResult[]; lastAiHistoryLength: number } | null> => {
-  const watchedHistory = historyMovies.filter(m => (m.status || 'history') === 'history');
-  
+  const watchedHistory = historyMovies.filter((m) => (m.status || 'history') === 'history');
+
   if (watchedHistory.length < 3) return null;
 
   const cacheKey = `ai_recs_${userId}`;
@@ -29,7 +29,8 @@ export const fetchAIRecommendations = async (
     try {
       const parsedCache: unknown = JSON.parse(cachedData);
       if (
-        typeof parsedCache === 'object' && parsedCache !== null &&
+        typeof parsedCache === 'object' &&
+        parsedCache !== null &&
         typeof (parsedCache as { timestamp?: unknown }).timestamp === 'number' &&
         !isExpired((parsedCache as { timestamp: number }).timestamp, CACHE_DURATION.AI_RECS) &&
         (parsedCache as { historyLength?: unknown }).historyLength === watchedHistory.length &&
@@ -41,14 +42,18 @@ export const fetchAIRecommendations = async (
         };
       }
     } catch (e) {
-      try { localStorage.removeItem(cacheKey); } catch { /* bỏ qua */ }
+      try {
+        localStorage.removeItem(cacheKey);
+      } catch {
+        /* bỏ qua */
+      }
     }
   }
 
   const aiRecs = await getAIRecommendations(
     watchedHistory,
     historyMovies,
-    Array.from(previouslyRecommendedTitles)
+    Array.from(previouslyRecommendedTitles),
   );
 
   const tasks = aiRecs.slice(0, 22).map((rec) => async () => {
@@ -56,7 +61,7 @@ export const fetchAIRecommendations = async (
       const yearMatch = rec.title.match(/\((\d{4})\)$/);
       const title = yearMatch ? rec.title.replace(/\s*\(\d{4}\)$/, '') : rec.title;
       const year = yearMatch ? yearMatch[1] : undefined;
-      
+
       const searchRes = await searchMovies(title, 1, year);
       return searchRes.results.length > 0 ? searchRes.results[0] : null;
     } catch (error) {
@@ -66,25 +71,28 @@ export const fetchAIRecommendations = async (
   });
 
   const tmdbResultsRaw = await withLimit(tasks, 5);
-  
-  const savedMovieIds = new Set(historyMovies.map(m => m.id.toString()));
-  const tmdbResults = tmdbResultsRaw.filter(m => 
-    m !== null && !savedMovieIds.has(m.id.toString())
+
+  const savedMovieIds = new Set(historyMovies.map((m) => m.id.toString()));
+  const tmdbResults = tmdbResultsRaw.filter(
+    (m) => m !== null && !savedMovieIds.has(m.id.toString()),
   ) as TMDBMovieResult[];
-  
+
   const displayResults = tmdbResults.slice(0, 20);
 
   try {
-    localStorage.setItem(cacheKey, JSON.stringify({
-      historyLength: watchedHistory.length,
-      data: displayResults,
-      timestamp: Date.now(),
-    }));
+    localStorage.setItem(
+      cacheKey,
+      JSON.stringify({
+        historyLength: watchedHistory.length,
+        data: displayResults,
+        timestamp: Date.now(),
+      }),
+    );
   } catch {
     // QuotaExceeded: bỏ qua cache.
   }
 
-  const newTitles = aiRecs.map(rec => rec.title);
+  const newTitles = aiRecs.map((rec) => rec.title);
   await updatePreviouslyRecommendedTitles(userId, newTitles);
 
   return {

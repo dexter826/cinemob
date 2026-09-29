@@ -44,9 +44,9 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     if (confettiFetchedRef.current) return;
     confettiFetchedRef.current = true;
     fetch('/data/confetti.json')
-      .then(response => response.json())
-      .then(data => setConfettiData(data))
-      .catch(error => console.warn('Confetti animation failed to load:', error));
+      .then((response) => response.json())
+      .then((data) => setConfettiData(data))
+      .catch((error) => console.warn('Confetti animation failed to load:', error));
   }, []);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   }, [ensureConfetti, isOpen]);
 
   const watchlistMovies = useMemo(
-    () => movies.filter(movie => (movie.status || 'history') === 'watchlist'),
+    () => movies.filter((movie) => (movie.status || 'history') === 'watchlist'),
     [movies],
   );
   const activePool = useMemo(() => {
@@ -108,53 +108,56 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     return () => controller.abort();
   }, [clearShuffleTimers, isOpen, randomAudio, trending.length, watchlistMovies.length]);
 
-  const startShuffle = useCallback((source: Exclude<PoolType, null>) => {
-    const pool = source === 'watchlist' ? watchlistMovies : trending;
-    if (pool.length === 0) {
-      setCurrentIndex(null);
-      setIsShuffling(false);
-      setHasResult(false);
-      return;
-    }
-
-    clearShuffleTimers();
-    ensureConfetti();
-    setPoolType(source);
-    setHasResult(false);
-    randomAudio?.stop();
-    randomAudio?.play();
-
-    if (reducedMotion) {
-      setCurrentIndex(Math.floor(Math.random() * pool.length));
-      setIsShuffling(false);
-      setHasResult(true);
-      return;
-    }
-
-    setIsShuffling(true);
-    const start = Date.now();
-    const tick = () => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / 3150, 1);
-      const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
-      if (effectivePool.length === 0) {
+  const startShuffle = useCallback(
+    (source: Exclude<PoolType, null>) => {
+      const pool = source === 'watchlist' ? watchlistMovies : trending;
+      if (pool.length === 0) {
+        setCurrentIndex(null);
         setIsShuffling(false);
         setHasResult(false);
         return;
       }
-      if (elapsed >= 3150) {
-        setCurrentIndex(Math.floor(Math.random() * effectivePool.length));
+
+      clearShuffleTimers();
+      ensureConfetti();
+      setPoolType(source);
+      setHasResult(false);
+      randomAudio?.stop();
+      randomAudio?.play();
+
+      if (reducedMotion) {
+        setCurrentIndex(Math.floor(Math.random() * pool.length));
         setIsShuffling(false);
         setHasResult(true);
-        audioStopTimeoutRef.current = setTimeout(() => randomAudio?.stop(), 1950);
         return;
       }
-      setCurrentIndex(index => index === null ? 0 : (index + 1) % effectivePool.length);
-      const nextDelay = progress < 0.5 ? 70 : progress < 0.75 ? 130 : progress < 0.9 ? 220 : 380;
-      shuffleTimeoutRef.current = setTimeout(tick, nextDelay);
-    };
-    shuffleTimeoutRef.current = setTimeout(tick, 70);
-  }, [clearShuffleTimers, ensureConfetti, randomAudio, reducedMotion, trending, watchlistMovies]);
+
+      setIsShuffling(true);
+      const start = Date.now();
+      const tick = () => {
+        const elapsed = Date.now() - start;
+        const progress = Math.min(elapsed / 3150, 1);
+        const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
+        if (effectivePool.length === 0) {
+          setIsShuffling(false);
+          setHasResult(false);
+          return;
+        }
+        if (elapsed >= 3150) {
+          setCurrentIndex(Math.floor(Math.random() * effectivePool.length));
+          setIsShuffling(false);
+          setHasResult(true);
+          audioStopTimeoutRef.current = setTimeout(() => randomAudio?.stop(), 1950);
+          return;
+        }
+        setCurrentIndex((index) => (index === null ? 0 : (index + 1) % effectivePool.length));
+        const nextDelay = progress < 0.5 ? 70 : progress < 0.75 ? 130 : progress < 0.9 ? 220 : 380;
+        shuffleTimeoutRef.current = setTimeout(tick, nextDelay);
+      };
+      shuffleTimeoutRef.current = setTimeout(tick, 70);
+    },
+    [clearShuffleTimers, ensureConfetti, randomAudio, reducedMotion, trending, watchlistMovies],
+  );
 
   useEffect(() => {
     if (isOpen && poolType && activePool.length > 0) startShuffle(poolType);
@@ -166,14 +169,25 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     if (poolType === 'watchlist') openDetailModal(currentItem as Movie);
     if (poolType === 'trending') {
       const movie = currentItem as TMDBMovieResult;
-      openAddModal({ movie, mediaType: movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie' });
+      openAddModal({
+        movie,
+        mediaType:
+          movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie',
+      });
     }
     onClose();
   };
 
   return {
-    activePool, poolType, currentIndex, isLoadingPool, isShuffling, hasResult,
-    confettiData, reducedMotion, startShuffle,
+    activePool,
+    poolType,
+    currentIndex,
+    isLoadingPool,
+    isShuffling,
+    hasResult,
+    confettiData,
+    reducedMotion,
+    startShuffle,
     handleRespin: () => poolType && startShuffle(poolType),
     handleWatchNow,
   };

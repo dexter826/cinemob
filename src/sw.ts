@@ -10,9 +10,7 @@ cleanupOutdatedCaches();
 self.skipWaiting();
 clientsClaim();
 
-
 self.addEventListener('push', (event) => {
-
   let data = {
     title: 'CineMOB',
     body: 'Có thông báo mới!',
@@ -49,7 +47,6 @@ self.addEventListener('push', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-
   event.notification.close();
 
   event.waitUntil(
@@ -62,7 +59,7 @@ self.addEventListener('notificationclick', (event) => {
       if (self.clients.openWindow) {
         return self.clients.openWindow('/');
       }
-    })
+    }),
   );
 });
 

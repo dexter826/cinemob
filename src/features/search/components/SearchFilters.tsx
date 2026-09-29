@@ -28,9 +28,13 @@ function SearchFilters({
   isSuggesting,
   showSuggestions,
   setShowSuggestions,
-  handleSelectMovie
+  handleSelectMovie,
 }: SearchFiltersProps) {
-  const hasActiveFilters = filters.type !== 'all' || filters.year !== '' || filters.country !== '' || filters.sortBy !== 'popularity.desc';
+  const hasActiveFilters =
+    filters.type !== 'all' ||
+    filters.year !== '' ||
+    filters.country !== '' ||
+    filters.sortBy !== 'popularity.desc';
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,7 +54,11 @@ function SearchFilters({
           {isSuggesting ? (
             <Loader2 className="text-primary animate-spin" size={18} strokeWidth={1.5} />
           ) : (
-            <Search className="text-text-muted group-focus-within:text-primary transition-colors" size={18} strokeWidth={1.5} />
+            <Search
+              className="text-text-muted group-focus-within:text-primary transition-colors"
+              size={18}
+              strokeWidth={1.5}
+            />
           )}
         </div>
         <input
@@ -78,7 +86,8 @@ function SearchFilters({
               {suggestions.map((movie) => {
                 const title = getMainTitleForTMDB(movie);
                 const year = (movie.release_date || movie.first_air_date)?.split('-')[0];
-                const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+                const isTV =
+                  movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
 
                 return (
                   <button
@@ -88,8 +97,8 @@ function SearchFilters({
                     className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
                   >
                     <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
-                      <img 
-                        src={getTMDBImageUrl(movie.poster_path, 'w92')} 
+                      <img
+                        src={getTMDBImageUrl(movie.poster_path, 'w92')}
                         alt={title}
                         className="w-full h-full object-cover"
                       />
@@ -100,8 +109,12 @@ function SearchFilters({
                       </h4>
                       <div className="flex items-center gap-3 mt-0.5">
                         <div className="flex items-center gap-1 text-xs text-text-muted">
-                          {isTV ? <Tv size={12} className="text-info" strokeWidth={1.5} /> : <Film size={12} className="text-success" strokeWidth={1.5} />}
-                          <span>{isTV ? 'TV Series' : 'Phim lẻ'}</span>
+                          {isTV ? (
+                            <Tv size={12} className="text-info" strokeWidth={1.5} />
+                          ) : (
+                            <Film size={12} className="text-success" strokeWidth={1.5} />
+                          )}
+                          <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
                         </div>
                         {year && (
                           <div className="flex items-center gap-1 text-xs text-text-muted">
@@ -161,7 +174,7 @@ function SearchFilters({
           options={[
             { value: 'all', label: 'Tất cả loại' },
             { value: 'movie', label: 'Phim lẻ' },
-            { value: 'tv', label: 'TV Series' },
+            { value: 'tv', label: 'Series' },
           ]}
           value={filters.type}
           onChange={(value) => updateFilter('type', value as SearchFormFilters['type'])}
@@ -221,6 +234,6 @@ function SearchFilters({
       </div>
     </div>
   );
-};
+}
 
 export default SearchFilters;
