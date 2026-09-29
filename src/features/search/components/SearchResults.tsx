@@ -21,7 +21,7 @@ interface SearchResultsProps {
   getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
   refreshRecommendations: (userId: string, force?: boolean) => void;
-  removeRecommendation: (userId: string, movieTitle: string) => Promise<void>;
+  removeRecommendation: (movieTitle: string) => void;
   userId: string;
 }
 
@@ -157,7 +157,7 @@ function SearchResults({
                     movie={movie}
                     onClick={handleSelectMovie}
                     status={getMovieStatus(movie.id)}
-                    onRemove={(m) => removeRecommendation(userId, m.title ?? '')}
+                    onRemove={(m) => removeRecommendation(m.title ?? '')}
                   />
                 ))}
               </div>

@@ -39,10 +39,6 @@ export interface Album {
   updatedAt?: Timestamp | Date;
 }
 
-export interface UserData {
-  previouslyRecommendedTitles: string[];
-}
-
 export interface Stats {
   totalMovies: number;
   totalMinutes: number;

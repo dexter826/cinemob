@@ -7,75 +7,20 @@ interface AIRecommendation {
   reason: string;
 }
 
-interface CircuitBreakerState {
-  failCount: number;
-  lastFailTime: number;
-  state: 'CLOSED' | 'OPEN';
-}
+const RETRY_DELAY_MS = 2000;
 
-const CIRCUIT_CONFIG = {
-  FAIL_THRESHOLD: 5,
-  RECOVERY_TIME: 60000,
-} as const;
-
-const RETRY_CONFIG = {
-  MAX_RETRIES: 3,
-  BASE_DELAY: 2000,
-} as const;
-
-let circuitBreaker: CircuitBreakerState = {
-  failCount: 0,
-  lastFailTime: 0,
-  state: 'CLOSED',
-};
-
-const isCircuitOpen = (): boolean => {
-  if (circuitBreaker.state === 'CLOSED') return false;
-
-  const timeSinceFail = Date.now() - circuitBreaker.lastFailTime;
-  if (timeSinceFail > CIRCUIT_CONFIG.RECOVERY_TIME) {
-    circuitBreaker = { failCount: 0, lastFailTime: 0, state: 'CLOSED' };
-    return false;
-  }
-  return true;
-};
-
-const recordFailure = (): void => {
-  circuitBreaker.failCount++;
-  circuitBreaker.lastFailTime = Date.now();
-
-  if (circuitBreaker.failCount >= CIRCUIT_CONFIG.FAIL_THRESHOLD) {
-    circuitBreaker.state = 'OPEN';
-  }
-};
-
-const recordSuccess = (): void => {
-  circuitBreaker.failCount = 0;
-  circuitBreaker.state = 'CLOSED';
-};
-
-// Lấy phim gợi ý từ AI theo lịch sử.
+// Lấy phim gợi ý từ AI theo lịch sử xem.
 export const getAIRecommendations = async (
   history: Movie[],
   allMovies: Movie[],
-  excludePreviouslyRecommended: string[] = [],
 ): Promise<AIRecommendation[]> => {
   if (!history || history.length === 0) return [];
-
-  if (isCircuitOpen()) {
-    console.warn('Circuit breaker OPEN: Too many API failures. Skipping AI recommendations.');
-    throw new Error('CIRCUIT_BREAKER_OPEN');
-  }
-
-  return retryWithBackoff(() =>
-    callOpenRouterAPI(history, allMovies, excludePreviouslyRecommended),
-  );
+  return retryOnRateLimit(() => callAIProxyAPI(history, allMovies));
 };
 
-const callOpenRouterAPI = async (
+const callAIProxyAPI = async (
   history: Movie[],
   allMovies: Movie[],
-  excludePreviouslyRecommended: string[],
 ): Promise<AIRecommendation[]> => {
   const filteredMovies = history.filter((m) => (m.rating || 0) >= 4);
   const selectedMovies = filteredMovies
@@ -90,11 +35,7 @@ const callOpenRouterAPI = async (
     .map((m) => `- ${m.title} (${m.rating ? m.rating + '/10 stars' : 'Liked'})`)
     .join('\n');
 
-  const existingTitles = allMovies
-    .slice(0, 100)
-    .map((m) => m.title)
-    .join(', ');
-  const previouslyRecommendedTitles = excludePreviouslyRecommended.slice(-100).join(', ');
+  const existingTitles = allMovies.map((m) => m.title).join(', ');
 
   const prompt = `
     You are an expert Film Curator. Analyze the user's movie history to identify their taste (directors, atmosphere, genres).
@@ -111,7 +52,6 @@ const callOpenRouterAPI = async (
 
     EXCLUDED LISTS (Do NOT recommend):
     - Collection: ${existingTitles}
-    - Previously Suggested: ${previouslyRecommendedTitles}
 
     OUTPUT FORMAT:
     Return ONLY a valid JSON array. No markdown formatting, no intro text.
@@ -121,58 +61,44 @@ const callOpenRouterAPI = async (
     ]
     `;
 
-  const response = await makeOpenRouterRequest(prompt);
+  const response = await makeAIProxyRequest(prompt);
 
   if (!response.ok) {
-    recordFailure();
     if (response.status === 429) throw new Error('API_RATE_LIMIT');
     throw new Error(`API_ERROR_${response.status}`);
   }
 
   const data = await response.json();
 
-  if (data.error) {
-    recordFailure();
-    throw new Error(data.error.message || 'API_ERROR');
-  }
-
-  if (!data.choices?.length) {
-    recordFailure();
-    return [];
-  }
+  if (data.error) throw new Error(data.error.message || 'API_ERROR');
+  if (!data.choices?.length) return [];
 
   try {
-    const recommendations = parseAIResponse(data.choices[0].message.content);
-    recordSuccess();
-    return recommendations;
-  } catch (error) {
-    recordFailure();
+    return parseAIResponse(data.choices[0].message.content);
+  } catch {
     throw new Error('PARSE_ERROR');
   }
 };
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-const retryWithBackoff = async (
+// Thử lại đúng một lần khi bị rate limit.
+const retryOnRateLimit = async (
   fn: () => Promise<AIRecommendation[]>,
-  retries: number = RETRY_CONFIG.MAX_RETRIES,
 ): Promise<AIRecommendation[]> => {
   try {
     return await fn();
   } catch (error) {
-    const shouldRetry = (error as Error).message === 'API_RATE_LIMIT' && retries > 0;
-    if (!shouldRetry) throw error;
-
-    const delayMs = RETRY_CONFIG.BASE_DELAY * Math.pow(2, RETRY_CONFIG.MAX_RETRIES - retries);
-    await sleep(delayMs);
-    return retryWithBackoff(fn, retries - 1);
+    if ((error as Error).message !== 'API_RATE_LIMIT') throw error;
+    await sleep(RETRY_DELAY_MS);
+    return fn();
   }
 };
 
-const makeOpenRouterRequest = (prompt: string): Promise<Response> =>
+const makeAIProxyRequest = (prompt: string): Promise<Response> =>
   fetch(`${AI_PROXY_URL}/v1/chat/completions`, {
     method: 'POST',
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(60000),
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'openrouter/free',

@@ -4,6 +4,7 @@ import useRecommendationsStore from '@/features/movies/stores/recommendationsSto
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import { useSearchTMDB } from './useSearchTMDB';
 import { searchMovies } from '../services/tmdb';
+import { isWatchedMovie } from '@/features/movies/utils/movieUtils';
 import { TMDBMovieResult } from '@/types';
 import type { User } from 'firebase/auth';
 
@@ -42,7 +43,6 @@ export const useSearch = (user: User | null) => {
     isTrendingLoading,
     refreshRecommendations,
     removeRecommendation,
-    historyMovies,
   } = useRecommendationsStore();
 
   const { movies: savedMovies } = useMovieStore();
@@ -233,7 +233,7 @@ export const useSearch = (user: User | null) => {
       setCurrentPage(1);
     },
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
-    watchedMoviesCount: historyMovies.filter((m) => (m.status || 'history') === 'history').length,
+    watchedMoviesCount: savedMovies.filter(isWatchedMovie).length,
     // Search states
     submittedQuery,
     suggestions,

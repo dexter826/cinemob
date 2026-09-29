@@ -35,12 +35,7 @@ export const useAppInit = () => {
   } = useAlbumStore();
   const coverMovieIdsRef = useRef<Record<string, string>>({});
 
-  const {
-    setHistoryMovies,
-    reset: resetRecommendations,
-    initializeForUser: initRecs,
-    historyMovies,
-  } = useRecommendationsStore();
+  const { reset: resetRecommendations, setActiveUser } = useRecommendationsStore();
 
   const {
     setMovies: setCalendarMovies,
@@ -124,15 +119,8 @@ export const useAppInit = () => {
       return;
     }
 
-    void initRecs(userId);
-  }, [userId, initRecs, resetRecommendations]);
-
-  useEffect(() => {
-    if (!userId) return;
-    const prevIds = historyMovies.map((m) => m.docId ?? m.id).join('|');
-    const nextIds = allMovies.map((m) => m.docId ?? m.id).join('|');
-    if (prevIds !== nextIds) setHistoryMovies(allMovies);
-  }, [userId, allMovies, historyMovies, setHistoryMovies]);
+    setActiveUser(userId);
+  }, [userId, setActiveUser, resetRecommendations]);
 
   useEffect(() => {
     setCalendarMovies(allMovies);

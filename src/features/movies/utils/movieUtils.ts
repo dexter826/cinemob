@@ -7,6 +7,9 @@ import { GENRE_TRANSLATIONS } from '@/constants/genres';
 const isVietnameseOrigin = (country: string): boolean =>
   ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
 
+// Phim đã xem, thiếu status thì coi là history.
+export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
+
 // Ưu tiên tiêu đề Tiếng Việt.
 export const getMainTitle = (movie: Movie): string => {
   const isVN = isVietnameseOrigin(movie.country || '');

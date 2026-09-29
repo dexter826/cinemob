@@ -1,7 +1,7 @@
 import { TMDBMovieResult, Movie } from '@/types';
 import { getAIRecommendations } from './aiService';
 import { searchMovies, getTrendingMovies, withLimit } from '@/features/search/services/tmdb';
-import { updatePreviouslyRecommendedTitles } from '@/features/auth/services/userService';
+import { isWatchedMovie } from '../utils/movieUtils';
 
 const CACHE_DURATION = {
   AI_RECS: 7 * 24 * 60 * 60 * 1000,
@@ -14,11 +14,10 @@ const isExpired = (timestamp: number, duration: number): boolean => {
 // Lấy phim gợi ý từ AI kèm cache.
 export const fetchAIRecommendations = async (
   userId: string,
-  historyMovies: Movie[],
-  previouslyRecommendedTitles: Set<string>,
+  allMovies: Movie[],
   forceRefresh: boolean = false,
-): Promise<{ aiRecommendations: TMDBMovieResult[]; lastAiHistoryLength: number } | null> => {
-  const watchedHistory = historyMovies.filter((m) => (m.status || 'history') === 'history');
+): Promise<{ aiRecommendations: TMDBMovieResult[] } | null> => {
+  const watchedHistory = allMovies.filter(isWatchedMovie);
 
   if (watchedHistory.length < 3) return null;
 
@@ -38,7 +37,6 @@ export const fetchAIRecommendations = async (
       ) {
         return {
           aiRecommendations: (parsedCache as { data: TMDBMovieResult[] }).data,
-          lastAiHistoryLength: watchedHistory.length,
         };
       }
     } catch (e) {
@@ -50,11 +48,7 @@ export const fetchAIRecommendations = async (
     }
   }
 
-  const aiRecs = await getAIRecommendations(
-    watchedHistory,
-    historyMovies,
-    Array.from(previouslyRecommendedTitles),
-  );
+  const aiRecs = await getAIRecommendations(watchedHistory, allMovies);
 
   const tasks = aiRecs.slice(0, 22).map((rec) => async () => {
     try {
@@ -72,7 +66,7 @@ export const fetchAIRecommendations = async (
 
   const tmdbResultsRaw = await withLimit(tasks, 5);
 
-  const savedMovieIds = new Set(historyMovies.map((m) => m.id.toString()));
+  const savedMovieIds = new Set(allMovies.map((m) => m.id.toString()));
   const tmdbResults = tmdbResultsRaw.filter(
     (m) => m !== null && !savedMovieIds.has(m.id.toString()),
   ) as TMDBMovieResult[];
@@ -92,12 +86,8 @@ export const fetchAIRecommendations = async (
     // QuotaExceeded: bỏ qua cache.
   }
 
-  const newTitles = aiRecs.map((rec) => rec.title);
-  await updatePreviouslyRecommendedTitles(userId, newTitles);
-
   return {
     aiRecommendations: displayResults,
-    lastAiHistoryLength: watchedHistory.length,
   };
 };
 
