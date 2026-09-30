@@ -1,5 +1,15 @@
 # Repository Guidelines
 
+## Working Principles
+
+- Clarify requirements when ambiguity could change the implementation.
+- Prefer the simplest solution that fully satisfies the request.
+- Keep changes focused on the requested behavior.
+- Avoid unrelated refactors, cleanup, or formatting changes.
+- Preserve existing APIs and conventions unless the task requires changing them.
+- Define a concrete success criterion before implementation.
+- Validate the narrowest affected scope before running broader checks.
+
 ## Project Structure & Module Organization
 
 CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: reusable UI in `shared/components/`, feature screens in `features/*/pages/` and `features/*/components/`, business logic in `features/*/hooks/`, Zustand state in `features/*/stores/` and `shared/stores/`, third-party initializations in `lib/`, external integrations in `features/*/services/`, and shared definitions in `types/`, `constants/`, plus colocated `utils/`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
@@ -23,7 +33,12 @@ Follow the existing TypeScript style: two-space indentation, single quotes, semi
 
 ## Validation Guidelines
 
-Before opening a PR, run `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`, then perform the manual checks relevant to the affected scope.
+Choose validation based on the scope of the change:
+
+- Small localized change: run the narrowest relevant check.
+- TypeScript or React change: run `npm run typecheck` and relevant lint checks.
+- User-facing feature: run typecheck, lint, format check, build, and relevant manual smoke tests.
+- Before opening a PR: run `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`.
 
 ## Commit & Pull Request Guidelines
 
