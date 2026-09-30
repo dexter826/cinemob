@@ -1,17 +1,19 @@
+import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import type { PublicProfileSummary } from '../../hooks/useUserSearch';
 
 interface UserCardProps {
   profile: PublicProfileSummary;
-  onClick: (uid: string) => void;
+  /** Việc phụ khi bấm thẻ (đóng modal); điều hướng do Link đảm nhiệm. */
+  onClick?: () => void;
 }
 
 /** Thẻ thành viên trong kết quả tìm người dùng. */
 function UserCard({ profile, onClick }: UserCardProps) {
   return (
-    <button
-      type="button"
-      onClick={() => onClick(profile.uid)}
+    <Link
+      to={`/profile/${profile.uid}`}
+      onClick={onClick}
       className="w-full flex items-center gap-3 p-3.5 bg-surface border border-border rounded-2xl text-left hover:border-primary/50 transition-colors cursor-pointer group"
     >
       {profile.photoURL ? (
@@ -41,7 +43,7 @@ function UserCard({ profile, onClick }: UserCardProps) {
         className="text-text-muted group-hover:text-primary transition-colors shrink-0"
         aria-hidden="true"
       />
-    </button>
+    </Link>
   );
 }
 

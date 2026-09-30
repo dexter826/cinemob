@@ -12,7 +12,7 @@ import {
 } from '../utils/movieUtils';
 import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
 import useToastStore from '@/shared/stores/toastStore';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
 import { IconButton } from '@/shared/components/ui/IconButton';
 import { MESSAGES } from '@/constants';
@@ -29,7 +29,6 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
   const [videos, setVideos] = useState<TMDBVideo[]>([]);
   const [credits, setCredits] = useState<TMDBCredits | null>(null);
   const { showToast } = useToastStore();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,11 +84,6 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
     if (videos.length > 0 && /^[A-Za-z0-9_-]{6,20}$/.test(key)) {
       window.open(`https://www.youtube.com/watch?v=${key}`, '_blank', 'noopener,noreferrer');
     }
-  };
-
-  const handlePersonClick = (personId: number) => {
-    navigate(`/person/${personId}`);
-    onClose();
   };
 
   return (
@@ -290,13 +284,14 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         </h3>
                         <div className="flex flex-wrap gap-2">
                           {credits.cast.slice(0, 8).map((actor) => (
-                            <button
+                            <Link
                               key={actor.id}
-                              onClick={() => handlePersonClick(actor.id)}
+                              to={`/person/${actor.id}`}
+                              onClick={onClose}
                               className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-xl text-xs font-medium text-text-secondary transition-colors border border-border cursor-pointer"
                             >
                               {actor.name}
-                            </button>
+                            </Link>
                           ))}
                         </div>
                       </div>

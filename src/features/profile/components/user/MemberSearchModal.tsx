@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Search, Users, X } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/Dialog';
@@ -16,15 +15,14 @@ interface MemberSearchModalProps {
 /** Modal tìm thành viên mở từ nút Users trên navbar. */
 function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const { searchText, setSearchText, submit, results, loading, error, submittedQuery } =
     useUserSearch(user?.uid);
   const settled = submittedQuery.length > 0 && searchText.trim().toLowerCase() === submittedQuery;
 
-  const openProfile = (uid: string) => {
+  // Điều hướng sang hồ sơ do Link trong UserCard đảm nhiệm.
+  const openProfile = () => {
     onClose();
-    navigate(`/profile/${uid}`);
   };
 
   return (

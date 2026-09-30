@@ -5,7 +5,7 @@ import { Album } from '@/types';
 import { addAlbum, deleteAlbum } from '../services/albumService';
 import useToastStore from '@/shared/stores/toastStore';
 import useAlertStore from '@/shared/stores/alertStore';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
 import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
 import { MESSAGES } from '@/constants/messages';
@@ -17,7 +17,6 @@ function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
-  const navigate = useNavigate();
   const { albums, loading, albumCoverMovies } = useAlbumStore();
 
   const [name, setName] = useState('');
@@ -127,10 +126,12 @@ function AlbumsPage() {
               key={album.docId}
               className="group relative bg-surface rounded-2xl border border-border overflow-hidden"
             >
-              <button
-                type="button"
-                onClick={() => album.docId && navigate(`/albums/${album.docId}`)}
+              <Link
+                to={`/albums/${album.docId}`}
                 aria-label={`Mở album ${album.name}, ${album.movieDocIds.length} mục`}
+                onClick={(event) => {
+                  if (!album.docId) event.preventDefault();
+                }}
                 className="block w-full text-left cursor-pointer rounded-none"
               >
                 <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
@@ -179,7 +180,7 @@ function AlbumsPage() {
                     </span>
                   </span>
                 </span>
-              </button>
+              </Link>
 
               <button
                 type="button"

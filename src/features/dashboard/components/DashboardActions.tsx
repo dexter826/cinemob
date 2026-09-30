@@ -1,5 +1,5 @@
 import { Search, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface DashboardActionsProps {
   onOpenAddModal: () => void;
@@ -7,12 +7,10 @@ interface DashboardActionsProps {
 
 /** Primary discovery action + secondary manual-add action. Usable at 320 px. */
 function DashboardActions({ onOpenAddModal }: DashboardActionsProps) {
-  const navigate = useNavigate();
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-      <button
-        onClick={() => navigate('/search')}
+      <Link
+        to="/search"
         aria-label="Tìm phim, khám phá và thêm vào bộ sưu tập"
         className="w-full bg-primary hover:bg-primary-hover p-5 sm:p-6 rounded-card flex items-center justify-between transition-colors cursor-pointer"
       >
@@ -25,7 +23,7 @@ function DashboardActions({ onOpenAddModal }: DashboardActionsProps) {
           </p>
         </div>
         <Search size={24} className="text-on-primary shrink-0 sm:w-7 sm:h-7" aria-hidden="true" />
-      </button>
+      </Link>
 
       <button
         onClick={onOpenAddModal}

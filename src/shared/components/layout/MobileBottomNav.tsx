@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, Folder, BarChart2, CalendarDays } from 'lucide-react';
 import { NAV_ITEMS, isNavItemActive } from './navigation';
 
@@ -11,7 +11,6 @@ const NAV_ICONS: Record<string, typeof Home> = {
 };
 
 function MobileBottomNav() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   return (
@@ -26,9 +25,9 @@ function MobileBottomNav() {
           const isActive = isNavItemActive(location.pathname, item);
 
           return (
-            <button
+            <Link
               key={item.to}
-              onClick={() => navigate(item.to)}
+              to={item.to}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
               className="relative flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-16 px-1 cursor-pointer"
@@ -42,7 +41,7 @@ function MobileBottomNav() {
                 aria-hidden="true"
                 className={`h-1 w-6 rounded-full transition-colors ${isActive ? 'bg-primary' : 'bg-transparent'}`}
               />
-            </button>
+            </Link>
           );
         })}
       </div>

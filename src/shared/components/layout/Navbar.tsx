@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
@@ -46,7 +46,6 @@ function Navbar() {
     setIsAvatarLoadFailed(false);
   }, [user?.photoURL]);
   const { theme, setTheme } = useTheme();
-  const navigate = useNavigate();
   const location = useLocation();
   const [isRandomOpen, setIsRandomOpen] = useState(false);
   const [isMemberSearchOpen, setIsMemberSearchOpen] = useState(false);
@@ -86,23 +85,21 @@ function Navbar() {
           aria-label="Điều hướng chính"
           className="pointer-events-auto w-full max-w-6xl bg-surface border border-border rounded-2xl sm:rounded-full px-3 md:px-4 h-14 flex items-center justify-between"
         >
-          <button
-            type="button"
+          <Link
+            to="/"
             className="flex items-center cursor-pointer rounded-control"
-            onClick={() => navigate('/')}
             aria-label="Về Thư viện CineMOB"
           >
             <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
-          </button>
+          </Link>
 
           <div className="hidden md:flex items-center justify-center flex-1 mx-4 md:mx-6 space-x-1">
             {NAV_ITEMS.map((item) => {
               const active = isNavItemActive(location.pathname, item);
               return (
-                <button
-                  type="button"
+                <Link
                   key={item.to}
-                  onClick={() => navigate(item.to)}
+                  to={item.to}
                   aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl transition-colors cursor-pointer whitespace-nowrap ${
@@ -113,7 +110,7 @@ function Navbar() {
                 >
                   {NAV_ICONS[item.to]}
                   <span className="hidden xl:inline">{item.label}</span>
-                </button>
+                </Link>
               );
             })}
           </div>
@@ -184,18 +181,15 @@ function Navbar() {
                   </div>
 
                   <div className="p-1.5 space-y-0.5">
-                    <button
-                      type="button"
+                    <Link
+                      to={user ? `/profile/${user.uid}` : '/'}
                       role="menuitem"
-                      onClick={() => {
-                        closeDropdown();
-                        navigate(user ? `/profile/${user.uid}` : '/');
-                      }}
+                      onClick={closeDropdown}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
                       <User size={18} strokeWidth={1.5} />
                       <span>Hồ sơ</span>
-                    </button>
+                    </Link>
                     <button
                       type="button"
                       role="menuitem"
