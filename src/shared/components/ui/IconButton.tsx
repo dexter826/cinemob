@@ -40,7 +40,7 @@ export function IconButton({
       title={title ?? label}
       className={classNames(
         'inline-flex items-center justify-center cursor-pointer',
-        'transition-colors focus-visible:outline-none',
+        'transition-colors',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         sizeClasses[size],
         variantClasses[variant],

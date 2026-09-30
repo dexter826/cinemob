@@ -52,7 +52,7 @@ const getPresentationClasses = (
       );
     case 'fullscreen-mobile':
       return classNames(
-        'm-0 w-full h-full rounded-none sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh] sm:rounded-dialog',
+        'm-0 w-full h-full rounded-none pt-[env(safe-area-inset-top)] sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh] sm:rounded-dialog sm:pt-0',
         chosenSize || 'sm:max-w-2xl',
       );
     default:
@@ -178,7 +178,12 @@ export function DialogBody({
   className?: string;
 }) {
   return (
-    <div className={classNames('flex-1 overflow-y-auto px-4 py-4 sm:px-6', className)}>
+    <div
+      className={classNames(
+        'flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6',
+        className,
+      )}
+    >
       {children}
     </div>
   );

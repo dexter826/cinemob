@@ -35,16 +35,23 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    if (theme !== 'system') {
+    // Áp class theme lên root và đồng bộ màu theme-color cho thanh trình duyệt
+    const applyResolvedTheme = (resolved: 'dark' | 'light') => {
       root.classList.remove('light', 'dark');
-      root.classList.add(theme);
+      root.classList.add(resolved);
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', resolved === 'dark' ? '#09090b' : '#fafafa');
+    };
+
+    if (theme !== 'system') {
+      applyResolvedTheme(theme);
       return;
     }
 
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     const applySystemTheme = () => {
-      root.classList.remove('light', 'dark');
-      root.classList.add(media.matches ? 'dark' : 'light');
+      applyResolvedTheme(media.matches ? 'dark' : 'light');
     };
 
     applySystemTheme();

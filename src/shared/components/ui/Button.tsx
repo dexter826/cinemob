@@ -50,7 +50,7 @@ export function Button({
       aria-busy={loading ? 'true' : undefined}
       className={classNames(
         'inline-flex items-center justify-center font-semibold cursor-pointer',
-        'transition focus-visible:outline-none',
+        'transition',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],

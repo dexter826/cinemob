@@ -7,6 +7,7 @@
   }
 
   :root {
+    color-scheme: light;
     --color-background: 250 250 250; /* zinc-50 */
     --color-surface: 255 255 255; /* white */
     --color-surface-elevated: 255 255 255; /* white */
@@ -34,6 +35,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --color-background: 9 9 11; /* zinc-950 */
     --color-surface: 20 20 23; /* zinc-900 deep */
     --color-surface-elevated: 28 28 32; /* raised zinc */
@@ -64,6 +66,12 @@
     -webkit-appearance: none;
     appearance: none;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Chặn double-tap zoom delay trên nút và liên kết */
+  button,
+  a {
+    touch-action: manipulation;
   }
 
   :where(button, a, input, textarea, select, [role='button'], [tabindex]):focus-visible {
