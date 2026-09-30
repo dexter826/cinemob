@@ -128,7 +128,13 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showFilters]);
 
+  // Đổi tab thì về trang 1, nhưng không đụng trang lấy từ deep-link lúc mount.
+  const isFirstTabRunRef = useRef(true);
   useEffect(() => {
+    if (isFirstTabRunRef.current) {
+      isFirstTabRunRef.current = false;
+      return;
+    }
     setCurrentPage(1);
   }, [activeTab]);
 

@@ -59,15 +59,12 @@ function MemberProfilePage() {
 
   const setActiveTab = (tab: 'common' | 'all') => {
     setActiveTabState(tab);
-    setSearchParams(
-      (prev) => {
-        const params = new URLSearchParams(prev);
-        if (tab === 'all') params.set('tab', tab);
-        else params.delete('tab');
-        return params;
-      },
-      { replace: true },
-    );
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      if (tab === 'all') params.set('tab', tab);
+      else params.delete('tab');
+      return params;
+    });
   };
 
   const lastUidRef = useRef<string | undefined>(undefined);

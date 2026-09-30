@@ -119,7 +119,8 @@ export const useSearch = (user: User | null) => {
     }
     if (key !== 'query') {
       setCurrentPage(1);
-      syncParams(next, 1);
+      // Giữ nguyên q đã submit trong URL, không ghi draft đang gõ dở.
+      syncParams({ ...next, query: submittedQuery }, 1);
     }
   };
 

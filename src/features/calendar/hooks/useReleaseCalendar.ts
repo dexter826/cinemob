@@ -21,7 +21,12 @@ const formatDateParam = (date: Date): string =>
 const parseDateParam = (value: string | null): Date | null => {
   if (!value) return null;
   const [y, m, d] = value.split('-').map(Number);
-  return y && m && d ? new Date(y, m - 1, d) : null;
+  if (!y || !m || !d) return null;
+  const date = new Date(y, m - 1, d);
+  // Chặn rollover kiểu 2026-02-30 lăn sang tháng sau.
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d
+    ? date
+    : null;
 };
 
 // Quản lý lịch phát sóng và thông báo đẩy.
@@ -122,23 +127,28 @@ export const useReleaseCalendar = () => {
   );
 
   const navigateMonth = (direction: 'prev' | 'next') => {
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
-    setCurrentDate(newDate);
+    const projected = new Date(currentDate);
+    projected.setMonth(projected.getMonth() + (direction === 'prev' ? -1 : 1));
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+      return newDate;
+    });
     mutateParams((params) => {
       params.set(
         'month',
-        `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}`,
+        `${projected.getFullYear()}-${String(projected.getMonth() + 1).padStart(2, '0')}`,
       );
     });
   };
 
   const goToToday = () => {
-    setCurrentDate(new Date());
-    setSelectedDateState(new Date());
+    const today = new Date();
+    setCurrentDate(today);
+    setSelectedDateState(today);
     mutateParams((params) => {
       params.delete('month');
-      params.set('date', formatDateParam(new Date()));
+      params.set('date', formatDateParam(today));
     });
   };
 

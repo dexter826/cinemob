@@ -167,7 +167,7 @@ function Login() {
               {isLoading ? (
                 <Loader2 size={20} className="animate-spin text-primary" aria-hidden="true" />
               ) : (
-                <GoogleIcon className="w-5 h-5 shrink-0" aria-hidden="true" />
+                <GoogleIcon className="w-5 h-5 shrink-0" />
               )}
               <span className="text-sm font-semibold">
                 {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
