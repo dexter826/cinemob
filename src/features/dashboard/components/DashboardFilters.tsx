@@ -218,16 +218,20 @@ function DashboardFilters({
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-medium text-text-muted block">
+                  <span id="df-rating-label" className="text-xs font-medium text-text-muted block">
                     Khoảng đánh giá
-                  </label>
+                  </span>
                   {filters.ratingRange && (
                     <span className="text-xs font-semibold text-primary tabular-nums">
                       {filters.ratingRange[0]} - {filters.ratingRange[1]} sao
                     </span>
                   )}
                 </div>
-                <div className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5">
+                <div
+                  role="group"
+                  aria-labelledby="df-rating-label"
+                  className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5"
+                >
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
                     const [min, max] = filters.ratingRange || [0, 0];
                     const isActive = filters.ratingRange && star >= min && star <= max;
@@ -237,6 +241,8 @@ function DashboardFilters({
                       <button
                         key={star}
                         onClick={() => handleRatingSelect(star)}
+                        aria-label={`Chọn ${star} sao`}
+                        aria-pressed={Boolean(isActive)}
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive
                             ? 'text-warning bg-warning/15 shadow-sm'

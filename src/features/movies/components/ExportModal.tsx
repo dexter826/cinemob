@@ -154,8 +154,10 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Rating Filter */}
             <div>
-              <label className="block text-xs text-text-muted mb-1.5">Đánh giá tối thiểu</label>
-              <div className="flex gap-1">
+              <span id="export-rating-label" className="block text-xs text-text-muted mb-1.5">
+                Đánh giá tối thiểu
+              </span>
+              <div role="group" aria-labelledby="export-rating-label" className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -165,6 +167,8 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                         rating: prev.rating === star ? null : star,
                       }))
                     }
+                    aria-label={`Tối thiểu ${star} sao`}
+                    aria-pressed={(filters.rating || 0) >= star}
                     className={`p-1.5 rounded-lg transition-colors cursor-pointer  ${
                       (filters.rating || 0) >= star
                         ? 'text-yellow-500 bg-yellow-500/10'
@@ -173,6 +177,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                   >
                     <Star
                       size={16}
+                      aria-hidden="true"
                       fill={(filters.rating || 0) >= star ? 'currentColor' : 'none'}
                     />
                   </button>

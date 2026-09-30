@@ -73,7 +73,7 @@ export function PickerWheel({
         </div>
       </div>
 
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-2" aria-live="polite">
         <p className="text-xs text-primary font-semibold">{poolLabel}</p>
         {showTitle && (
           <div className="space-y-1">
@@ -89,7 +89,7 @@ export function PickerWheel({
           </div>
         )}
         {isShuffling && (
-          <div className="space-y-1" aria-live="polite">
+          <div className="space-y-1">
             <h3
               className={`text-xl font-bold text-text-primary font-display ${animateCards ? 'animate-pulse' : ''}`}
             >

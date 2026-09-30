@@ -9,6 +9,7 @@ import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 import IconButton from '@/shared/components/ui/IconButton';
 import Switch from '@/shared/components/ui/Switch';
 import useToastStore from '@/shared/stores/toastStore';
+import useAlertStore from '@/shared/stores/alertStore';
 import { classNames } from '@/shared/utils/classNames';
 import { ACCEPTED_IMAGE_TYPES, CROP_SIZE } from '../constants/avatarEditor';
 import { useAvatarCrop } from '../hooks/useAvatarCrop';
@@ -48,6 +49,7 @@ function OwnProfileEditor({
 }: OwnProfileEditorProps) {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
+  const { showAlert } = useAlertStore();
   const crop = useAvatarCrop({ isOpen: true });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -89,9 +91,29 @@ function OwnProfileEditor({
     setIsAvatarLoadFailed(false);
   }, [user?.photoURL]);
 
+  // Cảnh báo khi đóng/refresh trang trong lúc form hồ sơ còn thay đổi chưa lưu.
+  useEffect(() => {
+    if (!isEditing) return;
+    const originalName = user?.displayName || FALLBACK_DISPLAY_NAME;
+    const hasDraftChanges =
+      draftName !== originalName ||
+      draftBio !== (profile?.bio ?? '') ||
+      draftGender !== (profile?.gender ?? '') ||
+      draftDob !== (profile?.dob ?? '');
+    if (!hasDraftChanges) return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener('beforeunload', warnBeforeUnload);
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload);
+  }, [isEditing, draftName, draftBio, draftGender, draftDob, profile, user]);
+
   if (!user) return null;
   const displayName = user.displayName || FALLBACK_DISPLAY_NAME;
   const isHidden = profile?.isMovieListHidden ?? false;
+  const isEditingDirty =
+    draftName !== displayName ||
+    draftBio !== (profile?.bio ?? '') ||
+    draftGender !== (profile?.gender ?? '') ||
+    draftDob !== (profile?.dob ?? '');
 
   // useFocusTrap bắt Escape ở tầng document, phải chặn trước khi sự kiện nổi lên đó.
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -112,8 +134,21 @@ function OwnProfileEditor({
 
   const cancelEditing = () => {
     if (crop.isBusy) return;
-    crop.cancelCrop();
-    setIsEditing(false);
+    if (!isEditingDirty) {
+      crop.cancelCrop();
+      setIsEditing(false);
+      return;
+    }
+    showAlert({
+      title: 'Bỏ thay đổi hồ sơ?',
+      message: 'Các thay đổi chưa lưu sẽ mất nếu bạn thoát khỏi chế độ chỉnh sửa.',
+      type: 'warning',
+      confirmText: 'Bỏ thay đổi',
+      onConfirm: () => {
+        crop.cancelCrop();
+        setIsEditing(false);
+      },
+    });
   };
 
   const submitEditing = async () => {

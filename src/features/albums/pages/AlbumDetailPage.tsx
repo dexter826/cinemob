@@ -5,6 +5,7 @@ import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
 import { formatMovieDate } from '@/features/movies/utils/movieUtils';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
+import useAlertStore from '@/shared/stores/alertStore';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';
@@ -15,6 +16,7 @@ function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
   const { openDetailModal } = useMovieDetailStore();
+  const { showAlert } = useAlertStore();
   const {
     album,
     loading,
@@ -189,7 +191,15 @@ function AlbumDetailPage() {
                     movie={movie}
                     onClick={openDetailModal}
                     onEdit={() => {}}
-                    onDelete={() => handleRemoveMovie(movie)}
+                    onDelete={() =>
+                      showAlert({
+                        title: 'Bỏ phim khỏi album',
+                        message: `Bỏ "${movie.title}" khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
+                        type: 'danger',
+                        confirmText: 'Bỏ khỏi album',
+                        onConfirm: () => handleRemoveMovie(movie),
+                      })
+                    }
                   />
                 ))}
               </div>

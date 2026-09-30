@@ -30,7 +30,6 @@ function ToastList({
   const { toasts, removeToast } = useToastStore();
   const reducedMotion = useReducedMotion() ?? false;
   const items = toasts.filter((t) => types.includes(t.type));
-  if (items.length === 0) return null;
   return (
     <div role={role} aria-live={ariaLive} className="flex flex-col gap-3 items-center w-full">
       <AnimatePresence mode="popLayout">

@@ -16,6 +16,7 @@ import {
 import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
 import { IconButton } from '@/shared/components/ui/IconButton';
+import useAlertStore from '@/shared/stores/alertStore';
 
 // Sub-components
 import StatusToggle from './add-movie/StatusToggle';
@@ -81,6 +82,7 @@ function AddMovieModal() {
   const [activeTab, setActiveTab] = useState<'info' | 'review'>(
     initialData?.movieToEdit ? 'review' : 'info',
   );
+  const { showAlert } = useAlertStore();
 
   useEffect(() => {
     if (errors.title || errors.country || errors.releaseDate || errors.runtime || errors.seasons) {
@@ -91,10 +93,25 @@ function AddMovieModal() {
   const isEditMode = !!initialData?.movieToEdit;
   const submitDisabled = isSubmitting || !isDirty || (movieExists && !isEditMode);
 
+  // Chặn đóng modal khi form còn thay đổi chưa lưu.
+  const requestClose = () => {
+    if (isDirty && !isSubmitting) {
+      showAlert({
+        title: 'Bỏ thay đổi?',
+        message: 'Thay đổi chưa lưu sẽ mất nếu bạn đóng hộp thoại này.',
+        type: 'warning',
+        confirmText: 'Bỏ thay đổi',
+        onConfirm: closeAddModal,
+      });
+      return;
+    }
+    closeAddModal();
+  };
+
   return (
     <Dialog
       open={isOpen}
-      onClose={closeAddModal}
+      onClose={requestClose}
       titleId="add-movie-title"
       presentation="fullscreen-mobile"
       size="4xl"
@@ -108,7 +125,7 @@ function AddMovieModal() {
             {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
         </div>
-        <IconButton label="Đóng hộp thoại thêm phim" onClick={closeAddModal} variant="secondary">
+        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="secondary">
           <X size={18} aria-hidden="true" />
         </IconButton>
       </div>
@@ -396,7 +413,7 @@ function AddMovieModal() {
       </DialogBody>
 
       <div className="px-5 py-4 sm:px-6 border-t border-border flex flex-row items-center justify-end gap-2 shrink-0 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-        <Button variant="ghost" onClick={closeAddModal}>
+        <Button variant="ghost" onClick={requestClose}>
           {movieExists && !isEditMode ? 'Đóng' : 'Hủy'}
         </Button>
         <Button

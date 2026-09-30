@@ -52,20 +52,31 @@ function TVProgressSection({
       {!isCompleted && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-text-secondary ml-1">Mùa (Season)</label>
-            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default">
+            <span id="tv-season-label" className="text-xs font-semibold text-text-secondary ml-1">
+              Mùa (Season)
+            </span>
+            <div
+              role="group"
+              aria-labelledby="tv-season-label"
+              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default"
+            >
               <button
                 type="button"
+                aria-label="Giảm mùa"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
                 className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
-              <div className="flex-1 text-center font-bold text-sm text-text-main">
+              <div
+                className="flex-1 text-center font-bold text-sm text-text-main"
+                aria-live="polite"
+              >
                 {currentSeason}
               </div>
               <button
                 type="button"
+                aria-label="Tăng mùa"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
                 className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
@@ -74,20 +85,31 @@ function TVProgressSection({
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-text-secondary ml-1">Tập</label>
-            <div className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default">
+            <span id="tv-episode-label" className="text-xs font-semibold text-text-secondary ml-1">
+              Tập
+            </span>
+            <div
+              role="group"
+              aria-labelledby="tv-episode-label"
+              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default"
+            >
               <button
                 type="button"
+                aria-label="Giảm tập"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
                 className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
-              <div className="flex-1 text-center font-bold text-sm text-text-main">
+              <div
+                className="flex-1 text-center font-bold text-sm text-text-main"
+                aria-live="polite"
+              >
                 {currentEpisode}
               </div>
               <button
                 type="button"
+                aria-label="Tăng tập"
                 onClick={() => {
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
