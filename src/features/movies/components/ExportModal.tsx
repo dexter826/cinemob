@@ -101,8 +101,16 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Status Filter */}
             <div>
-              <label className="block text-xs text-text-muted mb-1.5">Trạng thái</label>
+              <label
+                htmlFor="export-status"
+                id="export-status-label"
+                className="block text-xs text-text-muted mb-1.5"
+              >
+                Trạng thái
+              </label>
               <CustomDropdown
+                id="export-status"
+                aria-labelledby="export-status-label"
                 options={[
                   { value: 'all', label: 'Tất cả' },
                   { value: 'history', label: 'Đã xem' },
@@ -121,8 +129,16 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Content Type Filter */}
             <div>
-              <label className="block text-xs text-text-muted mb-1.5">Loại nội dung</label>
+              <label
+                htmlFor="export-content-type"
+                id="export-content-type-label"
+                className="block text-xs text-text-muted mb-1.5"
+              >
+                Loại nội dung
+              </label>
               <CustomDropdown
+                id="export-content-type"
+                aria-labelledby="export-content-type-label"
                 options={[
                   { value: 'all', label: 'Tất cả' },
                   { value: 'movie', label: 'Phim lẻ' },
@@ -166,8 +182,16 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Year Filter */}
             <div>
-              <label className="block text-xs text-text-muted mb-1.5">Năm xem</label>
+              <label
+                htmlFor="export-year"
+                id="export-year-label"
+                className="block text-xs text-text-muted mb-1.5"
+              >
+                Năm xem
+              </label>
               <CustomDropdown
+                id="export-year"
+                aria-labelledby="export-year-label"
                 options={[
                   { value: '', label: 'Tất cả các năm' },
                   ...filterOptions.years.map((year) => ({ value: year, label: year.toString() })),
@@ -182,8 +206,16 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Country Filter */}
             <div>
-              <label className="block text-xs text-text-muted mb-1.5">Quốc gia</label>
+              <label
+                htmlFor="export-country"
+                id="export-country-label"
+                className="block text-xs text-text-muted mb-1.5"
+              >
+                Quốc gia
+              </label>
               <CustomDropdown
+                id="export-country"
+                aria-labelledby="export-country-label"
                 options={[
                   { value: '', label: 'Tất cả quốc gia' },
                   ...filterOptions.countries.map((country) => ({ value: country, label: country })),

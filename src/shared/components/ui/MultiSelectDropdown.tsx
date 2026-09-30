@@ -17,6 +17,7 @@ interface MultiSelectDropdownProps {
   maxHeight?: string;
   maxDisplay?: number;
   id?: string;
+  'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean | 'true' | 'false';
@@ -33,12 +34,14 @@ function MultiSelectDropdown({
   maxHeight = '250px',
   maxDisplay = 2,
   id,
+  'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
 }: MultiSelectDropdownProps) {
   const generatedId = useId();
   const controlId = id ?? `multiselect-${generatedId}`;
+  const triggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${controlId}` : undefined;
   const listboxId = `${controlId}-listbox`;
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -160,7 +163,8 @@ function MultiSelectDropdown({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls={listboxId}
-          aria-labelledby={ariaLabelledBy}
+          aria-label={ariaLabel}
+          aria-labelledby={triggerLabelledBy}
           aria-describedby={ariaDescribedBy}
           aria-invalid={ariaInvalid}
         >

@@ -136,10 +136,16 @@ export function PersonMovieSection({
               <div className="space-y-4">
                 <div className="text-xs font-semibold text-text-secondary">Lọc nâng cao</div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-text-secondary ml-1">
+                  <label
+                    htmlFor="person-movie-years"
+                    id="person-movie-years-label"
+                    className="text-xs font-semibold text-text-secondary ml-1"
+                  >
                     Năm phát hành
                   </label>
                   <MultiSelectDropdown
+                    id="person-movie-years"
+                    aria-labelledby="person-movie-years-label"
                     options={availableYears.map((year) => ({ value: year, label: year }))}
                     values={selectedYears}
                     onChange={(values) => onSelectedYearsChange(values.map((v) => v.toString()))}

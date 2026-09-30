@@ -169,10 +169,16 @@ function DashboardFilters({
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-text-muted mb-2 block">
+                <label
+                  htmlFor="df-content-type"
+                  id="df-content-type-label"
+                  className="text-xs font-medium text-text-muted mb-2 block"
+                >
                   Loại nội dung
                 </label>
                 <CustomDropdown
+                  id="df-content-type"
+                  aria-labelledby="df-content-type-label"
                   options={[
                     { value: 'all', label: 'Tất cả nội dung' },
                     { value: 'movie', label: 'Phim lẻ' },
@@ -186,10 +192,16 @@ function DashboardFilters({
 
               {activeTab === 'history' && (
                 <div>
-                  <label className="text-xs font-medium text-text-muted mb-2 block">
+                  <label
+                    htmlFor="df-watch-status"
+                    id="df-watch-status-label"
+                    className="text-xs font-medium text-text-muted mb-2 block"
+                  >
                     Trạng thái
                   </label>
                   <CustomDropdown
+                    id="df-watch-status"
+                    aria-labelledby="df-watch-status-label"
                     options={[
                       { value: 'all', label: 'Tất cả trạng thái' },
                       { value: 'watching', label: 'Đang theo dõi' },
@@ -246,10 +258,16 @@ function DashboardFilters({
               </div>
 
               <div>
-                <label className="text-xs font-medium text-text-muted mb-2 block">
+                <label
+                  htmlFor="df-source-type"
+                  id="df-source-type-label"
+                  className="text-xs font-medium text-text-muted mb-2 block"
+                >
                   Nguồn nội dung
                 </label>
                 <CustomDropdown
+                  id="df-source-type"
+                  aria-labelledby="df-source-type-label"
                   options={[
                     { value: 'all', label: 'Tất cả nguồn' },
                     { value: 'normal', label: 'Xem trực tiếp' },
@@ -263,8 +281,16 @@ function DashboardFilters({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-text-muted block">Năm xem</label>
+                  <label
+                    htmlFor="df-year"
+                    id="df-year-label"
+                    className="text-xs font-medium text-text-muted block"
+                  >
+                    Năm xem
+                  </label>
                   <CustomDropdown
+                    id="df-year"
+                    aria-labelledby="df-year-label"
                     options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
                     value={filters.year || ''}
                     onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
@@ -272,8 +298,16 @@ function DashboardFilters({
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-text-muted block">Quốc gia</label>
+                  <label
+                    htmlFor="df-country"
+                    id="df-country-label"
+                    className="text-xs font-medium text-text-muted block"
+                  >
+                    Quốc gia
+                  </label>
                   <CustomDropdown
+                    id="df-country"
+                    aria-labelledby="df-country-label"
                     options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
                     value={filters.country}
                     onChange={(value) => updateFilter('country', value as string)}

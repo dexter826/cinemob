@@ -169,6 +169,7 @@ function StatsPage() {
                   value={selectedYear}
                   onChange={(val) => setSelectedYear(val.toString())}
                   className="w-28"
+                  aria-label="Năm thống kê"
                 />
               </div>
             </div>

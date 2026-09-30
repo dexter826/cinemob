@@ -12,6 +12,7 @@ interface CustomDatePickerProps {
   minDate?: string;
   maxDate?: string;
   id?: string;
+  'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean | 'true' | 'false';
@@ -55,12 +56,14 @@ function CustomDatePicker({
   minDate,
   maxDate,
   id,
+  'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
 }: CustomDatePickerProps) {
   const generatedId = useId();
   const controlId = id ?? `date-picker-${generatedId}`;
+  const triggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${controlId}` : undefined;
   const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
@@ -376,7 +379,8 @@ function CustomDatePicker({
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         aria-controls={`${controlId}-dialog`}
-        aria-labelledby={ariaLabelledBy}
+        aria-label={ariaLabel}
+        aria-labelledby={triggerLabelledBy}
         aria-describedby={ariaDescribedBy}
         aria-invalid={ariaInvalid}
       >

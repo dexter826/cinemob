@@ -64,12 +64,18 @@ function MovieFormFields({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Media Type */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+          <label
+            htmlFor="movie-media-type"
+            id="movie-media-type-label"
+            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          >
             <Film size={14} className="text-primary" aria-hidden="true" />
             Loại hình
           </label>
           {isManualMode ? (
             <CustomDropdown
+              id="movie-media-type"
+              aria-labelledby="movie-media-type-label"
               options={[
                 { value: 'movie', label: 'Phim lẻ' },
                 { value: 'tv', label: 'Series' },
@@ -90,7 +96,11 @@ function MovieFormFields({
 
         {/* Country */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+          <label
+            htmlFor="movie-country"
+            id="movie-country-label"
+            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          >
             <Globe size={14} className="text-primary" aria-hidden="true" />
             Quốc gia
           </label>
@@ -99,6 +109,8 @@ function MovieFormFields({
             className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
           >
             <CustomDropdown
+              id="movie-country"
+              aria-labelledby="movie-country-label"
               options={countryOptions}
               value={formData.country}
               onChange={(value) => {
@@ -111,7 +123,11 @@ function MovieFormFields({
 
         {/* Release Date */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+          <label
+            htmlFor="movie-release-date"
+            id="movie-release-date-label"
+            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          >
             <Calendar size={14} className="text-primary" aria-hidden="true" />
             Ngày phát hành
           </label>
@@ -120,6 +136,8 @@ function MovieFormFields({
             className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
           >
             <CustomDatePicker
+              id="movie-release-date"
+              aria-labelledby="movie-release-date-label"
               value={formData.releaseDate}
               onChange={(val) => {
                 setFormData({ ...formData, releaseDate: val });
@@ -160,11 +178,17 @@ function MovieFormFields({
 
       {/* Genres */}
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+        <label
+          htmlFor="movie-genres"
+          id="movie-genres-label"
+          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+        >
           <Film size={14} className="text-primary" aria-hidden="true" />
           Thể loại phim
         </label>
         <MultiSelectDropdown
+          id="movie-genres"
+          aria-labelledby="movie-genres-label"
           options={genreOptions.map((g) => ({
             value: g.id,
             label: GENRE_TRANSLATIONS[g.name] || g.name,
