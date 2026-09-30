@@ -73,6 +73,7 @@ function MovieListSection({
           <Search
             size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
+            aria-hidden="true"
           />
           <label htmlFor="profile-search" className="sr-only">
             Tìm phim trong hồ sơ này
@@ -83,6 +84,8 @@ function MovieListSection({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm phim trong hồ sơ này…"
+            autoComplete="off"
+            spellCheck={false}
             className="w-full bg-surface border border-border rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors"
           />
           {searchQuery && (
@@ -91,7 +94,7 @@ function MovieListSection({
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors p-1"
               aria-label="Xóa từ khóa tìm kiếm"
             >
-              <X size={15} />
+              <X size={15} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -108,7 +111,7 @@ function MovieListSection({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 text-xs text-text-muted px-1">
+      <div className="flex items-center justify-between gap-3 text-xs text-text-muted px-1 tabular-nums">
         <span>
           {searchQuery.trim() ? (
             <>

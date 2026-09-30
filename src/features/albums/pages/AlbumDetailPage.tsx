@@ -113,7 +113,9 @@ function AlbumDetailPage() {
                 </label>
                 <input
                   id="album-name"
+                  name="album-name"
                   type="text"
+                  autoComplete="off"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
@@ -217,12 +219,16 @@ function AlbumDetailPage() {
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
                     size={16}
                     strokeWidth={1.5}
+                    aria-hidden="true"
                   />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm trong lịch sử…"
+                    aria-label="Tìm phim trong lịch sử để thêm vào album"
+                    autoComplete="off"
+                    spellCheck={false}
                     className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
                 </div>

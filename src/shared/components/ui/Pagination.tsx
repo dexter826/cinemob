@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +10,7 @@ interface PaginationProps {
 
 function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const [inputValue, setInputValue] = useState(currentPage.toString());
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   // Update input value when currentPage changes
   React.useEffect(() => {
@@ -17,7 +19,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
   const handlePageChange = (page: number) => {
     onPageChange(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +57,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         aria-label="Trang trước"
         className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
-        <ChevronLeft size={18} />
+        <ChevronLeft size={18} aria-hidden="true" />
       </button>
 
       {/* Desktop Pagination */}
@@ -106,6 +108,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             value={inputValue}
             onChange={handleInputChange}
             onBlur={handleInputBlur}
+            aria-label="Số trang muốn chuyển đến"
+            autoComplete="off"
             className="w-10 h-7 text-center bg-black/5 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-text-main focus:ring-1 focus:ring-primary/50 outline-none"
           />
           <span className="text-xs font-bold text-text-muted opacity-50">/ {totalPages}</span>
@@ -120,7 +124,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         aria-label="Trang sau"
         className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
-        <ChevronRight size={18} />
+        <ChevronRight size={18} aria-hidden="true" />
       </button>
     </div>
   );

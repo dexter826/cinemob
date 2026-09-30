@@ -195,6 +195,8 @@ function CustomDropdown({
                 onKeyDown={handleNavigationKey}
                 placeholder="Tìm kiếm…"
                 aria-label="Tìm kiếm tùy chọn"
+                autoComplete="off"
+                spellCheck={false}
                 className="w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted/50"
               />
             </div>

@@ -112,6 +112,8 @@ function Login() {
                 <img
                   src={film.poster}
                   alt=""
+                  width={300}
+                  height={450}
                   className="w-full h-full object-cover select-none"
                   loading="eager"
                   draggable={false}
@@ -119,7 +121,7 @@ function Login() {
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
                 <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums">
-                  <Star size={10} className="fill-secondary text-secondary" />
+                  <Star size={10} className="fill-secondary text-secondary" aria-hidden="true" />
                   <span>{film.rating}</span>
                 </div>
 
@@ -165,7 +167,7 @@ function Login() {
               {isLoading ? (
                 <Loader2 size={20} className="animate-spin text-primary" aria-hidden="true" />
               ) : (
-                <GoogleIcon className="w-5 h-5 shrink-0" />
+                <GoogleIcon className="w-5 h-5 shrink-0" aria-hidden="true" />
               )}
               <span className="text-sm font-semibold">
                 {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
@@ -173,7 +175,7 @@ function Login() {
             </button>
 
             <div className="flex items-center gap-2 text-xs text-text-muted">
-              <Shield size={14} className="shrink-0 text-primary" />
+              <Shield size={14} className="shrink-0 text-primary" aria-hidden="true" />
               <span>Bảo mật dữ liệu cá nhân qua tài khoản Google</span>
             </div>
           </div>
@@ -181,15 +183,15 @@ function Login() {
           {/* Feature Highlights / Value Points */}
           <div className="pt-4 border-t border-border-default space-y-2 text-xs text-text-muted">
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" />
+              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
               <span>Đồng bộ tức thì trên mọi thiết bị</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" />
+              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
               <span>Nhắc lịch chiếu tập mới của series đang theo dõi</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" />
+              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
               <span>Miễn phí, không quảng cáo</span>
             </div>
           </div>

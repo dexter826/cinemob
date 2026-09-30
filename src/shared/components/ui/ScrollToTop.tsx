@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowUpToLine } from 'lucide-react';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
 function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasModal, setHasModal] = useState(false);
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -40,7 +42,7 @@ function ScrollToTop() {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
   };
 
@@ -53,7 +55,7 @@ function ScrollToTop() {
           aria-label="Cuộn lên đầu trang"
           className="fixed bottom-20 md:bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
         >
-          <ArrowUpToLine size={24} />
+          <ArrowUpToLine size={24} aria-hidden="true" />
         </button>
       )}
     </>

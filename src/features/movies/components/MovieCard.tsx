@@ -44,12 +44,12 @@ function MovieCard(props: MovieCardProps) {
 
   const showProgressBar = movie.status === 'history';
 
-  const progressWidth =
+  const progressFraction =
     movie.media_type === 'tv'
       ? movie.progress?.is_completed
-        ? '100%'
-        : `${((movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)) * 100}%`
-      : '100%';
+        ? 1
+        : (movie.progress?.watched_episodes || 0) / (movie.total_episodes || 1)
+      : 1;
 
   return (
     <article className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative">
@@ -129,14 +129,14 @@ function MovieCard(props: MovieCardProps) {
           <div className="flex items-center space-x-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 shadow-sm">
             {movie.media_type === 'tv' ? (
               <>
-                <Tv size={11} className="text-info" strokeWidth={1.5} />
+                <Tv size={11} className="text-info" strokeWidth={1.5} aria-hidden="true" />
                 <span className="text-[10px] font-semibold text-white tracking-wider">
                   {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
                 </span>
               </>
             ) : (
               <>
-                <Film size={11} className="text-success" strokeWidth={1.5} />
+                <Film size={11} className="text-success" strokeWidth={1.5} aria-hidden="true" />
                 <span className="text-[10px] font-semibold text-white tracking-wider uppercase">
                   Phim
                 </span>
@@ -157,8 +157,8 @@ function MovieCard(props: MovieCardProps) {
         {showProgressBar && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 overflow-hidden z-20">
             <div
-              className="h-full bg-primary transition-[width] duration-700 ease-out"
-              style={{ width: progressWidth }}
+              className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out"
+              style={{ transform: `scaleX(${progressFraction})` }}
             />
           </div>
         )}
@@ -186,7 +186,7 @@ function MovieCard(props: MovieCardProps) {
               </>
             )}
             <div className="flex items-center gap-1">
-              <Calendar size={10} className="opacity-70" strokeWidth={1.5} />
+              <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
               <span>{formatMovieDate(movie.watched_at)}</span>
             </div>
           </div>
@@ -212,7 +212,8 @@ function MovieCard(props: MovieCardProps) {
                 className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded-md text-primary shrink-0"
                 title="Có đánh giá"
               >
-                <MessageCircle size={11} strokeWidth={1.5} />
+                <MessageCircle size={11} strokeWidth={1.5} aria-hidden="true" />
+                <span className="sr-only">Có đánh giá</span>
               </div>
             )}
           </div>

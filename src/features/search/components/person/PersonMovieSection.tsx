@@ -71,12 +71,15 @@ export function PersonMovieSection({
             <Search
               className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
               size={18}
+              aria-hidden="true"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchQueryChange(e.target.value)}
               placeholder="Tìm phim của nghệ sĩ này…"
+              autoComplete="off"
+              spellCheck={false}
               className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-xl sm:rounded-2xl pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-colors"
             />
             {searchQuery && (
@@ -98,7 +101,7 @@ export function PersonMovieSection({
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
             className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
           >
-            <Filter size={20} />
+            <Filter size={20} aria-hidden="true" />
           </button>
 
           {showFilters && (
@@ -113,19 +116,23 @@ export function PersonMovieSection({
                     onClick={() => onSortByChange('year')}
                     className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
-                    <Calendar size={14} /> <span>Năm</span>
+                    <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
                     className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
-                    <Type size={14} /> <span>Tên</span>
+                    <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-black/5 dark:bg-white/5 text-text-muted hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
                   >
-                    {sortOrder === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+                    {sortOrder === 'asc' ? (
+                      <ArrowUp size={14} aria-hidden="true" />
+                    ) : (
+                      <ArrowDown size={14} aria-hidden="true" />
+                    )}
                     <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
                   </button>
                 </div>
@@ -159,7 +166,7 @@ export function PersonMovieSection({
 
         {paginatedMovies.length > 0 && (
           <div className="flex items-center justify-end">
-            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border">
+            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border tabular-nums">
               Hiển thị {paginatedMovies.length} / {filteredCount} mục
             </span>
           </div>

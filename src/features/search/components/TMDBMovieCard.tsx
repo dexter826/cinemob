@@ -55,7 +55,7 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
           )}
 
           {rating && (
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-warning">
+            <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-warning tabular-nums">
               <Star size={10} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
               <span>{rating}</span>
             </div>
@@ -97,8 +97,8 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
             {subTitle || '\u00A0'}
           </p>
           {year && (
-            <div className="flex items-center gap-1 text-xs text-text-muted font-medium shrink-0">
-              <Calendar size={10} className="opacity-70" strokeWidth={1.5} />
+            <div className="flex items-center gap-1 text-xs text-text-muted font-medium shrink-0 tabular-nums">
+              <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
               <span>{year}</span>
             </div>
           )}

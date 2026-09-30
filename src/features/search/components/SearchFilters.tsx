@@ -52,12 +52,18 @@ function SearchFilters({
       <div className="relative w-full group" ref={containerRef}>
         <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {isSuggesting ? (
-            <Loader2 className="text-primary animate-spin" size={18} strokeWidth={1.5} />
+            <Loader2
+              className="text-primary animate-spin"
+              size={18}
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
           ) : (
             <Search
               className="text-text-muted group-focus-within:text-primary transition-colors"
               size={18}
               strokeWidth={1.5}
+              aria-hidden="true"
             />
           )}
         </div>
@@ -65,6 +71,8 @@ function SearchFilters({
           type="text"
           placeholder="Nhập tên phim hoặc series…"
           value={filters.query}
+          autoComplete="off"
+          spellCheck={false}
           onFocus={() => {
             if (suggestions.length > 0) setShowSuggestions(true);
           }}
@@ -110,21 +118,36 @@ function SearchFilters({
                       <div className="flex items-center gap-3 mt-0.5">
                         <div className="flex items-center gap-1 text-xs text-text-muted">
                           {isTV ? (
-                            <Tv size={12} className="text-info" strokeWidth={1.5} />
+                            <Tv
+                              size={12}
+                              className="text-info"
+                              strokeWidth={1.5}
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <Film size={12} className="text-success" strokeWidth={1.5} />
+                            <Film
+                              size={12}
+                              className="text-success"
+                              strokeWidth={1.5}
+                              aria-hidden="true"
+                            />
                           )}
                           <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
                         </div>
                         {year && (
                           <div className="flex items-center gap-1 text-xs text-text-muted">
-                            <Calendar size={12} strokeWidth={1.5} />
+                            <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
                             <span>{year}</span>
                           </div>
                         )}
                         {(movie.vote_average ?? 0) > 0 && (
                           <div className="flex items-center gap-1 text-xs text-warning font-bold">
-                            <Star size={12} fill="currentColor" strokeWidth={1.5} />
+                            <Star
+                              size={12}
+                              fill="currentColor"
+                              strokeWidth={1.5}
+                              aria-hidden="true"
+                            />
                             <span>{(movie.vote_average ?? 0).toFixed(1)}</span>
                           </div>
                         )}
@@ -137,7 +160,7 @@ function SearchFilters({
                 onClick={handleSearch}
                 className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Search size={14} strokeWidth={1.5} />
+                <Search size={14} strokeWidth={1.5} aria-hidden="true" />
                 Xem tất cả kết quả cho "{filters.query}"
               </button>
             </div>
@@ -151,7 +174,7 @@ function SearchFilters({
               aria-label="Xóa nội dung tìm kiếm"
               className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer"
             >
-              <X size={20} strokeWidth={1.5} />
+              <X size={20} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
           <button
@@ -166,7 +189,7 @@ function SearchFilters({
 
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default dark:border-white/5 rounded-2xl px-3 h-11">
-          <Filter size={16} className="text-text-muted" strokeWidth={1.5} />
+          <Filter size={16} className="text-text-muted" strokeWidth={1.5} aria-hidden="true" />
           <span className="text-xs font-bold text-text-secondary">Lọc theo</span>
         </div>
 
@@ -227,7 +250,7 @@ function SearchFilters({
             aria-label="Đặt lại toàn bộ bộ lọc"
             className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
           >
-            <RotateCcw size={14} strokeWidth={1.5} />
+            <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
             <span>Đặt lại</span>
           </button>
         )}

@@ -102,7 +102,13 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
         </div>
 
         <div className="w-full md:w-2/5 h-48 md:h-auto relative shrink-0">
-          <img src={posterUrl} alt={mainTitle} className="w-full h-full object-cover" />
+          <img
+            src={posterUrl}
+            alt={mainTitle}
+            width={300}
+            height={450}
+            className="w-full h-full object-cover"
+          />
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-linear-to-t from-surface-elevated via-transparent to-transparent md:bg-linear-to-r md:from-transparent md:to-surface-elevated"
@@ -147,7 +153,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 <div>
                   <h2
                     id="movie-detail-title"
-                    className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-1 tracking-tight font-display"
+                    className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-1 tracking-tight font-display text-balance"
                   >
                     {mainTitle}
                   </h2>
@@ -159,7 +165,12 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm text-text-muted">
                   {movie.release_date && (
                     <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
-                      <Calendar size={14} className="text-info" strokeWidth={1.5} />
+                      <Calendar
+                        size={14}
+                        className="text-info"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                       <span className="font-medium tabular-nums">
                         {new Date(movie.release_date).getFullYear()}
                       </span>
@@ -169,7 +180,12 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     ? movie.seasons && movie.seasons > 0
                     : movie.runtime && movie.runtime > 0) && (
                     <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
-                      <Clock size={14} className="text-primary" strokeWidth={1.5} />
+                      <Clock
+                        size={14}
+                        className="text-primary"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                       <span className="font-medium tabular-nums">
                         {movie.media_type === 'tv'
                           ? `${movie.seasons} Mùa`
@@ -179,7 +195,12 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                   )}
                   {!!movie.rating && movie.rating > 0 && (
                     <div className="flex items-center gap-1.5 bg-warning/10 px-3 py-1 rounded-full border border-warning/20 dark:border-warning/10">
-                      <Star size={14} className="text-warning fill-warning" strokeWidth={1.5} />
+                      <Star
+                        size={14}
+                        className="text-warning fill-warning"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                       <span className="font-bold text-warning tabular-nums">
                         {movie.rating.toFixed(1)}
                       </span>
@@ -209,11 +230,13 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     </div>
                     <div className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden shadow-inner">
                       <div
-                        className="h-full bg-primary transition-[width] duration-700 ease-out rounded-full"
+                        className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out rounded-full"
                         style={{
-                          width: movie.progress.is_completed
-                            ? '100%'
-                            : `${((movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)) * 100}%`,
+                          transform: `scaleX(${
+                            movie.progress.is_completed
+                              ? 1
+                              : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)
+                          })`,
                         }}
                       />
                     </div>
@@ -223,7 +246,12 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 {movie.genres && (
                   <div className="flex items-center gap-2 sm:gap-2.5 text-text-muted text-xs sm:text-sm">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default dark:border-white/5">
-                      <Film size={14} className="sm:w-4 sm:h-4" strokeWidth={1.5} />
+                      <Film
+                        size={14}
+                        className="sm:w-4 sm:h-4"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                     </div>
                     <span className="line-clamp-2 font-medium">
                       {getTranslatedGenres(movie.genres)}
@@ -243,7 +271,12 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 {movie.review && (
                   <div className="bg-warning/5 dark:bg-warning/5 rounded-2xl p-4 sm:p-5 border border-warning/20 dark:border-warning/10">
                     <h3 className="text-base sm:text-lg font-bold text-text-main mb-2.5 flex items-center gap-2 tracking-tight">
-                      <Star size={16} className="text-warning fill-warning" strokeWidth={1.5} />
+                      <Star
+                        size={16}
+                        className="text-warning fill-warning"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                       Đánh giá của bạn
                     </h3>
                     <p className="text-text-muted leading-relaxed text-xs sm:text-sm md:text-base">
@@ -261,6 +294,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                             size={16}
                             className="sm:w-[18px] sm:h-[18px] text-info"
                             strokeWidth={1.5}
+                            aria-hidden="true"
                           />{' '}
                           Đạo diễn
                         </h3>
@@ -279,6 +313,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                             size={16}
                             className="sm:w-[18px] sm:h-[18px] text-primary"
                             strokeWidth={1.5}
+                            aria-hidden="true"
                           />{' '}
                           Diễn viên
                         </h3>
@@ -315,7 +350,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                           : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
                       }`}
                     >
-                      <Play size={18} fill="currentColor" strokeWidth={1.5} />
+                      <Play size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
                       <span>{videos.length > 0 ? 'Xem trailer' : 'Không có trailer'}</span>
                     </button>
                   ) : (
@@ -329,7 +364,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                           : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
                       }`}
                     >
-                      <FolderPlus size={18} strokeWidth={1.5} />
+                      <FolderPlus size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Thêm vào Album</span>
                     </button>
                   )}

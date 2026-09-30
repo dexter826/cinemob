@@ -93,6 +93,8 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                     : logoText
                 }
                 alt=""
+                width={200}
+                height={300}
                 className="w-full h-full object-cover"
               />
             </span>
@@ -129,6 +131,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 value={newAlbumName}
                 onChange={(e) => setNewAlbumName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
+                autoComplete="off"
                 className="w-full h-11 px-5 rounded-2xl border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
                 autoFocus
               />

@@ -65,7 +65,7 @@ function SearchResults({
       <>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <Sparkles className="text-primary shrink-0" size={18} />
+            <Sparkles className="text-primary shrink-0" size={18} aria-hidden="true" />
             <h2 className="text-lg sm:text-xl font-bold text-primary truncate">Đề xuất cho bạn</h2>
           </div>
           <button
@@ -74,7 +74,7 @@ function SearchResults({
             disabled={isAiLoading}
             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
           >
-            <RotateCcw size={16} />
+            <RotateCcw size={16} aria-hidden="true" />
             <span>Làm mới</span>
           </button>
         </div>
@@ -89,7 +89,7 @@ function SearchResults({
           </p>
         </div>
         <div className="flex items-center gap-2 mb-4">
-          <Star className="text-primary shrink-0" size={18} />
+          <Star className="text-primary shrink-0" size={18} aria-hidden="true" />
           <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
@@ -116,7 +116,7 @@ function SearchResults({
             {watchedMoviesCount >= 3 && (
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Sparkles className="text-primary shrink-0" size={18} />
+                  <Sparkles className="text-primary shrink-0" size={18} aria-hidden="true" />
                   <h2 className="text-lg sm:text-xl font-bold text-primary truncate">
                     Đề xuất cho bạn
                   </h2>
@@ -132,7 +132,7 @@ function SearchResults({
                       onClick={() => refreshRecommendations(userId, true)}
                       className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
                     >
-                      <RotateCcw size={14} />
+                      <RotateCcw size={14} aria-hidden="true" />
                       <span>Thử lại</span>
                     </button>
                   </div>
@@ -143,7 +143,7 @@ function SearchResults({
                     disabled={isAiLoading}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={16} aria-hidden="true" />
                     <span>Làm mới</span>
                   </button>
                 )}
@@ -164,7 +164,7 @@ function SearchResults({
             )}
 
             <div className="flex items-center gap-2 mb-4">
-              <Star className="text-primary shrink-0" size={18} />
+              <Star className="text-primary shrink-0" size={18} aria-hidden="true" />
               <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
             </div>
           </>

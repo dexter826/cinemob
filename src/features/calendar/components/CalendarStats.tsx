@@ -18,10 +18,10 @@ function CalendarStats({
       <div className="bg-surface border border-border-default rounded-2xl p-4 sm:p-5 ">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0">
-            <Tv size={24} className="text-primary" />
+            <Tv size={24} className="text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate">
+            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
               {tvSeriesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
@@ -33,10 +33,10 @@ function CalendarStats({
       <div className="bg-surface border border-border-default rounded-2xl p-4 sm:p-5 md:p-6 ">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0">
-            <Bell size={24} className="text-primary" />
+            <Bell size={24} className="text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate">
+            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
               {upcomingEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
@@ -48,10 +48,10 @@ function CalendarStats({
       <div className="bg-surface border border-border-default rounded-2xl p-4 sm:p-5 md:p-6 ">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0">
-            <Calendar size={24} className="text-primary" />
+            <Calendar size={24} className="text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate">
+            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
               {todayEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
@@ -63,10 +63,10 @@ function CalendarStats({
       <div className="bg-surface border border-border-default rounded-2xl p-4 sm:p-5 md:p-6 ">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shrink-0">
-            <Clock size={24} className="text-primary" />
+            <Clock size={24} className="text-primary" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate">
+            <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
               {thisWeekEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">

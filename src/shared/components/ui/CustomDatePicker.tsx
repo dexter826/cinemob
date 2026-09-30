@@ -261,7 +261,7 @@ function CustomDatePicker({
           className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
           aria-label="Năm trước"
         >
-          <ChevronLeft size={14} className="text-text-muted -mr-1.5" />
+          <ChevronLeft size={14} className="text-text-muted -mr-1.5" aria-hidden="true" />
           <ChevronLeft size={14} className="text-text-muted" />
         </button>
         <span className="text-sm font-semibold text-text-main">{viewDate.getFullYear()}</span>
@@ -271,7 +271,7 @@ function CustomDatePicker({
           className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
           aria-label="Năm sau"
         >
-          <ChevronRight size={14} className="text-text-muted -mr-1.5" />
+          <ChevronRight size={14} className="text-text-muted -mr-1.5" aria-hidden="true" />
           <ChevronRight size={14} className="text-text-muted" />
         </button>
       </div>
@@ -284,7 +284,7 @@ function CustomDatePicker({
           className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
           aria-label="Tháng trước"
         >
-          <ChevronLeft size={16} className="text-text-muted" />
+          <ChevronLeft size={16} className="text-text-muted" aria-hidden="true" />
         </button>
         <span className="text-sm font-medium text-text-main">{MONTHS_VI[viewDate.getMonth()]}</span>
         <button
@@ -293,7 +293,7 @@ function CustomDatePicker({
           className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
           aria-label="Tháng sau"
         >
-          <ChevronRight size={16} className="text-text-muted" />
+          <ChevronRight size={16} className="text-text-muted" aria-hidden="true" />
         </button>
       </div>
 
@@ -385,7 +385,7 @@ function CustomDatePicker({
         aria-invalid={ariaInvalid}
       >
         <div className="flex items-center gap-2">
-          <Calendar size={16} className="text-text-muted" />
+          <Calendar size={16} className="text-text-muted" aria-hidden="true" />
           <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
             {value ? formatDisplayDate(value) : placeholder}
           </span>

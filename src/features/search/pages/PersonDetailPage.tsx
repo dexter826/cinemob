@@ -117,7 +117,7 @@ function PersonDetailPage() {
                         {person.birthday && (
                           <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                              <Calendar size={18} className="text-primary" />
+                              <Calendar size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
                               <div className="text-xs font-semibold text-text-secondary">
@@ -133,7 +133,7 @@ function PersonDetailPage() {
                         {person.deathday && (
                           <div className="flex items-center gap-4 p-3 bg-error/5 rounded-2xl border border-error/20">
                             <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center border border-error/20">
-                              <Calendar size={18} className="text-error" />
+                              <Calendar size={18} className="text-error" aria-hidden="true" />
                             </div>
                             <div>
                               <div className="text-xs font-semibold text-danger">Ngày mất</div>
@@ -149,7 +149,7 @@ function PersonDetailPage() {
                         {person.birthday && !person.deathday && (
                           <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                              <Users size={18} className="text-primary" />
+                              <Users size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
                               <div className="text-xs font-semibold text-text-secondary">Tuổi</div>
@@ -175,7 +175,7 @@ function PersonDetailPage() {
                     {person.place_of_birth && (
                       <div className="mt-4 flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                          <MapPin size={18} className="text-primary" />
+                          <MapPin size={18} className="text-primary" aria-hidden="true" />
                         </div>
                         <div>
                           <div className="text-xs font-semibold text-text-secondary">Nơi sinh</div>
@@ -191,7 +191,11 @@ function PersonDetailPage() {
                         Tiểu sử
                       </h2>
                       <div className="text-text-muted leading-relaxed text-sm">
-                        <p className={showFullBio ? 'whitespace-pre-wrap' : 'line-clamp-4'}>
+                        <p
+                          className={
+                            showFullBio ? 'whitespace-pre-wrap break-words' : 'line-clamp-4'
+                          }
+                        >
                           {person.biography}
                         </p>
                         {person.biography.length > 200 && (
@@ -201,11 +205,11 @@ function PersonDetailPage() {
                           >
                             {showFullBio ? (
                               <>
-                                Thu gọn <ChevronUp size={14} />
+                                Thu gọn <ChevronUp size={14} aria-hidden="true" />
                               </>
                             ) : (
                               <>
-                                Xem thêm <ChevronDown size={14} />
+                                Xem thêm <ChevronDown size={14} aria-hidden="true" />
                               </>
                             )}
                           </button>

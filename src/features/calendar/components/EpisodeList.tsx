@@ -74,7 +74,7 @@ function EpisodeList({
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default opacity-40">
-              <Info size={32} className="text-text-muted" />
+              <Info size={32} className="text-text-muted" aria-hidden="true" />
             </div>
             <p className="text-text-secondary font-semibold text-xs">
               {selectedDate ? 'Không có tập phim nào' : 'Chưa có lịch phát sóng'}
@@ -104,6 +104,8 @@ function EpisodeList({
                         <img
                           src={getTMDBImageUrl(ep.posterPath)}
                           alt={ep.seriesName}
+                          width={140}
+                          height={210}
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
@@ -118,7 +120,7 @@ function EpisodeList({
                           </span>
                           {ep.episode.runtime && (
                             <span className="text-xs font-bold text-text-muted flex items-center gap-1 opacity-60">
-                              <Clock size={12} /> {ep.episode.runtime}m
+                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}m
                             </span>
                           )}
                         </div>

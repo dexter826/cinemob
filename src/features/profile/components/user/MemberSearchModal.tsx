@@ -48,6 +48,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
           <Search
             size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
+            aria-hidden="true"
           />
           <label htmlFor="member-search-input" className="sr-only">
             Tìm thành viên theo email
@@ -59,6 +60,8 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Tìm theo email…"
+            autoComplete="off"
+            spellCheck={false}
             className="w-full bg-surface border border-border rounded-2xl pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus:outline-none focus:border-primary transition-colors"
           />
           {searchText && (

@@ -220,7 +220,7 @@ function MovieFormFields({
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
           className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors resize-none"
-          placeholder="Giới thiệu ngắn về cốt truyện..."
+          placeholder="Giới thiệu ngắn về cốt truyện…"
         />
       </div>
     </div>

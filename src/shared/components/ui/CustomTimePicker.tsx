@@ -261,7 +261,7 @@ function CustomTimePicker({
         aria-invalid={ariaInvalid}
       >
         <div className="flex items-center gap-2">
-          <Clock size={16} className="text-text-muted" />
+          <Clock size={16} className="text-text-muted" aria-hidden="true" />
           <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
             {value || placeholder}
           </span>

@@ -180,7 +180,7 @@ function AddMovieModal() {
                   role="tab"
                   aria-selected={activeTab === 'info'}
                   onClick={() => setActiveTab('info')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Film size={15} aria-hidden="true" />
                   <span>Thông tin phim</span>
@@ -190,7 +190,7 @@ function AddMovieModal() {
                   role="tab"
                   aria-selected={activeTab === 'review'}
                   onClick={() => setActiveTab('review')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-xl flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Star size={15} aria-hidden="true" />
                   <span>Đánh giá</span>
@@ -217,7 +217,7 @@ function AddMovieModal() {
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-bold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
-                        placeholder="Tên gốc của phim..."
+                        placeholder="Tên gốc của phim…"
                       />
                     </div>
                     <div className="space-y-2">
@@ -234,7 +234,7 @@ function AddMovieModal() {
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
                         className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-bold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50"
-                        placeholder="Tên tiếng Việt..."
+                        placeholder="Tên tiếng Việt…"
                       />
                     </div>
                   </div>
@@ -253,7 +253,7 @@ function AddMovieModal() {
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
                       className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-medium text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
-                      placeholder="https://..."
+                      placeholder="https://…"
                     />
                   </div>
 
@@ -357,7 +357,7 @@ function AddMovieModal() {
                         <CustomDatePicker
                           value={formData.date}
                           onChange={(val) => setFormData({ ...formData, date: val })}
-                          placeholder="Chọn ngày..."
+                          placeholder="Chọn ngày…"
                         />
                       </div>
                       <div className="space-y-2">
@@ -371,7 +371,7 @@ function AddMovieModal() {
                         <CustomTimePicker
                           value={formData.time}
                           onChange={(val) => setFormData({ ...formData, time: val })}
-                          placeholder="Chọn giờ..."
+                          placeholder="Chọn giờ…"
                         />
                       </div>
                     </div>

@@ -16,7 +16,7 @@ function SearchHeader({ hasDiscoverMovies }: SearchHeaderProps) {
           onClick={() => navigate(-1)}
           className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer"
         >
-          <ArrowLeft size={24} />
+          <ArrowLeft size={24} aria-hidden="true" />
         </button>
         <h1 className="text-2xl font-bold">
           {hasDiscoverMovies ? 'Duyệt tất cả phim' : 'Tìm kiếm phim'}

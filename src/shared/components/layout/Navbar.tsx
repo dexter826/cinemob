@@ -164,6 +164,7 @@ function Navbar() {
                 )}
                 <ChevronDown
                   size={14}
+                  aria-hidden="true"
                   className={`hidden md:block transition-colors shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
@@ -187,7 +188,7 @@ function Navbar() {
                       onClick={closeDropdown}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
-                      <User size={18} strokeWidth={1.5} />
+                      <User size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Hồ sơ</span>
                     </Link>
                     <button
@@ -199,7 +200,7 @@ function Navbar() {
                       }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
                     >
-                      <Download size={18} strokeWidth={1.5} />
+                      <Download size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Xuất dữ liệu</span>
                     </button>
 
@@ -219,7 +220,7 @@ function Navbar() {
                       }}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-xl"
                     >
-                      <LogOut size={18} strokeWidth={1.5} />
+                      <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Đăng xuất</span>
                     </button>
                   </div>

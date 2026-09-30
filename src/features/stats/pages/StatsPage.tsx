@@ -69,6 +69,7 @@ function StatsPage() {
 
   const [selectedYear, setSelectedYear] = useState<string>('');
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   // Danh sách năm cho dropdown.
   const yearOptions = useMemo(
@@ -212,6 +213,7 @@ function StatsPage() {
                     radius={[4, 4, 0, 0]}
                     barSize={isSmallScreen ? 12 : 24}
                     animationDuration={1000}
+                    isAnimationActive={!prefersReducedMotion}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -238,7 +240,12 @@ function StatsPage() {
                       <span className="font-bold text-base text-text-main tabular-nums">
                         {rating}
                       </span>
-                      <Star size={12} className="fill-warning text-warning" strokeWidth={1.5} />
+                      <Star
+                        size={12}
+                        className="fill-warning text-warning"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                     </div>
                     <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
                       <div

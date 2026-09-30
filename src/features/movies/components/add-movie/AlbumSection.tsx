@@ -31,7 +31,7 @@ function AlbumSection({
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-xs font-medium text-text-muted flex items-center gap-1.5 ml-1">
-          <FolderPlus size={14} className="text-primary" />{' '}
+          <FolderPlus size={14} className="text-primary" aria-hidden="true" />{' '}
           {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
         </label>
         <button
@@ -41,11 +41,11 @@ function AlbumSection({
         >
           {showCreateAlbum ? (
             <>
-              <X size={12} /> Hủy
+              <X size={12} aria-hidden="true" /> Hủy
             </>
           ) : (
             <>
-              <Plus size={12} /> Tạo mới
+              <Plus size={12} aria-hidden="true" /> Tạo mới
             </>
           )}
         </button>
@@ -68,7 +68,11 @@ function AlbumSection({
             disabled={creatingAlbum || !newAlbumName.trim()}
             className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:shadow-premium disabled:opacity-40 transition-colors shadow-lg shadow-primary/20"
           >
-            {creatingAlbum ? <Loader2 size={18} className="animate-spin" /> : 'Tạo'}
+            {creatingAlbum ? (
+              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+            ) : (
+              'Tạo'
+            )}
           </button>
         </div>
       )}
@@ -77,7 +81,7 @@ function AlbumSection({
         options={albums.map((album) => ({ value: album.docId || '', label: album.name }))}
         values={selectedAlbumIds}
         onChange={(values) => setSelectedAlbumIds(values as string[])}
-        placeholder="Tìm hoặc chọn album..."
+        placeholder="Tìm hoặc chọn album…"
         searchable={true}
         maxDisplay={3}
         className="w-full"

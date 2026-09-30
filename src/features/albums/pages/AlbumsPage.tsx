@@ -85,9 +85,11 @@ function AlbumsPage() {
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
                 size={16}
                 strokeWidth={1.5}
+                aria-hidden="true"
               />
               <input
                 id="create-album-name"
+                name="album-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -101,7 +103,7 @@ function AlbumsPage() {
             disabled={creating || loading}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
           >
-            <Plus size={16} strokeWidth={1.5} />
+            <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
             <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>
           </button>
         </div>
@@ -142,6 +144,8 @@ function AlbumsPage() {
                         'w500',
                       )}
                       alt=""
+                      width={300}
+                      height={450}
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />

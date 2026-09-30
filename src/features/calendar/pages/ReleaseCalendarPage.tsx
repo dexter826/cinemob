@@ -22,7 +22,7 @@ const getPushStatus = (
 };
 
 const PUSH_LABEL: Record<PushStatus, string> = {
-  loading: 'Đang xử lý...',
+  loading: 'Đang xử lý…',
   on: 'Đã bật',
   blocked: 'Bị chặn',
   off: 'Thông báo',

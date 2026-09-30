@@ -71,9 +71,13 @@ function DashboardFilters({
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
             size={16}
             strokeWidth={1.5}
+            aria-hidden="true"
           />
           <input
             type="text"
+            name="library-search"
+            autoComplete="off"
+            spellCheck={false}
             value={filters.searchQuery}
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
@@ -103,7 +107,11 @@ function DashboardFilters({
               : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
           }`}
         >
-          {showFilters ? <X size={18} strokeWidth={1.5} /> : <Filter size={18} strokeWidth={1.5} />}
+          {showFilters ? (
+            <X size={18} strokeWidth={1.5} aria-hidden="true" />
+          ) : (
+            <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
+          )}
         </button>
       </div>
 
@@ -123,7 +131,7 @@ function DashboardFilters({
                     : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
-                <Calendar size={13} strokeWidth={1.5} />
+                <Calendar size={13} strokeWidth={1.5} aria-hidden="true" />
                 <span>Ngày</span>
               </button>
               <button
@@ -134,7 +142,7 @@ function DashboardFilters({
                     : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
                 }`}
               >
-                <Type size={13} strokeWidth={1.5} />
+                <Type size={13} strokeWidth={1.5} aria-hidden="true" />
                 <span>Tên</span>
               </button>
               <button
@@ -144,9 +152,9 @@ function DashboardFilters({
                 aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
               >
                 {filters.sortOrder === 'asc' ? (
-                  <ArrowUp size={16} strokeWidth={1.5} />
+                  <ArrowUp size={16} strokeWidth={1.5} aria-hidden="true" />
                 ) : (
-                  <ArrowDown size={16} strokeWidth={1.5} />
+                  <ArrowDown size={16} strokeWidth={1.5} aria-hidden="true" />
                 )}
               </button>
             </div>
@@ -253,6 +261,7 @@ function DashboardFilters({
                           size={14}
                           fill={isActive ? 'currentColor' : 'none'}
                           strokeWidth={1.5}
+                          aria-hidden="true"
                         />
                       </button>
                     );

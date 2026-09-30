@@ -19,7 +19,7 @@ function Footer() {
           </div>
           <p className="text-xs text-text-muted mt-1.5 flex items-center justify-center md:justify-start gap-1">
             Cine Over B**ch
-            <HandCoins className="w-3 h-3 text-primary" />
+            <HandCoins className="w-3 h-3 text-primary" aria-hidden="true" />
           </p>
         </div>
 
@@ -36,7 +36,7 @@ function Footer() {
                 className="text-text-muted hover:text-primary transition-colors duration-200"
                 aria-label={link.label}
               >
-                <Icon size={20} strokeWidth={1.5} />
+                <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
               </a>
             );
           })}

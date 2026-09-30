@@ -52,8 +52,8 @@ function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
             <span />
           )}
           {!!movie.rating && movie.rating > 0 && (
-            <span className="flex items-center gap-1 font-semibold text-text-main">
-              <Star size={13} className="text-amber-400 fill-amber-400" />
+            <span className="flex items-center gap-1 font-semibold text-text-main tabular-nums">
+              <Star size={13} className="text-amber-400 fill-amber-400" aria-hidden="true" />
               {movie.rating.toFixed(1)}
             </span>
           )}

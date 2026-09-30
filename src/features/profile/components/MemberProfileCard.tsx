@@ -45,7 +45,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
       <ProfileMeta gender={profile.gender} dob={profile.dob} className="mt-1 items-center" />
 
       {profile.bio ? (
-        <p className="mt-3 text-sm text-text-secondary leading-relaxed whitespace-pre-line max-w-prose">
+        <p className="mt-3 text-sm text-text-secondary leading-relaxed whitespace-pre-line break-words max-w-prose">
           {profile.bio}
         </p>
       ) : (

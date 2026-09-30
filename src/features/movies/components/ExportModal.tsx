@@ -95,8 +95,8 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
           {/* Filters */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-text-muted" />
-              <label className="text-sm font-medium text-text-muted">Bộ lọc dữ liệu</label>
+              <Filter size={16} className="text-text-muted" aria-hidden="true" />
+              <span className="text-sm font-medium text-text-muted">Bộ lọc dữ liệu</span>
             </div>
 
             {/* Status Filter */}
