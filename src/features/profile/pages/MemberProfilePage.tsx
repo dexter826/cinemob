@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { EyeOff, Link2, Users } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import useMovieStore from '@/features/movies/stores/movieStore';
@@ -52,7 +52,25 @@ function MemberProfilePage() {
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'common' | 'all'>('common');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTabState] = useState<'common' | 'all'>(() =>
+    searchParams.get('tab') === 'all' ? 'all' : 'common',
+  );
+
+  const setActiveTab = (tab: 'common' | 'all') => {
+    setActiveTabState(tab);
+    setSearchParams(
+      (prev) => {
+        const params = new URLSearchParams(prev);
+        if (tab === 'all') params.set('tab', tab);
+        else params.delete('tab');
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
+  const lastUidRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (isOwn || !uid) {
@@ -61,9 +79,21 @@ function MemberProfilePage() {
       setLoading(false);
       return;
     }
+    // Đổi thành viên thì về tab mặc định, không đụng deep-link lần đầu vào trang.
+    if (lastUidRef.current !== undefined && lastUidRef.current !== uid) {
+      setActiveTabState('common');
+      setSearchParams(
+        (prev) => {
+          const params = new URLSearchParams(prev);
+          params.delete('tab');
+          return params;
+        },
+        { replace: true },
+      );
+    }
+    lastUidRef.current = uid;
     let cancelled = false;
     setLoading(true);
-    setActiveTab('common');
     getMemberProfile(uid)
       .then((data) => {
         if (cancelled) return;
@@ -79,7 +109,7 @@ function MemberProfilePage() {
     return () => {
       cancelled = true;
     };
-  }, [isOwn, uid]);
+  }, [isOwn, uid, setSearchParams]);
 
   const otherMovies = useMemo(() => (isOwn ? [] : (profile?.movies ?? [])), [isOwn, profile]);
   const ownListMovies = useMemo(

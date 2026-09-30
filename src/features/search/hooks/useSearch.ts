@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movieStore';
 import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
@@ -33,6 +34,15 @@ const INITIAL_FILTERS: SearchFormFilters = {
   sortBy: 'popularity.desc',
 };
 
+const SEARCH_SORT_VALUES: SearchSortBy[] = [
+  'popularity.desc',
+  'vote_average.desc',
+  'primary_release_date.desc',
+  'primary_release_date.asc',
+  'title.asc',
+  'title.desc',
+];
+
 // Hook điều phối chính cho trang Tìm kiếm.
 export const useSearch = (user: User | null) => {
   const { openAddModal } = useAddMovieStore();
@@ -52,20 +62,64 @@ export const useSearch = (user: User | null) => {
     return aiRecommendations.filter((m) => !savedIds.has(m.id.toString()));
   }, [aiRecommendations, savedMovies]);
 
-  const [filters, setFilters] = useState<SearchFormFilters>(INITIAL_FILTERS);
-  const [submittedQuery, setSubmittedQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Khởi tạo từ URL để deep-link được query, bộ lọc và trang đang xem.
+  const [filters, setFilters] = useState<SearchFormFilters>(() => {
+    const type = searchParams.get('type');
+    const sortBy = searchParams.get('sortBy') as SearchSortBy | null;
+    return {
+      query: searchParams.get('q') ?? '',
+      type: type === 'movie' || type === 'tv' ? type : 'all',
+      year: searchParams.get('year') ?? '',
+      country: searchParams.get('country') ?? '',
+      sortBy: sortBy && SEARCH_SORT_VALUES.includes(sortBy) ? sortBy : 'popularity.desc',
+    };
+  });
+  const [submittedQuery, setSubmittedQuery] = useState(() => (searchParams.get('q') ?? '').trim());
   const [suggestions, setSuggestions] = useState<TMDBMovieResult[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = Number(searchParams.get('page'));
+    return Number.isInteger(page) && page > 1 ? page : 1;
+  });
   const [initialLoading, setInitialLoading] = useState(true);
 
+  // Chép trạng thái tìm kiếm vào query string, bỏ qua giá trị mặc định.
+  const syncParams = useCallback(
+    (next: SearchFormFilters, page: number, options?: { replace?: boolean }) => {
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        const setOrDelete = (key: string, value: string) => {
+          if (value) params.set(key, value);
+          else params.delete(key);
+        };
+        setOrDelete('q', next.query.trim());
+        setOrDelete('type', next.type !== 'all' ? next.type : '');
+        setOrDelete('year', next.year);
+        setOrDelete('country', next.country);
+        setOrDelete('sortBy', next.sortBy !== 'popularity.desc' ? next.sortBy : '');
+        setOrDelete('page', page > 1 ? String(page) : '');
+        return params;
+      }, options);
+    },
+    [setSearchParams],
+  );
+
   const updateFilter = <K extends keyof SearchFormFilters>(key: K, value: SearchFormFilters[K]) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    const next = { ...filters, [key]: value };
+    setFilters(next);
     if (key === 'query' && (value as string).trim() === '') {
       setSubmittedQuery('');
       setSuggestions([]);
+      syncParams(next, 1, { replace: true });
+      return;
+    }
+    if (key !== 'query') {
+      setCurrentPage(1);
+      syncParams(next, 1);
     }
   };
 
@@ -73,7 +127,8 @@ export const useSearch = (user: User | null) => {
     setSubmittedQuery(filters.query);
     setShowSuggestions(false);
     setCurrentPage(1);
-  }, [filters.query]);
+    syncParams(filters, 1);
+  }, [filters, syncParams]);
 
   useEffect(() => {
     const query = filters.query.trim();
@@ -123,10 +178,6 @@ export const useSearch = (user: User | null) => {
     isAiLoading,
     refreshRecommendations,
   ]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters.type, filters.year, filters.country, filters.sortBy]);
 
   const {
     results,
@@ -209,13 +260,18 @@ export const useSearch = (user: User | null) => {
     return movie ? movie.status || 'history' : null;
   };
 
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    syncParams(filters, page);
+  };
+
   return {
     filters,
     updateFilter,
     initialLoading,
     currentPage,
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
-    setCurrentPage,
+    setCurrentPage: goToPage,
     discoverMovies,
     aiRecommendations: filteredAiRecommendations,
     trendingMovies,
@@ -231,6 +287,7 @@ export const useSearch = (user: User | null) => {
       setSubmittedQuery('');
       setSuggestions([]);
       setCurrentPage(1);
+      syncParams(INITIAL_FILTERS, 1, { replace: true });
     },
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
     watchedMoviesCount: savedMovies.filter(isWatchedMovie).length,

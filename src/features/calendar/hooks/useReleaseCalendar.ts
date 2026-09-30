@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import useReleaseCalendarStore from '../stores/releaseCalendarStore';
 import useAlertStore from '@/shared/stores/alertStore';
@@ -12,16 +13,37 @@ import {
 } from '../services/pushNotificationService';
 import { UpcomingEpisode } from '@/types';
 
+const formatDateParam = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+    date.getDate(),
+  ).padStart(2, '0')}`;
+
+const parseDateParam = (value: string | null): Date | null => {
+  if (!value) return null;
+  const [y, m, d] = value.split('-').map(Number);
+  return y && m && d ? new Date(y, m - 1, d) : null;
+};
+
 // Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { openDetailModal } = useMovieDetailStore();
   const { movies, upcomingEpisodes, loading, loadingEpisodes } = useReleaseCalendarStore();
   const { showAlert } = useAlertStore();
   const { showToast } = useToastStore();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  // Khởi tạo từ URL để chia sẻ được đúng tháng, ngày và chế độ xem.
+  const [currentDate, setCurrentDate] = useState<Date>(
+    () =>
+      parseDateParam(searchParams.get('month') ? `${searchParams.get('month')}-01` : null) ??
+      new Date(),
+  );
+  const [selectedDate, setSelectedDateState] = useState<Date | null>(() =>
+    parseDateParam(searchParams.get('date')),
+  );
+  const [viewMode, setViewModeState] = useState<'calendar' | 'list'>(() =>
+    searchParams.get('view') === 'list' ? 'list' : 'calendar',
+  );
 
   const [pushSupported, setPushSupported] = useState(false);
   const [pushSubscribed, setPushSubscribed] = useState(false);
@@ -88,21 +110,52 @@ export const useReleaseCalendar = () => {
     return movies.filter((m) => m.media_type === 'tv' && m.source === 'tmdb');
   }, [movies]);
 
+  const mutateParams = useCallback(
+    (mutate: (params: URLSearchParams) => void, options?: { replace?: boolean }) => {
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        mutate(params);
+        return params;
+      }, options);
+    },
+    [setSearchParams],
+  );
+
   const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      if (direction === 'prev') {
-        newDate.setMonth(newDate.getMonth() - 1);
-      } else {
-        newDate.setMonth(newDate.getMonth() + 1);
-      }
-      return newDate;
+    const newDate = new Date(currentDate);
+    newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
+    setCurrentDate(newDate);
+    mutateParams((params) => {
+      params.set(
+        'month',
+        `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}`,
+      );
     });
   };
 
   const goToToday = () => {
     setCurrentDate(new Date());
-    setSelectedDate(new Date());
+    setSelectedDateState(new Date());
+    mutateParams((params) => {
+      params.delete('month');
+      params.set('date', formatDateParam(new Date()));
+    });
+  };
+
+  const setSelectedDate = (date: Date | null) => {
+    setSelectedDateState(date);
+    mutateParams((params) => {
+      if (date) params.set('date', formatDateParam(date));
+      else params.delete('date');
+    });
+  };
+
+  const setViewMode = (mode: 'calendar' | 'list') => {
+    setViewModeState(mode);
+    mutateParams((params) => {
+      if (mode === 'list') params.set('view', mode);
+      else params.delete('view');
+    });
   };
 
   const getEpisodesForDate = useCallback(

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
 import { deleteMovie } from '@/features/movies/services/movieService';
 import useMovieStore from '@/features/movies/stores/movieStore';
@@ -21,7 +22,24 @@ export const useDashboard = (user: User | null) => {
   const { setMovies: setExportMovies } = useExportStore();
 
   const { movies, loading } = useMovieStore();
-  const [activeTab, setActiveTab] = useState<ActiveTab>('history');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTabState] = useState<ActiveTab>(() =>
+    searchParams.get('tab') === 'watchlist' ? 'watchlist' : 'history',
+  );
+
+  const setActiveTab = useCallback(
+    (tab: ActiveTab) => {
+      setActiveTabState(tab);
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        if (tab === 'watchlist') params.set('tab', tab);
+        else params.delete('tab');
+        params.delete('page');
+        return params;
+      });
+    },
+    [setSearchParams],
+  );
 
   const filters = useDashboardFilters(movies, activeTab);
 

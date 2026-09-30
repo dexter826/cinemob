@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
 import { normalizeMovieDate, getTranslatedCountries } from '@/features/movies/utils/movieUtils';
 
@@ -39,11 +40,82 @@ const MOVIES_PER_PAGE = 20;
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
-  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTER_STATE);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Khởi tạo bộ lọc và trang từ URL để deep-link được trạng thái thư viện.
+  const [filters, setFilters] = useState<FilterState>(() => {
+    const sortBy = searchParams.get('sort');
+    const order = searchParams.get('order');
+    const contentType = searchParams.get('type');
+    const watchStatus = searchParams.get('status');
+    const sourceType = searchParams.get('source');
+    const rating = searchParams.get('rating')?.split('-').map(Number) ?? [];
+    const ratingRange =
+      rating.length === 2 && rating.every((value) => Number.isFinite(value))
+        ? ([rating[0], rating[1]] as [number, number])
+        : null;
+    return {
+      sortBy: sortBy === 'title' ? 'title' : 'date',
+      sortOrder: order === 'asc' ? 'asc' : 'desc',
+      searchQuery: searchParams.get('q') ?? '',
+      ratingRange,
+      year: Number(searchParams.get('year')) || null,
+      country: searchParams.get('country') ?? '',
+      contentType: contentType === 'movie' || contentType === 'tv' ? contentType : 'all',
+      watchStatus: watchStatus === 'watching' || watchStatus === 'completed' ? watchStatus : 'all',
+      sourceType: sourceType === 'normal' || sourceType === 'review' ? sourceType : 'all',
+    };
+  });
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = Number(searchParams.get('page'));
+    return Number.isInteger(page) && page > 1 ? page : 1;
+  });
+
+  // Chép bộ lọc vào query string, bỏ qua giá trị mặc định.
+  const syncParams = useCallback(
+    (next: FilterState, page: number, options?: { replace?: boolean }) => {
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        const setOrDelete = (key: string, value: string) => {
+          if (value) params.set(key, value);
+          else params.delete(key);
+        };
+        setOrDelete('q', next.searchQuery.trim());
+        setOrDelete('sort', next.sortBy !== 'date' ? next.sortBy : '');
+        setOrDelete('order', next.sortOrder !== 'desc' ? next.sortOrder : '');
+        setOrDelete(
+          'rating',
+          next.ratingRange ? `${next.ratingRange[0]}-${next.ratingRange[1]}` : '',
+        );
+        setOrDelete('year', next.year !== null ? String(next.year) : '');
+        setOrDelete('country', next.country);
+        setOrDelete('type', next.contentType !== 'all' ? next.contentType : '');
+        setOrDelete('status', next.watchStatus !== 'all' ? next.watchStatus : '');
+        setOrDelete('source', next.sourceType !== 'all' ? next.sourceType : '');
+        setOrDelete('page', page > 1 ? String(page) : '');
+        return params;
+      }, options);
+    },
+    [setSearchParams],
+  );
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    const next = { ...filters, [key]: value };
+    setFilters(next);
+    setCurrentPage(1);
+    syncParams(next, 1, { replace: key === 'searchQuery' });
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    syncParams(filters, page);
+  };
+
+  const clearFilters = () => {
+    const next = { ...INITIAL_FILTER_STATE, sortBy: filters.sortBy, sortOrder: filters.sortOrder };
+    setFilters(next);
+    setCurrentPage(1);
+    syncParams(next, 1);
   };
 
   useEffect(() => {
@@ -58,7 +130,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters, activeTab]);
+  }, [activeTab]);
 
   const currentTabMovies = useMemo(
     () => movies.filter((m) => (m.status || 'history') === activeTab),
@@ -145,16 +217,11 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     filters,
     updateFilter,
     currentPage,
-    setCurrentPage,
+    setCurrentPage: goToPage,
     totalPages,
     processedMovies: paginatedMovies,
     allProcessedMoviesCount: processedMovies.length,
-    clearFilters: () =>
-      setFilters((prev) => ({
-        ...INITIAL_FILTER_STATE,
-        sortBy: prev.sortBy,
-        sortOrder: prev.sortOrder,
-      })),
+    clearFilters,
     currentTabMovies,
     toggleSortOrder: () => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc'),
   };
