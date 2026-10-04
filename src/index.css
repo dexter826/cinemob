@@ -1,5 +1,101 @@
 @import 'tailwindcss';
-@config "../tailwind.config.js";
+
+/* Dark mode theo class trên <html> (ThemeProvider đặt/xóa .dark). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens: giá trị sáng mặc định, .dark ghi đè bằng biến CSS cùng tên. */
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Be Vietnam Pro', sans-serif;
+
+  --color-background: #fafafa; /* zinc-50 */
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-primary: #10b981; /* emerald-500 */
+  --color-primary-hover: #059669; /* emerald-600 */
+  --color-on-primary: #ffffff;
+  --color-text-primary: #09090b; /* zinc-950 */
+  --color-text-secondary: #52525b; /* zinc-600 */
+  --color-border: #e4e4e7; /* zinc-200 */
+  --color-focus: #059669;
+  --color-success: #22c55e; /* green-500 */
+  --color-warning: #f59e0b; /* amber-500 */
+  --color-danger: #ef4444; /* red-500 */
+  --color-info: #0ea5e9; /* sky-500 */
+  /* Hairline border cho vạch chia mảnh trên nền tint. */
+  --color-border-default: rgb(9 9 11 / 0.06);
+
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --radius-dialog: 24px;
+
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+
+  --animate-slide-in-right: slide-in-right 0.3s ease-out forwards;
+  --animate-slide-down: slide-down 0.3s ease-out forwards;
+  --animate-fade-in: fade-in 0.2s ease-out forwards;
+  --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoom-in-95 {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+.dark {
+  --color-background: #09090b; /* zinc-950 */
+  --color-surface: #141417; /* zinc-900 deep */
+  --color-surface-elevated: #1c1c20; /* raised zinc */
+  --color-primary-hover: #34d399; /* emerald-400 */
+  --color-text-primary: #fafafa; /* zinc-50 */
+  --color-text-secondary: #a1a1aa; /* zinc-400 */
+  --color-border: #27272a; /* zinc-800 */
+  --color-focus: #34d399;
+  --color-border-default: rgb(250 250 250 / 0.06);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+}
 
 @layer base {
   html {
@@ -8,52 +104,10 @@
 
   :root {
     color-scheme: light;
-    --color-background: 250 250 250; /* zinc-50 */
-    --color-surface: 255 255 255; /* white */
-    --color-surface-elevated: 255 255 255; /* white */
-    --color-primary: 16 185 129; /* emerald-500 */
-    --color-primary-hover: 5 150 105; /* emerald-600 */
-    --color-on-primary: 255 255 255; /* white */
-    --color-text-primary: 9 9 11; /* zinc-950 */
-    --color-text-secondary: 82 82 91; /* zinc-600 */
-    --color-border: 228 228 231; /* zinc-200 */
-    --color-focus: 5 150 105; /* emerald-600 */
-    --color-success: 34 197 94; /* green-500 */
-    --color-warning: 245 158 11; /* amber-500 */
-    --color-danger: 239 68 68; /* red-500 */
-    --color-info: 14 165 233; /* sky-500 */
-    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-    --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
-    --radius-control: 12px;
-    --radius-card: 16px;
-    --radius-dialog: 24px;
-    /* Hairline border for subtle dividers on tinted surfaces. */
-    --border-default: rgb(9 9 11 / 0.06);
   }
 
   .dark {
     color-scheme: dark;
-    --color-background: 9 9 11; /* zinc-950 */
-    --color-surface: 20 20 23; /* zinc-900 deep */
-    --color-surface-elevated: 28 28 32; /* raised zinc */
-    --color-primary: 16 185 129; /* emerald-500 */
-    --color-primary-hover: 52 211 153; /* emerald-400 */
-    --color-on-primary: 255 255 255; /* white */
-    --color-text-primary: 250 250 250; /* zinc-50 */
-    --color-text-secondary: 161 161 170; /* zinc-400 */
-    --color-border: 39 39 42; /* zinc-800 */
-    --color-focus: 52 211 153; /* emerald-400 */
-    --color-success: 34 197 94;
-    --color-warning: 245 158 11;
-    --color-danger: 239 68 68;
-    --color-info: 14 165 233;
-    --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-    --radius-control: 12px;
-    --radius-card: 16px;
-    --radius-dialog: 24px;
-    /* Hairline border for subtle dividers on tinted surfaces. */
-    --border-default: rgb(250 250 250 / 0.06);
   }
 
   button {
@@ -69,7 +123,7 @@
   }
 
   :where(button, a, input, textarea, select, [role='button'], [tabindex]):focus-visible {
-    outline: 2px solid rgb(var(--color-focus));
+    outline: 2px solid var(--color-focus);
     outline-offset: 3px;
   }
 
@@ -96,7 +150,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-text-secondary) / 0.3);
+    background: color-mix(in srgb, var(--color-text-secondary) 30%, transparent);
     border-radius: 6px;
     border: 1px solid transparent;
     background-clip: padding-box;
@@ -104,22 +158,22 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-text-secondary) / 0.5);
+    background: color-mix(in srgb, var(--color-text-secondary) 50%, transparent);
   }
 
   ::-webkit-scrollbar-thumb:active {
-    background: rgb(var(--color-text-secondary) / 0.7);
+    background: color-mix(in srgb, var(--color-text-secondary) 70%, transparent);
   }
 
   /* Scrollbar cho Firefox */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgb(var(--color-text-secondary) / 0.3) transparent;
+    scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 30%, transparent) transparent;
     -webkit-tap-highlight-color: transparent;
   }
 
   *:hover {
-    scrollbar-color: rgb(var(--color-text-secondary) / 0.5) transparent;
+    scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 50%, transparent) transparent;
   }
 
   /* Horizontal scrollbar */
@@ -132,24 +186,24 @@
   }
 
   ::-webkit-scrollbar-horizontal::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-text-secondary) / 0.2);
+    background: color-mix(in srgb, var(--color-text-secondary) 20%, transparent);
     height: 6px;
     border-radius: 6px;
   }
 
   ::-webkit-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-text-secondary) / 0.4);
+    background: color-mix(in srgb, var(--color-text-secondary) 40%, transparent);
   }
 
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     ::-webkit-scrollbar-thumb {
-      background: rgb(var(--color-text-primary));
-      border: 1px solid rgb(var(--color-background));
+      background: var(--color-text-primary);
+      border: 1px solid var(--color-background);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgb(var(--color-primary));
+      background: var(--color-primary);
     }
   }
 
@@ -215,12 +269,12 @@
   .center-card-glow {
     box-shadow:
       0 20px 50px -10px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgb(var(--color-primary) / 0.3);
+      0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
+}
 
-  /* Grid/danh sách dài: chỉ render vùng nhìn thấy, giữ chiều cao ước lượng để tránh nhảy layout. */
-  @utility cv-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 300px;
-  }
+/* Grid/danh sách dài: chỉ render vùng nhìn thấy, giữ chiều cao ước lượng để tránh nhảy layout. */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
 }

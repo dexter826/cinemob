@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
@@ -72,9 +72,12 @@ function StatsPage() {
   // Năm thống kê sync theo query param ?year=.
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedYear = searchParams.get('year') ?? '';
-  const setSelectedYear = (year: string) => {
-    setSearchParams(year ? { year } : {}, { replace: true });
-  };
+  const setSelectedYear = useCallback(
+    (year: string) => {
+      setSearchParams(year ? { year } : {}, { replace: true });
+    },
+    [setSearchParams],
+  );
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
@@ -89,7 +92,7 @@ function StatsPage() {
     if (availableYears.length > 0 && !selectedYear) {
       setSelectedYear(availableYears[0]);
     }
-  }, [availableYears, selectedYear]);
+  }, [availableYears, selectedYear, setSelectedYear]);
 
   // Thống kê theo tháng cho năm đã chọn.
   const monthlyData = useMemo(() => {
