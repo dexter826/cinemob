@@ -194,7 +194,7 @@ function DashboardFilters({
                   ]}
                   value={filters.contentType}
                   onChange={(value) => updateFilter('contentType', value as 'all' | 'movie' | 'tv')}
-                  placeholder="Chọn loại"
+                  placeholder="Chọn loại…"
                 />
               </div>
 
@@ -219,7 +219,7 @@ function DashboardFilters({
                     onChange={(value) =>
                       updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')
                     }
-                    placeholder="Chọn trạng thái"
+                    placeholder="Chọn trạng thái…"
                   />
                 </div>
               )}
@@ -293,7 +293,7 @@ function DashboardFilters({
                   ]}
                   value={filters.sourceType}
                   onChange={(value) => updateFilter('sourceType', value as SourceType)}
-                  placeholder="Chọn nguồn"
+                  placeholder="Chọn nguồn…"
                 />
               </div>
 
@@ -312,7 +312,7 @@ function DashboardFilters({
                     options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
                     value={filters.year || ''}
                     onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
-                    placeholder="Chọn năm"
+                    placeholder="Chọn năm…"
                   />
                 </div>
                 <div className="space-y-2">
@@ -329,7 +329,7 @@ function DashboardFilters({
                     options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
                     value={filters.country}
                     onChange={(value) => updateFilter('country', value as string)}
-                    placeholder="Chọn quốc gia"
+                    placeholder="Chọn quốc gia…"
                     searchable={true}
                   />
                 </div>

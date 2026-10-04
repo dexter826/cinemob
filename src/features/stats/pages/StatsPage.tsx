@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import {
@@ -22,15 +23,16 @@ import CustomDropdown from '@/shared/components/ui/CustomDropdown';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { buildGenreChartData, topEntries } from '../utils/statsSelectors';
 
+// Palette biểu đồ bám hệ màu của app: emerald chủ đạo, teal kề sắc, slate trung tính.
 const COLORS = [
-  '#be123c',
-  '#d97706',
-  '#9a3412',
-  '#c2410c',
-  '#57534e',
-  '#0f766e',
-  '#1e3a8a',
-  '#15803d',
+  '#10b981', // primary (emerald-500)
+  '#0d9488', // teal-600
+  '#059669', // emerald-600
+  '#14b8a6', // teal-500
+  '#047857', // emerald-700
+  '#64748b', // slate-500
+  '#94a3b8', // slate-400
+  '#475569', // slate-600
 ];
 
 interface ChartTooltipProps {
@@ -67,7 +69,12 @@ function StatsPage() {
     getMonthlyDataForYear,
   } = useStats(movies);
 
-  const [selectedYear, setSelectedYear] = useState<string>('');
+  // Năm thống kê sync theo query param ?year=.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedYear = searchParams.get('year') ?? '';
+  const setSelectedYear = (year: string) => {
+    setSearchParams(year ? { year } : {}, { replace: true });
+  };
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
@@ -133,7 +140,7 @@ function StatsPage() {
               <StatsCard
                 label="Tổng nội dung"
                 value={totalMovies}
-                subValue={`${movieCount} phim lẻ • ${tvCount} series`}
+                subValue={`${movieCount} phim lẻ, ${tvCount} series`}
                 icon={Film}
                 colorClass="text-primary"
               />
@@ -175,7 +182,11 @@ function StatsPage() {
               </div>
             </div>
 
-            <div className="h-72 sm:h-80 text-text-secondary">
+            <div
+              role="img"
+              aria-label={`Biểu đồ cột số phim xem theo tháng trong năm ${selectedYear}`}
+              className="h-72 sm:h-80 text-text-secondary"
+            >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
@@ -330,6 +341,8 @@ function StatsPage() {
                     paddingAngle={5}
                     dataKey="value"
                     stroke="none"
+                    animationDuration={1000}
+                    isAnimationActive={!prefersReducedMotion}
                   >
                     {genreData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

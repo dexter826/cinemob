@@ -32,9 +32,9 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
         )}
       </div>
 
-      <h1 className="mt-2 text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
+      <h2 className="mt-2 text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
         {profile.displayName}
-      </h1>
+      </h2>
       {profile.email && (
         <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
           <Mail size={12} className="shrink-0" aria-hidden="true" />

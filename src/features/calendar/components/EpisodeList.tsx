@@ -42,9 +42,9 @@ function EpisodeList({
         className={`bg-surface border border-border rounded-dialog p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}
       >
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
-          <h3 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
+          <h2 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
             {selectedDate ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}` : 'Sắp chiếu'}
-          </h3>
+          </h2>
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
@@ -91,7 +91,7 @@ function EpisodeList({
                     </h4>
                   </div>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-2.5 cv-auto">
                   {episodes.map((ep) => (
                     <button
                       key={`${ep.seriesId}-${ep.episode.id}`}
@@ -120,7 +120,7 @@ function EpisodeList({
                           </span>
                           {ep.episode.runtime && (
                             <span className="text-xs font-bold text-text-secondary flex items-center gap-1 opacity-60">
-                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}m
+                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}00A0phút
                             </span>
                           )}
                         </div>

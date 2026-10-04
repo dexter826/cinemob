@@ -23,7 +23,6 @@ function PersonCard({ person, onClick }: PersonCardProps) {
             className="w-full h-full object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         </div>
       </button>
       <div className="p-4 bg-surface border-t border-border-default">

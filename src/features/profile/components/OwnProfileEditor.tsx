@@ -342,9 +342,9 @@ function OwnProfileEditor({
             <div className="flex-1 min-w-0 text-left">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h1 className="text-xl sm:text-2xl font-bold text-text-primary truncate tracking-tight font-display">
+                  <h2 className="text-xl sm:text-2xl font-bold text-text-primary truncate tracking-tight font-display">
                     {displayName}
-                  </h1>
+                  </h2>
                   <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
                     <Mail size={12} className="shrink-0" aria-hidden="true" />
                     <span className="truncate">{user.email || 'Chưa có email'}</span>
@@ -398,7 +398,7 @@ function OwnProfileEditor({
           {isEditing && (
             <div className="mt-5 space-y-4">
               <label className="block">
-                <span className="block text-[11px] font-semibold text-text-secondary mb-1">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">
                   Tên hiển thị
                 </span>
                 <input
@@ -419,7 +419,7 @@ function OwnProfileEditor({
               </label>
 
               <label className="block">
-                <span className="block text-[11px] font-semibold text-text-secondary mb-1">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">
                   Giới thiệu
                 </span>
                 <textarea
@@ -431,25 +431,25 @@ function OwnProfileEditor({
                   placeholder="Thêm vài dòng giới thiệu về bạn…"
                   className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
                 />
-                <span className="block text-right text-[11px] text-text-secondary">
+                <span className="block text-right text-xs text-text-secondary">
                   {draftBio.length}/{BIO_MAX_LENGTH}
                 </span>
               </label>
 
               <div className="grid grid-cols-2 gap-3">
                 <label>
-                  <span className="block text-[11px] font-semibold text-text-secondary mb-1">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Giới tính
                   </span>
                   <CustomDropdown
                     options={GENDER_DROPDOWN_OPTIONS}
                     value={draftGender}
                     onChange={(val) => setDraftGender(String(val))}
-                    placeholder="Chọn giới tính"
+                    placeholder="Chọn giới tính…"
                   />
                 </label>
                 <label>
-                  <span className="block text-[11px] font-semibold text-text-secondary mb-1">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Ngày sinh
                   </span>
                   <CustomDatePicker value={draftDob} onChange={setDraftDob} />
@@ -484,7 +484,7 @@ function OwnProfileEditor({
                   )}
                   Ẩn danh sách phim
                 </p>
-                <p className="text-[11px] text-text-secondary mt-0.5">
+                <p className="text-xs text-text-secondary mt-0.5">
                   {isHidden
                     ? 'Danh sách phim đã bị gỡ khỏi dữ liệu, không ai xem được.'
                     : 'Danh sách phim đã xem hiển thị với mọi thành viên.'}

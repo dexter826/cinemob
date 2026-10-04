@@ -34,6 +34,8 @@ function SearchPage() {
     setShowSuggestions,
     handleSearch,
     submittedQuery,
+    resultsError,
+    retrySearch,
   } = useSearch(user);
 
   return (
@@ -80,6 +82,8 @@ function SearchPage() {
           refreshRecommendations={refreshRecommendations}
           removeRecommendation={removeRecommendation}
           userId={user?.uid || ''}
+          resultsError={resultsError}
+          retrySearch={retrySearch}
         />
       )}
     </div>

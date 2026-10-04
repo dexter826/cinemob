@@ -3,6 +3,7 @@ import { Movie } from '@/types';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
+import { monthLabel } from '@/shared/utils/dateFormat';
 
 // Hook xử lý logic thống kê toàn diện.
 export const useStats = (movies: Movie[]) => {
@@ -25,7 +26,7 @@ export const useStats = (movies: Movie[]) => {
   const getMonthlyDataForYear = useCallback(
     (year: string) => {
       const months = Array.from({ length: 12 }, (_, i) => ({
-        month: `Tháng ${i + 1}`,
+        month: monthLabel(i),
         count: 0,
       }));
 

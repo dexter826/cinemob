@@ -3,6 +3,7 @@ import TMDBMovieCard from './TMDBMovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import ErrorState from '@/shared/components/ui/ErrorState';
 import { Sparkles, Star, RotateCcw, Search } from 'lucide-react';
 
 interface SearchResultsProps {
@@ -23,6 +24,8 @@ interface SearchResultsProps {
   refreshRecommendations: (userId: string, force?: boolean) => void;
   removeRecommendation: (movieTitle: string) => void;
   userId: string;
+  resultsError?: boolean;
+  retrySearch?: () => void;
 }
 
 /** Hiển thị kết quả tìm kiếm, phim thịnh hành hoặc đề xuất AI. */
@@ -44,6 +47,8 @@ function SearchResults({
   refreshRecommendations,
   removeRecommendation,
   userId,
+  resultsError = false,
+  retrySearch,
 }: SearchResultsProps) {
   if (isLoading) {
     return (
@@ -52,6 +57,17 @@ function SearchResults({
           <SkeletonCard key={i} />
         ))}
       </div>
+    );
+  }
+
+  if (resultsError) {
+    return (
+      <ErrorState
+        title="Không tải được nội dung từ TMDB"
+        description="Kiểm tra kết nối mạng rồi thử tải lại."
+        retry={retrySearch ? { label: 'Thử lại', onClick: retrySearch } : undefined}
+        className="py-12"
+      />
     );
   }
 

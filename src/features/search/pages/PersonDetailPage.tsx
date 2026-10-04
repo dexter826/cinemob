@@ -99,7 +99,6 @@ function PersonDetailPage() {
                       alt={person.name}
                       className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-card shadow-premium border border-white/10"
                     />
-                    <div className="absolute inset-0 rounded-card bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500" />
                   </div>
                 </div>
 

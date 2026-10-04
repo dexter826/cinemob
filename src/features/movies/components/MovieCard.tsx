@@ -130,16 +130,14 @@ function MovieCard(props: MovieCardProps) {
             {movie.media_type === 'tv' ? (
               <>
                 <Tv size={11} className="text-info" strokeWidth={1.5} aria-hidden="true" />
-                <span className="text-[10px] font-semibold text-white tracking-wider">
-                  {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
+                <span className="text-xs font-semibold text-white tracking-wider">
+                  {movie.seasons && movie.seasons > 0 ? `TV • 00A0Mùa` : 'TV'}
                 </span>
               </>
             ) : (
               <>
                 <Film size={11} className="text-success" strokeWidth={1.5} aria-hidden="true" />
-                <span className="text-[10px] font-semibold text-white tracking-wider uppercase">
-                  Phim
-                </span>
+                <span className="text-xs font-semibold text-white ">Phim</span>
               </>
             )}
           </div>
@@ -147,7 +145,7 @@ function MovieCard(props: MovieCardProps) {
 
         {/* Review badge */}
         {movie.is_review && (
-          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
+          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
             <Eye size={11} aria-hidden="true" />
             <span className="hidden sm:inline">Xem qua </span>Review
           </span>
@@ -172,15 +170,12 @@ function MovieCard(props: MovieCardProps) {
           >
             {mainTitle}
           </h3>
-          <p
-            className="text-[11px] text-text-secondary truncate mt-0.5 italic"
-            title={subTitle || ''}
-          >
+          <p className="text-xs text-text-secondary truncate mt-0.5 italic" title={subTitle || ''}>
             {subTitle || '\u00A0'}
           </p>
         </div>
 
-        <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-secondary">
+        <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-xs text-text-secondary">
           <div className="flex items-center flex-wrap gap-1.5 font-medium">
             {movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed && (
               <>

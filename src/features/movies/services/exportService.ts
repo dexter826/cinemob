@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx';
+import { todayISO } from '@/shared/utils/dateFormat';
 import { Movie } from '@/types';
 import {
   getTranslatedCountries,
@@ -100,7 +101,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     ];
     ws['!cols'] = colWidths;
 
-    const fileName = `cinemob_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+    const fileName = `cinemob_export_${todayISO()}.xlsx`;
     XLSX.writeFile(wb, fileName);
   } catch (error) {
     console.error('Error exporting to Excel:', error);

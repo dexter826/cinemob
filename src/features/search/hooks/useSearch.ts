@@ -86,6 +86,8 @@ export const useSearch = (user: User | null) => {
     return Number.isInteger(page) && page > 1 ? page : 1;
   });
   const [initialLoading, setInitialLoading] = useState(true);
+  // Tăng nonce để nạp lại kết quả TMDB khi bấm Thử lại.
+  const [retryNonce, setRetryNonce] = useState(0);
 
   // Chép trạng thái tìm kiếm vào query string, bỏ qua giá trị mặc định.
   const syncParams = useCallback(
@@ -184,11 +186,13 @@ export const useSearch = (user: User | null) => {
     results,
     totalSearchPages,
     isSearchLoading,
+    searchError,
     discoverMovies,
     totalDiscoverPages,
     isDiscoverLoading,
+    discoverError,
     isSearchMode,
-  } = useSearchTMDB(submittedQuery, currentPage, filters);
+  } = useSearchTMDB(submittedQuery, currentPage, filters, retryNonce);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
 
@@ -291,6 +295,8 @@ export const useSearch = (user: User | null) => {
       syncParams(INITIAL_FILTERS, 1, { replace: true });
     },
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
+    resultsError: isSearchMode ? searchError : discoverError,
+    retrySearch: () => setRetryNonce((n) => n + 1),
     watchedMoviesCount: savedMovies.filter(isWatchedMovie).length,
     // Search states
     submittedQuery,

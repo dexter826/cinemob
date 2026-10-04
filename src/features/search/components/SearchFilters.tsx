@@ -225,7 +225,7 @@ function SearchFilters({
           ]}
           value={filters.type}
           onChange={(value) => updateFilter('type', value as SearchFormFilters['type'])}
-          placeholder="Chọn loại"
+          placeholder="Chọn loại…"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
         />
 
@@ -239,7 +239,7 @@ function SearchFilters({
           ]}
           value={filters.year}
           onChange={(value) => updateFilter('year', value as string)}
-          placeholder="Chọn năm"
+          placeholder="Chọn năm…"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
           searchable={true}
         />
@@ -248,7 +248,7 @@ function SearchFilters({
           options={TMDB_COUNTRY_OPTIONS}
           value={filters.country}
           onChange={(value) => updateFilter('country', value as string)}
-          placeholder="Quốc gia"
+          placeholder="Quốc gia…"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
           searchable={true}
         />
@@ -264,7 +264,7 @@ function SearchFilters({
           ]}
           value={filters.sortBy}
           onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
-          placeholder="Phù hợp"
+          placeholder="Phù hợp…"
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
         />
 

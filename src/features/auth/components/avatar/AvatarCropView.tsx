@@ -148,7 +148,7 @@ export function AvatarCropView({
         </span>
       </div>
 
-      <p id="avatar-crop-hint" className="text-[11px] text-text-secondary/70 mt-2 text-center">
+      <p id="avatar-crop-hint" className="text-xs text-text-secondary/70 mt-2 text-center">
         Kéo ảnh hoặc dùng phím mũi tên để căn góc, thanh trượt để phóng to
       </p>
     </div>

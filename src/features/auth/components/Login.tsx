@@ -120,7 +120,7 @@ function Login() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
-                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums">
+                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-text-secondary text-xs font-bold tabular-nums">
                   <Star
                     size={10}
                     className="fill-text-secondary text-text-secondary"
@@ -133,9 +133,7 @@ function Login() {
                   <p className="text-white text-xs sm:text-sm font-bold truncate leading-tight">
                     {film.title}
                   </p>
-                  <p className="text-white/60 text-[10px] sm:text-[11px] mt-0.5 font-medium">
-                    {film.year}
-                  </p>
+                  <p className="text-white/60 text-xs mt-0.5 font-medium">{film.year}</p>
                 </div>
               </div>
             ))}
@@ -203,7 +201,7 @@ function Login() {
 
         <footer className="pt-4 sm:pt-6 border-t border-border-default text-xs text-text-secondary flex items-center justify-between shrink-0">
           <span>&copy; {new Date().getFullYear()} CineMOB</span>
-          <span className="text-[11px] opacity-60">Sổ tay điện ảnh</span>
+          <span className="text-xs opacity-60">Sổ tay điện ảnh</span>
         </footer>
       </div>
     </main>

@@ -123,7 +123,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                     status: value as 'all' | 'history' | 'watchlist',
                   }))
                 }
-                placeholder="Chọn trạng thái"
+                placeholder="Chọn trạng thái…"
               />
             </div>
 
@@ -148,7 +148,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                 onChange={(value) =>
                   setFilters((prev) => ({ ...prev, contentType: value as 'all' | 'movie' | 'tv' }))
                 }
-                placeholder="Chọn loại"
+                placeholder="Chọn loại…"
               />
             </div>
 
@@ -205,7 +205,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                 onChange={(value) =>
                   setFilters((prev) => ({ ...prev, year: value === '' ? null : Number(value) }))
                 }
-                placeholder="Chọn năm"
+                placeholder="Chọn năm…"
               />
             </div>
 
@@ -227,7 +227,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                 ]}
                 value={filters.country || ''}
                 onChange={(value) => setFilters((prev) => ({ ...prev, country: value as string }))}
-                placeholder="Chọn quốc gia"
+                placeholder="Chọn quốc gia…"
                 searchable={true}
               />
             </div>

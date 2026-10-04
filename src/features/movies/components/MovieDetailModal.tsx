@@ -79,13 +79,6 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
     setShowAlbumSelector(true);
   };
 
-  const handleWatchTrailer = () => {
-    const key = videos[0]?.key ?? '';
-    if (videos.length > 0 && /^[A-Za-z0-9_-]{6,20}$/.test(key)) {
-      window.open(`https://www.youtube.com/watch?v=${key}`, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   return (
     <Dialog
       open={isOpen}
@@ -189,9 +182,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         aria-hidden="true"
                       />
                       <span className="font-medium tabular-nums">
-                        {movie.media_type === 'tv'
-                          ? `${movie.seasons} Mùa`
-                          : `${movie.runtime} Phút`}
+                        {movie.media_type === 'tv' ? `00A0Mùa` : `00A0Phút`}
                       </span>
                     </div>
                   )}
@@ -338,23 +329,28 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
 
                 <div className="pt-4 flex flex-col gap-3">
                   {movie.status === 'watchlist' ? (
-                    <button
-                      onClick={handleWatchTrailer}
-                      disabled={videos.length === 0}
-                      aria-label={
-                        videos.length > 0
-                          ? 'Xem trailer phim trên YouTube'
-                          : 'Phim không có video trailer'
-                      }
-                      className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-card font-bold transition-colors cursor-pointer ${
-                        videos.length > 0
-                          ? 'bg-red-600 hover:bg-red-500 text-white'
-                          : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
-                      }`}
-                    >
-                      <Play size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
-                      <span>{videos.length > 0 ? 'Xem trailer' : 'Không có trailer'}</span>
-                    </button>
+                    videos.length > 0 ? (
+                      <a
+                        href={`https://www.youtube.com/watch?v=${videos[0]?.key ?? ''}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Xem trailer phim trên YouTube (mở tab mới)"
+                        className="w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-card font-bold transition-colors cursor-pointer bg-red-600 hover:bg-red-500 text-white"
+                      >
+                        <Play size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                        <span>Xem trailer</span>
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled
+                        aria-label="Phim không có video trailer"
+                        className="w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-card font-bold cursor-not-allowed bg-black/5 dark:bg-white/5 text-text-secondary opacity-50"
+                      >
+                        <Play size={18} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                        <span>Không có trailer</span>
+                      </button>
+                    )
                   ) : (
                     <button
                       onClick={handleAddToAlbum}

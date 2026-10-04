@@ -28,6 +28,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const [hasResult, setHasResult] = useState(false);
   const [confettiData, setConfettiData] = useState<Record<string, unknown> | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const confettiFetchedRef = useRef(false);
@@ -122,8 +123,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       ensureConfetti();
       setPoolType(source);
       setHasResult(false);
-      randomAudio?.stop();
-      randomAudio?.play();
 
       if (reducedMotion) {
         setCurrentIndex(Math.floor(Math.random() * pool.length));
@@ -131,6 +130,9 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
         setHasResult(true);
         return;
       }
+
+      randomAudio?.stop();
+      if (!isMuted) randomAudio?.play();
 
       setIsShuffling(true);
       const start = Date.now();
@@ -156,7 +158,15 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       };
       shuffleTimeoutRef.current = setTimeout(tick, 70);
     },
-    [clearShuffleTimers, ensureConfetti, randomAudio, reducedMotion, trending, watchlistMovies],
+    [
+      clearShuffleTimers,
+      ensureConfetti,
+      isMuted,
+      randomAudio,
+      reducedMotion,
+      trending,
+      watchlistMovies,
+    ],
   );
 
   useEffect(() => {
@@ -187,6 +197,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     hasResult,
     confettiData,
     reducedMotion,
+    isMuted,
+    toggleMuted: () => setIsMuted((muted) => !muted),
     startShuffle,
     handleRespin: () => poolType && startShuffle(poolType),
     handleWatchNow,

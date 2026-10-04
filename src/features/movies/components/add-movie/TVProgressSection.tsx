@@ -125,8 +125,8 @@ function TVProgressSection({
 
       {totalEpisodes > 0 && !isCompleted && (
         <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-primary/20">
-          Tổng {totalEpisodes} tập • Mùa {currentSeason}: {episodesPerSeason[currentSeason] || '?'}{' '}
-          tập
+          Tổng {totalEpisodes}00A0tập, mùa00A0{currentSeason}:{' '}
+          {episodesPerSeason[currentSeason] || '?'} tập
         </div>
       )}
     </div>

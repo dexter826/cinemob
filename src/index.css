@@ -217,4 +217,10 @@
       0 20px 50px -10px rgba(0, 0, 0, 0.5),
       0 0 0 1px rgb(var(--color-primary) / 0.3);
   }
+
+  /* Grid/danh sách dài: chỉ render vùng nhìn thấy, giữ chiều cao ước lượng để tránh nhảy layout. */
+  @utility cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 300px;
+  }
 }

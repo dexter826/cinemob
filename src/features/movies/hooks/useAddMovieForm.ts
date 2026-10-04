@@ -6,6 +6,7 @@ import { addMovie, updateMovie } from '../services/movieService';
 import { Movie } from '@/types';
 import { normalizeMovieDate } from '../utils/movieUtils';
 import { MESSAGES } from '@/constants/messages';
+import { todayISO } from '@/shared/utils/dateFormat';
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from '@/features/albums/hooks/useAlbumSync';
 import { GENRE_OPTIONS } from '@/constants/genres';
@@ -42,7 +43,7 @@ export const useAddMovieForm = () => {
     runtime: '',
     seasons: '',
     poster: '',
-    date: new Date().toISOString().split('T')[0],
+    date: todayISO(),
     time: `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
     rating: 0,
     review: '',
@@ -143,7 +144,7 @@ export const useAddMovieForm = () => {
         runtime: '',
         seasons: '',
         poster: '',
-        date: now.toISOString().split('T')[0],
+        date: todayISO(),
         time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
         rating: 0,
         review: '',

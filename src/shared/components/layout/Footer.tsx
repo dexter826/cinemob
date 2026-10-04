@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Github, Mail, Heart, HandCoins } from 'lucide-react';
+import { Facebook, Instagram, Github, Mail, Heart } from 'lucide-react';
 import logoText from '@/assets/images/logo_text.png';
 
 function Footer() {
@@ -18,8 +18,7 @@ function Footer() {
             <img src={logoText} alt="CineMOB" className="h-7 select-none" />
           </div>
           <p className="text-xs text-text-secondary mt-1.5 flex items-center justify-center md:justify-start gap-1">
-            Cine Over B**ch
-            <HandCoins className="w-3 h-3 text-primary" aria-hidden="true" />
+            Sổ tay điện ảnh của riêng bạn.
           </p>
         </div>
 
@@ -45,7 +44,7 @@ function Footer() {
         {/* Khối 3: Bản quyền */}
         <div className="flex-1 text-xs text-text-secondary flex items-center justify-center md:justify-end gap-1">
           <span>© {new Date().getFullYear()}</span>
-          <span>• Made with</span>
+          <span>Made with</span>
           <Heart className="w-3 h-3 text-primary inline-block" aria-hidden="true" />
           <span>by</span>
           <a

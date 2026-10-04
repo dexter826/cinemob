@@ -8,14 +8,17 @@ export const useSearchTMDB = (
   submittedQuery: string,
   searchPage: number,
   filters: SearchFormFilters,
+  retryNonce: number = 0,
 ) => {
   const [results, setResults] = useState<TMDBMovieResult[]>([]);
   const [totalSearchPages, setTotalSearchPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [searchError, setSearchError] = useState(false);
 
   const [discoverMovies, setDiscoverMovies] = useState<TMDBMovieResult[]>([]);
   const [totalDiscoverPages, setTotalDiscoverPages] = useState(1);
   const [discoverLoading, setDiscoverLoading] = useState(false);
+  const [discoverError, setDiscoverError] = useState(false);
 
   const isSearchMode = submittedQuery.trim().length > 2;
 
@@ -25,6 +28,7 @@ export const useSearchTMDB = (
     const controller = new AbortController();
     const fetchData = async () => {
       setLoading(true);
+      setSearchError(false);
       try {
         const { results: data, totalPages } = await searchMovies(
           submittedQuery,
@@ -37,7 +41,10 @@ export const useSearchTMDB = (
           setTotalSearchPages(totalPages);
         }
       } catch (error) {
-        if (!ignore) console.error('Error searching movies:', error);
+        if (!ignore && !controller.signal.aborted) {
+          console.error('Error searching movies:', error);
+          setSearchError(true);
+        }
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -47,7 +54,7 @@ export const useSearchTMDB = (
       ignore = true;
       controller.abort();
     };
-  }, [submittedQuery, searchPage, filters.year, isSearchMode]);
+  }, [submittedQuery, searchPage, filters.year, isSearchMode, retryNonce]);
 
   const { year, country, rating, sortBy, type } = filters;
 
@@ -60,6 +67,7 @@ export const useSearchTMDB = (
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       setDiscoverLoading(true);
+      setDiscoverError(false);
       try {
         const { results: data, totalPages } = await getDiscoverMovies(
           {
@@ -77,7 +85,10 @@ export const useSearchTMDB = (
           setTotalDiscoverPages(totalPages);
         }
       } catch (error) {
-        if (!ignore) console.error('Error discovering movies:', error);
+        if (!ignore && !controller.signal.aborted) {
+          console.error('Error discovering movies:', error);
+          setDiscoverError(true);
+        }
       } finally {
         if (!ignore) setDiscoverLoading(false);
       }
@@ -87,15 +98,17 @@ export const useSearchTMDB = (
       clearTimeout(timer);
       controller.abort();
     };
-  }, [submittedQuery, searchPage, year, country, rating, sortBy, type, isSearchMode]);
+  }, [submittedQuery, searchPage, year, country, rating, sortBy, type, isSearchMode, retryNonce]);
 
   return {
     results,
     totalSearchPages,
     isSearchLoading: loading,
+    searchError,
     discoverMovies,
     totalDiscoverPages,
     isDiscoverLoading: discoverLoading,
+    discoverError,
     isSearchMode,
   };
 };

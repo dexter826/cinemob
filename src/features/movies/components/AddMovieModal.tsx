@@ -162,7 +162,7 @@ function AddMovieModal() {
                   {formData.title || 'Chưa nhập tên phim'}
                 </p>
                 {formData.title_vi && (
-                  <p className="text-[11px] text-text-secondary line-clamp-1 italic mt-0.5">
+                  <p className="text-xs text-text-secondary line-clamp-1 italic mt-0.5">
                     {formData.title_vi}
                   </p>
                 )}

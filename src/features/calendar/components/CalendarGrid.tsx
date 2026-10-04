@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { monthLabel } from '@/shared/utils/dateFormat';
 import { UpcomingEpisode } from '@/types';
 
 interface CalendarGridProps {
@@ -12,20 +13,6 @@ interface CalendarGridProps {
 }
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-const MONTHS = [
-  'Tháng 1',
-  'Tháng 2',
-  'Tháng 3',
-  'Tháng 4',
-  'Tháng 5',
-  'Tháng 6',
-  'Tháng 7',
-  'Tháng 8',
-  'Tháng 9',
-  'Tháng 10',
-  'Tháng 11',
-  'Tháng 12',
-];
 
 /** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
@@ -112,14 +99,14 @@ function CalendarGrid({
               {episodes.slice(0, 2).map((ep) => (
                 <div
                   key={`${ep.seriesId}-${ep.episode.id}`}
-                  className="text-[10px] sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
+                  className="text-xs sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
                 </div>
               ))}
               {episodes.length > 2 && (
-                <div className="text-[10px] sm:text-xs text-text-secondary font-bold opacity-60 pl-1">
+                <div className="text-xs sm:text-xs text-text-secondary font-bold opacity-60 pl-1">
                   +{episodes.length - 2}
                 </div>
               )}
@@ -170,7 +157,7 @@ function CalendarGrid({
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-primary tracking-tight whitespace-nowrap">
-            {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+            {monthLabel(currentDate.getMonth())} {currentDate.getFullYear()}
           </h2>
           <button
             type="button"
