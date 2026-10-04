@@ -91,6 +91,8 @@ function AlbumsPage() {
                 id="create-album-name"
                 name="album-name"
                 type="text"
+                autoComplete="off"
+                required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
@@ -100,7 +102,7 @@ function AlbumsPage() {
           </div>
           <button
             type="submit"
-            disabled={creating || loading}
+            disabled={creating}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
           >
             <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -134,57 +136,45 @@ function AlbumsPage() {
                 onClick={(event) => {
                   if (!album.docId) event.preventDefault();
                 }}
-                className="block w-full text-left cursor-pointer rounded-none"
+                className="absolute inset-0 z-10 cursor-pointer"
               >
-                <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
-                  {albumCoverMovies[album.docId || '']?.poster_path ? (
-                    <img
-                      src={getTMDBImageUrl(
-                        albumCoverMovies[album.docId || '']!.poster_path,
-                        'w500',
-                      )}
-                      alt=""
-                      width={300}
-                      height={450}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
-                      <span className="flex flex-col items-center gap-3 opacity-40">
-                        <Film
-                          size={20}
-                          className="text-white"
-                          strokeWidth={1.5}
-                          aria-hidden="true"
-                        />
-                        <span className="text-xs font-bold text-white">Trống</span>
-                      </span>
-                    </span>
-                  )}
-
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90"
+                <span className="sr-only">Mở album {album.name}</span>
+              </Link>
+              <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
+                {albumCoverMovies[album.docId || '']?.poster_path ? (
+                  <img
+                    src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
+                    alt=""
+                    width={300}
+                    height={450}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
                   />
-
-                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-control border border-white/10 z-10">
-                    <Folder
-                      size={12}
-                      className="text-primary"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <span className="text-xs font-semibold text-white">Album</span>
-                  </span>
-
-                  <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-                    <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
-                      {album.name}
+                ) : (
+                  <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
+                    <span className="flex flex-col items-center gap-3 opacity-40">
+                      <Film size={20} className="text-white" strokeWidth={1.5} aria-hidden="true" />
+                      <span className="text-xs font-bold text-white">Trống</span>
                     </span>
+                  </span>
+                )}
+
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90"
+                />
+
+                <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-control border border-white/10 z-10">
+                  <Folder size={12} className="text-primary" strokeWidth={1.5} aria-hidden="true" />
+                  <span className="text-xs font-semibold text-white">Album</span>
+                </span>
+
+                <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
+                  <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
+                    {album.name}
                   </span>
                 </span>
-              </Link>
+              </span>
 
               <button
                 type="button"
@@ -202,12 +192,7 @@ function AlbumsPage() {
                     <strong className="tabular-nums">{album.movieDocIds.length}</strong> mục
                   </span>
                 </div>
-                <span
-                  aria-hidden="true"
-                  className="text-xs font-medium text-text-secondary truncate"
-                >
-                  Chi tiết →
-                </span>
+                <span className="text-xs font-medium text-text-secondary truncate">Chi tiết</span>
               </div>
             </article>
           ))}

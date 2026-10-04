@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { FolderPlus, Plus, X, Loader2 } from 'lucide-react';
 import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
 import { Album } from '@/types';
@@ -27,6 +28,15 @@ function AlbumSection({
   selectedAlbumIds,
   setSelectedAlbumIds,
 }: AlbumSectionProps) {
+  const newAlbumInputRef = useRef<HTMLInputElement>(null);
+
+  // Chỉ tự focus input trên thiết bị trỏ chuột; mobile tránh mở keyboard đột ngột.
+  useEffect(() => {
+    if (showCreateAlbum && window.matchMedia('(hover: hover)').matches) {
+      newAlbumInputRef.current?.focus();
+    }
+  }, [showCreateAlbum]);
+
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
@@ -54,13 +64,21 @@ function AlbumSection({
       {showCreateAlbum && (
         <div className="flex gap-3 p-4 bg-black/5 dark:bg-white/5 rounded-card border border-border">
           <input
+            ref={newAlbumInputRef}
+            name="new-album-name"
             type="text"
+            autoComplete="off"
+            aria-label="Tên album mới"
             placeholder="Tên album mới…"
             value={newAlbumName}
             onChange={(e) => setNewAlbumName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleCreateAlbum();
+              }
+            }}
             className="flex-1 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
-            autoFocus
           />
           <button
             type="button"

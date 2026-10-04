@@ -73,7 +73,18 @@ export const useMovieValidation = () => {
         (ratingError ? 'rating' : null);
       const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
       if (targetRef?.current) {
-        targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const el = targetRef.current;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Đưa focus vào đúng trường lỗi: input trực tiếp, còn control tùy biến thì vào nút bên trong.
+        if (el instanceof HTMLInputElement) {
+          el.focus({ preventScroll: true });
+        } else {
+          el.querySelector<HTMLElement>(
+            'button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+          )?.focus({
+            preventScroll: true,
+          });
+        }
         setIsAnimating(false);
         const t1 = setTimeout(() => setIsAnimating(true), 10);
         const t2 = setTimeout(() => setIsAnimating(false), 1010);

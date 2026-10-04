@@ -171,14 +171,13 @@ function AddMovieModal() {
 
             <div className="flex-1 min-w-0 w-full space-y-6">
               <div
-                role="tablist"
+                role="group"
                 aria-label="Phần của biểu mẫu"
                 className="flex bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border"
               >
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'info'}
+                  aria-pressed={activeTab === 'info'}
                   onClick={() => setActiveTab('info')}
                   className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
                 >
@@ -187,8 +186,7 @@ function AddMovieModal() {
                 </button>
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'review'}
+                  aria-pressed={activeTab === 'review'}
                   onClick={() => setActiveTab('review')}
                   className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
                 >
@@ -210,15 +208,27 @@ function AddMovieModal() {
                       </label>
                       <input
                         id="add-movie-title-input"
+                        name="movie-title"
                         ref={refs.title}
                         type="text"
                         required
+                        autoComplete="off"
                         aria-invalid={errors.title ? true : undefined}
+                        aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
                         placeholder="Tên gốc của phim…"
                       />
+                      {isAnimating && errors.title && (
+                        <p
+                          id="add-movie-title-error"
+                          role="alert"
+                          className="text-xs font-medium text-danger ml-1"
+                        >
+                          Nhập tên phim để lưu lại trong thư viện.
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label
@@ -230,7 +240,9 @@ function AddMovieModal() {
                       </label>
                       <input
                         id="add-movie-title-vi"
+                        name="movie-title-vi"
                         type="text"
+                        autoComplete="off"
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
                         className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
@@ -249,7 +261,10 @@ function AddMovieModal() {
                     </label>
                     <input
                       id="add-movie-poster"
+                      name="movie-poster"
                       type="text"
+                      inputMode="url"
+                      autoComplete="off"
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
                       className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
@@ -289,7 +304,7 @@ function AddMovieModal() {
                           <MessageSquare size={20} />
                         </div>
                         <div className="min-w-0">
-                          <h4 className="text-sm font-bold text-text-primary">Xem qua review</h4>
+                          <h3 className="text-sm font-bold text-text-primary">Xem qua review</h3>
                           <p className="text-xs text-text-secondary font-medium">
                             Bật nếu bạn đã xem bản tóm tắt phim
                           </p>
@@ -335,11 +350,13 @@ function AddMovieModal() {
                       </label>
                       <textarea
                         id="add-movie-review"
+                        name="movie-review"
                         rows={4}
+                        autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
                         className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 outline-none transition-colors resize-none"
-                        placeholder="Bạn thấy phim này thế nào?"
+                        placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>
                   )}

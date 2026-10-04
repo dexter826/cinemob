@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FolderPlus, Film } from 'lucide-react';
 import { Movie, Album } from '@/types';
 import { useAuth } from '@/app/providers/AuthProvider';
@@ -29,6 +29,14 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
+  const newAlbumInputRef = useRef<HTMLInputElement>(null);
+
+  // Chỉ tự focus input trên thiết bị trỏ chuột; mobile tránh bật keyboard đột ngột.
+  useEffect(() => {
+    if (isOpen && showCreateForm && window.matchMedia('(hover: hover)').matches) {
+      newAlbumInputRef.current?.focus();
+    }
+  }, [isOpen, showCreateForm]);
 
   const handleAddToAlbum = async (album: Album) => {
     if (!album.docId || !movie?.docId) return;
@@ -126,14 +134,20 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
               </label>
               <input
                 id="album-selector-new-name"
+                name="album-name"
                 type="text"
                 placeholder="Nhập tên album…"
                 value={newAlbumName}
                 onChange={(e) => setNewAlbumName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !creatingAlbum) {
+                    e.preventDefault();
+                    handleCreateAlbum();
+                  }
+                }}
                 autoComplete="off"
                 className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
-                autoFocus
+                ref={newAlbumInputRef}
               />
               <div className="flex gap-3">
                 <Button

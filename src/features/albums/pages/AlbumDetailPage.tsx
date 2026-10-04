@@ -119,6 +119,7 @@ function AlbumDetailPage() {
                   name="album-name"
                   type="text"
                   autoComplete="off"
+                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
@@ -199,7 +200,7 @@ function AlbumDetailPage() {
                     onDelete={() =>
                       showAlert({
                         title: 'Bỏ phim khỏi album',
-                        message: `Bỏ "${movie.title}" khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
+                        message: `Bỏ “${movie.title}” khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
                         type: 'danger',
                         confirmText: 'Bỏ khỏi album',
                         onConfirm: () => handleRemoveMovie(movie),
@@ -251,7 +252,7 @@ function AlbumDetailPage() {
               <EmptyState
                 icon={Search}
                 title="Không tìm thấy phim"
-                description={`Không tìm thấy phim phù hợp với từ khóa "${searchQuery}"`}
+                description={`Không tìm thấy phim phù hợp với từ khóa “${searchQuery}”`}
                 className="py-10"
               />
             ) : (

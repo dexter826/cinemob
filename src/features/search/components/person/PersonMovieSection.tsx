@@ -75,6 +75,7 @@ export function PersonMovieSection({
             />
             <input
               type="text"
+              aria-label="Tìm phim của nghệ sĩ này"
               value={searchQuery}
               onChange={(e) => onSearchQueryChange(e.target.value)}
               placeholder="Tìm phim của nghệ sĩ này…"
@@ -85,10 +86,11 @@ export function PersonMovieSection({
             {searchQuery && (
               <button
                 onClick={() => onSearchQueryChange('')}
+                type="button"
                 aria-label="Xóa từ khóa tìm kiếm"
                 className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary transition-colors cursor-pointer"
               >
-                <X size={14} />
+                <X size={14} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -204,7 +206,7 @@ export function PersonMovieSection({
           title="Không tìm thấy phim"
           description={
             searchQuery
-              ? `Không tìm thấy phim nào của nghệ sĩ này phù hợp với "${searchQuery}"`
+              ? `Không tìm thấy phim nào của nghệ sĩ này phù hợp với “${searchQuery}”`
               : 'Nghệ sĩ này chưa có thông tin về các bộ phim tham gia.'
           }
         />

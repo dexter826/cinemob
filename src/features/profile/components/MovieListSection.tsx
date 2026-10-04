@@ -141,7 +141,7 @@ function MovieListSection({
         <EmptyState
           icon={Search}
           title="Không tìm thấy phim phù hợp"
-          description={`Không có bộ phim nào khớp với từ khóa "${searchQuery}"`}
+          description={`Không có bộ phim nào khớp với từ khóa “${searchQuery}”`}
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}
         />
       ) : (

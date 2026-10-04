@@ -85,7 +85,7 @@ function MovieFormFields({
                 setManualMediaType(value as 'movie' | 'tv');
                 setFormData((prev) => ({ ...prev, runtime: '', seasons: '' }));
               }}
-              placeholder="Chọn loại"
+              placeholder="Chọn loại…"
             />
           ) : (
             <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-secondary">
@@ -149,7 +149,11 @@ function MovieFormFields({
 
         {/* Runtime / Seasons */}
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+          <label
+            htmlFor="movie-runtime"
+            id="movie-runtime-label"
+            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          >
             {isTVSeries ? (
               <Tv size={14} className="text-primary" aria-hidden="true" />
             ) : (
@@ -161,10 +165,19 @@ function MovieFormFields({
             className={`transition-transform duration-300 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
           >
             <input
+              id="movie-runtime"
+              name="movie-runtime"
               ref={isTVSeries ? refs.seasons : refs.runtime}
               type="number"
+              inputMode="numeric"
               required
               disabled={!isManualMode}
+              autoComplete="off"
+              aria-invalid={
+                isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime))
+                  ? true
+                  : undefined
+              }
               value={isTVSeries ? formData.seasons : formData.runtime}
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
@@ -172,6 +185,13 @@ function MovieFormFields({
               className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
               placeholder={isTVSeries ? 'Số mùa…' : 'Phút…'}
             />
+            {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
+              <p role="alert" className="text-xs font-medium text-danger ml-1 mt-1">
+                {isTVSeries
+                  ? 'Nhập số mùa của series (lớn hơn 0).'
+                  : 'Nhập thời lượng phim theo phút.'}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -211,12 +231,19 @@ function MovieFormFields({
 
       {/* Overview */}
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1">
+        <label
+          htmlFor="movie-overview"
+          id="movie-overview-label"
+          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+        >
           <AlignLeft size={14} className="text-primary" aria-hidden="true" />
           Nội dung tóm tắt
         </label>
         <textarea
+          id="movie-overview"
+          name="movie-overview"
           rows={5}
+          autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
           className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors resize-none"

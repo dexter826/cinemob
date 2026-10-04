@@ -183,19 +183,19 @@ function MemberProfilePage() {
         <>
           <section aria-label="Phim đã xem" className="space-y-4">
             <div
-              role="tablist"
+              role="group"
               aria-label="Phim của thành viên"
               className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden"
             >
               <div
+                aria-hidden="true"
                 className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-sm transition-transform duration-300 ease-out ${
                   activeTab === 'common' ? 'translate-x-0' : 'translate-x-full'
                 }`}
               />
               <button
                 type="button"
-                role="tab"
-                aria-selected={activeTab === 'common'}
+                aria-pressed={activeTab === 'common'}
                 onClick={() => setActiveTab('common')}
                 className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
                   activeTab === 'common'
@@ -207,8 +207,7 @@ function MemberProfilePage() {
               </button>
               <button
                 type="button"
-                role="tab"
-                aria-selected={activeTab === 'all'}
+                aria-pressed={activeTab === 'all'}
                 onClick={() => setActiveTab('all')}
                 className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
                   activeTab === 'all' ? 'text-white' : 'text-text-secondary hover:text-text-primary'

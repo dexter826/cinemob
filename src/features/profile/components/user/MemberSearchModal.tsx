@@ -71,7 +71,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors p-1"
               aria-label="Xóa từ khóa tìm kiếm"
             >
-              <X size={15} />
+              <X size={15} aria-hidden="true" />
             </button>
           )}
         </form>
@@ -93,11 +93,11 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
             <p className="text-sm text-text-secondary">Kết quả sẽ hiển thị ở đây.</p>
           </div>
         ) : results.length === 0 ? (
-          <p className="py-8 text-center text-sm text-text-secondary">
-            Không có thành viên nào với email &quot;{searchText.trim()}&quot;.
+          <p aria-live="polite" className="py-8 text-center text-sm text-text-secondary">
+            Không có thành viên nào với email “{searchText.trim()}”.
           </p>
         ) : (
-          <div className="space-y-3">
+          <div aria-live="polite" aria-label="Kết quả tìm kiếm thành viên" className="space-y-3">
             {results.map((profile) => (
               <UserCard key={profile.uid} profile={profile} onClick={openProfile} />
             ))}

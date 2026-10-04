@@ -52,6 +52,7 @@ function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const accountMenuRef = React.useRef<HTMLDivElement>(null);
   const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
 
@@ -59,6 +60,30 @@ function Navbar() {
   const closeAndRestoreFocus = () => {
     setIsDropdownOpen(false);
     triggerRef.current?.focus();
+  };
+
+  // Menu mở: đưa focus vào mục đầu tiên (pattern ARIA menu).
+  React.useEffect(() => {
+    if (isDropdownOpen) {
+      accountMenuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+    }
+  }, [isDropdownOpen]);
+
+  const handleMenuKeyDown = (event: React.KeyboardEvent) => {
+    const items = Array.from(
+      accountMenuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [],
+    );
+    if (!items.length) return;
+    const currentIndex = items.indexOf(document.activeElement as HTMLElement);
+    let nextIndex: number | null = null;
+    if (event.key === 'ArrowDown') nextIndex = (currentIndex + 1 + items.length) % items.length;
+    else if (event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + items.length) % items.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = items.length - 1;
+    if (nextIndex !== null) {
+      event.preventDefault();
+      items[nextIndex].focus();
+    }
   };
 
   React.useEffect(() => {
@@ -122,7 +147,7 @@ function Navbar() {
 
             <IconButton
               label="Chọn ngẫu nhiên phim"
-              title="Chọn giúp tôi"
+              title="Chọn ngẫu nhiên phim"
               onClick={() => setIsRandomOpen(true)}
             >
               <Dice5 size={20} strokeWidth={1.5} aria-hidden="true" />
@@ -145,7 +170,14 @@ function Navbar() {
                 type="button"
                 ref={triggerRef}
                 onClick={() => (isDropdownOpen ? closeAndRestoreFocus() : setIsDropdownOpen(true))}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowDown' && !isDropdownOpen) {
+                    event.preventDefault();
+                    setIsDropdownOpen(true);
+                  }
+                }}
                 aria-label="Mở menu người dùng"
+                aria-haspopup="menu"
                 aria-expanded={isDropdownOpen}
                 aria-controls="account-menu"
                 className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
@@ -172,7 +204,10 @@ function Navbar() {
               {isDropdownOpen && (
                 <div
                   id="account-menu"
+                  ref={accountMenuRef}
                   role="menu"
+                  aria-label="Menu tài khoản"
+                  onKeyDown={handleMenuKeyDown}
                   className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden"
                 >
                   <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
@@ -185,6 +220,7 @@ function Navbar() {
                     <Link
                       to={user ? `/profile/${user.uid}` : '/'}
                       role="menuitem"
+                      tabIndex={-1}
                       onClick={closeDropdown}
                       className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
                     >
@@ -194,6 +230,7 @@ function Navbar() {
                     <button
                       type="button"
                       role="menuitem"
+                      tabIndex={-1}
                       onClick={() => {
                         setIsExportModalOpen(true);
                         closeDropdown();
@@ -207,6 +244,7 @@ function Navbar() {
                     <button
                       type="button"
                       role="menuitem"
+                      tabIndex={-1}
                       onClick={() => {
                         showAlert({
                           title: 'Xác nhận đăng xuất',

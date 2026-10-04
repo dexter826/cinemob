@@ -62,6 +62,7 @@ function OwnProfileEditor({
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
   const [isAvatarLoadFailed, setIsAvatarLoadFailed] = useState(false);
   const avatarMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
 
@@ -155,6 +156,7 @@ function OwnProfileEditor({
     const checked = validateDisplayName(draftName);
     if (!checked.ok) {
       setNameError(checked.error);
+      nameInputRef.current?.focus();
       return;
     }
     setIsSubmitting(true);
@@ -399,10 +401,13 @@ function OwnProfileEditor({
                   Tên hiển thị
                 </span>
                 <input
+                  ref={nameInputRef}
+                  name="display-name"
+                  autoComplete="nickname"
                   value={draftName}
                   onChange={(e) => setDraftName(e.target.value)}
                   maxLength={50}
-                  aria-label="Tên hiển thị mới"
+                  aria-invalid={nameError ? true : undefined}
                   className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
                 />
                 {nameError && (
@@ -417,11 +422,11 @@ function OwnProfileEditor({
                   Giới thiệu
                 </span>
                 <textarea
+                  name="bio"
                   value={draftBio}
                   onChange={(e) => setDraftBio(e.target.value.slice(0, BIO_MAX_LENGTH))}
                   rows={3}
                   maxLength={BIO_MAX_LENGTH}
-                  aria-label="Giới thiệu bản thân"
                   placeholder="Thêm vài dòng giới thiệu về bạn…"
                   className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
                 />

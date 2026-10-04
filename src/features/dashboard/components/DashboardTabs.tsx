@@ -11,17 +11,17 @@ interface DashboardTabsProps {
 function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: DashboardTabsProps) {
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div className="flex items-center" role="tablist" aria-label="Bộ lọc trạng thái xem phim">
+      <div className="flex items-center" role="group" aria-label="Bộ lọc trạng thái xem phim">
         <div className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden">
           <div
+            aria-hidden="true"
             className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-sm transition-transform duration-300 ease-out ${
               activeTab === 'history' ? 'translate-x-0' : 'translate-x-full'
             }`}
           />
           <button
             type="button"
-            role="tab"
-            aria-selected={activeTab === 'history'}
+            aria-pressed={activeTab === 'history'}
             onClick={() => onTabChange('history')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'history' ? 'text-white' : 'text-text-secondary hover:text-text-primary'
@@ -31,8 +31,7 @@ function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: Dashboa
           </button>
           <button
             type="button"
-            role="tab"
-            aria-selected={activeTab === 'watchlist'}
+            aria-pressed={activeTab === 'watchlist'}
             onClick={() => onTabChange('watchlist')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
               activeTab === 'watchlist'

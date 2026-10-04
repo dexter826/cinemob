@@ -13,7 +13,9 @@ function SearchHeader({ hasDiscoverMovies }: SearchHeaderProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-4">
         <button
+          type="button"
           onClick={() => navigate(-1)}
+          aria-label="Quay lại trang trước"
           className="p-2.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer"
         >
           <ArrowLeft size={24} aria-hidden="true" />

@@ -125,7 +125,7 @@ function SearchResults({
                 {aiRecommendations.length === 0 && !isAiLoading ? (
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="hidden sm:inline text-xs text-text-secondary">
-                      Không thể tải.{' '}
+                      Không tải được đề xuất.{' '}
                     </span>
                     <button
                       type="button"
@@ -169,7 +169,10 @@ function SearchResults({
             </div>
           </>
         )}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+        <div
+          aria-live="polite"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
+        >
           {showFiltered
             ? filteredResults.map((movie) => (
                 <TMDBMovieCard
@@ -194,7 +197,7 @@ function SearchResults({
               <EmptyState
                 icon={Search}
                 title="Không tìm thấy kết quả"
-                description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa "${query}". Hãy thử từ khóa khác.`}
+                description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa “${query}”. Hãy thử từ khóa khác.`}
               />
             </div>
           )}

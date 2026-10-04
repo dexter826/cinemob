@@ -19,15 +19,21 @@ function RatingSection({
   ratingRef,
 }: RatingSectionProps) {
   const displayRating = hoverRating || rating;
+  const groupRef = React.useRef<HTMLDivElement>(null);
 
   const handleGroupKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      setRating(Math.min(10, (rating || 0) + 1));
-    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
-      event.preventDefault();
-      setRating(Math.max(0, (rating || 0) - 1));
-    }
+    const dir =
+      event.key === 'ArrowRight' || event.key === 'ArrowUp'
+        ? 1
+        : event.key === 'ArrowLeft' || event.key === 'ArrowDown'
+          ? -1
+          : 0;
+    if (!dir) return;
+    event.preventDefault();
+    const next = Math.min(10, Math.max(1, (rating || 0) + dir));
+    setRating(next);
+    const buttons = groupRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+    buttons?.[next - 1]?.focus();
   };
 
   return (
@@ -50,6 +56,7 @@ function RatingSection({
         }`}
       >
         <div
+          ref={groupRef}
           role="radiogroup"
           aria-labelledby="add-movie-rating-label"
           onKeyDown={handleGroupKeyDown}
@@ -62,6 +69,7 @@ function RatingSection({
               role="radio"
               aria-checked={rating === star}
               aria-label={`Đánh giá ${star} trên 10`}
+              tabIndex={rating === star || (rating === 0 && star === 1) ? 0 : -1}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}

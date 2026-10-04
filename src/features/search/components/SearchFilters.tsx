@@ -36,6 +36,14 @@ function SearchFilters({
     filters.country !== '' ||
     filters.sortBy !== 'popularity.desc';
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Chỉ focus sẵn ô tìm kiếm trên desktop; mobile tránh bật keyboard ngay khi mở trang.
+  useEffect(() => {
+    if (window.matchMedia('(hover: hover)').matches) {
+      searchInputRef.current?.focus();
+    }
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,6 +77,12 @@ function SearchFilters({
         </div>
         <input
           type="text"
+          name="search-query"
+          aria-label="Tìm kiếm phim hoặc series"
+          role="combobox"
+          aria-expanded={showSuggestions && suggestions.length > 0}
+          aria-controls="search-suggestions"
+          aria-autocomplete="list"
           placeholder="Nhập tên phim hoặc series…"
           value={filters.query}
           autoComplete="off"
@@ -81,12 +95,17 @@ function SearchFilters({
             if (e.key === 'Enter') handleSearch();
           }}
           className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
-          autoFocus
+          ref={searchInputRef}
         />
 
         {/* Suggestion Dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
+          <div
+            id="search-suggestions"
+            role="listbox"
+            aria-label="Gợi ý tìm kiếm"
+            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden"
+          >
             <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
               <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
                 Gợi ý tìm kiếm
@@ -100,6 +119,8 @@ function SearchFilters({
                 return (
                   <button
                     key={movie.id}
+                    role="option"
+                    aria-selected={false}
                     onClick={() => handleSelectMovie(movie)}
                     aria-label={`Chọn phim ${title}`}
                     className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
@@ -107,7 +128,10 @@ function SearchFilters({
                     <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
                       <img
                         src={getTMDBImageUrl(movie.poster_path, 'w92')}
-                        alt={title}
+                        alt=""
+                        width={80}
+                        height={112}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -161,7 +185,7 @@ function SearchFilters({
                 className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Search size={14} strokeWidth={1.5} aria-hidden="true" />
-                Xem tất cả kết quả cho "{filters.query}"
+                Xem tất cả kết quả cho “{filters.query}”
               </button>
             </div>
           </div>

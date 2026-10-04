@@ -62,14 +62,14 @@ function ReleaseCalendarPage() {
         actions={
           <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <div
-              role="tablist"
+              role="group"
               aria-label="Chế độ hiển thị lịch chiếu"
               className="bg-surface border border-border p-1 rounded-card flex items-center"
             >
               <button
+                type="button"
                 disabled={loading}
-                role="tab"
-                aria-selected={viewMode === 'calendar'}
+                aria-pressed={viewMode === 'calendar'}
                 aria-label="Xem theo lịch tháng"
                 onClick={() => setViewMode('calendar')}
                 className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
@@ -82,9 +82,9 @@ function ReleaseCalendarPage() {
                 <span>Lịch</span>
               </button>
               <button
+                type="button"
                 disabled={loading}
-                role="tab"
-                aria-selected={viewMode === 'list'}
+                aria-pressed={viewMode === 'list'}
                 aria-label="Xem theo danh sách"
                 onClick={() => setViewMode('list')}
                 className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
@@ -158,7 +158,7 @@ function ReleaseCalendarPage() {
             <EmptyState
               icon={Tv}
               title="Chưa có series nào"
-              description='Thêm series vào danh sách "Đã xem" hoặc "Sẽ xem" để theo dõi lịch phát sóng.'
+              description="Thêm series vào danh sách “Đã xem” hoặc “Sẽ xem” để theo dõi lịch phát sóng."
               className="bg-surface border border-border rounded-dialog py-6 sm:py-8"
             />
           ) : (
