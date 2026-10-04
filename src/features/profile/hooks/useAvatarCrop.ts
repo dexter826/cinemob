@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type {
-  ChangeEvent,
-  DragEvent,
-  PointerEvent as ReactPointerEvent,
-  RefObject,
-  WheelEvent,
-} from 'react';
+import type { ChangeEvent, DragEvent, PointerEvent as ReactPointerEvent, RefObject } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { getCroppedImgBlob } from '@/features/auth/services/cloudinaryService';
 import {
@@ -58,7 +52,8 @@ export interface UseAvatarCropResult {
   handlePointerMove: (event: ReactPointerEvent) => void;
   handlePointerUp: (event: ReactPointerEvent) => void;
   handleZoomChange: (zoom: number) => void;
-  handleWheelZoom: (event: WheelEvent) => void;
+  handleWheelZoom: (event: globalThis.WheelEvent) => void;
+  handleKeyboardPan: (dx: number, dy: number) => void;
 }
 
 // Tỷ lệ co để ảnh gốc phủ kín khung crop vuông.
@@ -142,7 +137,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       }
 
       if (file.size > MAX_FILE_BYTES) {
-        setErrorMessage('Kích thước ảnh tối đa 10MB');
+        setErrorMessage('Kích thước ảnh tối đa 10\u00A0MB');
         return;
       }
 
@@ -158,7 +153,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       };
       probe.onerror = () => {
         URL.revokeObjectURL(objectUrl);
-        setErrorMessage('Không thể đọc tệp ảnh');
+        setErrorMessage('Không đọc được tệp ảnh. Hãy thử chọn ảnh khác.');
       };
       probe.src = objectUrl;
     },
@@ -252,12 +247,20 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
   );
 
   const handleWheelZoom = useCallback(
-    (event: WheelEvent) => {
+    (event: globalThis.WheelEvent) => {
       event.preventDefault();
       const delta = event.deltaY < 0 ? WHEEL_ZOOM_STEP : -WHEEL_ZOOM_STEP;
       handleZoomChange(zoom + delta);
     },
     [handleZoomChange, zoom],
+  );
+
+  // Pan bằng phím mũi tên — kênh bàn phím thay cho thao tác kéo bằng chuột.
+  const handleKeyboardPan = useCallback(
+    (dx: number, dy: number) => {
+      setPan((prev) => clampPan(prev.x + dx, prev.y + dy, zoom));
+    },
+    [clampPan, zoom],
   );
 
   const handleSave = useCallback(async () => {
@@ -357,5 +360,6 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
     handlePointerUp,
     handleZoomChange,
     handleWheelZoom,
+    handleKeyboardPan,
   };
 }

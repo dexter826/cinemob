@@ -206,6 +206,7 @@ function OwnProfileEditor({
             isDragging={crop.isDraggingPan}
             isUploading={crop.isUploading}
             onWheelZoom={crop.handleWheelZoom}
+            onKeyboardPan={crop.handleKeyboardPan}
             onPointerDown={crop.handlePointerDown}
             onPointerMove={crop.handlePointerMove}
             onPointerUp={crop.handlePointerUp}

@@ -38,6 +38,7 @@ function CustomTimePicker({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hourListRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const minuteListRef = useRef<HTMLDivElement>(null);
 
   const [hours, minutes] = value ? value.split(':').map(Number) : [0, 0];
@@ -66,6 +67,11 @@ function CustomTimePicker({
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, isMobile]);
+
+  // Popover desktop là dialog: nhận focus khi mở.
+  useEffect(() => {
+    if (isOpen && !isMobile) popoverRef.current?.focus();
   }, [isOpen, isMobile]);
 
   // Cuộn đến giờ phút đã chọn khi mở picker
@@ -141,8 +147,11 @@ function CustomTimePicker({
 
   const renderPicker = () => (
     <div
+      ref={popoverRef}
+      id={isMobile ? undefined : `${controlId}-dialog`}
+      tabIndex={isMobile ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card shadow-2xl p-4
+                bg-surface border border-border-default rounded-card shadow-elevated p-4
                 ${
                   isMobile
                     ? 'relative w-full max-w-[280px] mx-auto'

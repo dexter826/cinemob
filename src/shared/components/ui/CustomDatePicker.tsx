@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
 import { Dialog } from './Dialog';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { formatDateDMY, monthLabel } from '@/shared/utils/dateFormat';
 
 interface CustomDatePickerProps {
   value: string; // YYYY-MM-DD format
@@ -19,32 +20,12 @@ interface CustomDatePickerProps {
 }
 
 const DAYS_VI = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-const MONTHS_VI = [
-  'Tháng 1',
-  'Tháng 2',
-  'Tháng 3',
-  'Tháng 4',
-  'Tháng 5',
-  'Tháng 6',
-  'Tháng 7',
-  'Tháng 8',
-  'Tháng 9',
-  'Tháng 10',
-  'Tháng 11',
-  'Tháng 12',
-];
 
 const formatDateToString = (date: Date): string => {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
-};
-
-const formatDisplayDate = (dateStr: string): string => {
-  if (!dateStr) return '';
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return `${d}/${m}/${y}`;
 };
 
 function CustomDatePicker({
@@ -76,6 +57,7 @@ function CustomDatePicker({
   });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   const selectedDate = useMemo(() => {
     if (!value) return null;
@@ -116,6 +98,11 @@ function CustomDatePicker({
       setViewDate(new Date(y, m - 1, 1));
     }
   }, [value]);
+
+  // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
+  useEffect(() => {
+    if (isOpen && !isMobile) popoverRef.current?.focus();
+  }, [isOpen, isMobile]);
 
   const closePicker = () => {
     setIsOpen(false);
@@ -225,8 +212,11 @@ function CustomDatePicker({
 
   const renderCalendar = () => (
     <div
+      ref={popoverRef}
+      id={isMobile ? undefined : `${controlId}-dialog`}
+      tabIndex={isMobile ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card shadow-2xl p-4
+                bg-surface border border-border-default rounded-card shadow-elevated p-4
                 ${
                   isMobile
                     ? 'relative w-full max-w-[320px] mx-auto'
@@ -262,7 +252,7 @@ function CustomDatePicker({
           aria-label="Năm trước"
         >
           <ChevronLeft size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
-          <ChevronLeft size={14} className="text-text-secondary" />
+          <ChevronLeft size={14} className="text-text-secondary" aria-hidden="true" />
         </button>
         <span className="text-sm font-semibold text-text-primary">{viewDate.getFullYear()}</span>
         <button
@@ -272,7 +262,7 @@ function CustomDatePicker({
           aria-label="Năm sau"
         >
           <ChevronRight size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
-          <ChevronRight size={14} className="text-text-secondary" />
+          <ChevronRight size={14} className="text-text-secondary" aria-hidden="true" />
         </button>
       </div>
 
@@ -287,7 +277,7 @@ function CustomDatePicker({
           <ChevronLeft size={16} className="text-text-secondary" aria-hidden="true" />
         </button>
         <span className="text-sm font-medium text-text-primary">
-          {MONTHS_VI[viewDate.getMonth()]}
+          {monthLabel(viewDate.getMonth())}
         </span>
         <button
           type="button"
@@ -391,7 +381,7 @@ function CustomDatePicker({
           <span
             className={`text-sm font-medium ${value ? 'text-text-primary' : 'text-text-secondary'}`}
           >
-            {value ? formatDisplayDate(value) : placeholder}
+            {value ? formatDateDMY(value) : placeholder}
           </span>
         </div>
       </button>

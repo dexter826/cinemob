@@ -18,10 +18,17 @@ interface FocusTrapOptions {
   onEscape: () => void;
 }
 
+function isVisible(el: HTMLElement): boolean {
+  if (el === document.activeElement) return true;
+  if (typeof el.checkVisibility === 'function') {
+    return el.checkVisibility({ checkVisibilityCSS: true });
+  }
+  // Trình duyệt cũ: fixed position có offsetParent === null nên phải xét riêng.
+  return el.offsetParent !== null || getComputedStyle(el).position === 'fixed';
+}
+
 function getFocusable(container: HTMLElement): Array<HTMLElement> {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (el) => el.offsetParent !== null || el === document.activeElement,
-  );
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isVisible);
 }
 
 export function useFocusTrap({
