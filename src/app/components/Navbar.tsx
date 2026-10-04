@@ -33,7 +33,6 @@ const MemberSearchModal = lazy(
 const NAV_ICONS: Record<string, React.ReactNode> = {
   '/': <Home size={18} strokeWidth={1.5} aria-hidden="true" />,
   '/search': <Search size={18} strokeWidth={1.5} aria-hidden="true" />,
-  '/stats': <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />,
   '/albums': <Folder size={18} strokeWidth={1.5} aria-hidden="true" />,
   '/calendar': <CalendarDays size={18} strokeWidth={1.5} aria-hidden="true" />,
 };
@@ -226,6 +225,16 @@ function Navbar() {
                     >
                       <User size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Hồ sơ</span>
+                    </Link>
+                    <Link
+                      to="/stats"
+                      role="menuitem"
+                      tabIndex={-1}
+                      onClick={closeDropdown}
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                    >
+                      <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
+                      <span>Thống kê</span>
                     </Link>
                     <button
                       type="button"

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { MEMBER_PROFILE_COLLECTION } from '@/features/profile/services/memberProfileService';
@@ -48,31 +48,39 @@ export const useUserSearch = (excludeUid?: string) => {
   const [searchText, setSearchText] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [profiles, setProfiles] = useState<PublicProfileSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const fetchRef = useRef<Promise<PublicProfileSummary[]> | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    fetchPublicProfiles()
-      .then((data) => {
-        if (!cancelled) {
+  const ensureProfiles = useCallback(async () => {
+    if (!fetchRef.current) {
+      setLoading(true);
+      setError(false);
+      fetchRef.current = fetchPublicProfiles()
+        .then((data) => {
           setProfiles(data);
-          setError(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+          return data;
+        })
+        .catch((err) => {
+          fetchRef.current = null;
+          setError(true);
+          throw err;
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+    return fetchRef.current;
   }, []);
 
-  const submit = () => setSubmittedQuery(searchText.trim().toLowerCase());
+  const submit = async () => {
+    const query = searchText.trim().toLowerCase();
+    try {
+      await ensureProfiles();
+      setSubmittedQuery(query);
+    } catch {
+    }
+  };
 
   const results = useMemo(() => {
     if (!submittedQuery) return [];

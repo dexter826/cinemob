@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { EyeOff, Link2, Users } from 'lucide-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import useMovieStore from '@/features/movies/stores/movieStore';
 import useToastStore from '@/shared/stores/toastStore';
@@ -20,6 +20,7 @@ import type { MemberProfile } from '@/types';
 /** Trang cá nhân thành viên: chính chủ chỉnh sửa inline, thành viên khác chỉ xem. */
 function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { movies: myMovies, loading: myMoviesLoading } = useMovieStore();
   const own = useOwnProfile();
@@ -124,7 +125,22 @@ function MemberProfilePage() {
   if (isOwn) {
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-        <PageHeader title="Trang cá nhân" actions={copyLinkButton} />
+        <PageHeader
+          title="Trang cá nhân"
+          actions={
+            <>
+              <IconButton
+                label="Xem thống kê phim đã xem"
+                variant="secondary"
+                size="md"
+                onClick={() => navigate('/stats')}
+              >
+                <BarChart2 size={18} aria-hidden="true" />
+              </IconButton>
+              {copyLinkButton}
+            </>
+          }
+        />
         <OwnProfileEditor
           profile={own.profile}
           loading={own.loading}
@@ -133,13 +149,6 @@ function MemberProfilePage() {
           onSaveDetails={own.saveDetails}
           onToggleHidden={own.toggleMovieListHidden}
         />
-
-        {own.profile?.isMovieListHidden && (
-          <p className="flex items-center gap-2 px-4 py-3 rounded-card bg-amber-400/10 border border-amber-400/30 text-xs sm:text-sm text-text-secondary">
-            <EyeOff size={14} className="shrink-0 text-amber-500" aria-hidden="true" />
-            Danh sách phim đang ẩn với thành viên khác, chỉ bạn thấy mục này.
-          </p>
-        )}
 
         <section aria-label="Danh sách phim đã xem" className="space-y-4">
           <h2 className="sr-only">Danh sách phim đã xem</h2>

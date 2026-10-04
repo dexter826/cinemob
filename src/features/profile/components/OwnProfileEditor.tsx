@@ -486,7 +486,7 @@ function OwnProfileEditor({
                 </p>
                 <p className="text-xs text-text-secondary mt-0.5">
                   {isHidden
-                    ? 'Danh sách phim đã bị gỡ khỏi dữ liệu, không ai xem được.'
+                    ? 'Danh sách phim đang ẩn, chỉ bạn nhìn thấy.'
                     : 'Danh sách phim đã xem hiển thị với mọi thành viên.'}
                 </p>
               </div>

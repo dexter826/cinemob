@@ -42,7 +42,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
-            submit();
+            void submit();
           }}
         >
           <Search

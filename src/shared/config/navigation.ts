@@ -7,7 +7,6 @@ export interface NavigationItem {
 export const NAV_ITEMS: NavigationItem[] = [
   { to: '/', label: 'Thư viện', match: 'exact' },
   { to: '/search', label: 'Tìm phim', match: 'exact' },
-  { to: '/stats', label: 'Thống kê', match: 'exact' },
   { to: '/albums', label: 'Album', match: 'prefix' },
   { to: '/calendar', label: 'Lịch', match: 'exact' },
 ];
