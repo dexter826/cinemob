@@ -29,3 +29,32 @@ export const todayISO = (): string => {
   const d = String(now.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 };
+
+/** Chuẩn hóa giá trị ngày (Firestore Timestamp | Date | string | number) sang Date, an toàn null. */
+export const normalizeDate = (date: unknown): Date | null => {
+  if (!date) return null;
+  if (
+    typeof date === 'object' &&
+    date !== null &&
+    typeof (date as { toDate?: unknown }).toDate === 'function'
+  ) {
+    return (date as { toDate: () => Date }).toDate();
+  }
+  if (date instanceof Date) return Number.isNaN(date.getTime()) ? null : date;
+  if (typeof date === 'string' || typeof date === 'number') {
+    const d = new Date(date);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  return null;
+};
+
+/** Định dạng ngày bất kỳ sang dd/mm/yyyy, trả "N/A" nếu không đọc được. */
+export const formatDateAny = (date: unknown): string => {
+  const normalized = normalizeDate(date);
+  if (!normalized) return 'N/A';
+  return new Intl.DateTimeFormat('vi-VN', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(normalized);
+};

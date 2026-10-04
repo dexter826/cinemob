@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from './Navbar';
-import Footer from './Footer';
-import MobileBottomNav from './MobileBottomNav';
+import Footer from '@/shared/components/layout/Footer';
+import MobileBottomNav from '@/shared/components/layout/MobileBottomNav';
 import ScrollToTop from '@/shared/components/ui/ScrollToTop';
 import useInitialLoadStore from '@/shared/stores/initialLoadStore';
 

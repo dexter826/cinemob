@@ -1,6 +1,6 @@
 import { Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
-import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 
 interface EpisodeListProps {
   viewMode: 'calendar' | 'list';

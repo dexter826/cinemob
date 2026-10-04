@@ -1,6 +1,7 @@
 import { Calendar, Eye, Film, Star, Tv } from 'lucide-react';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import { formatMovieDate, getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { formatDateAny } from '@/shared/utils/dateFormat';
 import type { ProfileMovie } from '@/types';
 
 interface ProfileMovieCardProps {
@@ -11,7 +12,7 @@ interface ProfileMovieCardProps {
 function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
   const poster = movie.poster_path ? getTMDBImageUrl(movie.poster_path, 'w500') : PLACEHOLDER_IMAGE;
   const year = movie.release_date ? movie.release_date.slice(0, 4) : '';
-  const watchedAt = movie.watched_at ? formatMovieDate(movie.watched_at) : '';
+  const watchedAt = movie.watched_at ? formatDateAny(movie.watched_at) : '';
   const isTvSeries = movie.media_type === 'tv';
 
   return (

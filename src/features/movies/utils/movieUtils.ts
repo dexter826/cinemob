@@ -1,7 +1,9 @@
-import { Movie, TMDBMovieResult } from '@/types';
-import { TMDB_IMAGE_BASE_URL, PLACEHOLDER_IMAGE } from '@/constants';
+import { Movie } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
+
+// Helpers dùng riêng cho domain Movie (dữ liệu phim đã lưu trong thư viện).
+// Helper TMDB dùng chung nằm ở src/shared/utils/tmdb.ts, ngày/giờ ở dateFormat.ts.
 
 // Phim có quốc gia Việt Nam hay không, dùng để chọn tiêu đề chính/phụ.
 const isVietnameseOrigin = (country: string): boolean =>
@@ -37,65 +39,6 @@ export const getDisplayTitle = (movie: Movie): string => {
   const main = getMainTitle(movie);
   const sub = getSubTitle(movie);
   return sub ? `${main} (${sub})` : main;
-};
-
-// Lấy tiêu đề chính cho TMDB.
-export const getMainTitleForTMDB = (movie: TMDBMovieResult): string => {
-  return movie.title || movie.name || movie.original_title || movie.original_name || '';
-};
-
-// Lấy tiêu đề phụ cho TMDB.
-export const getSubTitleForTMDB = (movie: TMDBMovieResult): string => {
-  const main = getMainTitleForTMDB(movie);
-  const original = movie.original_title || movie.original_name || '';
-  return original && original !== main ? original : '';
-};
-
-// Lấy tiêu đề hiển thị chuẩn cho TMDB.
-export const getDisplayTitleForTMDB = (movie: TMDBMovieResult): string => {
-  const main = getMainTitleForTMDB(movie);
-  const sub = getSubTitleForTMDB(movie);
-  const hasVietnamese =
-    /[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/i.test(main);
-
-  if (sub && hasVietnamese) return `${main} (${sub})`;
-  return main || sub;
-};
-
-// Chuẩn hóa sang đối tượng Date.
-export const normalizeMovieDate = (date: unknown): Date | null => {
-  if (!date) return null;
-  if (
-    typeof date === 'object' &&
-    date !== null &&
-    typeof (date as { toDate?: unknown }).toDate === 'function'
-  ) {
-    return (date as { toDate: () => Date }).toDate();
-  }
-  if (date instanceof Date) return Number.isNaN(date.getTime()) ? null : date;
-  if (typeof date === 'string' || typeof date === 'number') {
-    const d = new Date(date);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  return null;
-};
-
-// Định dạng dd/mm/yyyy.
-export const formatMovieDate = (date: unknown): string => {
-  const normalized = normalizeMovieDate(date);
-  if (!normalized) return 'N/A';
-  return new Intl.DateTimeFormat('vi-VN', {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(normalized);
-};
-
-// Lấy URL ảnh đầy đủ từ TMDB.
-export const getTMDBImageUrl = (path: string | null, size: string = 'w500'): string => {
-  if (!path) return PLACEHOLDER_IMAGE;
-  if (path.startsWith('http') || path.startsWith('data:')) return path;
-  return `${TMDB_IMAGE_BASE_URL.replace('w500', size)}${path}`;
 };
 
 // Dịch tên quốc gia sang Tiếng Việt.

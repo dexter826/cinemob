@@ -1,6 +1,6 @@
 import { Movie } from '@/types';
 import { AI_PROXY_URL } from '@/constants';
-import { normalizeMovieDate } from '../utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 
 interface AIRecommendation {
   title: string;
@@ -25,8 +25,8 @@ const callAIProxyAPI = async (
   const filteredMovies = history.filter((m) => (m.rating || 0) >= 4);
   const selectedMovies = filteredMovies
     .sort((a, b) => {
-      const timeA = normalizeMovieDate(a.watched_at)?.getTime() || 0;
-      const timeB = normalizeMovieDate(b.watched_at)?.getTime() || 0;
+      const timeA = normalizeDate(a.watched_at)?.getTime() || 0;
+      const timeB = normalizeDate(b.watched_at)?.getTime() || 0;
       return timeB - timeA;
     })
     .slice(0, 50);

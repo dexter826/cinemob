@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-react';
 import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
-import { formatMovieDate } from '@/features/movies/utils/movieUtils';
+import { formatDateAny } from '@/shared/utils/dateFormat';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -50,7 +50,7 @@ function AlbumDetailPage() {
           title={loading ? 'Đang tải…' : album?.name || 'Chi tiết album'}
           description={
             !loading && album
-              ? `${album.movieDocIds.length} phim · Tạo ngày ${formatMovieDate(album.createdAt)}`
+              ? `${album.movieDocIds.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
               : ''
           }
           className="flex-col sm:flex-row items-stretch sm:items-center"

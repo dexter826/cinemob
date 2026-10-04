@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, PointerEvent as ReactPointerEvent, RefObject } from 'react';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { getCroppedImgBlob } from '@/features/auth/services/cloudinaryService';
+import { getCroppedImgBlob } from '@/features/profile/services/cloudinaryService';
 import {
   getOriginalGoogleAvatar,
   revertToGoogleAvatar,
   updateUserAvatar,
-} from '@/features/auth/services/avatarService';
+} from '@/features/profile/services/avatarService';
 import useAlertStore from '@/shared/stores/alertStore';
 import useToastStore from '@/shared/stores/toastStore';
 import {

@@ -1,6 +1,8 @@
 import { Movie } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import { getMainTitle, getSubTitle, formatMovieDate, getTMDBImageUrl } from '../utils/movieUtils';
+import { getMainTitle, getSubTitle } from '../utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { formatDateAny } from '@/shared/utils/dateFormat';
 import {
   Trash2,
   Calendar,
@@ -185,7 +187,7 @@ function MovieCard(props: MovieCardProps) {
             )}
             <div className="flex items-center gap-1">
               <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
-              <span>{formatMovieDate(movie.watched_at)}</span>
+              <span>{formatDateAny(movie.watched_at)}</span>
             </div>
           </div>
 

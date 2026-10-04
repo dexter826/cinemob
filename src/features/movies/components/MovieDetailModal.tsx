@@ -3,13 +3,9 @@ import { X, Calendar, Clock, Star, Film, FolderPlus, Play, Users, User } from 'l
 import { Movie, TMDBVideo, TMDBCredits } from '@/types';
 import { getMovieVideos, getMovieCredits } from '@/features/search/services/tmdb';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import {
-  getMainTitle,
-  getSubTitle,
-  formatMovieDate,
-  getTMDBImageUrl,
-  getTranslatedGenres,
-} from '../utils/movieUtils';
+import { getMainTitle, getSubTitle, getTranslatedGenres } from '../utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { formatDateAny } from '@/shared/utils/dateFormat';
 import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
 import useToastStore from '@/shared/stores/toastStore';
 import { Link } from 'react-router-dom';
@@ -371,7 +367,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 {movie.status !== 'watchlist' && (
                   <div className="pt-2 text-xs text-text-secondary font-medium flex items-center gap-1.5">
                     <Calendar size={13} aria-hidden="true" strokeWidth={1.5} />
-                    <span>Đã xem: {formatMovieDate(movie.watched_at)}</span>
+                    <span>Đã xem: {formatDateAny(movie.watched_at)}</span>
                   </div>
                 )}
               </div>

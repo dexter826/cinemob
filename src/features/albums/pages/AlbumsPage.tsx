@@ -7,7 +7,7 @@ import useToastStore from '@/shared/stores/toastStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { Link } from 'react-router-dom';
 import useAlbumStore from '../stores/albumStore';
-import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import PageHeader from '@/shared/components/ui/PageHeader';

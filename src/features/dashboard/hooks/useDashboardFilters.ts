@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
-import { normalizeMovieDate, getTranslatedCountries } from '@/features/movies/utils/movieUtils';
+import { getTranslatedCountries } from '@/features/movies/utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
@@ -160,9 +161,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     }
 
     if (filters.year !== null) {
-      result = result.filter(
-        (m) => normalizeMovieDate(m.watched_at)?.getFullYear() === filters.year,
-      );
+      result = result.filter((m) => normalizeDate(m.watched_at)?.getFullYear() === filters.year);
     }
 
     if (filters.country) {
@@ -200,8 +199,8 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       let comp = 0;
       if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title);
       else {
-        const da = normalizeMovieDate(a.watched_at)?.getTime() || 0;
-        const db = normalizeMovieDate(b.watched_at)?.getTime() || 0;
+        const da = normalizeDate(a.watched_at)?.getTime() || 0;
+        const db = normalizeDate(b.watched_at)?.getTime() || 0;
         comp = da - db;
       }
       return filters.sortOrder === 'asc' ? comp : -comp;

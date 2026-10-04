@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { Movie } from '@/types';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
-import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 import { monthLabel } from '@/shared/utils/dateFormat';
 
 // Hook xử lý logic thống kê toàn diện.
@@ -16,7 +16,7 @@ export const useStats = (movies: Movie[]) => {
   const availableYears = useMemo(() => {
     const years = new Set<string>();
     watchedMovies.forEach((m) => {
-      const date = normalizeMovieDate(m.watched_at);
+      const date = normalizeDate(m.watched_at);
       if (date) years.add(date.getFullYear().toString());
     });
     return Array.from(years).sort((a, b) => b.localeCompare(a));
@@ -31,7 +31,7 @@ export const useStats = (movies: Movie[]) => {
       }));
 
       watchedMovies.forEach((m) => {
-        const date = normalizeMovieDate(m.watched_at);
+        const date = normalizeDate(m.watched_at);
         if (date && date.getFullYear().toString() === year) {
           const monthIndex = date.getMonth();
           months[monthIndex].count++;

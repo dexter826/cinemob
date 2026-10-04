@@ -2,7 +2,7 @@ import Lottie from 'lottie-react';
 import { Dice5, Volume2, VolumeX } from 'lucide-react';
 import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import { getTMDBImageUrl } from '../utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { useRandomPicker, type PoolMovie, type PoolType } from '../hooks/useRandomPicker';
 import Loading from '@/shared/components/ui/Loading';
 import EmptyState from '@/shared/components/ui/EmptyState';

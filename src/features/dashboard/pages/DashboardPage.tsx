@@ -6,7 +6,7 @@ import MovieCard from '@/features/movies/components/MovieCard';
 import Pagination from '@/shared/components/ui/Pagination';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
@@ -49,7 +49,7 @@ function DashboardPage() {
       new Set(
         movies
           .map((m) => {
-            const d = normalizeMovieDate(m.watched_at);
+            const d = normalizeDate(m.watched_at);
             return d ? d.getFullYear() : null;
           })
           .filter((y): y is number => y !== null),

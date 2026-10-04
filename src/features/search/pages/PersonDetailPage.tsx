@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
-import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import PageHeader from '@/shared/components/ui/PageHeader';

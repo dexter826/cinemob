@@ -1,6 +1,6 @@
 import { deleteField, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { normalizeMovieDate } from '@/features/movies/utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
 // Collection Firestore của hồ sơ thành viên.
@@ -162,7 +162,7 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
 const sameWatchedAt = (a?: ProfileMovie['watched_at'], b?: ProfileMovie['watched_at']): boolean => {
   if (!a !== !b) return false;
   if (!a) return true;
-  return (normalizeMovieDate(a)?.getTime() ?? null) === (normalizeMovieDate(b)?.getTime() ?? null);
+  return (normalizeDate(a)?.getTime() ?? null) === (normalizeDate(b)?.getTime() ?? null);
 };
 
 // Hai danh sách phim hồ sơ giống nhau từng trường; tránh stringify mỗi lần sync.

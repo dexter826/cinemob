@@ -4,9 +4,9 @@ import useAddMovieStore from '../stores/addMovieStore';
 import useToastStore from '@/shared/stores/toastStore';
 import { addMovie, updateMovie } from '../services/movieService';
 import { Movie } from '@/types';
-import { normalizeMovieDate } from '../utils/movieUtils';
+
 import { MESSAGES } from '@/constants/messages';
-import { todayISO } from '@/shared/utils/dateFormat';
+import { normalizeDate, todayISO } from '@/shared/utils/dateFormat';
 import { useTVProgress } from './useTVProgress';
 import { useAlbumSync } from '@/features/albums/hooks/useAlbumSync';
 import { GENRE_OPTIONS } from '@/constants/genres';
@@ -110,7 +110,7 @@ export const useAddMovieForm = () => {
     if (initialData?.movieToEdit) {
       const m = initialData.movieToEdit;
       setStatus(m.status || 'history');
-      const d = normalizeMovieDate(m.watched_at) || new Date();
+      const d = normalizeDate(m.watched_at) || new Date();
       setFormData({
         title: m.title,
         title_vi: m.title_vi || '',
@@ -289,7 +289,7 @@ export const useAddMovieForm = () => {
       status !== (m.status || 'history') ||
       formData.is_review !== (m.is_review || false);
 
-    const d = normalizeMovieDate(m.watched_at) || new Date();
+    const d = normalizeDate(m.watched_at) || new Date();
     const origDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const origTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     const isTimeDirty =

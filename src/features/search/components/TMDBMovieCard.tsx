@@ -1,9 +1,5 @@
 import { TMDBMovieResult } from '@/types';
-import {
-  getMainTitleForTMDB,
-  getSubTitleForTMDB,
-  getTMDBImageUrl,
-} from '@/features/movies/utils/movieUtils';
+import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { Film, Tv, Bookmark, Star, Calendar, X } from 'lucide-react';
 
 interface TMDBMovieCardProps {

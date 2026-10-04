@@ -1,5 +1,5 @@
 import { Image as ImageIcon } from 'lucide-react';
-import { getTMDBImageUrl } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 
 interface PosterPreviewProps {
   posterPath: string;

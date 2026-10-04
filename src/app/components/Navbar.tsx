@@ -20,8 +20,8 @@ import { Link, useLocation } from 'react-router-dom';
 
 import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
-import { NAV_ITEMS, isNavItemActive } from './navigation';
-import { IconButton } from '../ui/IconButton';
+import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
+import { IconButton } from '@/shared/components/ui/IconButton';
 import logoText from '@/assets/images/logo_text.png';
 
 const RandomPickerModal = lazy(() => import('@/features/movies/components/RandomPickerModal'));

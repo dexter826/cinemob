@@ -3,7 +3,7 @@ import { Download, Loader2, Star, Filter } from 'lucide-react';
 import { Movie } from '@/types';
 import { exportToExcel, filterMoviesForExport, ExportFilters } from '../services/exportService';
 import useToastStore from '@/shared/stores/toastStore';
-import { normalizeMovieDate } from '../utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 import Dropdown from '@/shared/components/ui/Dropdown';
 import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
@@ -35,7 +35,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
       new Set(
         movies
           .map((m) => {
-            const d = normalizeMovieDate(m.watched_at);
+            const d = normalizeDate(m.watched_at);
             return d ? d.getFullYear() : null;
           })
           .filter((y): y is number => y !== null),

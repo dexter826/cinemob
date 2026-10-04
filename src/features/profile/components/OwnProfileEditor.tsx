@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'lucide-react';
-import { AvatarCropView } from '@/features/auth/components/avatar/AvatarCropView';
+import { AvatarCropView } from '@/features/profile/components/avatar/AvatarCropView';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Button } from '@/shared/components/ui/Button';
 import DatePicker from '@/shared/components/ui/DatePicker';

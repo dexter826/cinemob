@@ -3,7 +3,7 @@ import { Search, X, Filter, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 
 import Dropdown from '@/shared/components/ui/Dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
-import { getTMDBImageUrl, getMainTitleForTMDB } from '@/features/movies/utils/movieUtils';
+import { getTMDBImageUrl, getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import type { SearchSortBy, SearchFormFilters } from '../hooks/useSearch';
 
 interface SearchFiltersProps {

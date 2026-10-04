@@ -15,11 +15,11 @@ const MemberProfilePage = lazy(() => import('@/features/profile/pages/MemberProf
 const NotFoundPage = lazy(() => import('@/shared/pages/NotFoundPage'));
 const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
 const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
-import Layout from '@/shared/components/layout/Layout';
+import Layout from '@/app/components/Layout';
 import SplashScreen from '@/shared/components/feedback/SplashScreen';
 import Loading from '@/shared/components/ui/Loading';
 import ErrorBoundary from '@/shared/components/feedback/ErrorBoundary';
-import { useAppInit } from '@/shared/hooks/useAppInit';
+import { useAppInit } from '@/app/useAppInit';
 import ToastContainer from '@/shared/components/feedback/ToastContainer';
 import AlertContainer from '@/shared/components/feedback/AlertContainer';
 

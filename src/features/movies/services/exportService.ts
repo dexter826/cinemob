@@ -1,11 +1,8 @@
 import * as XLSX from 'xlsx';
 import { todayISO } from '@/shared/utils/dateFormat';
 import { Movie } from '@/types';
-import {
-  getTranslatedCountries,
-  getTranslatedGenres,
-  normalizeMovieDate,
-} from '../utils/movieUtils';
+import { getTranslatedCountries, getTranslatedGenres } from '../utils/movieUtils';
+import { normalizeDate } from '@/shared/utils/dateFormat';
 
 export interface ExportFilters {
   rating?: number | null;
@@ -25,7 +22,7 @@ export const filterMoviesForExport = (movies: Movie[], filters: ExportFilters): 
 
   if (filters.year !== null && filters.year !== undefined) {
     result = result.filter((movie) => {
-      const date = normalizeMovieDate(movie.watched_at);
+      const date = normalizeDate(movie.watched_at);
       return date ? date.getFullYear() === filters.year : false;
     });
   }
@@ -61,7 +58,7 @@ export const exportToExcel = async (movies: Movie[], filters: ExportFilters): Pr
     }
 
     const excelData = filteredMovies.map((movie) => {
-      const watchedDate = normalizeMovieDate(movie.watched_at);
+      const watchedDate = normalizeDate(movie.watched_at);
       const isTV = movie.media_type === 'tv';
       return {
         'Tên phim': movie.title,

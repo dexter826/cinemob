@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, Folder, BarChart2, CalendarDays } from 'lucide-react';
-import { NAV_ITEMS, isNavItemActive } from './navigation';
+import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 
 const NAV_ICONS: Record<string, typeof Home> = {
   '/': Home,
