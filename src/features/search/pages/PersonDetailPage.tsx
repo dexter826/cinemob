@@ -52,7 +52,7 @@ function PersonDetailPage() {
   }, [showFilters, setShowFilters]);
 
   return (
-    <div className="text-text-main transition-colors duration-300">
+    <div className="text-text-primary transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           onBack={() => navigate(-1)}
@@ -67,7 +67,7 @@ function PersonDetailPage() {
 
         {loading ? (
           <div className="space-y-6">
-            <div className="bg-surface border border-border-default rounded-3xl p-5 sm:p-6 shadow-premium h-96 animate-pulse" />
+            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 shadow-premium h-96 animate-pulse" />
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <SkeletonCard key={i} />
@@ -89,7 +89,7 @@ function PersonDetailPage() {
         ) : (
           <>
             {/* Person Info Section */}
-            <div className="bg-surface border border-border-default rounded-3xl p-5 sm:p-6 shadow-premium overflow-hidden relative">
+            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 shadow-premium overflow-hidden relative">
               <div className="flex flex-col md:flex-row gap-6 sm:gap-8 relative z-10">
                 {/* Person Image */}
                 <div className="flex justify-center md:justify-start shrink-0">
@@ -97,9 +97,9 @@ function PersonDetailPage() {
                     <img
                       src={getTMDBImageUrl(person.profile_path, 'h632')}
                       alt={person.name}
-                      className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-2xl shadow-premium border border-white/10"
+                      className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-card shadow-premium border border-white/10"
                     />
-                    <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500" />
+                    <div className="absolute inset-0 rounded-card bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500" />
                   </div>
                 </div>
 
@@ -107,7 +107,7 @@ function PersonDetailPage() {
                 <div className="flex-1 space-y-6">
                   <div>
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold text-text-main tracking-tight">
+                      <h2 className="text-xl font-bold text-text-primary tracking-tight">
                         Thông tin cá nhân
                       </h2>
                     </div>
@@ -115,8 +115,8 @@ function PersonDetailPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         {person.birthday && (
-                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                            <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                               <Calendar size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
@@ -131,13 +131,13 @@ function PersonDetailPage() {
                         )}
 
                         {person.deathday && (
-                          <div className="flex items-center gap-4 p-3 bg-error/5 rounded-2xl border border-error/20">
-                            <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center border border-error/20">
-                              <Calendar size={18} className="text-error" aria-hidden="true" />
+                          <div className="flex items-center gap-4 p-3 bg-danger/5 rounded-card border border-danger/20">
+                            <div className="w-10 h-10 rounded-control bg-danger/10 flex items-center justify-center border border-danger/20">
+                              <Calendar size={18} className="text-danger" aria-hidden="true" />
                             </div>
                             <div>
                               <div className="text-xs font-semibold text-danger">Ngày mất</div>
-                              <div className="font-bold text-sm text-error">
+                              <div className="font-bold text-sm text-danger">
                                 {new Date(person.deathday).toLocaleDateString('vi-VN')}
                               </div>
                             </div>
@@ -147,8 +147,8 @@ function PersonDetailPage() {
 
                       <div className="space-y-4">
                         {person.birthday && !person.deathday && (
-                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                            <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                               <Users size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
@@ -173,8 +173,8 @@ function PersonDetailPage() {
                     </div>
 
                     {person.place_of_birth && (
-                      <div className="mt-4 flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-2xl border border-border-default">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                      <div className="mt-4 flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                        <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                           <MapPin size={18} className="text-primary" aria-hidden="true" />
                         </div>
                         <div>
@@ -187,10 +187,10 @@ function PersonDetailPage() {
 
                   {person.biography && (
                     <div className="pt-4 border-t border-border-default">
-                      <h2 className="text-lg font-bold text-text-main mb-3 tracking-tight">
+                      <h2 className="text-lg font-bold text-text-primary mb-3 tracking-tight">
                         Tiểu sử
                       </h2>
-                      <div className="text-text-muted leading-relaxed text-sm">
+                      <div className="text-text-secondary leading-relaxed text-sm">
                         <p
                           className={
                             showFullBio ? 'whitespace-pre-wrap break-words' : 'line-clamp-4'

@@ -24,7 +24,7 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <article className="group relative bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300">
+    <article className="group relative bg-surface rounded-card overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300">
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <button
           type="button"
@@ -86,18 +86,18 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
 
       <div className="p-3 space-y-1">
         <h3
-          className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-main group-hover:text-primary transition-colors duration-200"
+          className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-primary group-hover:text-primary transition-colors duration-200"
           title={mainTitle}
         >
           {mainTitle}
         </h3>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs text-text-muted truncate flex-1 italic" title={subTitle}>
+          <p className="text-xs text-text-secondary truncate flex-1 italic" title={subTitle}>
             {subTitle || '\u00A0'}
           </p>
           {year && (
-            <div className="flex items-center gap-1 text-xs text-text-muted font-medium shrink-0 tabular-nums">
+            <div className="flex items-center gap-1 text-xs text-text-secondary font-medium shrink-0 tabular-nums">
               <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
               <span>{year}</span>
             </div>

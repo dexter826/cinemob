@@ -55,7 +55,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
         aria-label="Trang trước"
-        className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
+        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
         <ChevronLeft size={18} aria-hidden="true" />
       </button>
@@ -75,7 +75,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
                 <span
                   key={page}
                   aria-hidden="true"
-                  className="px-1 text-text-muted select-none opacity-50"
+                  className="px-1 text-text-secondary select-none opacity-50"
                 >
                   •••
                 </span>
@@ -91,10 +91,10 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
               onClick={() => handlePageChange(page)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={`Trang ${page}`}
-              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold tabular-nums transition-colors cursor-pointer ${
+              className={`min-w-10 h-10 px-3 rounded-control text-sm font-bold tabular-nums transition-colors cursor-pointer ${
                 isActive
                   ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
+                  : 'bg-surface border border-border-default text-text-primary hover:bg-primary/5 hover:border-primary/30'
               }`}
             >
               {page}
@@ -104,8 +104,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       </div>
 
       {/* Mobile Pagination with Input */}
-      <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-xl shadow-premium">
-        <span className="text-xs font-medium text-text-muted">Trang</span>
+      <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-control shadow-premium">
+        <span className="text-xs font-medium text-text-secondary">Trang</span>
         <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
           <input
             type="number"
@@ -116,9 +116,11 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             onBlur={handleInputBlur}
             aria-label="Số trang muốn chuyển đến"
             autoComplete="off"
-            className="w-10 h-7 text-center bg-black/5 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-text-main focus:ring-1 focus:ring-primary/50 outline-none"
+            className="w-10 h-7 text-center bg-black/5 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50 outline-none"
           />
-          <span className="text-xs font-bold text-text-muted opacity-50 tabular-nums">/ {totalPages}</span>
+          <span className="text-xs font-bold text-text-secondary opacity-50 tabular-nums">
+            / {totalPages}
+          </span>
         </form>
       </div>
 
@@ -128,7 +130,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
         aria-label="Trang sau"
-        className="p-2.5 rounded-xl bg-surface border border-border-default text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
+        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
       >
         <ChevronRight size={18} aria-hidden="true" />
       </button>

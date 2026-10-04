@@ -95,8 +95,8 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
           {/* Filters */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-text-muted" aria-hidden="true" />
-              <span className="text-sm font-medium text-text-muted">Bộ lọc dữ liệu</span>
+              <Filter size={16} className="text-text-secondary" aria-hidden="true" />
+              <span className="text-sm font-medium text-text-secondary">Bộ lọc dữ liệu</span>
             </div>
 
             {/* Status Filter */}
@@ -104,7 +104,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <label
                 htmlFor="export-status"
                 id="export-status-label"
-                className="block text-xs text-text-muted mb-1.5"
+                className="block text-xs text-text-secondary mb-1.5"
               >
                 Trạng thái
               </label>
@@ -132,7 +132,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <label
                 htmlFor="export-content-type"
                 id="export-content-type-label"
-                className="block text-xs text-text-muted mb-1.5"
+                className="block text-xs text-text-secondary mb-1.5"
               >
                 Loại nội dung
               </label>
@@ -154,7 +154,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
 
             {/* Rating Filter */}
             <div>
-              <span id="export-rating-label" className="block text-xs text-text-muted mb-1.5">
+              <span id="export-rating-label" className="block text-xs text-text-secondary mb-1.5">
                 Đánh giá tối thiểu
               </span>
               <div role="group" aria-labelledby="export-rating-label" className="flex gap-1">
@@ -172,7 +172,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
                     className={`p-1.5 rounded-lg transition-colors cursor-pointer  ${
                       (filters.rating || 0) >= star
                         ? 'text-yellow-500 bg-yellow-500/10'
-                        : 'text-text-muted bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
+                        : 'text-text-secondary bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10'
                     }`}
                   >
                     <Star
@@ -190,7 +190,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <label
                 htmlFor="export-year"
                 id="export-year-label"
-                className="block text-xs text-text-muted mb-1.5"
+                className="block text-xs text-text-secondary mb-1.5"
               >
                 Năm xem
               </label>
@@ -214,7 +214,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               <label
                 htmlFor="export-country"
                 id="export-country-label"
-                className="block text-xs text-text-muted mb-1.5"
+                className="block text-xs text-text-secondary mb-1.5"
               >
                 Quốc gia
               </label>

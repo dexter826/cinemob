@@ -153,8 +153,8 @@ function CustomDropdown({
         onKeyDown={handleNavigationKey}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
-          focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
+          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
+          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-300
           flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -169,19 +169,19 @@ function CustomDropdown({
         aria-invalid={ariaInvalid}
       >
         <span
-          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-main' : 'text-text-muted/60'}`}
+          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-secondary/60'}`}
         >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           size={16}
           aria-hidden="true"
-          className={`text-text-muted transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`}
+          className={`text-text-secondary transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
           {searchable && (
             <div className="p-3 border-b border-border-default bg-black/5 dark:bg-white/5">
               <input
@@ -197,7 +197,7 @@ function CustomDropdown({
                 aria-label="Tìm kiếm tùy chọn"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full bg-surface border border-border-default rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 text-text-main placeholder-text-muted/50"
+                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary/50"
               />
             </div>
           )}
@@ -209,7 +209,7 @@ function CustomDropdown({
             style={{ maxHeight }}
           >
             {filteredOptions.length === 0 ? (
-              <div className="px-4 py-4 text-sm text-text-muted text-center italic opacity-60">
+              <div className="px-4 py-4 text-sm text-text-secondary text-center italic opacity-60">
                 {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
               </div>
             ) : (
@@ -222,7 +222,7 @@ function CustomDropdown({
                   type="button"
                   onClick={() => handleSelect(option)}
                   onKeyDown={handleNavigationKey}
-                  className={`w-full px-4 py-2.5 text-left text-sm rounded-xl transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' : 'text-text-main hover:bg-primary/10 hover:text-primary'}`}
+                  className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
                   role="option"
                   aria-selected={option.value === value}
                 >

@@ -42,7 +42,7 @@ function AlbumDetailPage() {
   } = useAlbumDetail(albumId);
 
   return (
-    <div className="text-text-main transition-colors duration-300">
+    <div className="text-text-primary transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           onBack={() => navigate('/albums')}
@@ -64,11 +64,11 @@ function AlbumDetailPage() {
                 managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'
               }
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
                     ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -82,11 +82,11 @@ function AlbumDetailPage() {
               onClick={() => setEditing((v) => !v)}
               aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
               className={`
-                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-colors border cursor-pointer
+                flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   editing
                     ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-main hover:border-primary/50 shadow-premium'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -104,11 +104,14 @@ function AlbumDetailPage() {
         {editing && (
           <form
             onSubmit={handleSaveInfo}
-            className="bg-surface border border-border rounded-3xl p-4 sm:p-5"
+            className="bg-surface border border-border rounded-dialog p-4 sm:p-5"
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
-                <label htmlFor="album-name" className="text-xs font-medium text-text-muted ml-1">
+                <label
+                  htmlFor="album-name"
+                  className="text-xs font-medium text-text-secondary ml-1"
+                >
                   Tên album mới
                 </label>
                 <input
@@ -118,7 +121,7 @@ function AlbumDetailPage() {
                   autoComplete="off"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl px-4 sm:px-5 py-2.5 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
                 />
               </div>
 
@@ -126,14 +129,14 @@ function AlbumDetailPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-text-muted hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>
@@ -159,7 +162,7 @@ function AlbumDetailPage() {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
               {!loading && (
-                <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default tabular-nums">
+                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -216,7 +219,7 @@ function AlbumDetailPage() {
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="relative group flex-1 md:w-80">
                   <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
                     size={16}
                     strokeWidth={1.5}
                     aria-hidden="true"
@@ -229,10 +232,10 @@ function AlbumDetailPage() {
                     aria-label="Tìm phim trong lịch sử để thêm vào album"
                     autoComplete="off"
                     spellCheck={false}
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus:outline-none focus:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
+                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
                 </div>
-                <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
+                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>

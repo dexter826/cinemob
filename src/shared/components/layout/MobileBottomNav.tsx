@@ -16,7 +16,7 @@ function MobileBottomNav() {
   return (
     <nav
       aria-label="Điều hướng chính"
-      className="md:hidden fixed left-4 right-4 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-40"
+      className="md:hidden fixed left-4 right-4 bg-surface-elevated border border-border rounded-card shadow-elevated z-40"
       style={{ bottom: 'calc(12px + env(safe-area-inset-bottom, 12px))' }}
     >
       <div className="flex justify-around items-center h-16">

@@ -27,10 +27,7 @@
     --radius-control: 12px;
     --radius-card: 16px;
     --radius-dialog: 24px;
-    /* Legacy aliases, remove only after rg proves zero consumers. */
-    --color-text-main: 9 9 11; /* zinc-950 */
-    --color-text-muted: 113 113 122; /* zinc-500 */
-    --color-error: 239 68 68; /* red-500, alias of danger */
+    /* Hairline border for subtle dividers on tinted surfaces. */
     --border-default: rgb(9 9 11 / 0.06);
   }
 
@@ -55,10 +52,7 @@
     --radius-control: 12px;
     --radius-card: 16px;
     --radius-dialog: 24px;
-    /* Legacy aliases, remove only after rg proves zero consumers. */
-    --color-text-main: 250 250 250; /* zinc-50 */
-    --color-text-muted: 161 161 170; /* zinc-400 */
-    --color-error: 239 68 68; /* red-500, alias of danger */
+    /* Hairline border for subtle dividers on tinted surfaces. */
     --border-default: rgb(250 250 250 / 0.06);
   }
 
@@ -102,7 +96,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-text-muted) / 0.3);
+    background: rgb(var(--color-text-secondary) / 0.3);
     border-radius: 6px;
     border: 1px solid transparent;
     background-clip: padding-box;
@@ -110,22 +104,22 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-text-muted) / 0.5);
+    background: rgb(var(--color-text-secondary) / 0.5);
   }
 
   ::-webkit-scrollbar-thumb:active {
-    background: rgb(var(--color-text-muted) / 0.7);
+    background: rgb(var(--color-text-secondary) / 0.7);
   }
 
   /* Scrollbar cho Firefox */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgb(var(--color-text-muted) / 0.3) transparent;
+    scrollbar-color: rgb(var(--color-text-secondary) / 0.3) transparent;
     -webkit-tap-highlight-color: transparent;
   }
 
   *:hover {
-    scrollbar-color: rgb(var(--color-text-muted) / 0.5) transparent;
+    scrollbar-color: rgb(var(--color-text-secondary) / 0.5) transparent;
   }
 
   /* Horizontal scrollbar */
@@ -138,19 +132,19 @@
   }
 
   ::-webkit-scrollbar-horizontal::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-text-muted) / 0.2);
+    background: rgb(var(--color-text-secondary) / 0.2);
     height: 6px;
     border-radius: 6px;
   }
 
   ::-webkit-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-text-muted) / 0.4);
+    background: rgb(var(--color-text-secondary) / 0.4);
   }
 
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     ::-webkit-scrollbar-thumb {
-      background: rgb(var(--color-text-main));
+      background: rgb(var(--color-text-primary));
       border: 1px solid rgb(var(--color-background));
     }
 

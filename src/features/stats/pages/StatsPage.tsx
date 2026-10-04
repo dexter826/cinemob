@@ -42,7 +42,7 @@ interface ChartTooltipProps {
 const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-surface-elevated border border-border rounded-2xl p-4 shadow-elevated">
+      <div className="bg-surface-elevated border border-border rounded-card p-4 shadow-elevated">
         <p className="text-text-primary font-bold mb-1">{label || payload[0].name}</p>
         <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
       </div>
@@ -105,10 +105,10 @@ function StatsPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
-          <div className="h-32 bg-surface rounded-3xl animate-pulse" />
+          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
+          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
         </div>
-        <div className="h-96 bg-surface rounded-3xl animate-pulse" />
+        <div className="h-96 bg-surface rounded-dialog animate-pulse" />
       </div>
     );
   }
@@ -149,7 +149,7 @@ function StatsPage() {
 
           <section
             aria-labelledby="stats-trend-title"
-            className="bg-surface border border-border p-4 sm:p-6 rounded-3xl"
+            className="bg-surface border border-border p-4 sm:p-6 rounded-dialog"
           >
             <div className="flex items-center justify-between gap-4 mb-8">
               <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5">
+                <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5">
                   <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
                 </div>
                 <CustomDropdown
@@ -223,7 +223,7 @@ function StatsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <section
               aria-labelledby="stats-rating-title"
-              className="bg-surface border border-border p-6 rounded-3xl"
+              className="bg-surface border border-border p-6 rounded-dialog"
             >
               <div className="flex items-center gap-3 mb-8">
                 <h3
@@ -237,7 +237,7 @@ function StatsPage() {
                 {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
                   <div key={rating} className="flex items-center gap-4 group">
                     <div className="flex items-center gap-1 w-12 shrink-0">
-                      <span className="font-bold text-base text-text-main tabular-nums">
+                      <span className="font-bold text-base text-text-primary tabular-nums">
                         {rating}
                       </span>
                       <Star
@@ -255,7 +255,7 @@ function StatsPage() {
                         }}
                       />
                     </div>
-                    <span className="text-xs font-semibold text-text-muted bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
+                    <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
                       {moviesByRating[rating] ?? 0}
                     </span>
                   </div>
@@ -265,7 +265,7 @@ function StatsPage() {
 
             <section
               aria-labelledby="stats-countries-title"
-              className="bg-surface border border-border p-6 rounded-3xl"
+              className="bg-surface border border-border p-6 rounded-dialog"
             >
               <div className="flex items-center gap-3 mb-8">
                 <h3
@@ -279,17 +279,17 @@ function StatsPage() {
                 {topCountries.map(([country, count], index) => (
                   <div
                     key={country}
-                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-2xl border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group"
+                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">
                         0{index + 1}
                       </span>
-                      <span className="font-bold text-sm text-text-main truncate max-w-[150px]">
+                      <span className="font-bold text-sm text-text-primary truncate max-w-[150px]">
                         {country}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20 tabular-nums">
+                    <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-control border border-primary/20 tabular-nums">
                       {count} phim
                     </span>
                   </div>
@@ -308,7 +308,7 @@ function StatsPage() {
 
           <section
             aria-labelledby="stats-genres-title"
-            className="bg-surface border border-border p-6 rounded-3xl"
+            className="bg-surface border border-border p-6 rounded-dialog"
           >
             <div className="flex items-center gap-3 mb-8">
               <h3

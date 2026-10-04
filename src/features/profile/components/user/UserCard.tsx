@@ -14,7 +14,7 @@ function UserCard({ profile, onClick }: UserCardProps) {
     <Link
       to={`/profile/${profile.uid}`}
       onClick={onClick}
-      className="w-full flex items-center gap-3 p-3.5 bg-surface border border-border rounded-2xl text-left hover:border-primary/50 transition-colors cursor-pointer group"
+      className="w-full flex items-center gap-3 p-3.5 bg-surface border border-border rounded-card text-left hover:border-primary/50 transition-colors cursor-pointer group"
     >
       {profile.photoURL ? (
         <img
@@ -28,19 +28,19 @@ function UserCard({ profile, onClick }: UserCardProps) {
         </span>
       )}
       <span className="flex-1 min-w-0">
-        <span className="block text-sm font-bold text-text-main group-hover:text-primary transition-colors truncate">
+        <span className="block text-sm font-bold text-text-primary group-hover:text-primary transition-colors truncate">
           {profile.displayName}
         </span>
         {profile.email && profile.email !== profile.displayName && (
-          <span className="block text-xs text-text-muted truncate">{profile.email}</span>
+          <span className="block text-xs text-text-secondary truncate">{profile.email}</span>
         )}
-        <span className="block text-xs text-text-muted mt-0.5">
+        <span className="block text-xs text-text-secondary mt-0.5">
           {profile.totalCount} phim đã xem
         </span>
       </span>
       <ChevronRight
         size={18}
-        className="text-text-muted group-hover:text-primary transition-colors shrink-0"
+        className="text-text-secondary group-hover:text-primary transition-colors shrink-0"
         aria-hidden="true"
       />
     </Link>

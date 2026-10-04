@@ -27,7 +27,7 @@ function Layout({ children, appReady = true }: LayoutProps) {
       <main
         id="main-content"
         tabIndex={-1}
-        className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh] focus:outline-none"
+        className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh] focus-visible:outline-none"
       >
         {children}
       </main>

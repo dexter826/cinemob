@@ -45,7 +45,7 @@ function RatingSection({
         </span>
       </div>
       <div
-        className={`bg-black/5 dark:bg-white/5 border border-border rounded-xl p-4 transition-colors shadow-sm ${
+        className={`bg-black/5 dark:bg-white/5 border border-border rounded-control p-4 transition-colors shadow-sm ${
           isAnimating ? 'border-danger/50' : ''
         }`}
       >

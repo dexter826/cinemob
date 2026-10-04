@@ -83,7 +83,7 @@ function Navbar() {
       <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
         <nav
           aria-label="Điều hướng chính"
-          className="pointer-events-auto w-full max-w-6xl bg-surface border border-border rounded-2xl sm:rounded-full px-3 md:px-4 h-14 flex items-center justify-between"
+          className="pointer-events-auto w-full max-w-6xl bg-surface border border-border rounded-card sm:rounded-full px-3 md:px-4 h-14 flex items-center justify-between"
         >
           <Link
             to="/"
@@ -102,7 +102,7 @@ function Navbar() {
                   to={item.to}
                   aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-control transition-colors cursor-pointer whitespace-nowrap ${
                     active
                       ? 'bg-primary/10 text-primary font-semibold'
                       : 'hover:bg-primary/5 text-text-primary'
@@ -173,7 +173,7 @@ function Navbar() {
                 <div
                   id="account-menu"
                   role="menu"
-                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden"
                 >
                   <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-primary truncate">
@@ -186,7 +186,7 @@ function Navbar() {
                       to={user ? `/profile/${user.uid}` : '/'}
                       role="menuitem"
                       onClick={closeDropdown}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
                     >
                       <User size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Hồ sơ</span>
@@ -198,7 +198,7 @@ function Navbar() {
                         setIsExportModalOpen(true);
                         closeDropdown();
                       }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
                     >
                       <Download size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Xuất dữ liệu</span>
@@ -218,7 +218,7 @@ function Navbar() {
                         });
                         closeDropdown();
                       }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-xl"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
                     >
                       <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
                       <span>Đăng xuất</span>

@@ -69,7 +69,7 @@ export function PersonMovieSection({
         <div className="flex items-center gap-3 relative md:flex-1">
           <div className="relative group flex-1">
             <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
               size={18}
               aria-hidden="true"
             />
@@ -80,13 +80,13 @@ export function PersonMovieSection({
               placeholder="Tìm phim của nghệ sĩ này…"
               autoComplete="off"
               spellCheck={false}
-              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-xl sm:rounded-2xl pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-main focus:outline-none focus:border-primary/50 shadow-premium transition-colors"
+              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-control sm:rounded-card pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-primary focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/30 shadow-premium transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => onSearchQueryChange('')}
                 aria-label="Xóa từ khóa tìm kiếm"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-muted transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary transition-colors cursor-pointer"
               >
                 <X size={14} />
               </button>
@@ -99,7 +99,7 @@ export function PersonMovieSection({
               onShowFiltersChange(!showFilters);
             }}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-muted hover:border-primary/50'}`}
+            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
           >
             <Filter size={20} aria-hidden="true" />
           </button>
@@ -107,26 +107,26 @@ export function PersonMovieSection({
           {showFilters && (
             <div
               ref={filterRef}
-              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-3xl border border-border shadow-elevated flex flex-col gap-6 md:min-w-[320px]"
+              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border shadow-elevated flex flex-col gap-6 md:min-w-[320px]"
             >
               <div className="space-y-3">
                 <div className="text-xs font-semibold text-text-secondary">Sắp xếp theo</div>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-black/5 dark:bg-white/5 text-text-muted hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
                   >
                     {sortOrder === 'asc' ? (
                       <ArrowUp size={14} aria-hidden="true" />
@@ -166,7 +166,7 @@ export function PersonMovieSection({
 
         {paginatedMovies.length > 0 && (
           <div className="flex items-center justify-end">
-            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-border tabular-nums">
+            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-control border border-border tabular-nums">
               Hiển thị {paginatedMovies.length} / {filteredCount} mục
             </span>
           </div>

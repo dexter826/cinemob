@@ -24,7 +24,7 @@ function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: Dashboa
             aria-selected={activeTab === 'history'}
             onClick={() => onTabChange('history')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-              activeTab === 'history' ? 'text-white' : 'text-text-muted hover:text-text-main'
+              activeTab === 'history' ? 'text-white' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             Đã xem
@@ -35,7 +35,9 @@ function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: Dashboa
             aria-selected={activeTab === 'watchlist'}
             onClick={() => onTabChange('watchlist')}
             className={`px-4 py-1.5 text-sm md:text-base font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-              activeTab === 'watchlist' ? 'text-white' : 'text-text-muted hover:text-text-main'
+              activeTab === 'watchlist'
+                ? 'text-white'
+                : 'text-text-secondary hover:text-text-primary'
             }`}
           >
             Sẽ xem
@@ -43,7 +45,7 @@ function DashboardTabs({ activeTab, onTabChange, moviesCount, tvCount }: Dashboa
         </div>
       </div>
 
-      <span className="text-sm text-text-muted font-medium tabular-nums">
+      <span className="text-sm text-text-secondary font-medium tabular-nums">
         ({moviesCount} phim / {tvCount} series)
       </span>
     </div>

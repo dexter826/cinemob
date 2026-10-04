@@ -70,7 +70,7 @@ function AlbumsPage() {
 
       <form
         onSubmit={handleCreate}
-        className="bg-surface border border-border-default dark:border-white/5 rounded-3xl p-3 sm:p-4 shadow-premium"
+        className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4 shadow-premium"
       >
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
           <div className="flex-1 space-y-1.5 sm:space-y-2">
@@ -82,7 +82,7 @@ function AlbumsPage() {
             </label>
             <div className="relative group">
               <Folder
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
                 size={16}
                 strokeWidth={1.5}
                 aria-hidden="true"
@@ -93,7 +93,7 @@ function AlbumsPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-xl sm:rounded-2xl pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
                 placeholder="Ví dụ: Phim Mafia Ý…"
               />
             </div>
@@ -101,7 +101,7 @@ function AlbumsPage() {
           <button
             type="submit"
             disabled={creating || loading}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl sm:rounded-2xl bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
           >
             <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
             <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>
@@ -112,7 +112,7 @@ function AlbumsPage() {
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="aspect-video bg-surface rounded-3xl animate-pulse" />
+            <div key={i} className="aspect-video bg-surface rounded-dialog animate-pulse" />
           ))}
         </div>
       ) : albums.length === 0 ? (
@@ -126,7 +126,7 @@ function AlbumsPage() {
           {albums.map((album) => (
             <article
               key={album.docId}
-              className="group relative bg-surface rounded-2xl border border-border overflow-hidden"
+              className="group relative bg-surface rounded-card border border-border overflow-hidden"
             >
               <Link
                 to={`/albums/${album.docId}`}
@@ -168,7 +168,7 @@ function AlbumsPage() {
                     className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90"
                   />
 
-                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-xl border border-white/10 z-10">
+                  <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-control border border-white/10 z-10">
                     <Folder
                       size={12}
                       className="text-primary"
@@ -190,13 +190,13 @@ function AlbumsPage() {
                 type="button"
                 aria-label={`Xóa album ${album.name}`}
                 onClick={() => handleDelete(album)}
-                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-xl bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-control bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
               >
                 <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
               </button>
 
               <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
-                <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
+                <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-control bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
                   <Film size={12} strokeWidth={1.5} aria-hidden="true" />
                   <span>
                     <strong className="tabular-nums">{album.movieDocIds.length}</strong> mục

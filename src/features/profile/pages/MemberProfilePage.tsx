@@ -135,7 +135,7 @@ function MemberProfilePage() {
         />
 
         {own.profile?.isMovieListHidden && (
-          <p className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-xs sm:text-sm text-text-secondary">
+          <p className="flex items-center gap-2 px-4 py-3 rounded-card bg-amber-400/10 border border-amber-400/30 text-xs sm:text-sm text-text-secondary">
             <EyeOff size={14} className="shrink-0 text-amber-500" aria-hidden="true" />
             Danh sách phim đang ẩn với thành viên khác, chỉ bạn thấy mục này.
           </p>
@@ -198,7 +198,9 @@ function MemberProfilePage() {
                 aria-selected={activeTab === 'common'}
                 onClick={() => setActiveTab('common')}
                 className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'common' ? 'text-white' : 'text-text-muted hover:text-text-main'
+                  activeTab === 'common'
+                    ? 'text-white'
+                    : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
                 Phim chung
@@ -209,7 +211,7 @@ function MemberProfilePage() {
                 aria-selected={activeTab === 'all'}
                 onClick={() => setActiveTab('all')}
                 className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'all' ? 'text-white' : 'text-text-muted hover:text-text-main'
+                  activeTab === 'all' ? 'text-white' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
                 Tất cả phim
@@ -219,7 +221,7 @@ function MemberProfilePage() {
             {activeTab === 'common' &&
               (commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm sm:text-base font-bold text-text-main tracking-tight font-display">
+                  <p className="text-sm sm:text-base font-bold text-text-primary tracking-tight font-display">
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>

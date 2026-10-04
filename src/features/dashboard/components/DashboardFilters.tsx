@@ -68,7 +68,7 @@ function DashboardFilters({
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
           <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
             size={16}
             strokeWidth={1.5}
             aria-hidden="true"
@@ -82,13 +82,13 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-10 pr-8 text-sm text-text-main placeholder-text-muted/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
+            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
           />
           {filters.searchQuery && (
             <button
               onClick={() => updateFilter('searchQuery', '')}
               aria-label="Xóa từ khóa lọc"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer p-1"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-1"
             >
               <X size={14} strokeWidth={1.5} />
             </button>
@@ -101,10 +101,10 @@ function DashboardFilters({
             setShowFilters(!showFilters);
           }}
           aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-          className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-colors duration-200 cursor-pointer ${
+          className={`w-11 h-11 flex items-center justify-center rounded-card border transition-colors duration-200 cursor-pointer ${
             showFilters
               ? 'bg-primary/15 border-primary/40 text-primary'
-              : 'bg-surface border-border-default dark:border-white/5 text-text-muted hover:text-text-main hover:border-primary/40 dark:hover:border-white/10'
+              : 'bg-surface border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary hover:border-primary/40 dark:hover:border-white/10'
           }`}
         >
           {showFilters ? (
@@ -118,17 +118,17 @@ function DashboardFilters({
       {showFilters && (
         <div
           ref={filterRef}
-          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-3xl border border-border shadow-elevated flex flex-col gap-5 min-w-[320px]"
+          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 min-w-[320px]"
         >
           <div className="space-y-3">
-            <div className="text-xs font-semibold text-text-muted">Sắp xếp</div>
+            <div className="text-xs font-semibold text-text-secondary">Sắp xếp</div>
             <div className="flex gap-2">
               <button
                 onClick={() => updateFilter('sortBy', 'date')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'date'
                     ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
+                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
                 <Calendar size={13} strokeWidth={1.5} aria-hidden="true" />
@@ -136,10 +136,10 @@ function DashboardFilters({
               </button>
               <button
                 onClick={() => updateFilter('sortBy', 'title')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'title'
                     ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-muted hover:text-text-main'
+                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
                 <Type size={13} strokeWidth={1.5} aria-hidden="true" />
@@ -147,7 +147,7 @@ function DashboardFilters({
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-transparent text-text-muted hover:text-text-main hover:bg-black/10 transition-colors cursor-pointer"
+                className="flex items-center justify-center p-2.5 rounded-control bg-black/5 dark:bg-white/5 border border-transparent text-text-secondary hover:text-text-primary hover:bg-black/10 transition-colors cursor-pointer"
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
                 aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
               >
@@ -164,7 +164,7 @@ function DashboardFilters({
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-semibold text-text-muted">Bộ lọc</div>
+              <div className="text-xs font-semibold text-text-secondary">Bộ lọc</div>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
@@ -180,7 +180,7 @@ function DashboardFilters({
                 <label
                   htmlFor="df-content-type"
                   id="df-content-type-label"
-                  className="text-xs font-medium text-text-muted mb-2 block"
+                  className="text-xs font-medium text-text-secondary mb-2 block"
                 >
                   Loại nội dung
                 </label>
@@ -203,7 +203,7 @@ function DashboardFilters({
                   <label
                     htmlFor="df-watch-status"
                     id="df-watch-status-label"
-                    className="text-xs font-medium text-text-muted mb-2 block"
+                    className="text-xs font-medium text-text-secondary mb-2 block"
                   >
                     Trạng thái
                   </label>
@@ -226,7 +226,10 @@ function DashboardFilters({
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span id="df-rating-label" className="text-xs font-medium text-text-muted block">
+                  <span
+                    id="df-rating-label"
+                    className="text-xs font-medium text-text-secondary block"
+                  >
                     Khoảng đánh giá
                   </span>
                   {filters.ratingRange && (
@@ -238,7 +241,7 @@ function DashboardFilters({
                 <div
                   role="group"
                   aria-labelledby="df-rating-label"
-                  className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-xl border border-border-default dark:border-white/5"
+                  className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
                     const [min, max] = filters.ratingRange || [0, 0];
@@ -254,7 +257,7 @@ function DashboardFilters({
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive
                             ? 'text-warning bg-warning/15 shadow-sm'
-                            : 'text-text-muted/40 hover:text-text-muted hover:bg-black/5 dark:hover:bg-white/5'
+                            : 'text-text-secondary/40 hover:text-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
                         } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
                       >
                         <Star
@@ -267,7 +270,7 @@ function DashboardFilters({
                     );
                   })}
                 </div>
-                <p className="text-xs text-text-muted mt-2 opacity-60 text-center">
+                <p className="text-xs text-text-secondary mt-2 opacity-60 text-center">
                   Nhấn hai điểm khác nhau để chọn khoảng
                 </p>
               </div>
@@ -276,7 +279,7 @@ function DashboardFilters({
                 <label
                   htmlFor="df-source-type"
                   id="df-source-type-label"
-                  className="text-xs font-medium text-text-muted mb-2 block"
+                  className="text-xs font-medium text-text-secondary mb-2 block"
                 >
                   Nguồn nội dung
                 </label>
@@ -299,7 +302,7 @@ function DashboardFilters({
                   <label
                     htmlFor="df-year"
                     id="df-year-label"
-                    className="text-xs font-medium text-text-muted block"
+                    className="text-xs font-medium text-text-secondary block"
                   >
                     Năm xem
                   </label>
@@ -316,7 +319,7 @@ function DashboardFilters({
                   <label
                     htmlFor="df-country"
                     id="df-country-label"
-                    className="text-xs font-medium text-text-muted block"
+                    className="text-xs font-medium text-text-secondary block"
                   >
                     Quốc gia
                   </label>

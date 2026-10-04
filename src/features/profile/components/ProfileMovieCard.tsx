@@ -15,7 +15,7 @@ function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
   const isTvSeries = movie.media_type === 'tv';
 
   return (
-    <div className="bg-surface border border-border rounded-2xl overflow-hidden flex flex-col">
+    <div className="bg-surface border border-border rounded-card overflow-hidden flex flex-col">
       <div className="relative aspect-2/3 bg-black/5 dark:bg-white/5 overflow-hidden">
         <img src={poster} alt={movie.title} loading="lazy" className="w-full h-full object-cover" />
         <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
@@ -37,10 +37,12 @@ function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
         <div>
           <p className="text-sm font-bold text-text-primary line-clamp-1">{movie.title}</p>
           {movie.title_vi && movie.title_vi !== movie.title && (
-            <p className="text-xs text-text-muted italic line-clamp-1 mt-0.5">{movie.title_vi}</p>
+            <p className="text-xs text-text-secondary italic line-clamp-1 mt-0.5">
+              {movie.title_vi}
+            </p>
           )}
         </div>
-        <div className="mt-2 pt-2 border-t border-border-default/50 flex items-center justify-between text-xs text-text-muted">
+        <div className="mt-2 pt-2 border-t border-border-default/50 flex items-center justify-between text-xs text-text-secondary">
           {watchedAt ? (
             <span className="flex items-center gap-1">
               <Calendar size={11} className="opacity-70" aria-hidden="true" />
@@ -52,7 +54,7 @@ function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
             <span />
           )}
           {!!movie.rating && movie.rating > 0 && (
-            <span className="flex items-center gap-1 font-semibold text-text-main tabular-nums">
+            <span className="flex items-center gap-1 font-semibold text-text-primary tabular-nums">
               <Star size={13} className="text-amber-400 fill-amber-400" aria-hidden="true" />
               {movie.rating.toFixed(1)}
             </span>

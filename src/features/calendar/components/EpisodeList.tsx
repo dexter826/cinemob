@@ -39,7 +39,7 @@ function EpisodeList({
       }
     >
       <div
-        className={`bg-surface border border-border rounded-3xl p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}
+        className={`bg-surface border border-border rounded-dialog p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}
       >
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
           <h3 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
@@ -49,7 +49,7 @@ function EpisodeList({
             <button
               onClick={() => setSelectedDate(null)}
               aria-label="Xem tất cả các tập sắp phát sóng"
-              className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-control border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               Tất cả
             </button>
@@ -61,9 +61,9 @@ function EpisodeList({
             {Array.from({ length: 4 }).map((_, idx) => (
               <div
                 key={idx}
-                className="flex gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl animate-pulse"
+                className="flex gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-card animate-pulse"
               >
-                <div className="w-12 h-16 sm:w-14 sm:h-20 bg-black/10 dark:bg-white/10 rounded-xl" />
+                <div className="w-12 h-16 sm:w-14 sm:h-20 bg-black/10 dark:bg-white/10 rounded-control" />
                 <div className="flex-1 space-y-3 py-1">
                   <div className="h-4 bg-black/10 dark:bg-white/10 rounded-lg w-3/4" />
                   <div className="h-3 bg-black/10 dark:bg-white/10 rounded-lg w-1/4" />
@@ -73,8 +73,8 @@ function EpisodeList({
           </div>
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-border-default opacity-40">
-              <Info size={32} className="text-text-muted" aria-hidden="true" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-card flex items-center justify-center mb-4 border border-border-default opacity-40">
+              <Info size={32} className="text-text-secondary" aria-hidden="true" />
             </div>
             <p className="text-text-secondary font-semibold text-xs">
               {selectedDate ? 'Không có tập phim nào' : 'Chưa có lịch phát sóng'}
@@ -98,9 +98,9 @@ function EpisodeList({
                       type="button"
                       onClick={() => handleSeriesClick(ep)}
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
-                      className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-2xl hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
+                      className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-card hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
                     >
-                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-xl overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
+                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-control overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
                         <img
                           src={getTMDBImageUrl(ep.posterPath)}
                           alt={ep.seriesName}
@@ -119,7 +119,7 @@ function EpisodeList({
                             S{ep.episode.season_number}E{ep.episode.episode_number}
                           </span>
                           {ep.episode.runtime && (
-                            <span className="text-xs font-bold text-text-muted flex items-center gap-1 opacity-60">
+                            <span className="text-xs font-bold text-text-secondary flex items-center gap-1 opacity-60">
                               <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}m
                             </span>
                           )}

@@ -52,7 +52,7 @@ function MovieCard(props: MovieCardProps) {
       : 1;
 
   return (
-    <article className="group flex flex-col bg-surface rounded-2xl overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative">
+    <article className="group flex flex-col bg-surface rounded-card overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300 relative">
       <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
         <button
           type="button"
@@ -80,7 +80,7 @@ function MovieCard(props: MovieCardProps) {
               onClick={() => {
                 if (movie.docId) props.onDelete(movie.docId);
               }}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Xóa"
               aria-label="Xóa phim khỏi danh sách"
             >
@@ -91,7 +91,7 @@ function MovieCard(props: MovieCardProps) {
               <button
                 type="button"
                 onClick={() => props.onEdit(movie)}
-                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
                 title="Sửa"
                 aria-label="Chỉnh sửa thông tin phim"
               >
@@ -103,7 +103,7 @@ function MovieCard(props: MovieCardProps) {
               <button
                 type="button"
                 onClick={() => props.onMarkAsWatched?.(movie)}
-                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-xl transition-colors duration-200 border border-white/10 cursor-pointer"
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
                 title="Đã xem"
                 aria-label="Đánh dấu đã xem phim"
               >
@@ -114,7 +114,7 @@ function MovieCard(props: MovieCardProps) {
         )}
 
         {isSelectMode && (
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none border border-transparent group-hover:border-primary/40 rounded-2xl">
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none border border-transparent group-hover:border-primary/40 rounded-card">
             <CheckCircle
               className="text-white drop-shadow-lg"
               size={44}
@@ -167,17 +167,20 @@ function MovieCard(props: MovieCardProps) {
       <div className="p-3 flex flex-col flex-1">
         <div className="min-h-10 mb-2">
           <h3
-            className="font-bold text-sm md:text-[15px] leading-tight text-text-main line-clamp-1 group-hover:text-primary transition-colors duration-200"
+            className="font-bold text-sm md:text-[15px] leading-tight text-text-primary line-clamp-1 group-hover:text-primary transition-colors duration-200"
             title={mainTitle}
           >
             {mainTitle}
           </h3>
-          <p className="text-[11px] text-text-muted truncate mt-0.5 italic" title={subTitle || ''}>
+          <p
+            className="text-[11px] text-text-secondary truncate mt-0.5 italic"
+            title={subTitle || ''}
+          >
             {subTitle || '\u00A0'}
           </p>
         </div>
 
-        <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-muted">
+        <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-[10px] text-text-secondary">
           <div className="flex items-center flex-wrap gap-1.5 font-medium">
             {movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed && (
               <>
@@ -194,7 +197,7 @@ function MovieCard(props: MovieCardProps) {
           <div className="flex items-center gap-2 shrink-0">
             {!!movie.rating && movie.rating > 0 && (
               <span
-                className="flex items-center gap-1 font-semibold text-text-main"
+                className="flex items-center gap-1 font-semibold text-text-primary"
                 title="Đánh giá"
               >
                 <Star

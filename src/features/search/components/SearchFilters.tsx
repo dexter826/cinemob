@@ -60,7 +60,7 @@ function SearchFilters({
             />
           ) : (
             <Search
-              className="text-text-muted group-focus-within:text-primary transition-colors"
+              className="text-text-secondary group-focus-within:text-primary transition-colors"
               size={18}
               strokeWidth={1.5}
               aria-hidden="true"
@@ -80,15 +80,15 @@ function SearchFilters({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-2xl pl-11 sm:pl-12 pr-24 sm:pr-28 focus:outline-none focus:border-primary transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-main placeholder-text-muted/40"
+          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
           autoFocus
         />
 
         {/* Suggestion Dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-2xl shadow-elevated z-50 overflow-hidden">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
             <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
-              <div className="px-4 py-2 text-xs font-medium text-text-muted border-b border-border-default dark:border-white/5 mb-1">
+              <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
                 Gợi ý tìm kiếm
               </div>
               {suggestions.map((movie) => {
@@ -112,11 +112,11 @@ function SearchFilters({
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm text-text-main group-hover/item:text-primary transition-colors line-clamp-1">
+                      <h4 className="font-bold text-sm text-text-primary group-hover/item:text-primary transition-colors line-clamp-1">
                         {title}
                       </h4>
                       <div className="flex items-center gap-3 mt-0.5">
-                        <div className="flex items-center gap-1 text-xs text-text-muted">
+                        <div className="flex items-center gap-1 text-xs text-text-secondary">
                           {isTV ? (
                             <Tv
                               size={12}
@@ -135,7 +135,7 @@ function SearchFilters({
                           <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
                         </div>
                         {year && (
-                          <div className="flex items-center gap-1 text-xs text-text-muted">
+                          <div className="flex items-center gap-1 text-xs text-text-secondary">
                             <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
                             <span>{year}</span>
                           </div>
@@ -172,7 +172,7 @@ function SearchFilters({
             <button
               onClick={() => updateFilter('query', '')}
               aria-label="Xóa nội dung tìm kiếm"
-              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-muted transition-colors cursor-pointer"
+              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-secondary transition-colors cursor-pointer"
             >
               <X size={20} strokeWidth={1.5} aria-hidden="true" />
             </button>
@@ -180,7 +180,7 @@ function SearchFilters({
           <button
             onClick={handleSearch}
             aria-label="Tìm kiếm phim"
-            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-xl hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer"
+            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer"
           >
             Tìm
           </button>
@@ -188,8 +188,8 @@ function SearchFilters({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default dark:border-white/5 rounded-2xl px-3 h-11">
-          <Filter size={16} className="text-text-muted" strokeWidth={1.5} aria-hidden="true" />
+        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default dark:border-white/5 rounded-card px-3 h-11">
+          <Filter size={16} className="text-text-secondary" strokeWidth={1.5} aria-hidden="true" />
           <span className="text-xs font-bold text-text-secondary">Lọc theo</span>
         </div>
 
@@ -248,7 +248,7 @@ function SearchFilters({
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-card bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
           >
             <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
             <span>Đặt lại</span>

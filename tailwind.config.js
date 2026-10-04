@@ -23,10 +23,7 @@ export default {
         warning: 'rgb(var(--color-warning) / <alpha-value>)',
         danger: 'rgb(var(--color-danger) / <alpha-value>)',
         info: 'rgb(var(--color-info) / <alpha-value>)',
-        /* Legacy aliases, remove only after rg proves zero consumers. */
-        'text-main': 'rgb(var(--color-text-main) / <alpha-value>)',
-        'text-muted': 'rgb(var(--color-text-muted) / <alpha-value>)',
-        error: 'rgb(var(--color-error) / <alpha-value>)',
+        /* Hairline border for subtle dividers on tinted surfaces. */
         'border-default': 'var(--border-default)',
       },
       borderRadius: {

@@ -17,7 +17,7 @@ function Footer() {
           <div className="flex items-center justify-center md:justify-start gap-2">
             <img src={logoText} alt="CineMOB" className="h-7 select-none" />
           </div>
-          <p className="text-xs text-text-muted mt-1.5 flex items-center justify-center md:justify-start gap-1">
+          <p className="text-xs text-text-secondary mt-1.5 flex items-center justify-center md:justify-start gap-1">
             Cine Over B**ch
             <HandCoins className="w-3 h-3 text-primary" aria-hidden="true" />
           </p>
@@ -33,7 +33,7 @@ function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-muted hover:text-primary transition-colors duration-200"
+                className="text-text-secondary hover:text-primary transition-colors duration-200"
                 aria-label={link.label}
               >
                 <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
@@ -43,7 +43,7 @@ function Footer() {
         </div>
 
         {/* Khối 3: Bản quyền */}
-        <div className="flex-1 text-xs text-text-muted flex items-center justify-center md:justify-end gap-1">
+        <div className="flex-1 text-xs text-text-secondary flex items-center justify-center md:justify-end gap-1">
           <span>© {new Date().getFullYear()}</span>
           <span>• Made with</span>
           <Heart className="w-3 h-3 text-primary inline-block" aria-hidden="true" />

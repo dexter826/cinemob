@@ -16,7 +16,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
   }, [profile.photoURL]);
 
   return (
-    <div className="bg-surface border border-border rounded-3xl p-5 sm:p-6 flex flex-col items-center text-center">
+    <div className="bg-surface border border-border rounded-dialog p-5 sm:p-6 flex flex-col items-center text-center">
       <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-4 ring-primary/20 shrink-0">
         {profile.photoURL && !isAvatarLoadFailed ? (
           <img
@@ -32,7 +32,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
         )}
       </div>
 
-      <h1 className="mt-2 text-xl sm:text-2xl font-bold text-text-main tracking-tight font-display">
+      <h1 className="mt-2 text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
         {profile.displayName}
       </h1>
       {profile.email && (
@@ -49,7 +49,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
           {profile.bio}
         </p>
       ) : (
-        <p className="mt-3 text-sm text-text-muted italic">Chưa có giới thiệu.</p>
+        <p className="mt-3 text-sm text-text-secondary italic">Chưa có giới thiệu.</p>
       )}
     </div>
   );

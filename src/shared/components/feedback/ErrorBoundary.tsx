@@ -31,7 +31,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 p-8 text-center">
           <p className="text-lg font-bold">Đã xảy ra lỗi khi hiển thị</p>
-          <p className="text-sm text-text-muted">Thử tải lại trang hoặc quay về trang chủ.</p>
+          <p className="text-sm text-text-secondary">Thử tải lại trang hoặc quay về trang chủ.</p>
           <div className="flex gap-2">
             <button
               type="button"

@@ -30,8 +30,8 @@ export function PickerWheel({
       {/* Wheel of Fortune Layout - Fixed positions, changing content */}
       <div className="relative w-80 h-60 flex items-center justify-center movie-wheel-container">
         {/* Left Side Card */}
-        <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-          <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
+        <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
+          <div className="w-full h-full rounded-control overflow-hidden shadow-lg border border-border-default dark:border-white/10">
             <img
               src={leftSrc}
               alt=""
@@ -44,7 +44,7 @@ export function PickerWheel({
         {/* Center Card - Main focus */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
           <div
-            className={`w-full h-full rounded-xl overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${animateCards ? 'animate-pulse-soft' : ''}`}
+            className={`w-full h-full rounded-control overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${animateCards ? 'animate-pulse-soft' : ''}`}
           >
             <img src={centerSrc} alt="" className="w-full h-full object-cover" />
 
@@ -54,8 +54,8 @@ export function PickerWheel({
         </div>
 
         {/* Right Side Card */}
-        <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-xl overflow-hidden">
-          <div className="w-full h-full rounded-xl overflow-hidden shadow-lg border border-border-default dark:border-white/10">
+        <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
+          <div className="w-full h-full rounded-control overflow-hidden shadow-lg border border-border-default dark:border-white/10">
             <img
               src={rightSrc}
               alt=""

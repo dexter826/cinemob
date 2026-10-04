@@ -72,7 +72,7 @@ function SearchResults({
             type="button"
             onClick={() => refreshRecommendations(userId, true)}
             disabled={isAiLoading}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
           >
             <RotateCcw size={16} aria-hidden="true" />
             <span>Làm mới</span>
@@ -84,7 +84,7 @@ function SearchResults({
               <SkeletonCard key={i} />
             ))}
           </div>
-          <p className="text-sm font-medium text-text-muted text-center pt-2">
+          <p className="text-sm font-medium text-text-secondary text-center pt-2">
             Đang phân tích lịch sử xem và gợi ý phim phù hợp…
           </p>
         </div>
@@ -124,13 +124,13 @@ function SearchResults({
 
                 {aiRecommendations.length === 0 && !isAiLoading ? (
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="hidden sm:inline text-xs text-text-muted">
+                    <span className="hidden sm:inline text-xs text-text-secondary">
                       Không thể tải.{' '}
                     </span>
                     <button
                       type="button"
                       onClick={() => refreshRecommendations(userId, true)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
                     >
                       <RotateCcw size={14} aria-hidden="true" />
                       <span>Thử lại</span>
@@ -141,7 +141,7 @@ function SearchResults({
                     type="button"
                     onClick={() => refreshRecommendations(userId, true)}
                     disabled={isAiLoading}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-main whitespace-nowrap shrink-0"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border-default hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
                   >
                     <RotateCcw size={16} aria-hidden="true" />
                     <span>Làm mới</span>

@@ -88,7 +88,7 @@ function MovieFormFields({
               placeholder="Chọn loại"
             />
           ) : (
-            <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-semibold text-text-secondary">
+            <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-secondary">
               {isTVSeries ? 'Series' : 'Phim lẻ'}
             </div>
           )}
@@ -169,7 +169,7 @@ function MovieFormFields({
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 text-sm font-semibold text-text-primary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
+              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
               placeholder={isTVSeries ? 'Số mùa…' : 'Phút…'}
             />
           </div>
@@ -219,7 +219,7 @@ function MovieFormFields({
           rows={5}
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-2xl px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors resize-none"
+          className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors resize-none"
           placeholder="Giới thiệu ngắn về cốt truyện…"
         />
       </div>

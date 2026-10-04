@@ -24,7 +24,7 @@ function TVProgressSection({
   maxSeasons,
 }: TVProgressSectionProps) {
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-3xl p-5 space-y-4 shadow-sm">
+    <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-primary flex items-center gap-2">
           <Tv size={14} aria-hidden="true" /> Tiến độ xem
@@ -43,7 +43,7 @@ function TVProgressSection({
               </svg>
             </div>
           </div>
-          <span className="text-xs font-bold text-text-main group-hover:text-primary transition-colors">
+          <span className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">
             Hoàn thành bộ phim
           </span>
         </label>
@@ -58,18 +58,18 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-season-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default"
+              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
                 aria-label="Giảm mùa"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
               <div
-                className="flex-1 text-center font-bold text-sm text-text-main"
+                className="flex-1 text-center font-bold text-sm text-text-primary"
                 aria-live="polite"
               >
                 {currentSeason}
@@ -78,7 +78,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Tăng mùa"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>
@@ -91,18 +91,18 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-episode-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-border-default"
+              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
                 aria-label="Giảm tập"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
               <div
-                className="flex-1 text-center font-bold text-sm text-text-main"
+                className="flex-1 text-center font-bold text-sm text-text-primary"
                 aria-live="polite"
               >
                 {currentEpisode}
@@ -114,7 +114,7 @@ function TVProgressSection({
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-main hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>

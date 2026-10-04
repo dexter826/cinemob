@@ -3,7 +3,7 @@ function SkeletonCard() {
   return (
     <div
       aria-hidden="true"
-      className="flex flex-col bg-surface rounded-2xl overflow-hidden border border-border h-full motion-safe:animate-pulse motion-reduce:animate-none"
+      className="flex flex-col bg-surface rounded-card overflow-hidden border border-border h-full motion-safe:animate-pulse motion-reduce:animate-none"
     >
       <div className="aspect-2/3 w-full bg-black/5 dark:bg-white/5" />
       <div className="p-3 flex flex-col flex-1 space-y-3">

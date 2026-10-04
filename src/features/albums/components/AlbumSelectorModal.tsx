@@ -85,7 +85,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
       <div className="flex items-start justify-between gap-3 p-5 sm:p-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4 min-w-0">
           {movie && (
-            <span className="w-12 h-[72px] rounded-xl overflow-hidden border border-border shrink-0 block">
+            <span className="w-12 h-[72px] rounded-control overflow-hidden border border-border shrink-0 block">
               <img
                 src={
                   movie.poster_path
@@ -118,7 +118,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
 
       <DialogBody>
         {showCreateForm ? (
-          <div className="mb-6 p-5 border border-primary/20 rounded-2xl bg-primary/5">
+          <div className="mb-6 p-5 border border-primary/20 rounded-card bg-primary/5">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Tạo album mới</h3>
             <div className="space-y-4">
               <label htmlFor="album-selector-new-name" className="sr-only">
@@ -132,7 +132,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 onChange={(e) => setNewAlbumName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleCreateAlbum()}
                 autoComplete="off"
-                className="w-full h-11 px-5 rounded-2xl border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-colors"
+                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
                 autoFocus
               />
               <div className="flex gap-3">
@@ -155,12 +155,12 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           <button
             type="button"
             onClick={() => setShowCreateForm(true)}
-            className="w-full p-5 mb-6 rounded-3xl border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-colors text-left cursor-pointer"
+            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-colors text-left cursor-pointer"
           >
             <span className="flex items-center gap-4">
               <span
                 aria-hidden="true"
-                className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20"
+                className="w-12 h-12 bg-primary/10 rounded-control flex items-center justify-center shrink-0 border border-primary/20"
               >
                 <FolderPlus size={24} className="text-primary" />
               </span>
@@ -197,12 +197,12 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 onClick={() => handleAddToAlbum(album)}
                 disabled={addingToAlbum === album.docId}
                 aria-label={`Thêm phim vào album ${album.name}`}
-                className="w-full p-4 rounded-3xl border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left cursor-pointer"
+                className="w-full p-4 rounded-dialog border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left cursor-pointer"
               >
                 <span className="flex items-center gap-4">
                   <span
                     aria-hidden="true"
-                    className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-border"
+                    className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-control flex items-center justify-center shrink-0 border border-border"
                   >
                     <Film size={22} className="text-text-secondary" />
                   </span>

@@ -120,8 +120,8 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
             {loading ? (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <div className="h-10 bg-black/5 dark:bg-white/5 rounded-2xl w-3/4 animate-pulse" />
-                  <div className="h-6 bg-black/5 dark:bg-white/5 rounded-xl w-1/2 animate-pulse" />
+                  <div className="h-10 bg-black/5 dark:bg-white/5 rounded-card w-3/4 animate-pulse" />
+                  <div className="h-6 bg-black/5 dark:bg-white/5 rounded-control w-1/2 animate-pulse" />
                 </div>
 
                 <div className="flex gap-2">
@@ -142,7 +142,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <div
                         key={i}
-                        className="h-8 w-24 bg-black/5 dark:bg-white/5 rounded-xl animate-pulse"
+                        className="h-8 w-24 bg-black/5 dark:bg-white/5 rounded-control animate-pulse"
                       />
                     ))}
                   </div>
@@ -158,11 +158,13 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     {mainTitle}
                   </h2>
                   {subTitle && movie.title_vi !== mainTitle && (
-                    <p className="text-text-muted text-base sm:text-lg mb-2 italic">{subTitle}</p>
+                    <p className="text-text-secondary text-base sm:text-lg mb-2 italic">
+                      {subTitle}
+                    </p>
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm text-text-muted">
+                <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm text-text-secondary">
                   {movie.release_date && (
                     <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full border border-border-default dark:border-white/5">
                       <Calendar
@@ -209,21 +211,21 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 </div>
 
                 {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
-                  <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-4 sm:p-5 border border-border-default dark:border-white/5">
+                  <div className="bg-black/5 dark:bg-white/5 rounded-card p-4 sm:p-5 border border-border-default dark:border-white/5">
                     <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-text-muted text-xs font-semibold">Tiến độ xem</span>
+                      <span className="text-text-secondary text-xs font-semibold">Tiến độ xem</span>
                       {movie.progress.is_completed && (
                         <span className="text-success text-xs font-semibold tracking-wide px-2 py-0.5 bg-success/10 rounded-md border border-success/20 dark:border-success/10">
                           ✓ Hoàn thành
                         </span>
                       )}
                     </div>
-                    <div className="text-text-main font-bold text-xl sm:text-2xl mb-4 font-display">
+                    <div className="text-text-primary font-bold text-xl sm:text-2xl mb-4 font-display">
                       {movie.progress.is_completed
                         ? 'Đã xem hết'
                         : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
                       {!movie.progress.is_completed && movie.total_episodes && (
-                        <span className="text-text-muted font-normal text-sm ml-2 tabular-nums">
+                        <span className="text-text-secondary font-normal text-sm ml-2 tabular-nums">
                           ({movie.progress.watched_episodes}/{movie.total_episodes} tập)
                         </span>
                       )}
@@ -244,7 +246,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 )}
 
                 {movie.genres && (
-                  <div className="flex items-center gap-2 sm:gap-2.5 text-text-muted text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 sm:gap-2.5 text-text-secondary text-xs sm:text-sm">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center border border-border-default dark:border-white/5">
                       <Film
                         size={14}
@@ -260,17 +262,17 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                 )}
 
                 <div className="space-y-2.5">
-                  <h3 className="text-base sm:text-lg font-bold text-text-main tracking-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-text-primary tracking-tight">
                     Nội dung
                   </h3>
-                  <p className="text-text-muted leading-relaxed text-xs sm:text-sm md:text-base opacity-90">
+                  <p className="text-text-secondary leading-relaxed text-xs sm:text-sm md:text-base opacity-90">
                     {overview}
                   </p>
                 </div>
 
                 {movie.review && (
-                  <div className="bg-warning/5 dark:bg-warning/5 rounded-2xl p-4 sm:p-5 border border-warning/20 dark:border-warning/10">
-                    <h3 className="text-base sm:text-lg font-bold text-text-main mb-2.5 flex items-center gap-2 tracking-tight">
+                  <div className="bg-warning/5 dark:bg-warning/5 rounded-card p-4 sm:p-5 border border-warning/20 dark:border-warning/10">
+                    <h3 className="text-base sm:text-lg font-bold text-text-primary mb-2.5 flex items-center gap-2 tracking-tight">
                       <Star
                         size={16}
                         className="text-warning fill-warning"
@@ -279,7 +281,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                       />
                       Đánh giá của bạn
                     </h3>
-                    <p className="text-text-muted leading-relaxed text-xs sm:text-sm md:text-base">
+                    <p className="text-text-secondary leading-relaxed text-xs sm:text-sm md:text-base">
                       {movie.review}
                     </p>
                   </div>
@@ -289,7 +291,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                   <div className="space-y-4">
                     {credits.crew && credits.crew.some((c) => c.job === 'Director') && (
                       <div className="space-y-2.5">
-                        <h3 className="text-base sm:text-lg font-bold text-text-main flex items-center gap-2 tracking-tight">
+                        <h3 className="text-base sm:text-lg font-bold text-text-primary flex items-center gap-2 tracking-tight">
                           <User
                             size={16}
                             className="sm:w-[18px] sm:h-[18px] text-info"
@@ -298,7 +300,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                           />{' '}
                           Đạo diễn
                         </h3>
-                        <p className="text-text-muted text-xs sm:text-sm md:text-base">
+                        <p className="text-text-secondary text-xs sm:text-sm md:text-base">
                           {credits.crew
                             .filter((c) => c.job === 'Director')
                             .map((d) => d.name)
@@ -308,7 +310,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     )}
                     {credits.cast && credits.cast.length > 0 && (
                       <div className="space-y-2.5">
-                        <h3 className="text-base sm:text-lg font-bold text-text-main flex items-center gap-2 tracking-tight">
+                        <h3 className="text-base sm:text-lg font-bold text-text-primary flex items-center gap-2 tracking-tight">
                           <Users
                             size={16}
                             className="sm:w-[18px] sm:h-[18px] text-primary"
@@ -323,7 +325,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                               key={actor.id}
                               to={`/person/${actor.id}`}
                               onClick={onClose}
-                              className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-xl text-xs font-medium text-text-secondary transition-colors border border-border cursor-pointer"
+                              className="bg-black/5 dark:bg-white/5 hover:bg-primary/10 hover:text-primary hover:border-primary/30 px-3 py-1.5 rounded-control text-xs font-medium text-text-secondary transition-colors border border-border cursor-pointer"
                             >
                               {actor.name}
                             </Link>
@@ -344,7 +346,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                           ? 'Xem trailer phim trên YouTube'
                           : 'Phim không có video trailer'
                       }
-                      className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors cursor-pointer ${
+                      className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-card font-bold transition-colors cursor-pointer ${
                         videos.length > 0
                           ? 'bg-red-600 hover:bg-red-500 text-white'
                           : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'
@@ -358,7 +360,7 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                       onClick={handleAddToAlbum}
                       disabled={!canAddToAlbum}
                       aria-label="Thêm phim vào album cá nhân"
-                      className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold transition-colors cursor-pointer ${
+                      className={`w-full min-h-[50px] flex items-center justify-center gap-2 px-6 py-3.5 rounded-card font-bold transition-colors cursor-pointer ${
                         canAddToAlbum
                           ? 'bg-primary hover:bg-primary-hover text-on-primary'
                           : 'bg-black/5 dark:bg-white/5 text-text-secondary cursor-not-allowed opacity-50'

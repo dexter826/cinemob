@@ -64,7 +64,7 @@ function ReleaseCalendarPage() {
             <div
               role="tablist"
               aria-label="Chế độ hiển thị lịch chiếu"
-              className="bg-surface border border-border p-1 rounded-2xl flex items-center"
+              className="bg-surface border border-border p-1 rounded-card flex items-center"
             >
               <button
                 disabled={loading}
@@ -72,7 +72,7 @@ function ReleaseCalendarPage() {
                 aria-selected={viewMode === 'calendar'}
                 aria-label="Xem theo lịch tháng"
                 onClick={() => setViewMode('calendar')}
-                className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
+                className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
                   viewMode === 'calendar'
                     ? 'bg-primary text-white'
                     : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
@@ -87,7 +87,7 @@ function ReleaseCalendarPage() {
                 aria-selected={viewMode === 'list'}
                 aria-label="Xem theo danh sách"
                 onClick={() => setViewMode('list')}
-                className={`p-2 sm:p-2.5 rounded-xl transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
+                className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
                   viewMode === 'list'
                     ? 'bg-primary text-white'
                     : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
@@ -105,7 +105,7 @@ function ReleaseCalendarPage() {
               aria-label={
                 pushSubscribed ? 'Tắt thông báo tập phim mới' : 'Bật thông báo tập phim mới'
               }
-              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-2xl transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
                 pushStatus === 'on'
                   ? 'bg-success text-white'
                   : pushStatus === 'blocked'
@@ -132,10 +132,10 @@ function ReleaseCalendarPage() {
 
       {loading ? (
         <div className="space-y-6">
-          <div className="h-28 bg-surface rounded-3xl animate-pulse border border-border" />
+          <div className="h-28 bg-surface rounded-dialog animate-pulse border border-border" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 h-80 bg-surface rounded-3xl animate-pulse border border-border" />
-            <div className="h-80 bg-surface rounded-3xl animate-pulse border border-border" />
+            <div className="lg:col-span-2 h-80 bg-surface rounded-dialog animate-pulse border border-border" />
+            <div className="h-80 bg-surface rounded-dialog animate-pulse border border-border" />
           </div>
         </div>
       ) : (
@@ -159,7 +159,7 @@ function ReleaseCalendarPage() {
               icon={Tv}
               title="Chưa có series nào"
               description='Thêm series vào danh sách "Đã xem" hoặc "Sẽ xem" để theo dõi lịch phát sóng.'
-              className="bg-surface border border-border rounded-3xl py-6 sm:py-8"
+              className="bg-surface border border-border rounded-dialog py-6 sm:py-8"
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

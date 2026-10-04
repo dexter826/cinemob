@@ -76,7 +76,7 @@ export function AvatarCropView({
           onClick={() => onZoomChange(zoom - ZOOM_STEP)}
           disabled={zoom <= MIN_ZOOM || isUploading}
           aria-label="Thu nhỏ"
-          className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
+          className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30"
         >
           <ZoomOut size={16} />
         </button>
@@ -98,15 +98,17 @@ export function AvatarCropView({
           onClick={() => onZoomChange(zoom + ZOOM_STEP)}
           disabled={zoom >= MAX_ZOOM || isUploading}
           aria-label="Phóng to"
-          className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-muted hover:text-text-main transition-colors cursor-pointer disabled:opacity-30"
+          className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30"
         >
           <ZoomIn size={16} />
         </button>
 
-        <span className="text-xs font-mono text-text-muted w-9 text-right">{zoom.toFixed(1)}x</span>
+        <span className="text-xs font-mono text-text-secondary w-9 text-right">
+          {zoom.toFixed(1)}x
+        </span>
       </div>
 
-      <p className="text-[11px] text-text-muted/70 mt-2 text-center">
+      <p className="text-[11px] text-text-secondary/70 mt-2 text-center">
         Kéo ảnh để căn góc mặt, cuộn chuột để phóng to
       </p>
     </div>

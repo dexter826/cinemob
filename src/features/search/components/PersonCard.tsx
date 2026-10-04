@@ -9,7 +9,7 @@ interface PersonCardProps {
 /** Thẻ hiển thị nghệ sĩ, diễn viên trong kết quả tìm kiếm. */
 function PersonCard({ person, onClick }: PersonCardProps) {
   return (
-    <article className="group relative bg-surface rounded-3xl overflow-hidden border border-border">
+    <article className="group relative bg-surface rounded-dialog overflow-hidden border border-border">
       <button
         type="button"
         onClick={() => onClick(person.id)}
@@ -28,16 +28,16 @@ function PersonCard({ person, onClick }: PersonCardProps) {
       </button>
       <div className="p-4 bg-surface border-t border-border-default">
         <h3
-          className="font-bold text-sm line-clamp-1 tracking-tight text-text-main group-hover:text-primary transition-colors font-display"
+          className="font-bold text-sm line-clamp-1 tracking-tight text-text-primary group-hover:text-primary transition-colors font-display"
           title={person.name}
         >
           {person.name}
         </h3>
-        <p className="text-xs font-medium text-text-muted mt-1">
+        <p className="text-xs font-medium text-text-secondary mt-1">
           {person.known_for_department || 'Nghệ sĩ'}
         </p>
         {person.known_for && person.known_for.length > 0 && (
-          <p className="text-xs text-text-muted mt-2 line-clamp-1 font-medium opacity-80 italic">
+          <p className="text-xs text-text-secondary mt-2 line-clamp-1 font-medium opacity-80 italic">
             {person.known_for
               .map((m) => m.title || m.name)
               .filter(Boolean)

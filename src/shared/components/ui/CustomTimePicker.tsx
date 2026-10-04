@@ -142,7 +142,7 @@ function CustomTimePicker({
   const renderPicker = () => (
     <div
       className={`
-                bg-surface border border-border-default rounded-2xl shadow-2xl p-4
+                bg-surface border border-border-default rounded-card shadow-2xl p-4
                 ${
                   isMobile
                     ? 'relative w-full max-w-[280px] mx-auto'
@@ -155,7 +155,7 @@ function CustomTimePicker({
     >
       {isMobile && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-          <span id={dialogTitleId} className="text-sm font-bold text-text-main">
+          <span id={dialogTitleId} className="text-sm font-bold text-text-primary">
             Chọn giờ
           </span>
           <button
@@ -164,7 +164,7 @@ function CustomTimePicker({
             onClick={closePicker}
             className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
           >
-            <X size={20} className="text-text-muted" aria-hidden="true" />
+            <X size={20} className="text-text-secondary" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -173,7 +173,7 @@ function CustomTimePicker({
       <div className="flex gap-2 max-h-40">
         {/* Hour List */}
         <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold">
+          <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Giờ
           </div>
           {HOUR_OPTIONS.map((h) => (
@@ -187,7 +187,7 @@ function CustomTimePicker({
                                 ${
                                   h === hours
                                     ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
-                                    : 'text-text-main hover:bg-primary/10 hover:text-primary font-medium'
+                                    : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}
             >
@@ -198,7 +198,7 @@ function CustomTimePicker({
 
         {/* Minute List */}
         <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-xs text-text-muted text-center mb-1 sticky top-0 bg-surface font-bold">
+          <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Phút
           </div>
           {minuteOptions.map((m) => (
@@ -212,7 +212,7 @@ function CustomTimePicker({
                                 ${
                                   m === minutes
                                     ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
-                                    : 'text-text-main hover:bg-primary/10 hover:text-primary font-medium'
+                                    : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}
             >
@@ -227,7 +227,7 @@ function CustomTimePicker({
         <button
           type="button"
           onClick={setCurrentTime}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20"
+          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-primary/20"
         >
           Bây giờ
         </button>
@@ -246,8 +246,8 @@ function CustomTimePicker({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-2xl px-4 text-left
-          focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20
+          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
+          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between shadow-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -261,8 +261,10 @@ function CustomTimePicker({
         aria-invalid={ariaInvalid}
       >
         <div className="flex items-center gap-2">
-          <Clock size={16} className="text-text-muted" aria-hidden="true" />
-          <span className={`text-sm font-medium ${value ? 'text-text-main' : 'text-text-muted'}`}>
+          <Clock size={16} className="text-text-secondary" aria-hidden="true" />
+          <span
+            className={`text-sm font-medium ${value ? 'text-text-primary' : 'text-text-secondary'}`}
+          >
             {value || placeholder}
           </span>
         </div>
