@@ -73,7 +73,7 @@ function Login() {
   }, [signInWithGoogle]);
 
   return (
-    <div className="h-dvh max-h-dvh overflow-hidden flex flex-col lg:flex-row bg-background text-text-main relative selection:bg-primary/20 selection:text-primary">
+    <main className="h-dvh max-h-dvh overflow-hidden flex flex-col lg:flex-row bg-background text-text-main relative selection:bg-primary/20 selection:text-primary">
       {/* Brand & Showcase Panel */}
       <div className="relative z-10 flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 border-b lg:border-b-0 lg:border-r border-border-default bg-surface/20 overflow-y-auto lg:overflow-hidden">
         {/* Header Section */}
@@ -97,7 +97,7 @@ function Login() {
         {/* Visual Layered Movie Showcase */}
         <div className="relative my-4 sm:my-6 flex items-center justify-center py-2 sm:py-4">
           {/* Ambient Glow Backdrop */}
-          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 via-secondary/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
+          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
 
           {/* Decorative poster showcase, not interactive */}
           <div
@@ -120,8 +120,8 @@ function Login() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
 
-                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums">
-                  <Star size={10} className="fill-secondary text-secondary" aria-hidden="true" />
+                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-text-secondary text-[10px] sm:text-[11px] font-bold tabular-nums">
+                  <Star size={10} className="fill-text-secondary text-text-secondary" aria-hidden="true" />
                   <span>{film.rating}</span>
                 </div>
 
@@ -202,7 +202,7 @@ function Login() {
           <span className="text-[11px] opacity-60">Sổ tay điện ảnh</span>
         </footer>
       </div>
-    </div>
+    </main>
   );
 }
 

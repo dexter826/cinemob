@@ -17,10 +17,20 @@ function Layout({ children, appReady = true }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-100 focus:rounded-control focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-primary"
+      >
+        Nhảy tới nội dung chính
+      </a>
       <Navbar />
-      <div className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh]">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh] focus:outline-none"
+      >
         {children}
-      </div>
+      </main>
 
       {showFooter && <Footer />}
 

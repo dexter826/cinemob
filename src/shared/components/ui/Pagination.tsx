@@ -48,7 +48,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2 pt-6">
+    <nav aria-label="Phân trang" className="flex items-center justify-center gap-2 pt-6">
       {/* Previous Button */}
       <button
         type="button"
@@ -72,7 +72,11 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
           if (!showPage) {
             if (page === currentPage - 2 || page === currentPage + 2) {
               return (
-                <span key={page} className="px-1 text-text-muted select-none opacity-50">
+                <span
+                  key={page}
+                  aria-hidden="true"
+                  className="px-1 text-text-muted select-none opacity-50"
+                >
                   •••
                 </span>
               );
@@ -85,7 +89,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
               key={page}
               type="button"
               onClick={() => handlePageChange(page)}
-              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold transition-colors cursor-pointer ${
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={`Trang ${page}`}
+              className={`min-w-10 h-10 px-3 rounded-xl text-sm font-bold tabular-nums transition-colors cursor-pointer ${
                 isActive
                   ? 'bg-primary text-white shadow-lg shadow-primary/30'
                   : 'bg-surface border border-border-default text-text-main hover:bg-primary/5 hover:border-primary/30'
@@ -112,7 +118,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             autoComplete="off"
             className="w-10 h-7 text-center bg-black/5 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-text-main focus:ring-1 focus:ring-primary/50 outline-none"
           />
-          <span className="text-xs font-bold text-text-muted opacity-50">/ {totalPages}</span>
+          <span className="text-xs font-bold text-text-muted opacity-50 tabular-nums">/ {totalPages}</span>
         </form>
       </div>
 
@@ -126,7 +132,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       >
         <ChevronRight size={18} aria-hidden="true" />
       </button>
-    </div>
+    </nav>
   );
 }
 

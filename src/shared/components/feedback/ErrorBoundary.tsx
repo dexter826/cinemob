@@ -36,14 +36,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <button
               type="button"
               onClick={this.handleRetry}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-hover transition-colors cursor-pointer"
             >
               Thử lại
             </button>
             <button
               type="button"
               onClick={() => window.location.assign('/')}
-              className="rounded-lg border border-border-default px-4 py-2 text-sm font-bold"
+              className="rounded-lg border border-border-default px-4 py-2 text-sm font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
             >
               Về trang chủ
             </button>

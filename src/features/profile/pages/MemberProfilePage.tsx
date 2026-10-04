@@ -123,7 +123,7 @@ function MemberProfilePage() {
 
   if (isOwn) {
     return (
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader title="Trang cá nhân" actions={copyLinkButton} />
         <OwnProfileEditor
           profile={own.profile}
@@ -150,7 +150,7 @@ function MemberProfilePage() {
             emptyDescription="Thêm phim vào lịch sử xem."
           />
         </section>
-      </main>
+      </div>
     );
   }
 
@@ -158,18 +158,18 @@ function MemberProfilePage() {
 
   if (notFound || !profile) {
     return (
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <EmptyState
           icon={EyeOff}
           title="Không tìm thấy hồ sơ"
           description="Hồ sơ không tồn tại hoặc thành viên chưa mở app sau bản cập nhật."
         />
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Hồ sơ thành viên" actions={copyLinkButton} />
       <MemberProfileCard profile={profile} />
 
@@ -247,7 +247,7 @@ function MemberProfilePage() {
           </section>
         </>
       )}
-    </main>
+    </div>
   );
 }
 

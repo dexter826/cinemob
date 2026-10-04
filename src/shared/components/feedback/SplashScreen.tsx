@@ -12,7 +12,7 @@ const SPLASH_FETCH_TIMEOUT_MS = 8000;
 function StaticBrandFrame() {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 z-150 bg-background overflow-hidden">
-      <img src={logoText} alt="CineMOB" className="h-10 w-auto" />
+      <img src={logoText} alt="CineMOB" width={160} height={40} className="h-10 w-auto" />
     </div>
   );
 }
@@ -83,7 +83,7 @@ function SplashScreen({ onAnimationFinish, staticMode = false }: SplashScreenPro
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center z-150 bg-background overflow-hidden">
-      <div className="w-80 h-80 md:w-96 md:h-96 shrink-0 relative">
+      <div aria-hidden="true" className="w-80 h-80 md:w-96 md:h-96 shrink-0 relative">
         <Lottie animationData={animationData} loop={false} onComplete={notifyAnimationFinish} />
       </div>
     </div>

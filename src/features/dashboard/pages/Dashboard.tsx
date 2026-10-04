@@ -80,7 +80,7 @@ function Dashboard() {
   }, [movies]);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Thư viện điện ảnh" />
 
       <DashboardActions onOpenAddModal={() => openAddModal()} />
@@ -175,7 +175,7 @@ function Dashboard() {
           </>
         )}
       </section>
-    </main>
+    </div>
   );
 }
 

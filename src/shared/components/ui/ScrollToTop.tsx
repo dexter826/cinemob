@@ -53,7 +53,7 @@ function ScrollToTop() {
           type="button"
           onClick={scrollToTop}
           aria-label="Cuộn lên đầu trang"
-          className="fixed bottom-20 md:bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom,12px))] md:bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 cursor-pointer"
         >
           <ArrowUpToLine size={24} aria-hidden="true" />
         </button>
