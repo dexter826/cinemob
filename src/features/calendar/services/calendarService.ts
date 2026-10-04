@@ -6,7 +6,7 @@ import {
 } from '@/features/search/services/tmdb';
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 4;
 
 const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
@@ -37,7 +37,7 @@ export const fetchUpcomingEpisodesForMovies = async (
     return [];
   }
 
-  const cacheKey = `upcoming_episodes_v3_${userId}`;
+  const cacheKey = `upcoming_episodes_v4_${userId}`;
   const fingerprint = createCalendarFingerprint(tvSeries);
   const cachedData = localStorage.getItem(cacheKey);
 

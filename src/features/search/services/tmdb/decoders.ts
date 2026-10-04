@@ -21,6 +21,10 @@ const isOptionalNumber = (value: unknown): value is number | undefined =>
 const isNullableString = (value: unknown): value is string | null =>
   value === null || typeof value === 'string';
 
+// TMDB trả runtime: null cho các tập chưa lên sóng.
+const isNullableNumber = (value: unknown): value is number | null =>
+  value === null || typeof value === 'number';
+
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
 
@@ -216,11 +220,12 @@ const decodeEpisode: Decoder<TMDBEpisode> = (value) => {
     (value.vote_average !== undefined && typeof value.vote_average !== 'number')
   )
     return null;
-  if (!isOptionalNumber(value.runtime)) return null;
+  if (!isNullableNumber(value.runtime)) return null;
   return {
     ...value,
     air_date: typeof value.air_date === 'string' ? value.air_date : '',
     vote_average: typeof value.vote_average === 'number' ? value.vote_average : 0,
+    runtime: value.runtime ?? undefined,
   } as TMDBEpisode;
 };
 

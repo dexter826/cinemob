@@ -133,7 +133,7 @@ function MovieCard(props: MovieCardProps) {
               <>
                 <Tv size={11} className="text-info" strokeWidth={1.5} aria-hidden="true" />
                 <span className="text-xs font-semibold text-white tracking-wider">
-                  {movie.seasons && movie.seasons > 0 ? `TV • 00A0Mùa` : 'TV'}
+                  {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
                 </span>
               </>
             ) : (
@@ -147,7 +147,7 @@ function MovieCard(props: MovieCardProps) {
 
         {/* Review badge */}
         {movie.is_review && (
-          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
             <Eye size={11} aria-hidden="true" />
             <span className="hidden sm:inline">Xem qua </span>Review
           </span>

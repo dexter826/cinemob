@@ -28,7 +28,7 @@ function ProfileMovieCard({ movie }: ProfileMovieCardProps) {
           {isTvSeries ? 'Series' : 'Phim'}
         </span>
         {movie.is_review && (
-          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 inline-flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 inline-flex items-center gap-1 whitespace-nowrap rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
             <Eye size={11} aria-hidden="true" />
             <span className="hidden sm:inline">Xem qua </span>Review
           </span>
