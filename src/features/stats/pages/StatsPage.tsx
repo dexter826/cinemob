@@ -19,7 +19,7 @@ import useMovieStore from '@/features/movies/stores/movieStore';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import PageHeader from '@/shared/components/ui/PageHeader';
 import { useStats } from '../hooks/useStats';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { buildGenreChartData, topEntries } from '../utils/statsSelectors';
 
@@ -175,7 +175,7 @@ function StatsPage() {
                 <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5">
                   <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
                 </div>
-                <CustomDropdown
+                <Dropdown
                   options={yearOptions}
                   value={selectedYear}
                   onChange={(val) => setSelectedYear(val.toString())}

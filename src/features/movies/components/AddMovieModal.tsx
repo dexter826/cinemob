@@ -25,8 +25,8 @@ import TVProgressSection from './add-movie/TVProgressSection';
 import AlbumSection from './add-movie/AlbumSection';
 import MovieFormFields from './add-movie/MovieFormFields';
 import PosterPreview from './add-movie/PosterPreview';
-import CustomDatePicker from '@/shared/components/ui/CustomDatePicker';
-import CustomTimePicker from '@/shared/components/ui/CustomTimePicker';
+import DatePicker from '@/shared/components/ui/DatePicker';
+import TimePicker from '@/shared/components/ui/TimePicker';
 
 // Hooks
 import { useAddMovieForm } from '../hooks/useAddMovieForm';
@@ -371,7 +371,7 @@ function AddMovieModal() {
                           <Calendar size={14} className="text-primary" aria-hidden="true" />
                           Ngày xem
                         </label>
-                        <CustomDatePicker
+                        <DatePicker
                           value={formData.date}
                           onChange={(val) => setFormData({ ...formData, date: val })}
                           placeholder="Chọn ngày…"
@@ -385,7 +385,7 @@ function AddMovieModal() {
                           <Clock size={14} className="text-primary" aria-hidden="true" />
                           Giờ xem
                         </label>
-                        <CustomTimePicker
+                        <TimePicker
                           value={formData.time}
                           onChange={(val) => setFormData({ ...formData, time: val })}
                           placeholder="Chọn giờ…"

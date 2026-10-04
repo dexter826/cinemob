@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Film, Search, X } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/EmptyState';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import ProfileMovieCard from './ProfileMovieCard';
 import type { ProfileMovie } from '@/types';
@@ -101,7 +101,7 @@ function MovieListSection({
 
         <div className="flex items-center gap-2 sm:w-64 shrink-0">
           <div className="w-full">
-            <CustomDropdown
+            <Dropdown
               options={SORT_OPTIONS}
               value={sortBy}
               onChange={(val) => setSortBy(val as ProfileSortOption)}

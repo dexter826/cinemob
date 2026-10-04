@@ -4,7 +4,7 @@ import { Dialog } from './Dialog';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { formatDateDMY, monthLabel } from '@/shared/utils/dateFormat';
 
-interface CustomDatePickerProps {
+interface DatePickerProps {
   value: string; // YYYY-MM-DD format
   onChange: (value: string) => void;
   placeholder?: string;
@@ -28,7 +28,7 @@ const formatDateToString = (date: Date): string => {
   return `${y}-${m}-${d}`;
 };
 
-function CustomDatePicker({
+function DatePicker({
   value,
   onChange,
   placeholder = 'Chọn ngày…',
@@ -41,7 +41,7 @@ function CustomDatePicker({
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
-}: CustomDatePickerProps) {
+}: DatePickerProps) {
   const generatedId = useId();
   const controlId = id ?? `date-picker-${generatedId}`;
   const triggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${controlId}` : undefined;
@@ -406,4 +406,4 @@ function CustomDatePicker({
   );
 }
 
-export default CustomDatePicker;
+export default DatePicker;

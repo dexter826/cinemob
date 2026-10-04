@@ -3,7 +3,7 @@ import { Clock, X } from 'lucide-react';
 import { Dialog } from './Dialog';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
-interface CustomTimePickerProps {
+interface TimePickerProps {
   value: string; // HH:mm format
   onChange: (value: string) => void;
   placeholder?: string;
@@ -18,7 +18,7 @@ interface CustomTimePickerProps {
 
 const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => i);
 
-function CustomTimePicker({
+function TimePicker({
   value,
   onChange,
   placeholder = 'Chọn giờ…',
@@ -29,7 +29,7 @@ function CustomTimePicker({
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
-}: CustomTimePickerProps) {
+}: TimePickerProps) {
   const generatedId = useId();
   const controlId = id ?? `time-picker-${generatedId}`;
   const dialogTitleId = `${controlId}-title`;
@@ -299,4 +299,4 @@ function CustomTimePicker({
   );
 }
 
-export default CustomTimePicker;
+export default TimePicker;

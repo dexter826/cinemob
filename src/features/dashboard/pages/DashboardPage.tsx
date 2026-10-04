@@ -16,7 +16,7 @@ import DashboardTabs from '../components/DashboardTabs';
 import DashboardFilters from '../components/DashboardFilters';
 
 /** Quản lý bộ sưu tập phim. */
-function Dashboard() {
+function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const {
@@ -179,4 +179,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default DashboardPage;

@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import Login from '@/features/auth/components/Login';
-const Dashboard = lazy(() => import('@/features/dashboard/pages/Dashboard'));
+const Dashboard = lazy(() => import('@/features/dashboard/pages/DashboardPage'));
 const SearchPage = lazy(() => import('@/features/search/pages/SearchPage'));
 const StatsPage = lazy(() => import('@/features/stats/pages/StatsPage'));
 const AlbumsPage = lazy(() => import('@/features/albums/pages/AlbumsPage'));

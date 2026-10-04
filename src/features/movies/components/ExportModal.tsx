@@ -4,7 +4,7 @@ import { Movie } from '@/types';
 import { exportToExcel, filterMoviesForExport, ExportFilters } from '../services/exportService';
 import useToastStore from '@/shared/stores/toastStore';
 import { normalizeMovieDate } from '../utils/movieUtils';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
 import { IconButton } from '@/shared/components/ui/IconButton';
@@ -108,7 +108,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               >
                 Trạng thái
               </label>
-              <CustomDropdown
+              <Dropdown
                 id="export-status"
                 aria-labelledby="export-status-label"
                 options={[
@@ -136,7 +136,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               >
                 Loại nội dung
               </label>
-              <CustomDropdown
+              <Dropdown
                 id="export-content-type"
                 aria-labelledby="export-content-type-label"
                 options={[
@@ -194,7 +194,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               >
                 Năm xem
               </label>
-              <CustomDropdown
+              <Dropdown
                 id="export-year"
                 aria-labelledby="export-year-label"
                 options={[
@@ -218,7 +218,7 @@ function ExportModal({ isOpen, onClose, movies }: ExportModalProps) {
               >
                 Quốc gia
               </label>
-              <CustomDropdown
+              <Dropdown
                 id="export-country"
                 aria-labelledby="export-country-label"
                 options={[

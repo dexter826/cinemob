@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Search, X, Filter, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
 import { getTMDBImageUrl, getMainTitleForTMDB } from '@/features/movies/utils/movieUtils';
@@ -217,7 +217,7 @@ function SearchFilters({
           <span className="text-xs font-bold text-text-secondary">Lọc theo</span>
         </div>
 
-        <CustomDropdown
+        <Dropdown
           options={[
             { value: 'all', label: 'Tất cả loại' },
             { value: 'movie', label: 'Phim lẻ' },
@@ -229,7 +229,7 @@ function SearchFilters({
           className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
         />
 
-        <CustomDropdown
+        <Dropdown
           options={[
             { value: '', label: 'Tất cả năm' },
             ...Array.from({ length: new Date().getFullYear() - 1899 }, (_, i) => {
@@ -244,7 +244,7 @@ function SearchFilters({
           searchable={true}
         />
 
-        <CustomDropdown
+        <Dropdown
           options={TMDB_COUNTRY_OPTIONS}
           value={filters.country}
           onChange={(value) => updateFilter('country', value as string)}
@@ -253,7 +253,7 @@ function SearchFilters({
           searchable={true}
         />
 
-        <CustomDropdown
+        <Dropdown
           options={[
             { value: 'popularity.desc', label: 'Phổ biến' },
             { value: 'vote_average.desc', label: 'Đánh giá cao' },

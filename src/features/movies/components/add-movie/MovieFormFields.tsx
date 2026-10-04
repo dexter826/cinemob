@@ -1,7 +1,7 @@
 import React from 'react';
 import { Film, Globe, Calendar, Tv, Clock, AlignLeft } from 'lucide-react';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
-import CustomDatePicker from '@/shared/components/ui/CustomDatePicker';
+import Dropdown from '@/shared/components/ui/Dropdown';
+import DatePicker from '@/shared/components/ui/DatePicker';
 import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import type { MovieFormData } from '../../hooks/useAddMovieForm';
@@ -73,7 +73,7 @@ function MovieFormFields({
             Loại hình
           </label>
           {isManualMode ? (
-            <CustomDropdown
+            <Dropdown
               id="movie-media-type"
               aria-labelledby="movie-media-type-label"
               options={[
@@ -108,7 +108,7 @@ function MovieFormFields({
             ref={refs.country}
             className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
           >
-            <CustomDropdown
+            <Dropdown
               id="movie-country"
               aria-labelledby="movie-country-label"
               options={countryOptions}
@@ -135,7 +135,7 @@ function MovieFormFields({
             ref={refs.releaseDate}
             className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
           >
-            <CustomDatePicker
+            <DatePicker
               id="movie-release-date"
               aria-labelledby="movie-release-date-label"
               value={formData.releaseDate}

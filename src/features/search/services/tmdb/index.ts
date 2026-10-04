@@ -1,4 +1,4 @@
-export * from './tmdbClient';
+export * from './client';
 export * from './movieService';
 export * from './tvService';
 export * from './searchService';

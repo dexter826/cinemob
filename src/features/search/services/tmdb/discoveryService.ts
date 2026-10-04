@@ -1,6 +1,6 @@
-import { tmdbFetch, API_KEY } from './tmdbClient';
+import { tmdbFetch, API_KEY } from './client';
 import { TMDBMovieResult, TMDBPerson } from '@/types';
-import { decodeMovieResultPage, decodePerson } from './tmdbDecoders';
+import { decodeMovieResultPage, decodePerson } from './decoders';
 
 // Lấy phim đang thịnh hành.
 export const getTrendingMovies = async (

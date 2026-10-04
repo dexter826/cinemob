@@ -1,5 +1,5 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from '@/constants';
-import type { Decoder } from './tmdbDecoders';
+import type { Decoder } from './decoders';
 
 // Giới hạn request đồng thời. Trả về null cho task lỗi để caller phân biệt partial-failure.
 export const withLimit = <T>(

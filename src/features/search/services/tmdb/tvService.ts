@@ -1,6 +1,6 @@
-import { tmdbFetch, withLimit } from './tmdbClient';
+import { tmdbFetch, withLimit } from './client';
 import { TMDBEpisode } from '@/types';
-import { decodeTVDetails, decodeTVSeason, decodeTVSeasonEpisodes } from './tmdbDecoders';
+import { decodeTVDetails, decodeTVSeason, decodeTVSeasonEpisodes } from './decoders';
 
 interface TVSeasonResponse {
   episodes?: Array<{ id: number }>;

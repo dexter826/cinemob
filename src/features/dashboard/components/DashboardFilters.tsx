@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import {
   SortOption,
   SortOrder,
@@ -184,7 +184,7 @@ function DashboardFilters({
                 >
                   Loại nội dung
                 </label>
-                <CustomDropdown
+                <Dropdown
                   id="df-content-type"
                   aria-labelledby="df-content-type-label"
                   options={[
@@ -207,7 +207,7 @@ function DashboardFilters({
                   >
                     Trạng thái
                   </label>
-                  <CustomDropdown
+                  <Dropdown
                     id="df-watch-status"
                     aria-labelledby="df-watch-status-label"
                     options={[
@@ -283,7 +283,7 @@ function DashboardFilters({
                 >
                   Nguồn nội dung
                 </label>
-                <CustomDropdown
+                <Dropdown
                   id="df-source-type"
                   aria-labelledby="df-source-type-label"
                   options={[
@@ -306,7 +306,7 @@ function DashboardFilters({
                   >
                     Năm xem
                   </label>
-                  <CustomDropdown
+                  <Dropdown
                     id="df-year"
                     aria-labelledby="df-year-label"
                     options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
@@ -323,7 +323,7 @@ function DashboardFilters({
                   >
                     Quốc gia
                   </label>
-                  <CustomDropdown
+                  <Dropdown
                     id="df-country"
                     aria-labelledby="df-country-label"
                     options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}

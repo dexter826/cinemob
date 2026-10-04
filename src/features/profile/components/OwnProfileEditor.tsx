@@ -4,8 +4,8 @@ import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'l
 import { AvatarCropView } from '@/features/auth/components/avatar/AvatarCropView';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Button } from '@/shared/components/ui/Button';
-import CustomDatePicker from '@/shared/components/ui/CustomDatePicker';
-import CustomDropdown from '@/shared/components/ui/CustomDropdown';
+import DatePicker from '@/shared/components/ui/DatePicker';
+import Dropdown from '@/shared/components/ui/Dropdown';
 import IconButton from '@/shared/components/ui/IconButton';
 import Switch from '@/shared/components/ui/Switch';
 import useToastStore from '@/shared/stores/toastStore';
@@ -441,7 +441,7 @@ function OwnProfileEditor({
                   <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Giới tính
                   </span>
-                  <CustomDropdown
+                  <Dropdown
                     options={GENDER_DROPDOWN_OPTIONS}
                     value={draftGender}
                     onChange={(val) => setDraftGender(String(val))}
@@ -452,7 +452,7 @@ function OwnProfileEditor({
                   <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Ngày sinh
                   </span>
-                  <CustomDatePicker value={draftDob} onChange={setDraftDob} />
+                  <DatePicker value={draftDob} onChange={setDraftDob} />
                 </label>
               </div>
 

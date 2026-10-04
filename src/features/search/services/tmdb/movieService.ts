@@ -1,13 +1,13 @@
-import { tmdbFetch } from './tmdbClient';
+import { tmdbFetch } from './client';
 import { TMDBMovieDetail, TMDBVideo, TMDBCredits, PersonMovie } from '@/types';
-import { API_KEY } from './tmdbClient';
+import { API_KEY } from './client';
 import {
   decodeCreditResponse,
   decodeCredits,
   decodeMovieDetail,
   decodeVideoResults,
   type TMDBCreditItem,
-} from './tmdbDecoders';
+} from './decoders';
 
 const toPersonMovie = (item: TMDBCreditItem, media_type: 'movie' | 'tv'): PersonMovie => ({
   id: item.id,

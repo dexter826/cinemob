@@ -1,6 +1,6 @@
-import { tmdbFetch, API_KEY, withLimit } from './tmdbClient';
+import { tmdbFetch, API_KEY, withLimit } from './client';
 import { TMDBMovieResult, TMDBPerson, TMDBMovieDetail } from '@/types';
-import { decodeMovieDetail, decodeMovieResultPage, decodePersonPage } from './tmdbDecoders';
+import { decodeMovieDetail, decodeMovieResultPage, decodePersonPage } from './decoders';
 
 // Tìm kiếm phim và TV show.
 export const searchMovies = async (

@@ -6,7 +6,7 @@ interface Option {
   label: string;
 }
 
-interface CustomDropdownProps {
+interface DropdownProps {
   options: Option[];
   value: string | number | null;
   onChange: (value: string | number) => void;
@@ -22,7 +22,7 @@ interface CustomDropdownProps {
   'aria-invalid'?: boolean | 'true' | 'false';
 }
 
-function CustomDropdown({
+function Dropdown({
   options,
   value,
   onChange,
@@ -36,7 +36,7 @@ function CustomDropdown({
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
-}: CustomDropdownProps) {
+}: DropdownProps) {
   const generatedId = useId();
   const controlId = id ?? `dropdown-${generatedId}`;
   const triggerLabelledBy = ariaLabelledBy ? `${ariaLabelledBy} ${controlId}` : undefined;
@@ -240,4 +240,4 @@ function CustomDropdown({
   );
 }
 
-export default CustomDropdown;
+export default Dropdown;
