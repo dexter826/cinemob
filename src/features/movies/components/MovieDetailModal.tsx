@@ -25,6 +25,9 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
   const [videos, setVideos] = useState<TMDBVideo[]>([]);
   const [credits, setCredits] = useState<TMDBCredits | null>(null);
   const { showToast } = useToastStore();
+  // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
+  const trailerKey = videos[0]?.key ?? '';
+  const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -325,9 +328,9 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
 
                 <div className="pt-4 flex flex-col gap-3">
                   {movie.status === 'watchlist' ? (
-                    videos.length > 0 ? (
+                    hasValidTrailer ? (
                       <a
-                        href={`https://www.youtube.com/watch?v=${videos[0]?.key ?? ''}`}
+                        href={`https://www.youtube.com/watch?v=${trailerKey}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Xem trailer phim trên YouTube (mở tab mới)"

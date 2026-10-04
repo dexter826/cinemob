@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
 import { useAuth } from '@/app/providers/AuthProvider';
 import { Album } from '@/types';
@@ -21,14 +21,14 @@ function AlbumsPage() {
 
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
+  const creatingRef = useRef(false);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    if (!name.trim()) {
-      showToast(MESSAGES.ALBUM.NAME_REQUIRED, 'error');
-      return;
-    }
+    // Ref-guard chống double-submit trong cùng một tick render.
+    if (creatingRef.current || !name.trim()) return;
+    creatingRef.current = true;
     try {
       setCreating(true);
       await addAlbum({
@@ -41,6 +41,7 @@ function AlbumsPage() {
     } catch (error) {
       showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
+      creatingRef.current = false;
       setCreating(false);
     }
   };

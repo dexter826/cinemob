@@ -30,6 +30,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
   const newAlbumInputRef = useRef<HTMLInputElement>(null);
+  const creatingRef = useRef(false);
 
   // Chỉ tự focus input trên thiết bị trỏ chuột; mobile tránh bật keyboard đột ngột.
   useEffect(() => {
@@ -65,7 +66,9 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
   };
 
   const handleCreateAlbum = async () => {
-    if (!newAlbumName.trim() || !user) return;
+    // Ref-guard chống double-submit trong cùng một tick render.
+    if (creatingRef.current || !newAlbumName.trim() || !user) return;
+    creatingRef.current = true;
 
     try {
       setCreatingAlbum(true);
@@ -80,6 +83,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
     } catch (error) {
       showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
+      creatingRef.current = false;
       setCreatingAlbum(false);
     }
   };

@@ -43,8 +43,12 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
     );
   }, [isOpen, movieToEdit, albums]);
 
+  const creatingRef = useRef(false);
+  // Ref-guard chống double-submit trong cùng một tick render (state `creatingAlbum`
+  // chưa kịp cập nhật khi người dùng bấm Enter lần thứ hai).
   const handleCreateAlbum = async () => {
-    if (!newAlbumName.trim() || !user) return;
+    if (creatingRef.current || !newAlbumName.trim() || !user) return;
+    creatingRef.current = true;
     try {
       setCreatingAlbum(true);
       const newAlbumId = await addAlbum({
@@ -59,6 +63,7 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
     } catch (error) {
       showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
+      creatingRef.current = false;
       setCreatingAlbum(false);
     }
   };
