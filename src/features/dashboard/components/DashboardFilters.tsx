@@ -16,6 +16,7 @@ interface DashboardFiltersProps {
     ratingRange: [number, number] | null;
     year: number | null;
     country: string;
+    genre: string;
     contentType: 'all' | 'movie' | 'tv';
     watchStatus: 'all' | 'watching' | 'completed';
     sourceType: 'all' | 'normal' | 'review';
@@ -29,6 +30,7 @@ interface DashboardFiltersProps {
   activeTab: 'history' | 'watchlist';
   availableYears: { value: string | number; label: string }[];
   availableCountries: { value: string; label: string }[];
+  availableGenres: { value: string; label: string }[];
   clearFilters: () => void;
 }
 
@@ -43,12 +45,14 @@ function DashboardFilters({
   activeTab,
   availableYears,
   availableCountries,
+  availableGenres,
   clearFilters,
 }: DashboardFiltersProps) {
   const hasActiveFilters =
     filters.ratingRange !== null ||
     filters.year !== null ||
     filters.country ||
+    filters.genre ||
     filters.contentType !== 'all' ||
     filters.watchStatus !== 'all' ||
     filters.sourceType !== 'all';
@@ -121,7 +125,7 @@ function DashboardFilters({
       {showFilters && (
         <div
           ref={filterRef}
-          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 min-w-[320px]"
+          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 min-w-[320px] max-h-[calc(100dvh-24rem)] overflow-y-auto overscroll-contain"
         >
           <div className="space-y-3">
             <div className="text-xs font-semibold text-text-secondary">Sắp xếp</div>
@@ -228,6 +232,63 @@ function DashboardFilters({
               )}
 
               <div>
+                <label
+                  htmlFor="df-genre"
+                  id="df-genre-label"
+                  className="text-xs font-medium text-text-secondary mb-2 block"
+                >
+                  Thể loại
+                </label>
+                <Dropdown
+                  id="df-genre"
+                  aria-labelledby="df-genre-label"
+                  options={[{ value: '', label: 'Tất cả thể loại' }, ...availableGenres]}
+                  value={filters.genre}
+                  onChange={(value) => updateFilter('genre', value as string)}
+                  placeholder="Chọn thể loại…"
+                  searchable={true}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="df-year"
+                    id="df-year-label"
+                    className="text-xs font-medium text-text-secondary block"
+                  >
+                    Năm xem
+                  </label>
+                  <Dropdown
+                    id="df-year"
+                    aria-labelledby="df-year-label"
+                    options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
+                    value={filters.year || ''}
+                    onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
+                    placeholder="Chọn năm…"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="df-country"
+                    id="df-country-label"
+                    className="text-xs font-medium text-text-secondary block"
+                  >
+                    Quốc gia
+                  </label>
+                  <Dropdown
+                    id="df-country"
+                    aria-labelledby="df-country-label"
+                    options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
+                    value={filters.country}
+                    onChange={(value) => updateFilter('country', value as string)}
+                    placeholder="Chọn quốc gia…"
+                    searchable={true}
+                  />
+                </div>
+              </div>
+
+              <div>
                 <div className="flex items-center justify-between mb-2">
                   <span
                     id="df-rating-label"
@@ -298,44 +359,6 @@ function DashboardFilters({
                   onChange={(value) => updateFilter('sourceType', value as SourceType)}
                   placeholder="Chọn nguồn…"
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="df-year"
-                    id="df-year-label"
-                    className="text-xs font-medium text-text-secondary block"
-                  >
-                    Năm xem
-                  </label>
-                  <Dropdown
-                    id="df-year"
-                    aria-labelledby="df-year-label"
-                    options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
-                    value={filters.year || ''}
-                    onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
-                    placeholder="Chọn năm…"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="df-country"
-                    id="df-country-label"
-                    className="text-xs font-medium text-text-secondary block"
-                  >
-                    Quốc gia
-                  </label>
-                  <Dropdown
-                    id="df-country"
-                    aria-labelledby="df-country-label"
-                    options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
-                    value={filters.country}
-                    onChange={(value) => updateFilter('country', value as string)}
-                    placeholder="Chọn quốc gia…"
-                    searchable={true}
-                  />
-                </div>
               </div>
             </div>
           </div>

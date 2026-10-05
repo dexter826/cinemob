@@ -8,6 +8,7 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import { normalizeDate } from '@/shared/utils/dateFormat';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
+import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
 import { useDashboard } from '../hooks/useDashboard';
@@ -80,6 +81,23 @@ function DashboardPage() {
       }));
   }, [movies]);
 
+  /** Danh sách thể loại cho bộ lọc. */
+  const availableGenres = useMemo(() => {
+    return Array.from(
+      new Set(
+        movies
+          .filter((m) => m.genres && m.genres.trim().length > 0)
+          .flatMap((m) => (m.genres ?? '').split(',').map((g) => g.trim()))
+          .filter((g) => g.length > 0),
+      ),
+    )
+      .sort((a, b) => a.localeCompare(b))
+      .map((genre) => ({
+        value: genre,
+        label: GENRE_TRANSLATIONS[genre] || genre,
+      }));
+  }, [movies]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Thư viện điện ảnh" />
@@ -110,6 +128,7 @@ function DashboardPage() {
               activeTab={activeTab}
               availableYears={availableYears}
               availableCountries={availableCountries}
+              availableGenres={availableGenres}
               clearFilters={clearFilters}
             />
           )}

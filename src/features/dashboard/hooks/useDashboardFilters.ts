@@ -16,6 +16,7 @@ export interface FilterState {
   ratingRange: [number, number] | null;
   year: number | null;
   country: string;
+  genre: string;
   contentType: 'all' | 'movie' | 'tv';
   watchStatus: 'all' | 'watching' | 'completed';
   sourceType: SourceType;
@@ -30,6 +31,7 @@ const INITIAL_FILTER_STATE: FilterState = {
   ratingRange: null,
   year: null,
   country: '',
+  genre: '',
   contentType: 'all',
   watchStatus: 'all',
   sourceType: 'all',
@@ -63,6 +65,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       ratingRange,
       year: Number(searchParams.get('year')) || null,
       country: searchParams.get('country') ?? '',
+      genre: searchParams.get('genre') ?? '',
       contentType: contentType === 'movie' || contentType === 'tv' ? contentType : 'all',
       watchStatus: watchStatus === 'watching' || watchStatus === 'completed' ? watchStatus : 'all',
       sourceType: sourceType === 'normal' || sourceType === 'review' ? sourceType : 'all',
@@ -91,6 +94,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
         );
         setOrDelete('year', next.year !== null ? String(next.year) : '');
         setOrDelete('country', next.country);
+        setOrDelete('genre', next.genre);
         setOrDelete('type', next.contentType !== 'all' ? next.contentType : '');
         setOrDelete('status', next.watchStatus !== 'all' ? next.watchStatus : '');
         setOrDelete('source', next.sourceType !== 'all' ? next.sourceType : '');
@@ -173,6 +177,15 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
         const translatedCountry = getTranslatedCountries(m.country || '').toLowerCase();
         return translatedCountry.includes(q);
       });
+    }
+
+    if (filters.genre) {
+      result = result.filter((m) =>
+        (m.genres || '')
+          .split(',')
+          .map((g) => g.trim())
+          .includes(filters.genre),
+      );
     }
 
     if (filters.contentType !== 'all') {
