@@ -53,7 +53,7 @@ function DashboardPage() {
         movies.flatMap((m) => {
           const d = normalizeDate(m.watched_at);
           const years = d ? [d.getFullYear()] : [];
-          getSeasonWatchedDates(m).forEach((sd) => years.push(sd.getFullYear()));
+          getSeasonWatchedDates(m).forEach(({ date }) => years.push(date.getFullYear()));
           return years;
         }),
       ),
@@ -163,6 +163,7 @@ function DashboardPage() {
               filters.ratingRange ||
               filters.year ||
               filters.country ||
+              filters.genre ||
               filters.contentType !== 'all'
                 ? {
                     label: 'Xóa tất cả bộ lọc',

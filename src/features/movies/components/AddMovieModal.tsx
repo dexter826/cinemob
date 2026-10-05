@@ -60,7 +60,7 @@ function AddMovieModal() {
     setIsCompleted,
     seasonDates,
     setSeasonDate,
-    syncedSeasonCount,
+    resolvedSeasonCount,
     totalEpisodes,
     episodesPerSeason,
     selectedAlbumIds,
@@ -407,7 +407,7 @@ function AddMovieModal() {
                       setCurrentEpisode={setCurrentEpisode}
                       totalEpisodes={totalEpisodes}
                       episodesPerSeason={episodesPerSeason}
-                      maxSeasons={Math.max(parseInt(formData.seasons) || 1, syncedSeasonCount)}
+                      maxSeasons={Math.max(parseInt(formData.seasons) || 1, resolvedSeasonCount)}
                       seasonDates={seasonDates}
                       onSeasonDateChange={setSeasonDate}
                       defaultDate={formData.date}

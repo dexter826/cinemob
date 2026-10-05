@@ -3,7 +3,6 @@ export const MESSAGES = {
   MOVIE: {
     ADD_SUCCESS: 'Đã thêm phim mới',
     UPDATE_SUCCESS: 'Đã cập nhật thông tin phim',
-    DELETE_SUCCESS: 'Đã xóa phim khỏi lịch sử',
     DELETE_ERROR: 'Xóa phim thất bại',
     SAVE_ERROR: 'Có lỗi khi lưu phim',
     REQUIRED_RATING: 'Vui lòng đánh giá phim',

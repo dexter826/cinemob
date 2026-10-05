@@ -241,24 +241,15 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                     </div>
                     {getSeasonWatchedDates(movie).length >= 2 && (
                       <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-secondary">
-                        {Object.entries(movie.progress?.season_dates || {})
-                          .map(([season, iso]) => {
-                            const [y, m, d] = iso.split('-').map(Number);
-                            return Number(season) && y && m && d
-                              ? { season: Number(season), date: new Date(y, m - 1, d) }
-                              : null;
-                          })
-                          .filter((s): s is { season: number; date: Date } => s !== null)
-                          .sort((a, b) => a.season - b.season)
-                          .map(({ season, date }) => (
-                            <span key={season} className="tabular-nums">
-                              Phần&nbsp;{season}:{' '}
-                              {date.toLocaleDateString('vi-VN', {
-                                month: '2-digit',
-                                year: 'numeric',
-                              })}
-                            </span>
-                          ))}
+                        {getSeasonWatchedDates(movie).map(({ season, date }) => (
+                          <span key={season} className="tabular-nums">
+                            Phần&nbsp;{season}:{' '}
+                            {date.toLocaleDateString('vi-VN', {
+                              month: '2-digit',
+                              year: 'numeric',
+                            })}
+                          </span>
+                        ))}
                       </div>
                     )}
                   </div>

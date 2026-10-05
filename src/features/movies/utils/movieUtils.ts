@@ -56,22 +56,23 @@ export const getTranslatedGenres = (genreStr: string): string => {
     .join(', ');
 };
 
-// Đọc season_dates (ISO 'YYYY-MM-DD') thành danh sách Date hợp lệ.
-export const getSeasonWatchedDates = (movie: Movie): Date[] => {
+// Đọc season_dates thành danh sách {season, date} sắp theo số mùa.
+export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; date: Date }> => {
   const seasonDates = movie.progress?.season_dates;
   if (!seasonDates) return [];
-  return Object.values(seasonDates)
-    .map((iso) => {
+  return Object.entries(seasonDates)
+    .map(([season, iso]) => {
       const [y, m, d] = iso.split('-').map(Number);
-      return y && m && d ? new Date(y, m - 1, d) : null;
+      return y && m && d ? { season: Number(season), date: new Date(y, m - 1, d) } : null;
     })
-    .filter((date): date is Date => date !== null);
+    .filter((s): s is { season: number; date: Date } => s !== null && Number.isFinite(s.season))
+    .sort((a, b) => a.season - b.season);
 };
 
 // Ngày xem muộn nhất trong watched_at và các mùa — dùng cho hiển thị và lọc năm.
 export const getLatestWatchedDate = (movie: Movie): Date | null => {
   let latest = normalizeDate(movie.watched_at);
-  for (const date of getSeasonWatchedDates(movie)) {
+  for (const { date } of getSeasonWatchedDates(movie)) {
     if (!latest || date.getTime() > latest.getTime()) latest = date;
   }
   return latest;

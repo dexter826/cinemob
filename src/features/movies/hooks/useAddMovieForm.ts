@@ -230,6 +230,10 @@ export const useAddMovieForm = () => {
         for (let s = 1; s <= tvProgress.currentSeason; s++) {
           seasonDates[String(s)] = tvProgress.seasonDates[s] || formData.date;
         }
+        const previousSeasonDates = initialData?.movieToEdit?.progress?.season_dates || {};
+        Object.entries(previousSeasonDates).forEach(([season, iso]) => {
+          if (Number(season) > tvProgress.currentSeason && iso) seasonDates[season] = iso;
+        });
         movieData.progress = {
           current_season: tvProgress.currentSeason,
           current_episode: tvProgress.currentEpisode,
@@ -361,7 +365,7 @@ export const useAddMovieForm = () => {
     setIsCompleted: tvProgress.setIsCompleted,
     seasonDates: tvProgress.seasonDates,
     setSeasonDate: tvProgress.setSeasonDate,
-    syncedSeasonCount: tvProgress.resolvedSeasonCount,
+    resolvedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,
     selectedAlbumIds: albumSync.selectedAlbumIds,

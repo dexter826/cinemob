@@ -67,13 +67,20 @@ function ToastList({
             <IconButton label="Đóng thông báo" size="sm" onClick={() => removeToast(toast.id)}>
               <X size={14} aria-hidden="true" />
             </IconButton>
-            <motion.div
-              aria-hidden="true"
-              initial={{ width: '100%' }}
-              animate={{ width: '0%' }}
-              transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
-              className="absolute bottom-0 left-0 h-0.5 bg-primary/50"
-            />
+            {reducedMotion ? (
+              <div
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50"
+              />
+            ) : (
+              <motion.div
+                aria-hidden="true"
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
+                className="absolute bottom-0 left-0 h-0.5 bg-primary/50"
+              />
+            )}
           </motion.div>
         ))}
       </AnimatePresence>

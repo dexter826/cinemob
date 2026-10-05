@@ -174,7 +174,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     if (filters.year !== null) {
       result = result.filter((m) => {
         if (normalizeDate(m.watched_at)?.getFullYear() === filters.year) return true;
-        return getSeasonWatchedDates(m).some((d) => d.getFullYear() === filters.year);
+        return getSeasonWatchedDates(m).some(({ date }) => date.getFullYear() === filters.year);
       });
     }
 

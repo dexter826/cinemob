@@ -20,7 +20,7 @@ export const useDashboard = (user: User | null) => {
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
 
-  const { movies, loading, removeLocal, restoreMovie } = useMovieStore();
+  const { movies, loading, removeLocal, restoreMovie, clearPendingDelete } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTabState] = useState<ActiveTab>(() =>
     searchParams.get('tab') === 'watchlist' ? 'watchlist' : 'history',
@@ -53,7 +53,8 @@ export const useDashboard = (user: User | null) => {
     const timer = setTimeout(async () => {
       try {
         await deleteMovie(user.uid, docId);
-      } catch (e) {
+        clearPendingDelete(docId);
+      } catch {
         restoreMovie(movie);
         showToast(MESSAGES.MOVIE.DELETE_ERROR, 'error');
       }

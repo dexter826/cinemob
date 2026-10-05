@@ -36,7 +36,9 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
             try {
               const fresh = await getTVShowSeasonCount(Number(m.id));
               if (fresh && fresh > seasonCount) seasonCount = fresh;
-            } catch {}
+            } catch (error) {
+              console.warn('Không lấy được số mùa mới từ TMDB, dùng số mùa đã lưu:', error);
+            }
             const info =
               seasonCount > 0
                 ? await getTVShowEpisodeInfo(Number(m.id), seasonCount)
@@ -79,6 +81,15 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
         setIsCompleted(false);
         setSeasonDates({});
       }
+    } else if (movieToEdit) {
+      // Sửa phim lẻ: dọn state TV để không nô sang lần mở kế tiếp.
+      setTotalEpisodes(0);
+      setEpisodesPerSeason({});
+      setCurrentSeason(1);
+      setCurrentEpisode(0);
+      setIsCompleted(false);
+      setSeasonDates({});
+      setResolvedSeasonCount(0);
     } else if (!movieToEdit && !tmdbId) {
       setTotalEpisodes(0);
       setEpisodesPerSeason({});
