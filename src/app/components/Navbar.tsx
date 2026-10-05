@@ -6,7 +6,6 @@ import {
   BarChart2,
   Dice5,
   Folder,
-  Download,
   ChevronDown,
   Search,
   CalendarDays,
@@ -18,14 +17,12 @@ import { useAuth } from '@/app/providers/AuthProvider';
 import { useTheme } from '@/app/providers/ThemeProvider';
 import { Link, useLocation } from 'react-router-dom';
 
-import useExportStore from '@/features/movies/stores/exportStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 import { IconButton } from '@/shared/components/ui/IconButton';
 import logoText from '@/assets/images/logo_text.png';
 
 const RandomPickerModal = lazy(() => import('@/features/movies/components/RandomPickerModal'));
-const ExportModal = lazy(() => import('@/features/movies/components/ExportModal'));
 const MemberSearchModal = lazy(
   () => import('@/features/profile/components/user/MemberSearchModal'),
 );
@@ -52,7 +49,6 @@ function Navbar() {
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const accountMenuRef = React.useRef<HTMLDivElement>(null);
-  const { isExportModalOpen, setIsExportModalOpen, movies } = useExportStore();
   const { showAlert } = useAlertStore();
 
   const closeDropdown = () => setIsDropdownOpen(false);
@@ -241,20 +237,6 @@ function Navbar() {
                       role="menuitem"
                       tabIndex={-1}
                       onClick={() => {
-                        setIsExportModalOpen(true);
-                        closeDropdown();
-                      }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
-                    >
-                      <Download size={18} strokeWidth={1.5} aria-hidden="true" />
-                      <span>Xuất dữ liệu</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      role="menuitem"
-                      tabIndex={-1}
-                      onClick={() => {
                         showAlert({
                           title: 'Xác nhận đăng xuất',
                           message: 'Bạn có chắc chắn muốn đăng xuất?',
@@ -287,12 +269,6 @@ function Navbar() {
       {isMemberSearchOpen && (
         <Suspense fallback={null}>
           <MemberSearchModal isOpen onClose={() => setIsMemberSearchOpen(false)} />
-        </Suspense>
-      )}
-
-      {isExportModalOpen && (
-        <Suspense fallback={null}>
-          <ExportModal isOpen onClose={() => setIsExportModalOpen(false)} movies={movies} />
         </Suspense>
       )}
     </>

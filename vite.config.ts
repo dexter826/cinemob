@@ -51,7 +51,6 @@ export default defineConfig(() => {
             firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
             charts: ['recharts'],
             lottie: ['lottie-react'],
-            utils: ['xlsx', 'file-saver'],
           },
         },
       },

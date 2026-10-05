@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
 import { deleteMovie } from '@/features/movies/services/movieService';
@@ -7,7 +7,6 @@ import useToastStore from '@/shared/stores/toastStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
-import useExportStore from '@/features/movies/stores/exportStore';
 import { useDashboardFilters, ActiveTab } from './useDashboardFilters';
 import { useDashboardStats } from './useDashboardStats';
 import { MESSAGES } from '@/constants/messages';
@@ -19,7 +18,6 @@ export const useDashboard = (user: User | null) => {
   const { showAlert } = useAlertStore();
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
-  const { setMovies: setExportMovies } = useExportStore();
 
   const { movies, loading } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -44,10 +42,6 @@ export const useDashboard = (user: User | null) => {
   const filters = useDashboardFilters(movies, activeTab);
 
   const { stats, contentTypeStats } = useDashboardStats(filters.currentTabMovies);
-
-  useEffect(() => {
-    setExportMovies(movies);
-  }, [movies, setExportMovies]);
 
   const handleDelete = async (docId: string) => {
     showAlert({

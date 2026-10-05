@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@vudovn/ag-kit": "^2026.7.18",
-    "file-saver": "^2.0.5",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
     "howler": "^2.2.4",
@@ -24,7 +23,6 @@
     "react-dom": "^19.2.1",
     "react-router-dom": "^7.9.6",
     "recharts": "^3.4.1",
-    "xlsx": "^0.18.5",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
