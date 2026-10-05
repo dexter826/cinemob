@@ -4,22 +4,23 @@ import { Movie } from '@/types';
 import { deleteMovie } from '@/features/movies/services/movieService';
 import useMovieStore from '@/features/movies/stores/movieStore';
 import useToastStore from '@/shared/stores/toastStore';
-import useAlertStore from '@/shared/stores/alertStore';
 import useAddMovieStore from '@/features/movies/stores/addMovieStore';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
+import { getMainTitle } from '@/features/movies/utils/movieUtils';
 import { useDashboardFilters, ActiveTab } from './useDashboardFilters';
 import { useDashboardStats } from './useDashboardStats';
 import { MESSAGES } from '@/constants/messages';
 import type { User } from 'firebase/auth';
 
+const UNDO_DELETE_MS = 7000;
+
 // Hook điều phối chính cho Dashboard.
 export const useDashboard = (user: User | null) => {
   const { showToast } = useToastStore();
-  const { showAlert } = useAlertStore();
   const { openAddModal } = useAddMovieStore();
   const { openDetailModal } = useMovieDetailStore();
 
-  const { movies, loading } = useMovieStore();
+  const { movies, loading, removeLocal, restoreMovie } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTabState] = useState<ActiveTab>(() =>
     searchParams.get('tab') === 'watchlist' ? 'watchlist' : 'history',
@@ -43,21 +44,26 @@ export const useDashboard = (user: User | null) => {
 
   const { stats, contentTypeStats } = useDashboardStats(filters.currentTabMovies);
 
-  const handleDelete = async (docId: string) => {
-    showAlert({
-      title: 'Xóa phim',
-      message:
-        'Bạn có chắc chắn muốn xóa phim này khỏi lịch sử không? Hành động này không thể hoàn tác.',
-      type: 'danger',
-      confirmText: 'Xóa',
-      onConfirm: async () => {
-        try {
-          if (!user) return;
-          await deleteMovie(user.uid, docId);
-          showToast(MESSAGES.MOVIE.DELETE_SUCCESS, 'success');
-        } catch (e) {
-          showToast(MESSAGES.MOVIE.DELETE_ERROR, 'error');
-        }
+  const handleDelete = (docId: string) => {
+    if (!user) return;
+    const movie = movies.find((m) => m.docId === docId);
+    if (!movie) return;
+
+    removeLocal(docId);
+    const timer = setTimeout(async () => {
+      try {
+        await deleteMovie(user.uid, docId);
+      } catch (e) {
+        restoreMovie(movie);
+        showToast(MESSAGES.MOVIE.DELETE_ERROR, 'error');
+      }
+    }, UNDO_DELETE_MS);
+
+    showToast(`Đã xóa ${getMainTitle(movie)}`, 'info', UNDO_DELETE_MS, {
+      label: 'Hoàn tác',
+      onAction: () => {
+        clearTimeout(timer);
+        restoreMovie(movie);
       },
     });
   };

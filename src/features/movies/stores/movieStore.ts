@@ -11,6 +11,8 @@ interface MovieState {
   initialize: (uid: string) => void;
   cleanup: () => void;
   setMovies: (movies: Movie[]) => void;
+  removeLocal: (docId: string) => void;
+  restoreMovie: (movie: Movie) => void;
 }
 
 // Quản lý và đồng bộ danh sách phim.
@@ -52,6 +54,9 @@ const useMovieStore = create<MovieState>((set, get) => ({
   },
 
   setMovies: (movies) => set({ movies }),
+  removeLocal: (docId) =>
+    set((state) => ({ movies: state.movies.filter((m) => m.docId !== docId) })),
+  restoreMovie: (movie) => set((state) => ({ movies: [...state.movies, movie] })),
 }));
 
 export default useMovieStore;

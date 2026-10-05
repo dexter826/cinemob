@@ -37,24 +37,43 @@ function ToastList({
           <motion.div
             key={toast.id}
             layout={!reducedMotion}
-            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
             animate={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={
               reducedMotion
                 ? { opacity: 0 }
-                : { opacity: 0, y: -8, transition: { duration: MOTION_DURATION.fast } }
+                : { opacity: 0, y: 8, transition: { duration: MOTION_DURATION.fast } }
             }
             transition={toastTransition}
             aria-atomic="true"
-            className="flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
+            className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
           >
             <ToastIcon type={toast.type} />
             <span className="text-xs sm:text-sm font-semibold flex-1 tracking-tight mr-4 leading-tight">
               {toast.message}
             </span>
+            {toast.action && (
+              <button
+                type="button"
+                onClick={() => {
+                  toast.action?.onAction();
+                  removeToast(toast.id);
+                }}
+                className="text-xs font-bold text-primary hover:underline mr-2 shrink-0 cursor-pointer"
+              >
+                {toast.action.label}
+              </button>
+            )}
             <IconButton label="Đóng thông báo" size="sm" onClick={() => removeToast(toast.id)}>
               <X size={14} aria-hidden="true" />
             </IconButton>
+            <motion.div
+              aria-hidden="true"
+              initial={{ width: '100%' }}
+              animate={{ width: '0%' }}
+              transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
+              className="absolute bottom-0 left-0 h-0.5 bg-primary/50"
+            />
           </motion.div>
         ))}
       </AnimatePresence>
@@ -62,13 +81,12 @@ function ToastList({
   );
 }
 
-/** Tiered toast announcements. Store API (`showToast`) unchanged. */
 function ToastContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
   return (
     <div
       ref={containerRef}
-      className="fixed top-6 left-1/2 -translate-x-1/2 z-100 flex flex-col gap-3 items-center pointer-events-none w-full max-w-[90vw] sm:max-w-md"
+      className="fixed z-100 left-1/2 -translate-x-1/2 bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] w-full max-w-[90vw] md:left-auto md:right-6 md:bottom-6 md:translate-x-0 md:max-w-md flex flex-col gap-3 items-center pointer-events-none"
     >
       <ToastList types={['success', 'info']} role="status" ariaLive="polite" />
       <ToastList types={['warning', 'error']} role="alert" ariaLive="assertive" />
