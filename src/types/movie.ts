@@ -26,6 +26,7 @@ export interface Movie {
     current_episode: number;
     watched_episodes: number;
     is_completed: boolean;
+    season_dates?: Record<string, string>;
   };
   is_review?: boolean;
 }
@@ -68,7 +69,6 @@ export interface MemberProfile {
   bio?: string;
   gender?: MemberGender;
   dob?: string;
-  // true = chủ hồ sơ gỡ danh sách phim khỏi Firestore, không ai đọc được kể cả qua API.
   isMovieListHidden: boolean;
   updatedAt: Timestamp | Date;
   totalCount: number;

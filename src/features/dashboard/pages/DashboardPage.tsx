@@ -9,6 +9,7 @@ import SkeletonCard from '@/shared/components/ui/SkeletonCard';
 import { normalizeDate } from '@/shared/utils/dateFormat';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
+import { getSeasonWatchedDates } from '@/features/movies/utils/movieUtils';
 import PageHeader from '@/shared/components/ui/PageHeader';
 
 import { useDashboard } from '../hooks/useDashboard';
@@ -49,12 +50,12 @@ function DashboardPage() {
   const availableYears = useMemo(() => {
     return Array.from(
       new Set(
-        movies
-          .map((m) => {
-            const d = normalizeDate(m.watched_at);
-            return d ? d.getFullYear() : null;
-          })
-          .filter((y): y is number => y !== null),
+        movies.flatMap((m) => {
+          const d = normalizeDate(m.watched_at);
+          const years = d ? [d.getFullYear()] : [];
+          getSeasonWatchedDates(m).forEach((sd) => years.push(sd.getFullYear()));
+          return years;
+        }),
       ),
     )
       .sort((a, b) => b - a)

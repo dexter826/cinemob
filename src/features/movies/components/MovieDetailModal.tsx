@@ -3,7 +3,12 @@ import { X, Calendar, Clock, Star, Film, FolderPlus, Play, Users, User } from 'l
 import { Movie, TMDBVideo, TMDBCredits } from '@/types';
 import { getMovieVideos, getMovieCredits } from '@/features/search/services/tmdb';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import { getMainTitle, getSubTitle, getTranslatedGenres } from '../utils/movieUtils';
+import {
+  getMainTitle,
+  getSubTitle,
+  getTranslatedGenres,
+  getSeasonWatchedDates,
+} from '../utils/movieUtils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { formatDateAny } from '@/shared/utils/dateFormat';
 import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
@@ -181,7 +186,9 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         aria-hidden="true"
                       />
                       <span className="font-medium tabular-nums">
-                        {movie.media_type === 'tv' ? `00A0Mùa` : `00A0Phút`}
+                        {movie.media_type === 'tv'
+                          ? `${movie.seasons}\u00A0Mùa`
+                          : `${movie.runtime}\u00A0Phút`}
                       </span>
                     </div>
                   )}
@@ -232,6 +239,28 @@ function MovieDetailModal({ isOpen, onClose, movie }: MovieDetailModalProps) {
                         }}
                       />
                     </div>
+                    {getSeasonWatchedDates(movie).length >= 2 && (
+                      <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-secondary">
+                        {Object.entries(movie.progress?.season_dates || {})
+                          .map(([season, iso]) => {
+                            const [y, m, d] = iso.split('-').map(Number);
+                            return Number(season) && y && m && d
+                              ? { season: Number(season), date: new Date(y, m - 1, d) }
+                              : null;
+                          })
+                          .filter((s): s is { season: number; date: Date } => s !== null)
+                          .sort((a, b) => a.season - b.season)
+                          .map(({ season, date }) => (
+                            <span key={season} className="tabular-nums">
+                              Phần&nbsp;{season}:{' '}
+                              {date.toLocaleDateString('vi-VN', {
+                                month: '2-digit',
+                                year: 'numeric',
+                              })}
+                            </span>
+                          ))}
+                      </div>
+                    )}
                   </div>
                 )}
 

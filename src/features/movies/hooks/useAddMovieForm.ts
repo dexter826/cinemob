@@ -211,7 +211,7 @@ export const useAddMovieForm = () => {
         title_vi: formData.title_vi,
         poster_path: formData.poster,
         runtime: parseInt(formData.runtime) || 0,
-        seasons: parseInt(formData.seasons) || 0,
+        seasons: Math.max(parseInt(formData.seasons) || 0, tvProgress.resolvedSeasonCount || 0),
         watched_at: status === 'history' ? new Date(y, m - 1, d, h, min, 0) : new Date(),
         status,
         rating: Number(formData.rating),
@@ -226,6 +226,10 @@ export const useAddMovieForm = () => {
 
       if (isTVSeries) {
         movieData.total_episodes = tvProgress.totalEpisodes;
+        const seasonDates: Record<string, string> = {};
+        for (let s = 1; s <= tvProgress.currentSeason; s++) {
+          seasonDates[String(s)] = tvProgress.seasonDates[s] || formData.date;
+        }
         movieData.progress = {
           current_season: tvProgress.currentSeason,
           current_episode: tvProgress.currentEpisode,
@@ -235,6 +239,7 @@ export const useAddMovieForm = () => {
             tvProgress.isCompleted,
           ),
           is_completed: tvProgress.isCompleted,
+          season_dates: seasonDates,
         };
       }
 
@@ -303,7 +308,21 @@ export const useAddMovieForm = () => {
         tvProgress.isCompleted !== m.progress.is_completed;
     }
 
-    return isBasicDirty || isTimeDirty || isProgressDirty;
+    let isSeasonDatesDirty = false;
+    if (isTVSeries && m.progress) {
+      const origDates = m.progress.season_dates || {};
+      const origDateISO = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      for (let s = 1; s <= tvProgress.currentSeason; s++) {
+        if (
+          (tvProgress.seasonDates[s] || formData.date) !== (origDates[String(s)] || origDateISO)
+        ) {
+          isSeasonDatesDirty = true;
+          break;
+        }
+      }
+    }
+
+    return isBasicDirty || isTimeDirty || isProgressDirty || isSeasonDatesDirty;
   }, [
     formData,
     status,
@@ -312,6 +331,7 @@ export const useAddMovieForm = () => {
     tvProgress.currentSeason,
     tvProgress.currentEpisode,
     tvProgress.isCompleted,
+    tvProgress.seasonDates,
   ]);
 
   return {
@@ -339,6 +359,9 @@ export const useAddMovieForm = () => {
     setCurrentEpisode: tvProgress.setCurrentEpisode,
     isCompleted: tvProgress.isCompleted,
     setIsCompleted: tvProgress.setIsCompleted,
+    seasonDates: tvProgress.seasonDates,
+    setSeasonDate: tvProgress.setSeasonDate,
+    syncedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,
     selectedAlbumIds: albumSync.selectedAlbumIds,

@@ -1,5 +1,6 @@
 import { Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
+import { formatDateDMY } from '@/shared/utils/dateFormat';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 
 interface EpisodeListProps {
@@ -43,7 +44,7 @@ function EpisodeList({
       >
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
           <h2 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
-            {selectedDate ? `Ngày ${selectedDate.toLocaleDateString('vi-VN')}` : 'Sắp chiếu'}
+            {selectedDate ? `Ngày ${formatDateDMY(selectedDate)}` : 'Sắp chiếu'}
           </h2>
           {selectedDate && (
             <button
@@ -120,7 +121,7 @@ function EpisodeList({
                           </span>
                           {ep.episode.runtime && (
                             <span className="text-xs font-bold text-text-secondary flex items-center gap-1 opacity-60">
-                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}00A0phút
+                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}&nbsp;phút
                             </span>
                           )}
                         </div>

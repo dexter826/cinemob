@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { formatDateDMY } from '@/shared/utils/dateFormat';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import SkeletonCard from '@/shared/components/ui/SkeletonCard';
@@ -123,7 +124,7 @@ function PersonDetailPage() {
                                 Ngày sinh
                               </div>
                               <div className="font-bold text-sm">
-                                {new Date(person.birthday).toLocaleDateString('vi-VN')}
+                                {formatDateDMY(person.birthday)}
                               </div>
                             </div>
                           </div>
@@ -137,7 +138,7 @@ function PersonDetailPage() {
                             <div>
                               <div className="text-xs font-semibold text-danger">Ngày mất</div>
                               <div className="font-bold text-sm text-danger">
-                                {new Date(person.deathday).toLocaleDateString('vi-VN')}
+                                {formatDateDMY(person.deathday)}
                               </div>
                             </div>
                           </div>

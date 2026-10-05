@@ -1,9 +1,7 @@
 import { Movie } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-
-// Helpers dùng riêng cho domain Movie (dữ liệu phim đã lưu trong thư viện).
-// Helper TMDB dùng chung nằm ở src/shared/utils/tmdb.ts, ngày/giờ ở dateFormat.ts.
+import { normalizeDate } from '@/shared/utils/dateFormat';
 
 // Phim có quốc gia Việt Nam hay không, dùng để chọn tiêu đề chính/phụ.
 const isVietnameseOrigin = (country: string): boolean =>
@@ -56,4 +54,25 @@ export const getTranslatedGenres = (genreStr: string): string => {
       return GENRE_TRANSLATIONS[trimmed] || trimmed;
     })
     .join(', ');
+};
+
+// Đọc season_dates (ISO 'YYYY-MM-DD') thành danh sách Date hợp lệ.
+export const getSeasonWatchedDates = (movie: Movie): Date[] => {
+  const seasonDates = movie.progress?.season_dates;
+  if (!seasonDates) return [];
+  return Object.values(seasonDates)
+    .map((iso) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return y && m && d ? new Date(y, m - 1, d) : null;
+    })
+    .filter((date): date is Date => date !== null);
+};
+
+// Ngày xem muộn nhất trong watched_at và các mùa — dùng cho hiển thị và lọc năm.
+export const getLatestWatchedDate = (movie: Movie): Date | null => {
+  let latest = normalizeDate(movie.watched_at);
+  for (const date of getSeasonWatchedDates(movie)) {
+    if (!latest || date.getTime() > latest.getTime()) latest = date;
+  }
+  return latest;
 };

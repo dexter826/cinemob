@@ -3,6 +3,7 @@ import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getMainTitle, getSubTitle } from '../utils/movieUtils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { formatDateAny } from '@/shared/utils/dateFormat';
+import { getLatestWatchedDate } from '../utils/movieUtils';
 import {
   Trash2,
   Calendar,
@@ -179,15 +180,9 @@ function MovieCard(props: MovieCardProps) {
 
         <div className="mt-auto pt-2 border-t border-border-default flex items-center justify-between text-xs text-text-secondary">
           <div className="flex items-center flex-wrap gap-1.5 font-medium">
-            {movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed && (
-              <>
-                <span className="text-primary">{`S${movie.progress.current_season}E${movie.progress.current_episode}`}</span>
-                <span className="opacity-30">•</span>
-              </>
-            )}
             <div className="flex items-center gap-1">
               <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
-              <span>{formatDateAny(movie.watched_at)}</span>
+              <span>{formatDateAny(getLatestWatchedDate(movie) || movie.watched_at)}</span>
             </div>
           </div>
 

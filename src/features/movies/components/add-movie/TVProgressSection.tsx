@@ -1,4 +1,5 @@
 import { Tv } from 'lucide-react';
+import DatePicker from '@/shared/components/ui/DatePicker';
 
 interface TVProgressSectionProps {
   isCompleted: boolean;
@@ -10,6 +11,9 @@ interface TVProgressSectionProps {
   totalEpisodes: number;
   episodesPerSeason: Record<number, number>;
   maxSeasons: number;
+  seasonDates: Record<number, string>;
+  onSeasonDateChange: (season: number, isoDate: string) => void;
+  defaultDate: string;
 }
 
 function TVProgressSection({
@@ -22,6 +26,9 @@ function TVProgressSection({
   totalEpisodes,
   episodesPerSeason,
   maxSeasons,
+  seasonDates,
+  onSeasonDateChange,
+  defaultDate,
 }: TVProgressSectionProps) {
   return (
     <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4 shadow-sm">
@@ -125,10 +132,32 @@ function TVProgressSection({
 
       {totalEpisodes > 0 && !isCompleted && (
         <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-primary/20">
-          Tổng {totalEpisodes}00A0tập, mùa00A0{currentSeason}:{' '}
+          Tổng {totalEpisodes}&nbsp;tập, mùa&nbsp;{currentSeason}:{' '}
           {episodesPerSeason[currentSeason] || '?'} tập
         </div>
       )}
+
+      <div className="space-y-2 pt-4 border-t border-primary/20">
+        <span className="text-xs font-semibold text-text-secondary ml-1 block">
+          Ngày xem từng phần
+        </span>
+        <div className="space-y-2">
+          {Array.from({ length: currentSeason }, (_, i) => i + 1).map((season) => (
+            <div key={season} className="flex items-center gap-3">
+              <span className="text-xs font-bold text-text-primary w-16 shrink-0">
+                Phần&nbsp;{season}
+              </span>
+              <DatePicker
+                value={seasonDates[season] || defaultDate}
+                onChange={(value) => onSeasonDateChange(season, value)}
+                aria-label={`Ngày xem phần ${season}`}
+                className="flex-1"
+                popupMode="dialog"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

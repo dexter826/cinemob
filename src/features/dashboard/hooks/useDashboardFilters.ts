@@ -1,7 +1,11 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
-import { getTranslatedCountries } from '@/features/movies/utils/movieUtils';
+import {
+  getTranslatedCountries,
+  getSeasonWatchedDates,
+  getLatestWatchedDate,
+} from '@/features/movies/utils/movieUtils';
 import { normalizeDate } from '@/shared/utils/dateFormat';
 
 export type SortOption = 'date' | 'title';
@@ -168,7 +172,10 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     }
 
     if (filters.year !== null) {
-      result = result.filter((m) => normalizeDate(m.watched_at)?.getFullYear() === filters.year);
+      result = result.filter((m) => {
+        if (normalizeDate(m.watched_at)?.getFullYear() === filters.year) return true;
+        return getSeasonWatchedDates(m).some((d) => d.getFullYear() === filters.year);
+      });
     }
 
     if (filters.country) {
@@ -215,8 +222,8 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       let comp = 0;
       if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title);
       else {
-        const da = normalizeDate(a.watched_at)?.getTime() || 0;
-        const db = normalizeDate(b.watched_at)?.getTime() || 0;
+        const da = getLatestWatchedDate(a)?.getTime() || 0;
+        const db = getLatestWatchedDate(b)?.getTime() || 0;
         comp = da - db;
       }
       return filters.sortOrder === 'asc' ? comp : -comp;

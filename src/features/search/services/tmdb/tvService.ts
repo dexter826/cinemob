@@ -42,6 +42,15 @@ export const getTVSeasonDetails = async (
   return data ? { episode_count: data.episodes?.length || 0 } : null;
 };
 
+// Lấy số mùa hiện tại của series từ TMDB (null nếu không đọc được).
+export const getTVShowSeasonCount = async (
+  tvId: number,
+  signal?: AbortSignal,
+): Promise<number | null> => {
+  const data = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
+  return data?.number_of_seasons ?? null;
+};
+
 // Lấy tổng số tập phim theo mùa.
 export const getTVShowEpisodeInfo = async (
   tvId: number,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTVShowEpisodeInfo } from '@/features/search/services/tmdb';
+import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
 import { Movie } from '@/types';
 
 interface TVProgressProps {
@@ -17,6 +17,9 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
   const [totalEpisodes, setTotalEpisodes] = useState(0);
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   const [isCompleted, setIsCompleted] = useState(false);
+  const [seasonDates, setSeasonDates] = useState<Record<number, string>>({});
+  // Số mùa đã đồng bộ với TMDB (chỉ tăng so với snapshot); 0 = không áp dụng.
+  const [resolvedSeasonCount, setResolvedSeasonCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -25,17 +28,29 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
 
     if (movieToEdit && movieToEdit.media_type === 'tv') {
       const m = movieToEdit;
-      if (m.source === 'tmdb' && m.id && m.seasons) {
+      if (m.source === 'tmdb' && m.id) {
         const fetchInfo = async () => {
           setIsLoading(true);
           try {
-            const info = await getTVShowEpisodeInfo(Number(m.id), m.seasons ?? 0);
+            let seasonCount = m.seasons || 0;
+            try {
+              const fresh = await getTVShowSeasonCount(Number(m.id));
+              if (fresh && fresh > seasonCount) seasonCount = fresh;
+            } catch {}
+            const info =
+              seasonCount > 0
+                ? await getTVShowEpisodeInfo(Number(m.id), seasonCount)
+                : { total_episodes: 0, episodes_per_season: {} };
             if (!ignore) {
-              setTotalEpisodes(info.total_episodes);
+              setTotalEpisodes(info.total_episodes || m.total_episodes || 0);
               setEpisodesPerSeason(info.episodes_per_season);
+              setResolvedSeasonCount(seasonCount);
             }
           } catch (error) {
-            if (!ignore) setTotalEpisodes(m.total_episodes || 0);
+            if (!ignore) {
+              setTotalEpisodes(m.total_episodes || 0);
+              setResolvedSeasonCount(m.seasons || 0);
+            }
           } finally {
             if (!ignore) setIsLoading(false);
           }
@@ -43,16 +58,26 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
         fetchInfo();
       } else {
         setTotalEpisodes(m.total_episodes || 0);
+        setResolvedSeasonCount(m.seasons || 0);
       }
 
       if (m.progress) {
         setCurrentSeason(m.progress.current_season || 1);
         setCurrentEpisode(m.progress.current_episode || 0);
         setIsCompleted(m.progress.is_completed || false);
+        setSeasonDates(
+          Object.fromEntries(
+            Object.entries(m.progress.season_dates || {}).map(([season, iso]) => [
+              Number(season),
+              iso,
+            ]),
+          ),
+        );
       } else {
         setCurrentSeason(1);
         setCurrentEpisode(0);
         setIsCompleted(false);
+        setSeasonDates({});
       }
     } else if (!movieToEdit && !tmdbId) {
       setTotalEpisodes(0);
@@ -60,8 +85,12 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
       setCurrentSeason(1);
       setCurrentEpisode(0);
       setIsCompleted(true);
+      setSeasonDates({});
+      setResolvedSeasonCount(0);
     } else if (!movieToEdit && isTVSeries && tmdbId) {
       setIsLoading(false);
+      setSeasonDates({});
+      setResolvedSeasonCount(0);
     }
     return () => {
       ignore = true;
@@ -78,6 +107,10 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     return watched;
   };
 
+  const setSeasonDate = (season: number, isoDate: string) => {
+    setSeasonDates((prev) => ({ ...prev, [season]: isoDate }));
+  };
+
   return {
     currentSeason,
     setCurrentSeason,
@@ -89,6 +122,9 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     setEpisodesPerSeason,
     isCompleted,
     setIsCompleted,
+    seasonDates,
+    setSeasonDate,
+    resolvedSeasonCount,
     isLoading,
     calculateWatchedEpisodes,
   };

@@ -7,8 +7,11 @@ const dayMonthYear = new Intl.DateTimeFormat('vi-VN', {
 
 const monthFormatter = new Intl.DateTimeFormat('vi-VN', { month: 'long' });
 
-/** "2026-10-04" → "04/10/2026". */
-export const formatDateDMY = (isoDate: string): string => {
+/** "2026-10-04" (hoặc Date) → "04/10/2026". */
+export const formatDateDMY = (isoDate: string | Date): string => {
+  if (isoDate instanceof Date) {
+    return Number.isNaN(isoDate.getTime()) ? '' : dayMonthYear.format(isoDate);
+  }
   if (!isoDate) return '';
   const [y, m, d] = isoDate.split('-').map(Number);
   if (!y || !m || !d) return '';
@@ -52,9 +55,5 @@ export const normalizeDate = (date: unknown): Date | null => {
 export const formatDateAny = (date: unknown): string => {
   const normalized = normalizeDate(date);
   if (!normalized) return 'N/A';
-  return new Intl.DateTimeFormat('vi-VN', {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(normalized);
+  return dayMonthYear.format(normalized);
 };

@@ -5,7 +5,7 @@ import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { formatDateDMY, monthLabel } from '@/shared/utils/dateFormat';
 
 interface DatePickerProps {
-  value: string; // YYYY-MM-DD format
+  value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
@@ -13,6 +13,7 @@ interface DatePickerProps {
   minDate?: string;
   maxDate?: string;
   id?: string;
+  popupMode?: 'popover' | 'dialog';
   'aria-label'?: string;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
@@ -37,6 +38,7 @@ function DatePicker({
   minDate,
   maxDate,
   id,
+  popupMode = 'popover',
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
@@ -48,6 +50,7 @@ function DatePicker({
   const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
+  const useDialogPresentation = isMobile || popupMode === 'dialog';
   const [viewDate, setViewDate] = useState(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -72,15 +75,15 @@ function DatePicker({
       }
     };
 
-    if (isOpen && !isMobile) {
+    if (isOpen && !useDialogPresentation) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, isMobile]);
+  }, [isOpen, useDialogPresentation]);
 
   useEffect(() => {
-    if (!isOpen || isMobile) return undefined;
+    if (!isOpen || useDialogPresentation) return undefined;
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -89,7 +92,7 @@ function DatePicker({
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, isMobile]);
+  }, [isOpen, useDialogPresentation]);
 
   // Update viewDate when value changes externally
   useEffect(() => {
@@ -101,8 +104,8 @@ function DatePicker({
 
   // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
   useEffect(() => {
-    if (isOpen && !isMobile) popoverRef.current?.focus();
-  }, [isOpen, isMobile]);
+    if (isOpen && !useDialogPresentation) popoverRef.current?.focus();
+  }, [isOpen, useDialogPresentation]);
 
   const closePicker = () => {
     setIsOpen(false);
@@ -213,21 +216,21 @@ function DatePicker({
   const renderCalendar = () => (
     <div
       ref={popoverRef}
-      id={isMobile ? undefined : `${controlId}-dialog`}
-      tabIndex={isMobile ? undefined : -1}
+      id={useDialogPresentation ? undefined : `${controlId}-dialog`}
+      tabIndex={useDialogPresentation ? undefined : -1}
       className={`
                 bg-surface border border-border-default rounded-card shadow-elevated p-4
                 ${
-                  isMobile
+                  useDialogPresentation
                     ? 'relative w-full max-w-[320px] mx-auto'
                     : 'absolute top-full left-0 mt-1 z-50 w-72'
                 }
             `}
-      role={isMobile ? undefined : 'dialog'}
-      aria-label={isMobile ? undefined : 'Chọn ngày'}
-      onClick={(e) => isMobile && e.stopPropagation()}
+      role={useDialogPresentation ? undefined : 'dialog'}
+      aria-label={useDialogPresentation ? undefined : 'Chọn ngày'}
+      onClick={(e) => useDialogPresentation && e.stopPropagation()}
     >
-      {isMobile && (
+      {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
           <span id={dialogTitleId} className="text-sm font-bold text-text-primary">
             Chọn ngày
@@ -388,7 +391,7 @@ function DatePicker({
 
       {/* Calendar UI */}
       {isOpen &&
-        (isMobile ? (
+        (useDialogPresentation ? (
           <Dialog
             open={isOpen}
             onClose={closePicker}
