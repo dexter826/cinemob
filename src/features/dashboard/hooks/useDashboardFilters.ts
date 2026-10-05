@@ -41,6 +41,7 @@ const MOVIES_PER_PAGE = 20;
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Khởi tạo bộ lọc và trang từ URL để deep-link được trạng thái thư viện.
@@ -121,7 +122,9 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const insideToggle = toggleRef.current?.contains(target) ?? false;
+      if (filterRef.current && !filterRef.current.contains(target) && !insideToggle) {
         setShowFilters(false);
       }
     };
@@ -219,6 +222,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     showFilters,
     setShowFilters,
     filterRef,
+    toggleRef,
     filters,
     updateFilter,
     currentPage,

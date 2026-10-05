@@ -33,6 +33,7 @@ function DashboardPage() {
     showFilters,
     setShowFilters,
     filterRef,
+    toggleRef,
     handleDelete,
     handleEdit,
     openAddModal,
@@ -104,6 +105,7 @@ function DashboardPage() {
               showFilters={showFilters}
               setShowFilters={setShowFilters}
               filterRef={filterRef}
+              toggleRef={toggleRef}
               toggleSortOrder={toggleSortOrder}
               activeTab={activeTab}
               availableYears={availableYears}

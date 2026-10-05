@@ -24,6 +24,7 @@ interface DashboardFiltersProps {
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   filterRef: React.RefObject<HTMLDivElement | null>;
+  toggleRef: React.RefObject<HTMLButtonElement | null>;
   toggleSortOrder: () => void;
   activeTab: 'history' | 'watchlist';
   availableYears: { value: string | number; label: string }[];
@@ -37,6 +38,7 @@ function DashboardFilters({
   showFilters,
   setShowFilters,
   filterRef,
+  toggleRef,
   toggleSortOrder,
   activeTab,
   availableYears,
@@ -96,6 +98,7 @@ function DashboardFilters({
         </div>
 
         <button
+          ref={toggleRef}
           onClick={(e) => {
             e.stopPropagation();
             setShowFilters(!showFilters);

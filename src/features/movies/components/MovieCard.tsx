@@ -133,7 +133,7 @@ function MovieCard(props: MovieCardProps) {
               <>
                 <Tv size={11} className="text-info" strokeWidth={1.5} aria-hidden="true" />
                 <span className="text-xs font-semibold text-white tracking-wider">
-                  {movie.seasons && movie.seasons > 0 ? `TV • ${movie.seasons} Mùa` : 'TV'}
+                  {movie.seasons && movie.seasons > 0 ? `Series • ${movie.seasons} mùa` : 'Series'}
                 </span>
               </>
             ) : (

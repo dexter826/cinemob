@@ -125,7 +125,7 @@ function StatsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title="Thống kê điện ảnh" description="Tổng quan thói quen xem phim của bạn." />
+      <PageHeader title="Thống kê điện ảnh" />
 
       {totalMovies === 0 ? (
         <EmptyState

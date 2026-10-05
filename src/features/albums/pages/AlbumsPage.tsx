@@ -67,7 +67,7 @@ function AlbumsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title="Album phim" description="Tạo album riêng để nhóm phim đã xem." />
+      <PageHeader title="Album phim" />
 
       <form
         onSubmit={handleCreate}
