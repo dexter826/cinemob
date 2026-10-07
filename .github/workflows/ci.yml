@@ -39,6 +39,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Format check
+        run: npm run format:check
+
       - name: Build
         run: npm run build
 
@@ -46,6 +49,5 @@ jobs:
         working-directory: .github/scripts
         run: npm ci
 
-      - name: Test notification script
-        working-directory: .github/scripts
+      - name: Test repository
         run: npm test

@@ -96,6 +96,7 @@ graph TD
    - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
    - `VITE_AI_PROXY_URL`: URL Cloudflare Worker cineproxy dùng cho gợi ý phim qua AI.
+   - `VITE_VAPID_PUBLIC_KEY`: Public key dùng cho Web Push; có fallback nếu để trống.
    - `VITE_CLOUDINARY_CLOUD_NAME` / `VITE_CLOUDINARY_UPLOAD_PRESET`: Cấu hình Cloudinary dùng cho upload ảnh hồ sơ.
 
    > [!NOTE]
@@ -111,13 +112,15 @@ graph TD
 
 ## Các lệnh chính
 
-| Lệnh                | Mô tả                                                             |
-| :------------------ | :---------------------------------------------------------------- |
-| `npm run dev`       | Khởi chạy Vite development server tại cổng `3000`.                |
-| `npm run build`     | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.  |
-| `npm run preview`   | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
-| `npm run typecheck` | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                 |
-| `npm run lint`      | Chạy ESLint kiểm tra mã nguồn trong `src/`.                       |
+| Lệnh                   | Mô tả                                                             |
+| :--------------------- | :---------------------------------------------------------------- |
+| `npm run dev`          | Khởi chạy Vite development server tại cổng `3000`.                |
+| `npm run build`        | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.  |
+| `npm run preview`      | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
+| `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                 |
+| `npm run lint`         | Chạy ESLint kiểm tra mã nguồn trong `src/`.                       |
+| `npm test`             | Chạy notification-script tests.                                   |
+| `npm run format:check` | Kiểm tra format bằng Prettier.                                    |
 
 ---
 
@@ -128,6 +131,8 @@ Dự án dùng ESLint để kiểm tra chuẩn mã nguồn. Trước khi mở Pu
 ```bash
 npm run typecheck
 npm run lint
+npm test
+npm run format:check
 npm run build
 ```
 
