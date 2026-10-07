@@ -15,7 +15,7 @@
 
 ## Tổng quan
 
-**CineMOB** là ứng dụng web client-side (CSR) dạng PWA xây dựng bằng React 19 và TypeScript, hỗ trợ theo dõi danh mục phim ảnh, quản lý lịch chiếu và phân tích thói quen giải trí với giao diện tối ưu cho thiết bị di động.
+**CineMOB** là ứng dụng web client-side (CSR) dạng PWA xây dựng bằng React 19 và TypeScript, hỗ trợ theo dõi danh mục phim ảnh, quản lý lịch chiếu và phân tích lịch sử xem phim, với giao diện thích ứng cho thiết bị di động.
 
 <div align="center">
   <img src="docs/images/mockup.jpg" alt="CineMOB Interface Mockup" width="800" />
@@ -26,16 +26,17 @@
 - **Khám phá & Tra cứu:** Tìm kiếm phim, TV show, diễn viên, xem trailer và đánh giá chi tiết từ TMDB.
 - **Quản lý danh sách xem:** Phân loại theo trạng thái (Đang xem, Đã xem, Muốn xem) và tạo album theo chủ đề riêng.
 - **Lịch phát sóng:** Theo dõi lịch chiếu tập mới theo tuần/tháng để không bỏ lỡ các series yêu thích.
-- **Gợi ý phim thông minh:** Đề xuất phim phù hợp ngữ cảnh và sở thích người dùng
-- **Thống kê & Xuất báo cáo:** Trực quan hóa thói quen giải trí qua biểu đồ (Recharts) và hỗ trợ xuất danh sách ra file Excel (.xlsx).
-- **Hỗ trợ PWA:** Cài đặt nhanh chóng trên thiết bị di động và máy tính, hoạt động mượt mà ngay cả khi kết nối mạng không ổn định.
+- **Gợi ý phim:** Đề xuất phim phù hợp với ngữ cảnh và sở thích người dùng.
+- **Thống kê:** Trực quan hóa lịch sử xem phim qua biểu đồ (Recharts).
+- **Hỗ trợ PWA:** Có thể cài đặt như ứng dụng trên thiết bị di động và máy tính.
 
-### Tích hợp chính
+### Dịch vụ sử dụng
 
-- **Dữ liệu điện ảnh:** Lấy thông tin phim, TV show, diễn viên và lịch chiếu từ [TMDB API](https://www.themoviedb.org/documentation/api).
-- **Xác thực & Lưu trữ:** Sử dụng Firebase v12 (Google Sign-In qua Firebase Auth và đồng bộ dữ liệu thời gian thực qua Cloud Firestore).
-- **Trợ lý gợi ý:** Đề xuất phim theo ngữ cảnh và sở thích người xem qua [OpenRouter API](https://openrouter.ai/), gọi trung gian qua Cloudflare Worker cineproxy để giữ API key phía server.
-- **Thống kê & Xuất dữ liệu:** Trực quan hóa dữ liệu bằng [Recharts](https://recharts.org/) và hỗ trợ xuất danh sách phim ra file Excel (.xlsx) với SheetJS.
+- **TMDB:** Cung cấp dữ liệu phim, TV show, diễn viên và lịch chiếu. Xem [TMDB API](https://www.themoviedb.org/documentation/api).
+- **Firebase:** Hỗ trợ đăng nhập và lưu trữ dữ liệu cá nhân.
+- **Dịch vụ gợi ý phim:** Đề xuất phim dựa trên lịch sử xem và sở thích người dùng.
+- **Thông báo:** Nhận thông báo khi có tập mới.
+- **Recharts:** Hiển thị thống kê dưới dạng biểu đồ. Xem [Recharts](https://recharts.org/).
 
 ### Kiến trúc ứng dụng
 
@@ -82,7 +83,7 @@ graph TD
 2. **Cài đặt dependencies:**
 
    ```bash
-   npm install
+   npm ci
    ```
 
 3. **Cấu hình biến môi trường:**
@@ -96,11 +97,11 @@ graph TD
    - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
    - `VITE_AI_PROXY_URL`: URL Cloudflare Worker cineproxy dùng cho gợi ý phim qua AI.
-   - `VITE_VAPID_PUBLIC_KEY`: Public key dùng cho Web Push; có fallback nếu để trống.
+   - `VITE_VAPID_PUBLIC_KEY`: Public key tùy chọn cho Web Push; ứng dụng dùng fallback nếu để trống.
    - `VITE_CLOUDINARY_CLOUD_NAME` / `VITE_CLOUDINARY_UPLOAD_PRESET`: Cấu hình Cloudinary dùng cho upload ảnh hồ sơ.
 
    > [!NOTE]
-   > Các biến có tiền tố `VITE_` sẽ được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt. Không đưa các khóa bí mật mang quyền quản trị vào các biến này.
+   > Các biến có tiền tố `VITE_` hoặc `REACT_APP_` sẽ được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt. Không đưa các khóa bí mật mang quyền quản trị vào các biến này.
 
 4. **Chạy server phát triển:**
    ```bash
@@ -119,7 +120,7 @@ graph TD
 | `npm run preview`      | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
 | `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                 |
 | `npm run lint`         | Chạy ESLint kiểm tra mã nguồn trong `src/`.                       |
-| `npm test`             | Chạy notification-script tests.                                   |
+| `npm test`             | Chạy test cho script gửi thông báo.                               |
 | `npm run format:check` | Kiểm tra format bằng Prettier.                                    |
 
 ---
@@ -170,9 +171,6 @@ Cấu trúc các thư mục và tập tin chính trong dự án:
 ## Nguồn dữ liệu
 
 Dự án sử dụng dữ liệu từ [The Movie Database (TMDB)](https://www.themoviedb.org/).
-
-> [!NOTE]
-> Sản phẩm này sử dụng TMDB API nhưng không được chứng thực hoặc xác nhận bởi TMDB.
 
 ---
 
