@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
 import randomAudioFile from '@/assets/audio/random.MP3';
+import { MOTION_DURATION } from '@/constants/animations';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/addMovieStore';
@@ -136,20 +137,24 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
 
       setIsShuffling(true);
       const start = Date.now();
+      const pickerDurationMs = MOTION_DURATION.picker * 1000;
       const tick = () => {
         const elapsed = Date.now() - start;
-        const progress = Math.min(elapsed / 3150, 1);
+        const progress = Math.min(elapsed / pickerDurationMs, 1);
         const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
         if (effectivePool.length === 0) {
           setIsShuffling(false);
           setHasResult(false);
           return;
         }
-        if (elapsed >= 3150) {
+        if (elapsed >= pickerDurationMs) {
           setCurrentIndex(Math.floor(Math.random() * effectivePool.length));
           setIsShuffling(false);
           setHasResult(true);
-          audioStopTimeoutRef.current = setTimeout(() => randomAudio?.stop(), 1950);
+          audioStopTimeoutRef.current = setTimeout(
+            () => randomAudio?.stop(),
+            MOTION_DURATION.pickerAudioTail * 1000,
+          );
           return;
         }
         setCurrentIndex((index) => (index === null ? 0 : (index + 1) % effectivePool.length));

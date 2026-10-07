@@ -1,47 +1,49 @@
 ---
 name: CineMOB Neon Cinema Lounge
 colors:
-  primary: "#10B981"
-  primary-hover: "#059669"
-  on-primary: "#09090B"
-  secondary: "#71717A"
-  background: "#09090B"
-  surface: "#18181B"
-  surface-elevated: "#27272A"
-  text-primary: "#FAFAFA"
-  text-secondary: "#A1A1AA"
-  border: "#27272A"
-  focus: "#10B981"
-  success: "#10B981"
-  warning: "#F59E0B"
-  danger: "#EF4444"
-  info: "#3B82F6"
+  primary: '#10B981'
+  primary-hover: '#34D399'
+  on-primary: '#09090B'
+  secondary: '#A1A1AA'
+  background: '#09090B'
+  surface: '#141417'
+  surface-elevated: '#1C1C20'
+  text-primary: '#FAFAFA'
+  text-secondary: '#A1A1AA'
+  border: '#27272A'
+  focus: '#34D399'
+  success: '#4ADE80'
+  on-success: '#09090B'
+  warning: '#FBBF24'
+  danger: '#F87171'
+  on-danger: '#09090B'
+  info: '#38BDF8'
 typography:
   display:
     fontFamily: Be Vietnam Pro
     fontSize: 2.25rem
-    fontWeight: "700"
-    lineHeight: "1.2"
+    fontWeight: '700'
+    lineHeight: '1.2'
   heading:
     fontFamily: Be Vietnam Pro
     fontSize: 1.5rem
-    fontWeight: "600"
-    lineHeight: "1.3"
+    fontWeight: '600'
+    lineHeight: '1.3'
   body:
     fontFamily: Inter
     fontSize: 1rem
-    fontWeight: "400"
-    lineHeight: "1.5"
+    fontWeight: '400'
+    lineHeight: '1.5'
   body-sm:
     fontFamily: Inter
     fontSize: 0.875rem
-    fontWeight: "400"
-    lineHeight: "1.4"
+    fontWeight: '400'
+    lineHeight: '1.4'
   label:
     fontFamily: Inter
     fontSize: 0.75rem
-    fontWeight: "500"
-    lineHeight: "1.2"
+    fontWeight: '500'
+    lineHeight: '1.2'
 rounded:
   sm: 6px
   md: 8px
@@ -58,56 +60,56 @@ spacing:
   2xl: 48px
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.xl}"
+    backgroundColor: '{colors.primary}'
+    textColor: '{colors.on-primary}'
+    rounded: '{rounded.xl}'
     padding: 12px
   button-primary-hover:
-    backgroundColor: "{colors.primary-hover}"
+    backgroundColor: '{colors.primary-hover}'
   card-interactive:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.2xl}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-primary}'
+    rounded: '{rounded.2xl}'
     padding: 16px
   dialog-surface:
-    backgroundColor: "{colors.surface-elevated}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.2xl}"
+    backgroundColor: '{colors.surface-elevated}'
+    textColor: '{colors.text-primary}'
+    rounded: '{rounded.2xl}'
     padding: 24px
   badge-secondary:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-secondary}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-secondary}'
+    rounded: '{rounded.sm}'
     padding: 4px
   input-field:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.text-primary}"
-    rounded: "{rounded.lg}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.text-primary}'
+    rounded: '{rounded.lg}'
     padding: 12px
   input-field-focus:
-    backgroundColor: "{colors.focus}"
+    backgroundColor: '{colors.focus}'
   divider:
-    backgroundColor: "{colors.border}"
+    backgroundColor: '{colors.border}'
     height: 1px
   status-badge-success:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.success}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.success}'
+    rounded: '{rounded.sm}'
     padding: 4px
   status-badge-warning:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.warning}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.warning}'
+    rounded: '{rounded.sm}'
     padding: 4px
   status-badge-danger:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.danger}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.danger}'
+    rounded: '{rounded.sm}'
     padding: 4px
   status-badge-info:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.info}"
-    rounded: "{rounded.sm}"
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.info}'
+    rounded: '{rounded.sm}'
     padding: 4px
 ---
 
@@ -125,6 +127,7 @@ more accessible, and less dependent on decorative effects.
 ### Brand Invariants
 
 Mandatory:
+
 - Emerald + posters + logo + SplashScreen + Random Picker confetti are brand invariants.
 - Dark is flagship; light is complete.
 - Be Vietnam Pro is display; Inter is interface/body.
@@ -150,10 +153,19 @@ Semantic roles (CSS variables in `src/index.css`, exposed via Tailwind):
 - `background`, `surface`, `surface-elevated`
 - `text-primary`, `text-secondary`
 - `border`, `focus`
-- `primary`, `primary-hover`, `on-primary`
+- `primary`, `primary-hover`, `on-primary`, `on-success`, `on-danger`
 - `success`, `warning`, `danger`, `info`
 
+The YAML values above describe the flagship dark theme. Light mode overrides
+`primary-hover: #059669`, `secondary: #71717A`, and the foundation tokens with
+`background: #FAFAFA`, `surface: #FFFFFF`,
+`surface-elevated: #FFFFFF`, `text-primary: #09090B`, `text-secondary: #52525B`,
+`border: #E4E4E7`, `focus: #059669`, `success: #15803D`, `warning: #A16207`,
+`danger: #B91C1C`, `on-success: #FFFFFF`, `on-danger: #FFFFFF`, `info: #0369A1`,
+and `border-default: rgb(9 9 11 / 0.06)`.
+
 Rules:
+
 - Emerald is reserved for brand emphasis, the primary action, active state, meaningful
   selection, and approved brand moments. Do not decorate every icon or container emerald.
 - Dark uses neutral zinc-like foundations so posters and emerald lead.
@@ -174,8 +186,9 @@ Rules:
 ## Layout
 
 - Bounded spacing scale; page gutters and max content widths defined by layout classes.
-- Standard page container: `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`.
-- Poster grids: mobile 2 cols, tablet 3–4 cols, desktop 5+ cols; always `aspect-2/3`.
+- Standard page container: `max-w-7xl mx-auto px-4 md:px-6`.
+- Movie grids normally use 2 columns on mobile and 3–5 columns at larger widths;
+  the album catalog currently caps at 4 columns. Poster media uses `aspect-2/3`.
 - Use alignment and whitespace before container chrome.
 - Management screens optimize scanability; cinematic screens optimize imagery and breathing room.
 
@@ -212,8 +225,10 @@ Four levels:
 
 ## Shapes
 
-- Radius roles: controls `rounded-xl`, cards `rounded-2xl`, dialogs `rounded-2xl/3xl`.
-- Bounded radius scale defined in YAML tokens (`sm` to `3xl`).
+- Radius roles are CSS tokens: controls `rounded-control` (12px), cards
+  `rounded-card` (16px), and dialogs `rounded-dialog` (24px).
+- The YAML scale remains a planning vocabulary; implementation uses the named CSS
+  tokens above where a role has a shared contract.
 
 ## Components
 
@@ -221,8 +236,9 @@ Four levels:
 
 - Shared primitives require two real consumers or enforcement of a global contract
   (dialog accessibility, focus, motion, feedback semantics).
-- Approved shared layer: Button, IconButton, Surface, PageHeader, FormField, Dialog,
-  selection controls, Loading, EmptyState, ErrorState, SkeletonCard, Toast/Alert.
+- Approved shared layer: Button, IconButton, PageHeader, Dialog, Dropdown,
+  MultiSelectDropdown, DatePicker, TimePicker, Loading, EmptyState, ErrorState,
+  SkeletonCard, Toast/Alert.
 - Feature-specific components stay inside their feature.
 - Never create a large generic API merely to eliminate repeated class strings.
 - Keep rendering in components, behavior in hooks, remote calls in services,
@@ -231,10 +247,11 @@ Four levels:
 ### Dialogs and Overlays
 
 Presentations by task:
+
 - Short confirmation / focused action: centered dialog.
 - Quick mobile selection: bottom sheet below `sm`, centered at `sm` and above.
 - Complex forms (add/edit movie): fullscreen-mobile below `sm`, wide dialog above.
-- Share and Random Picker inherit the common foundation with content-appropriate presentation.
+- Random Picker inherits the common foundation with a content-appropriate presentation.
 
 The dialog foundation owns portal rendering, overlay, Escape handling, focus trapping,
 initial focus, scroll locking (single lock, layout-preserving), accessible naming
@@ -243,8 +260,8 @@ Nested overlays keep exactly one scroll lock and topmost-only keyboard handling.
 
 ### Forms and Controls
 
-- `FormField` owns label, hint, required state, and error relationship (`${id}-hint`,
-  `${id}-error`, `aria-describedby`, `aria-invalid`). Sentence case always.
+- Feature forms own label, hint, required state, and error relationships; each control
+  must expose the corresponding `aria-describedby` and `aria-invalid` state.
 - Triggers use `aria-haspopup="listbox"`, `aria-expanded`, `aria-controls`; options use
   `role="option"` + `aria-selected`. Arrow/Enter/Space/Escape fully keyboard operable.
 - Date/time pickers reuse the dialog focus lifecycle; nested opening must not break
@@ -262,15 +279,19 @@ Nested overlays keep exactly one scroll lock and topmost-only keyboard handling.
 ### Motion
 
 Token ranges:
+
 - fast: 120–150 ms (hover, press, focus, toggles).
 - standard: 180–220 ms (menus, ordinary transitions).
 - deliberate: 240–300 ms (dialogs, panels).
+- picker: 3150 ms (Random Picker selection choreography); its audio tail is 1950 ms.
 
 Rules:
+
 - Central contract in `src/constants/animations.ts`: `MOTION_DURATION`, `MOTION_EASING`,
   `OVERLAY_VARIANTS`, `DIALOG_VARIANTS`, `getMotionTransition`.
-- Components must not invent isolated springs or durations. Avoid `transition-all`;
-  transition only changed properties.
+- Shared primitives use the motion contract. Feature choreography may use a named local
+  duration when it represents progress or feedback timing, but must honor reduced motion.
+  Avoid `transition-all`; transition only changed properties.
 - No complete route/tab animation. Do not bounce or spring the active navigation item.
 - A modal receives one coordinated overlay and surface transition; it must not remount
   content repeatedly. If the recipe flickers, simplify or remove it.
@@ -279,6 +300,7 @@ Rules:
 ### Feedback and Application States
 
 Tiered hierarchy:
+
 - Small reversible update: inline state.
 - Ordinary async success: short neutral toast only when confirmation is otherwise unclear.
 - Recoverable failure: problem + actionable retry (`ErrorState`).
@@ -293,6 +315,7 @@ long copy, missing posters, abnormal data. No speculative business states.
 ### Accessibility
 
 Primary flows target WCAG 2.2 AA:
+
 - Visible global `focus-visible` treatment; never remove an outline without a replacement.
 - Keyboard access for all controls and cards; semantic buttons/links, no nested interactives.
 - Dialogs: role, name, modal semantics, trap, and restoration.
@@ -304,13 +327,15 @@ Primary flows target WCAG 2.2 AA:
 ### Brand Moments
 
 Splash:
-- Full splash on app start/reload; no splash on internal navigation or /share/:uid.
+
+- Full splash on app start/reload; no splash on internal navigation.
 - Play the full Lottie animation under normal conditions.
 - Asset failure: static brand frame + non-sensitive warning, never infinite block.
 - `prefers-reduced-motion`: static branded treatment, never forced animation.
 - Lazy loading must not change the approved artwork.
 
 Confetti:
+
 - Confetti only after Random Picker selection.
 - Never for create, update, delete, share, or toast success.
 - Lazy-load where practical; never block the selected result.
@@ -321,6 +346,7 @@ Splash and confetti assets are protected brand assets and are not deletion candi
 ### Decision Gates
 
 Implementation must pause for owner approval before:
+
 - Adding a UI, animation, accessibility, or test dependency.
 - Changing a route, feature, business rule, or user flow.
 - Changing splash or confetti artwork, or the approved splash/confetti triggers.
@@ -336,6 +362,7 @@ within platform limits. Glass requires a usable opaque fallback.
 ### Review Checklist
 
 Before releasing or merging changes, verify:
+
 - Scope and design-contract alignment; no unapproved expansion.
 - Visual hierarchy and brand preservation (emerald, posters, logo, Splash, confetti intact).
 - Component and API quality (naming, ownership, no `React.FC` in new code).
@@ -343,8 +370,6 @@ Before releasing or merging changes, verify:
 - Responsive behavior at 320, 375, 768, 1024, 1440 in dark and light themes.
 - Motion stability and performance (one transition, no remount, no layout shift).
 - State and edge-case coverage (loading, empty, error, offline, abnormal content).
-- Public share entry: /share/:uid bypasses auth and splash, handles invalid/disabled
-  links without leaking private data, retains CineMOB branding in both themes.
 - Documentation accuracy (`DESIGN.md` matches implementation).
 - Automated: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`.
 - Manual: mouse, keyboard, touch, reduced motion, browser/PWA matrix, modal lifecycle,
@@ -364,3 +389,4 @@ Don't: animate the overlay, route, child sections, and button simultaneously.
 
 Do: use natural Vietnamese sentence case.
 Don't: use 10px uppercase tracking-widest for ordinary field labels.
+```

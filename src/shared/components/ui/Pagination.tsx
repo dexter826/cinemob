@@ -93,7 +93,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
               aria-label={`Trang ${page}`}
               className={`min-w-10 h-10 px-3 rounded-control text-sm font-bold tabular-nums transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                  ? 'bg-primary text-on-primary shadow-lg shadow-primary/30'
                   : 'bg-surface border border-border-default text-text-primary hover:bg-primary/5 hover:border-primary/30'
               }`}
             >

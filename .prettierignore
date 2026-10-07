@@ -3,4 +3,5 @@ dev-dist
 functions
 node_modules
 .agents
+graphify-out
 package-lock.json

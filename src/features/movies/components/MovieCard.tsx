@@ -83,7 +83,7 @@ function MovieCard(props: MovieCardProps) {
               onClick={() => {
                 if (movie.docId) props.onDelete(movie.docId);
               }}
-              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
+              className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
               title="Xóa"
               aria-label="Xóa phim khỏi danh sách"
             >
@@ -94,7 +94,7 @@ function MovieCard(props: MovieCardProps) {
               <button
                 type="button"
                 onClick={() => props.onEdit(movie)}
-                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-primary text-white hover:text-on-primary rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
                 title="Sửa"
                 aria-label="Chỉnh sửa thông tin phim"
               >
@@ -106,7 +106,7 @@ function MovieCard(props: MovieCardProps) {
               <button
                 type="button"
                 onClick={() => props.onMarkAsWatched?.(movie)}
-                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
+                className="p-2 min-w-9 min-h-9 flex items-center justify-center bg-black/60 hover:bg-success text-white hover:text-on-success rounded-control transition-colors duration-200 border border-white/10 cursor-pointer"
                 title="Đã xem"
                 aria-label="Đánh dấu đã xem phim"
               >

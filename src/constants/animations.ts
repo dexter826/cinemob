@@ -4,6 +4,8 @@ export const MOTION_DURATION = {
   fast: 0.14,
   standard: 0.2,
   deliberate: 0.28,
+  picker: 3.15,
+  pickerAudioTail: 1.95,
 } as const;
 
 export const MOTION_EASING = {

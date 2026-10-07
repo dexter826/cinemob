@@ -195,7 +195,7 @@ function TimePicker({
                                 w-full py-1.5 text-sm rounded-lg transition-colors
                                 ${
                                   h === hours
-                                    ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
+                                    ? 'bg-primary text-on-primary font-bold shadow-md shadow-primary/20'
                                     : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}
@@ -220,7 +220,7 @@ function TimePicker({
                                 w-full py-1.5 text-sm rounded-lg transition-colors
                                 ${
                                   m === minutes
-                                    ? 'bg-primary text-white font-bold shadow-md shadow-primary/20'
+                                    ? 'bg-primary text-on-primary font-bold shadow-md shadow-primary/20'
                                     : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}

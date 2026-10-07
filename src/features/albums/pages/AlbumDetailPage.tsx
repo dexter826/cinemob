@@ -137,7 +137,7 @@ function AlbumDetailPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-white font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-on-primary font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>

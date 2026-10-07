@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { X } from 'lucide-react';
 import { DIALOG_VARIANTS, OVERLAY_VARIANTS, getMotionTransition } from '@/constants/animations';
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap';
 import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
@@ -160,9 +161,7 @@ export function DialogHeader({
             aria-label="Đóng hộp thoại"
             className="inline-flex w-9 h-9 items-center justify-center rounded-control text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer shrink-0"
           >
-            <span aria-hidden="true" className="text-lg leading-none">
-              ×
-            </span>
+            <X size={18} strokeWidth={1.8} aria-hidden="true" />
           </button>
         )}
       </div>

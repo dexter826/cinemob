@@ -222,7 +222,7 @@ function Dropdown({
                   type="button"
                   onClick={() => handleSelect(option)}
                   onKeyDown={handleNavigationKey}
-                  className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-white font-bold shadow-lg shadow-primary/20' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
+                  className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold shadow-lg shadow-primary/20' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
                   role="option"
                   aria-selected={option.value === value}
                 >

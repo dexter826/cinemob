@@ -101,7 +101,7 @@ export function PersonMovieSection({
               onShowFiltersChange(!showFilters);
             }}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-white' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
+            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
           >
             <Filter size={20} aria-hidden="true" />
           </button>
@@ -116,13 +116,13 @@ export function PersonMovieSection({
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>

@@ -41,8 +41,8 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
           {status && (
             <div
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold text-white ${
-                status === 'history' ? 'bg-success' : 'bg-primary'
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold ${
+                status === 'history' ? 'bg-success text-on-success' : 'bg-primary text-on-primary'
               }`}
             >
               <Bookmark size={10} className="fill-white" strokeWidth={1.5} aria-hidden="true" />
@@ -72,7 +72,7 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
             type="button"
             onClick={() => onRemove(movie)}
             aria-label={`Bỏ qua gợi ý ${mainTitle}`}
-            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-danger text-white rounded-lg border border-white/10 transition-colors cursor-pointer"
+            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-lg border border-white/10 transition-colors cursor-pointer"
             title="Không quan tâm"
           >
             <X size={14} strokeWidth={1.5} aria-hidden="true" />

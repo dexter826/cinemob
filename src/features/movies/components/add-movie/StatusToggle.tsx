@@ -35,7 +35,7 @@ function StatusToggle({ status, setStatus }: StatusToggleProps) {
         onClick={() => setStatus('history')}
         className={`flex-1 py-2.5 text-xs font-bold transition-colors rounded-control cursor-pointer ${
           status === 'history'
-            ? 'bg-primary text-white'
+            ? 'bg-primary text-on-primary'
             : 'text-text-secondary hover:text-text-primary'
         }`}
       >
@@ -50,7 +50,7 @@ function StatusToggle({ status, setStatus }: StatusToggleProps) {
         onClick={() => setStatus('watchlist')}
         className={`flex-1 py-2.5 text-xs font-bold transition-colors rounded-control cursor-pointer ${
           status === 'watchlist'
-            ? 'bg-primary text-white'
+            ? 'bg-primary text-on-primary'
             : 'text-text-secondary hover:text-text-primary'
         }`}
       >

@@ -279,7 +279,7 @@ function OwnProfileEditor({
                 {crop.isDragOverAvatar && (
                   <span
                     aria-hidden="true"
-                    className="absolute inset-0 flex items-center justify-center bg-primary/85 text-white"
+                    className="absolute inset-0 flex items-center justify-center bg-primary/85 text-on-primary"
                   >
                     <Upload size={26} />
                   </span>

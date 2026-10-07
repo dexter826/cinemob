@@ -146,7 +146,7 @@ function SearchResults({
                     <button
                       type="button"
                       onClick={() => refreshRecommendations(userId, true)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-primary text-on-primary hover:bg-primary/80 transition-colors cursor-pointer"
                     >
                       <RotateCcw size={14} aria-hidden="true" />
                       <span>Thử lại</span>

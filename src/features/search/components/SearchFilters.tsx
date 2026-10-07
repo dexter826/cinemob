@@ -204,7 +204,7 @@ function SearchFilters({
           <button
             onClick={handleSearch}
             aria-label="Tìm kiếm phim"
-            className="bg-primary text-white px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer"
+            className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20 cursor-pointer"
           >
             Tìm
           </button>

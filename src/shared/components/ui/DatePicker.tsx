@@ -326,7 +326,7 @@ function DatePicker({
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-primary font-medium' : ''}
                                 ${isDisabled ? 'text-text-secondary/20 cursor-not-allowed' : ''}
                                 ${isTodayDate && !isSelectedDate ? 'border border-primary/50 text-primary font-bold' : ''}
-                                ${isSelectedDate ? 'bg-primary text-white font-bold shadow-lg shadow-primary/30 scale-110' : ''}
+                                ${isSelectedDate ? 'bg-primary text-on-primary font-bold shadow-lg shadow-primary/30 scale-110' : ''}
                             `}
             >
               {item.day}

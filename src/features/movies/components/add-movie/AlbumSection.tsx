@@ -84,7 +84,7 @@ function AlbumSection({
             type="button"
             onClick={handleCreateAlbum}
             disabled={creatingAlbum || !newAlbumName.trim()}
-            className="px-5 py-2.5 bg-primary text-white rounded-control text-sm font-bold hover:shadow-premium disabled:opacity-40 transition-colors shadow-lg shadow-primary/20"
+            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-sm font-bold hover:shadow-premium disabled:opacity-40 transition-colors shadow-lg shadow-primary/20"
           >
             {creatingAlbum ? (
               <Loader2 size={18} className="animate-spin" aria-hidden="true" />

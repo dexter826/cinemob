@@ -73,7 +73,7 @@ function ReleaseCalendarPage() {
                 onClick={() => setViewMode('calendar')}
                 className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
                   viewMode === 'calendar'
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-on-primary'
                     : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -88,7 +88,7 @@ function ReleaseCalendarPage() {
                 onClick={() => setViewMode('list')}
                 className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
                   viewMode === 'list'
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-on-primary'
                     : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                 } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -106,7 +106,7 @@ function ReleaseCalendarPage() {
               }
               className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
                 pushStatus === 'on'
-                  ? 'bg-success text-white'
+                  ? 'bg-success text-on-success'
                   : pushStatus === 'blocked'
                     ? 'bg-danger/10 text-danger border border-danger/20 cursor-not-allowed'
                     : 'bg-surface border border-border text-text-primary hover:border-primary/30'

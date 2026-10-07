@@ -1,10 +1,26 @@
-import { deleteField, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  collection,
+  deleteField,
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { normalizeDate } from '@/shared/utils/dateFormat';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
 // Collection Firestore của hồ sơ thành viên.
 export const MEMBER_PROFILE_COLLECTION = 'member_profiles';
+
+export interface PublicProfileSummary {
+  uid: string;
+  displayName: string;
+  photoURL?: string;
+  email?: string;
+  totalCount: number;
+}
 
 export const BIO_MAX_LENGTH = 300;
 export const GENDER_OPTIONS = ['male', 'female', 'other'] as const;
@@ -23,6 +39,35 @@ export const validateDob = (raw: string): string | undefined => {
 // Cache hồ sơ theo uid 5 phút để mở lại trang cá nhân hiện ngay.
 const PROFILE_CACHE_TTL = 5 * 60 * 1000;
 const profileDocCache = new Map<string, { data: MemberProfile | null; at: number }>();
+
+const PUBLIC_PROFILE_CACHE_TTL = 5 * 60 * 1000;
+let publicProfileCache: { profiles: PublicProfileSummary[]; fetchedAt: number } | null = null;
+
+// Fetch một lần mỗi phiên, cache 5 phút.
+export const fetchPublicProfiles = async (): Promise<PublicProfileSummary[]> => {
+  if (publicProfileCache && Date.now() - publicProfileCache.fetchedAt < PUBLIC_PROFILE_CACHE_TTL) {
+    return publicProfileCache.profiles;
+  }
+  const snap = await getDocs(collection(db, MEMBER_PROFILE_COLLECTION));
+  const profiles = snap.docs
+    .map((d) => {
+      const data = d.data() as Partial<MemberProfile>;
+      return {
+        uid: d.id,
+        displayName: typeof data.displayName === 'string' ? data.displayName : '',
+        photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
+        email: typeof data.email === 'string' ? data.email : undefined,
+        totalCount: typeof data.totalCount === 'number' ? data.totalCount : 0,
+      };
+    })
+    .filter((profile) => profile.displayName.length > 0);
+  publicProfileCache = { profiles, fetchedAt: Date.now() };
+  return profiles;
+};
+
+export const clearPublicProfileCache = (): void => {
+  publicProfileCache = null;
+};
 
 // Ghi xong phải gọi để lần đọc sau luôn lấy dữ liệu mới.
 export const clearMemberProfileCache = (uid?: string): void => {

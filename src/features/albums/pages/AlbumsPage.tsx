@@ -104,7 +104,7 @@ function AlbumsPage() {
           <button
             type="submit"
             disabled={creating}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-white text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-on-primary text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
           >
             <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
             <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>
@@ -181,7 +181,7 @@ function AlbumsPage() {
                 type="button"
                 aria-label={`Xóa album ${album.name}`}
                 onClick={() => handleDelete(album)}
-                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-control bg-black/60 text-white hover:bg-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-control bg-black/60 text-white hover:bg-danger hover:text-on-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
               >
                 <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
               </button>
