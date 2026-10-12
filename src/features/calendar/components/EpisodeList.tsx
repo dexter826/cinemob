@@ -1,10 +1,12 @@
 import { Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
-import { formatDateDMY } from '@/shared/utils/dateFormat';
+import { formatDateDMY, todayISO } from '@/shared/utils/dateFormat';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 
 interface EpisodeListProps {
-  viewMode: 'calendar' | 'list';
+  currentDate: Date;
+  episodesError: string | null;
+  retryEpisodes: () => void;
   selectedDate: Date | null;
   setSelectedDate: (date: Date | null) => void;
   loadingEpisodes: boolean;
@@ -13,9 +15,11 @@ interface EpisodeListProps {
   handleSeriesClick: (episode: UpcomingEpisode) => void;
 }
 
-/** Hiển thị danh sách tập phim sắp phát sóng theo ngày hoặc toàn bộ. */
+/** Hiển thị chi tiết tập phim trong tháng hoặc ngày đang chọn. */
 function EpisodeList({
-  viewMode,
+  currentDate,
+  episodesError,
+  retryEpisodes,
   selectedDate,
   setSelectedDate,
   loadingEpisodes,
@@ -23,8 +27,12 @@ function EpisodeList({
   episodesByDate,
   handleSeriesClick,
 }: EpisodeListProps) {
+  const today = todayISO();
+  const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+  const monthTitle = `Tháng ${String(currentDate.getMonth() + 1).padStart(2, '0')}/${currentDate.getFullYear()}`;
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('vi-VN', {
       weekday: 'long',
       year: 'numeric',
@@ -34,25 +42,20 @@ function EpisodeList({
   };
 
   return (
-    <div
-      className={
-        viewMode === 'calendar' ? 'lg:col-span-1 lg:max-h-[880px] flex flex-col' : 'lg:col-span-3'
-      }
-    >
-      <div
-        className={`bg-surface border border-border rounded-dialog p-4 sm:p-6 flex flex-col h-full min-h-[400px] ${viewMode === 'calendar' ? 'lg:max-h-[880px] lg:min-h-[880px]' : 'lg:min-h-[600px]'}`}
-      >
+    <div className="lg:col-span-1 lg:max-h-[880px] flex flex-col min-w-0">
+      <div className="bg-surface border border-border rounded-dialog p-4 sm:p-6 flex flex-col h-full min-h-[400px] lg:max-h-[880px] lg:min-h-[880px]">
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
           <h2 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
-            {selectedDate ? `Ngày ${formatDateDMY(selectedDate)}` : 'Sắp chiếu'}
+            {selectedDate ? `Ngày ${formatDateDMY(selectedDate)}` : monthTitle}
           </h2>
           {selectedDate && (
             <button
               onClick={() => setSelectedDate(null)}
-              aria-label="Xem tất cả các tập sắp phát sóng"
+              type="button"
+              aria-label="Xem cả tháng"
               className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-control border border-primary/20 hover:bg-primary/20 transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
-              Tất cả
+              Xem cả tháng
             </button>
           )}
         </div>
@@ -72,13 +75,30 @@ function EpisodeList({
               </div>
             ))}
           </div>
+        ) : episodesError ? (
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 py-12 text-center">
+            <p role="alert" className="text-text-secondary text-sm">
+              {episodesError}
+            </p>
+            <button
+              type="button"
+              onClick={retryEpisodes}
+              className="px-4 py-2 rounded-control bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20"
+            >
+              Thử lại
+            </button>
+          </div>
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-card flex items-center justify-center mb-4 border border-border-default opacity-40">
               <Info size={32} className="text-text-secondary" aria-hidden="true" />
             </div>
             <p className="text-text-secondary font-semibold text-xs">
-              {selectedDate ? 'Không có tập phim nào' : 'Chưa có lịch phát sóng'}
+              {selectedDate
+                ? 'Không có tập phim nào trong ngày này'
+                : monthKey > today.slice(0, 7)
+                  ? 'Chưa có lịch phát sóng được công bố cho tháng này'
+                  : 'Không có tập phim phát sóng trong tháng này'}
             </p>
           </div>
         ) : (
@@ -127,6 +147,13 @@ function EpisodeList({
                         </div>
                         <p className="text-xs font-medium text-text-secondary truncate mt-1.5 italic">
                           {ep.episode.name || `Tập ${ep.episode.episode_number}`}
+                        </p>
+                        <p className="text-xs text-text-secondary mt-1.5">
+                          {date < today
+                            ? 'Đã phát sóng'
+                            : date === today
+                              ? 'Hôm nay'
+                              : 'Sắp phát sóng'}
                         </p>
                       </div>
                       <div className="self-center pl-1 sm:pl-2" aria-hidden="true">

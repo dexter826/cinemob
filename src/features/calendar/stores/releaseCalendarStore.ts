@@ -1,52 +1,58 @@
 import { create } from 'zustand';
 import { Movie, UpcomingEpisode } from '@/types';
-import { fetchUpcomingEpisodesForMovies } from '../services/calendarService';
+import { fetchEpisodesForMonth } from '../services/calendarService';
 
 interface ReleaseCalendarState {
   movies: Movie[];
-  upcomingEpisodes: UpcomingEpisode[];
+  monthEpisodes: UpcomingEpisode[];
+  monthKey: string | null;
+  userId: string | null;
   loading: boolean;
   loadingEpisodes: boolean;
-  hasFetchedInitial: boolean;
+  episodesError: string | null;
   setMovies: (movies: Movie[]) => void;
-  setUpcomingEpisodes: (episodes: UpcomingEpisode[]) => void;
   setLoading: (loading: boolean) => void;
-  setLoadingEpisodes: (loading: boolean) => void;
-  setHasFetchedInitial: (fetched: boolean) => void;
   initializeForUser: (userId: string) => void;
-  fetchUpcomingEpisodes: (userId: string, movies: Movie[]) => Promise<void>;
+  cancelMonthRequest: () => void;
+  fetchMonthEpisodes: (userId: string, movies: Movie[], monthKey: string) => Promise<void>;
 }
 
 // Quản lý trạng thái lịch phát sóng tập phim mới.
 let calendarRequestId = 0;
 const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
   movies: [],
-  upcomingEpisodes: [],
+  monthEpisodes: [],
+  monthKey: null,
+  userId: null,
   loading: true,
   loadingEpisodes: false,
-  hasFetchedInitial: false,
+  episodesError: null,
   setMovies: (movies) => set({ movies }),
-  setUpcomingEpisodes: (episodes) => set({ upcomingEpisodes: episodes }),
   setLoading: (loading) => set({ loading }),
-  setLoadingEpisodes: (loading) => set({ loadingEpisodes: loading }),
-  setHasFetchedInitial: (fetched) => set({ hasFetchedInitial: fetched }),
-  initializeForUser: () => {
+  initializeForUser: (userId) => {
+    calendarRequestId++;
     set({
-      movies: [],
-      upcomingEpisodes: [],
-      loading: true,
+      userId,
+      monthEpisodes: [],
+      monthKey: null,
       loadingEpisodes: false,
-      hasFetchedInitial: false,
+      episodesError: null,
     });
   },
-  fetchUpcomingEpisodes: async (userId: string, movies: Movie[]) => {
+  cancelMonthRequest: () => {
+    calendarRequestId++;
+  },
+  fetchMonthEpisodes: async (userId, movies, monthKey) => {
     const requestId = ++calendarRequestId;
-    set({ loadingEpisodes: true });
+    set({ userId, monthKey, monthEpisodes: [], episodesError: null, loadingEpisodes: true });
     try {
-      const episodes = await fetchUpcomingEpisodesForMovies(userId, movies);
-      if (requestId === calendarRequestId) set({ upcomingEpisodes: episodes });
-    } catch (error) {
-      console.error('Failed to fetch upcoming episodes:', error);
+      const episodes =
+        movies.length === 0 ? [] : await fetchEpisodesForMonth(userId, movies, monthKey);
+      if (requestId === calendarRequestId) set({ monthEpisodes: episodes });
+    } catch {
+      if (requestId === calendarRequestId) {
+        set({ episodesError: 'Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại.' });
+      }
     } finally {
       if (requestId === calendarRequestId) set({ loadingEpisodes: false });
     }

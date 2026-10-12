@@ -1,12 +1,11 @@
 import { Movie, UpcomingEpisode } from '@/types';
 import {
-  getTVShowUpcomingEpisodes,
+  getTVShowEpisodesInRange,
   getMovieDetailsWithLanguage,
   withLimit,
 } from '@/features/search/services/tmdb';
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
-const CACHE_VERSION = 4;
 
 const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
@@ -26,95 +25,74 @@ export const createCalendarFingerprint = (movies: Movie[]): string =>
       .sort((a, b) => a.id.localeCompare(b.id) || a.docId.localeCompare(b.docId)),
   );
 
-// Tải lịch chiếu tập mới từ TMDB kèm bộ nhớ tạm.
-export const fetchUpcomingEpisodesForMovies = async (
+export const fetchEpisodesForMonth = async (
   userId: string,
   movies: Movie[],
+  monthKey: string,
 ): Promise<UpcomingEpisode[]> => {
-  const tvSeries = movies.filter((m) => m.media_type === 'tv' && m.source === 'tmdb');
+  const tvSeries = movies.filter((movie) => movie.media_type === 'tv' && movie.source === 'tmdb');
+  if (tvSeries.length === 0) return [];
 
-  if (tvSeries.length === 0) {
-    return [];
-  }
-
-  const cacheKey = `upcoming_episodes_v4_${userId}`;
   const fingerprint = createCalendarFingerprint(tvSeries);
-  const cachedData = localStorage.getItem(cacheKey);
-
-  if (cachedData) {
-    try {
-      const parsedCache: unknown = JSON.parse(cachedData);
-      if (
-        typeof parsedCache === 'object' &&
-        parsedCache !== null &&
-        (parsedCache as { version?: unknown }).version === CACHE_VERSION &&
-        (parsedCache as { fingerprint?: unknown }).fingerprint === fingerprint &&
-        typeof (parsedCache as { timestamp?: unknown }).timestamp === 'number' &&
-        !isExpired((parsedCache as { timestamp: number }).timestamp, CACHE_DURATION) &&
-        Array.isArray((parsedCache as { data?: unknown }).data)
-      ) {
-        return (parsedCache as { data: UpcomingEpisode[] }).data;
-      }
-    } catch {
-      try {
-        localStorage.removeItem(cacheKey);
-      } catch {
-        /* quota/bị chặn: bỏ qua */
-      }
+  const cacheKey = `calendar_month_v1_${userId}_${monthKey}`;
+  try {
+    const cached = JSON.parse(localStorage.getItem(cacheKey) ?? 'null') as {
+      fingerprint?: string;
+      timestamp?: number;
+      data?: UpcomingEpisode[];
+    } | null;
+    if (
+      cached?.fingerprint === fingerprint &&
+      typeof cached.timestamp === 'number' &&
+      !isExpired(cached.timestamp, CACHE_DURATION) &&
+      Array.isArray(cached.data)
+    ) {
+      return cached.data;
     }
+  } catch {
+    // Cache lỗi hoặc storage bị chặn: tiếp tục tải từ TMDB.
   }
 
-  const tasks = tvSeries.map((series) => async () => {
-    try {
+  const [year, month] = monthKey.split('-').map(Number);
+  const startDate = `${monthKey}-01`;
+  const endDate = `${monthKey}-${new Date(year, month, 0).getDate()}`;
+  const results = await withLimit(
+    tvSeries.map((series) => async () => {
       const tvId = Number(series.id);
-      if (!Number.isFinite(tvId)) return [];
-      const episodes = await getTVShowUpcomingEpisodes(tvId);
-
+      if (!Number.isFinite(tvId)) throw new Error('Series không có TMDB ID hợp lệ');
+      const episodes = await getTVShowEpisodesInRange(tvId, startDate, endDate);
       let seriesNameVi = series.title_vi;
       if (!seriesNameVi) {
-        const viDetails = await getMovieDetailsWithLanguage(tvId, 'tv', 'vi-VN');
-        seriesNameVi = viDetails?.name;
+        try {
+          seriesNameVi = (await getMovieDetailsWithLanguage(tvId, 'tv', 'vi-VN'))?.name;
+        } catch {
+          // Tên dịch không ảnh hưởng đến dữ liệu lịch phát sóng.
+        }
       }
-
-      const upcomingForSeries: UpcomingEpisode[] = episodes.map((ep) => ({
+      return episodes.map((episode) => ({
         seriesId: tvId,
         seriesName: series.title,
-        seriesNameVi: seriesNameVi,
+        seriesNameVi,
         posterPath: series.poster_path,
-        episode: ep,
+        episode,
         docId: series.docId,
       }));
-
-      return upcomingForSeries;
-    } catch (error) {
-      console.error(`Failed to fetch episodes for seriesId=${series.id}:`, error);
-      return [];
-    }
-  });
-
-  const results = await withLimit(tasks, 5);
-  const allUpcoming: UpcomingEpisode[] = [];
-  results.forEach((res) => {
-    if (res) allUpcoming.push(...res);
-  });
-
-  allUpcoming.sort(
-    (a, b) => new Date(a.episode.air_date).getTime() - new Date(b.episode.air_date).getTime(),
+    }),
+    2,
   );
-
+  if (results.some((result) => result === null)) {
+    throw new Error('Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại.');
+  }
+  const episodes = results
+    .flatMap((result) => result ?? [])
+    .sort((a, b) => a.episode.air_date.localeCompare(b.episode.air_date));
   try {
     localStorage.setItem(
       cacheKey,
-      JSON.stringify({
-        data: allUpcoming,
-        version: CACHE_VERSION,
-        fingerprint,
-        timestamp: Date.now(),
-      }),
+      JSON.stringify({ fingerprint, timestamp: Date.now(), data: episodes }),
     );
   } catch {
-    // QuotaExceededError Safari PWA: bỏ qua cache, vẫn trả dữ liệu.
+    // Storage bị chặn hoặc hết dung lượng: vẫn trả dữ liệu đã tải.
   }
-
-  return allUpcoming;
+  return episodes;
 };

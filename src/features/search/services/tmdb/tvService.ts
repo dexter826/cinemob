@@ -166,6 +166,44 @@ export const getTVShowUpcomingEpisodes = async (
   );
 };
 
+// Đọc cả lịch sử và lịch đã công bố trong khoảng ngày của lịch tháng.
+export const getTVShowEpisodesInRange = async (
+  tvId: number,
+  startDate: string,
+  endDate: string,
+  signal?: AbortSignal,
+): Promise<TMDBEpisode[]> => {
+  const details = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
+  if (!details || details.number_of_seasons === undefined) {
+    throw new Error('Không thể tải thông tin series');
+  }
+
+  const tasks = Array.from({ length: details.number_of_seasons }, (_, index) => async () => {
+    const season = await tmdbFetch<TVSeasonEpisodesResponse>(
+      `tv/${tvId}/season/${index + 1}`,
+      {},
+      decodeTVSeasonEpisodes,
+      signal,
+    );
+    if (!season?.episodes) throw new Error('Không thể tải lịch mùa phim');
+    return season.episodes;
+  });
+  const seasons = await withLimit(tasks, 3);
+  if (seasons.some((season) => season === null)) {
+    throw new Error('Không thể tải đầy đủ lịch phát sóng');
+  }
+
+  return seasons
+    .flatMap((season) => season ?? [])
+    .filter((episode) => episode.air_date >= startDate && episode.air_date <= endDate)
+    .map((episode) => ({
+      ...episode,
+      vote_average: episode.vote_average ?? 0,
+      runtime: episode.runtime ?? undefined,
+    }))
+    .sort((a, b) => a.air_date.localeCompare(b.air_date));
+};
+
 // Lấy thông tin tập phim tiếp theo.
 export const getTVShowNextEpisode = async (
   tvId: number,

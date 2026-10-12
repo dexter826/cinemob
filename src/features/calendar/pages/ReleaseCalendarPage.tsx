@@ -1,5 +1,6 @@
 import EmptyState from '@/shared/components/ui/EmptyState';
-import { Tv, Bell, BellOff, BellRing, Calendar, List } from 'lucide-react';
+import { Tv, Bell, BellOff, BellRing } from 'lucide-react';
+import { todayISO } from '@/shared/utils/dateFormat';
 
 import { useReleaseCalendar } from '../hooks/useReleaseCalendar';
 import CalendarStats from '../components/CalendarStats';
@@ -33,12 +34,12 @@ function ReleaseCalendarPage() {
     loading,
     loadingEpisodes,
     tvSeries,
-    upcomingEpisodes,
+    monthEpisodes,
     currentDate,
     selectedDate,
     setSelectedDate,
-    viewMode,
-    setViewMode,
+    episodesError,
+    retryEpisodes,
     pushLoading,
     pushSubscribed,
     notificationPermission,
@@ -52,6 +53,7 @@ function ReleaseCalendarPage() {
   } = useReleaseCalendar();
 
   const pushStatus = getPushStatus(pushLoading, pushSubscribed, notificationPermission);
+  const today = todayISO();
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -60,43 +62,6 @@ function ReleaseCalendarPage() {
         className="flex-col sm:flex-row items-stretch sm:items-center"
         actions={
           <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-            <div
-              role="group"
-              aria-label="Chế độ hiển thị lịch chiếu"
-              className="bg-surface border border-border p-1 rounded-card flex items-center"
-            >
-              <button
-                type="button"
-                disabled={loading}
-                aria-pressed={viewMode === 'calendar'}
-                aria-label="Xem theo lịch tháng"
-                onClick={() => setViewMode('calendar')}
-                className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
-                  viewMode === 'calendar'
-                    ? 'bg-primary text-on-primary'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
-                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <Calendar size={14} strokeWidth={1.5} aria-hidden="true" />
-                <span>Lịch</span>
-              </button>
-              <button
-                type="button"
-                disabled={loading}
-                aria-pressed={viewMode === 'list'}
-                aria-label="Xem theo danh sách"
-                onClick={() => setViewMode('list')}
-                className={`p-2 sm:p-2.5 rounded-control transition-colors flex items-center gap-2 font-semibold text-xs cursor-pointer ${
-                  viewMode === 'list'
-                    ? 'bg-primary text-on-primary'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
-                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <List size={14} strokeWidth={1.5} aria-hidden="true" />
-                <span>Danh sách</span>
-              </button>
-            </div>
-
             <button
               onClick={handlePushToggle}
               disabled={pushLoading || loading}
@@ -141,15 +106,10 @@ function ReleaseCalendarPage() {
         <>
           <CalendarStats
             tvSeriesCount={tvSeries.length}
-            upcomingEpisodesCount={upcomingEpisodes.length}
-            todayEpisodesCount={getEpisodesForDate(new Date()).length}
-            thisWeekEpisodesCount={
-              upcomingEpisodes.filter((ep) => {
-                const airDate = new Date(ep.episode.air_date);
-                const weekFromNow = new Date();
-                weekFromNow.setDate(weekFromNow.getDate() + 7);
-                return airDate <= weekFromNow;
-              }).length
+            monthEpisodesCount={monthEpisodes.length}
+            airedEpisodesCount={monthEpisodes.filter((ep) => ep.episode.air_date < today).length}
+            upcomingEpisodesCount={
+              monthEpisodes.filter((ep) => ep.episode.air_date >= today).length
             }
           />
 
@@ -162,20 +122,20 @@ function ReleaseCalendarPage() {
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {viewMode === 'calendar' && (
-                <CalendarGrid
-                  currentDate={currentDate}
-                  navigateMonth={navigateMonth}
-                  goToToday={goToToday}
-                  loadingEpisodes={loadingEpisodes}
-                  getEpisodesForDate={getEpisodesForDate}
-                  setSelectedDate={setSelectedDate}
-                  selectedDate={selectedDate}
-                />
-              )}
+              <CalendarGrid
+                currentDate={currentDate}
+                navigateMonth={navigateMonth}
+                goToToday={goToToday}
+                loadingEpisodes={loadingEpisodes}
+                getEpisodesForDate={getEpisodesForDate}
+                setSelectedDate={setSelectedDate}
+                selectedDate={selectedDate}
+              />
 
               <EpisodeList
-                viewMode={viewMode}
+                currentDate={currentDate}
+                episodesError={episodesError}
+                retryEpisodes={retryEpisodes}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 loadingEpisodes={loadingEpisodes}

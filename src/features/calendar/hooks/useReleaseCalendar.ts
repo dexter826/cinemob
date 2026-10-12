@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/app/providers/AuthProvider';
 import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
+import useMovieStore from '@/features/movies/stores/movieStore';
 import useReleaseCalendarStore from '../stores/releaseCalendarStore';
 import useAlertStore from '@/shared/stores/alertStore';
 import useToastStore from '@/shared/stores/toastStore';
@@ -19,7 +21,7 @@ const formatDateParam = (date: Date): string =>
   ).padStart(2, '0')}`;
 
 const parseDateParam = (value: string | null): Date | null => {
-  if (!value) return null;
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const [y, m, d] = value.split('-').map(Number);
   if (!y || !m || !d) return null;
   const date = new Date(y, m - 1, d);
@@ -31,24 +33,64 @@ const parseDateParam = (value: string | null): Date | null => {
 
 // Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
+  const { user } = useAuth();
+  const userId = user?.uid;
   const { openDetailModal } = useMovieDetailStore();
-  const { movies, upcomingEpisodes, loading, loadingEpisodes } = useReleaseCalendarStore();
+  const {
+    movies,
+    monthEpisodes: storedEpisodes,
+    monthKey: loadedMonthKey,
+    userId: loadedUserId,
+    loading,
+    loadingEpisodes: fetchingEpisodes,
+    episodesError: storedError,
+    fetchMonthEpisodes,
+    cancelMonthRequest,
+    initializeForUser,
+  } = useReleaseCalendarStore();
   const { showAlert } = useAlertStore();
   const { showToast } = useToastStore();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Khởi tạo từ URL để chia sẻ được đúng tháng, ngày và chế độ xem.
-  const [currentDate, setCurrentDate] = useState<Date>(
-    () =>
-      parseDateParam(searchParams.get('month') ? `${searchParams.get('month')}-01` : null) ??
-      new Date(),
+  const monthParam = searchParams.get('month');
+  const dateParam = searchParams.get('date');
+  const currentDate = useMemo(
+    () => parseDateParam(monthParam ? `${monthParam}-01` : null) ?? new Date(),
+    [monthParam],
   );
-  const [selectedDate, setSelectedDateState] = useState<Date | null>(() =>
-    parseDateParam(searchParams.get('date')),
+  const monthKey = formatDateParam(currentDate).slice(0, 7);
+  const selectedDate = useMemo(() => {
+    const date = parseDateParam(dateParam);
+    return date && formatDateParam(date).startsWith(monthKey) ? date : null;
+  }, [dateParam, monthKey]);
+  const matchesScope = loadedMonthKey === monthKey && loadedUserId === userId;
+  const monthEpisodes = useMemo(
+    () => (matchesScope ? storedEpisodes : []),
+    [matchesScope, storedEpisodes],
   );
-  const [viewMode, setViewModeState] = useState<'calendar' | 'list'>(() =>
-    searchParams.get('view') === 'list' ? 'list' : 'calendar',
-  );
+  const loadingEpisodes = fetchingEpisodes || (!loading && !!userId && !matchesScope);
+  const episodesError = matchesScope ? storedError : null;
+
+  useEffect(() => {
+    initializeForUser(userId ?? '');
+    if (!userId || loading) return;
+    const movieState = useMovieStore.getState();
+    if (movieState.activeUid !== userId || movieState.loading) return;
+    void fetchMonthEpisodes(userId, movies, monthKey);
+    return cancelMonthRequest;
+  }, [
+    userId,
+    loading,
+    movies,
+    monthKey,
+    fetchMonthEpisodes,
+    cancelMonthRequest,
+    initializeForUser,
+  ]);
+
+  const retryEpisodes = () => {
+    if (userId) void fetchMonthEpisodes(userId, movies, monthKey);
+  };
 
   const [pushSupported, setPushSupported] = useState(false);
   const [pushSubscribed, setPushSubscribed] = useState(false);
@@ -119,6 +161,7 @@ export const useReleaseCalendar = () => {
     (mutate: (params: URLSearchParams) => void, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
+        params.delete('view');
         mutate(params);
         return params;
       }, options);
@@ -127,53 +170,41 @@ export const useReleaseCalendar = () => {
   );
 
   const navigateMonth = (direction: 'prev' | 'next') => {
-    const projected = new Date(currentDate);
-    projected.setMonth(projected.getMonth() + (direction === 'prev' ? -1 : 1));
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
-      newDate.setMonth(newDate.getMonth() + (direction === 'prev' ? -1 : 1));
-      return newDate;
-    });
+    const projected = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + (direction === 'prev' ? -1 : 1),
+      1,
+    );
     mutateParams((params) => {
       params.set(
         'month',
         `${projected.getFullYear()}-${String(projected.getMonth() + 1).padStart(2, '0')}`,
       );
+      params.delete('date');
     });
   };
 
   const goToToday = () => {
     const today = new Date();
-    setCurrentDate(today);
-    setSelectedDateState(today);
     mutateParams((params) => {
-      params.delete('month');
+      params.set('month', formatDateParam(today).slice(0, 7));
       params.set('date', formatDateParam(today));
     });
   };
 
   const setSelectedDate = (date: Date | null) => {
-    setSelectedDateState(date);
     mutateParams((params) => {
       if (date) params.set('date', formatDateParam(date));
       else params.delete('date');
     });
   };
 
-  const setViewMode = (mode: 'calendar' | 'list') => {
-    setViewModeState(mode);
-    mutateParams((params) => {
-      if (mode === 'list') params.set('view', mode);
-      else params.delete('view');
-    });
-  };
-
   const getEpisodesForDate = useCallback(
     (date: Date) => {
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      return upcomingEpisodes.filter((ep) => ep.episode.air_date === dateStr);
+      return monthEpisodes.filter((ep) => ep.episode.air_date === dateStr);
     },
-    [upcomingEpisodes],
+    [monthEpisodes],
   );
 
   const displayedEpisodes = useMemo(() => {
@@ -181,16 +212,8 @@ export const useReleaseCalendar = () => {
       return getEpisodesForDate(selectedDate);
     }
 
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const thirtyDaysLater = new Date();
-    thirtyDaysLater.setDate(now.getDate() + 30);
-
-    return upcomingEpisodes.filter((ep) => {
-      const airDate = new Date(ep.episode.air_date);
-      return airDate >= now && airDate <= thirtyDaysLater;
-    });
-  }, [selectedDate, upcomingEpisodes, getEpisodesForDate]);
+    return monthEpisodes;
+  }, [selectedDate, monthEpisodes, getEpisodesForDate]);
 
   const episodesByDate = useMemo(() => {
     const grouped: { [key: string]: UpcomingEpisode[] } = {};
@@ -212,15 +235,15 @@ export const useReleaseCalendar = () => {
 
   return {
     movies,
-    upcomingEpisodes,
+    monthEpisodes,
     loading,
     loadingEpisodes,
+    episodesError,
+    retryEpisodes,
     tvSeries,
     currentDate,
     selectedDate,
     setSelectedDate,
-    viewMode,
-    setViewMode,
     pushSupported,
     pushSubscribed,
     pushLoading,

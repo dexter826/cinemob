@@ -250,7 +250,7 @@ export const decodeTVDetails: Decoder<{
     return null;
   if (value.origin_country !== undefined && !isStringArray(value.origin_country)) return null;
   const nextEpisode =
-    value.next_episode_to_air === undefined ? undefined : decodeEpisode(value.next_episode_to_air);
+    value.next_episode_to_air == null ? undefined : decodeEpisode(value.next_episode_to_air);
   if (nextEpisode === null) return null;
   return {
     status: value.status,

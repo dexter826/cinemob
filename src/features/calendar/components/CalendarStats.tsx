@@ -3,15 +3,15 @@ import { Tv, Bell, Calendar, Clock } from 'lucide-react';
 interface CalendarStatsProps {
   tvSeriesCount: number;
   upcomingEpisodesCount: number;
-  todayEpisodesCount: number;
-  thisWeekEpisodesCount: number;
+  monthEpisodesCount: number;
+  airedEpisodesCount: number;
 }
 
 function CalendarStats({
   tvSeriesCount,
   upcomingEpisodesCount,
-  todayEpisodesCount,
-  thisWeekEpisodesCount,
+  monthEpisodesCount,
+  airedEpisodesCount,
 }: CalendarStatsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -37,10 +37,10 @@ function CalendarStats({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
-              {upcomingEpisodesCount}
+              {monthEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
-              Sắp chiếu
+              Tập trong tháng
             </p>
           </div>
         </div>
@@ -52,10 +52,10 @@ function CalendarStats({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
-              {todayEpisodesCount}
+              {airedEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
-              Hôm nay
+              Đã phát sóng
             </p>
           </div>
         </div>
@@ -67,10 +67,10 @@ function CalendarStats({
           </div>
           <div className="min-w-0">
             <p className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight leading-none truncate tabular-nums">
-              {thisWeekEpisodesCount}
+              {upcomingEpisodesCount}
             </p>
             <p className="text-xs font-semibold text-text-secondary mt-1.5 sm:mt-2 truncate">
-              Tuần này
+              Sắp phát sóng
             </p>
           </div>
         </div>

@@ -31,6 +31,10 @@ const useMovieStore = create<MovieState>((set, get) => ({
     if (unsubscribe && activeUid === uid) return;
     if (unsubscribe) unsubscribe();
 
+    if (activeUid !== uid) {
+      set({ movies: [], loading: true, initialized: false, pendingDeleteIds: [] });
+    }
+
     const unsub = subscribeToMovies(uid, (movies) => {
       const pending = get().pendingDeleteIds;
       set({

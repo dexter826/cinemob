@@ -37,13 +37,8 @@ export const useAppInit = () => {
 
   const { reset: resetRecommendations, setActiveUser } = useRecommendationsStore();
 
-  const {
-    setMovies: setCalendarMovies,
-    setLoading: setCalendarLoading,
-    setHasFetchedInitial: setCalFetchedInitial,
-    fetchUpcomingEpisodes,
-    hasFetchedInitial: calFetchedInitial,
-  } = useReleaseCalendarStore();
+  const { setMovies: setCalendarMovies, setLoading: setCalendarLoading } =
+    useReleaseCalendarStore();
 
   useEffect(() => {
     if (user) {
@@ -123,8 +118,9 @@ export const useAppInit = () => {
   }, [userId, setActiveUser, resetRecommendations]);
 
   useEffect(() => {
-    setCalendarMovies(allMovies);
-    setCalendarLoading(moviesLoading);
+    const currentMovies = useMovieStore.getState();
+    setCalendarMovies(currentMovies.movies);
+    setCalendarLoading(currentMovies.loading);
   }, [allMovies, moviesLoading, setCalendarMovies, setCalendarLoading]);
 
   useEffect(() => {
@@ -156,12 +152,4 @@ export const useAppInit = () => {
       window.clearTimeout(timer);
     };
   }, [allMovies, moviesInitialized, moviesLoading, showToast, user]);
-
-  const movieCount = allMovies.length;
-
-  useEffect(() => {
-    if (!user || movieCount === 0) return;
-    fetchUpcomingEpisodes(user.uid, allMovies);
-    if (!calFetchedInitial) setCalFetchedInitial(true);
-  }, [user, movieCount, allMovies, calFetchedInitial, fetchUpcomingEpisodes, setCalFetchedInitial]);
 };
