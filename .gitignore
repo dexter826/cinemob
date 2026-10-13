@@ -47,3 +47,4 @@ Thumbs.db
 # Cache cục bộ tạo bởi npm khi kiểm tra lockfile
 .npm-cache/
 .zcodeignore
+.worktrees/
