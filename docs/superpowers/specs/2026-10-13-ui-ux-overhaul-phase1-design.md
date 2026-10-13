@@ -13,6 +13,7 @@
 CineMOB is a Progressive Web App (PWA) built with React 19, TypeScript, Tailwind CSS v4, and Zustand, backed by Firebase and TMDB. The codebase currently comprises 147 source files with a stable backend integration, clean TypeScript compilation (0 errors), and established PWA caching/push infrastructure.
 
 However, the current user interface presents several UX frictions that make it feel like a traditional web admin panel rather than an immersive native mobile cinema app:
+
 1. **Modal Constraint:** Movie details are currently confined to a popup modal (`MovieDetailModal.tsx`), restricting viewport immersion, causing gesture/scroll conflicts on mobile devices, and lacking deep-linkable URLs.
 2. **Navigation Rigidity:** The existing 4-tab mobile bottom bar lacks a quick-action trigger for cinephile logging and feels detached from native mobile navigation patterns.
 3. **Flat Dashboard:** The home screen lacks the cinematic grandeur (edge-to-edge backdrop banners, smooth swimlane carousels) seen in modern streaming and cinema discovery platforms like Apple TV and Netflix.
@@ -24,6 +25,7 @@ Rather than executing a risky, ground-up rewrite that would discard working busi
 ## 2. Goals, Non-Goals & Anti-Goals
 
 ### 2.1 Goals (Phase 1)
+
 - **Design Tokens & Theme Foundation:** Enhance `src/index.css` with deep cinema dark mode tokens, subtle hairline borders, and frosted glass (`backdrop-blur`) variables compatible with Tailwind CSS v4 `@theme`.
 - **App Shell & 5-Tab Navigation:**
   - Introduce an iOS-grade floating frosted-glass bottom bar with 5 items:
@@ -43,12 +45,14 @@ Rather than executing a risky, ground-up rewrite that would discard working busi
 - **Mobbin Reference Grounding:** Ground components in real-world patterns extracted from Apple TV, Netflix, and Letterboxd on Mobbin.
 
 ### 2.2 Non-Goals (Deferred to Phases 2 & 3)
+
 - Reworking the detailed statistics charts in `features/stats` (Recharts integration remains as-is for now; revamped in Phase 2).
 - Overhauling the Custom Album creation and drag-and-drop mechanics in `features/albums` (deferred to Phase 3).
 - Modifying the release calendar grid in `features/calendar` (deferred to Phase 3).
 - Modifying Firebase Firestore schema, authentication rules, or writing custom non-TMDB backends.
 
 ### 2.3 Anti-Goals
+
 - **No heavy new dependencies:** Do not introduce massive external UI libraries (e.g., MUI, AntD). Stick strictly to Tailwind v4, Lucide React, and Framer Motion.
 - **No performance regression:** Maintain fast initial render times; ensure heavy hero backdrop images have low-res blur placeholders or gradient fallbacks.
 - **No desktop breakage:** While mobile-first, layouts must remain responsive and centered on wide desktop viewports (`max-w-7xl` container wrapping).
@@ -89,16 +93,19 @@ Rather than executing a risky, ground-up rewrite that would discard working busi
 ## 4. Component Structure for Phase 1
 
 ### 4.1 Shell & Navigation
+
 - `src/shared/components/layout/MobileBottomNav.tsx`: 5-tab bar with elevated center (+) button and glassmorphism styling.
 - `src/features/movies/components/quick-log/QuickLogSheet.tsx`: Bottom sheet tìm kiếm và ghi log phim nhanh.
 
 ### 4.2 Dashboard (`src/features/dashboard`)
+
 - `src/features/dashboard/pages/DashboardPage.tsx`: Trang chủ kết hợp.
 - `src/features/dashboard/components/DashboardHero.tsx`: Hero carousel tràn viền với backdrop & phim hot.
 - `src/features/dashboard/components/MovieSwimlane.tsx`: Hàng phim cuộn ngang mượt mà (Now Playing, Trending, Upcoming).
 - `src/features/dashboard/components/UserLibrarySection.tsx`: Phần thư viện của người dùng (Recent watched, Watchlist, Full filter modal/expander).
 
 ### 4.3 Movie Details (`src/features/movies`)
+
 - `src/features/movies/pages/MovieDetailPage.tsx`: Trang chi tiết phim toàn màn hình.
 - `src/features/movies/components/detail/MovieDetailHeader.tsx`: Backdrop tràn viền + nút Back/Share.
 - `src/features/movies/components/detail/MovieActionPills.tsx`: Nút tương tác nhanh (Đã xem, Muốn xem, Đánh giá, Thêm vào album).
@@ -109,6 +116,7 @@ Rather than executing a risky, ground-up rewrite that would discard working busi
 ---
 
 ## 5. What is Left to the Builder
+
 - **Animation Springs:** Điều chỉnh độ nảy và mượt mà của Framer Motion cho Hero banner và Quick Log sheet.
 - **Image Fallback Skeletons:** Màu sắc và hiệu ứng pulse của skeleton khi ảnh backdrop TMDB đang tải.
 - **PWA Safe-Area Spacing:** Căn chỉnh chính xác padding đáy `pb-[calc(5rem+env(safe-area-inset-bottom,16px))]` trên iOS và Android.
@@ -116,6 +124,7 @@ Rather than executing a risky, ground-up rewrite that would discard working busi
 ---
 
 ## 6. Verification Plan
+
 - **TypeScript:** `npm run typecheck` đạt 0 lỗi.
 - **ESLint:** `npm run lint` đạt 0 lỗi.
 - **Responsive & Gestures:**
