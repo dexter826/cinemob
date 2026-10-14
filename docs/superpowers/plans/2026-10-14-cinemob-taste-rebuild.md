@@ -16,7 +16,16 @@
 - Giữ `lang="vi"`, sentence case tiếng Việt, không uppercase tracking-widest cho label thường.
 - Headline ≤2 dòng mọi width; không eyebrow; không mono ngoài số liệu; không gradient (trừ scrim backdrop); không shadow khi nghỉ; không glass trang trí; tối đa 2 font.
 - Mỗi task xong phải chạy `npm run typecheck`, `npm run lint`, `npm run build` xanh mới commit.
+- Mỗi task kết thúc bằng code-refactor mode A (review report: Blocker/Major/Minor, tối đa 3 Nit, không bịa lỗi). Sửa Blocker + Major trước khi sang task tiếp theo. Giữ nguyên hành vi khi refactor; bug phát hiện riêng, không trộn vào diff cấu trúc.
 - Commit message Conventional Commits (`docs:`, `feat:`, `refactor:`, `style:`).
+- Mọi implementation chạy trên nhánh `redesign/taste-full` trong isolated worktree (chưa tạo — tạo ở bước khởi động implementation, không làm trên `master`).
+
+---
+
+## Prerequisites (chưa thực hiện — làm ở bước khởi động implementation)
+
+- [ ] Tạo isolated worktree tại `.worktrees/redesign-taste-full` + nhánh `redesign/taste-full` (verify `git check-ignore`, `npm ci`, baseline `npm test` xanh mới bắt đầu Task 0).
+- [ ] Code-refactor áp dụng 7 trục (naming, kích thước/trách nhiệm, DRY có chừng mực, lỗi, cấu trúc/phụ thuộc, bảo mật/PII, testability) + refs React/TS của skill; giữ style codebase hiện tại (quotes, import, naming).
 
 ---
 
