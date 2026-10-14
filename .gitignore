@@ -39,7 +39,6 @@ Thumbs.db
 
 # Cấu hình Firebase
 .firebase/
-.firebaserc
 
 # Thư mục tạm Gemini
 .gemini/
@@ -49,3 +48,6 @@ Thumbs.db
 .zcodeignore
 .worktrees/
 .superpowers/
+
+# Agent local (không share, trước đây nằm rải rác ở .git/info/exclude)
+/.agents/
