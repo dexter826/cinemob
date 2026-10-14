@@ -23,9 +23,9 @@
 ### Quy trình deal direction (Chặng 1, trước khi viết token)
 
 1. **Subject inventory** 8–12 thứ chỉ CineMOB có: thư viện phim cá nhân chung của nhóm, poster/backdrop TMDB, modal xem phim, bánh xe random picker, lịch phát hành, album xếp hạng, "vừa xem / muốn xem", splash Lottie, thành viên (member search), thống kê nhóm.
-2. `node <skill>/scripts/draw.mjs --sector entertainment --brief "<one line>" --sections <vai trò theo nhóm màn>` → deal 3 directions → chọn 1 theo direction nào mang được inventory (không chọn thứ quen thuộc) → deal full sheet.
+2. `node <skill>/scripts/draw.mjs --sector consumer-app --brief "<one line>" --sections <vai trò theo nhóm màn>` → deal 3 directions → chọn 1 theo direction nào mang được inventory (không chọn thứ quen thuộc) → deal full sheet. (Sector list thực tế không có `entertainment`; `consumer-app` là sector gần nhất với PWA tiêu dùng.)
 3. **Redraw** mỗi lần phải có lý do (mâu thuẫn asset không tồn tại / brand constraint) và ghi vào report.
-4. Vai trò sections ứng với nhóm màn: shell, dashboard-hero, search-rails, detail-fold, management-sheet, modal.
+4. Vai trò sections hợp lệ (roles list của `draw.mjs`) map sang nhóm màn: `showcase` → dashboard rails/hero, `gallery` → poster grids (search, album detail), `list` → search/albums/calendar rows, `stats` → Stats, `about` → detail fold; shell/nav theo house rules, footer theo blueprint `footer`, modal theo primitive Dialog (không phải section).
 5. **Kết quả draw (direction name + seed, palette, type system, motion, blueprint từng section) được ghi vào Appendix của spec này ngay khi chạy xong**, trước khi code token.
 
 ### Idea sentence (bắt buộc — chốt cùng lúc với direction ở Chặng 1, ghi vào Appendix trước khi code token)
