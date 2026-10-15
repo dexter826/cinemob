@@ -1,50 +1,70 @@
-# Repository Guidelines
+# AGENTS.md
 
-## Working Principles
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
-- Clarify requirements when ambiguity could change the implementation.
-- Prefer the simplest solution that fully satisfies the request.
-- Keep changes focused on the requested behavior.
-- Avoid unrelated refactors, cleanup, or formatting changes.
-- Preserve existing APIs and conventions unless the task requires changing them.
-- Define a concrete success criterion before implementation.
-- Validate the narrowest affected scope before running broader checks.
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-## Project Structure & Module Organization
+## 1. Think Before Coding
 
-CineMOB is a React 19 + TypeScript PWA built with Vite. Application code lives in `src/`: the app shell and bootstrap in `app/` (`App.tsx`, `useAppInit.ts`, `app/components/` for Layout/Navbar, `app/providers/`), reusable UI in `shared/components/`, feature screens in `features/*/pages/` and `features/*/components/`, business logic in `features/*/hooks/`, Zustand state in `features/*/stores/` and `shared/stores/`, third-party initializations in `lib/`, external integrations in `features/*/services/`, and shared definitions in `types/`, `constants/`, `shared/config/`, plus colocated `utils/`. Dependency direction: `shared/` must not import from `features/`; `app/` owns routes, global bootstrap, and cross-feature UI wiring. Features may consume another feature's domain service or store when the dependency remains acyclic and moving it to `shared/` would create a false abstraction. TMDB helpers shared across features live in `shared/utils/tmdb.ts`; date helpers in `shared/utils/dateFormat.ts`. Keep bundled media in `src/assets/`; place directly served icons, manifests, and JSON in `public/`. Documentation images belong in `docs/`. Firebase configuration and rules remain at the repository root. Do not edit generated `dist/` or `dev-dist/` output.
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-## Build, Test, and Development Commands
+Before implementing:
 
-- `npm ci` installs the exact locked dependencies from `package-lock.json`.
-- `npm run dev` starts Vite on `http://localhost:3000` with PWA development support.
-- `npm run build` creates the optimized production bundle in `dist/`.
-- `npm run preview` serves the production bundle locally for final smoke testing.
-- `npx tsc --noEmit` runs TypeScript validation without producing files.
-- `npm run typecheck` is an alias for the above.
-- `npm run lint` runs ESLint over `src/` (0 errors, warnings capped at 200).
-- `npm test` runs notification-script tests.
-- `npm run format` formats the whole repo with Prettier; `npm run format:check` only verifies.
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
 
-Copy `.env.example` to `.env` before exercising Firebase, TMDB, the AI proxy, or push notifications. `VITE_VAPID_PUBLIC_KEY` is public configuration; the app has a fallback public key when it is omitted.
+## 2. Simplicity First
 
-## Coding Style & Naming Conventions
+**Minimum code that solves the problem. Nothing speculative.**
 
-Follow the existing TypeScript style: two-space indentation, single quotes, semicolons, and functional React components (no `React.FC`); `ErrorBoundary` is the exception because React error boundaries require a class component. Formatting itself is enforced by Prettier (`.prettierrc.json`, print width 100); ESLint (`eslint.config.js`) owns code quality and contains no formatting rules, so the two never conflict. Use `PascalCase` for components and pages (`MovieCard.tsx`), `camelCase` for functions and utilities, `useX` for hooks, and `xStore.ts` / `xService.ts` for Zustand stores and service modules. Keep rendering in components, reusable behavior in hooks, external service calls in services, and bundled public JSON fetches in the owning UI behavior. Keep shared interfaces in `src/types`. ESLint (`eslint.config.js`) must stay green; avoid unrelated formatting churn.
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
 
-## Validation Guidelines
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-Choose validation based on the scope of the change:
+## 3. Surgical Changes
 
-- Small localized change: run the narrowest relevant check.
-- TypeScript or React change: run `npm run typecheck` and relevant lint checks.
-- User-facing feature: run typecheck, lint, format check, build, and relevant manual smoke tests.
-- Before opening a PR: run `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm run build`.
+**Touch only what you must. Clean up only your own mess.**
 
-## Commit & Pull Request Guidelines
+When editing existing code:
 
-Recent history follows Conventional Commit prefixes such as `feat:` and `chore:`; also use `fix:`, `docs:`, or `refactor:` where appropriate. Keep each commit focused and write an imperative summary. PRs should explain what changed and why, link the relevant issue, list verification performed, and include before/after screenshots for visible UI changes.
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
 
-## Security & Configuration
+When your changes create orphans:
 
-Never commit `.env`, API keys, or Firebase credentials. Variables prefixed with `VITE_` or `REACT_APP_` are exposed to browser code, so they must not contain privileged server-side secrets. Review `firestore.rules` carefully whenever data access behavior changes.
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
