@@ -42,7 +42,10 @@ export const useUserSearch = (excludeUid?: string) => {
     try {
       await ensureProfiles();
       setSubmittedQuery(query);
-    } catch {}
+    } catch (error) {
+      // Lookup lỗi (mạng/quyền) → kết quả trống thay vì dừng app; log để truy vết.
+      console.warn('[member-search] ensureProfiles thất bại:', error);
+    }
   };
 
   const results = useMemo(() => {

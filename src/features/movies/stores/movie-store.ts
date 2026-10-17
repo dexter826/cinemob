@@ -6,6 +6,7 @@ interface MovieState {
   movies: Movie[];
   loading: boolean;
   initialized: boolean;
+  error: boolean;
   unsubscribe: (() => void) | null;
   activeUid: string | null;
   pendingDeleteIds: string[];
@@ -22,6 +23,7 @@ const useMovieStore = create<MovieState>((set, get) => ({
   movies: [],
   loading: true,
   initialized: false,
+  error: false,
   unsubscribe: null,
   activeUid: null,
   pendingDeleteIds: [],
@@ -32,17 +34,22 @@ const useMovieStore = create<MovieState>((set, get) => ({
     if (unsubscribe) unsubscribe();
 
     if (activeUid !== uid) {
-      set({ movies: [], loading: true, initialized: false, pendingDeleteIds: [] });
+      set({ movies: [], loading: true, initialized: false, pendingDeleteIds: [], error: false });
     }
 
-    const unsub = subscribeToMovies(uid, (movies) => {
-      const pending = get().pendingDeleteIds;
-      set({
-        movies: movies.filter((m) => !m.docId || !pending.includes(m.docId)),
-        loading: false,
-        initialized: true,
-      });
-    });
+    const unsub = subscribeToMovies(
+      uid,
+      (movies) => {
+        const pending = get().pendingDeleteIds;
+        set({
+          movies: movies.filter((m) => !m.docId || !pending.includes(m.docId)),
+          loading: false,
+          initialized: true,
+          error: false,
+        });
+      },
+      () => set({ error: true, loading: false, initialized: true }),
+    );
 
     set({ unsubscribe: unsub, activeUid: uid });
   },
@@ -58,6 +65,7 @@ const useMovieStore = create<MovieState>((set, get) => ({
         pendingDeleteIds: [],
         loading: true,
         initialized: false,
+        error: false,
       });
     }
   },

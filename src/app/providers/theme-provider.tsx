@@ -63,7 +63,10 @@ export function ThemeProvider({
     (nextTheme: Theme) => {
       try {
         localStorage.setItem(storageKey, nextTheme);
-      } catch {}
+      } catch {
+        // Private mode/Safari chặn localStorage — theme vẫn đổi trong phiên, chỉ không persist.
+        console.warn('[theme] Không lưu được theme vào localStorage');
+      }
       setTheme(nextTheme);
     },
     [storageKey],

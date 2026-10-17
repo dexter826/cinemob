@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Calendar,
-  Clock,
+
   FolderPlus,
   Pencil,
   Play,
@@ -317,13 +317,6 @@ function MovieDetailPage() {
               </div>
             )
           )}
-
-          <p className="mt-8 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
-            <Clock size={12} aria-hidden="true" />
-            <span className="tabular-nums">
-              {movie.runtime && movie.runtime > 0 ? `${movie.runtime} phút` : movie.media_type === 'tv' ? 'Series' : '—'}
-            </span>
-          </p>
         </div>
       </article>
 

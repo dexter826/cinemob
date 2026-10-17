@@ -114,8 +114,13 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
   };
 };
 
-// Theo dõi danh sách phim thời gian thực.
-export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => void) => {
+// Theo dõi danh sách phim thời gian thực. onError tách riêng để UI phân biệt
+// "kho trống" với "lỗi mạng/quyền" (tránh hiển thị EmptyState khi lỗi).
+export const subscribeToMovies = (
+  uid: string,
+  callback: (movies: Movie[]) => void,
+  onError?: (error: unknown) => void,
+) => {
   const q = query(
     collection(db, COLLECTION_NAME),
     where('uid', '==', uid),
@@ -132,7 +137,7 @@ export const subscribeToMovies = (uid: string, callback: (movies: Movie[]) => vo
     },
     (error) => {
       console.error('Snapshot error:', error);
-      callback([]);
+      if (onError) onError(error);
     },
   );
 };

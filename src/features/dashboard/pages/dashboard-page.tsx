@@ -2,9 +2,12 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Film, Search, Plus } from 'lucide-react';
+import { useAuth } from '@/features/auth/components/auth-provider';
+import useMovieStore from '@/features/movies/stores/movie-store';
 import PosterCard from '@/features/movies/components/poster-card';
 import Pagination from '@/shared/components/ui/pagination';
 import EmptyState from '@/shared/components/ui/empty-state';
+import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Button from '@/shared/components/ui/button';
 import { normalizeDate } from '@/shared/utils/date-format';
@@ -28,6 +31,8 @@ function DashboardPage() {
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion() ?? false;
   useScrollRestore('dashboard');
+  const { user } = useAuth();
+  const { error: libraryError, initialize: initMovies, cleanup: cleanupMovies } = useMovieStore();
 
   const {
     loading,
@@ -253,6 +258,22 @@ function DashboardPage() {
               <SkeletonCard key={i} />
             ))}
           </div>
+        ) : libraryError ? (
+          <ErrorState
+            title="Không tải được thư viện"
+            description="Lỗi kết nối tới dữ liệu phim. Bộ sưu tập của bạn vẫn an toàn."
+            retry={
+              user
+                ? {
+                    label: 'Thử lại',
+                    onClick: () => {
+                      cleanupMovies();
+                      initMovies(user.uid);
+                    },
+                  }
+                : undefined
+            }
+          />
         ) : processedMovies.length === 0 ? (
           <EmptyState
             icon={Film}

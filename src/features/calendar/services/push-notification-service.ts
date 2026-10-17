@@ -1,10 +1,8 @@
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '@/shared/lib/firebase';
 
-// Khớp với key trong GitHub Actions.
-const VAPID_PUBLIC_KEY =
-  import.meta.env.VITE_VAPID_PUBLIC_KEY ||
-  'BFBK097ne-pKAkExp7CqZtA9sPf9VdrwazPIFktU753xdoUMM2Rw2gZpxmugVoX-anvHb7T8KVj-rZQwar7vPp8';
+// Khóa VAPID public — chỉ từ env; thiếu thì push bị tắt (tránh key stale khi CI đổi key).
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
 // Định dạng khóa VAPID cho Web Push.
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -76,6 +74,10 @@ async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
 export async function subscribeToPushNotifications(): Promise<PushSubscription | null> {
   if (!isPushSupported()) {
     console.warn('Push notifications are not supported');
+    return null;
+  }
+  if (!VAPID_PUBLIC_KEY) {
+    console.warn('[push] Thiếu VITE_VAPID_PUBLIC_KEY — thông báo bị tắt');
     return null;
   }
 
