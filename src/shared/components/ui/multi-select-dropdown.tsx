@@ -224,7 +224,7 @@ function MultiSelectDropdown({
                 aria-label="Tìm kiếm tùy chọn"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full border-none rounded-lg px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary"
+                className="w-full border-none rounded-lg px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
           )}

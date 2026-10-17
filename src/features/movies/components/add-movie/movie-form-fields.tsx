@@ -246,7 +246,7 @@ function MovieFormFields({
           autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors resize-none"
+          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors resize-none"
           placeholder="Nhập tóm tắt cốt truyện…"
         />
       </div>

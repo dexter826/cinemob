@@ -150,7 +150,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                   }
                 }}
                 autoComplete="off"
-                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
+                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
                 ref={newAlbumInputRef}
               />
               <div className="flex gap-3">

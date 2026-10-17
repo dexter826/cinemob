@@ -358,7 +358,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-colors resize-none"
+                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-colors resize-none"
                         placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>
