@@ -1,18 +1,18 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useReleaseCalendarStore from '../stores/releaseCalendarStore';
-import useAlertStore from '@/shared/stores/alertStore';
-import useToastStore from '@/shared/stores/toastStore';
+import { useAuth } from '@/app/providers/auth-provider';
+import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useReleaseCalendarStore from '../stores/release-calendar-store';
+import useAlertStore from '@/shared/stores/alert-store';
+import useToastStore from '@/shared/stores/toast-store';
 import {
   isPushUsable,
   getNotificationPermission,
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
   isSubscribedToPush,
-} from '../services/pushNotificationService';
+} from '../services/push-notification-service';
 import { UpcomingEpisode } from '@/types';
 
 const formatDateParam = (date: Date): string =>

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { monthLabel } from '@/shared/utils/dateFormat';
+import { monthLabel } from '@/shared/utils/date-format';
 import { UpcomingEpisode } from '@/types';
 
 interface CalendarGridProps {

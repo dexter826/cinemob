@@ -1,15 +1,15 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-react';
-import MovieCard from '@/features/movies/components/MovieCard';
-import Pagination from '@/shared/components/ui/Pagination';
-import { formatDateAny } from '@/shared/utils/dateFormat';
-import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
-import useAlertStore from '@/shared/stores/alertStore';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import PageHeader from '@/shared/components/ui/PageHeader';
-import { useAlbumDetail } from '../hooks/useAlbumDetail';
+import MovieCard from '@/features/movies/components/movie-card';
+import Pagination from '@/shared/components/ui/pagination';
+import { formatDateAny } from '@/shared/utils/date-format';
+import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
+import useAlertStore from '@/shared/stores/alert-store';
+import EmptyState from '@/shared/components/ui/empty-state';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import PageHeader from '@/shared/components/ui/page-header';
+import { useAlbumDetail } from '../hooks/use-album-detail';
 
 /** Quản lý chi tiết album và thêm/bớt phim trong album. */
 function AlbumDetailPage() {

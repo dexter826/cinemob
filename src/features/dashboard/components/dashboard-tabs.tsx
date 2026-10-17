@@ -1,4 +1,4 @@
-import { ActiveTab } from '../hooks/useDashboardFilters';
+import { ActiveTab } from '../hooks/use-dashboard-filters';
 
 interface DashboardTabsProps {
   activeTab: ActiveTab;

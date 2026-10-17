@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useAuth } from '@/app/providers/AuthProvider';
+import { useAuth } from '@/app/providers/auth-provider';
 import { Shield, Loader2, Star, CheckCircle2 } from 'lucide-react';
 import logoText from '@/assets/images/logo_text.png';
 

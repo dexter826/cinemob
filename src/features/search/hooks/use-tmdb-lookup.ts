@@ -4,10 +4,10 @@ import {
   getMovieDetailsWithLanguage,
   getTVShowEpisodeInfo,
 } from '../services/tmdb';
-import { checkMovieExists } from '@/features/movies/services/movieService';
+import { checkMovieExists } from '@/features/movies/services/movie-service';
 import { translateCountries } from '@/constants/countries';
 import { MESSAGES } from '@/constants/messages';
-import useToastStore from '@/shared/stores/toastStore';
+import useToastStore from '@/shared/stores/toast-store';
 import { User } from 'firebase/auth';
 
 interface TMDBLookupResult {

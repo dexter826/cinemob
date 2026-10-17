@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
-import useAddMovieStore from '@/features/movies/stores/addMovieStore';
-import { useSearchTMDB } from './useSearchTMDB';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
-import { isWatchedMovie } from '@/features/movies/utils/movieUtils';
+import { isWatchedMovie } from '@/features/movies/utils/movie-utils';
 import { TMDBMovieResult } from '@/types';
 import type { User } from 'firebase/auth';
 

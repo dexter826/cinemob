@@ -1,12 +1,12 @@
-import EmptyState from '@/shared/components/ui/EmptyState';
+import EmptyState from '@/shared/components/ui/empty-state';
 import { Tv, Bell, BellOff, BellRing } from 'lucide-react';
-import { todayISO } from '@/shared/utils/dateFormat';
+import { todayISO } from '@/shared/utils/date-format';
 
-import { useReleaseCalendar } from '../hooks/useReleaseCalendar';
-import CalendarStats from '../components/CalendarStats';
-import CalendarGrid from '../components/CalendarGrid';
-import EpisodeList from '../components/EpisodeList';
-import PageHeader from '@/shared/components/ui/PageHeader';
+import { useReleaseCalendar } from '../hooks/use-release-calendar';
+import CalendarStats from '../components/calendar-stats';
+import CalendarGrid from '../components/calendar-grid';
+import EpisodeList from '../components/episode-list';
+import PageHeader from '@/shared/components/ui/page-header';
 
 /** Trang Lịch phát sóng các tập phim mới của Series. */
 type PushStatus = 'loading' | 'on' | 'blocked' | 'off';

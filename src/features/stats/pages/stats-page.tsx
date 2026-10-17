@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
-import StatsCard from '../components/StatsCard';
+import StatsCard from '../components/stats-card';
 import {
   PieChart,
   Pie,
@@ -15,13 +15,13 @@ import {
   YAxis,
   CartesianGrid,
 } from 'recharts';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import PageHeader from '@/shared/components/ui/PageHeader';
-import { useStats } from '../hooks/useStats';
-import Dropdown from '@/shared/components/ui/Dropdown';
-import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
-import { buildGenreChartData, topEntries } from '../utils/statsSelectors';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import EmptyState from '@/shared/components/ui/empty-state';
+import PageHeader from '@/shared/components/ui/page-header';
+import { useStats } from '../hooks/use-stats';
+import Dropdown from '@/shared/components/ui/dropdown';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
 // Palette biểu đồ bám hệ màu của app: emerald chủ đạo, teal kề sắc, slate trung tính.
 const COLORS = [

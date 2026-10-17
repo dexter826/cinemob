@@ -1,11 +1,11 @@
 import type { RefObject } from 'react';
 import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type, X } from 'lucide-react';
 import type { PersonMovie } from '@/types';
-import TMDBMovieCard from '../TMDBMovieCard';
-import Pagination from '@/shared/components/ui/Pagination';
-import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import useAddMovieStore from '@/features/movies/stores/addMovieStore';
+import TMDBMovieCard from '../tmdb-movie-card';
+import Pagination from '@/shared/components/ui/pagination';
+import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
+import EmptyState from '@/shared/components/ui/empty-state';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 
 interface PersonMovieSectionProps {
   searchQuery: string;

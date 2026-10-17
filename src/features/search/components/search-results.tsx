@@ -1,9 +1,9 @@
 import { TMDBMovieResult } from '@/types';
-import TMDBMovieCard from './TMDBMovieCard';
-import Pagination from '@/shared/components/ui/Pagination';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import ErrorState from '@/shared/components/ui/ErrorState';
+import TMDBMovieCard from './tmdb-movie-card';
+import Pagination from '@/shared/components/ui/pagination';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import EmptyState from '@/shared/components/ui/empty-state';
+import ErrorState from '@/shared/components/ui/error-state';
 import { Sparkles, Star, RotateCcw, Search } from 'lucide-react';
 
 interface SearchResultsProps {

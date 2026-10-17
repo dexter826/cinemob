@@ -5,8 +5,8 @@ import {
   getTranslatedCountries,
   getSeasonWatchedDates,
   getLatestWatchedDate,
-} from '@/features/movies/utils/movieUtils';
-import { normalizeDate } from '@/shared/utils/dateFormat';
+} from '@/features/movies/utils/movie-utils';
+import { normalizeDate } from '@/shared/utils/date-format';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';

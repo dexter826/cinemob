@@ -1,14 +1,14 @@
 import { useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
-import { deleteMovie } from '@/features/movies/services/movieService';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useToastStore from '@/shared/stores/toastStore';
-import useAddMovieStore from '@/features/movies/stores/addMovieStore';
-import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
-import { getMainTitle } from '@/features/movies/utils/movieUtils';
-import { useDashboardFilters, ActiveTab } from './useDashboardFilters';
-import { useDashboardStats } from './useDashboardStats';
+import { deleteMovie } from '@/features/movies/services/movie-service';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
+import { getMainTitle } from '@/features/movies/utils/movie-utils';
+import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
+import { useDashboardStats } from './use-dashboard-stats';
 import { MESSAGES } from '@/constants/messages';
 import type { User } from 'firebase/auth';
 

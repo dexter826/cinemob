@@ -1,9 +1,9 @@
-import { useSearch } from '../hooks/useSearch';
-import { useAuth } from '@/app/providers/AuthProvider';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import PageHeader from '@/shared/components/ui/PageHeader';
-import SearchFilters from '../components/SearchFilters';
-import SearchResults from '../components/SearchResults';
+import { useSearch } from '../hooks/use-search';
+import { useAuth } from '@/app/providers/auth-provider';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import PageHeader from '@/shared/components/ui/page-header';
+import SearchFilters from '../components/search-filters';
+import SearchResults from '../components/search-results';
 
 /** Trang tìm kiếm và khám phá phim từ TMDB. */
 function SearchPage() {

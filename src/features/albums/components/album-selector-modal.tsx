@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { FolderPlus, Film } from 'lucide-react';
 import { Movie, Album } from '@/types';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useToastStore from '@/shared/stores/toastStore';
-import useAlbumStore from '../stores/albumStore';
-import { updateAlbum, addAlbum } from '../services/albumService';
-import { getDisplayTitle } from '@/features/movies/utils/movieUtils';
-import Loading from '@/shared/components/ui/Loading';
-import EmptyState from '@/shared/components/ui/EmptyState';
+import { useAuth } from '@/app/providers/auth-provider';
+import useToastStore from '@/shared/stores/toast-store';
+import useAlbumStore from '../stores/album-store';
+import { updateAlbum, addAlbum } from '../services/album-service';
+import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
+import Loading from '@/shared/components/ui/loading';
+import EmptyState from '@/shared/components/ui/empty-state';
 import logoText from '@/assets/images/logo_text.png';
 import { MESSAGES } from '@/constants/messages';
-import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
-import { Button } from '@/shared/components/ui/Button';
-import { IconButton } from '@/shared/components/ui/IconButton';
+import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
+import { Button } from '@/shared/components/ui/button';
+import { IconButton } from '@/shared/components/ui/icon-button';
 
 interface AlbumSelectorModalProps {
   isOpen: boolean;

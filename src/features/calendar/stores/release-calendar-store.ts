@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Movie, UpcomingEpisode } from '@/types';
-import { fetchEpisodesForMonth } from '../services/calendarService';
+import { fetchEpisodesForMonth } from '../services/calendar-service';
 
 interface ReleaseCalendarState {
   movies: Movie[];

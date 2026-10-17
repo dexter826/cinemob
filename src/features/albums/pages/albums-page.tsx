@@ -1,16 +1,16 @@
 import React, { useRef, useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
-import { useAuth } from '@/app/providers/AuthProvider';
+import { useAuth } from '@/app/providers/auth-provider';
 import { Album } from '@/types';
-import { addAlbum, deleteAlbum } from '../services/albumService';
-import useToastStore from '@/shared/stores/toastStore';
-import useAlertStore from '@/shared/stores/alertStore';
+import { addAlbum, deleteAlbum } from '../services/album-service';
+import useToastStore from '@/shared/stores/toast-store';
+import useAlertStore from '@/shared/stores/alert-store';
 import { Link } from 'react-router-dom';
-import useAlbumStore from '../stores/albumStore';
+import useAlbumStore from '../stores/album-store';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import PageHeader from '@/shared/components/ui/PageHeader';
+import EmptyState from '@/shared/components/ui/empty-state';
+import PageHeader from '@/shared/components/ui/page-header';
 
 /** Quản lý và hiển thị danh sách các album phim cá nhân. */
 function AlbumsPage() {

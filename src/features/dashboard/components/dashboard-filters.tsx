@@ -1,12 +1,12 @@
 import React from 'react';
 import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
-import Dropdown from '@/shared/components/ui/Dropdown';
+import Dropdown from '@/shared/components/ui/dropdown';
 import {
   SortOption,
   SortOrder,
   SourceType,
   type FilterUpdateFn,
-} from '../hooks/useDashboardFilters';
+} from '../hooks/use-dashboard-filters';
 
 interface DashboardFiltersProps {
   filters: {

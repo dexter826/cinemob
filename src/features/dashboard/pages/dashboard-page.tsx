@@ -1,21 +1,21 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/app/providers/AuthProvider';
+import { useAuth } from '@/app/providers/auth-provider';
 import { Film } from 'lucide-react';
-import MovieCard from '@/features/movies/components/MovieCard';
-import Pagination from '@/shared/components/ui/Pagination';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import { normalizeDate } from '@/shared/utils/dateFormat';
+import MovieCard from '@/features/movies/components/movie-card';
+import Pagination from '@/shared/components/ui/pagination';
+import EmptyState from '@/shared/components/ui/empty-state';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import { normalizeDate } from '@/shared/utils/date-format';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { getSeasonWatchedDates } from '@/features/movies/utils/movieUtils';
-import PageHeader from '@/shared/components/ui/PageHeader';
+import { getSeasonWatchedDates } from '@/features/movies/utils/movie-utils';
+import PageHeader from '@/shared/components/ui/page-header';
 
-import { useDashboard } from '../hooks/useDashboard';
-import DashboardActions from '../components/DashboardActions';
-import DashboardTabs from '../components/DashboardTabs';
-import DashboardFilters from '../components/DashboardFilters';
+import { useDashboard } from '../hooks/use-dashboard';
+import DashboardActions from '../components/dashboard-actions';
+import DashboardTabs from '../components/dashboard-tabs';
+import DashboardFilters from '../components/dashboard-filters';
 
 /** Quản lý bộ sưu tập phim. */
 function DashboardPage() {

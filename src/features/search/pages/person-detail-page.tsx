@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
-import { formatDateDMY } from '@/shared/utils/dateFormat';
+import { formatDateDMY } from '@/shared/utils/date-format';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import PageHeader from '@/shared/components/ui/PageHeader';
-import { PersonMovieSection } from '../components/person/PersonMovieSection';
-import { usePersonDetail } from '../hooks/usePersonDetail';
+import EmptyState from '@/shared/components/ui/empty-state';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import PageHeader from '@/shared/components/ui/page-header';
+import { PersonMovieSection } from '../components/person/person-movie-section';
+import { usePersonDetail } from '../hooks/use-person-detail';
 
 /** Chi tiết nghệ sĩ, diễn viên và danh sách phim liên quan. */
 function PersonDetailPage() {

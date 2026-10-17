@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { searchMovies, getDiscoverMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
-import type { SearchFormFilters } from './useSearch';
+import type { SearchFormFilters } from './use-search';
 
 // Tìm kiếm và khám phá phim từ TMDB.
 export const useSearchTMDB = (

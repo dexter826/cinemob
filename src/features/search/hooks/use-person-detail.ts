@@ -8,7 +8,7 @@ import {
   paginatePersonMovies,
   type PersonSortBy,
   type SortOrder,
-} from '../utils/personSelectors';
+} from '../utils/person-selectors';
 
 const ITEMS_PER_PAGE = 20;
 

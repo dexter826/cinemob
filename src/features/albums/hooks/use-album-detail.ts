@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Album, Movie } from '@/types';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useToastStore from '@/shared/stores/toastStore';
+import { useAuth } from '@/app/providers/auth-provider';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
-import { subscribeToAlbum, updateAlbum } from '../services/albumService';
-import { filterAvailableAlbumMovies, paginateItems } from '../utils/albumSelectors';
+import { subscribeToAlbum, updateAlbum } from '../services/album-service';
+import { filterAvailableAlbumMovies, paginateItems } from '../utils/album-selectors';
 
 const ITEMS_PER_PAGE = 10;
 

@@ -1,6 +1,6 @@
 import { Info, Clock, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
-import { formatDateDMY, todayISO } from '@/shared/utils/dateFormat';
+import { formatDateDMY, todayISO } from '@/shared/utils/date-format';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 
 interface EpisodeListProps {

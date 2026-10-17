@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { User } from 'firebase/auth';
-import { addAlbum, syncMovieAlbums } from '../services/albumService';
-import useAlbumStore from '../stores/albumStore';
+import { addAlbum, syncMovieAlbums } from '../services/album-service';
+import useAlbumStore from '../stores/album-store';
 import { Movie } from '@/types';
 import { MESSAGES } from '@/constants/messages';
 

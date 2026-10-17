@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 import { Search, X, Filter, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
-import Dropdown from '@/shared/components/ui/Dropdown';
+import Dropdown from '@/shared/components/ui/dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
 import { getTMDBImageUrl, getMainTitleForTMDB } from '@/shared/utils/tmdb';
-import type { SearchSortBy, SearchFormFilters } from '../hooks/useSearch';
+import type { SearchSortBy, SearchFormFilters } from '../hooks/use-search';
 
 interface SearchFiltersProps {
   filters: SearchFormFilters;
