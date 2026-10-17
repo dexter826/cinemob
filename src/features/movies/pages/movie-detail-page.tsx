@@ -94,14 +94,11 @@ function MovieDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
-      {/* Thanh trên: Back + URL (IA: trang riêng, share được) */}
+      {/* Thanh trên: Back */}
       <div className="flex items-center justify-between py-4">
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} aria-hidden="true" />
         </IconButton>
-        <span className="text-[10px] font-semibold tracking-[0.1em] text-text-secondary tabular-nums">
-          /movie/{id}
-        </span>
       </div>
 
       <article className="pb-10 flex flex-col md:flex-row gap-6 md:gap-10">
@@ -127,7 +124,7 @@ function MovieDetailPage() {
           <h1 className="font-display tracking-wide leading-[1.02] text-3xl sm:text-4xl md:text-5xl text-text-primary">
             {mainTitle}
           </h1>
-          {subTitle && movie.title_vi !== mainTitle && (
+          {subTitle && subTitle !== mainTitle && (
             <p className="text-text-secondary text-base sm:text-lg mt-2">{subTitle}</p>
           )}
 

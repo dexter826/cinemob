@@ -49,12 +49,12 @@ export interface TMDBPerson {
   profile_path: string | null;
   known_for_department: string;
   popularity: number;
-  birthday?: string;
-  deathday?: string;
+  birthday?: string | null;
+  deathday?: string | null;
   gender?: number;
-  place_of_birth?: string;
-  biography?: string;
-  homepage?: string;
+  place_of_birth?: string | null;
+  biography?: string | null;
+  homepage?: string | null;
   known_for?: TMDBMovieResult[]; // For search results
 }
 

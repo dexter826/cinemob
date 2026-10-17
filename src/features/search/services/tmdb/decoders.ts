@@ -21,6 +21,10 @@ const isOptionalNumber = (value: unknown): value is number | undefined =>
 const isNullableString = (value: unknown): value is string | null =>
   value === null || typeof value === 'string';
 
+// TMDB trả null cho field optional chưa có dữ liệu (vd deathday của người còn sống).
+const isOptionalNullableString = (value: unknown): value is string | null | undefined =>
+  value === undefined || value === null || typeof value === 'string';
+
 // TMDB trả runtime: null cho các tập chưa lên sóng.
 const isNullableNumber = (value: unknown): value is number | null =>
   value === null || typeof value === 'number';
@@ -98,9 +102,9 @@ export const decodePerson: Decoder<TMDBPerson> = (value) => {
   )
     return null;
   if (
-    !isOptionalString(value.biography) ||
-    !isOptionalString(value.birthday) ||
-    !isOptionalString(value.deathday)
+    !isOptionalNullableString(value.biography) ||
+    !isOptionalNullableString(value.birthday) ||
+    !isOptionalNullableString(value.deathday)
   )
     return null;
   if (value.known_for !== undefined && decodeArray(value.known_for, decodeMovieResult) === null)

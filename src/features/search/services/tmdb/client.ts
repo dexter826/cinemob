@@ -73,6 +73,10 @@ export const tmdbFetch = async <T>(
     }
     return decoded;
   } catch (error) {
+    // Abort do unmount/đổi tham số là huỷ bình thường — không log như lỗi.
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return null;
+    }
     console.error(`Failed to fetch from TMDB [${endpoint}]:`, error);
     return null;
   }
