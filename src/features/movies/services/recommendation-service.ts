@@ -1,7 +1,7 @@
 import { TMDBMovieResult, Movie } from '@/types';
-import { getAIRecommendations } from './aiService';
+import { getAIRecommendations } from './ai-service';
 import { searchMovies, getTrendingMovies, withLimit } from '@/features/search/services/tmdb';
-import { isWatchedMovie } from '../utils/movieUtils';
+import { isWatchedMovie } from '../utils/movie-utils';
 
 const CACHE_DURATION = {
   AI_RECS: 7 * 24 * 60 * 60 * 1000,

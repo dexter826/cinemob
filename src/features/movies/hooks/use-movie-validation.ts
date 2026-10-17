@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import useToastStore from '@/shared/stores/toastStore';
+import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
 
 export interface FormErrors {

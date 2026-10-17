@@ -13,23 +13,23 @@ import {
   Clock,
 } from 'lucide-react';
 
-import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
-import { Button } from '@/shared/components/ui/Button';
-import { IconButton } from '@/shared/components/ui/IconButton';
-import useAlertStore from '@/shared/stores/alertStore';
+import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
+import { Button } from '@/shared/components/ui/button';
+import { IconButton } from '@/shared/components/ui/icon-button';
+import useAlertStore from '@/shared/stores/alert-store';
 
 // Sub-components
-import StatusToggle from './add-movie/StatusToggle';
-import RatingSection from './add-movie/RatingSection';
-import TVProgressSection from './add-movie/TVProgressSection';
-import AlbumSection from './add-movie/AlbumSection';
-import MovieFormFields from './add-movie/MovieFormFields';
-import PosterPreview from './add-movie/PosterPreview';
-import DatePicker from '@/shared/components/ui/DatePicker';
-import TimePicker from '@/shared/components/ui/TimePicker';
+import StatusToggle from './add-movie/status-toggle';
+import RatingSection from './add-movie/rating-section';
+import TVProgressSection from './add-movie/tv-progress-section';
+import AlbumSection from './add-movie/album-section';
+import MovieFormFields from './add-movie/movie-form-fields';
+import PosterPreview from './add-movie/poster-preview';
+import DatePicker from '@/shared/components/ui/date-picker';
+import TimePicker from '@/shared/components/ui/time-picker';
 
 // Hooks
-import { useAddMovieForm } from '../hooks/useAddMovieForm';
+import { useAddMovieForm } from '../hooks/use-add-movie-form';
 import { COUNTRY_OPTIONS } from '@/constants';
 
 function AddMovieModal() {

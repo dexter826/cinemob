@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
-import randomAudioFile from '@/assets/audio/random.MP3';
+import randomAudioFile from '@/assets/audio/random.mp3';
 import { MOTION_DURATION } from '@/constants/animations';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
-import useAddMovieStore from '../stores/addMovieStore';
-import useMovieDetailStore from '../stores/movieDetailStore';
-import useMovieStore from '../stores/movieStore';
+import useAddMovieStore from '../stores/add-movie-store';
+import useMovieDetailStore from '../stores/movie-detail-store';
+import useMovieStore from '../stores/movie-store';
 
 export type PoolMovie = Movie | TMDBMovieResult;
 export type PoolType = 'watchlist' | 'trending' | null;

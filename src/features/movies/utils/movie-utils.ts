@@ -1,7 +1,7 @@
 import { Movie } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { normalizeDate } from '@/shared/utils/dateFormat';
+import { normalizeDate } from '@/shared/utils/date-format';
 
 // Phim có quốc gia Việt Nam hay không, dùng để chọn tiêu đề chính/phụ.
 const isVietnameseOrigin = (country: string): boolean =>

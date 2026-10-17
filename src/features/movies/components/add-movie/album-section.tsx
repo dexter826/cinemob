@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { FolderPlus, Plus, X, Loader2 } from 'lucide-react';
-import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
+import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import { Album } from '@/types';
 
 interface AlbumSectionProps {

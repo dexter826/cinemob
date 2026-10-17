@@ -8,14 +8,14 @@ import {
   getSubTitle,
   getTranslatedGenres,
   getSeasonWatchedDates,
-} from '../utils/movieUtils';
+} from '../utils/movie-utils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { formatDateAny } from '@/shared/utils/dateFormat';
-import AlbumSelectorModal from '@/features/albums/components/AlbumSelectorModal';
-import useToastStore from '@/shared/stores/toastStore';
+import { formatDateAny } from '@/shared/utils/date-format';
+import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
+import useToastStore from '@/shared/stores/toast-store';
 import { Link } from 'react-router-dom';
-import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
-import { IconButton } from '@/shared/components/ui/IconButton';
+import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
+import { IconButton } from '@/shared/components/ui/icon-button';
 import { MESSAGES } from '@/constants';
 
 interface MovieDetailModalProps {

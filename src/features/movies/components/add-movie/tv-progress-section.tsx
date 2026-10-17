@@ -1,5 +1,5 @@
 import { Tv } from 'lucide-react';
-import DatePicker from '@/shared/components/ui/DatePicker';
+import DatePicker from '@/shared/components/ui/date-picker';
 
 interface TVProgressSectionProps {
   isCompleted: boolean;

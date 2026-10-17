@@ -3,13 +3,13 @@ import { Dice5, Volume2, VolumeX } from 'lucide-react';
 import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { useRandomPicker, type PoolMovie, type PoolType } from '../hooks/useRandomPicker';
-import Loading from '@/shared/components/ui/Loading';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import { Dialog, DialogBody } from '@/shared/components/ui/Dialog';
-import { Button } from '@/shared/components/ui/Button';
-import { IconButton } from '@/shared/components/ui/IconButton';
-import { PickerWheel } from './random-picker/PickerWheel';
+import { useRandomPicker, type PoolMovie, type PoolType } from '../hooks/use-random-picker';
+import Loading from '@/shared/components/ui/loading';
+import EmptyState from '@/shared/components/ui/empty-state';
+import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
+import { Button } from '@/shared/components/ui/button';
+import { IconButton } from '@/shared/components/ui/icon-button';
+import { PickerWheel } from './random-picker/picker-wheel';
 
 interface RandomPickerModalProps {
   isOpen: boolean;

@@ -1,9 +1,9 @@
 import { Movie } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
-import { getMainTitle, getSubTitle } from '../utils/movieUtils';
+import { getMainTitle, getSubTitle } from '../utils/movie-utils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { formatDateAny } from '@/shared/utils/dateFormat';
-import { getLatestWatchedDate } from '../utils/movieUtils';
+import { formatDateAny } from '@/shared/utils/date-format';
+import { getLatestWatchedDate } from '../utils/movie-utils';
 import {
   Trash2,
   Calendar,

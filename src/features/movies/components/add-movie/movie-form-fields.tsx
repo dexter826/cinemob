@@ -1,10 +1,10 @@
 import React from 'react';
 import { Film, Globe, Calendar, Tv, Clock, AlignLeft } from 'lucide-react';
-import Dropdown from '@/shared/components/ui/Dropdown';
-import DatePicker from '@/shared/components/ui/DatePicker';
-import MultiSelectDropdown from '@/shared/components/ui/MultiSelectDropdown';
+import Dropdown from '@/shared/components/ui/dropdown';
+import DatePicker from '@/shared/components/ui/date-picker';
+import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import type { MovieFormData } from '../../hooks/useAddMovieForm';
+import type { MovieFormData } from '../../hooks/use-add-movie-form';
 
 interface GenreOption {
   id: number;

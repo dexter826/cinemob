@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { TMDBMovieResult } from '@/types';
-import { fetchAIRecommendations, fetchTrendingFallback } from '../services/recommendationService';
-import useMovieStore from './movieStore';
+import { fetchAIRecommendations, fetchTrendingFallback } from '../services/recommendation-service';
+import useMovieStore from './movie-store';
 
 const pendingRequests = new Map<string, { requestId: number; promise: Promise<void> }>();
 let userGeneration = 0;

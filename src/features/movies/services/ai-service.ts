@@ -1,6 +1,6 @@
 import { Movie } from '@/types';
 import { AI_PROXY_URL } from '@/constants';
-import { normalizeDate } from '@/shared/utils/dateFormat';
+import { normalizeDate } from '@/shared/utils/date-format';
 
 interface AIRecommendation {
   title: string;

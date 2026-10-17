@@ -1,17 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useAddMovieStore from '../stores/addMovieStore';
-import useToastStore from '@/shared/stores/toastStore';
-import { addMovie, updateMovie } from '../services/movieService';
+import { useAuth } from '@/app/providers/auth-provider';
+import useAddMovieStore from '../stores/add-movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import { addMovie, updateMovie } from '../services/movie-service';
 import { Movie } from '@/types';
 
 import { MESSAGES } from '@/constants/messages';
-import { normalizeDate, todayISO } from '@/shared/utils/dateFormat';
-import { useTVProgress } from './useTVProgress';
-import { useAlbumSync } from '@/features/albums/hooks/useAlbumSync';
+import { normalizeDate, todayISO } from '@/shared/utils/date-format';
+import { useTVProgress } from './use-tv-progress';
+import { useAlbumSync } from '@/features/albums/hooks/use-album-sync';
 import { GENRE_OPTIONS } from '@/constants/genres';
-import { useTMDBLookup } from '@/features/search/hooks/useTMDBLookup';
-import { useMovieValidation } from './useMovieValidation';
+import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
+import { useMovieValidation } from './use-movie-validation';
 
 export interface MovieFormData {
   title: string;

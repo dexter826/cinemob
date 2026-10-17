@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Movie } from '@/types';
-import { subscribeToMovies } from '../services/movieService';
+import { subscribeToMovies } from '../services/movie-service';
 
 interface MovieState {
   movies: Movie[];
