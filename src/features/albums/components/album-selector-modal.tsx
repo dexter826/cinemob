@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FolderPlus, Film } from 'lucide-react';
 import { Movie, Album } from '@/types';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '../stores/album-store';
 import { updateAlbum, addAlbum } from '../services/album-service';

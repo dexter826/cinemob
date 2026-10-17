@@ -1,5 +1,5 @@
 import { useSearch } from '../hooks/use-search';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
 import SearchFilters from '../components/search-filters';

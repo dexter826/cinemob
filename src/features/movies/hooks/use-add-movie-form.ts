@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';

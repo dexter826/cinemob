@@ -13,7 +13,7 @@ import {
   arrayRemove,
   arrayUnion,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/shared/lib/firebase';
 import { Album } from '@/types';
 
 const COLLECTION_NAME = 'albums';

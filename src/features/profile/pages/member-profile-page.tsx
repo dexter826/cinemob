@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import PageHeader from '@/shared/components/ui/page-header';

@@ -12,7 +12,7 @@ import {
   writeBatch,
   arrayRemove,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/shared/lib/firebase';
 import { Movie } from '@/types';
 
 const COLLECTION_NAME = 'movies';

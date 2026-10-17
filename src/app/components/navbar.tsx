@@ -13,7 +13,7 @@ import {
   User,
   Users,
 } from 'lucide-react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import { useTheme } from '@/app/providers/theme-provider';
 import { Link, useLocation } from 'react-router-dom';
 

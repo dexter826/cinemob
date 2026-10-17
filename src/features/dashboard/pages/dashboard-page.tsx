@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import { Film } from 'lucide-react';
 import MovieCard from '@/features/movies/components/movie-card';
 import Pagination from '@/shared/components/ui/pagination';

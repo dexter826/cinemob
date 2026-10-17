@@ -1,6 +1,6 @@
 import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from '@/app/providers/auth-provider';
+import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider';
 import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import Login from '@/features/auth/components/login';

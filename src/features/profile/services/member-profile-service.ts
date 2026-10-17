@@ -7,7 +7,7 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/shared/lib/firebase';
 import { normalizeDate } from '@/shared/utils/date-format';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 

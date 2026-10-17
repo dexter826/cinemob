@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Search, Users, X } from 'lucide-react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Loading from '@/shared/components/ui/loading';

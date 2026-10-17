@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, PointerEvent as ReactPointerEvent, RefObject } from 'react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import { getCroppedImgBlob } from '@/features/profile/services/cloudinary-service';
 import {
   getOriginalGoogleAvatar,

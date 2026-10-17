@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useReleaseCalendarStore from '../stores/release-calendar-store';

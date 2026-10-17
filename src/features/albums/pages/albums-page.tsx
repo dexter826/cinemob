@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Plus, Folder, Film, Trash2 } from 'lucide-react';
-import { useAuth } from '@/app/providers/auth-provider';
+import { useAuth } from '@/features/auth/components/auth-provider';
 import { Album } from '@/types';
 import { addAlbum, deleteAlbum } from '../services/album-service';
 import useToastStore from '@/shared/stores/toast-store';

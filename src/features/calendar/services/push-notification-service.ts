@@ -1,5 +1,5 @@
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '@/lib/firebase';
+import { db, auth } from '@/shared/lib/firebase';
 
 // Khớp với key trong GitHub Actions.
 const VAPID_PUBLIC_KEY =
