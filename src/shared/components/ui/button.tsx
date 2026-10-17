@@ -16,16 +16,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-hover border border-transparent',
   secondary:
-    'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
+    'bg-transparent text-text-primary border border-border hover:border-primary hover:text-primary',
   ghost:
     'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
   danger: 'bg-danger text-on-danger hover:brightness-95 border border-transparent',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-xs gap-1.5 rounded-control',
-  md: 'px-4 py-2.5 text-sm gap-2 rounded-control',
-  lg: 'px-6 py-3.5 text-base gap-2 rounded-card',
+  sm: 'px-3 py-1.5 text-[11px] gap-1.5 rounded-control',
+  md: 'px-4 py-2.5 text-xs gap-2 rounded-control',
+  lg: 'px-6 py-3 text-sm gap-2 rounded-control',
 };
 
 export function Button({

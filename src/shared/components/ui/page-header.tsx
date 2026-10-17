@@ -43,8 +43,12 @@ function PageHeader({
         )}
         {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}
         <div className="min-w-0">
-          {eyebrow && <p className="text-xs font-semibold text-text-secondary mb-1">{eyebrow}</p>}
-          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-primary truncate font-display">
+          {eyebrow && (
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary mb-1">
+              {eyebrow}
+            </p>
+          )}
+          <h1 className="font-display uppercase tracking-wide text-2xl sm:text-3xl md:text-4xl text-text-primary truncate">
             {title}
           </h1>
           {description && (

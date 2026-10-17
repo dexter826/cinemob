@@ -86,7 +86,7 @@ export function Dialog({
           key="dialog-overlay"
           role="presentation"
           className={classNames(
-            'fixed inset-0 flex flex-col bg-black/60 p-0 sm:p-4',
+            'fixed inset-0 flex flex-col bg-black/72 p-0 sm:p-4',
             overlayClassName || 'z-50',
           )}
           variants={OVERLAY_VARIANTS}
@@ -144,7 +144,7 @@ export function DialogHeader({
         <div className="min-w-0">
           <h2
             id={titleId}
-            className="text-base sm:text-lg font-bold tracking-tight font-display truncate"
+            className="text-base sm:text-lg font-bold uppercase tracking-wide font-display truncate"
           >
             {title}
           </h2>
