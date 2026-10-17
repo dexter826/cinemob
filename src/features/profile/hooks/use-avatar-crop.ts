@@ -295,37 +295,38 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
   }, [user, refreshUser, showToast, pan, zoom, reset]);
 
   // Khôi phục ảnh gốc tài khoản Google, kèm undo-toast.
-  const handleDelete = useCallback(() => {
+  const handleDelete = useCallback(async () => {
     if (!user || isBusy) return;
     const previousPhotoURL = user.photoURL;
 
     setIsDeleting(true);
     setErrorMessage(null);
 
-    (async () => {
-      try {
-        await revertToGoogleAvatar(user);
-        await refreshUser();
-        showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
-          label: 'Hoàn tác',
-          onAction: () => {
-            if (!previousPhotoURL) return;
-            setUserAvatarUrl(user, previousPhotoURL)
-              .then(() => refreshUser())
-              .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
-          },
-        });
-      } catch (error: unknown) {
-        const message =
-          error instanceof Error && error.message
-            ? error.message
-            : 'Không thể xóa ảnh đại diện';
-        setErrorMessage(message);
-        showToast(message, 'error');
-      } finally {
-        setIsDeleting(false);
-      }
-    })();
+    try {
+      await revertToGoogleAvatar(user);
+      await refreshUser();
+      showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
+        label: 'Hoàn tác',
+        onAction: () => {
+          if (!previousPhotoURL) return;
+          setUserAvatarUrl(user, previousPhotoURL)
+            .then(() => {
+              refreshUser();
+              showToast('Đã hoàn tác ảnh đại diện', 'success');
+            })
+            .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
+        },
+      });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Không thể xóa ảnh đại diện';
+      setErrorMessage(message);
+      showToast(message, 'error');
+    } finally {
+      setIsDeleting(false);
+    }
   }, [user, isBusy, refreshUser, showToast]);
 
   const googleAvatarUrl = user ? getOriginalGoogleAvatar(user) : null;

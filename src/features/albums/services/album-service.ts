@@ -53,6 +53,24 @@ export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
   });
 };
 
+// Thêm phim vào album bằng arrayUnion nguyên tử.
+export const addMovieToAlbum = async (albumId: string, movieDocId: string) => {
+  const albumRef = doc(db, COLLECTION_NAME, albumId);
+  await updateDoc(albumRef, {
+    movieDocIds: arrayUnion(movieDocId),
+    updatedAt: serverTimestamp(),
+  });
+};
+
+// Gỡ phim khỏi album bằng arrayRemove nguyên tử.
+export const removeMovieFromAlbum = async (albumId: string, movieDocId: string) => {
+  const albumRef = doc(db, COLLECTION_NAME, albumId);
+  await updateDoc(albumRef, {
+    movieDocIds: arrayRemove(movieDocId),
+    updatedAt: serverTimestamp(),
+  });
+};
+
 export const syncMovieAlbums = async (
   movieDocId: string,
   previousAlbumIds: string[],

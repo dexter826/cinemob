@@ -5,7 +5,12 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
-import { subscribeToAlbum, updateAlbum } from '../services/album-service';
+import {
+  subscribeToAlbum,
+  updateAlbum,
+  addMovieToAlbum,
+  removeMovieFromAlbum,
+} from '../services/album-service';
 import { filterAvailableAlbumMovies, paginateItems } from '../utils/album-selectors';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 
@@ -89,8 +94,7 @@ export function useAlbumDetail(albumId?: string) {
       return;
     }
     try {
-      const newIds = Array.from(new Set([...(album.movieDocIds || []), movie.docId]));
-      await updateAlbum(album.docId, { movieDocIds: newIds });
+      await addMovieToAlbum(album.docId, movie.docId);
       showToast(MESSAGES.ALBUM.ADD_MOVIE_SUCCESS, 'success');
     } catch {
       showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
@@ -100,15 +104,14 @@ export function useAlbumDetail(albumId?: string) {
   const handleRemoveMovie = async (movie: Movie) => {
     if (!album?.docId || !movie.docId) return;
     const albumDocId = album.docId;
-    const previousIds = album.movieDocIds || [];
+    const movieDocId = movie.docId;
     try {
-      const newIds = previousIds.filter((id) => id !== movie.docId);
-      await updateAlbum(albumDocId, { movieDocIds: newIds });
+      await removeMovieFromAlbum(albumDocId, movieDocId);
       showToast(`Đã bỏ "${getMainTitle(movie)}" khỏi album`, 'info', UNDO_REMOVE_MS, {
         label: 'Hoàn tác',
         onAction: () => {
-          updateAlbum(albumDocId, { movieDocIds: previousIds }).catch(() =>
-            showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error'),
+          addMovieToAlbum(albumDocId, movieDocId).catch(() =>
+            showToast('Không thể hoàn tác, vui lòng thử lại', 'error'),
           );
         },
       });

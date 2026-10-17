@@ -36,10 +36,14 @@ function useWallPosters(): TMDBMovieResult[] {
 
   useEffect(() => {
     let cancelled = false;
-    getTrendingMovies().then((data) => {
-      if (cancelled) return;
-      setPosters((data?.results ?? []).filter((m) => m.poster_path).slice(0, WALL_COUNT));
-    });
+    getTrendingMovies()
+      .then((data) => {
+        if (cancelled) return;
+        setPosters((data?.results ?? []).filter((m) => m.poster_path).slice(0, WALL_COUNT));
+      })
+      .catch(() => {
+        // Poster trang trí nền: bỏ qua nếu gặp lỗi mạng hoặc rate-limit
+      });
     return () => {
       cancelled = true;
     };
