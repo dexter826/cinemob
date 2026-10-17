@@ -154,10 +154,7 @@ function DashboardPage() {
       <section className="border-b border-border">
         <div className="md:px-0 pt-6 pb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary">
-              Thư viện
-            </p>
-            <p className="font-display leading-[0.95] text-6xl md:text-8xl mt-2 tabular-nums">
+            <p className="font-display leading-[0.95] text-6xl md:text-8xl tabular-nums">
               {movies.length}
             </p>
             <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mt-2">

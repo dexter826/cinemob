@@ -9,8 +9,6 @@ import {
   Play,
   Star,
   Trash2,
-  User,
-  Users,
 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
@@ -268,19 +266,18 @@ function MovieDetailPage() {
             </div>
           )}
 
-          {/* Đạo diễn + diễn viên */}
+          {/* Đạo diễn + diễn viên — khối credit kiểu press-kit */}
           {extrasLoading ? (
             <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
           ) : (
             credits && (
-              <div className="mt-7 space-y-5">
+              <div className="mt-7 border-t border-border">
                 {credits.crew?.some((c) => c.job === 'Director') && (
-                  <div>
-                    <SectionHeader className="flex items-center gap-1.5">
-                      <User size={12} aria-hidden="true" />
+                  <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
+                    <span className="w-20 sm:w-24 shrink-0 text-[11px] font-semibold text-text-secondary pt-0.5">
                       Đạo diễn
-                    </SectionHeader>
-                    <p className="mt-1.5 text-sm text-text-primary">
+                    </span>
+                    <p className="text-sm text-text-primary">
                       {credits.crew
                         .filter((c) => c.job === 'Director')
                         .map((d) => d.name)
@@ -289,17 +286,16 @@ function MovieDetailPage() {
                   </div>
                 )}
                 {credits.cast && credits.cast.length > 0 && (
-                  <div>
-                    <SectionHeader className="flex items-center gap-1.5">
-                      <Users size={12} aria-hidden="true" />
+                  <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
+                    <span className="w-20 sm:w-24 shrink-0 text-[11px] font-semibold text-text-secondary pt-0.5">
                       Diễn viên
-                    </SectionHeader>
-                    <div className="mt-2.5 flex flex-wrap gap-2">
+                    </span>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
                       {credits.cast.slice(0, 8).map((actor) => (
                         <Link
                           key={actor.id}
                           to={`/person/${actor.id}`}
-                          className="border border-border rounded-control px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-primary hover:text-primary transition-colors cursor-pointer"
+                          className="text-text-secondary hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
                         >
                           {actor.name}
                         </Link>
