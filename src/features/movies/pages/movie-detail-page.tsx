@@ -80,9 +80,9 @@ function MovieDetailPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
       {/* Thanh trên: Back */}
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between pb-4 md:pb-5">
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
           <ArrowLeft size={20} aria-hidden="true" />
         </IconButton>
