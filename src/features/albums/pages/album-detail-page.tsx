@@ -67,8 +67,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
-                    ? 'bg-primary/10 border-primary/30 text-primary'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50'
+                    ? 'text-primary font-bold border-transparent'
+                    : 'border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -85,8 +85,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   editing
-                    ? 'bg-primary/10 border-primary/30 text-primary'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50'
+                    ? 'text-primary font-bold border-transparent'
+                    : 'border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}

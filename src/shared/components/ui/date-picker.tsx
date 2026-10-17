@@ -345,7 +345,7 @@ function DatePicker({
             onChange(formatDateToString(today));
             closePicker();
           }}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-primary/20"
+          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
         >
           Hôm nay
         </button>

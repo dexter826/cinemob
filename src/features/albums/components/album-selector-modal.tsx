@@ -130,7 +130,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
 
       <DialogBody>
         {showCreateForm ? (
-          <div className="mb-6 p-5 border border-primary/20 rounded-card bg-primary/5">
+          <div className="mb-6 p-5 border border-border rounded-card">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Tạo album mới</h3>
             <div className="space-y-4">
               <label htmlFor="album-selector-new-name" className="sr-only">
@@ -173,12 +173,12 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           <button
             type="button"
             onClick={() => setShowCreateForm(true)}
-            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-colors text-left cursor-pointer"
+            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-border hover:border-primary/60 transition-colors text-left cursor-pointer"
           >
             <span className="flex items-center gap-4">
               <span
                 aria-hidden="true"
-                className="w-12 h-12 bg-primary/10 rounded-control flex items-center justify-center shrink-0 border border-primary/20"
+                className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
               >
                 <FolderPlus size={24} className="text-primary" />
               </span>

@@ -187,7 +187,7 @@ function AlbumsPage() {
               </button>
 
               <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
-                <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-control bg-primary/10 text-primary font-semibold text-xs border border-primary/20 shrink-0">
+                <div className="inline-flex items-center gap-1.5 text-primary font-semibold text-xs shrink-0">
                   <Film size={12} strokeWidth={1.5} aria-hidden="true" />
                   <span>
                     <strong className="tabular-nums">{album.movieDocIds.length}</strong> mục

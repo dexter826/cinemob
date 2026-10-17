@@ -110,7 +110,7 @@ function DashboardFilters({
           aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
           className={`w-11 h-11 flex items-center justify-center rounded-card border transition-colors duration-200 cursor-pointer ${
             showFilters
-              ? 'bg-primary/15 border-primary/40 text-primary'
+              ? 'bg-primary text-on-primary border-primary'
               : 'bg-surface border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary hover:border-primary/40 dark:hover:border-white/10'
           }`}
         >
@@ -134,7 +134,7 @@ function DashboardFilters({
                 onClick={() => updateFilter('sortBy', 'date')}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'date'
-                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    ? 'bg-primary text-on-primary border-primary'
                     : 'border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -145,7 +145,7 @@ function DashboardFilters({
                 onClick={() => updateFilter('sortBy', 'title')}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'title'
-                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    ? 'bg-primary text-on-primary border-primary'
                     : 'border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >

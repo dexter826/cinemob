@@ -83,8 +83,8 @@ function CalendarGrid({
           aria-pressed={selected}
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
-            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group 
-            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40' : 'border-border-default dark:border-white/5'}
+            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group
+            ${today ? 'border-primary' : 'border-border-default dark:border-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
@@ -99,7 +99,7 @@ function CalendarGrid({
               {episodes.slice(0, 2).map((ep) => (
                 <div
                   key={`${ep.seriesId}-${ep.episode.id}`}
-                  className="text-xs sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
+                  className="text-xs sm:text-xs text-primary truncate font-bold"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
@@ -163,7 +163,7 @@ function CalendarGrid({
             type="button"
             onClick={goToToday}
             aria-label="Về hôm nay"
-            className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors cursor-pointer"
+            className="text-xs font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
           >
             Hôm nay
           </button>
