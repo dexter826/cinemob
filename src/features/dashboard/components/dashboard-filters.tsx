@@ -139,7 +139,7 @@ function DashboardFilters({
       {showFilters && (
         <div
           ref={filterRef}
-          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 min-w-[320px] max-h-[calc(100dvh-24rem)] overflow-y-auto overscroll-contain"
+          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 w-[320px] max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-24rem)] overflow-y-auto overscroll-contain"
         >
           <div className="space-y-3">
             <div className="text-xs font-semibold text-text-secondary">Sắp xếp</div>
