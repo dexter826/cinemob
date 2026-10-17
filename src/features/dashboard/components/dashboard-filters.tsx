@@ -71,10 +71,10 @@ function DashboardFilters({
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
-      <div className="flex items-center gap-2 w-full sm:w-auto">
+      <div className="flex items-center gap-1 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
           <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
+            className="absolute left-2 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
             size={16}
             strokeWidth={1.5}
             aria-hidden="true"
@@ -88,13 +88,13 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors ring-1"
+            className="w-full sm:w-52 h-11 bg-transparent rounded-none border-0 border-b border-transparent pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary hover:border-b-border focus-visible:outline-none focus-visible:border-b-primary focus-visible:ring-0 transition-colors"
           />
           {filters.searchQuery && (
             <button
               onClick={() => updateFilter('searchQuery', '')}
               aria-label="Xóa từ khóa lọc"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-1"
             >
               <X size={14} strokeWidth={1.5} />
             </button>
@@ -108,10 +108,8 @@ function DashboardFilters({
             setShowFilters(!showFilters);
           }}
           aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-          className={`w-11 h-11 flex items-center justify-center rounded-card border transition-colors duration-200 cursor-pointer ${
-            showFilters
-              ? 'bg-primary text-on-primary border-primary'
-              : 'bg-surface border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary hover:border-primary/40 dark:hover:border-white/10'
+          className={`w-11 h-11 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
+            showFilters ? 'text-primary' : 'text-text-secondary hover:text-primary'
           }`}
         >
           {showFilters ? (
