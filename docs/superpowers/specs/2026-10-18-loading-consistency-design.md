@@ -1,6 +1,8 @@
 # Chuẩn hóa trạng thái loading trong CineMOB
 
-Ngày: 18/10/2026. Trạng thái: bản thiết kế chờ người dùng duyệt; chưa cho phép triển khai source.
+Ngày: 18/10/2026. Trạng thái: người dùng đã duyệt thiết kế; đang lập kế hoạch triển khai.
+
+Điều chỉnh sau khi duyệt: người dùng yêu cầu không thêm hoặc chạy test, không kiểm tra trên trình duyệt. Chỉ rà soát source/diff và chạy typecheck, lint, build. Không thêm test runner, dependency test, mock, fixture hoặc script kiểm thử. Điều chỉnh này thay thế các yêu cầu kiểm thử trước đó.
 
 ## 1. Mục tiêu và phạm vi đã thống nhất
 
@@ -125,7 +127,7 @@ Builder quyết định tên component/prop/helper, cách biểu diễn request 
 
 ## 7. Kiểm chứng và tiêu chí hoàn tất
 
-Đây là thay đổi nhiều feature, cần kế hoạch triển khai sau khi duyệt tài liệu. Thứ tự: (1) bảo vệ dữ liệu và kết thúc pending, (2) error/empty/scope/refresh, (3) primitives và skeleton geometry, (4) keyboard/status/theme và kiểm tra tích hợp. Mỗi nhóm phải có bằng chứng trước khi chuyển nhóm; không sửa tất cả rồi chỉ chạy build.
+Đây là thay đổi nhiều feature, cần kế hoạch triển khai sau khi duyệt tài liệu. Thứ tự: (1) bảo vệ dữ liệu và kết thúc pending, (2) error/empty/scope/refresh, (3) primitives và skeleton geometry, (4) rà soát status/theme và kiểm tra tĩnh. Mỗi nhóm phải được rà soát đường đi trạng thái trước khi chuyển nhóm. Bảng dưới là tiêu chí hành vi để đối chiếu source, không phải danh sách test phải tạo hoặc chạy.
 
 | Nhóm           | Bằng chứng bắt buộc                                                                                                                                                    |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -138,8 +140,8 @@ Builder quyết định tên component/prop/helper, cách biểu diễn request 
 | Accessibility  | Keyboard đóng modal và giữ focus; một status mỗi vùng; không đọc danh sách placeholder; reduced-motion còn text/status có nghĩa                                        |
 | Mutations/ảnh  | Save cần details chưa sẵn sàng bị chặn; ảnh lỗi dùng fallback một lần; pending không lặp spinner; lỗi giữ input                                                        |
 
-Các regression về request/state và bảo vệ ghi cần automated test chạy offline với dữ liệu giả, chứng minh fail trước/fix sau. Repo chưa có frontend runner; ưu tiên công cụ Node/TypeScript/React hiện có và kiểm thử handler/state thật, không test chỉ tìm chuỗi source. Nếu cần test runner/DOM để chạy hook/component thật thì builder phải ghi rõ lựa chọn dev-only tối thiểu trong kế hoạch trước khi triển khai; ràng buộc không thêm thư viện runtime vẫn giữ nguyên.
+Theo chỉ định mới nhất của người dùng, không thêm hoặc chạy automated test, harness, mock, fixture hay dependency test. Không mở trình duyệt để kiểm tra thủ công. Các kích thước 390 px/1440 px, light/dark, keyboard và reduced-motion trong bảng chỉ định mục tiêu thiết kế; lần triển khai này đối chiếu qua source/CSS, không khẳng định đã đo hoặc thao tác thực tế.
 
-Kiểm tra cuối gồm typecheck/lint/build theo scripts hiện có, regression có liên quan, một lượt browser desktop/mobile và hai theme, detector trên target đã đổi. Kiểm tra accessibility bằng DOM/keyboard; nếu không có screen reader phải ghi rõ giới hạn, không tuyên bố đạt WCAG từ aria attributes. Không ghi/xóa dữ liệu tài khoản thật để chứng minh L01; dùng fixture/mocks cho đường ghi.
+Kiểm tra cuối chỉ gồm typecheck/lint/build theo scripts hiện có và rà soát diff/đường đi trạng thái, đúng yêu cầu người dùng. Không ghi/xóa dữ liệu tài khoản thật. Báo cáo cuối phải phân biệt lỗi đã sửa theo source với hành vi chưa được kiểm chứng runtime; không tuyên bố đã chứng minh hết race condition, đạt WCAG hoặc hết layout shift.
 
 Stop condition: có đối chiếu L01–L17 với thay đổi và bằng chứng; không còn pending bị treo ở các kịch bản trên, không còn lỗi giả empty, primitive hiển thị đúng và không khóa thừa. Chỉ polish lỗi trong phạm vi vừa thay đổi; không mở rộng thành redesign hay cải tổ toàn bộ data layer.
