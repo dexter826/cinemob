@@ -7,6 +7,10 @@ const CACHE_DURATION = {
   AI_RECS: 7 * 24 * 60 * 60 * 1000,
 } as const;
 
+const AI_RECOMMENDATIONS_LIMIT = 10;
+const AI_CANDIDATE_LIMIT = 22;
+const AI_CACHE_VERSION = 'v2';
+
 const isExpired = (timestamp: number, duration: number): boolean => {
   return Date.now() - timestamp > duration;
 };
@@ -21,7 +25,7 @@ export const fetchAIRecommendations = async (
 
   if (watchedHistory.length < 3) return null;
 
-  const cacheKey = `ai_recs_${userId}`;
+  const cacheKey = `ai_recs_${AI_CACHE_VERSION}_${userId}`;
   const cachedData = localStorage.getItem(cacheKey);
 
   if (cachedData && !forceRefresh) {
@@ -50,7 +54,7 @@ export const fetchAIRecommendations = async (
 
   const aiRecs = await getAIRecommendations(watchedHistory, allMovies);
 
-  const tasks = aiRecs.slice(0, 22).map((rec) => async () => {
+  const tasks = aiRecs.slice(0, AI_CANDIDATE_LIMIT).map((rec) => async () => {
     try {
       const yearMatch = rec.title.match(/\((\d{4})\)$/);
       const title = yearMatch ? rec.title.replace(/\s*\(\d{4}\)$/, '') : rec.title;
@@ -71,7 +75,7 @@ export const fetchAIRecommendations = async (
     (m) => m !== null && !savedMovieIds.has(m.id.toString()),
   ) as TMDBMovieResult[];
 
-  const displayResults = tmdbResults.slice(0, 20);
+  const displayResults = tmdbResults.slice(0, AI_RECOMMENDATIONS_LIMIT);
 
   try {
     localStorage.setItem(
