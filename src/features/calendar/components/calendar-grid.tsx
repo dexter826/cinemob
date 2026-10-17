@@ -14,6 +14,9 @@ interface CalendarGridProps {
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
+/** Số ô lưới lịch tháng cố định (6 tuần) — đủ cho mọi cách rơi của ngày 1. */
+const TOTAL_CELLS = 42;
+
 /** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
   currentDate,
@@ -29,14 +32,12 @@ function CalendarGrid({
   const getFirstDayOfMonth = (date: Date) =>
     new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
+  const todayDate = new Date();
+
+  const isToday = (date: Date) =>
+    date.getDate() === todayDate.getDate() &&
+    date.getMonth() === todayDate.getMonth() &&
+    date.getFullYear() === todayDate.getFullYear();
 
   const isSelected = (date: Date) => {
     if (!selectedDate) return false;
@@ -129,7 +130,9 @@ function CalendarGrid({
     }
 
     const totalCells = days.length;
-    const nextMonthDaysNeeded = 42 - totalCells;
+    // Chỉ điền đủ số ô của tháng sau để hoàn tất hàng cuối — không nhét cứng 6 tuần.
+    const remainder = totalCells % 7;
+    const nextMonthDaysNeeded = remainder === 0 ? 0 : 7 - remainder;
     for (let day = 1; day <= nextMonthDaysNeeded; day++) {
       days.push(
         <div
@@ -145,13 +148,13 @@ function CalendarGrid({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-dialog flex flex-col h-full">
+    <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-dialog flex flex-col">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button
           type="button"
           onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -172,7 +175,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
@@ -191,7 +194,7 @@ function CalendarGrid({
 
       {loadingEpisodes ? (
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {Array.from({ length: 42 }).map((_, idx) => (
+          {Array.from({ length: TOTAL_CELLS }).map((_, idx) => (
             <div
               key={idx}
               className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card animate-pulse"

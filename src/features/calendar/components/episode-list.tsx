@@ -1,4 +1,4 @@
-import { Info, Clock, ChevronRight } from 'lucide-react';
+import { Info, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
 import { formatDateDMY, todayISO } from '@/shared/utils/date-format';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
@@ -42,8 +42,8 @@ function EpisodeList({
   };
 
   return (
-    <div className="lg:col-span-1 lg:max-h-[880px] flex flex-col min-w-0 lg:border-l lg:border-border lg:pl-6">
-      <div className="flex flex-col h-full min-h-[400px] lg:max-h-[880px] lg:min-h-[880px]">
+    <div className="lg:col-span-1 lg:relative min-w-0 min-h-0 lg:border-l lg:border-border lg:pl-6">
+      <div className="flex flex-col min-h-0 lg:absolute lg:inset-y-0 lg:right-0 lg:left-6">
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
           <h2 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
             {selectedDate ? `Ngày ${formatDateDMY(selectedDate)}` : monthTitle}
@@ -97,7 +97,7 @@ function EpisodeList({
             </p>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto custom-scrollbar -mr-1 pr-1">
+          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar -mr-1 pr-1">
             {Object.entries(episodesByDate).map(([date, episodes]) => (
               <div key={date} className="mb-6 last:mb-0">
                 <div className="sticky top-0 z-10 pb-2 -mt-1 pt-1 flex justify-start bg-background">
@@ -132,11 +132,6 @@ function EpisodeList({
                           <span className="text-xs font-black text-primary tabular-nums">
                             S{ep.episode.season_number}E{ep.episode.episode_number}
                           </span>
-                          {ep.episode.runtime && (
-                            <span className="text-xs font-bold text-text-secondary flex items-center gap-1 opacity-60">
-                              <Clock size={12} aria-hidden="true" /> {ep.episode.runtime}&nbsp;phút
-                            </span>
-                          )}
                         </div>
                         <p className="text-xs font-medium text-text-secondary truncate mt-1">
                           {ep.episode.name || `Tập ${ep.episode.episode_number}`}
