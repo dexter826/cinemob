@@ -3,7 +3,8 @@ import { Film, Search, X } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
-import ProfileMovieCard from './profile-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 import {
   filterAndSortProfileMovies,
@@ -145,9 +146,23 @@ function MovieListSection({
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
           {visibleMovies.map((movie) => (
-            <ProfileMovieCard key={String(movie.id)} movie={movie} />
+            <PosterCard
+              key={String(movie.id)}
+              title={movie.title_vi || movie.title}
+              posterPath={movie.poster_path ?? null}
+              mediaType={movie.media_type}
+              rating={movie.rating}
+              review={movie.is_review}
+              meta={
+                movie.watched_at
+                  ? formatDateAny(movie.watched_at)
+                  : movie.release_date
+                    ? movie.release_date.slice(0, 4)
+                    : undefined
+              }
+            />
           ))}
         </div>
       )}

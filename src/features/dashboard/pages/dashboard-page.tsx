@@ -262,7 +262,6 @@ function DashboardPage() {
               {processedMovies.map((movie) => (
                 <motion.div key={movie.docId} variants={staggerItem}>
                   <PosterCard
-                    id={movie.id}
                     title={getMainTitle(movie)}
                     posterPath={movie.poster_path}
                     mediaType={movie.media_type}
@@ -276,6 +275,9 @@ function DashboardPage() {
                             total: movie.total_episodes ?? 0,
                           }
                         : null
+                    }
+                    onClick={() =>
+                      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
                     }
                   />
                 </motion.div>

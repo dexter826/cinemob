@@ -1,7 +1,8 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-react';
-import MovieCard from '@/features/movies/components/movie-card';
+import { ArrowLeft, Film, PlusCircle, Edit2, Trash2, X as XIcon, Search } from 'lucide-react';
+import PosterCard from '@/features/movies/components/poster-card';
+import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
 import { formatDateAny } from '@/shared/utils/date-format';
 import useAlertStore from '@/shared/stores/alert-store';
@@ -188,23 +189,36 @@ function AlbumDetailPage() {
                 }
               />
             ) : (
-              <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+              <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                 {albumMovies.map((movie) => (
-                  <MovieCard
+                  <PosterCard
                     key={movie.docId}
-                    movie={movie}
-                    onClick={(m) =>
-                      navigate(`/movie/${m.id}${m.media_type === 'tv' ? '?type=tv' : ''}`)
+                    title={getMainTitle(movie)}
+                    posterPath={movie.poster_path}
+                    source={movie.source}
+                    mediaType={movie.media_type}
+                    rating={movie.rating}
+                    onClick={() =>
+                      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
                     }
-                    onEdit={() => {}}
-                    onDelete={() =>
-                      showAlert({
-                        title: 'Bỏ phim khỏi album',
-                        message: `Bỏ “${movie.title}” khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
-                        type: 'danger',
-                        confirmText: 'Bỏ khỏi album',
-                        onConfirm: () => handleRemoveMovie(movie),
-                      })
+                    actions={
+                      <button
+                        type="button"
+                        onClick={() =>
+                          showAlert({
+                            title: 'Bỏ phim khỏi album',
+                            message: `Bỏ “${getMainTitle(movie)}” khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
+                            type: 'danger',
+                            confirmText: 'Bỏ khỏi album',
+                            onConfirm: () => handleRemoveMovie(movie),
+                          })
+                        }
+                        aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
+                        title="Bỏ khỏi album"
+                        className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
+                      </button>
                     }
                   />
                 ))}
@@ -257,13 +271,18 @@ function AlbumDetailPage() {
               />
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                   {paginatedMovies.map((movie) => (
-                    <MovieCard
+                    <PosterCard
                       key={movie.docId}
-                      mode="select"
-                      movie={movie}
-                      onSelect={handleAddMovie}
+                      title={getMainTitle(movie)}
+                      posterPath={movie.poster_path}
+                      source={movie.source}
+                      mediaType={movie.media_type}
+                      rating={movie.rating}
+                      selectable
+                      ariaLabel={`Thêm ${getMainTitle(movie)} vào album`}
+                      onClick={() => handleAddMovie(movie)}
                     />
                   ))}
                 </div>

@@ -1,45 +1,64 @@
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Star } from 'lucide-react';
+import { Bookmark, CheckCircle, Eye, Star, X } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { classNames } from '@/shared/utils/class-names';
 
 interface PosterCardProps {
-  /** TMDB id (Movie.id). */
-  id: number | string;
   title: string;
   posterPath: string | null;
+  /** 'manual' → posterPath là URL trực tiếp, không ghép base TMDB. */
+  source?: 'tmdb' | 'manual';
   mediaType?: 'movie' | 'tv';
-  /** Điểm người dùng; fallback TMDB vote_average. Ẩn nếu <= 0. */
   rating?: number;
   /** Dòng meta caps dưới tiêu đề, vd "Tâm lý · 2025". */
   meta?: string;
-  /** 'manual' → posterPath là URL trực tiếp, không ghép base TMDB (đồng bộ movie-card). */
-  source?: 'tmdb' | 'manual';
   /** TV progress: thanh 2px dưới cùng poster. */
   progress?: { current: number; total: number } | null;
-  /** Bật hero transition sang /movie/:id (Task 6) — bỏ khi reduced-motion. */
+  /** Badge trạng thái bộ sưu tập (Đã xem / Sẽ xem). */
+  status?: 'history' | 'watchlist' | null;
+  /** Nhân vật / vai trò (trang diễn viên) — dòng vàng dưới meta. */
+  credit?: string;
+  /** Đánh dấu phim có review. */
+  review?: boolean;
+  /** Nút bỏ gợi ý (góc phải trên, trên cùng). */
+  onRemove?: () => void;
+  /** Icon actions (xóa/sửa/đã xem) — desktop hiện khi hover, mobile luôn hiện. */
+  actions?: React.ReactNode;
+  /** Chế độ chọn (album selector): overlay check theo `selected`. */
+  selectable?: boolean;
+  selected?: boolean;
+  /** Không truyền → card chỉ hiển thị, không bấm được (vd profile công khai). */
+  onClick?: () => void;
+  ariaLabel?: string;
   layoutId?: string;
   className?: string;
 }
 
 /**
- * Poster card editorial: poster là nguồn màu duy nhất, hover = viền vàng 1px
- * + ảnh phóng nhẹ bên trong frame (không lift, không bóng).
+ * Card DUY NHẤT của app (editorial): poster là cả thẻ, chữ trên scrim.
+ * Hover = viền vàng 1px + ảnh phóng nhẹ bên trong — không lift, không bóng.
  */
 function PosterCard({
-  id,
   title,
   posterPath,
+  source = 'tmdb',
   mediaType,
   rating,
   meta,
-  source = 'tmdb',
   progress,
+  status,
+  credit,
+  review,
+  onRemove,
+  actions,
+  selectable = false,
+  selected = false,
+  onClick,
+  ariaLabel,
   layoutId,
   className,
 }: PosterCardProps) {
-  const navigate = useNavigate();
   const reducedMotion = useReducedMotion() ?? false;
   const imageUrl =
     posterPath && source === 'manual' ? posterPath : getTMDBImageUrl(posterPath, 'w500');
@@ -48,64 +67,133 @@ function PosterCard({
       ? Math.min(100, Math.round((progress.current / progress.total) * 100))
       : null;
   const showRating = typeof rating === 'number' && rating > 0;
-
-  const handleClick = () => {
-    navigate(`/movie/${id}${mediaType === 'tv' ? '?type=tv' : ''}`);
-  };
+  const statusLabel = status === 'history' ? 'Đã xem' : status === 'watchlist' ? 'Sẽ xem' : null;
 
   return (
-    <motion.button
-      type="button"
-      onClick={handleClick}
+    <motion.article
       layoutId={!reducedMotion && layoutId ? layoutId : undefined}
-      aria-label={`Xem chi tiết phim ${title}`}
       className={classNames(
-        'group relative block w-full aspect-2/3 rounded-poster overflow-hidden',
-        'bg-surface border border-border cursor-pointer text-left p-0',
-        'ring-inset transition-[outline-color] duration-200',
-        'hover:ring-1 hover:ring-primary focus-visible:ring-1 focus-visible:ring-primary',
+        'group relative block aspect-2/3 rounded-poster overflow-hidden',
+        'bg-surface border border-border',
+        selected ? 'ring-1 ring-primary' : 'ring-inset transition-[outline-color] duration-200',
+        onClick && !selected && 'hover:ring-1 hover:ring-primary',
+        selectable || onClick ? 'cursor-pointer' : '',
         className ?? '',
       )}
     >
-      <img
-        src={imageUrl}
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        draggable={false}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
-      />
+      {onClick ? (
+        <button
+          type="button"
+          onClick={onClick}
+          aria-label={ariaLabel ?? `Xem chi tiết phim ${title}`}
+          className="absolute inset-0 w-full h-full cursor-pointer p-0 text-left"
+        >
+          <img
+            src={imageUrl}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+          />
+        </button>
+      ) : (
+        <img
+          src={imageUrl}
+          alt={title}
+          loading="lazy"
+          draggable={false}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
 
       {/* Scrim chức năng: nền tối để chữ đọc được trên ảnh */}
       <span
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none"
       />
 
-      {showRating && (
-        <span className="absolute top-1.5 right-2 flex items-center gap-1 text-[11px] font-bold text-primary">
-          <Star size={11} className="fill-primary" aria-hidden="true" />
-          {rating.toFixed(1)}
+      {/* Badges góc trái trên */}
+      <div className="absolute top-2 left-2 flex flex-col items-start gap-1.5 z-10 pointer-events-none">
+        {statusLabel && (
+          <span
+            className={classNames(
+              'flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-[9px] font-bold uppercase tracking-[0.06em]',
+              status === 'history' ? 'bg-success text-on-success' : 'bg-primary text-on-primary',
+            )}
+          >
+            <Bookmark size={9} className="fill-current" aria-hidden="true" />
+            {statusLabel}
+          </span>
+        )}
+        {showRating && (
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[10px] font-bold text-primary tabular-nums">
+            <Star size={9} className="fill-primary" aria-hidden="true" />
+            {rating!.toFixed(1)}
+          </span>
+        )}
+      </div>
+
+      {/* Review chip */}
+      {review && (
+        <span className="absolute bottom-12 left-2.5 z-10 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[9px] font-bold uppercase tracking-[0.06em] text-white pointer-events-none">
+          <Eye size={9} aria-hidden="true" />
+          Review
         </span>
       )}
 
-      <span className="absolute inset-x-0 bottom-0 block p-2.5">
-        <span className="block text-[11px] font-bold uppercase tracking-[0.05em] leading-[1.35] text-white line-clamp-2">
-          {title}
-        </span>
-        {meta && (
-          <span className="block mt-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white/55 truncate">
-            {meta}
-          </span>
-        )}
-      </span>
+      {/* Cột phải trên: nút bỏ gợi ý + actions tùy chọn */}
+      {(onRemove || actions) && (
+        <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-200">
+          {onRemove && (
+            <button
+              type="button"
+              onClick={onRemove}
+              aria-label={`Bỏ gợi ý ${title}`}
+              title="Không quan tâm"
+              className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+            >
+              <X size={13} strokeWidth={1.5} aria-hidden="true" />
+            </button>
+          )}
+          {actions}
+        </div>
+      )}
 
+      {/* Overlay chọn (album selector) */}
+      {selectable && selected && (
+        <div className="absolute inset-0 z-10 bg-primary/25 border border-primary flex items-center justify-center pointer-events-none">
+          <CheckCircle className="text-white" size={40} strokeWidth={1.5} aria-hidden="true" />
+        </div>
+      )}
+
+      {/* Info trên scrim */}
+      <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
+        <h3
+          className="text-[11px] font-bold uppercase tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
+          title={title}
+        >
+          {title}
+        </h3>
+        {meta && (
+          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white/55 truncate">
+            {meta}
+          </p>
+        )}
+        {credit && (
+          <p className="mt-1 pt-1 border-t border-white/15 text-[9px] font-semibold uppercase tracking-[0.08em] text-primary truncate">
+            {credit}
+          </p>
+        )}
+      </div>
+
+      {/* Progress TV */}
       {progressPercent !== null && (
         <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-0.5 bg-black/40">
           <span className="block h-full bg-primary" style={{ width: `${progressPercent}%` }} />
         </span>
       )}
-    </motion.button>
+    </motion.article>
   );
 }
 

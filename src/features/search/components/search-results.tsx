@@ -1,5 +1,6 @@
 import { TMDBMovieResult } from '@/types';
-import TMDBMovieCard from './tmdb-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import { getMainTitleForTMDB, getSubTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -76,6 +77,13 @@ function SearchResults({
   const showTrendingSkeleton = isTrendingLoading && trendingMovies.length === 0;
   const showFiltered = Boolean(query) || discoverMovies.length > 0;
 
+  const cardMeta = (movie: TMDBMovieResult) => {
+    const year = (movie.release_date || movie.first_air_date)?.split('-')[0] || '';
+    return [getSubTitleForTMDB(movie), year].filter(Boolean).join(' · ');
+  };
+  const isTVResult = (movie: TMDBMovieResult) =>
+    movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+
   if (showAiLoadingBlock) {
     return (
       <>
@@ -112,11 +120,15 @@ function SearchResults({
           {showTrendingSkeleton
             ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
             : trendingMovies.map((movie) => (
-                <TMDBMovieCard
+                <PosterCard
                   key={movie.id}
-                  movie={movie}
-                  onClick={handleSelectMovie}
+                  title={getMainTitleForTMDB(movie)}
+                  posterPath={movie.poster_path}
+                  mediaType={isTVResult(movie) ? 'tv' : 'movie'}
+                  rating={movie.vote_average}
                   status={getMovieStatus(movie.id)}
+                  meta={cardMeta(movie)}
+                  onClick={() => handleSelectMovie(movie)}
                 />
               ))}
         </div>
@@ -168,12 +180,16 @@ function SearchResults({
             {aiRecommendations.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 mb-8">
                 {aiRecommendations.map((movie) => (
-                  <TMDBMovieCard
+                  <PosterCard
                     key={movie.id}
-                    movie={movie}
-                    onClick={handleSelectMovie}
+                    title={getMainTitleForTMDB(movie)}
+                    posterPath={movie.poster_path}
+                    mediaType={isTVResult(movie) ? 'tv' : 'movie'}
+                    rating={movie.vote_average}
                     status={getMovieStatus(movie.id)}
-                    onRemove={(m) => removeRecommendation(m.title ?? '')}
+                    meta={cardMeta(movie)}
+                    onClick={() => handleSelectMovie(movie)}
+                    onRemove={() => removeRecommendation(movie.title ?? '')}
                   />
                 ))}
               </div>
@@ -191,21 +207,29 @@ function SearchResults({
         >
           {showFiltered
             ? filteredResults.map((movie) => (
-                <TMDBMovieCard
+                <PosterCard
                   key={movie.id}
-                  movie={movie}
-                  onClick={handleSelectMovie}
+                  title={getMainTitleForTMDB(movie)}
+                  posterPath={movie.poster_path}
+                  mediaType={isTVResult(movie) ? 'tv' : 'movie'}
+                  rating={movie.vote_average}
                   status={getMovieStatus(movie.id)}
+                  meta={cardMeta(movie)}
+                  onClick={() => handleSelectMovie(movie)}
                 />
               ))
             : showTrendingSkeleton
               ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
               : trendingMovies.map((movie) => (
-                  <TMDBMovieCard
+                  <PosterCard
                     key={movie.id}
-                    movie={movie}
-                    onClick={handleSelectMovie}
+                    title={getMainTitleForTMDB(movie)}
+                    posterPath={movie.poster_path}
+                    mediaType={isTVResult(movie) ? 'tv' : 'movie'}
+                    rating={movie.vote_average}
                     status={getMovieStatus(movie.id)}
+                    meta={cardMeta(movie)}
+                    onClick={() => handleSelectMovie(movie)}
                   />
                 ))}
           {query.length > 2 && filteredResults.length === 0 && (

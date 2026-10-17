@@ -1,7 +1,8 @@
 import type { RefObject } from 'react';
 import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type, X } from 'lucide-react';
 import type { PersonMovie } from '@/types';
-import TMDBMovieCard from '../tmdb-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -178,14 +179,16 @@ export function PersonMovieSection({
       {/* Results */}
       {paginatedMovies.length > 0 ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
             {paginatedMovies.map((movie) => (
-              <TMDBMovieCard
+              <PosterCard
                 key={`${movie.id}-${movie.media_type}`}
-                movie={movie}
+                title={getMainTitleForTMDB(movie)}
+                posterPath={movie.poster_path}
+                mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
+                meta={(movie.release_date || movie.first_air_date || '').split('-')[0]}
+                credit={movie.character || movie.job}
                 onClick={() => handleMovieClick(movie)}
-                character={movie.character}
-                job={movie.job}
               />
             ))}
           </div>

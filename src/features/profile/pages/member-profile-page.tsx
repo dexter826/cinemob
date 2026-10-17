@@ -12,7 +12,8 @@ import { getMemberProfile, buildProfileMovies } from '../services/member-profile
 import OwnProfileEditor from '../components/own-profile-editor';
 import MemberProfileCard from '../components/member-profile-card';
 import MovieListSection from '../components/movie-list-section';
-import ProfileMovieCard from '../components/profile-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import { formatDateAny } from '@/shared/utils/date-format';
 import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
@@ -230,9 +231,23 @@ function MemberProfilePage() {
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>
-                  <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+                  <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                     {commonMovies.map((movie) => (
-                      <ProfileMovieCard key={String(movie.id)} movie={movie} />
+                      <PosterCard
+                        key={String(movie.id)}
+                        title={movie.title_vi || movie.title}
+                        posterPath={movie.poster_path ?? null}
+                        mediaType={movie.media_type}
+                        rating={movie.rating}
+                        review={movie.is_review}
+                        meta={
+                          movie.watched_at
+                            ? formatDateAny(movie.watched_at)
+                            : movie.release_date
+                              ? movie.release_date.slice(0, 4)
+                              : undefined
+                        }
+                      />
                     ))}
                   </div>
                 </div>
