@@ -77,8 +77,9 @@ function PosterCard({
       className={classNames(
         'group relative block aspect-2/3 rounded-poster overflow-hidden',
         'bg-surface border border-border',
-        selected ? 'ring-1 ring-primary' : 'ring-inset transition-[outline-color] duration-200',
-        onClick && !selected && 'hover:ring-1 hover:ring-primary',
+        selected
+          ? 'ring-1 ring-primary'
+          : 'ring-inset has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-primary',
         selectable || onClick ? 'cursor-pointer' : '',
         className ?? '',
       )}

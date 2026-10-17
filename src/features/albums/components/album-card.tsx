@@ -81,7 +81,7 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
       )}
 
       {cover ? (
-        <div className="absolute inset-0 z-20 rounded-poster overflow-hidden bg-surface border border-border transition-[outline-color] duration-200 group-hover:ring-1 group-hover:ring-primary group-focus-within:ring-1 group-focus-within:ring-primary">
+        <div className="absolute inset-0 z-20 rounded-poster overflow-hidden bg-surface border border-border group-has-[:focus-visible]:ring-1 group-has-[:focus-visible]:ring-primary">
           <img
             src={getTMDBImageUrl(cover, 'w500')}
             alt=""
