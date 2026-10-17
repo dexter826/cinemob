@@ -27,12 +27,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [isShuffling, setIsShuffling] = useState(false);
   const [hasResult, setHasResult] = useState(false);
-  const [confettiData, setConfettiData] = useState<Record<string, unknown> | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const confettiFetchedRef = useRef(false);
   const reducedMotion = useReducedMotion() ?? false;
 
   const clearShuffleTimers = useCallback(() => {
@@ -40,15 +38,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     if (audioStopTimeoutRef.current) clearTimeout(audioStopTimeoutRef.current);
     shuffleTimeoutRef.current = null;
     audioStopTimeoutRef.current = null;
-  }, []);
-
-  const ensureConfetti = useCallback(() => {
-    if (confettiFetchedRef.current) return;
-    confettiFetchedRef.current = true;
-    fetch('/data/confetti.json')
-      .then((response) => response.json())
-      .then((data) => setConfettiData(data))
-      .catch((error) => console.warn('Confetti animation failed to load:', error));
   }, []);
 
   useEffect(() => {
@@ -60,10 +49,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       audio.unload();
     };
   }, [clearShuffleTimers]);
-
-  useEffect(() => {
-    if (isOpen) ensureConfetti();
-  }, [ensureConfetti, isOpen]);
 
   const watchlistMovies = useMemo(
     () => movies.filter((movie) => (movie.status || 'history') === 'watchlist'),
@@ -121,7 +106,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       }
 
       clearShuffleTimers();
-      ensureConfetti();
       setPoolType(source);
       setHasResult(false);
 
@@ -165,7 +149,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     },
     [
       clearShuffleTimers,
-      ensureConfetti,
       isMuted,
       randomAudio,
       reducedMotion,
@@ -203,7 +186,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     isLoadingPool,
     isShuffling,
     hasResult,
-    confettiData,
     reducedMotion,
     isMuted,
     toggleMuted: () => setIsMuted((muted) => !muted),

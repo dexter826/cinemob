@@ -1,4 +1,3 @@
-import Lottie from 'lottie-react';
 import { Dice5, Volume2, VolumeX } from 'lucide-react';
 import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -10,6 +9,7 @@ import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import { PickerWheel } from './random-picker/picker-wheel';
+import ConfettiBurst from '@/shared/components/feedback/confetti-burst';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
@@ -44,7 +44,6 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     isLoadingPool,
     isShuffling,
     hasResult,
-    confettiData,
     reducedMotion,
     isMuted,
     toggleMuted,
@@ -58,7 +57,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
       ? (currentItem as Movie).title
       : (currentItem as TMDBMovieResult).title || (currentItem as TMDBMovieResult).name || ''
     : '';
-  const showConfetti = hasResult && !reducedMotion && confettiData !== null;
+  const showConfetti = hasResult && !reducedMotion;
 
   return (
     <Dialog
@@ -70,14 +69,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     >
       <DialogBody className="relative">
         <div className="relative flex flex-col gap-4">
-          {showConfetti && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90"
-            >
-              <Lottie animationData={confettiData} loop={false} />
-            </div>
-          )}
+          {showConfetti && <ConfettiBurst />}
           <div className="flex items-center justify-between gap-2 relative z-10">
             <div className="flex items-center gap-2 min-w-0">
               <div
