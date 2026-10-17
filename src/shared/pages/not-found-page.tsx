@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import Button from '@/shared/components/ui/button';
 
 // Trang báo khi đường link sai hoặc không còn tồn tại — editorial.
 function NotFoundPage() {
@@ -12,8 +11,11 @@ function NotFoundPage() {
         Không tìm thấy trang — đường link sai hoặc không còn tồn tại
       </p>
       <div className="mt-8 flex justify-center">
-        <Link to="/">
-          <Button variant="secondary">Về Thư viện</Button>
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center font-semibold cursor-pointer transition px-4 py-2.5 text-xs gap-2 rounded-control bg-transparent text-text-primary border border-border hover:border-primary hover:text-primary"
+        >
+          Về Thư viện
         </Link>
       </div>
     </div>

@@ -39,7 +39,7 @@ function Footer() {
 
         {/* Khối 3: Bản quyền */}
         <div className="flex-1 text-[10px] font-medium tracking-[0.1em] text-text-secondary flex items-center justify-center md:justify-end">
-          <span>© {new Date().getFullYear()} MOB</span>
+          <span>© {new Date().getFullYear()} CineMOB</span>
         </div>
       </div>
     </footer>

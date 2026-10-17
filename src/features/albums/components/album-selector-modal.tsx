@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FolderPlus, Film } from 'lucide-react';
+import { FolderPlus, Film, X } from 'lucide-react';
 import { Movie, Album } from '@/types';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
@@ -122,9 +122,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           </div>
         </div>
         <IconButton label="Đóng bảng chọn album" onClick={onClose} variant="ghost">
-          <span aria-hidden="true" className="text-lg leading-none">
-            ×
-          </span>
+          <X size={18} strokeWidth={1.8} aria-hidden="true" />
         </IconButton>
       </div>
 

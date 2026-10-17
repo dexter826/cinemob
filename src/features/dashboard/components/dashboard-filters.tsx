@@ -94,7 +94,7 @@ function DashboardFilters({
             <button
               onClick={() => updateFilter('searchQuery', '')}
               aria-label="Xóa từ khóa lọc"
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-2"
             >
               <X size={14} strokeWidth={1.5} />
             </button>
