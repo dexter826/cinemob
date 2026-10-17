@@ -8,7 +8,7 @@ import { updateAlbum, addAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
 import Loading from '@/shared/components/ui/loading';
 import EmptyState from '@/shared/components/ui/empty-state';
-import logoText from '@/assets/images/logo_text.png';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
@@ -99,11 +99,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           {movie && (
             <span className="w-12 h-[72px] rounded-control overflow-hidden border border-border shrink-0 block">
               <img
-                src={
-                  movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                    : logoText
-                }
+                src={getTMDBImageUrl(movie.poster_path, 'w200')}
                 alt=""
                 width={200}
                 height={300}
