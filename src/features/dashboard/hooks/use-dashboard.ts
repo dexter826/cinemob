@@ -5,7 +5,6 @@ import { deleteMovie } from '@/features/movies/services/movie-service';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
-import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
 import { useDashboardStats } from './use-dashboard-stats';
@@ -18,7 +17,6 @@ const UNDO_DELETE_MS = 7000;
 export const useDashboard = (user: User | null) => {
   const { showToast } = useToastStore();
   const { openAddModal } = useAddMovieStore();
-  const { openDetailModal } = useMovieDetailStore();
 
   const { movies, loading, removeLocal, restoreMovie, clearPendingDelete } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,7 +92,6 @@ export const useDashboard = (user: User | null) => {
     handleDelete,
     handleEdit,
     handleMarkAsWatched,
-    handleMovieClick: openDetailModal,
     openAddModal,
     ...filters,
   };

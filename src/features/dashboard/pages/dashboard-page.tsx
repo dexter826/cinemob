@@ -1,29 +1,38 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Film } from 'lucide-react';
-import MovieCard from '@/features/movies/components/movie-card';
+import { Film, Search, Plus } from 'lucide-react';
+import PosterCard from '@/features/movies/components/poster-card';
 import Pagination from '@/shared/components/ui/pagination';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import Button from '@/shared/components/ui/button';
 import { normalizeDate } from '@/shared/utils/date-format';
+import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
+import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { getSeasonWatchedDates } from '@/features/movies/utils/movie-utils';
-import PageHeader from '@/shared/components/ui/page-header';
+import {
+  getSeasonWatchedDates,
+  getMainTitle,
+  getSubTitle,
+  getLatestWatchedDate,
+} from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
-import DashboardActions from '../components/dashboard-actions';
 import DashboardTabs from '../components/dashboard-tabs';
 import DashboardFilters from '../components/dashboard-filters';
 
-/** Quản lý bộ sưu tập phim. */
+/** Quản lý bộ sưu tập phim — editorial: hero typography + hairline sections. */
 function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const reducedMotion = useReducedMotion() ?? false;
+  useScrollRestore('dashboard');
+
   const {
     loading,
-    contentTypeStats,
     processedMovies,
     totalPages,
     currentPage,
@@ -36,15 +45,51 @@ function DashboardPage() {
     setShowFilters,
     filterRef,
     toggleRef,
-    handleDelete,
-    handleEdit,
     openAddModal,
-    handleMarkAsWatched,
-    handleMovieClick,
     toggleSortOrder,
     clearFilters,
     movies,
   } = useDashboard(user);
+
+  // Hero dùng số liệu toàn bộ bộ sưu tập (không theo tab).
+  const totalHours = useMemo(
+    () => Math.floor(movies.reduce((acc, m) => acc + (m.runtime || 0), 0) / 60),
+    [movies],
+  );
+  const allContent = useMemo(
+    () => ({
+      movies: movies.filter((m) => m.media_type === 'movie' || !m.media_type).length,
+      tv: movies.filter((m) => m.media_type === 'tv').length,
+    }),
+    [movies],
+  );
+  const statusCounts = useMemo(
+    () => ({
+      history: movies.filter((m) => (m.status || 'history') === 'history').length,
+      watchlist: movies.filter((m) => m.status === 'watchlist').length,
+    }),
+    [movies],
+  );
+
+  /** TV đang xem dở (có progress thật trong data) — tối đa 4, mới nhất trước. */
+  const continueWatching = useMemo(
+    () =>
+      movies
+        .filter(
+          (m) =>
+            m.media_type === 'tv' &&
+            (m.status || 'history') === 'history' &&
+            m.progress &&
+            !m.progress.is_completed &&
+            (m.progress.watched_episodes ?? 0) > 0,
+        )
+        .sort(
+          (a, b) =>
+            (getLatestWatchedDate(b)?.getTime() ?? 0) - (getLatestWatchedDate(a)?.getTime() ?? 0),
+        )
+        .slice(0, 4),
+    [movies],
+  );
 
   /** Danh sách năm cho bộ lọc. */
   const availableYears = useMemo(() => {
@@ -100,44 +145,77 @@ function DashboardPage() {
   }, [movies]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title="Thư viện điện ảnh" />
+    <div className="max-w-6xl mx-auto px-4 md:px-0">
+      {/* Hero: số lớn là nhân vật chính */}
+      <section className="border-b border-border">
+        <div className="md:px-0 pt-6 pb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
+              Thư viện
+            </p>
+            <p className="font-display uppercase leading-[0.95] text-6xl md:text-8xl mt-2 tabular-nums">
+              {movies.length}
+            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary mt-2">
+              Phim trong bộ sưu tập
+            </p>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+              <span>{totalHours} giờ xem</span>
+              <span className="border-l border-border pl-4">{allContent.movies} phim</span>
+              <span className="border-l border-border pl-4">{allContent.tv} series</span>
+            </div>
+          </div>
+          <div className="flex gap-2.5 pb-1">
+            <Button onClick={() => navigate('/search')} leadingIcon={<Search size={14} aria-hidden="true" />}>
+              Tìm phim
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => openAddModal()}
+              leadingIcon={<Plus size={14} aria-hidden="true" />}
+            >
+              Thêm thủ công
+            </Button>
+          </div>
+        </div>
+      </section>
 
-      <DashboardActions onOpenAddModal={() => openAddModal()} />
+      {/* Tabs + filters */}
+      <div className="border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
+        <DashboardTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          historyCount={statusCounts.history}
+          watchlistCount={statusCounts.watchlist}
+          moviesCount={allContent.movies}
+          tvCount={allContent.tv}
+        />
+        {movies.length > 0 && (
+          <DashboardFilters
+            filters={filters}
+            updateFilter={updateFilter}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            filterRef={filterRef}
+            toggleRef={toggleRef}
+            toggleSortOrder={toggleSortOrder}
+            activeTab={activeTab}
+            availableYears={availableYears}
+            availableCountries={availableCountries}
+            availableGenres={availableGenres}
+            clearFilters={clearFilters}
+          />
+        )}
+      </div>
 
-      <section aria-labelledby="library-content-title" className="space-y-4">
+      {/* Lưới poster */}
+      <section aria-labelledby="library-content-title" className="py-5">
         <h2 id="library-content-title" className="sr-only">
           Nội dung thư viện
         </h2>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <DashboardTabs
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            moviesCount={contentTypeStats.moviesCount}
-            tvCount={contentTypeStats.tvCount}
-          />
-
-          {movies.length > 0 && (
-            <DashboardFilters
-              filters={filters}
-              updateFilter={updateFilter}
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-              filterRef={filterRef}
-              toggleRef={toggleRef}
-              toggleSortOrder={toggleSortOrder}
-              activeTab={activeTab}
-              availableYears={availableYears}
-              availableCountries={availableCountries}
-              availableGenres={availableGenres}
-              clearFilters={clearFilters}
-            />
-          )}
-        </div>
-
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {Array.from({ length: 10 }).map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {Array.from({ length: 12 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
@@ -177,18 +255,34 @@ function DashboardPage() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            <motion.div
+              variants={staggerContainer}
+              initial={reducedMotion ? false : 'hidden'}
+              animate="show"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+            >
               {processedMovies.map((movie) => (
-                <MovieCard
-                  key={movie.docId}
-                  movie={movie}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                  onClick={handleMovieClick}
-                  onMarkAsWatched={activeTab === 'watchlist' ? handleMarkAsWatched : undefined}
-                />
+                <motion.div key={movie.docId} variants={staggerItem}>
+                  <PosterCard
+                    id={movie.id}
+                    title={getMainTitle(movie)}
+                    posterPath={movie.poster_path}
+                    mediaType={movie.media_type}
+                    source={movie.source}
+                    rating={movie.rating}
+                    meta={getSubTitle(movie)}
+                    progress={
+                      movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed
+                        ? {
+                            current: movie.progress.watched_episodes ?? 0,
+                            total: movie.total_episodes ?? 0,
+                          }
+                        : null
+                    }
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             <Pagination
               currentPage={currentPage}
@@ -198,6 +292,44 @@ function DashboardPage() {
           </>
         )}
       </section>
+
+      {/* Tiếp tục xem: TV có progress thật */}
+      {continueWatching.length > 0 && (
+        <section aria-labelledby="continue-watching-title" className="border-t border-border">
+          <div className="py-5">
+            <p
+              id="continue-watching-title"
+              className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary"
+            >
+              Tiếp tục xem
+            </p>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
+              {continueWatching.map((movie) => {
+                const total = movie.total_episodes || 0;
+                const watched = movie.progress?.watched_episodes ?? 0;
+                const percent = total > 0 ? Math.min(100, Math.round((watched / total) * 100)) : 0;
+                return (
+                  <div
+                    key={movie.docId}
+                    className="sm:border-l sm:border-border-default sm:pl-4 first:sm:border-l-0 first:sm:pl-0"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.05em] truncate">
+                      {getMainTitle(movie)}
+                    </p>
+                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                      S{movie.progress?.current_season ?? 1} · E
+                      {movie.progress?.current_episode ?? 0}/{total} · {percent}%
+                    </p>
+                    <div className="mt-2 h-0.5 bg-border-default" role="presentation">
+                      <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
