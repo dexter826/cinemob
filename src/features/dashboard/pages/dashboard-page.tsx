@@ -163,7 +163,7 @@ function DashboardPage() {
       />
 
       {/* Tabs + filters */}
-      <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
+      <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-4">
         <DashboardTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}

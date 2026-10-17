@@ -71,10 +71,10 @@ function DashboardFilters({
 
   return (
     <div className="flex flex-col items-end gap-3 relative">
-      <div className="flex items-center gap-1 w-full sm:w-auto">
-        <div className="relative group flex-1 sm:flex-none">
+      <div className="flex items-center gap-1 w-full sm:w-auto h-12">
+        <div className="relative group flex-1 sm:flex-none h-12 flex items-center">
           <Search
-            className="absolute left-2 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
+            className="absolute left-2 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors pointer-events-none"
             size={16}
             strokeWidth={1.5}
             aria-hidden="true"
@@ -88,7 +88,7 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-72 h-11 bg-transparent rounded-none border-0 border-b border-transparent pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary hover:border-b-border focus-visible:outline-none focus-visible:border-b-primary focus-visible:ring-0 transition-colors"
+            className="w-full sm:w-72 h-12 bg-transparent rounded-none border-0 pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors"
           />
           {filters.searchQuery && (
             <button
@@ -99,6 +99,14 @@ function DashboardFilters({
               <X size={14} strokeWidth={1.5} />
             </button>
           )}
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-200 ${
+              filters.searchQuery
+                ? 'opacity-100'
+                : 'opacity-0 group-hover:opacity-40 group-focus-within:opacity-100'
+            }`}
+          />
         </div>
 
         <button
@@ -108,7 +116,7 @@ function DashboardFilters({
             setShowFilters(!showFilters);
           }}
           aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-          className={`w-11 h-11 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
+          className={`w-11 h-12 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
             showFilters ? 'text-primary' : 'text-text-secondary hover:text-primary'
           }`}
         >
