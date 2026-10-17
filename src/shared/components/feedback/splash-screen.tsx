@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import logoText from '@/assets/images/logo_text.png';
 
 interface SplashScreenProps {
   onAnimationFinish: () => void;
@@ -8,20 +7,20 @@ interface SplashScreenProps {
 
 const SPLASH_DURATION_MS = 1500;
 
-/** Khung thương hiệu tĩnh/CSS — thay thế animation trước đây. */
+/** Khung thương hiệu tĩnh/CSS — typography wordmark Editorial Print. */
 function BrandFrame({ animated }: { animated: boolean }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 z-150 bg-background overflow-hidden">
-      <img
-        src={logoText}
-        alt="CineMOB"
-        width={160}
-        height={40}
-        className={`h-10 w-auto ${animated ? 'animate-splash-brand' : ''}`}
-      />
+      <span
+        className={`font-display text-4xl sm:text-5xl uppercase tracking-wide text-text-primary select-none ${
+          animated ? 'animate-splash-brand' : ''
+        }`}
+      >
+        Cine<span className="text-primary">MOB</span>
+      </span>
       <span
         aria-hidden="true"
-        className={`h-[3px] w-11 bg-primary origin-left ${animated ? 'animate-splash-rule' : ''}`}
+        className={`h-[3px] w-12 bg-primary origin-left ${animated ? 'animate-splash-rule' : ''}`}
       />
     </div>
   );
