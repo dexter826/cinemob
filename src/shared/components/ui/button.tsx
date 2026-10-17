@@ -1,3 +1,4 @@
+import Spinner from './spinner';
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
@@ -58,10 +59,14 @@ export function Button({
       )}
       {...rest}
     >
-      {leadingIcon && (
-        <span aria-hidden="true" className="inline-flex shrink-0">
-          {leadingIcon}
-        </span>
+      {loading ? (
+        <Spinner size={16} className="text-current" />
+      ) : (
+        leadingIcon && (
+          <span aria-hidden="true" className="inline-flex shrink-0">
+            {leadingIcon}
+          </span>
+        )
       )}
       <span className="truncate">{children}</span>
       {trailingIcon && (

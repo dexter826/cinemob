@@ -21,6 +21,7 @@
   --color-text-muted: #5f5b53; /* chữ phụ đặc ≥4.5:1 — placeholder, hint */
   --color-text-faint: #8a857c; /* decorative/large ≥3:1 — số mờ, rule phụ */
   --color-border: rgb(20 20 20 / 0.16);
+  --color-skeleton: color-mix(in srgb, var(--color-text-primary) 8%, var(--color-surface));
   --color-focus: #8f6400;
   --color-success: #15803d; /* green-700 */
   --color-on-success: #fffefa;
