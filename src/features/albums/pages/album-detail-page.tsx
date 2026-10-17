@@ -1,3 +1,5 @@
+import ErrorState from '@/shared/components/ui/error-state';
+import useMovieStore from '@/features/movies/stores/movie-store';
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -26,6 +28,11 @@ function AlbumDetailPage() {
   const {
     album,
     loading,
+    error,
+    retry,
+    moviesLoading,
+    moviesError,
+    pendingMovieIds,
     editing,
     setEditing,
     name,
@@ -47,6 +54,20 @@ function AlbumDetailPage() {
     handleRemoveMovie,
   } = useAlbumDetail(albumId);
 
+  const retryMovies = () => {
+    const state = useMovieStore.getState();
+    const uid = state.activeUid;
+    state.cleanup();
+    if (uid) state.initialize(uid);
+  };
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Không thể đọc album. Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: retry }}
+      />
+    );
   return (
     <div className="text-text-primary transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -176,7 +197,13 @@ function AlbumDetailPage() {
               )}
             </div>
 
-            {loading ? (
+            {moviesError ? (
+              <ErrorState
+                title="Không tải được danh sách phim"
+                description="Vui lòng thử lại."
+                retry={{ label: 'Thử lại', onClick: retryMovies }}
+              />
+            ) : loading || moviesLoading ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <SkeletonCard key={i} />
@@ -214,11 +241,17 @@ function AlbumDetailPage() {
                       <button
                         type="button"
                         onClick={() => handleRemoveMovie(movie)}
+                        disabled={pendingMovieIds.has(movie.docId!)}
+                        aria-busy={pendingMovieIds.has(movie.docId!)}
                         aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
                         title="Bỏ khỏi album"
                         className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
                       >
-                        <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
+                        {pendingMovieIds.has(movie.docId!) ? (
+                          <span className="text-[9px]">Đang gỡ…</span>
+                        ) : (
+                          <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
+                        )}
                       </button>
                     }
                   />
@@ -228,7 +261,7 @@ function AlbumDetailPage() {
           </div>
         )}
 
-        {managingMovies && (
+        {managingMovies && !moviesLoading && !moviesError && !loading && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
@@ -272,7 +305,10 @@ function AlbumDetailPage() {
                       rating={movie.rating}
                       selectable
                       ariaLabel={`Thêm ${getMainTitle(movie)} vào album`}
-                      onClick={() => handleAddMovie(movie)}
+                      onClick={
+                        pendingMovieIds.has(movie.docId!) ? undefined : () => handleAddMovie(movie)
+                      }
+                      credit={pendingMovieIds.has(movie.docId!) ? 'Đang thêm…' : undefined}
                     />
                   ))}
                 </div>

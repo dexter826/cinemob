@@ -6,10 +6,9 @@ import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '@/features/albums/stores/album-store';
 import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
 import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
-import { subscribeToAlbums } from '@/features/albums/services/album-service';
 import { syncMemberProfile } from '@/features/profile/services/member-profile-service';
 import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
-import { Album, Movie } from '@/types';
+import { Movie } from '@/types';
 
 // Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
@@ -29,8 +28,8 @@ export const useAppInit = () => {
   const {
     albums,
     loading: albumsLoading,
-    setAlbums,
-    setLoading: setAlbumsLoading,
+    initialize: initAlbums,
+    cleanup: cleanupAlbums,
     setAlbumCoverMovies,
   } = useAlbumStore();
 
@@ -54,19 +53,10 @@ export const useAppInit = () => {
   }, [moviesInitialized, markInitialLoadComplete]);
 
   useEffect(() => {
-    if (!user) {
-      setAlbums([]);
-      setAlbumsLoading(false);
-      return;
-    }
-
-    const unsubscribe = subscribeToAlbums(user.uid, (data: Album[]) => {
-      setAlbums(data);
-      setAlbumsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user, setAlbums, setAlbumsLoading]);
+    if (userId) initAlbums(userId);
+    else cleanupAlbums();
+    return cleanupAlbums;
+  }, [userId, initAlbums, cleanupAlbums]);
 
   useEffect(() => {
     if (albumsLoading || !moviesInitialized) return;

@@ -1,3 +1,4 @@
+import ErrorState from '@/shared/components/ui/error-state';
 import React, { useRef, useState } from 'react';
 import { Plus, Folder } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
@@ -20,7 +21,7 @@ function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
-  const { albums, loading, albumCoverMovies } = useAlbumStore();
+  const { albums, loading, error, retry, albumCoverMovies } = useAlbumStore();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,7 +88,13 @@ function AlbumsPage() {
         }
       />
 
-      {loading ? (
+      {error ? (
+        <ErrorState
+          title={error}
+          description="Vui lòng thử tải lại album."
+          retry={{ label: 'Thử lại', onClick: retry }}
+        />
+      ) : loading ? (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="aspect-2/3 rounded-poster bg-surface animate-pulse" />
@@ -105,9 +112,10 @@ function AlbumsPage() {
       ) : (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
           {paginatedAlbums.map((album, index) => {
-            const coverPosters: (string | null)[] = (
-              album.docId ? albumCoverMovies[album.docId] : undefined
-            )?.map((movie) => movie.poster_path) ?? [];
+            const coverPosters: (string | null)[] =
+              (album.docId ? albumCoverMovies[album.docId] : undefined)?.map(
+                (movie) => movie.poster_path,
+              ) ?? [];
 
             return (
               <AlbumCard

@@ -1,3 +1,4 @@
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useRef, useState } from 'react';
 import { FolderPlus, Film, X } from 'lucide-react';
 import { Movie, Album } from '@/types';
@@ -24,7 +25,7 @@ interface AlbumSelectorModalProps {
 function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps) {
   const { user } = useAuth();
   const { showToast } = useToastStore();
-  const { albums, loading } = useAlbumStore();
+  const { albums, loading, error, retry } = useAlbumStore();
   const [addingToAlbum, setAddingToAlbum] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
@@ -183,7 +184,13 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           </button>
         )}
 
-        {loading ? (
+        {error ? (
+          <ErrorState
+            title={error}
+            description="Vui lòng thử tải lại album."
+            retry={{ label: 'Thử lại', onClick: retry }}
+          />
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loading size={40} fullScreen={false} />
             <p className="text-xs font-semibold text-text-secondary">Đang tải album…</p>

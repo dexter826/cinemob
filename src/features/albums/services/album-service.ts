@@ -138,18 +138,23 @@ export const subscribeToAlbum = (
   uid: string,
   docId: string,
   callback: (album: Album | null) => void,
+  onError?: (error: unknown) => void,
 ) => {
   const ref = doc(db, COLLECTION_NAME, docId);
-  return onSnapshot(ref, (snapshot) => {
-    if (!snapshot.exists()) {
-      callback(null);
-      return;
-    }
-    const data = snapshot.data();
-    if (data.uid !== uid) {
-      callback(null);
-      return;
-    }
-    callback(mapDocToAlbum(snapshot.id, data as Record<string, unknown>));
-  });
+  return onSnapshot(
+    ref,
+    (snapshot) => {
+      if (!snapshot.exists()) {
+        callback(null);
+        return;
+      }
+      const data = snapshot.data();
+      if (data.uid !== uid) {
+        callback(null);
+        return;
+      }
+      callback(mapDocToAlbum(snapshot.id, data as Record<string, unknown>));
+    },
+    onError,
+  );
 };
