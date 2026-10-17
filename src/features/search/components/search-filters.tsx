@@ -191,7 +191,7 @@ function SearchFilters({
           </div>
         )}
 
-        <div className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 sm:gap-2">
+        <div className="absolute right-1.5 sm:right-2 bottom-2 flex items-center gap-1 sm:gap-2">
           {filters.query && (
             <button
               onClick={() => updateFilter('query', '')}

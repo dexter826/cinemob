@@ -74,7 +74,7 @@ function AlbumsPage() {
         onSubmit={handleCreate}
         className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
           <div className="flex-1 space-y-1.5 sm:space-y-2">
             <label
               htmlFor="create-album-name"

@@ -47,7 +47,7 @@ function AlbumSection({
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20'}`}
+          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
         >
           {showCreateAlbum ? (
             <>

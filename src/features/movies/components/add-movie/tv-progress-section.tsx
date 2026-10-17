@@ -31,7 +31,7 @@ function TVProgressSection({
   defaultDate,
 }: TVProgressSectionProps) {
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4">
+    <div className="border border-border rounded-dialog p-5 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-primary flex items-center gap-2">
           <Tv size={14} aria-hidden="true" /> Tiến độ xem
@@ -131,13 +131,13 @@ function TVProgressSection({
       )}
 
       {totalEpisodes > 0 && !isCompleted && (
-        <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-primary/20">
+        <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-border">
           Tổng {totalEpisodes}&nbsp;tập, mùa&nbsp;{currentSeason}:{' '}
           {episodesPerSeason[currentSeason] || '?'} tập
         </div>
       )}
 
-      <div className="space-y-2 pt-4 border-t border-primary/20">
+      <div className="space-y-2 pt-4 border-t border-border">
         <span className="text-xs font-semibold text-text-secondary ml-1 block">
           Ngày xem từng phần
         </span>

@@ -73,8 +73,8 @@ function ReleaseCalendarPage() {
                 pushStatus === 'on'
                   ? 'bg-success text-on-success'
                   : pushStatus === 'blocked'
-                    ? 'bg-danger/10 text-danger border border-danger/20 cursor-not-allowed'
-                    : 'bg-surface border border-border text-text-primary hover:border-primary/30'
+                    ? 'text-danger cursor-not-allowed'
+                    : 'text-text-secondary hover:text-primary'
               } ${pushLoading || loading ? 'opacity-50 cursor-wait' : ''}`}
             >
               {pushStatus === 'loading' && (

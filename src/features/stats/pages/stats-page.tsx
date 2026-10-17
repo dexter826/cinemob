@@ -297,7 +297,7 @@ function StatsPage() {
                         {country}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-control border border-primary/20 tabular-nums">
+                    <span className="text-xs font-semibold text-primary tabular-nums">
                       {count} phim
                     </span>
                   </div>

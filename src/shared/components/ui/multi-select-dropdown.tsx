@@ -175,7 +175,7 @@ function MultiSelectDropdown({
               {displayOptions.map((option) => (
                 <span
                   key={option.value}
-                  className="inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium truncate max-w-28"
+                  className="inline-flex items-center px-2 py-0.5 bg-primary text-on-primary rounded-md text-xs font-medium truncate max-w-28"
                 >
                   {option.label}
                 </span>

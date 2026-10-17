@@ -82,7 +82,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
             <div className="flex items-center gap-2 min-w-0">
               <div
                 aria-hidden="true"
-                className="w-9 h-9 rounded-card bg-primary/10 flex items-center justify-center text-primary shrink-0"
+                className="flex items-center justify-center text-primary shrink-0"
               >
                 <Dice5 size={18} aria-hidden="true" />
               </div>

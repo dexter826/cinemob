@@ -116,7 +116,7 @@ function PersonDetailPage() {
                       <div className="space-y-4">
                         {person.birthday && (
                           <div className="flex items-center gap-4 p-3 rounded-card border border-border-default">
-                            <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <div className="flex items-center justify-center text-primary">
                               <Calendar size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
@@ -148,7 +148,7 @@ function PersonDetailPage() {
                       <div className="space-y-4">
                         {person.birthday && !person.deathday && (
                           <div className="flex items-center gap-4 p-3 rounded-card border border-border-default">
-                            <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <div className="flex items-center justify-center text-primary">
                               <Users size={18} className="text-primary" aria-hidden="true" />
                             </div>
                             <div>
@@ -174,7 +174,7 @@ function PersonDetailPage() {
 
                     {person.place_of_birth && (
                       <div className="mt-4 flex items-center gap-4 p-3 rounded-card border border-border-default">
-                        <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <div className="flex items-center justify-center text-primary">
                           <MapPin size={18} className="text-primary" aria-hidden="true" />
                         </div>
                         <div>

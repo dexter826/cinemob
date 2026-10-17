@@ -302,7 +302,7 @@ function AddMovieModal() {
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           aria-hidden="true"
-                          className={`w-10 h-10 flex items-center justify-center rounded-control transition-colors shrink-0 ${formData.is_review ? 'bg-primary/20 text-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}
+                          className={`w-10 h-10 flex items-center justify-center rounded-control transition-colors shrink-0 ${formData.is_review ? 'bg-primary text-on-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}
                         >
                           <MessageSquare size={20} />
                         </div>

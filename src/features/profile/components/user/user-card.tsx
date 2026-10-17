@@ -23,7 +23,7 @@ function UserCard({ profile, onClick }: UserCardProps) {
           className="w-12 h-12 rounded-full object-cover border border-border-default shrink-0"
         />
       ) : (
-        <span className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-lg font-bold text-primary shrink-0">
+        <span className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-lg font-bold text-primary shrink-0">
           {profile.displayName.charAt(0).toUpperCase()}
         </span>
       )}
