@@ -1,30 +1,30 @@
 import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from '@/app/providers/AuthProvider';
-import useMovieDetailStore from '@/features/movies/stores/movieDetailStore';
-import useAddMovieStore from '@/features/movies/stores/addMovieStore';
-import Login from '@/features/auth/components/Login';
-const Dashboard = lazy(() => import('@/features/dashboard/pages/DashboardPage'));
-const SearchPage = lazy(() => import('@/features/search/pages/SearchPage'));
-const StatsPage = lazy(() => import('@/features/stats/pages/StatsPage'));
-const AlbumsPage = lazy(() => import('@/features/albums/pages/AlbumsPage'));
-const AlbumDetailPage = lazy(() => import('@/features/albums/pages/AlbumDetailPage'));
-const PersonDetailPage = lazy(() => import('@/features/search/pages/PersonDetailPage'));
-const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/ReleaseCalendarPage'));
-const MemberProfilePage = lazy(() => import('@/features/profile/pages/MemberProfilePage'));
-const NotFoundPage = lazy(() => import('@/shared/pages/NotFoundPage'));
-const AddMovieModal = lazy(() => import('@/features/movies/components/AddMovieModal'));
-const MovieDetailModal = lazy(() => import('@/features/movies/components/MovieDetailModal'));
-import Layout from '@/app/components/Layout';
-import SplashScreen from '@/shared/components/feedback/SplashScreen';
-import Loading from '@/shared/components/ui/Loading';
-import ErrorBoundary from '@/shared/components/feedback/ErrorBoundary';
-import { useAppInit } from '@/app/useAppInit';
-import ToastContainer from '@/shared/components/feedback/ToastContainer';
-import AlertContainer from '@/shared/components/feedback/AlertContainer';
+import { AuthProvider, useAuth } from '@/app/providers/auth-provider';
+import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import Login from '@/features/auth/components/login';
+const Dashboard = lazy(() => import('@/features/dashboard/pages/dashboard-page'));
+const SearchPage = lazy(() => import('@/features/search/pages/search-page'));
+const StatsPage = lazy(() => import('@/features/stats/pages/stats-page'));
+const AlbumsPage = lazy(() => import('@/features/albums/pages/albums-page'));
+const AlbumDetailPage = lazy(() => import('@/features/albums/pages/album-detail-page'));
+const PersonDetailPage = lazy(() => import('@/features/search/pages/person-detail-page'));
+const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/release-calendar-page'));
+const MemberProfilePage = lazy(() => import('@/features/profile/pages/member-profile-page'));
+const NotFoundPage = lazy(() => import('@/shared/pages/not-found-page'));
+const AddMovieModal = lazy(() => import('@/features/movies/components/add-movie-modal'));
+const MovieDetailModal = lazy(() => import('@/features/movies/components/movie-detail-modal'));
+import Layout from '@/app/components/layout';
+import SplashScreen from '@/shared/components/feedback/splash-screen';
+import Loading from '@/shared/components/ui/loading';
+import ErrorBoundary from '@/shared/components/feedback/error-boundary';
+import { useAppInit } from '@/app/use-app-init';
+import ToastContainer from '@/shared/components/feedback/toast-container';
+import AlertContainer from '@/shared/components/feedback/alert-container';
 
-import useInitialLoadStore from '@/shared/stores/initialLoadStore';
-import { getSplashMode, SplashMode } from '@/shared/utils/splashPolicy';
+import useInitialLoadStore from '@/shared/stores/initial-load-store';
+import { getSplashMode, SplashMode } from '@/shared/utils/splash-policy';
 
 // Điều hướng trang không animate toàn màn hình để tránh nháy composite layer.
 function AnimatedRoutes() {

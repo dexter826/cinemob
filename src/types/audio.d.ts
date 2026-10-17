@@ -13,11 +13,6 @@ declare module '*.mp3' {
   export default src;
 }
 
-declare module '*.MP3' {
-  const src: string;
-  export default src;
-}
-
 declare module '*.ogg' {
   const src: string;
   export default src;

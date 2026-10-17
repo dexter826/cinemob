@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import { ThemeProvider } from '@/app/providers/ThemeProvider';
+import App from './app';
+import { ThemeProvider } from '@/app/providers/theme-provider';
 import { registerSW } from 'virtual:pwa-register';
 
 if ('serviceWorker' in navigator) {
