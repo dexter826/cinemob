@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo, useCall
 import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { AuthContextType } from '@/types';
-import useToastStore from '@/shared/stores/toastStore';
+import useToastStore from '@/shared/stores/toast-store';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

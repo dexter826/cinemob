@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useInitialLoadStore from '@/shared/stores/initialLoadStore';
-import useToastStore from '@/shared/stores/toastStore';
-import useAlbumStore from '@/features/albums/stores/albumStore';
-import useRecommendationsStore from '@/features/movies/stores/recommendationsStore';
-import useReleaseCalendarStore from '@/features/calendar/stores/releaseCalendarStore';
-import { subscribeToAlbums } from '@/features/albums/services/albumService';
-import { syncMemberProfile } from '@/features/profile/services/memberProfileService';
-import { clearPublicProfileCache } from '@/features/profile/hooks/useUserSearch';
+import { useAuth } from '@/app/providers/auth-provider';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useInitialLoadStore from '@/shared/stores/initial-load-store';
+import useToastStore from '@/shared/stores/toast-store';
+import useAlbumStore from '@/features/albums/stores/album-store';
+import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
+import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
+import { subscribeToAlbums } from '@/features/albums/services/album-service';
+import { syncMemberProfile } from '@/features/profile/services/member-profile-service';
+import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
 import { Album, Movie } from '@/types';
 
 // Khởi tạo ứng dụng sau khi đăng nhập.

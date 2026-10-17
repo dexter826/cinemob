@@ -1,9 +1,9 @@
 import React from 'react';
-import Navbar from './Navbar';
-import Footer from '@/shared/components/layout/Footer';
-import MobileBottomNav from '@/shared/components/layout/MobileBottomNav';
-import ScrollToTop from '@/shared/components/ui/ScrollToTop';
-import useInitialLoadStore from '@/shared/stores/initialLoadStore';
+import Navbar from './navbar';
+import Footer from '@/shared/components/layout/footer';
+import MobileBottomNav from '@/shared/components/layout/mobile-bottom-nav';
+import ScrollToTop from '@/shared/components/ui/scroll-to-top';
+import useInitialLoadStore from '@/shared/stores/initial-load-store';
 
 interface LayoutProps {
   children: React.ReactNode;

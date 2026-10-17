@@ -13,18 +13,18 @@ import {
   User,
   Users,
 } from 'lucide-react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import { useTheme } from '@/app/providers/ThemeProvider';
+import { useAuth } from '@/app/providers/auth-provider';
+import { useTheme } from '@/app/providers/theme-provider';
 import { Link, useLocation } from 'react-router-dom';
 
-import useAlertStore from '@/shared/stores/alertStore';
+import useAlertStore from '@/shared/stores/alert-store';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
-import { IconButton } from '@/shared/components/ui/IconButton';
+import { IconButton } from '@/shared/components/ui/icon-button';
 import logoText from '@/assets/images/logo_text.png';
 
-const RandomPickerModal = lazy(() => import('@/features/movies/components/RandomPickerModal'));
+const RandomPickerModal = lazy(() => import('@/features/movies/components/random-picker-modal'));
 const MemberSearchModal = lazy(
-  () => import('@/features/profile/components/user/MemberSearchModal'),
+  () => import('@/features/profile/components/user/member-search-modal'),
 );
 
 const NAV_ICONS: Record<string, React.ReactNode> = {
