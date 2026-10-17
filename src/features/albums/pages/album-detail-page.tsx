@@ -199,6 +199,7 @@ function AlbumDetailPage() {
                     source={movie.source}
                     mediaType={movie.media_type}
                     rating={movie.rating}
+                    review={movie.is_review}
                     onClick={() =>
                       navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
                     }

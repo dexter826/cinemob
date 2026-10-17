@@ -298,6 +298,7 @@ function DashboardPage() {
                     mediaType={movie.media_type}
                     source={movie.source}
                     rating={movie.rating}
+                    review={movie.is_review}
                     meta={getSubTitle(movie)}
                     progress={
                       movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed
