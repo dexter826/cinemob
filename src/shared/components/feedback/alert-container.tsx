@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { AlertTriangle, Info } from 'lucide-react';
-import useAlertStore from '../../stores/alertStore';
-import { Dialog, DialogBody, DialogFooter } from '../ui/Dialog';
-import { Button } from '../ui/Button';
+import useAlertStore from '../../stores/alert-store';
+import { Dialog, DialogBody, DialogFooter } from '../ui/dialog';
+import { Button } from '../ui/button';
 
 const TITLE_ID = 'alert-dialog-title';
 const DESCRIPTION_ID = 'alert-dialog-description';

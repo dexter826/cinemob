@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import useInitialLoadStore from '../../stores/initialLoadStore';
+import useInitialLoadStore from '../../stores/initial-load-store';
 
 interface LoadingProps {
   size?: number;

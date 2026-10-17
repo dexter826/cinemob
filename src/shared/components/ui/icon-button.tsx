@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@/shared/utils/classNames';
+import { classNames } from '@/shared/utils/class-names';
 
 interface IconButtonProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,

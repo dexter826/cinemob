@@ -2,8 +2,8 @@ import { useRef } from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION } from '@/constants/animations';
-import useToastStore from '../../stores/toastStore';
-import { IconButton } from '../ui/IconButton';
+import useToastStore from '../../stores/toast-store';
+import { IconButton } from '../ui/icon-button';
 
 const toastTransition = { duration: MOTION_DURATION.standard, ease: 'easeOut' as const };
 

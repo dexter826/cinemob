@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
-import { Dialog } from './Dialog';
-import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
-import { formatDateDMY, monthLabel } from '@/shared/utils/dateFormat';
+import { Dialog } from './dialog';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { formatDateDMY, monthLabel } from '@/shared/utils/date-format';
 
 interface DatePickerProps {
   value: string;

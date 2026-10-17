@@ -1,5 +1,5 @@
 import { Link2Off } from 'lucide-react';
-import EmptyState from '@/shared/components/ui/EmptyState';
+import EmptyState from '@/shared/components/ui/empty-state';
 
 // Trang báo khi đường link sai hoặc không còn tồn tại.
 function NotFoundPage() {

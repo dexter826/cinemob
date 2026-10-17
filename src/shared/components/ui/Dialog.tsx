@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { DIALOG_VARIANTS, OVERLAY_VARIANTS, getMotionTransition } from '@/constants/animations';
-import { useFocusTrap } from '@/shared/hooks/useFocusTrap';
-import { usePreventScroll } from '@/shared/hooks/usePreventScroll';
-import { classNames } from '@/shared/utils/classNames';
+import { useFocusTrap } from '@/shared/hooks/use-focus-trap';
+import { usePreventScroll } from '@/shared/hooks/use-prevent-scroll';
+import { classNames } from '@/shared/utils/class-names';
 
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
 

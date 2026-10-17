@@ -1,7 +1,7 @@
 import { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from './Button';
-import { classNames } from '@/shared/utils/classNames';
+import { Button } from './button';
+import { classNames } from '@/shared/utils/class-names';
 
 interface EmptyStateProps {
   icon?: LucideIcon;

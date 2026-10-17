@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowUpToLine } from 'lucide-react';
-import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 
 function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);

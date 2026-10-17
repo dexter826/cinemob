@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 
 interface PaginationProps {
   currentPage: number;

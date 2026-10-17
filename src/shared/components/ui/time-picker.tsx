@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { Clock, X } from 'lucide-react';
-import { Dialog } from './Dialog';
-import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
+import { Dialog } from './dialog';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 
 interface TimePickerProps {
   value: string; // HH:mm format

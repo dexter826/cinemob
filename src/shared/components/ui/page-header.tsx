@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, LucideIcon } from 'lucide-react';
-import { IconButton } from './IconButton';
+import { IconButton } from './icon-button';
 
 interface PageHeaderProps {
   title: string;

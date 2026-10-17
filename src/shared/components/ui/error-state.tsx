@@ -1,5 +1,5 @@
-import { Button } from './Button';
-import { classNames } from '@/shared/utils/classNames';
+import { Button } from './button';
+import { classNames } from '@/shared/utils/class-names';
 
 interface ErrorStateProps {
   title: string;

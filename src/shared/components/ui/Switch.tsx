@@ -1,4 +1,4 @@
-import { classNames } from '@/shared/utils/classNames';
+import { classNames } from '@/shared/utils/class-names';
 
 interface SwitchProps {
   checked: boolean;
