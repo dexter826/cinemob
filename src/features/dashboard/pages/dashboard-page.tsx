@@ -10,6 +10,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Button from '@/shared/components/ui/button';
+import { PageHeader } from '@/shared/components/ui';
 import { SectionHeader } from '@/shared/components/ui';
 import { normalizeDate } from '@/shared/utils/date-format';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
@@ -56,17 +57,6 @@ function DashboardPage() {
   } = useDashboard();
 
   // Hero dùng số liệu toàn bộ bộ sưu tập (không theo tab).
-  const totalHours = useMemo(
-    () => Math.floor(movies.reduce((acc, m) => acc + (m.runtime || 0), 0) / 60),
-    [movies],
-  );
-  const allContent = useMemo(
-    () => ({
-      movies: movies.filter((m) => m.media_type === 'movie' || !m.media_type).length,
-      tv: movies.filter((m) => m.media_type === 'tv').length,
-    }),
-    [movies],
-  );
   const statusCounts = useMemo(
     () => ({
       history: movies.filter((m) => (m.status || 'history') === 'history').length,
@@ -150,24 +140,15 @@ function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-0">
-      {/* Hero: số lớn là nhân vật chính */}
-      <section className="border-b border-border">
-        <div className="md:px-0 pt-6 pb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-          <div className="min-w-0">
-            <p className="font-display leading-[0.95] text-6xl md:text-8xl tabular-nums">
-              {movies.length}
-            </p>
-            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mt-2">
-              Phim trong bộ sưu tập
-            </p>
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
-              <span>{totalHours} giờ xem</span>
-              <span className="border-l border-border pl-4">{allContent.movies} phim</span>
-              <span className="border-l border-border pl-4">{allContent.tv} series</span>
-            </div>
-          </div>
-          <div className="flex gap-2.5 pb-1">
-            <Button onClick={() => navigate('/search')} leadingIcon={<Search size={14} aria-hidden="true" />}>
+      {/* Header đồng bộ với mọi trang — số liệu chỉ ở tabs + thống kê riêng */}
+      <PageHeader
+        title="Thư viện"
+        actions={
+          <>
+            <Button
+              onClick={() => navigate('/search')}
+              leadingIcon={<Search size={14} aria-hidden="true" />}
+            >
               Tìm phim
             </Button>
             <Button
@@ -177,12 +158,12 @@ function DashboardPage() {
             >
               Thêm thủ công
             </Button>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {/* Tabs + filters */}
-      <div className="border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
+      <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
         <DashboardTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}

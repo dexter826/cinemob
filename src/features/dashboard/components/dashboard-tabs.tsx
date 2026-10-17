@@ -13,7 +13,7 @@ const TABS: { key: ActiveTab; label: string }[] = [
   { key: 'watchlist', label: 'Sẽ xem' },
 ];
 
-/** Tabs caps + gạch chân vàng trượt (editorial). Số phim/series hiển thị ở hero. */
+/** Tabs caps + gạch chân vàng trượt (editorial). */
 function DashboardTabs({ activeTab, onTabChange, historyCount, watchlistCount }: DashboardTabsProps) {
   const reducedMotion = useReducedMotion() ?? false;
   const counts: Record<ActiveTab, number> = { history: historyCount, watchlist: watchlistCount };
