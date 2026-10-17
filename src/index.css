@@ -237,37 +237,6 @@
     }
   }
 
-  /* Random Picker Animations */
-  @keyframes pulse-soft {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-  }
-
-  @keyframes card-float {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
-
-  .animate-pulse-soft {
-    animation: pulse-soft 1.5s ease-in-out infinite;
-  }
-
-  .animate-card-float {
-    animation: card-float 3s ease-in-out infinite;
-  }
-
   /* 3D perspective for movie cards */
   .movie-wheel-container {
     perspective: 1200px;
@@ -284,12 +253,6 @@
 
   .font-display {
     font-family: var(--font-display);
-  }
-
-  /* Editorial Print: glow đã bỏ — giữ tên class vì random picker/login đang dùng,
-     giá trị hạ xuống hairline. */
-  .center-card-glow {
-    box-shadow: 0 0 0 1px var(--color-border);
   }
 }
 

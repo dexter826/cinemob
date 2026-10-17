@@ -24,7 +24,6 @@ export function PickerWheel({
   hasResult,
 }: PickerWheelProps) {
   const reducedMotion = useReducedMotion() ?? false;
-  const animateCards = isShuffling && !reducedMotion;
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Wheel of Fortune Layout - Fixed positions, changing content */}
@@ -32,20 +31,14 @@ export function PickerWheel({
         {/* Left Side Card */}
         <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
-            <img
-              src={leftSrc}
-              alt=""
-              className={`w-full h-full object-cover ${animateCards ? 'animate-pulse-soft' : ''}`}
-            />
+            <img src={leftSrc} alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30" />
           </div>
         </div>
 
         {/* Center Card - Main focus */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
-          <div
-            className={`w-full h-full rounded-control overflow-hidden shadow-2xl border-2 border-primary center-card-glow ${animateCards ? 'animate-pulse-soft' : ''}`}
-          >
+          <div className="w-full h-full rounded-control overflow-hidden border border-primary">
             <img src={centerSrc} alt="" className="w-full h-full object-cover" />
 
             {/* Gradient overlay */}
@@ -56,11 +49,7 @@ export function PickerWheel({
         {/* Right Side Card */}
         <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
-            <img
-              src={rightSrc}
-              alt=""
-              className={`w-full h-full object-cover ${animateCards ? 'animate-pulse-soft' : ''}`}
-            />
+            <img src={rightSrc} alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30" />
           </div>
         </div>
@@ -90,13 +79,8 @@ export function PickerWheel({
         )}
         {isShuffling && (
           <div className="space-y-1">
-            <h3
-              className={`text-xl font-bold text-text-primary font-display ${animateCards ? 'animate-pulse' : ''}`}
-            >
-              Đang chọn ngẫu nhiên…
-            </h3>
-            <p className={`text-sm text-text-secondary ${animateCards ? 'animate-pulse' : ''}`}>
-              Đang xáo trộn các phim phù hợp
+            <h3 className="text-xl font-bold text-text-primary font-display">Đang chọn ngẫu nhiên…</h3>
+            <p className="text-sm text-text-secondary">Đang xáo trộn các phim phù hợp
             </p>
           </div>
         )}

@@ -1,7 +1,8 @@
 import type { RefObject } from 'react';
-import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type } from 'lucide-react';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
+import SearchInput from '@/shared/components/ui/search-input';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
@@ -68,33 +69,13 @@ export function PersonMovieSection({
       {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 pt-4">
         <div className="flex items-center gap-3 relative md:flex-1">
-          <div className="relative group flex-1">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-              size={18}
-              aria-hidden="true"
-            />
-            <input
-              type="text"
-              aria-label="Tìm phim của nghệ sĩ này"
-              value={searchQuery}
-              onChange={(e) => onSearchQueryChange(e.target.value)}
-              placeholder="Tìm phim của nghệ sĩ này…"
-              autoComplete="off"
-              spellCheck={false}
-              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-control sm:rounded-card pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-primary focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => onSearchQueryChange('')}
-                type="button"
-                aria-label="Xóa từ khóa tìm kiếm"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary transition-colors cursor-pointer"
-              >
-                <X size={14} aria-hidden="true" />
-              </button>
-            )}
-          </div>
+          <SearchInput
+            value={searchQuery}
+            onChange={onSearchQueryChange}
+            placeholder="Tìm phim của nghệ sĩ này…"
+            label="Tìm phim của nghệ sĩ này"
+            className="flex-1"
+          />
 
           <button
             onClick={(e) => {
@@ -168,11 +149,9 @@ export function PersonMovieSection({
         </div>
 
         {paginatedMovies.length > 0 && (
-          <div className="flex items-center justify-end">
-            <span className="text-xs font-semibold text-text-secondary px-3 py-1.5 rounded-control border border-border tabular-nums">
-              Hiển thị {paginatedMovies.length} / {filteredCount} mục
-            </span>
-          </div>
+          <p className="flex items-center justify-end text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+            Hiển thị {paginatedMovies.length} / {filteredCount} mục
+          </p>
         )}
       </div>
 

@@ -58,7 +58,7 @@ function SearchFilters({
   return (
     <div className="flex flex-col gap-3 sm:gap-4">
       <div className="relative w-full group" ref={containerRef}>
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {isSuggesting ? (
             <Loader2
               className="text-primary animate-spin"
@@ -94,7 +94,7 @@ function SearchFilters({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors ring-1 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
+          className="w-full h-11 bg-transparent border border-border rounded-control pl-10 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors text-sm text-text-primary placeholder:text-text-secondary"
           ref={searchInputRef}
         />
 

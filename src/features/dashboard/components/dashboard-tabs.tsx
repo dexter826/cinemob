@@ -6,8 +6,6 @@ interface DashboardTabsProps {
   onTabChange: (tab: ActiveTab) => void;
   historyCount: number;
   watchlistCount: number;
-  moviesCount: number;
-  tvCount: number;
 }
 
 const TABS: { key: ActiveTab; label: string }[] = [
@@ -15,15 +13,8 @@ const TABS: { key: ActiveTab; label: string }[] = [
   { key: 'watchlist', label: 'Sẽ xem' },
 ];
 
-/** Tabs caps + gạch chân vàng trượt (editorial). */
-function DashboardTabs({
-  activeTab,
-  onTabChange,
-  historyCount,
-  watchlistCount,
-  moviesCount,
-  tvCount,
-}: DashboardTabsProps) {
+/** Tabs caps + gạch chân vàng trượt (editorial). Số phim/series hiển thị ở hero. */
+function DashboardTabs({ activeTab, onTabChange, historyCount, watchlistCount }: DashboardTabsProps) {
   const reducedMotion = useReducedMotion() ?? false;
   const counts: Record<ActiveTab, number> = { history: historyCount, watchlist: watchlistCount };
 
@@ -59,10 +50,6 @@ function DashboardTabs({
           );
         })}
       </div>
-
-      <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-text-secondary tabular-nums">
-        {moviesCount} phim · {tvCount} series
-      </span>
     </div>
   );
 }

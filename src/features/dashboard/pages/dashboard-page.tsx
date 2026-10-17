@@ -185,8 +185,6 @@ function DashboardPage() {
           onTabChange={setActiveTab}
           historyCount={statusCounts.history}
           watchlistCount={statusCounts.watchlist}
-          moviesCount={allContent.movies}
-          tvCount={allContent.tv}
         />
         {movies.length > 0 && (
           <DashboardFilters
@@ -205,6 +203,44 @@ function DashboardPage() {
           />
         )}
       </div>
+
+      {/* Tiếp tục xem: TV có progress thật — đặt trên lưới theo yêu cầu */}
+      {continueWatching.length > 0 && (
+        <section aria-labelledby="continue-watching-title" className="border-b border-border">
+          <div className="py-5">
+            <p
+              id="continue-watching-title"
+              className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary"
+            >
+              Tiếp tục xem
+            </p>
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
+              {continueWatching.map((movie) => {
+                const total = movie.total_episodes || 0;
+                const watched = movie.progress?.watched_episodes ?? 0;
+                const percent = total > 0 ? Math.min(100, Math.round((watched / total) * 100)) : 0;
+                return (
+                  <div
+                    key={movie.docId}
+                    className="sm:border-l sm:border-border-default sm:pl-4 first:sm:border-l-0 first:sm:pl-0"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.05em] truncate">
+                      {getMainTitle(movie)}
+                    </p>
+                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                      S{movie.progress?.current_season ?? 1} · E
+                      {movie.progress?.current_episode ?? 0}/{total} · {percent}%
+                    </p>
+                    <div className="mt-2 h-0.5 bg-border-default" role="presentation">
+                      <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Lưới poster */}
       <section aria-labelledby="library-content-title" className="py-5">
@@ -292,44 +328,6 @@ function DashboardPage() {
           </>
         )}
       </section>
-
-      {/* Tiếp tục xem: TV có progress thật */}
-      {continueWatching.length > 0 && (
-        <section aria-labelledby="continue-watching-title" className="border-t border-border">
-          <div className="py-5">
-            <p
-              id="continue-watching-title"
-              className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary"
-            >
-              Tiếp tục xem
-            </p>
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
-              {continueWatching.map((movie) => {
-                const total = movie.total_episodes || 0;
-                const watched = movie.progress?.watched_episodes ?? 0;
-                const percent = total > 0 ? Math.min(100, Math.round((watched / total) * 100)) : 0;
-                return (
-                  <div
-                    key={movie.docId}
-                    className="sm:border-l sm:border-border-default sm:pl-4 first:sm:border-l-0 first:sm:pl-0"
-                  >
-                    <p className="text-xs font-bold uppercase tracking-[0.05em] truncate">
-                      {getMainTitle(movie)}
-                    </p>
-                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
-                      S{movie.progress?.current_season ?? 1} · E
-                      {movie.progress?.current_episode ?? 0}/{total} · {percent}%
-                    </p>
-                    <div className="mt-2 h-0.5 bg-border-default" role="presentation">
-                      <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 }

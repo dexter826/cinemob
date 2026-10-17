@@ -172,9 +172,9 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex px-3 h-10 items-center rounded-control border border-border-default dark:border-white/5">
-                  <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
-                </div>
+                <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                  {totalInYear} phim · {selectedYear}
+                </span>
                 <Dropdown
                   options={yearOptions}
                   value={selectedYear}

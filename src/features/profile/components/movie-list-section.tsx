@@ -4,6 +4,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PosterCard from '@/features/movies/components/poster-card';
+import SearchInput from '@/shared/components/ui/search-input';
 import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 import {
@@ -70,35 +71,14 @@ function MovieListSection({
   return (
     <>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="relative flex-1">
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary"
-            aria-hidden="true"
-          />
-          <label htmlFor="profile-search" className="sr-only">
-            Tìm phim trong hồ sơ này
-          </label>
-          <input
-            id="profile-search"
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm phim trong hồ sơ này…"
-            autoComplete="off"
-            spellCheck={false}
-            className="w-full bg-surface border border-border rounded-card pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors p-1"
-              aria-label="Xóa từ khóa tìm kiếm"
-            >
-              <X size={15} aria-hidden="true" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          id="profile-search"
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Tìm phim trong hồ sơ này…"
+          label="Tìm phim trong hồ sơ này"
+          className="flex-1"
+        />
 
         <div className="flex items-center gap-2 sm:w-64 shrink-0">
           <div className="w-full">

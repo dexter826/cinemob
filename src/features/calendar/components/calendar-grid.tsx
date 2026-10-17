@@ -118,7 +118,7 @@ function CalendarGrid({
                 {episodes.slice(0, 3).map((ep, dotIndex) => (
                   <div
                     key={`${ep.seriesId}-${ep.episode.id}-dot-${dotIndex}`}
-                    className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"
+                    className="w-1.5 h-1.5 rounded-[3px] bg-primary"
                   ></div>
                 ))}
               </div>

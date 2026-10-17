@@ -4,6 +4,7 @@ import { ArrowLeft, Film, PlusCircle, Edit2, Trash2, X as XIcon, Search } from '
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
+import SearchInput from '@/shared/components/ui/search-input';
 import { formatDateAny } from '@/shared/utils/date-format';
 import useAlertStore from '@/shared/stores/alert-store';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -232,25 +233,14 @@ function AlbumDetailPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="relative group flex-1 md:w-80">
-                  <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-                    size={16}
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Tìm trong lịch sử…"
-                    aria-label="Tìm phim trong lịch sử để thêm vào album"
-                    autoComplete="off"
-                    spellCheck={false}
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium transition-colors ring-1"
-                  />
-                </div>
-                <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
+                <SearchInput
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Tìm trong lịch sử…"
+                  label="Tìm phim trong lịch sử để thêm vào album"
+                  className="flex-1 md:w-80"
+                />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>
