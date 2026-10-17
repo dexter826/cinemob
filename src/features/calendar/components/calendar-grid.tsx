@@ -60,7 +60,7 @@ function CalendarGrid({
       days.push(
         <div
           key={`prev-${day}`}
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-control sm:rounded-card flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-secondary">{day}</div>
         </div>,
@@ -84,7 +84,7 @@ function CalendarGrid({
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
             hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group 
-            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
+            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40' : 'border-border-default dark:border-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
@@ -134,7 +134,7 @@ function CalendarGrid({
       days.push(
         <div
           key={`next-${day}`}
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-control sm:rounded-card flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-secondary">{day}</div>
         </div>,
@@ -151,7 +151,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -172,7 +172,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
@@ -194,7 +194,7 @@ function CalendarGrid({
           {Array.from({ length: 42 }).map((_, idx) => (
             <div
               key={idx}
-              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card animate-pulse bg-black/5 dark:bg-white/5"
+              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card animate-pulse"
             />
           ))}
         </div>

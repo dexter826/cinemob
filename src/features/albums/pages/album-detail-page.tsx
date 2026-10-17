@@ -121,7 +121,7 @@ function AlbumDetailPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
+                  className="w-full border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 />
               </div>
 
@@ -162,7 +162,7 @@ function AlbumDetailPage() {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
               {!loading && (
-                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default tabular-nums">
+                <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -247,10 +247,10 @@ function AlbumDetailPage() {
                     aria-label="Tìm phim trong lịch sử để thêm vào album"
                     autoComplete="off"
                     spellCheck={false}
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium transition-colors ring-1 ring-black/5 dark:ring-white/5"
+                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium transition-colors ring-1"
                   />
                 </div>
-                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
+                <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>

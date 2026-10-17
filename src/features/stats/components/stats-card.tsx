@@ -14,7 +14,7 @@ function StatsCard({ label, value, subValue, icon: Icon, colorClass }: StatsCard
     <div className="bg-surface border border-border p-6 rounded-dialog flex items-center space-x-5">
       <div
         aria-hidden="true"
-        className={`p-4 rounded-card bg-black/5 dark:bg-white/5 border border-border ${colorClass}`}
+        className={`p-4 rounded-card border border-border ${colorClass}`}
       >
         <Icon size={24} strokeWidth={1.5} />
       </div>

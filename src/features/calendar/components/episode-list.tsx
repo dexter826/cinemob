@@ -65,7 +65,7 @@ function EpisodeList({
             {Array.from({ length: 4 }).map((_, idx) => (
               <div
                 key={idx}
-                className="flex gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 border border-border-default rounded-card animate-pulse"
+                className="flex gap-4 p-3 sm:p-4 border border-border-default rounded-card animate-pulse"
               >
                 <div className="w-12 h-16 sm:w-14 sm:h-20 bg-black/10 dark:bg-white/10 rounded-control" />
                 <div className="flex-1 space-y-3 py-1">
@@ -90,7 +90,7 @@ function EpisodeList({
           </div>
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-black/5 dark:bg-white/5 rounded-card flex items-center justify-center mb-4 border border-border-default opacity-40">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-card flex items-center justify-center mb-4 border border-border-default opacity-40">
               <Info size={32} className="text-text-secondary" aria-hidden="true" />
             </div>
             <p className="text-text-secondary font-semibold text-xs">
@@ -119,7 +119,7 @@ function EpisodeList({
                       type="button"
                       onClick={() => handleSeriesClick(ep)}
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
-                      className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-card hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
+                      className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-card hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
                     >
                       <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-control overflow-hidden border border-border-default/50 transition-colors duration-300">
                         <img

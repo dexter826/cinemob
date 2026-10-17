@@ -136,19 +136,19 @@ function AddMovieModal() {
       <DialogBody className="p-5 sm:p-6 lg:p-7">
         {isLoadingDetails ? (
           <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
-            <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 bg-black/5 dark:bg-white/5 rounded-card sm:rounded-dialog animate-pulse shrink-0 mx-auto md:mx-0" />
+            <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog animate-pulse shrink-0 mx-auto md:mx-0" />
             <div className="flex-1 w-full space-y-6">
-              <div className="h-11 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
+              <div className="h-11 rounded-card w-full animate-pulse" />
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
-                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
+                  <div className="h-20 rounded-card animate-pulse" />
+                  <div className="h-20 rounded-card animate-pulse" />
                 </div>
-                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
-                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
+                <div className="h-12 rounded-card w-full animate-pulse" />
+                <div className="h-12 rounded-card w-full animate-pulse" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
-                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
+                  <div className="h-12 rounded-card animate-pulse" />
+                  <div className="h-12 rounded-card animate-pulse" />
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@ function AddMovieModal() {
               <div
                 role="group"
                 aria-label="Phần của biểu mẫu"
-                className="flex bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border"
+                className="flex p-1 rounded-card border border-border"
               >
                 <button
                   type="button"
@@ -220,7 +220,7 @@ function AddMovieModal() {
                         aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+                        className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
                         placeholder="Tên gốc của phim…"
                       />
                       {isAnimating && errors.title && (
@@ -248,7 +248,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                        className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
+                        className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
                         placeholder="Tên tiếng Việt…"
                       />
                     </div>
@@ -270,7 +270,7 @@ function AddMovieModal() {
                       autoComplete="off"
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-                      className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
+                      className="w-full h-11 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
                       placeholder="https://…"
                     />
                   </div>
@@ -298,7 +298,7 @@ function AddMovieModal() {
                   <StatusToggle status={status} setStatus={setStatus} />
 
                   {status === 'history' && (
-                    <div className="flex items-center justify-between gap-3 p-4 bg-black/5 dark:bg-white/5 border border-border rounded-card">
+                    <div className="flex items-center justify-between gap-3 p-4 border border-border rounded-card">
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           aria-hidden="true"
@@ -358,7 +358,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                        className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 outline-none transition-colors resize-none"
+                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 outline-none transition-colors resize-none"
                         placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>

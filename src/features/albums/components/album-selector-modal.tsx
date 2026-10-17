@@ -220,7 +220,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 <span className="flex items-center gap-4">
                   <span
                     aria-hidden="true"
-                    className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-control flex items-center justify-center shrink-0 border border-border"
+                    className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
                   >
                     <Film size={22} className="text-text-secondary" />
                   </span>

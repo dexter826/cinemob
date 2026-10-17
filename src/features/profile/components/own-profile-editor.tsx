@@ -372,9 +372,9 @@ function OwnProfileEditor({
                 <div className="mt-1">
                   {loading ? (
                     <div aria-hidden="true" className="space-y-2 max-w-prose">
-                      <div className="h-3 w-32 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-3/4 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-1/2 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
+                      <div className="h-3 w-32 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
+                      <div className="h-3 w-3/4 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
+                      <div className="h-3 w-1/2 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
                     </div>
                   ) : (
                     <>

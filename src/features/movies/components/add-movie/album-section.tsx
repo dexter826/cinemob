@@ -62,7 +62,7 @@ function AlbumSection({
       </div>
 
       {showCreateAlbum && (
-        <div className="flex gap-3 p-4 bg-black/5 dark:bg-white/5 rounded-card border border-border">
+        <div className="flex gap-3 p-4 rounded-card border border-border">
           <input
             ref={newAlbumInputRef}
             name="new-album-name"

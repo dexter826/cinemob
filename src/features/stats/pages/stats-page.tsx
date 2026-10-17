@@ -172,7 +172,7 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5">
+                <div className="hidden sm:flex px-3 h-10 items-center rounded-control border border-border-default dark:border-white/5">
                   <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
                 </div>
                 <Dropdown
@@ -263,7 +263,7 @@ function StatsPage() {
                         }}
                       />
                     </div>
-                    <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
+                    <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
                       {moviesByRating[rating] ?? 0}
                     </span>
                   </div>
@@ -287,7 +287,7 @@ function StatsPage() {
                 {topCountries.map(([country, count], index) => (
                   <div
                     key={country}
-                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors duration-300 group"
+                    className="flex items-center justify-between p-4 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors duration-300 group"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">

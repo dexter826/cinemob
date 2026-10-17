@@ -191,7 +191,7 @@ function Navbar() {
                   onKeyDown={handleMenuKeyDown}
                   className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
                 >
-                  <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
+                  <div className="px-4 py-3 border-b border-border">
                     <p className="text-sm font-semibold text-text-primary truncate">
                       {user?.displayName}
                     </p>

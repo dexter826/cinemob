@@ -94,7 +94,7 @@ function SearchFilters({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
+          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors ring-1 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
           ref={searchInputRef}
         />
 
@@ -272,7 +272,7 @@ function SearchFilters({
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-card bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-card hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
           >
             <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
             <span>Đặt lại</span>

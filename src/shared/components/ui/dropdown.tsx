@@ -153,7 +153,7 @@ function Dropdown({
         onKeyDown={handleNavigationKey}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
+          w-full h-11 border border-border-default rounded-card px-4 text-left
           focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-300
           flex items-center justify-between
@@ -183,7 +183,7 @@ function Dropdown({
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
           {searchable && (
-            <div className="p-3 border-b border-border-default bg-black/5 dark:bg-white/5">
+            <div className="p-3 border-b border-border-default">
               <input
                 ref={inputRef}
                 type="text"

@@ -115,7 +115,7 @@ function PersonDetailPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         {person.birthday && (
-                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                          <div className="flex items-center gap-4 p-3 rounded-card border border-border-default">
                             <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                               <Calendar size={18} className="text-primary" aria-hidden="true" />
                             </div>
@@ -147,7 +147,7 @@ function PersonDetailPage() {
 
                       <div className="space-y-4">
                         {person.birthday && !person.deathday && (
-                          <div className="flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                          <div className="flex items-center gap-4 p-3 rounded-card border border-border-default">
                             <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                               <Users size={18} className="text-primary" aria-hidden="true" />
                             </div>
@@ -173,7 +173,7 @@ function PersonDetailPage() {
                     </div>
 
                     {person.place_of_birth && (
-                      <div className="mt-4 flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 rounded-card border border-border-default">
+                      <div className="mt-4 flex items-center gap-4 p-3 rounded-card border border-border-default">
                         <div className="w-10 h-10 rounded-control bg-primary/10 flex items-center justify-center border border-primary/20">
                           <MapPin size={18} className="text-primary" aria-hidden="true" />
                         </div>

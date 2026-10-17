@@ -88,7 +88,7 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors ring-1 ring-black/5 dark:ring-white/5"
+            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors ring-1"
           />
           {filters.searchQuery && (
             <button
@@ -135,7 +135,7 @@ function DashboardFilters({
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'date'
                     ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
+                    : 'border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
                 <Calendar size={13} strokeWidth={1.5} aria-hidden="true" />
@@ -146,7 +146,7 @@ function DashboardFilters({
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
                   filters.sortBy === 'title'
                     ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
+                    : 'border-transparent text-text-secondary hover:text-text-primary'
                 }`}
               >
                 <Type size={13} strokeWidth={1.5} aria-hidden="true" />
@@ -154,7 +154,7 @@ function DashboardFilters({
               </button>
               <button
                 onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-control bg-black/5 dark:bg-white/5 border border-transparent text-text-secondary hover:text-text-primary hover:bg-black/10 transition-colors cursor-pointer"
+                className="flex items-center justify-center p-2.5 rounded-control border border-transparent text-text-secondary hover:text-text-primary hover:bg-black/10 transition-colors cursor-pointer"
                 title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
                 aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
               >
@@ -305,7 +305,7 @@ function DashboardFilters({
                 <div
                   role="group"
                   aria-labelledby="df-rating-label"
-                  className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5"
+                  className="flex gap-1 p-1.5 rounded-control border border-border-default dark:border-white/5"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
                     const [min, max] = filters.ratingRange || [0, 0];

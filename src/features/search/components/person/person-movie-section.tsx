@@ -117,19 +117,19 @@ export function PersonMovieSection({
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
                   >
                     {sortOrder === 'asc' ? (
                       <ArrowUp size={14} aria-hidden="true" />
@@ -169,7 +169,7 @@ export function PersonMovieSection({
 
         {paginatedMovies.length > 0 && (
           <div className="flex items-center justify-end">
-            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-control border border-border tabular-nums">
+            <span className="text-xs font-semibold text-text-secondary px-3 py-1.5 rounded-control border border-border tabular-nums">
               Hiển thị {paginatedMovies.length} / {filteredCount} mục
             </span>
           </div>

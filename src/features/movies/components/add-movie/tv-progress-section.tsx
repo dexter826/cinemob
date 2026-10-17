@@ -65,7 +65,7 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-season-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
+              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
@@ -98,7 +98,7 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-episode-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
+              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"

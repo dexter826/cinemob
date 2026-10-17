@@ -96,7 +96,7 @@ function AlbumsPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
+                className="w-full border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 placeholder="Ví dụ: Phim Mafia Ý…"
               />
             </div>
@@ -141,7 +141,7 @@ function AlbumsPage() {
               >
                 <span className="sr-only">Mở album {album.name}</span>
               </Link>
-              <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden bg-black/5 dark:bg-white/5">
+              <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden">
                 {albumCoverMovies[album.docId || '']?.poster_path ? (
                   <img
                     src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
