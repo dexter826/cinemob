@@ -18,6 +18,13 @@ function ToastIcon({ type }: { type: string }) {
   return <Info size={18} className={`${iconClass} text-info`} aria-hidden="true" />;
 }
 
+const PROGRESS_BAR_COLORS: Record<string, string> = {
+  success: 'bg-success/70',
+  error: 'bg-danger/70',
+  warning: 'bg-warning/70',
+  info: 'bg-info/70',
+};
+
 function ToastList({
   types,
   role,
@@ -70,7 +77,7 @@ function ToastList({
             {reducedMotion ? (
               <div
                 aria-hidden="true"
-                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50"
+                className={`absolute bottom-0 left-0 h-0.5 w-full ${PROGRESS_BAR_COLORS[toast.type] ?? 'bg-info/70'}`}
               />
             ) : (
               <motion.div
@@ -78,7 +85,7 @@ function ToastList({
                 initial={{ scaleX: 1 }}
                 animate={{ scaleX: 0 }}
                 transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
-                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50 origin-left"
+                className={`absolute bottom-0 left-0 h-0.5 w-full origin-left ${PROGRESS_BAR_COLORS[toast.type] ?? 'bg-info/70'}`}
               />
             )}
           </motion.div>
