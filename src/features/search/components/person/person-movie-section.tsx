@@ -116,13 +116,13 @@ export function PersonMovieSection({
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>

@@ -1,6 +1,6 @@
 import { TMDBMovieResult } from '@/types';
 import { getMainTitleForTMDB, getSubTitleForTMDB, getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { Film, Tv, Bookmark, Star, Calendar, X } from 'lucide-react';
+import { Film, Tv, Bookmark, Star, X } from 'lucide-react';
 
 interface TMDBMovieCardProps {
   movie: TMDBMovieResult;
@@ -11,7 +11,7 @@ interface TMDBMovieCardProps {
   onRemove?: (movie: TMDBMovieResult) => void;
 }
 
-/** Thẻ hiển thị phim từ TMDB trong kết quả tìm kiếm và khám phá. */
+/** Thẻ TMDB editorial: poster là cả thẻ, info trên scrim, badge trạng thái flat. */
 function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMDBMovieCardProps) {
   const mainTitle = getMainTitleForTMDB(movie);
   const subTitle = getSubTitleForTMDB(movie);
@@ -20,89 +20,83 @@ function TMDBMovieCard({ movie, onClick, status, character, job, onRemove }: TMD
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <article className="group relative bg-surface rounded-card overflow-hidden border border-border hover:border-primary/40 transition-colors duration-300">
-      <div className="aspect-2/3 w-full relative overflow-hidden bg-black/5 dark:bg-white/5">
-        <button
-          type="button"
-          onClick={() => onClick(movie)}
-          aria-label={`Xem chi tiết phim ${mainTitle}`}
-          className="absolute inset-0 w-full h-full cursor-pointer rounded-none"
-        >
-          <img
-            src={getTMDBImageUrl(movie.poster_path, 'w500')}
-            alt={mainTitle}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        </button>
+    <article className="group relative aspect-2/3 rounded-poster overflow-hidden border border-border bg-surface ring-inset transition-[outline-color] duration-200 hover:ring-1 hover:ring-primary">
+      <button
+        type="button"
+        onClick={() => onClick(movie)}
+        aria-label={
+          status ? `Mở chi tiết phim ${mainTitle}` : `Thêm phim ${mainTitle} vào bộ sưu tập`
+        }
+        className="absolute inset-0 w-full h-full cursor-pointer p-0 text-left"
+      >
+        <img
+          src={getTMDBImageUrl(movie.poster_path, 'w500')}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          draggable={false}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+        />
+      </button>
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      {/* Scrim chức năng: nền tối để chữ đọc được trên ảnh */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none"
+      />
 
-        <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
-          {status && (
-            <div
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/10 text-xs font-bold ${
-                status === 'history' ? 'bg-success text-on-success' : 'bg-primary text-on-primary'
-              }`}
-            >
-              <Bookmark size={10} className="fill-white" strokeWidth={1.5} aria-hidden="true" />
-              <span>{status === 'history' ? 'Đã xem' : 'Sẽ xem'}</span>
-            </div>
-          )}
-
-          {rating && (
-            <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-warning tabular-nums">
-              <Star size={10} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
-              <span>{rating}</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 text-xs font-bold text-white">
-            {isTV ? (
-              <Tv size={10} className="text-info" strokeWidth={1.5} aria-hidden="true" />
-            ) : (
-              <Film size={10} className="text-success" strokeWidth={1.5} aria-hidden="true" />
-            )}
-            <span>{isTV ? 'TV' : 'Phim'}</span>
-          </div>
-        </div>
-
-        {onRemove && (
-          <button
-            type="button"
-            onClick={() => onRemove(movie)}
-            aria-label={`Bỏ qua gợi ý ${mainTitle}`}
-            className="absolute top-2 right-2 z-20 min-w-9 min-h-9 flex items-center justify-center p-1.5 bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-lg border border-white/10 transition-colors cursor-pointer"
-            title="Không quan tâm"
+      <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10 pointer-events-none">
+        {status && (
+          <span
+            className={`flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-[9px] font-bold uppercase tracking-[0.06em] ${
+              status === 'history' ? 'bg-success text-on-success' : 'bg-primary text-on-primary'
+            }`}
           >
-            <X size={14} strokeWidth={1.5} aria-hidden="true" />
-          </button>
+            <Bookmark size={9} className="fill-current" aria-hidden="true" />
+            {status === 'history' ? 'Đã xem' : 'Sẽ xem'}
+          </span>
         )}
+        {rating && (
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[10px] font-bold text-primary tabular-nums">
+            <Star size={9} className="fill-primary" aria-hidden="true" />
+            {rating}
+          </span>
+        )}
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[9px] font-bold uppercase tracking-[0.06em] text-white">
+          {isTV ? (
+            <Tv size={9} aria-hidden="true" />
+          ) : (
+            <Film size={9} aria-hidden="true" />
+          )}
+          {isTV ? 'TV' : 'Phim'}
+        </span>
       </div>
 
-      <div className="p-3 space-y-1">
+      {onRemove && (
+        <button
+          type="button"
+          onClick={() => onRemove(movie)}
+          aria-label={`Bỏ qua gợi ý ${mainTitle}`}
+          className="absolute top-2 right-2 z-20 min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+          title="Không quan tâm"
+        >
+          <X size={13} strokeWidth={1.5} aria-hidden="true" />
+        </button>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
         <h3
-          className="font-bold text-sm md:text-base leading-tight line-clamp-1 text-text-primary group-hover:text-primary transition-colors duration-200"
+          className="text-[11px] font-bold uppercase tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
           title={mainTitle}
         >
           {mainTitle}
         </h3>
-
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs text-text-secondary truncate flex-1 italic" title={subTitle}>
-            {subTitle || '\u00A0'}
-          </p>
-          {year && (
-            <div className="flex items-center gap-1 text-xs text-text-secondary font-medium shrink-0 tabular-nums">
-              <Calendar size={10} className="opacity-70" strokeWidth={1.5} aria-hidden="true" />
-              <span>{year}</span>
-            </div>
-          )}
-        </div>
-
+        <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white/55 truncate">
+          {[subTitle, year].filter(Boolean).join(' · ') || '\u00A0'}
+        </p>
         {(character || job) && (
-          <p className="text-xs text-primary/80 font-medium truncate pt-1 border-t border-border-default dark:border-white/5">
-            {character ? `Nhân vật: ${character}` : `Công việc: ${job}`}
+          <p className="mt-1 pt-1 border-t border-white/15 text-[9px] font-semibold uppercase tracking-[0.08em] text-primary truncate">
+            {character ?? job}
           </p>
         )}
       </div>

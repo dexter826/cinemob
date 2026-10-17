@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
@@ -247,7 +247,15 @@ export const useSearch = (user: User | null) => {
     return result;
   }, [displayMovies, filters.type, filters.country, isSearchMode, filters.sortBy]);
 
+  const navigate = useNavigate();
+
   const handleSelectMovie = (movie: TMDBMovieResult) => {
+    // Phim đã trong bộ sưu tập → trang chi tiết; chưa có → mở form thêm nhanh.
+    if (getMovieStatus(movie.id)) {
+      const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+      navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
+      return;
+    }
     openAddModal({
       movie: movie,
       mediaType:
