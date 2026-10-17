@@ -32,7 +32,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
         )}
       </div>
 
-      <h2 className="mt-2 text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
+      <h2 className="mt-2 text-xl sm:text-2xl text-text-primary tracking-tight font-display">
         {profile.displayName}
       </h2>
       {profile.email && (

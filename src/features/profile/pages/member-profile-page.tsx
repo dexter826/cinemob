@@ -192,7 +192,11 @@ function MemberProfilePage() {
       ) : (
         <>
           <section aria-label="Phim đã xem" className="space-y-4">
-            <div role="group" aria-label="Phim của thành viên" className="flex items-center border-b border-border">
+            <div
+              role="group"
+              aria-label="Phim của thành viên"
+              className="flex items-center border-b border-border"
+            >
               {(
                 [
                   { key: 'common', label: 'Phim chung' },
@@ -207,9 +211,7 @@ function MemberProfilePage() {
                     aria-pressed={isActive}
                     onClick={() => setActiveTab(tab.key)}
                     className={`relative flex items-center h-11 px-3.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
-                      isActive
-                        ? 'text-text-primary'
-                        : 'text-text-secondary hover:text-text-primary'
+                      isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                     }`}
                   >
                     {tab.label}
@@ -227,7 +229,7 @@ function MemberProfilePage() {
             {activeTab === 'common' &&
               (commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm sm:text-base font-bold text-text-primary tracking-tight font-display">
+                  <p className="text-sm sm:text-base text-text-primary tracking-tight font-display">
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>

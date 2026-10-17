@@ -69,7 +69,7 @@ function AlbumSection({
             type="text"
             autoComplete="off"
             aria-label="Tên album mới"
-            placeholder="Tên album mới…"
+            placeholder="Nhập tên album…"
             value={newAlbumName}
             onChange={(e) => setNewAlbumName(e.target.value)}
             onKeyDown={(e) => {

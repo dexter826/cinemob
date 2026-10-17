@@ -342,7 +342,7 @@ function OwnProfileEditor({
             <div className="flex-1 min-w-0 text-left">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-xl sm:text-2xl font-bold text-text-primary truncate tracking-tight font-display">
+                  <h2 className="text-xl sm:text-2xl text-text-primary truncate tracking-tight font-display">
                     {displayName}
                   </h2>
                   <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
@@ -407,6 +407,7 @@ function OwnProfileEditor({
                   autoComplete="nickname"
                   value={draftName}
                   onChange={(e) => setDraftName(e.target.value)}
+                  placeholder="Nhập tên hiển thị…"
                   maxLength={50}
                   aria-invalid={nameError ? true : undefined}
                   className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"

@@ -142,10 +142,7 @@ export function DialogHeader({
     <div className="shrink-0 border-b border-border px-4 py-3 sm:px-6 sm:py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2
-            id={titleId}
-            className="text-base sm:text-lg font-bold tracking-wide font-display truncate"
-          >
+          <h2 id={titleId} className="text-base sm:text-lg font-bold tracking-wide truncate">
             {title}
           </h2>
           {description && (

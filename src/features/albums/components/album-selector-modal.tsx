@@ -115,7 +115,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             <span className="text-xs font-semibold text-primary mb-1 block">Thêm vào album</span>
             <h2
               id="album-selector-title"
-              className="text-xl font-bold text-text-primary truncate tracking-tight font-display"
+              className="text-xl text-text-primary truncate tracking-tight font-display"
             >
               {movie ? getDisplayTitle(movie) : 'Chọn album'}
             </h2>

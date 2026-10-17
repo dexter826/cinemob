@@ -140,7 +140,7 @@ export function PersonMovieSection({
                     options={availableYears.map((year) => ({ value: year, label: year }))}
                     values={selectedYears}
                     onChange={(values) => onSelectedYearsChange(values.map((v) => v.toString()))}
-                    placeholder="Tất cả các năm"
+                    placeholder="Chọn năm…"
                   />
                 </div>
               </div>

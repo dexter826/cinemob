@@ -128,6 +128,7 @@ function AlbumDetailPage() {
                   type="text"
                   autoComplete="off"
                   required
+                  placeholder="Nhập tên album…"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
@@ -245,7 +246,7 @@ function AlbumDetailPage() {
                 <Search
                   value={searchQuery}
                   onChange={setSearchQuery}
-                  placeholder="Tìm trong lịch sử…"
+                  placeholder="Tìm phim trong lịch sử…"
                   label="Tìm phim trong lịch sử để thêm vào album"
                   className="flex-1 md:w-80"
                 />

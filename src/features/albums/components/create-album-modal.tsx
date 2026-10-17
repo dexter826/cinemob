@@ -42,7 +42,7 @@ function CreateAlbumModal({ isOpen, onClose, onSubmit }: CreateAlbumModalProps) 
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ví dụ: Phim Mafia Ý…"
+            placeholder="Nhập tên album…"
           />
         </DialogBody>
         <DialogFooter>

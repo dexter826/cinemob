@@ -57,6 +57,7 @@ export const useAddMovieForm = () => {
 
   const [status, setStatus] = useState<'history' | 'watchlist'>('history');
   const [manualMediaType, setManualMediaType] = useState<'movie' | 'tv'>('movie');
+  const [isTouched, setIsTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
@@ -100,6 +101,7 @@ export const useAddMovieForm = () => {
     if (isOpen) {
       clearErrors();
       setHoverRating(0);
+      setIsTouched(false);
     }
   }, [isOpen, clearErrors]);
 
@@ -280,7 +282,7 @@ export const useAddMovieForm = () => {
   };
 
   const isDirty = useMemo(() => {
-    if (!initialData?.movieToEdit) return true;
+    if (!initialData?.movieToEdit) return isTouched;
     const m = initialData.movieToEdit;
 
     const isBasicDirty =
@@ -331,6 +333,7 @@ export const useAddMovieForm = () => {
     formData,
     status,
     initialData,
+    isTouched,
     isTVSeries,
     tvProgress.currentSeason,
     tvProgress.currentEpisode,
@@ -338,16 +341,24 @@ export const useAddMovieForm = () => {
     tvProgress.seasonDates,
   ]);
 
+  // Bọc setter để đánh dấu người dùng đã thao tác; prefill TMDB nội bộ không tính là dirty.
+  const touched =
+    <A extends unknown[]>(fn: (...args: A) => void) =>
+    (...args: A) => {
+      setIsTouched(true);
+      fn(...args);
+    };
+
   return {
     isOpen,
     initialData,
     closeAddModal,
     formData,
-    setFormData,
+    setFormData: touched(setFormData),
     status,
-    setStatus,
+    setStatus: touched(setStatus),
     manualMediaType,
-    setManualMediaType,
+    setManualMediaType: touched(setManualMediaType),
     isDirty,
     isSubmitting,
     movieExists,
@@ -358,28 +369,28 @@ export const useAddMovieForm = () => {
     isAnimating,
     isLoadingDetails: isTMDBLoading || tvProgress.isLoading,
     currentSeason: tvProgress.currentSeason,
-    setCurrentSeason: tvProgress.setCurrentSeason,
+    setCurrentSeason: touched(tvProgress.setCurrentSeason),
     currentEpisode: tvProgress.currentEpisode,
-    setCurrentEpisode: tvProgress.setCurrentEpisode,
+    setCurrentEpisode: touched(tvProgress.setCurrentEpisode),
     isCompleted: tvProgress.isCompleted,
-    setIsCompleted: tvProgress.setIsCompleted,
+    setIsCompleted: touched(tvProgress.setIsCompleted),
     seasonDates: tvProgress.seasonDates,
-    setSeasonDate: tvProgress.setSeasonDate,
+    setSeasonDate: touched(tvProgress.setSeasonDate),
     resolvedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,
     selectedAlbumIds: albumSync.selectedAlbumIds,
-    setSelectedAlbumIds: albumSync.setSelectedAlbumIds,
+    setSelectedAlbumIds: touched(albumSync.setSelectedAlbumIds),
     showCreateAlbum: albumSync.showCreateAlbum,
     setShowCreateAlbum: albumSync.setShowCreateAlbum,
     newAlbumName: albumSync.newAlbumName,
-    setNewAlbumName: albumSync.setNewAlbumName,
+    setNewAlbumName: touched(albumSync.setNewAlbumName),
     creatingAlbum: albumSync.creatingAlbum,
     handleCreateAlbum: albumSync.handleCreateAlbum,
     handleSubmit,
     genreOptions: GENRE_OPTIONS,
     selectedGenreIds,
-    setSelectedGenreIds,
+    setSelectedGenreIds: touched(setSelectedGenreIds),
     isManualMode,
     isTVSeries,
     albums: albumSync.albums,

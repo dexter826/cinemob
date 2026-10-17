@@ -83,7 +83,7 @@ function SearchFilters({
           aria-expanded={showSuggestions && suggestions.length > 0}
           aria-controls="search-suggestions"
           aria-autocomplete="list"
-          placeholder="Nhập tên phim hoặc series…"
+          placeholder="Tìm kiếm phim hoặc series…"
           value={filters.query}
           autoComplete="off"
           spellCheck={false}
@@ -244,7 +244,7 @@ function SearchFilters({
           options={TMDB_COUNTRY_OPTIONS}
           value={filters.country}
           onChange={(value) => updateFilter('country', value as string)}
-          placeholder="Quốc gia…"
+          placeholder="Chọn quốc gia…"
           className="w-full"
           searchable={true}
         />
@@ -260,7 +260,7 @@ function SearchFilters({
           ]}
           value={filters.sortBy}
           onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
-          placeholder="Phù hợp…"
+          placeholder="Sắp xếp theo…"
           className="w-full"
         />
 

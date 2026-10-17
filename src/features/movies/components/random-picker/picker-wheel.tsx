@@ -64,10 +64,7 @@ export function PickerWheel({
         <p className="text-xs text-primary font-semibold">{poolLabel}</p>
         {showTitle && (
           <div className="space-y-1">
-            <h3
-              className="text-xl font-bold text-text-primary line-clamp-2 font-display"
-              title={title}
-            >
+            <h3 className="text-xl text-text-primary line-clamp-2 font-display" title={title}>
               {title}
             </h3>
             <p className="text-sm text-text-secondary">
@@ -77,9 +74,8 @@ export function PickerWheel({
         )}
         {isShuffling && (
           <div className="space-y-1">
-            <h3 className="text-xl font-bold text-text-primary font-display">Đang chọn ngẫu nhiên…</h3>
-            <p className="text-sm text-text-secondary">Đang xáo trộn các phim phù hợp
-            </p>
+            <h3 className="text-xl text-text-primary font-display">Đang chọn ngẫu nhiên…</h3>
+            <p className="text-sm text-text-secondary">Đang xáo trộn các phim phù hợp</p>
           </div>
         )}
       </div>

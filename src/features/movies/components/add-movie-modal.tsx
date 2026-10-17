@@ -94,7 +94,7 @@ function AddMovieModal() {
   }, [errors]);
 
   const isEditMode = !!initialData?.movieToEdit;
-  const submitDisabled = isSubmitting || !isDirty || (movieExists && !isEditMode);
+  const submitDisabled = isSubmitting || (movieExists && !isEditMode) || (isEditMode && !isDirty);
 
   // Chặn đóng modal khi form còn thay đổi chưa lưu.
   const requestClose = () => {
@@ -123,7 +123,7 @@ function AddMovieModal() {
         <div className="min-w-0">
           <h2
             id="add-movie-title"
-            className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate font-display"
+            className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate"
           >
             {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
@@ -221,7 +221,7 @@ function AddMovieModal() {
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
-                        placeholder="Tên gốc của phim…"
+                        placeholder="Nhập tên gốc của phim…"
                       />
                       {isAnimating && errors.title && (
                         <p
@@ -249,7 +249,7 @@ function AddMovieModal() {
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
                         className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
-                        placeholder="Tên tiếng Việt…"
+                        placeholder="Nhập tên tiếng Việt…"
                       />
                     </div>
                   </div>

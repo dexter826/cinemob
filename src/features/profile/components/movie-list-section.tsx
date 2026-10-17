@@ -86,7 +86,7 @@ function MovieListSection({
               options={SORT_OPTIONS}
               value={sortBy}
               onChange={(val) => setSortBy(val as ProfileSortOption)}
-              placeholder="Sắp xếp"
+              placeholder="Sắp xếp theo…"
             />
           </div>
         </div>
