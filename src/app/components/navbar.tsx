@@ -79,63 +79,49 @@ function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background">
+      <header className="sticky top-0 z-50 bg-background border-b border-border">
         <nav
           aria-label="Điều hướng chính"
           className="h-14 max-w-6xl mx-auto px-4 md:px-6 flex items-center justify-between"
         >
-          <div className="flex items-center gap-4 xl:gap-6 min-w-0">
-            <Link
-              to="/"
-              className="flex items-baseline gap-2.5 shrink-0 cursor-pointer"
-              aria-label="Về Thư viện CineMOB"
-            >
-              <span className="font-display text-xl uppercase tracking-wide select-none">
-                Cine<span className="text-primary">MOB</span>
-              </span>
-              <span
-                aria-hidden="true"
-                className="hidden xl:inline text-[9px] font-semibold tracking-[0.18em] uppercase text-text-faint whitespace-nowrap"
-              >
-                Phòng chiếu gia đình
-              </span>
-            </Link>
+          <Link
+            to="/"
+            className="flex items-center cursor-pointer"
+            aria-label="Về Thư viện CineMOB"
+          >
+            <span className="font-display text-xl uppercase tracking-wide select-none">
+              Cine<span className="text-primary">MOB</span>
+            </span>
+          </Link>
 
-            <div className="hidden md:flex items-center min-w-0">
-              {NAV_ITEMS.map((item, index) => {
-                const active = isNavItemActive(location.pathname, item);
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    aria-label={item.label}
-                    aria-current={active ? 'page' : undefined}
-                    className={`relative flex items-center gap-1.5 h-14 px-2 lg:px-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
-                      active ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                  >
+          <div className="hidden md:flex items-center self-stretch">
+            {NAV_ITEMS.map((item) => {
+              const active = isNavItemActive(location.pathname, item);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  aria-label={item.label}
+                  aria-current={active ? 'page' : undefined}
+                  className={`relative flex items-center h-full px-3 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
+                    active
+                      ? 'text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {item.label}
+                  {active && (
                     <span
                       aria-hidden="true"
-                      className={`hidden lg:inline text-[9px] tabular-nums tracking-[0.1em] ${
-                        active ? 'text-primary' : 'text-text-faint'
-                      }`}
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    {item.label}
-                    {active && (
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-x-2 bottom-0 h-0.5 bg-primary"
-                      />
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
+                      className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
-          <div className="flex items-center space-x-1 shrink-0">
+          <div className="flex items-center space-x-1">
             <IconButton label="Tìm thành viên" onClick={() => setIsMemberSearchOpen(true)}>
               <Users size={20} strokeWidth={1.5} aria-hidden="true" />
             </IconButton>
@@ -258,10 +244,6 @@ function Navbar() {
             </div>
           </div>
         </nav>
-        <div aria-hidden="true" className="max-w-6xl mx-auto px-4 md:px-6">
-          <div className="h-px bg-border" />
-          <div className="mt-[3px] h-px bg-border-default" />
-        </div>
       </header>
 
       {isRandomOpen && (

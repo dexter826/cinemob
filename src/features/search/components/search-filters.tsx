@@ -94,7 +94,7 @@ function SearchFilters({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 bg-transparent rounded-none border-0 border-b border-border hover:border-b-primary/50 focus-visible:border-b-primary transition-colors pl-10 pr-24 sm:pr-28 text-sm text-text-primary placeholder:text-text-secondary"
+          className="w-full h-11 bg-transparent rounded-none border-0 border-b border-border hover:border-b-primary/50 focus-visible:border-b-primary focus-visible:outline-none transition-colors pl-10 pr-24 sm:pr-28 text-sm text-text-primary placeholder:text-text-secondary"
           ref={searchInputRef}
         />
 

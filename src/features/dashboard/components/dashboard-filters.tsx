@@ -88,7 +88,7 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Tìm kiếm phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-72 h-12 bg-transparent rounded-none border-0 pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary transition-colors"
+            className="w-full sm:w-72 h-12 bg-transparent rounded-none border-0 pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors"
           />
           {filters.searchQuery && (
             <button
