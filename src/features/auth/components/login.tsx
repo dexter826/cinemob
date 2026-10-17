@@ -1,6 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Loader2, Shield } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { getTrendingMovies } from '@/features/search/services/tmdb';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import type { TMDBMovieResult } from '@/types';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -25,10 +28,31 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-/** Màn hình đăng nhập tài khoản CineMOB — editorial stark trên nền phẳng. */
+const WALL_COUNT = 18;
+
+/** Lấy poster trending để dựng tường nền login — trang trí thuần, lỗi thì bỏ qua. */
+function useWallPosters(): TMDBMovieResult[] {
+  const [posters, setPosters] = useState<TMDBMovieResult[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getTrendingMovies().then((data) => {
+      if (cancelled) return;
+      setPosters((data?.results ?? []).filter((m) => m.poster_path).slice(0, WALL_COUNT));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return posters;
+}
+
+/** Màn đăng nhập — tường poster trending mờ làm nền, nội dung nổi giữa. */
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const posters = useWallPosters();
 
   const handleLogin = useCallback(async () => {
     setIsLoading(true);
@@ -41,66 +65,72 @@ function Login() {
     }
   }, [signInWithGoogle]);
 
+  const hasWall = posters.length >= 6;
+
   return (
-    <main className="h-dvh max-h-dvh overflow-hidden flex flex-col lg:flex-row bg-background text-text-primary relative selection:bg-primary/20 selection:text-primary">
-      {/* Brand panel */}
-      <div className="relative z-10 flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 border-b lg:border-b-0 lg:border-r border-border overflow-y-auto lg:overflow-hidden">
-        <div>
-          <p
+    <main className="relative min-h-dvh flex flex-col bg-background text-text-primary overflow-hidden selection:bg-primary/20 selection:text-primary">
+      {hasWall && (
+        <>
+          <div
             aria-hidden="true"
-            className="w-11 h-[3px] bg-primary mb-6"
+            className="absolute inset-0 grid grid-cols-3 sm:grid-cols-6 grid-rows-3 gap-0.5 opacity-50"
+            style={{ filter: 'saturate(0.85)' }}
+          >
+            {posters.map((poster) => (
+              <img
+                key={poster.id}
+                src={getTMDBImageUrl(poster.poster_path, 'w342')}
+                alt=""
+                draggable={false}
+                className="w-full h-full object-cover"
+              />
+            ))}
+          </div>
+          <div
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(60% 55% at 50% 45%, rgba(10,10,10,0.55), rgba(10,10,10,0.88))',
+            }}
           />
-          <p className="font-display text-2xl tracking-wide">Cine<span className="text-primary">MOB</span></p>
+        </>
+      )}
 
-          <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl lg:text-5xl mt-8 lg:mt-12 max-w-xl">
-            Theo dõi phim đã xem, đang xem và sẽ xem.
-          </h1>
-
-          <p className="mt-4 text-xs sm:text-sm lg:text-base text-text-secondary leading-relaxed max-w-lg">
-            Lưu từng bộ phim, chấm điểm, tạo album và nhận nhắc khi series mới ra tập.
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm flex flex-col items-center text-center">
+          <p aria-hidden="true" className="w-11 h-[3px] bg-primary mb-7" />
+          <p className="font-display text-2xl tracking-wide">
+            Cine<span className="text-primary">MOB</span>
           </p>
+
+          <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9 max-w-md">
+            Theo dõi mọi bộ phim bạn xem.
+          </h1>
+          <p className="mt-3 text-sm text-text-secondary leading-relaxed max-w-sm">
+            Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
+          </p>
+
+          <button
+            onClick={handleLogin}
+            disabled={isLoading}
+            className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            aria-label="Đăng nhập bằng tài khoản Google"
+            aria-busy={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 size={18} className="animate-spin text-on-primary" aria-hidden="true" />
+            ) : (
+              <GoogleIcon className="w-5 h-5 shrink-0" />
+            )}
+            <span>Tiếp tục với Google</span>
+          </button>
         </div>
       </div>
 
-      {/* Auth panel */}
-      <div className="relative z-10 w-full lg:w-[440px] xl:w-[480px] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 bg-surface overflow-y-auto lg:overflow-hidden shrink-0">
-        <div className="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto space-y-6 sm:space-y-8">
-          <div className="space-y-2">
-            <h2 className="font-display tracking-wide text-2xl sm:text-3xl text-text-primary">
-              Bắt đầu
-            </h2>
-            <p className="text-xs sm:text-sm text-text-secondary">
-              Đăng nhập để đồng bộ thư viện trên mọi thiết bị.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <button
-              onClick={handleLogin}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-control bg-transparent border border-border hover:border-primary hover:text-primary font-bold tracking-[0.08em] text-xs text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-              aria-label="Đăng nhập bằng tài khoản Google"
-              aria-busy={isLoading}
-            >
-              {isLoading ? (
-                <Loader2 size={18} className="animate-spin text-primary" aria-hidden="true" />
-              ) : (
-                <GoogleIcon className="w-5 h-5 shrink-0" />
-              )}
-              <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
-            </button>
-
-            <div className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
-              <Shield size={13} className="shrink-0 text-primary" aria-hidden="true" />
-              <span>Đăng nhập qua Google — không cần mật khẩu riêng</span>
-            </div>
-          </div>
-        </div>
-
-        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold tracking-[0.08em] text-text-secondary shrink-0">
-          &copy; {new Date().getFullYear()} CineMOB
-        </footer>
-      </div>
+      <footer className="relative z-10 pb-6 text-center text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
+        &copy; {new Date().getFullYear()} CineMOB
+      </footer>
     </main>
   );
 }
