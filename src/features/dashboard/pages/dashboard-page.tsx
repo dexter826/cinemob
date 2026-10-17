@@ -139,7 +139,7 @@ function DashboardPage() {
   }, [movies]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-0 pt-5 md:pt-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
       {/* Header đồng bộ với mọi trang — số liệu chỉ ở tabs + thống kê riêng */}
       <PageHeader
         title="Thư viện"

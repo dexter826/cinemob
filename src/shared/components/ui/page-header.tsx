@@ -34,7 +34,7 @@ function PageHeader({
       <LegacyIcon className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
     ) : undefined);
   return (
-    <div className={`flex items-start justify-between gap-3 sm:gap-6 pb-5 border-b border-border ${className}`}>
+    <div className={`flex items-center justify-between gap-3 sm:gap-6 pb-5 border-b border-border ${className}`}>
       <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
         {onBack && (
           <IconButton label="Quay lại trang trước" onClick={onBack} variant="secondary" size="md">

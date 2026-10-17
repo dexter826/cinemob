@@ -125,7 +125,7 @@ function MemberProfilePage() {
 
   if (isOwn) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           title="Trang cá nhân"
           actions={
@@ -168,7 +168,7 @@ function MemberProfilePage() {
 
   if (notFound || !profile) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <EmptyState
           icon={EyeOff}
           title="Không tìm thấy hồ sơ"
@@ -179,7 +179,7 @@ function MemberProfilePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Hồ sơ thành viên" actions={copyLinkButton} />
       <MemberProfileCard profile={profile} />
 

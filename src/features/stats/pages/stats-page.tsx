@@ -113,7 +113,7 @@ function StatsPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="h-32 bg-surface rounded-dialog animate-pulse" />
           <div className="h-32 bg-surface rounded-dialog animate-pulse" />
@@ -124,7 +124,7 @@ function StatsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Thống kê điện ảnh" />
 
       {totalMovies === 0 ? (

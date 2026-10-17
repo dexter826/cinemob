@@ -39,7 +39,7 @@ function SearchPage() {
   } = useSearch(user);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title={discoverMovies.length > 0 ? 'Khám phá điện ảnh' : 'Tìm kiếm phim'} />
 
       <SearchFilters

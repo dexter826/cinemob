@@ -4,6 +4,7 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import { Album } from '@/types';
 import { addAlbum, deleteAlbum } from '../services/album-service';
 import useToastStore from '@/shared/stores/toast-store';
+import { TextField, Button } from '@/shared/components/ui';
 import useAlertStore from '@/shared/stores/alert-store';
 import { Link } from 'react-router-dom';
 import useAlbumStore from '../stores/album-store';
@@ -66,14 +67,14 @@ function AlbumsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Album phim" />
 
       <form
         onSubmit={handleCreate}
         className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4"
       >
-        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
           <div className="flex-1 space-y-1.5 sm:space-y-2">
             <label
               htmlFor="create-album-name"
@@ -81,34 +82,24 @@ function AlbumsPage() {
             >
               Tạo album mới
             </label>
-            <div className="relative group">
-              <Folder
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-                size={16}
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-              <input
-                id="create-album-name"
-                name="album-name"
-                type="text"
-                autoComplete="off"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
-                placeholder="Ví dụ: Phim Mafia Ý…"
-              />
-            </div>
+            <TextField
+              id="create-album-name"
+              name="album-name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              leadingIcon={<Folder size={16} strokeWidth={1.5} aria-hidden="true" />}
+              placeholder="Ví dụ: Phim Mafia Ý…"
+            />
           </div>
-          <button
+          <Button
             type="submit"
             disabled={creating}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-on-primary text-xs sm:text-sm font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+            className="w-full sm:w-auto"
+            leadingIcon={<Plus size={14} strokeWidth={1.5} aria-hidden="true" />}
           >
-            <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
-            <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>
-          </button>
+            {creating ? 'Đang tạo…' : 'Tạo album'}
+          </Button>
         </div>
       </form>
 

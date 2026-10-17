@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Search, X, Filter, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
+import { Search, X, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
@@ -211,11 +211,7 @@ function SearchFilters({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <div className="hidden md:flex items-center gap-2 bg-surface/50 border border-border-default dark:border-white/5 rounded-card px-3 h-11">
-          <Filter size={16} className="text-text-secondary" strokeWidth={1.5} aria-hidden="true" />
-          <span className="text-xs font-bold text-text-secondary">Lọc theo</span>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
 
         <Dropdown
           options={[
@@ -226,7 +222,7 @@ function SearchFilters({
           value={filters.type}
           onChange={(value) => updateFilter('type', value as SearchFormFilters['type'])}
           placeholder="Chọn loại…"
-          className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
+          className="w-full"
         />
 
         <Dropdown
@@ -240,7 +236,7 @@ function SearchFilters({
           value={filters.year}
           onChange={(value) => updateFilter('year', value as string)}
           placeholder="Chọn năm…"
-          className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
+          className="w-full"
           searchable={true}
         />
 
@@ -249,7 +245,7 @@ function SearchFilters({
           value={filters.country}
           onChange={(value) => updateFilter('country', value as string)}
           placeholder="Quốc gia…"
-          className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
+          className="w-full"
           searchable={true}
         />
 
@@ -265,14 +261,14 @@ function SearchFilters({
           value={filters.sortBy}
           onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
           placeholder="Phù hợp…"
-          className="flex-1 md:flex-none min-w-[140px] sm:min-w-40"
+          className="w-full"
         />
 
         {hasActiveFilters && (
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-11 rounded-card hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-transparent hover:border-border"
+            className="flex items-center justify-center gap-2 px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-border"
           >
             <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
             <span>Đặt lại</span>
