@@ -28,8 +28,7 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-const WALL_COUNT = 20;
-const WALL_STRIP_COUNT = 12;
+const WALL_COUNT = 6;
 
 /** Lấy poster trending để dựng tường nền login — trang trí thuần, lỗi thì bỏ qua. */
 function useWallPosters(): TMDBMovieResult[] {
@@ -52,7 +51,7 @@ function useWallPosters(): TMDBMovieResult[] {
 function PosterTile({ poster }: { poster: TMDBMovieResult }) {
   return (
     <img
-      src={getTMDBImageUrl(poster.poster_path, 'w342')}
+      src={getTMDBImageUrl(poster.poster_path, 'w500')}
       alt=""
       aria-hidden="true"
       draggable={false}
@@ -78,12 +77,12 @@ function Login() {
     }
   }, [signInWithGoogle]);
 
-  const hasWall = posters.length >= WALL_STRIP_COUNT;
+  const hasWall = posters.length >= WALL_COUNT;
 
   return (
-    <main className="min-h-dvh grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr]">
-      <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l">
-        <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
+    <main className="min-h-dvh lg:h-dvh lg:overflow-hidden grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr] lg:grid-rows-1">
+      <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l min-h-0">
+        <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20 overflow-y-auto">
           <div className="w-full max-w-sm">
             <p aria-hidden="true" className="w-11 h-[3px] bg-primary mb-7" />
             <p className="font-display text-2xl tracking-wide">
@@ -114,24 +113,24 @@ function Login() {
           </div>
         </div>
 
-        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
+        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-[10px] font-semibold tracking-[0.08em] text-text-secondary shrink-0">
           &copy; {new Date().getFullYear()} CineMOB
         </footer>
       </div>
 
       {hasWall && (
-        <div className="order-2 lg:order-1 overflow-hidden">
+        <div className="order-2 lg:order-1 overflow-hidden min-h-0 h-full">
           <div
             aria-hidden="true"
-            className="grid grid-cols-6 grid-rows-2 gap-0.5 h-40 lg:hidden"
+            className="grid grid-cols-6 gap-0.5 h-24 sm:h-28 lg:hidden"
           >
-            {posters.slice(0, WALL_STRIP_COUNT).map((poster) => (
+            {posters.map((poster) => (
               <PosterTile key={poster.id} poster={poster} />
             ))}
           </div>
           <div
             aria-hidden="true"
-            className="hidden lg:grid grid-cols-4 grid-rows-5 gap-0.5 h-full"
+            className="hidden lg:grid grid-cols-3 grid-rows-2 gap-0.5 h-full w-full"
           >
             {posters.map((poster) => (
               <PosterTile key={poster.id} poster={poster} />
