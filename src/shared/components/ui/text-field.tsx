@@ -10,6 +10,8 @@ interface TextFieldProps
   /** Thông báo lỗi — hiện dưới field, viền chuyển danger. */
   error?: string;
   id: string;
+  /** 'underline' = gạch-đáy (nền trang — chuẩn app); 'boxed' = hộp (trong modal/elevated). */
+  variant?: 'underline' | 'boxed';
   className?: string;
 }
 
@@ -17,7 +19,15 @@ interface TextFieldProps
  * Input văn bản chuẩn của app: h-11, nền trong suốt + hairline,
  * focus viền vàng. Mọi input đơn giản đi qua đây, cấm inline custom.
  */
-function TextField({ label, leadingIcon, error, id, className, ...rest }: TextFieldProps) {
+function TextField({
+  label,
+  leadingIcon,
+  error,
+  id,
+  variant = 'underline',
+  className,
+  ...rest
+}: TextFieldProps) {
   return (
     <div className={classNames('w-full', className)}>
       {label && (
@@ -39,8 +49,11 @@ function TextField({ label, leadingIcon, error, id, className, ...rest }: TextFi
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           className={classNames(
-            'w-full h-11 bg-transparent border rounded-control text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:outline-none focus-visible:border-primary transition-colors',
-            leadingIcon ? 'pl-10 pr-4' : 'px-4',
+            'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors',
+            variant === 'underline'
+              ? 'rounded-none border-0 border-b border-border hover:border-b-primary/40 focus-visible:border-b-primary'
+              : 'rounded-control border focus-visible:border-primary',
+            leadingIcon ? 'pl-10 pr-4' : variant === 'underline' ? 'px-1' : 'px-4',
             error ? 'border-danger' : 'border-border',
           )}
           {...rest}
