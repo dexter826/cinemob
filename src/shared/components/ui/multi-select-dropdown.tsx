@@ -208,7 +208,7 @@ function MultiSelectDropdown({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-control shadow-elevated z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-control z-50 overflow-hidden">
           {searchable && (
             <div className="p-2 border-b border-border-default">
               <input

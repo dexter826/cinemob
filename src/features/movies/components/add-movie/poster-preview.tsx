@@ -10,7 +10,7 @@ interface PosterPreviewProps {
 function PosterPreview({ posterPath, title }: PosterPreviewProps) {
   return (
     <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-full mx-auto shrink-0">
-      <div className="relative group aspect-2/3 rounded-card sm:rounded-dialog overflow-hidden border border-border shadow-card transition-shadow hover:shadow-elevated">
+      <div className="relative group aspect-2/3 rounded-card sm:rounded-dialog overflow-hidden border border-border">
         {posterPath ? (
           <>
             <img

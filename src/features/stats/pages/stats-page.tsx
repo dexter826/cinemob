@@ -44,7 +44,7 @@ interface ChartTooltipProps {
 const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-surface-elevated border border-border rounded-card p-4 shadow-elevated">
+      <div className="bg-surface-elevated border border-border rounded-card p-4">
         <p className="text-text-primary font-bold mb-1">{label || payload[0].name}</p>
         <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
       </div>

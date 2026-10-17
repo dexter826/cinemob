@@ -46,7 +46,7 @@ function ToastList({
             }
             transition={toastTransition}
             aria-atomic="true"
-            className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
+            className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
           >
             <ToastIcon type={toast.type} />
             <span className="text-xs sm:text-sm font-semibold flex-1 tracking-tight mr-4 leading-tight">

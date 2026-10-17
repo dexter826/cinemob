@@ -305,7 +305,7 @@ function OwnProfileEditor({
                   ref={avatarMenuRef}
                   role="menu"
                   onKeyDown={handleMenuKeyDown}
-                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden animate-zoom-in-95 duration-150"
                 >
                   <button
                     ref={firstMenuItemRef}

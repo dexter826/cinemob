@@ -106,7 +106,7 @@ export function Dialog({
             aria-describedby={descriptionId}
             tabIndex={-1}
             className={classNames(
-              'flex flex-col overflow-hidden bg-surface-elevated text-text-primary shadow-elevated',
+              'flex flex-col overflow-hidden bg-surface-elevated text-text-primary',
               getPresentationClasses(presentation, size),
               className,
             )}

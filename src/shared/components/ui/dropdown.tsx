@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 interface Option {
   value: string | number;
@@ -181,7 +181,7 @@ function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden">
           {searchable && (
             <div className="p-3 border-b border-border-default">
               <input
@@ -227,9 +227,6 @@ function Dropdown({
                   aria-selected={option.value === value}
                 >
                   <span>{option.label}</span>
-                  {option.value === value && (
-                    <Check size={16} className="text-white" aria-hidden="true" />
-                  )}
                 </button>
               ))
             )}

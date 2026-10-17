@@ -219,7 +219,7 @@ function DatePicker({
       id={useDialogPresentation ? undefined : `${controlId}-dialog`}
       tabIndex={useDialogPresentation ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card shadow-elevated p-4
+                bg-surface border border-border-default rounded-card p-4
                 ${
                   useDialogPresentation
                     ? 'relative w-full max-w-[320px] mx-auto'

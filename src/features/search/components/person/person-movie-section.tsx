@@ -91,7 +91,7 @@ export function PersonMovieSection({
           {showFilters && (
             <div
               ref={filterRef}
-              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border shadow-elevated flex flex-col gap-6 md:min-w-[320px]"
+              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border flex flex-col gap-6 md:min-w-[320px]"
             >
               <div className="space-y-3">
                 <div className="text-xs font-semibold text-text-secondary">Sắp xếp theo</div>

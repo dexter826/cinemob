@@ -104,7 +104,7 @@ function SearchFilters({
             id="search-suggestions"
             role="listbox"
             aria-label="Gợi ý tìm kiếm"
-            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden"
+            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
           >
             <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
               <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
