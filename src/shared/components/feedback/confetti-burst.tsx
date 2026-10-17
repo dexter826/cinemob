@@ -2,7 +2,7 @@ import React from 'react';
 
 const PARTICLE_COUNT = 24;
 
-/** Confetti CSS thuần — thay Lottie; nơi gọi tự gate reduced-motion. */
+/** Confetti CSS thuần — thay thế animation trước đây; nơi gọi tự gate reduced-motion. */
 function ConfettiBurst() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
