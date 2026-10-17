@@ -1,6 +1,14 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Edit2, Trash2, X as XIcon, Search as SearchIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  Film,
+  PlusCircle,
+  Edit2,
+  Trash2,
+  X as XIcon,
+  Search as SearchIcon,
+} from 'lucide-react';
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
@@ -67,8 +75,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
-                    ? 'text-primary font-bold border-transparent'
-                    : 'border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary'
+                    ? 'bg-primary border-primary text-on-primary'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -85,8 +93,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   editing
-                    ? 'text-primary font-bold border-transparent'
-                    : 'border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary'
+                    ? 'bg-primary border-primary text-on-primary'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -122,7 +130,7 @@ function AlbumDetailPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
+                  className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 />
               </div>
 

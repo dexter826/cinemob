@@ -83,7 +83,7 @@ export function PersonMovieSection({
               onShowFiltersChange(!showFilters);
             }}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
+            className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-primary'}`}
           >
             <Filter size={18} aria-hidden="true" />
           </button>

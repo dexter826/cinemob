@@ -116,7 +116,7 @@ function DashboardFilters({
             setShowFilters(!showFilters);
           }}
           aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-          className={`w-11 h-12 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
+          className={`group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-200 cursor-pointer ${
             showFilters ? 'text-primary' : 'text-text-secondary hover:text-primary'
           }`}
         >
@@ -125,6 +125,14 @@ function DashboardFilters({
           ) : (
             <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
           )}
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-200 ${
+              showFilters
+                ? 'opacity-100'
+                : 'opacity-0 group-hover:opacity-40 group-focus-within:opacity-100'
+            }`}
+          />
         </button>
       </div>
 

@@ -128,7 +128,7 @@ function AddMovieModal() {
             {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
         </div>
-        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="secondary">
+        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="ghost">
           <X size={18} aria-hidden="true" />
         </IconButton>
       </div>

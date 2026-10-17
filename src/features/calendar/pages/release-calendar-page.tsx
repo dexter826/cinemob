@@ -69,12 +69,12 @@ function ReleaseCalendarPage() {
               aria-label={
                 pushSubscribed ? 'Tắt thông báo tập phim mới' : 'Bật thông báo tập phim mới'
               }
-              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card border transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
                 pushStatus === 'on'
-                  ? 'bg-success text-on-success'
+                  ? 'bg-success text-on-success border-transparent'
                   : pushStatus === 'blocked'
-                    ? 'text-danger cursor-not-allowed'
-                    : 'text-text-secondary hover:text-primary'
+                    ? 'border-transparent text-danger cursor-not-allowed'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-primary'
               } ${pushLoading || loading ? 'opacity-50 cursor-wait' : ''}`}
             >
               {pushStatus === 'loading' && (

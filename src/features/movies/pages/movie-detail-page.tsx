@@ -1,15 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  ArrowLeft,
-  Calendar,
-
-  FolderPlus,
-  Pencil,
-  Play,
-  Star,
-  Trash2,
-} from 'lucide-react';
+import { ArrowLeft, Calendar, FolderPlus, Pencil, Play, Star, Trash2 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
 import useAlertStore from '@/shared/stores/alert-store';
@@ -41,10 +32,7 @@ function MovieDetailPage() {
   const handleDelete = useDeleteMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
 
-  const movie = useMemo(
-    () => movies.find((m) => String(m.id) === id),
-    [movies, id],
-  );
+  const movie = useMemo(() => movies.find((m) => String(m.id) === id), [movies, id]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
 
   const mainTitle = movie ? getMainTitle(movie) : '';
@@ -54,8 +42,7 @@ function MovieDetailPage() {
     movie?.source === 'tmdb'
       ? getTMDBImageUrl(movie.poster_path, 'w780')
       : movie?.poster_path || PLACEHOLDER_IMAGE;
-  const canAddToAlbum =
-    !!movie && (movie.status || 'history') === 'history' && !!movie.docId;
+  const canAddToAlbum = !!movie && (movie.status || 'history') === 'history' && !!movie.docId;
   const trailerKey = videos[0]?.key ?? '';
   // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
@@ -96,7 +83,7 @@ function MovieDetailPage() {
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
       {/* Thanh trên: Back */}
       <div className="flex items-center justify-between py-4">
-        <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)}>
+        <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
           <ArrowLeft size={20} aria-hidden="true" />
         </IconButton>
       </div>
@@ -130,9 +117,7 @@ function MovieDetailPage() {
 
           {/* Meta caps */}
           <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
-            {movie.release_date && (
-              <span>{new Date(movie.release_date).getFullYear()}</span>
-            )}
+            {movie.release_date && <span>{new Date(movie.release_date).getFullYear()}</span>}
             {movie.media_type === 'tv'
               ? !!movie.seasons && movie.seasons > 0 && <span>{movie.seasons} mùa</span>
               : !!movie.runtime && movie.runtime > 0 && <span>{movie.runtime} phút</span>}
@@ -146,7 +131,11 @@ function MovieDetailPage() {
           {/* Điểm */}
           {!!movie.rating && movie.rating > 0 && (
             <p className="mt-4 flex items-baseline gap-2">
-              <Star size={18} className="fill-primary text-primary self-center" aria-hidden="true" />
+              <Star
+                size={18}
+                className="fill-primary text-primary self-center"
+                aria-hidden="true"
+              />
               <span className="font-display text-3xl text-primary tabular-nums">
                 {movie.rating.toFixed(1)}
               </span>
@@ -160,7 +149,11 @@ function MovieDetailPage() {
                 <Button
                   leadingIcon={<Play size={16} fill="currentColor" aria-hidden="true" />}
                   onClick={() =>
-                    window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank', 'noopener')
+                    window.open(
+                      `https://www.youtube.com/watch?v=${trailerKey}`,
+                      '_blank',
+                      'noopener',
+                    )
                   }
                 >
                   Xem trailer
@@ -203,9 +196,7 @@ function MovieDetailPage() {
             <div className="mt-7 border border-border rounded-card p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2.5">
                 <SectionHeader>Tiến độ xem</SectionHeader>
-                {movie.progress.is_completed && (
-                  <Chip tone="success">Hoàn thành</Chip>
-                )}
+                {movie.progress.is_completed && <Chip tone="success">Hoàn thành</Chip>}
               </div>
               <p className="font-display text-xl text-text-primary tabular-nums">
                 {movie.progress.is_completed
@@ -224,7 +215,8 @@ function MovieDetailPage() {
                     width: `${Math.round(
                       (movie.progress.is_completed
                         ? 1
-                        : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)) * 100,
+                        : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)) *
+                        100,
                     )}%`,
                   }}
                 />

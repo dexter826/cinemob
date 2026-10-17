@@ -11,7 +11,6 @@ import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Button from '@/shared/components/ui/button';
 import { PageHeader } from '@/shared/components/ui';
-import { SectionHeader } from '@/shared/components/ui';
 import { normalizeDate } from '@/shared/utils/date-format';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
@@ -21,7 +20,6 @@ import {
   getSeasonWatchedDates,
   getMainTitle,
   getSubTitle,
-  getLatestWatchedDate,
 } from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
@@ -62,26 +60,6 @@ function DashboardPage() {
       history: movies.filter((m) => (m.status || 'history') === 'history').length,
       watchlist: movies.filter((m) => m.status === 'watchlist').length,
     }),
-    [movies],
-  );
-
-  /** TV đang xem dở (có progress thật trong data) — tối đa 4, mới nhất trước. */
-  const continueWatching = useMemo(
-    () =>
-      movies
-        .filter(
-          (m) =>
-            m.media_type === 'tv' &&
-            (m.status || 'history') === 'history' &&
-            m.progress &&
-            !m.progress.is_completed &&
-            (m.progress.watched_episodes ?? 0) > 0,
-        )
-        .sort(
-          (a, b) =>
-            (getLatestWatchedDate(b)?.getTime() ?? 0) - (getLatestWatchedDate(a)?.getTime() ?? 0),
-        )
-        .slice(0, 4),
     [movies],
   );
 
@@ -187,39 +165,6 @@ function DashboardPage() {
           />
         )}
       </div>
-
-      {/* Tiếp tục xem: TV có progress thật — đặt trên lưới theo yêu cầu */}
-      {continueWatching.length > 0 && (
-        <section aria-labelledby="continue-watching-title" className="border-b border-border">
-          <div className="py-5">
-            <SectionHeader id="continue-watching-title">Tiếp tục xem</SectionHeader>
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
-              {continueWatching.map((movie) => {
-                const total = movie.total_episodes || 0;
-                const watched = movie.progress?.watched_episodes ?? 0;
-                const percent = total > 0 ? Math.min(100, Math.round((watched / total) * 100)) : 0;
-                return (
-                  <div
-                    key={movie.docId}
-                    className="sm:border-l sm:border-border-default sm:pl-4 first:sm:border-l-0 first:sm:pl-0"
-                  >
-                    <p className="text-xs font-bold tracking-[0.05em] truncate">
-                      {getMainTitle(movie)}
-                    </p>
-                    <p className="mt-1 text-[10px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
-                      S{movie.progress?.current_season ?? 1} · E
-                      {movie.progress?.current_episode ?? 0}/{total} · {percent}%
-                    </p>
-                    <div className="mt-2 h-0.5 bg-border-default" role="presentation">
-                      <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Lưới poster */}
       <section aria-labelledby="library-content-title" className="py-5">
