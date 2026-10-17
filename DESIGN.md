@@ -1,70 +1,47 @@
-# AGENTS.md
+# CineMOB — Design System
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Nguồn sự thật của token: `src/index.css` (`@theme` + `.dark`). File này là hợp đồng ngắn: token, luật, giọng.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## 1. Triết lý: Editorial Print
 
-## 1. Think Before Coding
+Bố cục như báo in: chữ đậm lệch trục, hairline thay bóng, đen sâu + mực vàng spotlight (dark), giấy ấm (light).
+Không bóng mềm, không gradient trang trí, không bo tròn lớn.
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+## 2. Token (2 theme — giá trị trong `src/index.css`)
 
-Before implementing:
+| Token | Dark | Light | Vai trò |
+|---|---|---|---|
+| `--color-background` | `#0a0a0a` | `#f7f4ed` | nền trang |
+| `--color-surface` | `#141414` | `#fdfbf6` | panel, card |
+| `--color-surface-elevated` | `#1a1a1a` | `#fffefa` | dialog, dropdown, toast |
+| `--color-primary` | `#ca8a04` | `#8f6400` | accent duy nhất — link, active, CTA |
+| `--color-text-primary` | `#f5f5f2` | `#0a0a0a` | mực chính |
+| `--color-text-secondary` | `#8a8a85` | `#6b6b66` | chữ phụ ≥4.5:1 |
+| `--color-text-muted` | `#9c9c97` | `#5f5b53` | placeholder, hint, weekday |
+| `--color-text-faint` | `#6e6e69` | `#8a857c` | decorative/large ≥3:1 |
+| `--color-border` | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control |
+| `--color-focus` | `#ca8a04` | `#8f6400` | outline focus |
 
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng hairline (`--shadow-*` = none by design).
 
-## 2. Simplicity First
+## 3. Luật cấm
 
-**Minimum code that solves the problem. Nothing speculative.**
+1. Không bóng mềm — mọi elevation dùng `border`/hairline.
+2. Không pure white/black làm nền; light phải là giấy ấm, dark không đen tuyệt đối ngoài `#0a0a0a`.
+3. Vàng `primary` là accent duy nhất — không thêm màu nhấn thứ hai.
+4. Focus: outline 2px `--color-focus` offset 3px hiện **tức thì**; cấm `outline-none` (ngoại lệ: underline search inputs); border/ring chỉ là lớp phụ, không thay outline.
+5. Không alpha `/40–/60` trên chữ — dùng `text-secondary`/`text-muted`/`text-faint` theo vai trò.
+6. Không hex/rgba trong `.tsx` — mọi màu qua token (ngoại lệ: brand mark Google ở nút đăng nhập).
+7. Không Lottie/ảnh động nặng — motion CSS ngắn, tôn trọng `prefers-reduced-motion`.
+8. Hành động đảo ngược được → undo-toast 7s (pattern `use-delete-movie.ts`); confirm dialog chỉ cho hành động phá huỷ thật (xoá album).
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+## 4. Chữ & bố cục
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+- `font-display` (Anton) cho tiêu đề, số liệu lớn, wordmark; body `font-sans` (Be Vietnam Pro).
+- Nhãn nhỏ: caps 9–12px, `tracking` 0.08–0.18em; số liệu `tabular-nums`.
+- Container `max-w-6xl`, section cách nhau bằng hairline.
 
-## 3. Surgical Changes
+## 5. Giọng copy
 
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+- Tiếng Việt, câu ngắn, xưng "bạn"; không emoji; nút là động từ ("Thêm phim", "Hoàn tác").
+- Toast/tooltip nói kết quả cụ thể ("Đã xoá X", "Gỡ phim khỏi album thất bại"), không "Có lỗi xảy ra" chung chung.

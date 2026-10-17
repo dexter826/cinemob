@@ -5,7 +5,6 @@ import { IconButton } from './icon-button';
 interface PageHeaderProps {
   title: string;
   description?: string;
-  eyebrow?: string;
   onBack?: () => void;
   actions?: React.ReactNode;
   leading?: React.ReactNode;
@@ -19,7 +18,6 @@ interface PageHeaderProps {
 function PageHeader({
   title,
   description,
-  eyebrow,
   onBack,
   actions,
   leading,
@@ -43,11 +41,6 @@ function PageHeader({
         )}
         {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}
         <div className="min-w-0">
-          {eyebrow && (
-            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mb-1">
-              {eyebrow}
-            </p>
-          )}
           <h1 className="font-display tracking-wide text-2xl sm:text-3xl md:text-4xl text-text-primary truncate">
             {title}
           </h1>
