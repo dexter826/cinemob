@@ -28,7 +28,8 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-const WALL_COUNT = 18;
+const WALL_COUNT = 20;
+const WALL_STRIP_COUNT = 12;
 
 /** Lấy poster trending để dựng tường nền login — trang trí thuần, lỗi thì bỏ qua. */
 function useWallPosters(): TMDBMovieResult[] {
@@ -48,7 +49,19 @@ function useWallPosters(): TMDBMovieResult[] {
   return posters;
 }
 
-/** Màn đăng nhập — tường poster trending mờ làm nền, nội dung nổi giữa. */
+function PosterTile({ poster }: { poster: TMDBMovieResult }) {
+  return (
+    <img
+      src={getTMDBImageUrl(poster.poster_path, 'w342')}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      className="w-full h-full object-cover"
+    />
+  );
+}
+
+/** Màn đăng nhập — bìa tạp chí: tường poster bên trái, cột form lệch trục trái bên phải. */
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,72 +78,67 @@ function Login() {
     }
   }, [signInWithGoogle]);
 
-  const hasWall = posters.length >= 6;
+  const hasWall = posters.length >= WALL_STRIP_COUNT;
 
   return (
-    <main className="relative min-h-dvh flex flex-col bg-background text-text-primary overflow-hidden selection:bg-primary/20 selection:text-primary">
+    <main className="min-h-dvh grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr]">
+      <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l">
+        <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
+          <div className="w-full max-w-sm">
+            <p aria-hidden="true" className="w-11 h-[3px] bg-primary mb-7" />
+            <p className="font-display text-2xl tracking-wide">
+              Cine<span className="text-primary">MOB</span>
+            </p>
+
+            <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9">
+              Theo dõi mọi bộ phim bạn xem.
+            </h1>
+            <p className="mt-3 text-sm text-text-secondary leading-relaxed">
+              Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
+            </p>
+
+            <button
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              aria-label="Đăng nhập bằng tài khoản Google"
+              aria-busy={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin text-on-primary" aria-hidden="true" />
+              ) : (
+                <GoogleIcon className="w-5 h-5 shrink-0" />
+              )}
+              <span>Tiếp tục với Google</span>
+            </button>
+          </div>
+        </div>
+
+        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
+          &copy; {new Date().getFullYear()} CineMOB
+        </footer>
+      </div>
+
       {hasWall && (
-        <>
+        <div className="order-2 lg:order-1 overflow-hidden">
           <div
             aria-hidden="true"
-            className="absolute inset-0 grid grid-cols-3 sm:grid-cols-6 grid-rows-3 gap-0.5 opacity-50"
-            style={{ filter: 'saturate(0.85)' }}
+            className="grid grid-cols-6 grid-rows-2 gap-0.5 h-40 lg:hidden"
           >
-            {posters.map((poster) => (
-              <img
-                key={poster.id}
-                src={getTMDBImageUrl(poster.poster_path, 'w342')}
-                alt=""
-                draggable={false}
-                className="w-full h-full object-cover"
-              />
+            {posters.slice(0, WALL_STRIP_COUNT).map((poster) => (
+              <PosterTile key={poster.id} poster={poster} />
             ))}
           </div>
           <div
             aria-hidden="true"
-            className="absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(60% 55% at 50% 45%, rgba(10,10,10,0.55), rgba(10,10,10,0.88))',
-            }}
-          />
-        </>
-      )}
-
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm flex flex-col items-center text-center">
-          <p aria-hidden="true" className="w-11 h-[3px] bg-primary mb-7" />
-          <p className="font-display text-2xl tracking-wide">
-            Cine<span className="text-primary">MOB</span>
-          </p>
-
-          <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9 max-w-md">
-            Theo dõi mọi bộ phim bạn xem.
-          </h1>
-          <p className="mt-3 text-sm text-text-secondary leading-relaxed max-w-sm">
-            Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
-          </p>
-
-          <button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-            aria-label="Đăng nhập bằng tài khoản Google"
-            aria-busy={isLoading}
+            className="hidden lg:grid grid-cols-4 grid-rows-5 gap-0.5 h-full"
           >
-            {isLoading ? (
-              <Loader2 size={18} className="animate-spin text-on-primary" aria-hidden="true" />
-            ) : (
-              <GoogleIcon className="w-5 h-5 shrink-0" />
-            )}
-            <span>Tiếp tục với Google</span>
-          </button>
+            {posters.map((poster) => (
+              <PosterTile key={poster.id} poster={poster} />
+            ))}
+          </div>
         </div>
-      </div>
-
-      <footer className="relative z-10 pb-6 text-center text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
-        &copy; {new Date().getFullYear()} CineMOB
-      </footer>
+      )}
     </main>
   );
 }
