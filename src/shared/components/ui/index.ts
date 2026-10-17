@@ -11,6 +11,7 @@ export { default as Stat } from './stat';
 export { default as SectionHeader } from './section-header';
 export { default as PageHeader } from './page-header';
 export { default as Dialog } from './dialog';
+export { DialogHeader, DialogBody, DialogFooter } from './dialog';
 export { default as Dropdown } from './dropdown';
 export { default as MultiSelectDropdown } from './multi-select-dropdown';
 export { default as DatePicker } from './date-picker';

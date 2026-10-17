@@ -4,10 +4,11 @@ import { Album, Movie } from '@/types';
 interface AlbumState {
   albums: Album[];
   loading: boolean;
-  albumCoverMovies: Record<string, Movie | null>;
+  /** Poster chồng thẻ album (tối đa 3 phim mỗi album), tính một lần trong use-app-init. */
+  albumCoverMovies: Record<string, Movie[]>;
   setAlbums: (albums: Album[]) => void;
   setLoading: (loading: boolean) => void;
-  setAlbumCoverMovies: (covers: Record<string, Movie | null>) => void;
+  setAlbumCoverMovies: (covers: Record<string, Movie[]>) => void;
 }
 
 // Quản lý danh sách album và ảnh bìa.

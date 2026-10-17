@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useInitialLoadStore from '@/shared/stores/initial-load-store';
@@ -33,7 +33,6 @@ export const useAppInit = () => {
     setLoading: setAlbumsLoading,
     setAlbumCoverMovies,
   } = useAlbumStore();
-  const coverMovieIdsRef = useRef<Record<string, string>>({});
 
   const { reset: resetRecommendations, setActiveUser } = useRecommendationsStore();
 
@@ -72,35 +71,21 @@ export const useAppInit = () => {
   useEffect(() => {
     if (albumsLoading || !moviesInitialized) return;
 
-    const updates: Record<string, Movie | null> = {};
+    const updates: Record<string, Movie[]> = {};
     let hasUpdates = false;
 
     albums.forEach((album) => {
       const albumId = album.docId;
       if (!albumId) return;
 
-      if (!album.movieDocIds || album.movieDocIds.length === 0) {
-        updates[albumId] = null;
-        hasUpdates = true;
-        return;
-      }
+      // Bìa album = tối đa 3 phim đầu tiên theo thứ tự trong album.
+      const covers = (album.movieDocIds || [])
+        .map((docId) => allMovies.find((m) => m.docId === docId))
+        .filter((movie): movie is Movie => movie !== undefined)
+        .slice(0, 3);
 
-      let selectedMovieId = coverMovieIdsRef.current[albumId];
-
-      if (!selectedMovieId || !album.movieDocIds.includes(selectedMovieId)) {
-        const randomIndex = Math.floor(Math.random() * album.movieDocIds.length);
-        selectedMovieId = album.movieDocIds[randomIndex];
-        coverMovieIdsRef.current[albumId] = selectedMovieId;
-      }
-
-      const movieData = allMovies.find((m) => m.docId === selectedMovieId);
-      if (movieData) {
-        updates[albumId] = movieData;
-        hasUpdates = true;
-      } else {
-        updates[albumId] = null;
-        hasUpdates = true;
-      }
+      updates[albumId] = covers;
+      hasUpdates = true;
     });
 
     if (hasUpdates) {

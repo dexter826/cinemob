@@ -1,49 +1,56 @@
 import React, { useRef, useState } from 'react';
-import { Plus, Folder, Film, Trash2 } from 'lucide-react';
+import { Plus, Folder } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { Album } from '@/types';
 import { addAlbum, deleteAlbum } from '../services/album-service';
 import useToastStore from '@/shared/stores/toast-store';
-import { TextField, Button } from '@/shared/components/ui';
+import { Button, PageHeader } from '@/shared/components/ui';
 import useAlertStore from '@/shared/stores/alert-store';
-import { Link } from 'react-router-dom';
 import useAlbumStore from '../stores/album-store';
-import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/empty-state';
-import PageHeader from '@/shared/components/ui/page-header';
+import Pagination from '@/shared/components/ui/pagination';
+import CreateAlbumModal from '../components/create-album-modal';
+import AlbumCard from '../components/album-card';
 
-/** Quản lý và hiển thị danh sách các album phim cá nhân. */
+const ALBUMS_PER_PAGE = 12;
+
+/** Quản lý và hiển thị danh sách các album phim cá nhân — lưới thẻ chồng poster. */
 function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
   const { albums, loading, albumCoverMovies } = useAlbumStore();
 
-  const [name, setName] = useState('');
-  const [creating, setCreating] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const creatingRef = useRef(false);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const totalPages = Math.ceil(albums.length / ALBUMS_PER_PAGE);
+  // Xóa hết album ở trang cuối → kẹp về trang lớn nhất còn tồn tại.
+  const safePage = Math.min(currentPage, totalPages || 1);
+  const paginatedAlbums = albums.slice(
+    (safePage - 1) * ALBUMS_PER_PAGE,
+    safePage * ALBUMS_PER_PAGE,
+  );
+
+  const handleCreate = async (name: string) => {
     if (!user) return;
     // Ref-guard chống double-submit trong cùng một tick render.
     if (creatingRef.current || !name.trim()) return;
     creatingRef.current = true;
     try {
-      setCreating(true);
       await addAlbum({
         uid: user.uid,
         name: name.trim(),
         movieDocIds: [],
       });
-      setName('');
-      showToast(MESSAGES.ALBUM.CREATE_SUCCESS(name), 'success');
-    } catch (error) {
+      showToast(MESSAGES.ALBUM.CREATE_SUCCESS(name.trim()), 'success');
+      setIsCreateOpen(false);
+    } catch {
       showToast(MESSAGES.ALBUM.CREATE_ERROR, 'error');
     } finally {
       creatingRef.current = false;
-      setCreating(false);
     }
   };
 
@@ -59,7 +66,7 @@ function AlbumsPage() {
         try {
           await deleteAlbum(album.docId!);
           showToast(MESSAGES.ALBUM.DELETE_SUCCESS, 'success');
-        } catch (error) {
+        } catch {
           showToast(MESSAGES.ALBUM.DELETE_ERROR, 'error');
         }
       },
@@ -67,129 +74,61 @@ function AlbumsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title="Album phim" />
-
-      <form
-        onSubmit={handleCreate}
-        className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
-          <div className="flex-1 space-y-1.5 sm:space-y-2">
-            <label
-              htmlFor="create-album-name"
-              className="text-xs font-semibold text-text-secondary ml-1"
-            >
-              Tạo album mới
-            </label>
-            <TextField
-              id="create-album-name"
-              name="album-name"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              leadingIcon={<Folder size={16} strokeWidth={1.5} aria-hidden="true" />}
-              placeholder="Ví dụ: Phim Mafia Ý…"
-            />
-          </div>
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
+      <PageHeader
+        title="Album phim"
+        actions={
           <Button
-            type="submit"
-            disabled={creating}
-            className="w-full sm:w-auto"
+            onClick={() => setIsCreateOpen(true)}
             leadingIcon={<Plus size={14} strokeWidth={1.5} aria-hidden="true" />}
           >
-            {creating ? 'Đang tạo…' : 'Tạo album'}
+            Tạo album
           </Button>
-        </div>
-      </form>
+        }
+      />
 
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="aspect-video bg-surface rounded-dialog animate-pulse" />
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="aspect-2/3 rounded-poster bg-surface animate-pulse" />
           ))}
         </div>
       ) : albums.length === 0 ? (
-        <EmptyState
-          icon={Folder}
-          title="Chưa có album nào"
-          description="Tạo album đầu tiên rồi thêm phim đã xem vào."
-        />
+        <div className="mt-6">
+          <EmptyState
+            icon={Folder}
+            title="Chưa có album nào"
+            description="Tạo album đầu tiên rồi thêm phim đã xem vào."
+            action={{ label: 'Tạo album', onClick: () => setIsCreateOpen(true) }}
+          />
+        </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-          {albums.map((album) => (
-            <article
-              key={album.docId}
-              className="group relative bg-surface rounded-card border border-border overflow-hidden"
-            >
-              <Link
-                to={`/albums/${album.docId}`}
-                aria-label={`Mở album ${album.name}, ${album.movieDocIds.length} mục`}
-                onClick={(event) => {
-                  if (!album.docId) event.preventDefault();
-                }}
-                className="absolute inset-0 z-10 cursor-pointer"
-              >
-                <span className="sr-only">Mở album {album.name}</span>
-              </Link>
-              <span className="relative block h-40 sm:h-48 md:h-56 w-full overflow-hidden">
-                {albumCoverMovies[album.docId || '']?.poster_path ? (
-                  <img
-                    src={getTMDBImageUrl(albumCoverMovies[album.docId || '']!.poster_path, 'w500')}
-                    alt=""
-                    width={300}
-                    height={450}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="flex h-full w-full bg-linear-to-br from-zinc-800 to-zinc-950 items-center justify-center">
-                    <span className="flex flex-col items-center gap-3 opacity-40">
-                      <Film size={20} className="text-white" strokeWidth={1.5} aria-hidden="true" />
-                      <span className="text-xs font-bold text-white">Trống</span>
-                    </span>
-                  </span>
-                )}
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+          {paginatedAlbums.map((album, index) => {
+            const coverPosters: (string | null)[] = (
+              album.docId ? albumCoverMovies[album.docId] : undefined
+            )?.map((movie) => movie.poster_path) ?? [];
 
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent opacity-90"
-                />
-
-                <span className="absolute top-2 left-2 sm:top-3 sm:left-3 flex items-center space-x-1.5 px-2.5 py-1.5 bg-black/60 rounded-control border border-white/10 z-10">
-                  <Folder size={12} className="text-primary" strokeWidth={1.5} aria-hidden="true" />
-                  <span className="text-xs font-semibold text-white">Album</span>
-                </span>
-
-                <span className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-                  <span className="block font-bold text-sm sm:text-base md:text-lg text-white truncate tracking-tight font-display">
-                    {album.name}
-                  </span>
-                </span>
-              </span>
-
-              <button
-                type="button"
-                aria-label={`Xóa album ${album.name}`}
-                onClick={() => handleDelete(album)}
-                className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-control bg-black/60 text-white hover:bg-danger hover:text-on-danger border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 cursor-pointer z-20"
-              >
-                <Trash2 size={15} strokeWidth={1.5} aria-hidden="true" />
-              </button>
-
-              <div className="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-1 sm:gap-2 bg-surface border-t border-border">
-                <div className="inline-flex items-center gap-1.5 text-primary font-semibold text-xs shrink-0">
-                  <Film size={12} strokeWidth={1.5} aria-hidden="true" />
-                  <span>
-                    <strong className="tabular-nums">{album.movieDocIds.length}</strong> mục
-                  </span>
-                </div>
-                <span className="text-xs font-medium text-text-secondary truncate">Chi tiết</span>
-              </div>
-            </article>
-          ))}
+            return (
+              <AlbumCard
+                key={album.docId}
+                album={album}
+                coverPosters={coverPosters}
+                onDelete={handleDelete}
+                index={index}
+              />
+            );
+          })}
         </div>
       )}
+
+      <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setCurrentPage} />
+
+      <CreateAlbumModal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onSubmit={handleCreate}
+      />
     </div>
   );
 }
