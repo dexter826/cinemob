@@ -257,9 +257,12 @@ function StatsPage() {
                     </div>
                     <div className="flex-1 h-0.5 bg-border-default overflow-hidden">
                       <div
-                        className="h-full bg-warning transition-[width] duration-700 ease-out"
+                        className="h-full w-full bg-warning origin-left transition-transform duration-700 ease-out"
                         style={{
-                          width: `${((moviesByRating[rating] ?? 0) / (ratedCount || 1)) * 100}%`,
+                          transform: `scaleX(${Math.min(
+                            1,
+                            (moviesByRating[rating] ?? 0) / (ratedCount || 1),
+                          )})`,
                         }}
                       />
                     </div>

@@ -75,10 +75,10 @@ function ToastList({
             ) : (
               <motion.div
                 aria-hidden="true"
-                initial={{ width: '100%' }}
-                animate={{ width: '0%' }}
+                initial={{ scaleX: 1 }}
+                animate={{ scaleX: 0 }}
                 transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
-                className="absolute bottom-0 left-0 h-0.5 bg-primary/50"
+                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50 origin-left"
               />
             )}
           </motion.div>

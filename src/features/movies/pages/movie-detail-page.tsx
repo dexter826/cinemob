@@ -209,14 +209,14 @@ function MovieDetailPage() {
               </p>
               <div className="mt-3 h-0.5 bg-border-default" role="presentation">
                 <div
-                  className="h-full bg-primary transition-[width] duration-700 ease-out"
+                  className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out"
                   style={{
-                    width: `${Math.round(
-                      (movie.progress.is_completed
+                    transform: `scaleX(${Math.min(
+                      1,
+                      movie.progress.is_completed
                         ? 1
-                        : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1)) *
-                        100,
-                    )}%`,
+                        : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1),
+                    )})`,
                   }}
                 />
               </div>
