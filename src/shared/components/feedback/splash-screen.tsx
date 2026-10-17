@@ -12,7 +12,7 @@ function BrandFrame({ animated }: { animated: boolean }) {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 z-150 bg-background overflow-hidden">
       <span
-        className={`font-display text-4xl sm:text-5xl uppercase tracking-wide text-text-primary select-none ${
+        className={`font-display text-4xl sm:text-5xl tracking-wide text-text-primary select-none ${
           animated ? 'animate-splash-brand' : ''
         }`}
       >

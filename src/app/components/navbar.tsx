@@ -89,7 +89,7 @@ function Navbar() {
             className="flex items-center cursor-pointer"
             aria-label="Về Thư viện CineMOB"
           >
-            <span className="font-display text-xl uppercase tracking-wide select-none">
+            <span className="font-display text-xl tracking-wide select-none">
               Cine<span className="text-primary">MOB</span>
             </span>
           </Link>
