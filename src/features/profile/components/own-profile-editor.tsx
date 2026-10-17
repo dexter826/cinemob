@@ -295,7 +295,7 @@ function OwnProfileEditor({
                   aria-label="Tuỳ chọn ảnh đại diện"
                   aria-haspopup="menu"
                   aria-expanded={isAvatarMenuOpen}
-                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-elevated hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Pencil size={15} aria-hidden="true" />
                 </button>
@@ -305,7 +305,7 @@ function OwnProfileEditor({
                   ref={avatarMenuRef}
                   role="menu"
                   onKeyDown={handleMenuKeyDown}
-                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
                 >
                   <button
                     ref={firstMenuItemRef}

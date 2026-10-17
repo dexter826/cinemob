@@ -85,7 +85,7 @@ export function AvatarCropView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={handleViewportKeyDown}
-        className={`relative rounded-full overflow-hidden ring-4 ring-primary/40 shadow-xl touch-none bg-black/80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary ${
+        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
       >

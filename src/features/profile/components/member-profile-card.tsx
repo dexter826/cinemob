@@ -17,7 +17,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
 
   return (
     <div className="bg-surface border border-border rounded-dialog p-5 sm:p-6 flex flex-col items-center text-center">
-      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-4 ring-primary/20 shrink-0">
+      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border border-border shrink-0">
         {profile.photoURL && !isAvatarLoadFailed ? (
           <img
             src={profile.photoURL}

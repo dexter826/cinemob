@@ -19,8 +19,10 @@ function StatsCard({ label, value, subValue, icon: Icon, colorClass }: StatsCard
         <Icon size={24} strokeWidth={1.5} />
       </div>
       <div>
-        <p className="text-text-secondary text-xs font-medium mb-1.5">{label}</p>
-        <p className="text-3xl sm:text-4xl font-extrabold text-text-primary tracking-tight leading-none font-display tabular-nums">
+        <p className="text-text-secondary text-[11px] font-semibold uppercase tracking-[0.1em] mb-1.5">
+          {label}
+        </p>
+        <p className="font-display uppercase tracking-wide text-4xl sm:text-5xl text-text-primary leading-none tabular-nums">
           {value}
         </p>
         {subValue && (

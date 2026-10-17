@@ -191,39 +191,36 @@ function MemberProfilePage() {
       ) : (
         <>
           <section aria-label="Phim đã xem" className="space-y-4">
-            <div
-              role="group"
-              aria-label="Phim của thành viên"
-              className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden"
-            >
-              <div
-                aria-hidden="true"
-                className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-sm transition-transform duration-300 ease-out ${
-                  activeTab === 'common' ? 'translate-x-0' : 'translate-x-full'
-                }`}
-              />
-              <button
-                type="button"
-                aria-pressed={activeTab === 'common'}
-                onClick={() => setActiveTab('common')}
-                className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'common'
-                    ? 'text-white'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                Phim chung
-              </button>
-              <button
-                type="button"
-                aria-pressed={activeTab === 'all'}
-                onClick={() => setActiveTab('all')}
-                className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'all' ? 'text-white' : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                Tất cả phim
-              </button>
+            <div role="group" aria-label="Phim của thành viên" className="flex items-center border-b border-border">
+              {(
+                [
+                  { key: 'common', label: 'Phim chung' },
+                  { key: 'all', label: 'Tất cả phim' },
+                ] as const
+              ).map((tab) => {
+                const isActive = activeTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`relative flex items-center h-11 px-3.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+                      isActive
+                        ? 'text-text-primary'
+                        : 'text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {tab.label}
+                    {isActive && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {activeTab === 'common' &&

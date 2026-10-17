@@ -25,14 +25,14 @@ import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
 // Palette biểu đồ bám hệ màu của app: emerald chủ đạo, teal kề sắc, slate trung tính.
 const COLORS = [
-  '#10b981', // primary (emerald-500)
-  '#0d9488', // teal-600
-  '#059669', // emerald-600
-  '#14b8a6', // teal-500
-  '#047857', // emerald-700
-  '#64748b', // slate-500
-  '#94a3b8', // slate-400
-  '#475569', // slate-600
+  '#ca8a04', // mực vàng chủ đạo
+  '#a16207', // gold đậm
+  '#dfa60b', // gold sáng
+  '#78716c', // stone-500
+  '#a8a29e', // stone-400
+  '#57534e', // stone-600
+  '#d6d3d1', // stone-300
+  '#44403c', // stone-700
 ];
 
 interface ChartTooltipProps {
@@ -192,12 +192,6 @@ function StatsPage() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.85} />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0.15} />
-                    </linearGradient>
-                  </defs>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     vertical={false}
@@ -223,8 +217,8 @@ function StatsPage() {
                   />
                   <Bar
                     dataKey="count"
-                    fill="url(#barGradient)"
-                    radius={[4, 4, 0, 0]}
+                    fill="var(--color-primary)"
+                    radius={[2, 2, 0, 0]}
                     barSize={isSmallScreen ? 12 : 24}
                     animationDuration={1000}
                     isAnimationActive={!prefersReducedMotion}
@@ -261,9 +255,9 @@ function StatsPage() {
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
+                    <div className="flex-1 h-0.5 bg-border-default overflow-hidden">
                       <div
-                        className="h-full bg-warning rounded-full transition-colors duration-700 ease-out"
+                        className="h-full bg-warning transition-[width] duration-700 ease-out"
                         style={{
                           width: `${((moviesByRating[rating] ?? 0) / (ratedCount || 1)) * 100}%`,
                         }}
@@ -293,7 +287,7 @@ function StatsPage() {
                 {topCountries.map(([country, count], index) => (
                   <div
                     key={country}
-                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group"
+                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors duration-300 group"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">

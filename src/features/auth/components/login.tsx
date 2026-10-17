@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Shield, Loader2, Star, CheckCircle2 } from 'lucide-react';
-import logoText from '@/assets/images/logo_text.png';
+import { Loader2, Shield, CheckCircle2 } from 'lucide-react';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -26,37 +25,7 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-const SHOWCASE_FILMS = [
-  {
-    title: 'Vùng Đất Linh Hồn',
-    year: '2001',
-    rating: '9.5',
-    poster: 'https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg',
-    tiltClass: '-rotate-6 -translate-y-1 sm:-translate-y-2',
-    zIndex: 'z-10',
-    scaleClass: 'scale-90 sm:scale-95',
-  },
-  {
-    title: 'Interstellar',
-    year: '2014',
-    rating: '9.3',
-    poster: 'https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg',
-    tiltClass: 'rotate-0 translate-y-0',
-    zIndex: 'z-20',
-    scaleClass: 'scale-100 sm:scale-105 shadow-primary/20',
-  },
-  {
-    title: 'Dune: Part Two',
-    year: '2024',
-    rating: '9.0',
-    poster: 'https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg',
-    tiltClass: 'rotate-6 translate-y-1 sm:translate-y-2',
-    zIndex: 'z-10',
-    scaleClass: 'scale-90 sm:scale-95',
-  },
-];
-
-/** Màn hình đăng nhập tài khoản CineMOB. */
+/** Màn hình đăng nhập tài khoản CineMOB — editorial stark trên nền phẳng. */
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -74,83 +43,35 @@ function Login() {
 
   return (
     <main className="h-dvh max-h-dvh overflow-hidden flex flex-col lg:flex-row bg-background text-text-primary relative selection:bg-primary/20 selection:text-primary">
-      {/* Brand & Showcase Panel */}
-      <div className="relative z-10 flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 border-b lg:border-b-0 lg:border-r border-border-default bg-surface/20 overflow-y-auto lg:overflow-hidden">
-        {/* Header Section */}
+      {/* Brand panel */}
+      <div className="relative z-10 flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 border-b lg:border-b-0 lg:border-r border-border overflow-y-auto lg:overflow-hidden">
         <div>
-          <div className="flex items-center gap-3">
-            <img src={logoText} alt="CineMOB" className="h-7 sm:h-8 w-auto" />
-          </div>
-
-          <div className="mt-6 sm:mt-8 lg:mt-10 max-w-xl space-y-2 sm:space-y-3">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.15] text-text-primary font-display">
-              Mỗi phim bạn xem đều xứng đáng được nhớ.
-            </h1>
-
-            <p className="text-xs sm:text-sm lg:text-base text-text-secondary leading-relaxed font-normal max-w-lg">
-              CineMOB là cuốn sổ tay điện ảnh của riêng bạn, nơi lưu lại từng tác phẩm, theo dõi
-              từng series và tìm ra phim hay tiếp theo.
-            </p>
-          </div>
-        </div>
-
-        {/* Visual Layered Movie Showcase */}
-        <div className="relative my-4 sm:my-6 flex items-center justify-center py-2 sm:py-4">
-          {/* Ambient Glow Backdrop */}
-          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
-
-          {/* Decorative poster showcase, not interactive */}
-          <div
+          <p
             aria-hidden="true"
-            className="flex items-center justify-center -space-x-8 sm:-space-x-12 lg:-space-x-14"
-          >
-            {SHOWCASE_FILMS.map((film) => (
-              <div
-                key={film.title}
-                className={`relative rounded-card overflow-hidden border border-white/10 shadow-2xl w-28 sm:w-36 lg:w-44 aspect-2/3 shrink-0 bg-surface ${film.tiltClass} ${film.zIndex} ${film.scaleClass}`}
-              >
-                <img
-                  src={film.poster}
-                  alt=""
-                  width={300}
-                  height={450}
-                  className="w-full h-full object-cover select-none"
-                  loading="eager"
-                  draggable={false}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
+            className="w-11 h-[3px] bg-primary mb-6"
+          />
+          <p className="font-display text-2xl uppercase tracking-wide">Cine<span className="text-primary">MOB</span></p>
 
-                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-text-secondary text-xs font-bold tabular-nums">
-                  <Star
-                    size={10}
-                    className="fill-text-secondary text-text-secondary"
-                    aria-hidden="true"
-                  />
-                  <span>{film.rating}</span>
-                </div>
+          <h1 className="font-display uppercase tracking-wide leading-[1.05] text-3xl sm:text-4xl lg:text-5xl mt-8 lg:mt-12 max-w-xl">
+            Mỗi phim bạn xem đều xứng đáng được nhớ.
+          </h1>
 
-                <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                  <p className="text-white text-xs sm:text-sm font-bold truncate leading-tight">
-                    {film.title}
-                  </p>
-                  <p className="text-white/60 text-xs mt-0.5 font-medium">{film.year}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="mt-4 text-xs sm:text-sm lg:text-base text-text-secondary leading-relaxed max-w-lg">
+            CineMOB là cuốn sổ tay điện ảnh của riêng bạn, nơi lưu lại từng tác phẩm, theo dõi
+            từng series và tìm ra phim hay tiếp theo.
+          </p>
         </div>
 
-        {/* Bottom Tagline */}
-        <div className="pt-2 hidden sm:block">
-          <p className="text-xs text-text-secondary">Rạp phim của riêng bạn, mở cửa mọi lúc.</p>
-        </div>
+        <p className="pt-2 hidden sm:block text-[10px] font-semibold uppercase tracking-[0.14em] text-text-secondary">
+          Rạp phim của riêng bạn, mở cửa mọi lúc
+        </p>
       </div>
 
-      {/* Auth Panel */}
+      {/* Auth panel */}
       <div className="relative z-10 w-full lg:w-[440px] xl:w-[480px] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 bg-surface overflow-y-auto lg:overflow-hidden shrink-0">
         <div className="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto space-y-6 sm:space-y-8">
           <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary font-display">
+            <h2 className="font-display uppercase tracking-wide text-2xl sm:text-3xl text-text-primary">
               Bắt đầu
             </h2>
             <p className="text-xs sm:text-sm text-text-secondary">
@@ -162,46 +83,44 @@ function Login() {
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-card bg-surface border border-border hover:border-primary/40 hover:bg-black/5 dark:hover:bg-white/5 font-semibold text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-control bg-transparent border border-border hover:border-primary hover:text-primary font-bold uppercase tracking-[0.08em] text-xs text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >
               {isLoading ? (
-                <Loader2 size={20} className="animate-spin text-primary" aria-hidden="true" />
+                <Loader2 size={18} className="animate-spin text-primary" aria-hidden="true" />
               ) : (
                 <GoogleIcon className="w-5 h-5 shrink-0" />
               )}
-              <span className="text-sm font-semibold">
-                {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
-              </span>
+              <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
             </button>
 
-            <div className="flex items-center gap-2 text-xs text-text-secondary">
-              <Shield size={14} className="shrink-0 text-primary" aria-hidden="true" />
+            <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
+              <Shield size={13} className="shrink-0 text-primary" aria-hidden="true" />
               <span>Bảo mật dữ liệu cá nhân qua tài khoản Google</span>
             </div>
           </div>
 
-          {/* Feature Highlights / Value Points */}
-          <div className="pt-4 border-t border-border-default space-y-2 text-xs text-text-secondary">
+          {/* Điểm giá trị */}
+          <div className="pt-4 border-t border-border space-y-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
+              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
               <span>Đồng bộ tức thì trên mọi thiết bị</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
+              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
               <span>Nhắc lịch chiếu tập mới của series đang theo dõi</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
+              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
               <span>Miễn phí, không quảng cáo</span>
             </div>
           </div>
         </div>
 
-        <footer className="pt-4 sm:pt-6 border-t border-border-default text-xs text-text-secondary flex items-center justify-between shrink-0">
+        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary flex items-center justify-between shrink-0">
           <span>&copy; {new Date().getFullYear()} CineMOB</span>
-          <span className="text-xs opacity-60">Sổ tay điện ảnh</span>
+          <span className="opacity-60">Sổ tay điện ảnh</span>
         </footer>
       </div>
     </main>
