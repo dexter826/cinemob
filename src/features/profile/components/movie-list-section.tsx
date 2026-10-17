@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Film, Search, X } from 'lucide-react';
+import { Film, Search } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';

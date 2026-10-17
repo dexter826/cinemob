@@ -1,4 +1,3 @@
-import { useReducedMotion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 interface PickerWheelProps {
@@ -23,7 +22,6 @@ export function PickerWheel({
   showTitle,
   hasResult,
 }: PickerWheelProps) {
-  const reducedMotion = useReducedMotion() ?? false;
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Wheel of Fortune Layout - Fixed positions, changing content */}

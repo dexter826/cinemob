@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calendar, Film, Filter, Type } from 'lucide-react';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import SearchInput from '@/shared/components/ui/search-input';
