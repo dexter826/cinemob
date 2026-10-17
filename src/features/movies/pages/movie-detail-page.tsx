@@ -164,31 +164,30 @@ function MovieDetailPage() {
                 </Button>
               )
             ) : (
-              <>
-                <Button
-                  leadingIcon={<FolderPlus size={16} aria-hidden="true" />}
-                  disabled={!canAddToAlbum}
-                  onClick={() => setShowAlbumSelector(true)}
-                >
-                  Thêm vào Album
-                </Button>
-                <Button
-                  variant="secondary"
-                  leadingIcon={<Pencil size={14} aria-hidden="true" />}
-                  onClick={() => openAddModal({ movieToEdit: movie })}
-                >
-                  Chỉnh sửa
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-danger hover:bg-danger/10"
-                  leadingIcon={<Trash2 size={14} aria-hidden="true" />}
-                  onClick={confirmDelete}
-                >
-                  Xóa
-                </Button>
-              </>
+              <Button
+                leadingIcon={<FolderPlus size={16} aria-hidden="true" />}
+                disabled={!canAddToAlbum}
+                onClick={() => setShowAlbumSelector(true)}
+              >
+                Thêm vào Album
+              </Button>
             )}
+
+            <Button
+              variant="secondary"
+              leadingIcon={<Pencil size={14} aria-hidden="true" />}
+              onClick={() => openAddModal({ movieToEdit: movie })}
+            >
+              Chỉnh sửa
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-danger hover:bg-danger/10"
+              leadingIcon={<Trash2 size={14} aria-hidden="true" />}
+              onClick={confirmDelete}
+            >
+              Xóa
+            </Button>
           </div>
 
           {/* TV progress */}
