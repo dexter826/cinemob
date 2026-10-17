@@ -1,18 +1,5 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import {
-  LogOut,
-  Sun,
-  Moon,
-  BarChart2,
-  Dice5,
-  Folder,
-  ChevronDown,
-  Search,
-  CalendarDays,
-  Home,
-  User,
-  Users,
-} from 'lucide-react';
+import { LogOut, Sun, Moon, BarChart2, Dice5, ChevronDown, User, Users } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { useTheme } from '@/app/providers/theme-provider';
 import { Link, useLocation } from 'react-router-dom';
@@ -20,19 +7,11 @@ import { Link, useLocation } from 'react-router-dom';
 import useAlertStore from '@/shared/stores/alert-store';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 import { IconButton } from '@/shared/components/ui/icon-button';
-import logoText from '@/assets/images/logo_text.png';
 
 const RandomPickerModal = lazy(() => import('@/features/movies/components/random-picker-modal'));
 const MemberSearchModal = lazy(
   () => import('@/features/profile/components/user/member-search-modal'),
 );
-
-const NAV_ICONS: Record<string, React.ReactNode> = {
-  '/': <Home size={18} strokeWidth={1.5} aria-hidden="true" />,
-  '/search': <Search size={18} strokeWidth={1.5} aria-hidden="true" />,
-  '/albums': <Folder size={18} strokeWidth={1.5} aria-hidden="true" />,
-  '/calendar': <CalendarDays size={18} strokeWidth={1.5} aria-hidden="true" />,
-};
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -100,20 +79,22 @@ function Navbar() {
 
   return (
     <>
-      <div className="sticky top-4 z-50 w-full px-4 md:px-6 pointer-events-none flex justify-center mb-6">
+      <header className="sticky top-0 z-50 bg-background border-b border-border">
         <nav
           aria-label="Điều hướng chính"
-          className="pointer-events-auto w-full max-w-6xl bg-surface border border-border rounded-card sm:rounded-full px-3 md:px-4 h-14 flex items-center justify-between"
+          className="h-14 max-w-6xl mx-auto px-4 md:px-6 flex items-center justify-between"
         >
           <Link
             to="/"
-            className="flex items-center cursor-pointer rounded-control"
+            className="flex items-center cursor-pointer"
             aria-label="Về Thư viện CineMOB"
           >
-            <img src={logoText} alt="CineMOB Logo" className="h-7 md:h-8 w-auto" />
+            <span className="font-display text-xl uppercase tracking-wide select-none">
+              Cine<span className="text-primary">MOB</span>
+            </span>
           </Link>
 
-          <div className="hidden md:flex items-center justify-center flex-1 mx-4 md:mx-6 space-x-1">
+          <div className="hidden md:flex items-center self-stretch">
             {NAV_ITEMS.map((item) => {
               const active = isNavItemActive(location.pathname, item);
               return (
@@ -122,14 +103,19 @@ function Navbar() {
                   to={item.to}
                   aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-control transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`relative flex items-center h-full px-3 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
                     active
-                      ? 'bg-primary/10 text-primary font-semibold'
-                      : 'hover:bg-primary/5 text-text-primary'
+                      ? 'text-text-primary'
+                      : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
-                  {NAV_ICONS[item.to]}
-                  <span className="hidden xl:inline">{item.label}</span>
+                  {item.label}
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
+                    />
+                  )}
                 </Link>
               );
             })}
@@ -175,7 +161,7 @@ function Navbar() {
                 aria-haspopup="menu"
                 aria-expanded={isDropdownOpen}
                 aria-controls="account-menu"
-                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-border hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer min-w-9 min-h-9"
+                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-control border border-transparent hover:border-border transition-colors cursor-pointer min-w-9 min-h-9"
               >
                 {user?.photoURL && !isAvatarLoadFailed ? (
                   <img
@@ -203,7 +189,7 @@ function Navbar() {
                   role="menu"
                   aria-label="Menu tài khoản"
                   onKeyDown={handleMenuKeyDown}
-                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden"
+                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
                 >
                   <div className="px-4 py-3 border-b border-border bg-black/5 dark:bg-white/5">
                     <p className="text-sm font-semibold text-text-primary truncate">
@@ -258,7 +244,7 @@ function Navbar() {
             </div>
           </div>
         </nav>
-      </div>
+      </header>
 
       {isRandomOpen && (
         <Suspense fallback={null}>
