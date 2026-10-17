@@ -73,7 +73,6 @@ function MovieCard(props: MovieCardProps) {
           />
         </button>
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         {/* Independent actions, siblings of the detail button, never nested */}
         {!isSelectMode && (
@@ -119,7 +118,7 @@ function MovieCard(props: MovieCardProps) {
         {isSelectMode && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-primary/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none border border-transparent group-hover:border-primary/40 rounded-card">
             <CheckCircle
-              className="text-white drop-shadow-lg"
+              className="text-white"
               size={44}
               strokeWidth={1.5}
               aria-hidden="true"
@@ -129,7 +128,7 @@ function MovieCard(props: MovieCardProps) {
 
         {/* Badges Stack */}
         <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
-          <div className="flex items-center space-x-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10 shadow-sm">
+          <div className="flex items-center space-x-1 px-2.5 py-1 bg-black/60 rounded-lg border border-white/10">
             {movie.media_type === 'tv' ? (
               <>
                 <Tv size={11} className="text-info" strokeWidth={1.5} aria-hidden="true" />
@@ -148,7 +147,7 @@ function MovieCard(props: MovieCardProps) {
 
         {/* Review badge */}
         {movie.is_review && (
-          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+          <span className="absolute left-1/2 bottom-2 -translate-x-1/2 z-10 inline-flex items-center gap-1 whitespace-nowrap rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white">
             <Eye size={11} aria-hidden="true" />
             <span className="hidden sm:inline">Xem qua </span>Review
           </span>

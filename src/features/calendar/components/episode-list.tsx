@@ -106,7 +106,7 @@ function EpisodeList({
             {Object.entries(episodesByDate).map(([date, episodes]) => (
               <div key={date} className="mb-6 last:mb-0">
                 <div className="sticky top-0 z-10 pb-3 flex justify-start">
-                  <div className="bg-surface border border-border px-3.5 py-1.5 rounded-full">
+                  <div className="bg-surface border border-border px-3.5 py-1.5 rounded-control">
                     <h4 className="text-xs font-bold text-primary whitespace-nowrap">
                       {formatDate(date)}
                     </h4>
@@ -121,7 +121,7 @@ function EpisodeList({
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
                       className="w-full flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-black/5 dark:bg-white/5 rounded-card hover:bg-primary/5 transition-colors duration-300 cursor-pointer border border-border text-left items-start overflow-hidden"
                     >
-                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-control overflow-hidden shadow-md border border-border-default/50 transition-colors duration-300">
+                      <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-lg sm:rounded-control overflow-hidden border border-border-default/50 transition-colors duration-300">
                         <img
                           src={getTMDBImageUrl(ep.posterPath)}
                           alt={ep.seriesName}

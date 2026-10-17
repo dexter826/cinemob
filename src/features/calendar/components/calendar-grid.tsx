@@ -84,7 +84,7 @@ function CalendarGrid({
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
             hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group 
-            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40 shadow-lg shadow-primary/10' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
+            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
