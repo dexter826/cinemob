@@ -230,6 +230,8 @@ Nâng cấp thị giác bằng **đường kẻ, không phải bóng**:
 - ❌ Instant state changes (dùng transition 150–200ms)
 - ❌ Invisible focus states
 - ❌ Màu màu mè trong chrome (chrome = đen/trắng/hairline; màu chỉ ở poster + gold accent)
+- ❌ Input hộp trên nền trang — **input trên nền trang luôn gạch-đáy** (variant underline); hộp chỉ trong bề mặt elevated (modal/dropdown). Tìm kiếm = component `Search`, cấm inline.
+- ❌ Khối stat hộp-viền-icon-tile — stat dùng component `Stat`: số trần + label + vạch phân cách.
 
 ---
 
