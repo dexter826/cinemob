@@ -12,11 +12,14 @@ interface MovieState {
   pendingDeleteIds: string[];
   initialize: (uid: string) => void;
   cleanup: () => void;
+  retry: () => void;
   setMovies: (movies: Movie[]) => void;
   removeLocal: (docId: string) => void;
   restoreMovie: (movie: Movie) => void;
   clearPendingDelete: (docId: string) => void;
 }
+
+let movieGeneration = 0;
 
 // Quản lý và đồng bộ danh sách phim.
 const useMovieStore = create<MovieState>((set, get) => ({
@@ -37,9 +40,12 @@ const useMovieStore = create<MovieState>((set, get) => ({
       set({ movies: [], loading: true, initialized: false, pendingDeleteIds: [], error: false });
     }
 
+    const generation = ++movieGeneration;
+    set({ loading: true, error: false });
     const unsub = subscribeToMovies(
       uid,
       (movies) => {
+        if (generation !== movieGeneration) return;
         const pending = get().pendingDeleteIds;
         set({
           movies: movies.filter((m) => !m.docId || !pending.includes(m.docId)),
@@ -48,13 +54,23 @@ const useMovieStore = create<MovieState>((set, get) => ({
           error: false,
         });
       },
-      () => set({ error: true, loading: false, initialized: true }),
+      () => {
+        if (generation === movieGeneration) set({ error: true, loading: false, initialized: true });
+      },
     );
 
     set({ unsubscribe: unsub, activeUid: uid });
   },
 
+  retry: () => {
+    const { activeUid, unsubscribe } = get();
+    if (!activeUid) return;
+    unsubscribe?.();
+    set({ unsubscribe: null });
+    get().initialize(activeUid);
+  },
   cleanup: () => {
+    ++movieGeneration;
     const { unsubscribe } = get();
     if (unsubscribe) {
       unsubscribe();

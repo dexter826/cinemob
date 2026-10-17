@@ -67,7 +67,7 @@ export const getPersonMovieCredits = async (
   personId: number,
   signal?: AbortSignal,
 ): Promise<PersonMovie[]> => {
-  if (!API_KEY) return [];
+  if (!API_KEY) throw new Error('TMDB API key is unavailable');
 
   try {
     const [movieData, tvData] = await Promise.all([
@@ -75,6 +75,7 @@ export const getPersonMovieCredits = async (
       tmdbFetch(`person/${personId}/tv_credits`, {}, decodeCreditResponse, signal),
     ]);
 
+    if (!movieData || !tvData) throw new Error('Incomplete person credits');
     const movies: PersonMovie[] = [...(movieData?.cast || []), ...(movieData?.crew || [])].map(
       (item) => toPersonMovie(item, 'movie'),
     );
@@ -96,6 +97,6 @@ export const getPersonMovieCredits = async (
     });
   } catch (error) {
     console.error('Failed to get person movie credits:', error);
-    return [];
+    throw error;
   }
 };

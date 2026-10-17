@@ -45,3 +45,12 @@ Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng
 
 - Tiếng Việt, câu ngắn, xưng "bạn"; không emoji; nút là động từ ("Thêm phim", "Hoàn tác").
 - Toast/tooltip nói kết quả cụ thể ("Đã xoá X", "Gỡ phim khỏi album thất bại"), không "Có lỗi xảy ra" chung chung.
+
+## 6. Loading và phản hồi tác vụ
+
+- Chưa có nội dung, biết trước bố cục: skeleton khớp aspect, grid, gap và breakpoint của nội dung thật.
+- Đang xử lý hành động: spinner và nhãn tại nút/vùng thao tác; khóa đúng hành động phụ thuộc.
+- Refresh cùng ngữ cảnh: giữ nội dung hợp lệ, báo cập nhật cục bộ. Đổi user/query/month không hiện kết quả cũ như kết quả mới.
+- Lỗi đọc khác dữ liệu rỗng; lỗi có retry, pending không kéo dài sau lỗi hoặc hủy.
+- Skeleton dùng token skeleton và motion-safe; status nằm ngoài vùng aria-busy. Không dùng phần trăm giả.
+- Khởi động kết thúc trạng thái chờ khi xác thực xong; không ép thời lượng splash. Tải nội dung trang giữ thanh điều hướng.

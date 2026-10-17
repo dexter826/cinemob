@@ -1,3 +1,4 @@
+import { PLACEHOLDER_IMAGE } from '@/constants';
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Bookmark, CheckCircle, Eye, Star, X } from 'lucide-react';
@@ -96,6 +97,10 @@ function PosterCard({
             alt=""
             aria-hidden="true"
             loading="lazy"
+            onError={(event) => {
+              const image = event.currentTarget;
+              if (image.getAttribute('src') !== PLACEHOLDER_IMAGE) image.src = PLACEHOLDER_IMAGE;
+            }}
             draggable={false}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           />
@@ -105,6 +110,10 @@ function PosterCard({
           src={imageUrl}
           alt={title}
           loading="lazy"
+          onError={(event) => {
+            const image = event.currentTarget;
+            if (image.getAttribute('src') !== PLACEHOLDER_IMAGE) image.src = PLACEHOLDER_IMAGE;
+          }}
           draggable={false}
           className="absolute inset-0 w-full h-full object-cover"
         />

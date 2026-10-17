@@ -1,3 +1,5 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'lucide-react';
@@ -32,6 +34,7 @@ interface OwnProfileEditorProps {
   onRetry: () => void;
   saving: boolean;
   toggling: boolean;
+  canToggle: boolean;
   onSaveDetails: (details: OwnProfileDetails) => Promise<boolean>;
   onToggleHidden: () => Promise<boolean>;
 }
@@ -50,6 +53,7 @@ function OwnProfileEditor({
   onRetry,
   saving,
   toggling,
+  canToggle,
   onSaveDetails,
   onToggleHidden,
 }: OwnProfileEditorProps) {
@@ -363,6 +367,7 @@ function OwnProfileEditor({
                   </p>
                 </div>
 
+                <LoadingStatus>{loading ? 'Đang tải hồ sơ…' : ''}</LoadingStatus>
                 {!isEditing && (
                   <Button
                     variant="secondary"
@@ -388,9 +393,9 @@ function OwnProfileEditor({
                     </div>
                   ) : loading ? (
                     <div aria-hidden="true" className="space-y-2 max-w-prose">
-                      <div className="h-3 w-32 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-3/4 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-1/2 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
+                      <Skeleton className="h-3 w-32 rounded-md  " />
+                      <Skeleton className="h-3 w-3/4 rounded-md  " />
+                      <Skeleton className="h-3 w-1/2 rounded-md  " />
                     </div>
                   ) : (
                     <>
@@ -511,7 +516,7 @@ function OwnProfileEditor({
                 checked={isHidden}
                 onToggle={() => void onToggleHidden()}
                 label="Ẩn danh sách phim"
-                disabled={toggling || !ready}
+                disabled={toggling || !canToggle}
               />
             </div>
           </div>

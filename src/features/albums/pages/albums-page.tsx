@@ -1,3 +1,5 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import React, { useRef, useState } from 'react';
 import { Plus, Folder } from 'lucide-react';
@@ -88,6 +90,7 @@ function AlbumsPage() {
         }
       />
 
+      <LoadingStatus>{loading ? 'Đang tải album…' : ''}</LoadingStatus>
       {error ? (
         <ErrorState
           title={error}
@@ -97,7 +100,7 @@ function AlbumsPage() {
       ) : loading ? (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="aspect-2/3 rounded-poster bg-surface animate-pulse" />
+            <Skeleton key={i} className="aspect-2/3 rounded-poster  " />
           ))}
         </div>
       ) : albums.length === 0 ? (

@@ -1,6 +1,6 @@
+import Spinner from '@/shared/components/ui/spinner';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Loader2 } from 'lucide-react';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import type { TMDBMovieResult } from '@/types';
@@ -108,11 +108,11 @@ function Login() {
               aria-busy={isLoading}
             >
               {isLoading ? (
-                <Loader2 size={18} className="animate-spin text-on-primary" aria-hidden="true" />
+                <Spinner size={18} className="text-current" />
               ) : (
                 <GoogleIcon className="w-5 h-5 shrink-0" />
               )}
-              <span>Tiếp tục với Google</span>
+              <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
             </button>
           </div>
         </div>
@@ -124,10 +124,7 @@ function Login() {
 
       {hasWall && (
         <div className="order-2 lg:order-1 overflow-hidden min-h-0 h-full">
-          <div
-            aria-hidden="true"
-            className="grid grid-cols-6 gap-0.5 h-24 sm:h-28 lg:hidden"
-          >
+          <div aria-hidden="true" className="grid grid-cols-6 gap-0.5 h-24 sm:h-28 lg:hidden">
             {posters.map((poster) => (
               <PosterTile key={poster.id} poster={poster} />
             ))}

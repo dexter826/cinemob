@@ -1,3 +1,4 @@
+import ErrorState from '@/shared/components/ui/error-state';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, FolderPlus, Pencil, Play, Star, Trash2 } from 'lucide-react';
@@ -19,13 +20,19 @@ import { IconButton } from '@/shared/components/ui/icon-button';
 import { SectionHeader, Chip } from '@/shared/components/ui';
 import Button from '@/shared/components/ui/button';
 import EmptyState from '@/shared/components/ui/empty-state';
-import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import Skeleton from '@/shared/components/ui/skeleton';
+import LoadingStatus from '@/shared/components/ui/loading-status';
 
 /** Trang chi tiết phim /movie/:id — thay cho MovieDetailModal (IA đã duyệt). */
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { movies, loading: collectionLoading } = useMovieStore();
+  const {
+    movies,
+    loading: collectionLoading,
+    error: collectionError,
+    retry: retryCollection,
+  } = useMovieStore();
   const { openAddModal } = useAddMovieStore();
   const handleDelete = useDeleteMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
@@ -51,11 +58,30 @@ function MovieDetailPage() {
     navigate('/');
   };
 
+  if (collectionError)
+    return (
+      <ErrorState
+        title="Không tải được bộ sưu tập"
+        description="Vui lòng thử lại để xem thông tin phim."
+        retry={{ label: 'Thử lại', onClick: retryCollection }}
+      />
+    );
+
   if (!movie) {
     return (
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
         {collectionLoading ? (
-          <SkeletonCard />
+          <>
+            <LoadingStatus>Đang tải thông tin phim…</LoadingStatus>
+            <div aria-busy="true" className="flex flex-col md:flex-row gap-6 md:gap-10">
+              <Skeleton className="w-full max-w-[240px] md:max-w-[280px] aspect-2/3 shrink-0 self-center md:self-start" />
+              <div className="flex-1 space-y-4">
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
+                <Skeleton className="h-28 w-full" />
+              </div>
+            </div>
+          </>
         ) : (
           <EmptyState
             icon={ArrowLeft}

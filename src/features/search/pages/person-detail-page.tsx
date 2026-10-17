@@ -1,3 +1,6 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Calendar, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
@@ -15,6 +18,7 @@ function PersonDetailPage() {
   const navigate = useNavigate();
   const {
     loading,
+    retry,
     person,
     error,
     searchQuery,
@@ -55,6 +59,7 @@ function PersonDetailPage() {
   return (
     <div className="text-text-primary transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <LoadingStatus>{loading ? 'Đang tải thông tin nghệ sĩ…' : ''}</LoadingStatus>
         <PageHeader
           onBack={() => navigate(-1)}
           icon={User}
@@ -66,9 +71,15 @@ function PersonDetailPage() {
           }
         />
 
-        {loading ? (
+        {error ? (
+          <ErrorState
+            title={error}
+            description="Vui lòng thử lại."
+            retry={{ label: 'Thử lại', onClick: retry }}
+          />
+        ) : loading ? (
           <div className="space-y-6">
-            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 h-96 animate-pulse" />
+            <Skeleton className=" border border-border-default rounded-dialog p-5 sm:p-6 h-96 " />
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <SkeletonCard key={i} />

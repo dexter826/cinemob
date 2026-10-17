@@ -1,3 +1,4 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
 import ErrorState from '@/shared/components/ui/error-state';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import React from 'react';
@@ -54,12 +55,7 @@ function AlbumDetailPage() {
     handleRemoveMovie,
   } = useAlbumDetail(albumId);
 
-  const retryMovies = () => {
-    const state = useMovieStore.getState();
-    const uid = state.activeUid;
-    state.cleanup();
-    if (uid) state.initialize(uid);
-  };
+  const retryMovies = useMovieStore((state) => state.retry);
   if (error)
     return (
       <ErrorState
@@ -71,6 +67,13 @@ function AlbumDetailPage() {
   return (
     <div className="text-text-primary transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <LoadingStatus>
+          {loading || moviesLoading
+            ? 'Đang tải phim trong album…'
+            : pendingMovieIds.size
+              ? 'Đang cập nhật album…'
+              : ''}
+        </LoadingStatus>
         <PageHeader
           onBack={() => navigate('/albums')}
           icon={Film}
@@ -190,7 +193,7 @@ function AlbumDetailPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
-              {!loading && (
+              {!loading && !moviesLoading && !moviesError && (
                 <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
@@ -204,7 +207,7 @@ function AlbumDetailPage() {
                 retry={{ label: 'Thử lại', onClick: retryMovies }}
               />
             ) : loading || moviesLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}

@@ -22,7 +22,12 @@ export interface OwnProfileDetails {
 /** Nạp và lưu phần hồ sơ chính chủ chỉnh sửa trên trang cá nhân. */
 export const useOwnProfile = () => {
   const { user } = useAuth();
-  const { movies } = useMovieStore();
+  const {
+    movies,
+    loading: moviesLoading,
+    error: moviesError,
+    activeUid: moviesUid,
+  } = useMovieStore();
   const { showToast } = useToastStore();
   const uid = user?.uid || '';
   const [profile, setProfile] = useState<MemberProfile | null>(null);
@@ -95,8 +100,9 @@ export const useOwnProfile = () => {
     [ready, refresh, saving, showToast, uid],
   );
 
+  const canToggle = ready && !moviesLoading && !moviesError && moviesUid === uid;
   const toggleMovieListHidden = useCallback(async (): Promise<boolean> => {
-    if (!ready || activeUid.current !== uid || toggling) return false;
+    if (!canToggle || activeUid.current !== uid || toggling) return false;
     const next = !(profile?.isMovieListHidden ?? false);
     setToggling(true);
     try {
@@ -111,7 +117,7 @@ export const useOwnProfile = () => {
     } finally {
       setToggling(false);
     }
-  }, [ready, movies, profile?.isMovieListHidden, refresh, showToast, toggling, uid]);
+  }, [canToggle, movies, profile?.isMovieListHidden, refresh, showToast, toggling, uid]);
 
   return {
     profile: loadedUid === uid ? profile : null,
@@ -121,6 +127,7 @@ export const useOwnProfile = () => {
     retry: () => setRetryNonce((n) => n + 1),
     saving,
     toggling,
+    canToggle,
     saveDetails,
     toggleMovieListHidden,
   };

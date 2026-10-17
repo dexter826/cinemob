@@ -1,3 +1,6 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
@@ -55,7 +58,7 @@ const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
 
 /** Thống kê hoạt động xem phim, điểm số và thể loại. */
 function StatsPage() {
-  const { movies, loading } = useMovieStore();
+  const { movies, loading, error, retry } = useMovieStore();
   const {
     totalMovies,
     movieCount,
@@ -111,14 +114,24 @@ function StatsPage() {
     return buildGenreChartData(moviesByGenre);
   }, [moviesByGenre]);
 
+  if (error)
+    return (
+      <ErrorState
+        title="Không tải được dữ liệu thống kê"
+        description="Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: retry }}
+      />
+    );
+
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+        <LoadingStatus>Đang tải thống kê…</LoadingStatus>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
-          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
+          <Skeleton className="h-32  rounded-dialog " />
+          <Skeleton className="h-32  rounded-dialog " />
         </div>
-        <div className="h-96 bg-surface rounded-dialog animate-pulse" />
+        <Skeleton className="h-96  rounded-dialog " />
       </div>
     );
   }

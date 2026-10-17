@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
 import { Movie } from '@/types';
-
 interface TVProgressProps {
   movieToEdit?: Movie;
   tmdbId?: number | string;
@@ -9,8 +8,6 @@ interface TVProgressProps {
   isTVSeries: boolean;
   isOpen: boolean;
 }
-
-// Quản lý tiến độ xem phim bộ.
 export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVProgressProps) => {
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(0);
@@ -18,96 +15,76 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [seasonDates, setSeasonDates] = useState<Record<number, string>>({});
-  // Số mùa đã đồng bộ với TMDB (chỉ tăng so với snapshot); 0 = không áp dụng.
   const [resolvedSeasonCount, setResolvedSeasonCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+  const [resolvedMovie, setResolvedMovie] = useState<Movie | undefined>();
   useEffect(() => {
     if (!isOpen) return;
-    let ignore = false;
-
-    if (movieToEdit && movieToEdit.media_type === 'tv') {
-      const m = movieToEdit;
-      if (m.source === 'tmdb' && m.id) {
-        const fetchInfo = async () => {
-          setIsLoading(true);
-          try {
-            let seasonCount = m.seasons || 0;
-            try {
-              const fresh = await getTVShowSeasonCount(Number(m.id));
-              if (fresh && fresh > seasonCount) seasonCount = fresh;
-            } catch (error) {
-              console.warn('Không lấy được số mùa mới từ TMDB, dùng số mùa đã lưu:', error);
-            }
-            const info =
-              seasonCount > 0
-                ? await getTVShowEpisodeInfo(Number(m.id), seasonCount)
-                : { total_episodes: 0, episodes_per_season: {} };
-            if (!ignore) {
-              setTotalEpisodes(info.total_episodes || m.total_episodes || 0);
-              setEpisodesPerSeason(info.episodes_per_season);
-              setResolvedSeasonCount(seasonCount);
-            }
-          } catch (error) {
-            if (!ignore) {
-              setTotalEpisodes(m.total_episodes || 0);
-              setResolvedSeasonCount(m.seasons || 0);
-            }
-          } finally {
-            if (!ignore) setIsLoading(false);
-          }
-        };
-        fetchInfo();
-      } else {
-        setTotalEpisodes(m.total_episodes || 0);
-        setResolvedSeasonCount(m.seasons || 0);
-      }
-
-      if (m.progress) {
-        setCurrentSeason(m.progress.current_season || 1);
-        setCurrentEpisode(m.progress.current_episode || 0);
-        setIsCompleted(m.progress.is_completed || false);
-        setSeasonDates(
-          Object.fromEntries(
-            Object.entries(m.progress.season_dates || {}).map(([season, iso]) => [
-              Number(season),
-              iso,
-            ]),
-          ),
-        );
-      } else {
-        setCurrentSeason(1);
-        setCurrentEpisode(0);
-        setIsCompleted(false);
-        setSeasonDates({});
-      }
-    } else if (movieToEdit) {
-      // Sửa phim lẻ: dọn state TV để không nô sang lần mở kế tiếp.
-      setTotalEpisodes(0);
-      setEpisodesPerSeason({});
-      setCurrentSeason(1);
-      setCurrentEpisode(0);
-      setIsCompleted(false);
-      setSeasonDates({});
-      setResolvedSeasonCount(0);
-    } else if (!movieToEdit && !tmdbId) {
-      setTotalEpisodes(0);
-      setEpisodesPerSeason({});
-      setCurrentSeason(1);
-      setCurrentEpisode(0);
-      setIsCompleted(true);
-      setSeasonDates({});
-      setResolvedSeasonCount(0);
-    } else if (!movieToEdit && isTVSeries && tmdbId) {
+    setError(null);
+    setEpisodesPerSeason({});
+    setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
+    setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
+    const progress = movieToEdit?.progress;
+    setCurrentSeason(progress?.current_season ?? 1);
+    setCurrentEpisode(progress?.current_episode ?? 0);
+    setIsCompleted(progress?.is_completed ?? !movieToEdit);
+    setSeasonDates(
+      Object.fromEntries(
+        Object.entries(progress?.season_dates ?? {}).map(([season, date]) => [
+          Number(season),
+          date,
+        ]),
+      ),
+    );
+  }, [isOpen, movieToEdit, tmdbId, isTVSeries]);
+  useEffect(() => {
+    if (!isOpen || movieToEdit?.media_type !== 'tv' || movieToEdit.source !== 'tmdb') {
       setIsLoading(false);
-      setSeasonDates({});
-      setResolvedSeasonCount(0);
+      return;
     }
-    return () => {
-      ignore = true;
+    let cancelled = false;
+    setIsLoading(true);
+    setError(null);
+    const fetchInfo = async () => {
+      try {
+        const fresh = await getTVShowSeasonCount(Number(movieToEdit.id));
+        if (fresh === null) throw new Error('TV season count unavailable');
+        const seasons = Math.max(fresh || 0, movieToEdit.seasons || 0);
+        const info = await getTVShowEpisodeInfo(Number(movieToEdit.id), seasons);
+        if (Object.keys(info.episodes_per_season).length < seasons)
+          throw new Error('Incomplete TV episode data');
+        if (!cancelled) {
+          setTotalEpisodes(info.total_episodes || movieToEdit.total_episodes || 0);
+          setEpisodesPerSeason(info.episodes_per_season);
+          setResolvedSeasonCount(seasons);
+        }
+      } catch {
+        if (!cancelled) setError('Không cập nhật được tiến độ TV. Bạn có thể thử lại.');
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+          setResolvedMovie(movieToEdit);
+        }
+      }
     };
-  }, [isOpen, movieToEdit, isTVSeries, tmdbId]);
-
+    void fetchInfo();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, movieToEdit, retryNonce]);
+  const refreshing =
+    isOpen &&
+    movieToEdit?.source === 'tmdb' &&
+    movieToEdit.media_type === 'tv' &&
+    (isLoading || resolvedMovie !== movieToEdit);
+  const hasUsableSnapshot = isCompleted
+    ? totalEpisodes > 0
+    : totalEpisodes > 0 &&
+      Array.from({ length: currentSeason }, (_, i) => i + 1).every(
+        (season) => (episodesPerSeason[season] ?? 0) > 0,
+      );
   const calculateWatchedEpisodes = (season: number, episode: number, completed: boolean) => {
     if (completed) return totalEpisodes;
     let watched = 0;
@@ -136,7 +113,10 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     seasonDates,
     setSeasonDate,
     resolvedSeasonCount,
-    isLoading,
+    isLoading: refreshing,
+    error,
+    retry: () => setRetryNonce((n) => n + 1),
+    hasUsableSnapshot,
     calculateWatchedEpisodes,
   };
 };

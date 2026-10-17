@@ -22,6 +22,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const { openAddModal } = useAddMovieStore();
   const { movies } = useMovieStore();
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);
+  const [poolError, setPoolError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
   const [isLoadingPool, setIsLoadingPool] = useState(false);
   const [poolType, setPoolType] = useState<PoolType>(null);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
@@ -81,11 +83,14 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     setPoolType('trending');
     if (trending.length === 0) {
       setIsLoadingPool(true);
+      setPoolError(null);
       getTrendingMovies(1, controller.signal)
         .then(({ results }) => {
           if (!controller.signal.aborted) setTrending(results);
         })
-        .catch(() => undefined)
+        .catch(() => {
+          if (!controller.signal.aborted) setPoolError('Không tải được phim thịnh hành.');
+        })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoadingPool(false);
         });
@@ -93,7 +98,14 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       setIsLoadingPool(false);
     }
     return () => controller.abort();
-  }, [clearShuffleTimers, isOpen, randomAudio, trending.length, watchlistMovies.length]);
+  }, [
+    clearShuffleTimers,
+    isOpen,
+    randomAudio,
+    trending.length,
+    watchlistMovies.length,
+    retryNonce,
+  ]);
 
   const startShuffle = useCallback(
     (source: Exclude<PoolType, null>) => {
@@ -147,14 +159,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       };
       shuffleTimeoutRef.current = setTimeout(tick, 70);
     },
-    [
-      clearShuffleTimers,
-      isMuted,
-      randomAudio,
-      reducedMotion,
-      trending,
-      watchlistMovies,
-    ],
+    [clearShuffleTimers, isMuted, randomAudio, reducedMotion, trending, watchlistMovies],
   );
 
   useEffect(() => {
@@ -184,6 +189,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     poolType,
     currentIndex,
     isLoadingPool,
+    poolError,
+    retryPool: () => setRetryNonce((n) => n + 1),
     isShuffling,
     hasResult,
     reducedMotion,

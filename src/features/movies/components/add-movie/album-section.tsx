@@ -1,9 +1,15 @@
+import Loading from '@/shared/components/ui/loading';
+import ErrorState from '@/shared/components/ui/error-state';
+import Spinner from '@/shared/components/ui/spinner';
 import { useEffect, useRef } from 'react';
-import { FolderPlus, Plus, X, Loader2 } from 'lucide-react';
+import { FolderPlus, Plus, X } from 'lucide-react';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import { Album } from '@/types';
 
 interface AlbumSectionProps {
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
   isEditMode: boolean;
   showCreateAlbum: boolean;
   setShowCreateAlbum: (show: boolean) => void;
@@ -17,6 +23,9 @@ interface AlbumSectionProps {
 }
 
 function AlbumSection({
+  loading,
+  error,
+  onRetry,
   isEditMode,
   showCreateAlbum,
   setShowCreateAlbum,
@@ -37,6 +46,16 @@ function AlbumSection({
     }
   }, [showCreateAlbum]);
 
+  if (loading) return <Loading text="Đang tải album…" />;
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Tải lại album trước khi lưu phim."
+        retry={{ label: 'Thử lại', onClick: onRetry }}
+        compact
+      />
+    );
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
@@ -86,11 +105,7 @@ function AlbumSection({
             disabled={creatingAlbum || !newAlbumName.trim()}
             className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-sm font-bold disabled:opacity-40 transition-colors"
           >
-            {creatingAlbum ? (
-              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
-            ) : (
-              'Tạo'
-            )}
+            {creatingAlbum ? <Spinner size={18} className="text-current" /> : 'Tạo'}
           </button>
         </div>
       )}

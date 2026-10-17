@@ -1,3 +1,5 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useSearch } from '../hooks/use-search';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import PageHeader from '@/shared/components/ui/page-header';
@@ -19,6 +21,8 @@ function SearchPage() {
     trendingMovies,
     isAiLoading,
     isTrendingLoading,
+    aiError,
+    trendingError,
     refreshRecommendations,
     removeRecommendation,
     filteredResults,
@@ -53,29 +57,68 @@ function SearchPage() {
         handleSelectMovie={handleSelectMovie}
       />
 
-      <SearchResults
-        mode={mode}
-        onClear={handleClear}
-        isLoading={isLoading}
-        query={submittedQuery}
-        totalPages={totalPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isAiLoading={isAiLoading}
-        isTrendingLoading={isTrendingLoading}
-        aiRecommendations={aiRecommendations}
-        trendingMovies={trendingMovies}
-        discoverMovies={discoverMovies}
-        filteredResults={filteredResults}
-        watchedMoviesCount={watchedMoviesCount}
-        getMovieStatus={getMovieStatus}
-        handleSelectMovie={handleSelectMovie}
-        refreshRecommendations={refreshRecommendations}
-        removeRecommendation={removeRecommendation}
-        userId={user?.uid || ''}
-        resultsError={resultsError}
-        retrySearch={retrySearch}
-      />
+      <LoadingStatus>
+        {isLoading
+          ? 'Đang tải kết quả…'
+          : resultsError
+            ? 'Không tải được kết quả.'
+            : mode !== 'home'
+              ? `Có ${filteredResults.length} kết quả trên trang này.`
+              : isAiLoading || isTrendingLoading
+                ? 'Đang cập nhật gợi ý phim…'
+                : ''}
+      </LoadingStatus>
+      {mode === 'home' && aiError && (
+        <ErrorState
+          compact
+          title={aiError}
+          description="Nội dung đã tải trước đó vẫn được giữ."
+          retry={{
+            label: 'Thử lại',
+            onClick: () => {
+              if (user) void refreshRecommendations(user.uid, true);
+            },
+          }}
+        />
+      )}
+      {mode === 'home' && trendingError && (
+        <ErrorState
+          compact
+          title={trendingError}
+          description="Vui lòng thử lại."
+          retry={{
+            label: 'Thử lại',
+            onClick: () => {
+              if (user) void refreshRecommendations(user.uid, true);
+            },
+          }}
+        />
+      )}
+      <div aria-busy={isLoading}>
+        <SearchResults
+          mode={mode}
+          onClear={handleClear}
+          isLoading={isLoading}
+          query={submittedQuery}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          isAiLoading={isAiLoading}
+          isTrendingLoading={isTrendingLoading}
+          aiRecommendations={aiRecommendations}
+          trendingMovies={trendingMovies}
+          discoverMovies={discoverMovies}
+          filteredResults={filteredResults}
+          watchedMoviesCount={watchedMoviesCount}
+          getMovieStatus={getMovieStatus}
+          handleSelectMovie={handleSelectMovie}
+          refreshRecommendations={refreshRecommendations}
+          removeRecommendation={removeRecommendation}
+          userId={user?.uid || ''}
+          resultsError={resultsError}
+          retrySearch={retrySearch}
+        />
+      </div>
     </div>
   );
 }

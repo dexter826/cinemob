@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import useInitialLoadStore from '@/shared/stores/initial-load-store';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '@/features/albums/stores/album-store';
 import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
@@ -22,7 +21,6 @@ export const useAppInit = () => {
     movies: allMovies,
     loading: moviesLoading,
   } = useMovieStore();
-  const { markInitialLoadComplete } = useInitialLoadStore();
   const { showToast } = useToastStore();
 
   const {
@@ -39,18 +37,12 @@ export const useAppInit = () => {
     useReleaseCalendarStore();
 
   useEffect(() => {
-    if (user) {
-      initMovies(user.uid);
+    if (userId) {
+      initMovies(userId);
     } else {
       cleanupMovies();
     }
-  }, [user, initMovies, cleanupMovies]);
-
-  useEffect(() => {
-    if (moviesInitialized) {
-      markInitialLoadComplete();
-    }
-  }, [moviesInitialized, markInitialLoadComplete]);
+  }, [userId, initMovies, cleanupMovies]);
 
   useEffect(() => {
     if (userId) initAlbums(userId);

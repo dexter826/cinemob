@@ -19,6 +19,7 @@ const UNDO_REMOVE_MS = 7000;
 
 export function useAlbumDetail(albumId?: string) {
   const { user } = useAuth();
+  const uid = user?.uid;
   const { movies, loading: moviesLoading, error: moviesError } = useMovieStore();
   const { showToast } = useToastStore();
   const [album, setAlbum] = useState<Album | null>(null);
@@ -26,7 +27,7 @@ export function useAlbumDetail(albumId?: string) {
   const [error, setError] = useState<string | null>(null);
   const [retryNonce, setRetryNonce] = useState(0);
   const [loadedScope, setLoadedScope] = useState('');
-  const scope = (user?.uid ?? '') + ':' + (albumId ?? '');
+  const scope = (uid ?? '') + ':' + (albumId ?? '');
   const currentScope = useRef(scope);
   currentScope.current = scope;
   const pending = useRef(new Map<string, { remove: boolean; written: boolean }>());
@@ -58,16 +59,17 @@ export function useAlbumDetail(albumId?: string) {
     setError(null);
     setLoading(true);
     setLoadedScope('');
-    if (!albumId || !user) {
+    if (!albumId || !uid) {
       setLoading(false);
       return;
     }
     let cancelled = false;
     const unsubscribe = subscribeToAlbum(
-      user.uid,
+      uid,
       albumId,
       (data) => {
         if (cancelled) return;
+        if (!data) pending.current.clear();
         latestAlbum.current = data;
         setAlbum(data);
         setLoadedScope(scope);
@@ -88,7 +90,7 @@ export function useAlbumDetail(albumId?: string) {
       cancelled = true;
       unsubscribe();
     };
-  }, [albumId, user?.uid, scope, retryNonce]);
+  }, [albumId, uid, scope, retryNonce]);
 
   const watchedMovies = useMemo(
     () => movies.filter((movie) => (movie.status || 'history') === 'history'),

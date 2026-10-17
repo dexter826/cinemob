@@ -33,6 +33,8 @@ const parseDateParam = (value: string | null): Date | null => {
 // Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { user } = useAuth();
+  const collectionError = useMovieStore((state) => state.error);
+  const retryCollection = useMovieStore((state) => state.retry);
   const userId = user?.uid;
   const navigate = useNavigate();
   const {
@@ -72,13 +74,14 @@ export const useReleaseCalendar = () => {
 
   useEffect(() => {
     initializeForUser(userId ?? '');
-    if (!userId || loading) return;
+    if (!userId || loading || collectionError) return;
     const movieState = useMovieStore.getState();
     if (movieState.activeUid !== userId || movieState.loading) return;
     void fetchMonthEpisodes(userId, movies, monthKey);
     return cancelMonthRequest;
   }, [
     userId,
+    collectionError,
     loading,
     movies,
     monthKey,
@@ -233,6 +236,8 @@ export const useReleaseCalendar = () => {
   };
 
   return {
+    collectionError,
+    retryCollection,
     movies,
     monthEpisodes,
     loading,

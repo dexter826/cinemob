@@ -14,22 +14,29 @@ interface AlbumSyncProps {
 
 // Quản lý việc thêm phim vào Album.
 export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSyncProps) => {
-  const { albums } = useAlbumStore();
+  const { albums, loading, error, activeUid, retry } = useAlbumStore();
+  const uid = user?.uid;
+  const scope = `${uid ?? ''}:${movieToEdit?.docId ?? 'new'}`;
+  const [selectionScope, setSelectionScope] = useState<string | null>(null);
+  const sourceReady = !!uid && activeUid === uid && !loading && !error;
+  const ready = sourceReady && selectionScope === scope;
   const [selectedAlbumIds, setSelectedAlbumIds] = useState<string[]>([]);
   const [showCreateAlbum, setShowCreateAlbum] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
-  const syncedRef = useRef(false);
+  const syncedRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
       setShowCreateAlbum(false);
       setNewAlbumName('');
-      syncedRef.current = false;
+      syncedRef.current = null;
+      setSelectionScope(null);
       return;
     }
-    if (syncedRef.current) return;
-    syncedRef.current = true;
+    if (!sourceReady || syncedRef.current === scope) return;
+    syncedRef.current = scope;
+    setSelectionScope(scope);
 
     const movieDocId = movieToEdit?.docId;
     if (!movieDocId) {
@@ -41,13 +48,13 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
         .filter((album) => album.movieDocIds?.includes(movieDocId))
         .map((album) => album.docId || ''),
     );
-  }, [isOpen, movieToEdit, albums]);
+  }, [isOpen, movieToEdit, albums, sourceReady, scope]);
 
   const creatingRef = useRef(false);
   // Ref-guard chống double-submit trong cùng một tick render (state `creatingAlbum`
   // chưa kịp cập nhật khi người dùng bấm Enter lần thứ hai).
   const handleCreateAlbum = async () => {
-    if (creatingRef.current || !newAlbumName.trim() || !user) return;
+    if (!ready || creatingRef.current || !newAlbumName.trim() || !user) return;
     creatingRef.current = true;
     try {
       setCreatingAlbum(true);
@@ -69,7 +76,10 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
   };
 
   const syncAlbums = async (movieDocId: string) => {
-    const previousAlbumIds = albums
+    const source = useAlbumStore.getState();
+    if (!ready || source.loading || source.error || source.activeUid !== uid)
+      throw new Error('Album data is not ready');
+    const previousAlbumIds = source.albums
       .filter((album) => album.movieDocIds?.includes(movieDocId))
       .map((album) => album.docId)
       .filter((id): id is string => Boolean(id));
@@ -78,6 +88,10 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
   };
 
   return {
+    ready,
+    loading: loading || (!selectionScope && !error),
+    error,
+    retry,
     selectedAlbumIds,
     setSelectedAlbumIds,
     showCreateAlbum,

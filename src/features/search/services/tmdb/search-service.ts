@@ -9,7 +9,8 @@ export const searchMovies = async (
   year?: string,
   signal?: AbortSignal,
 ): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
-  if (!query || !API_KEY) return { results: [], totalPages: 0 };
+  if (!query) return { results: [], totalPages: 0 };
+  if (!API_KEY) throw new Error('TMDB API key is unavailable');
 
   try {
     const params: Record<string, string> = {
@@ -30,6 +31,7 @@ export const searchMovies = async (
       ),
     ]);
 
+    if (!movieData || !tvData) throw new Error('Incomplete TMDB search response');
     const rawMovies = (movieData?.results || []).map((item) => ({
       ...item,
       media_type: 'movie' as const,
@@ -69,7 +71,7 @@ export const searchMovies = async (
     };
   } catch (error) {
     console.error('Failed to search movies:', error);
-    return { results: [], totalPages: 0 };
+    throw error;
   }
 };
 

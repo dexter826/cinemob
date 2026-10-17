@@ -103,7 +103,7 @@ function SearchResults({
             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
           >
             <RotateCcw size={16} aria-hidden="true" />
-            <span>Làm mới</span>
+            <span>{isAiLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
           </button>
         </div>
         <div className="py-6 space-y-4">
@@ -157,7 +157,7 @@ function SearchResults({
                 {aiRecommendations.length === 0 && !isAiLoading ? (
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="hidden sm:inline text-xs text-text-secondary">
-                      Không tải được đề xuất.{' '}
+                      Chưa có đề xuất.{' '}
                     </span>
                     <button
                       type="button"
@@ -205,10 +205,7 @@ function SearchResults({
             </div>
           </>
         )}
-        <div
-          aria-live="polite"
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {showFiltered
             ? filteredResults.map((movie) => (
                 <PosterCard

@@ -19,7 +19,7 @@ interface ReleaseCalendarState {
 
 // Quản lý trạng thái lịch phát sóng tập phim mới.
 let calendarRequestId = 0;
-const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
+const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   movies: [],
   monthEpisodes: [],
   monthKey: null,
@@ -30,6 +30,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
   setMovies: (movies) => set({ movies }),
   setLoading: (loading) => set({ loading }),
   initializeForUser: (userId) => {
+    if (get().userId === userId) return;
     calendarRequestId++;
     set({
       userId,
@@ -44,7 +45,14 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set) => ({
   },
   fetchMonthEpisodes: async (userId, movies, monthKey) => {
     const requestId = ++calendarRequestId;
-    set({ userId, monthKey, monthEpisodes: [], episodesError: null, loadingEpisodes: true });
+    set({
+      userId,
+      monthKey,
+      monthEpisodes:
+        get().userId === userId && get().monthKey === monthKey ? get().monthEpisodes : [],
+      episodesError: null,
+      loadingEpisodes: true,
+    });
     try {
       const episodes =
         movies.length === 0 ? [] : await fetchEpisodesForMonth(userId, movies, monthKey);

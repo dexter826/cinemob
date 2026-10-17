@@ -1,17 +1,9 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useState, useEffect } from 'react';
 
-import {
-  X,
-  Save,
-  Loader2,
-  Film,
-  Star,
-  Type,
-  Image,
-  MessageSquare,
-  Calendar,
-  Clock,
-} from 'lucide-react';
+import { X, Save, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
 
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
@@ -46,6 +38,12 @@ function AddMovieModal() {
     isDirty,
     isSubmitting,
     isLoadingDetails,
+    detailsError,
+    retryDetails,
+    tvProgressLoading,
+    tvProgressError,
+    retryTVProgress,
+    canSubmit,
     movieExists,
     ratingError,
     setRatingError,
@@ -80,6 +78,9 @@ function AddMovieModal() {
     refs,
     errors,
     albums,
+    albumsLoading,
+    albumsError,
+    retryAlbums,
   } = useAddMovieForm();
 
   const [activeTab, setActiveTab] = useState<'info' | 'review'>(
@@ -94,7 +95,8 @@ function AddMovieModal() {
   }, [errors]);
 
   const isEditMode = !!initialData?.movieToEdit;
-  const submitDisabled = isSubmitting || (movieExists && !isEditMode) || (isEditMode && !isDirty);
+  const submitDisabled =
+    !canSubmit || isSubmitting || (movieExists && !isEditMode) || (isEditMode && !isDirty);
 
   // Chặn đóng modal khi form còn thay đổi chưa lưu.
   const requestClose = () => {
@@ -134,21 +136,30 @@ function AddMovieModal() {
       </div>
 
       <DialogBody className="p-5 sm:p-6 lg:p-7">
-        {isLoadingDetails ? (
+        <LoadingStatus>
+          {isLoadingDetails ? 'Đang tải thông tin phim…' : isSubmitting ? 'Đang lưu phim…' : ''}
+        </LoadingStatus>
+        {detailsError ? (
+          <ErrorState
+            title={detailsError}
+            description="Thử tải lại thông tin phim hoặc đóng hộp thoại."
+            retry={{ label: 'Thử lại', onClick: retryDetails }}
+          />
+        ) : isLoadingDetails ? (
           <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
-            <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog animate-pulse shrink-0 mx-auto md:mx-0" />
+            <Skeleton className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog  shrink-0 mx-auto md:mx-0" />
             <div className="flex-1 w-full space-y-6">
-              <div className="h-11 rounded-card w-full animate-pulse" />
+              <Skeleton className="h-11 rounded-card w-full " />
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-20 rounded-card animate-pulse" />
-                  <div className="h-20 rounded-card animate-pulse" />
+                  <Skeleton className="h-20 rounded-card " />
+                  <Skeleton className="h-20 rounded-card " />
                 </div>
-                <div className="h-12 rounded-card w-full animate-pulse" />
-                <div className="h-12 rounded-card w-full animate-pulse" />
+                <Skeleton className="h-12 rounded-card w-full " />
+                <Skeleton className="h-12 rounded-card w-full " />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 rounded-card animate-pulse" />
-                  <div className="h-12 rounded-card animate-pulse" />
+                  <Skeleton className="h-12 rounded-card " />
+                  <Skeleton className="h-12 rounded-card " />
                 </div>
               </div>
             </div>
@@ -399,6 +410,9 @@ function AddMovieModal() {
 
                   {status === 'history' && isTVSeries && (
                     <TVProgressSection
+                      loading={tvProgressLoading}
+                      error={tvProgressError}
+                      onRetry={retryTVProgress}
                       isCompleted={isCompleted}
                       setIsCompleted={setIsCompleted}
                       currentSeason={currentSeason}
@@ -416,6 +430,9 @@ function AddMovieModal() {
 
                   {status === 'history' && (
                     <AlbumSection
+                      loading={albumsLoading}
+                      error={albumsError}
+                      onRetry={retryAlbums}
                       isEditMode={isEditMode}
                       showCreateAlbum={showCreateAlbum}
                       setShowCreateAlbum={setShowCreateAlbum}
@@ -444,19 +461,15 @@ function AddMovieModal() {
           onClick={handleSubmit}
           disabled={submitDisabled}
           loading={isSubmitting}
-          leadingIcon={
-            isSubmitting ? (
-              <Loader2 className="animate-spin" size={16} aria-hidden="true" />
-            ) : (
-              <Save size={16} aria-hidden="true" />
-            )
-          }
+          leadingIcon={<Save size={16} aria-hidden="true" />}
         >
-          {movieExists && !isEditMode
-            ? 'Đã có trong thư viện'
-            : isEditMode
-              ? 'Cập nhật'
-              : 'Lưu phim'}
+          {isSubmitting
+            ? 'Đang lưu…'
+            : movieExists && !isEditMode
+              ? 'Đã có trong thư viện'
+              : isEditMode
+                ? 'Cập nhật'
+                : 'Lưu phim'}
         </Button>
       </div>
     </Dialog>

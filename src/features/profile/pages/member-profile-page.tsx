@@ -1,3 +1,7 @@
+import Skeleton from '@/shared/components/ui/skeleton';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
@@ -23,7 +27,12 @@ function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { movies: myMovies, loading: myMoviesLoading } = useMovieStore();
+  const {
+    movies: myMovies,
+    loading: myMoviesLoading,
+    error: myMoviesError,
+    retry: retryMovies,
+  } = useMovieStore();
   const own = useOwnProfile();
 
   const isOwn = Boolean(user && uid && user.uid === uid);
@@ -52,6 +61,9 @@ function MemberProfilePage() {
   );
 
   const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+  const [loadedUid, setLoadedUid] = useState<string | undefined>();
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -93,14 +105,21 @@ function MemberProfilePage() {
     lastUidRef.current = uid;
     let cancelled = false;
     setLoading(true);
+    setProfile(null);
+    setProfileError(null);
+    setLoadedUid(undefined);
     getMemberProfile(uid)
       .then((data) => {
         if (cancelled) return;
         setProfile(data);
+        setLoadedUid(uid);
         setNotFound(data === null);
       })
       .catch(() => {
-        if (!cancelled) setNotFound(true);
+        if (!cancelled) {
+          setProfileError('Không tải được hồ sơ thành viên.');
+          setLoadedUid(uid);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -108,7 +127,7 @@ function MemberProfilePage() {
     return () => {
       cancelled = true;
     };
-  }, [isOwn, uid, setSearchParams]);
+  }, [isOwn, uid, setSearchParams, retryNonce]);
 
   const otherMovies = useMemo(() => (isOwn ? [] : (profile?.movies ?? [])), [isOwn, profile]);
   const ownListMovies = useMemo(
@@ -121,7 +140,7 @@ function MemberProfilePage() {
     return getCommonMovies(myMovies, profile.movies);
   }, [isOwn, myMovies, profile]);
 
-  if (!user || !uid) return <Loading fullScreen />;
+  if (!user || !uid) return <Loading />;
 
   if (isOwn) {
     return (
@@ -150,6 +169,7 @@ function MemberProfilePage() {
           onRetry={own.retry}
           saving={own.saving}
           toggling={own.toggling}
+          canToggle={own.canToggle}
           onSaveDetails={own.saveDetails}
           onToggleHidden={own.toggleMovieListHidden}
         />
@@ -159,6 +179,8 @@ function MemberProfilePage() {
           <MovieListSection
             movies={ownListMovies}
             isLoading={myMoviesLoading}
+            error={myMoviesError ? 'Không tải được danh sách phim' : null}
+            onRetry={retryMovies}
             emptyTitle="Chưa có phim nào"
             emptyDescription="Thêm phim vào lịch sử xem."
           />
@@ -167,7 +189,28 @@ function MemberProfilePage() {
     );
   }
 
-  if (loading) return <Loading fullScreen />;
+  if (profileError && loadedUid === uid)
+    return (
+      <ErrorState
+        title={profileError}
+        description="Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: () => setRetryNonce((n) => n + 1) }}
+      />
+    );
+  if (loading || loadedUid !== uid)
+    return (
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <LoadingStatus>Đang tải hồ sơ thành viên…</LoadingStatus>
+        <div aria-busy="true">
+          <Skeleton className="h-56 w-full" />
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {Array.from({ length: 6 }, (_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
 
   if (notFound || !profile) {
     return (
@@ -230,7 +273,15 @@ function MemberProfilePage() {
             </div>
 
             {activeTab === 'common' &&
-              (commonMovies && commonMovies.length > 0 ? (
+              (myMoviesError ? (
+                <ErrorState
+                  title="Không tải được bộ sưu tập của bạn"
+                  description="Thử lại để xem phim chung."
+                  retry={{ label: 'Thử lại', onClick: retryMovies }}
+                />
+              ) : myMoviesLoading ? (
+                <Loading text="Đang tải phim chung…" />
+              ) : commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
                   <p className="text-sm sm:text-base text-text-primary tracking-tight font-display">
                     Bạn và {profile.displayName} đã xem chung{' '}

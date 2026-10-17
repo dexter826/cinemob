@@ -1,5 +1,11 @@
-import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
+import { useEffect, Suspense, lazy } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigationType,
+} from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
@@ -14,7 +20,7 @@ const PersonDetailPage = lazy(() => import('@/features/search/pages/person-detai
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/release-calendar-page'));
 const MemberProfilePage = lazy(() => import('@/features/profile/pages/member-profile-page'));
 const NotFoundPage = lazy(() => import('@/shared/pages/not-found-page'));
-const AddMovieModal = lazy(() => import('@/features/movies/components/add-movie-modal'));
+const loadAddMovieModal = () => import('@/features/movies/components/add-movie-modal');
 import Layout from '@/app/components/layout';
 import SplashScreen from '@/shared/components/feedback/splash-screen';
 import Loading from '@/shared/components/ui/loading';
@@ -23,8 +29,9 @@ import { useAppInit } from '@/app/use-app-init';
 import ToastContainer from '@/shared/components/feedback/toast-container';
 import AlertContainer from '@/shared/components/feedback/alert-container';
 
-import useInitialLoadStore from '@/shared/stores/initial-load-store';
-import { getSplashMode, SplashMode } from '@/shared/utils/splash-policy';
+import LazyDialog from '@/shared/components/ui/lazy-dialog';
+import ErrorState from '@/shared/components/ui/error-state';
+import useMovieStore from '@/features/movies/stores/movie-store';
 
 // Fade mount 200ms mỗi điều hướng (fallback editorial cho hero transition — spec §7).
 function AnimatedRoutes() {
@@ -62,83 +69,49 @@ function AnimatedRoutes() {
   );
 }
 
-function MainApp({ onReady, appReady }: { onReady: () => void; appReady: boolean }) {
-  const { user, loading: authLoading } = useAuth();
-  const { isOpen: isAddMovieOpen } = useAddMovieStore();
-  const { isInitialLoadComplete } = useInitialLoadStore();
-
+function MainApp() {
+  const { user, loading: authLoading, error: authError, retryAuth } = useAuth();
+  const { isOpen: isAddMovieOpen, ownerUid: modalOwnerUid, closeAddModal } = useAddMovieStore();
+  const collectionUid = useMovieStore((state) => state.activeUid);
   useAppInit();
-
-  useEffect(() => {
-    if (!authLoading) {
-      if (!user) {
-        onReady();
-      } else if (isInitialLoadComplete) {
-        onReady();
-      }
-    }
-  }, [authLoading, user, isInitialLoadComplete, onReady]);
-
-  if (authLoading) return null;
-
-  if (!user) {
-    return <Login />;
-  }
-
+  if (authLoading) return <SplashScreen />;
+  if (authError)
+    return (
+      <ErrorState
+        title={authError}
+        description="Thử xác thực lại để tiếp tục."
+        retry={{ label: 'Thử lại', onClick: retryAuth }}
+      />
+    );
+  if (!user) return <Login />;
   return (
-    <Layout appReady={appReady}>
+    <Layout key={user.uid}>
       <ErrorBoundary>
-        <Suspense fallback={<Loading fullScreen={false} contain={true} />}>
-          <AnimatedRoutes />
+        <Suspense fallback={<Loading fullScreen={false} contain />}>
+          {collectionUid === user.uid ? <AnimatedRoutes /> : <Loading text="Đang tải thư viện…" />}
         </Suspense>
       </ErrorBoundary>
-      <Suspense fallback={null}>
-        <ErrorBoundary>{isAddMovieOpen && <AddMovieModal />}</ErrorBoundary>
-      </Suspense>
+      <LazyDialog
+        open={isAddMovieOpen && modalOwnerUid === user.uid}
+        onClose={closeAddModal}
+        title="Thông tin phim"
+        loader={loadAddMovieModal}
+        componentProps={{}}
+        size="4xl"
+        presentation="fullscreen-mobile"
+      />
     </Layout>
   );
 }
-
 function App() {
-  // Splash mode is decided once at startup: full splash on app start/reload,
-  // static when reduced motion is requested.
-  const [splashMode] = useState<SplashMode>(() =>
-    getSplashMode(window.matchMedia('(prefers-reduced-motion: reduce)').matches),
-  );
-  const [shouldShowSplash, setShouldShowSplash] = useState(() => splashMode !== 'none');
-  const [appReady, setAppReady] = useState(false);
-
-  const handleAppReady = useCallback(() => {
-    setAppReady(true);
-  }, []);
-
-  const handleSplashFinish = useCallback(() => {
-    setShouldShowSplash(false);
-  }, []);
-
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/*"
-          element={
-            <AuthProvider>
-              {shouldShowSplash && (
-                <SplashScreen
-                  onAnimationFinish={handleSplashFinish}
-                  staticMode={splashMode === 'static'}
-                />
-              )}
-
-              <MainApp onReady={handleAppReady} appReady={appReady} />
-              <ToastContainer />
-              <AlertContainer />
-            </AuthProvider>
-          }
-        />
-      </Routes>
+      <AuthProvider>
+        <MainApp />
+        <ToastContainer />
+        <AlertContainer />
+      </AuthProvider>
     </Router>
   );
 }
-
 export default App;

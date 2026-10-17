@@ -1,3 +1,4 @@
+import Skeleton from '@/shared/components/ui/skeleton';
 import { Info, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
 import { formatDateDMY, todayISO } from '@/shared/utils/date-format';
@@ -63,11 +64,11 @@ function EpisodeList({
         {loadingEpisodes ? (
           <div className="space-y-4 flex-1">
             {Array.from({ length: 4 }).map((_, idx) => (
-              <div key={idx} className="flex gap-4 py-3 border-b border-border-default animate-pulse">
-                <div className="w-12 h-16 sm:w-14 sm:h-20 bg-surface-elevated rounded-control" />
+              <div key={idx} className="flex gap-4 py-3 border-b border-border-default">
+                <Skeleton className="w-12 h-16 sm:w-14 sm:h-20  rounded-control" />
                 <div className="flex-1 space-y-3 py-1">
-                  <div className="h-4 bg-surface-elevated rounded w-3/4" />
-                  <div className="h-3 bg-surface-elevated rounded w-1/4" />
+                  <Skeleton className="h-4  rounded w-3/4" />
+                  <Skeleton className="h-3  rounded w-1/4" />
                 </div>
               </div>
             ))}

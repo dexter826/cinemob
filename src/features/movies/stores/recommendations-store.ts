@@ -15,6 +15,9 @@ interface RecommendationsState {
   isAiLoading: boolean;
   isTrendingLoading: boolean;
   aiFailed: boolean;
+  hasAttempted: boolean;
+  aiError: string | null;
+  trendingError: string | null;
   reset: () => void;
   setActiveUser: (userId: string) => void;
   refreshRecommendations: (userId: string, forceRefresh?: boolean) => Promise<void>;
@@ -35,6 +38,9 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
       isAiLoading: false,
       isTrendingLoading: false,
       aiFailed: false,
+      hasAttempted: false,
+      aiError: null,
+      trendingError: null,
     });
   };
 
@@ -45,6 +51,9 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
     isAiLoading: false,
     isTrendingLoading: false,
     aiFailed: false,
+    hasAttempted: false,
+    aiError: null,
+    trendingError: null,
     reset: () => beginFreshState(null),
     // Đặt user hiện tại, xoá dữ liệu cũ nếu đổi user.
     setActiveUser: (userId) => {
@@ -54,11 +63,12 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
     refreshRecommendations: async (userId: string, forceRefresh = false) => {
       if (get().activeUserId !== userId) return;
       const generation = userGeneration;
+      set({ hasAttempted: true });
       const shouldFetchTrending = get().trendingMovies.length === 0 || forceRefresh;
 
       if (shouldFetchTrending) {
         const requestId = ++trendingRequestId;
-        set({ isTrendingLoading: true });
+        set({ isTrendingLoading: true, trendingError: null });
         try {
           const trending = await fetchTrendingFallback();
           if (
@@ -71,6 +81,12 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
           }
         } catch (e) {
           console.error('Failed to fetch trending movies:', e);
+          if (
+            get().activeUserId === userId &&
+            generation === userGeneration &&
+            requestId === trendingRequestId
+          )
+            set({ trendingError: 'Không cập nhật được phim thịnh hành.' });
         } finally {
           if (
             get().activeUserId === userId &&
@@ -82,6 +98,8 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
         }
       }
 
+      if (get().activeUserId !== userId || generation !== userGeneration) return;
+
       // AI đã fail: chỉ gọi lại khi refresh thủ công.
       if (get().aiFailed && !forceRefresh) return;
 
@@ -90,7 +108,7 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
         return pendingRequests.get(pendingKey)?.promise;
       }
 
-      set({ isAiLoading: true });
+      set({ isAiLoading: true, aiError: null });
       const requestId = ++aiRequestId;
 
       const requestPromise = (async () => {
@@ -113,7 +131,7 @@ const useRecommendationsStore = create<RecommendationsState>((set, get) => {
             generation === userGeneration &&
             requestId === aiRequestId
           ) {
-            set({ aiFailed: true });
+            set({ aiFailed: true, aiError: 'Không cập nhật được đề xuất AI.' });
           }
         } finally {
           if (

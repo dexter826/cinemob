@@ -1,3 +1,4 @@
+import ErrorState from '@/shared/components/ui/error-state';
 import { Dice5, Volume2, VolumeX } from 'lucide-react';
 import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -42,6 +43,8 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
     poolType,
     currentIndex,
     isLoadingPool,
+    poolError,
+    retryPool,
     isShuffling,
     hasResult,
     reducedMotion,
@@ -115,7 +118,15 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
                 <Loading fullScreen={false} text="Đang chuẩn bị danh sách đề xuất…" />
               </div>
             )}
-            {!isLoadingPool && !hasPool && (
+            {!isLoadingPool && poolError && !hasPool && (
+              <ErrorState
+                title={poolError}
+                description="Vui lòng thử tải lại."
+                retry={{ label: 'Thử lại', onClick: retryPool }}
+                compact
+              />
+            )}
+            {!isLoadingPool && !poolError && !hasPool && (
               <EmptyState
                 icon={Dice5}
                 title="Không tìm thấy phim"

@@ -1,5 +1,7 @@
+import Spinner from '@/shared/components/ui/spinner';
+import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useRef, useEffect } from 'react';
-import { Search, X, RotateCcw, Loader2, Star, Calendar, Film, Tv } from 'lucide-react';
+import { Search, X, RotateCcw, Star, Calendar, Film, Tv } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
@@ -57,15 +59,13 @@ function SearchFilters({
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4">
+      <LoadingStatus>
+        {isSuggesting ? 'Đang tìm gợi ý…' : showSuggestions ? `${suggestions.length} gợi ý.` : ''}
+      </LoadingStatus>
       <div className="relative w-full group" ref={containerRef}>
         <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {isSuggesting ? (
-            <Loader2
-              className="text-primary animate-spin"
-              size={18}
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
+            <Spinner size={18} />
           ) : (
             <Search
               className="text-text-secondary group-focus-within:text-primary transition-colors"
@@ -212,7 +212,6 @@ function SearchFilters({
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
-
         <Dropdown
           options={[
             { value: 'all', label: 'Tất cả loại' },

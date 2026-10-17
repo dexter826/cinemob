@@ -1,4 +1,5 @@
-import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import LazyDialog from '@/shared/components/ui/lazy-dialog';
+import React, { useEffect, useRef, useState } from 'react';
 import { LogOut, Sun, Moon, BarChart2, Dice5, ChevronDown, User, Users } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { useTheme } from '@/app/providers/theme-provider';
@@ -8,10 +9,8 @@ import useAlertStore from '@/shared/stores/alert-store';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 import { IconButton } from '@/shared/components/ui/icon-button';
 
-const RandomPickerModal = lazy(() => import('@/features/movies/components/random-picker-modal'));
-const MemberSearchModal = lazy(
-  () => import('@/features/profile/components/user/member-search-modal'),
-);
+const loadRandomPicker = () => import('@/features/movies/components/random-picker-modal');
+const loadMemberSearch = () => import('@/features/profile/components/user/member-search-modal');
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -104,9 +103,7 @@ function Navbar() {
                   aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
                   className={`relative flex items-center h-full px-3 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
-                    active
-                      ? 'text-text-primary'
-                      : 'text-text-secondary hover:text-text-primary'
+                    active ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   {item.label}
@@ -246,17 +243,20 @@ function Navbar() {
         </nav>
       </header>
 
-      {isRandomOpen && (
-        <Suspense fallback={null}>
-          <RandomPickerModal isOpen onClose={() => setIsRandomOpen(false)} />
-        </Suspense>
-      )}
-
-      {isMemberSearchOpen && (
-        <Suspense fallback={null}>
-          <MemberSearchModal isOpen onClose={() => setIsMemberSearchOpen(false)} />
-        </Suspense>
-      )}
+      <LazyDialog
+        open={isRandomOpen}
+        onClose={() => setIsRandomOpen(false)}
+        title="Chọn phim ngẫu nhiên"
+        loader={loadRandomPicker}
+        componentProps={{ isOpen: true, onClose: () => setIsRandomOpen(false) }}
+      />
+      <LazyDialog
+        open={isMemberSearchOpen}
+        onClose={() => setIsMemberSearchOpen(false)}
+        title="Tìm thành viên"
+        loader={loadMemberSearch}
+        componentProps={{ isOpen: true, onClose: () => setIsMemberSearchOpen(false) }}
+      />
     </>
   );
 }

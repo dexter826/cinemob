@@ -1,3 +1,4 @@
+import Skeleton from '@/shared/components/ui/skeleton';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { monthLabel } from '@/shared/utils/date-format';
 import { UpcomingEpisode } from '@/types';
@@ -13,9 +14,6 @@ interface CalendarGridProps {
 }
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-
-/** Số ô lưới lịch tháng cố định (6 tuần) — đủ cho mọi cách rơi của ngày 1. */
-const TOTAL_CELLS = 42;
 
 /** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
@@ -194,10 +192,13 @@ function CalendarGrid({
 
       {loadingEpisodes ? (
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {Array.from({ length: TOTAL_CELLS }).map((_, idx) => (
-            <div
+          {Array.from({
+            length:
+              Math.ceil((getDaysInMonth(currentDate) + getFirstDayOfMonth(currentDate)) / 7) * 7,
+          }).map((_, idx) => (
+            <Skeleton
               key={idx}
-              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card animate-pulse"
+              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card "
             />
           ))}
         </div>

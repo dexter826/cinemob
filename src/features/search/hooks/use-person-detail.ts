@@ -13,6 +13,8 @@ import {
 const ITEMS_PER_PAGE = 20;
 
 export function usePersonDetail(personId?: string) {
+  const [retryNonce, setRetryNonce] = useState(0);
+  const [loadedId, setLoadedId] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
   const [person, setPerson] = useState<TMDBPerson | null>(null);
   const [movies, setMovies] = useState<PersonMovie[]>([]);
@@ -114,14 +116,19 @@ export function usePersonDetail(personId?: string) {
     }
 
     setLoading(true);
+    setLoadedId(undefined);
+    setPerson(null);
+    setMovies([]);
     setError(null);
-    Promise.all([
-      getPersonDetails(personId, controller.signal),
-      getPersonMovieCredits(Number(personId), controller.signal),
-    ])
-      .then(([personData, movieCredits]) => {
+    getPersonDetails(personId, controller.signal)
+      .then(async (personData) => {
+        const movieCredits = personData
+          ? await getPersonMovieCredits(Number(personId), controller.signal)
+          : [];
+        return { personData, movieCredits };
+      })
+      .then(({ personData, movieCredits }) => {
         if (controller.signal.aborted || sequence !== requestSequence.current) return;
-        if (!personData) throw new Error('Failed to fetch person details');
         setPerson(personData);
         setMovies(movieCredits);
       })
@@ -132,11 +139,14 @@ export function usePersonDetail(personId?: string) {
         setPerson(null);
       })
       .finally(() => {
-        if (!controller.signal.aborted && sequence === requestSequence.current) setLoading(false);
+        if (!controller.signal.aborted && sequence === requestSequence.current) {
+          setLoading(false);
+          setLoadedId(personId);
+        }
       });
 
     return () => controller.abort();
-  }, [personId]);
+  }, [personId, retryNonce]);
 
   const availableYears = useMemo(() => getPersonAvailableYears(movies), [movies]);
   const filteredMovies = useMemo(
@@ -149,8 +159,9 @@ export function usePersonDetail(personId?: string) {
   );
 
   return {
-    loading,
-    person,
+    loading: loading || loadedId !== personId,
+    retry: () => setRetryNonce((n) => n + 1),
+    person: loadedId === personId ? person : null,
     movies,
     error,
     searchQuery,

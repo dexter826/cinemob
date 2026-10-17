@@ -1,7 +1,12 @@
+import Loading from '@/shared/components/ui/loading';
+import ErrorState from '@/shared/components/ui/error-state';
 import { Tv } from 'lucide-react';
 import DatePicker from '@/shared/components/ui/date-picker';
 
 interface TVProgressSectionProps {
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
   isCompleted: boolean;
   setIsCompleted: (completed: boolean) => void;
   currentSeason: number;
@@ -17,6 +22,9 @@ interface TVProgressSectionProps {
 }
 
 function TVProgressSection({
+  loading,
+  error,
+  onRetry,
   isCompleted,
   setIsCompleted,
   currentSeason,
@@ -30,6 +38,16 @@ function TVProgressSection({
   onSeasonDateChange,
   defaultDate,
 }: TVProgressSectionProps) {
+  if (loading) return <Loading text="Đang cập nhật tiến độ TV…" />;
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Dữ liệu đã lưu vẫn được giữ."
+        retry={{ label: 'Thử lại', onClick: onRetry }}
+        compact
+      />
+    );
   return (
     <div className="border border-border rounded-dialog p-5 space-y-4">
       <div className="flex items-center justify-between">

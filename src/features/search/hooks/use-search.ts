@@ -51,6 +51,9 @@ export const useSearch = (user: User | null) => {
     trendingMovies,
     isAiLoading,
     isTrendingLoading,
+    hasAttempted,
+    aiError,
+    trendingError,
     refreshRecommendations,
     removeRecommendation,
   } = useRecommendationsStore();
@@ -163,6 +166,7 @@ export const useSearch = (user: User | null) => {
   useEffect(() => {
     if (
       user?.uid &&
+      !hasAttempted &&
       aiRecommendations.length === 0 &&
       trendingMovies.length === 0 &&
       !isAiLoading
@@ -171,6 +175,7 @@ export const useSearch = (user: User | null) => {
     }
   }, [
     user?.uid,
+    hasAttempted,
     aiRecommendations.length,
     trendingMovies.length,
     isAiLoading,
@@ -286,6 +291,8 @@ export const useSearch = (user: User | null) => {
     trendingMovies,
     isAiLoading,
     isTrendingLoading,
+    aiError,
+    trendingError,
     refreshRecommendations,
     removeRecommendation,
     filteredResults,

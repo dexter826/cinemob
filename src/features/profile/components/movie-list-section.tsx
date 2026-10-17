@@ -1,3 +1,5 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useMemo, useState } from 'react';
 import { Film, Search as SearchIcon } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -25,6 +27,8 @@ const LOAD_MORE_SIZE = 40;
 interface MovieListSectionProps {
   movies: ProfileMovie[];
   isLoading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
   emptyTitle: string;
   emptyDescription: string;
 }
@@ -33,6 +37,8 @@ interface MovieListSectionProps {
 function MovieListSection({
   movies,
   isLoading = false,
+  error,
+  onRetry,
   emptyTitle,
   emptyDescription,
 }: MovieListSectionProps) {
@@ -54,13 +60,28 @@ function MovieListSection({
     setVisibleCount(LOAD_MORE_SIZE);
   }, [searchQuery, sortBy]);
 
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Vui lòng thử lại."
+        retry={onRetry ? { label: 'Thử lại', onClick: onRetry } : undefined}
+      />
+    );
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <SkeletonCard key={i} />
-        ))}
-      </div>
+      <>
+        <LoadingStatus>Đang tải danh sách phim…</LoadingStatus>
+        <div
+          aria-busy="true"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+        >
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </>
     );
   }
 

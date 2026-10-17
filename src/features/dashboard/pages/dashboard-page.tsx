@@ -1,3 +1,4 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Film, Search, Plus } from 'lucide-react';
@@ -105,6 +106,7 @@ function DashboardPage() {
         <h2 id="library-content-title" className="sr-only">
           Nội dung thư viện
         </h2>
+        <LoadingStatus>{loading ? 'Đang tải thư viện…' : ''}</LoadingStatus>
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
             {Array.from({ length: 12 }).map((_, i) => (
