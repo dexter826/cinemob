@@ -35,13 +35,14 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    // Áp class theme lên root và đồng bộ màu theme-color cho thanh trình duyệt
+    // Áp class theme lên root và đồng bộ màu theme-color theo token
     const applyResolvedTheme = (resolved: 'dark' | 'light') => {
       root.classList.remove('light', 'dark');
       root.classList.add(resolved);
+      const background = window.getComputedStyle(root).getPropertyValue('--color-background').trim();
       document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', resolved === 'dark' ? '#09090b' : '#fafafa');
+        .querySelectorAll('meta[name="theme-color"]')
+        .forEach((meta) => meta.setAttribute('content', background));
     };
 
     if (theme !== 'system') {

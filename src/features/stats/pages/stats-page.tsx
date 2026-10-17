@@ -23,16 +23,16 @@ import Dropdown from '@/shared/components/ui/dropdown';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
-// Palette biểu đồ bám hệ màu của app: emerald chủ đạo, teal kề sắc, slate trung tính.
+// Palette biểu đồ derive từ token — tự đúng ở cả 2 theme (spec 2026-10-17).
 const COLORS = [
-  '#ca8a04', // mực vàng chủ đạo
-  '#a16207', // gold đậm
-  '#dfa60b', // gold sáng
-  '#78716c', // stone-500
-  '#a8a29e', // stone-400
-  '#57534e', // stone-600
-  '#d6d3d1', // stone-300
-  '#44403c', // stone-700
+  'var(--color-primary)',
+  'color-mix(in srgb, var(--color-primary) 78%, var(--color-text-secondary))',
+  'color-mix(in srgb, var(--color-primary) 56%, var(--color-text-secondary))',
+  'var(--color-text-secondary)',
+  'color-mix(in srgb, var(--color-text-secondary) 76%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 58%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 42%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 28%, var(--color-surface))',
 ];
 
 interface ChartTooltipProps {
