@@ -335,7 +335,7 @@ function DashboardFilters({
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive
                             ? 'text-warning bg-warning/15'
-                            : 'text-text-secondary/40 hover:text-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
+                            : 'text-text-muted hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5'
                         } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
                       >
                         <Star

@@ -297,7 +297,7 @@ function DatePicker({
         {DAYS_VI.map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-bold text-text-secondary/60 py-1 uppercase"
+            className="text-center text-xs font-bold text-text-muted py-1 uppercase"
           >
             {day}
           </div>

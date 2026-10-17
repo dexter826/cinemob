@@ -80,7 +80,7 @@ function RatingSection({
               <Star
                 aria-hidden="true"
                 className={`w-4 h-4 sm:w-6 sm:h-6 transition-colors ${
-                  star <= displayRating ? 'fill-warning text-warning' : 'text-text-secondary/40'
+                  star <= displayRating ? 'fill-warning text-warning' : 'text-text-muted'
                 }`}
               />
             </button>

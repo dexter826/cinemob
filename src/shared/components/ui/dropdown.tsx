@@ -169,7 +169,7 @@ function Dropdown({
         aria-invalid={ariaInvalid}
       >
         <span
-          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-secondary/60'}`}
+          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-muted'}`}
         >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
@@ -197,7 +197,7 @@ function Dropdown({
                 aria-label="Tìm kiếm tùy chọn"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary/50"
+                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
           )}
