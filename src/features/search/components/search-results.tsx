@@ -237,7 +237,7 @@ function SearchResults({
               <EmptyState
                 icon={Search}
                 title="Không tìm thấy kết quả"
-                description={`Chúng tôi không tìm thấy phim nào phù hợp với từ khóa “${query}”. Hãy thử từ khóa khác.`}
+                description={`Không có phim nào khớp “${query}”. Thử từ khóa khác.`}
               />
             </div>
           )}
@@ -246,7 +246,7 @@ function SearchResults({
               <EmptyState
                 icon={Search}
                 title="Bắt đầu khám phá"
-                description="Nhập tên phim, diễn viên hoặc từ khóa để tìm kiếm những tác phẩm điện ảnh tuyệt vời."
+                description="Nhập tên phim hoặc series để tìm kiếm."
               />
             </div>
           )}

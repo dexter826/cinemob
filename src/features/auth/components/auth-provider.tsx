@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const code = (error as { code?: string })?.code ?? '';
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
       console.error('Error signing in', error);
-      showToast('Đăng nhập thất bại. Vui lòng thử lại.', 'error');
+      showToast('Đăng nhập thất bại. Thử lại.', 'error');
     }
   }, [showToast]);
 

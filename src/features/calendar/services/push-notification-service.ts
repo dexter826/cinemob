@@ -117,9 +117,9 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     if (error instanceof Error) {
       if (error.message.includes('not active')) {
-        throw new Error('Service worker chưa sẵn sàng. Vui lòng refresh trang và thử lại.');
+        throw new Error('Service worker chưa sẵn sàng. Refresh trang rồi thử lại.');
       } else if (error.message.includes('timeout')) {
-        throw new Error('Service worker mất quá nhiều thời gian. Vui lòng refresh trang.');
+        throw new Error('Service worker mất quá nhiều thời gian. Refresh trang rồi thử lại.');
       } else if (error.name === 'AbortError') {
         throw new Error('Push notification không được hỗ trợ trên thiết bị này hoặc cần HTTPS.');
       }

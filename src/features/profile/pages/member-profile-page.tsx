@@ -172,7 +172,7 @@ function MemberProfilePage() {
         <EmptyState
           icon={EyeOff}
           title="Không tìm thấy hồ sơ"
-          description="Hồ sơ không tồn tại hoặc thành viên chưa mở app sau bản cập nhật."
+          description="Không tìm thấy hồ sơ này."
         />
       </div>
     );

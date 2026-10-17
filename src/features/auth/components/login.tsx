@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Loader2, Shield, CheckCircle2 } from 'lucide-react';
+import { Loader2, Shield } from 'lucide-react';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -53,18 +53,13 @@ function Login() {
           <p className="font-display text-2xl tracking-wide">Cine<span className="text-primary">MOB</span></p>
 
           <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl lg:text-5xl mt-8 lg:mt-12 max-w-xl">
-            Mỗi phim bạn xem đều xứng đáng được nhớ.
+            Theo dõi phim đã xem, đang xem và sẽ xem.
           </h1>
 
           <p className="mt-4 text-xs sm:text-sm lg:text-base text-text-secondary leading-relaxed max-w-lg">
-            CineMOB là cuốn sổ tay điện ảnh của riêng bạn, nơi lưu lại từng tác phẩm, theo dõi
-            từng series và tìm ra phim hay tiếp theo.
+            Lưu từng bộ phim, chấm điểm, tạo album và nhận nhắc khi series mới ra tập.
           </p>
         </div>
-
-        <p className="pt-2 hidden sm:block text-[10px] font-semibold tracking-[0.14em] text-text-secondary">
-          Rạp phim của riêng bạn, mở cửa mọi lúc
-        </p>
       </div>
 
       {/* Auth panel */}
@@ -97,30 +92,13 @@ function Login() {
 
             <div className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
               <Shield size={13} className="shrink-0 text-primary" aria-hidden="true" />
-              <span>Bảo mật dữ liệu cá nhân qua tài khoản Google</span>
-            </div>
-          </div>
-
-          {/* Điểm giá trị */}
-          <div className="pt-4 border-t border-border space-y-2 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Đồng bộ tức thì trên mọi thiết bị</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Nhắc lịch chiếu tập mới của series đang theo dõi</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Miễn phí, không quảng cáo</span>
+              <span>Đăng nhập qua Google — không cần mật khẩu riêng</span>
             </div>
           </div>
         </div>
 
-        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold tracking-[0.08em] text-text-secondary flex items-center justify-between shrink-0">
-          <span>&copy; {new Date().getFullYear()} CineMOB</span>
-          <span className="opacity-60">Sổ tay điện ảnh</span>
+        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold tracking-[0.08em] text-text-secondary shrink-0">
+          &copy; {new Date().getFullYear()} CineMOB
         </footer>
       </div>
     </main>

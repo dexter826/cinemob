@@ -127,7 +127,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
               <EmptyState
                 icon={Dice5}
                 title="Không tìm thấy phim"
-                description="Hiện chưa có phim trong watchlist và không lấy được danh sách thịnh hành để quay ngẫu nhiên."
+                description="Không có phim sẽ xem và không tải được danh sách thịnh hành."
                 compact
               />
             )}

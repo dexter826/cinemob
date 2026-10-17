@@ -113,7 +113,7 @@ function AlbumsPage() {
         <EmptyState
           icon={Folder}
           title="Chưa có album nào"
-          description="Hãy bắt đầu bằng cách tạo album đầu tiên và thêm các phim bạn đã xem vào đó."
+          description="Tạo album đầu tiên rồi thêm phim đã xem vào."
         />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">

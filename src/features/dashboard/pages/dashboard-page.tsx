@@ -255,15 +255,15 @@ function DashboardPage() {
               filters.searchQuery
                 ? 'Không tìm thấy nội dung phù hợp'
                 : activeTab === 'history'
-                  ? 'Chưa có nội dung nào trong lịch sử'
-                  : 'Danh sách Sẽ xem đang trống'
+                  ? 'Chưa có phim đã xem'
+                  : 'Chưa có phim sẽ xem'
             }
             description={
               filters.searchQuery
                 ? 'Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại.'
                 : activeTab === 'history'
-                  ? 'Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên.'
-                  : 'Khám phá và thêm những bộ phim bạn muốn xem vào đây.'
+                  ? 'Thêm phim đầu tiên vào lịch sử.'
+                  : 'Thêm phim từ trang Tìm phim.'
             }
             action={
               filters.searchQuery ||

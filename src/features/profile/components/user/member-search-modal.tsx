@@ -85,7 +85,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
             compact
             className="flex-1"
             title="Không tải được danh sách"
-            description="Đã có lỗi khi tải danh sách thành viên. Vui lòng thử lại sau."
+            description="Không tải được danh sách thành viên. Thử lại."
           />
         ) : !settled ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">

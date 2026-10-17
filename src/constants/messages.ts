@@ -5,7 +5,7 @@ export const MESSAGES = {
     UPDATE_SUCCESS: 'Đã cập nhật thông tin phim',
     DELETE_ERROR: 'Xóa phim thất bại',
     SAVE_ERROR: 'Có lỗi khi lưu phim',
-    REQUIRED_RATING: 'Vui lòng đánh giá phim',
+    REQUIRED_RATING: 'Chấm điểm phim trước khi lưu',
     ALREADY_EXISTS: 'Phim này đã có trong danh sách',
   },
   ALBUM: {
@@ -24,8 +24,8 @@ export const MESSAGES = {
     ONLY_WATCHED: 'Chỉ có thể thêm phim đã xem vào album',
   },
   COMMON: {
-    ERROR: 'Có lỗi xảy ra, vui lòng thử lại',
+    ERROR: 'Có lỗi. Thử lại.',
     LOAD_ERROR: 'Không thể tải thông tin',
-    REQUIRED_FIELDS: 'Vui lòng nhập đủ thông tin',
+    REQUIRED_FIELDS: 'Nhập đủ các trường bắt buộc',
   },
 } as const;

@@ -249,7 +249,7 @@ function AlbumDetailPage() {
             {availableMovies.length === 0 ? (
               <EmptyState
                 title="Đã hết phim để thêm"
-                description="Tất cả phim trong lịch sử của bạn đều đã có trong album này."
+                description="Mọi phim đã xem đều đã nằm trong album này."
                 className="py-10"
               />
             ) : filteredAvailableMovies.length === 0 ? (
