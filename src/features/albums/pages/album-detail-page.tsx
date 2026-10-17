@@ -4,7 +4,6 @@ import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-r
 import MovieCard from '@/features/movies/components/movie-card';
 import Pagination from '@/shared/components/ui/pagination';
 import { formatDateAny } from '@/shared/utils/date-format';
-import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
 import useAlertStore from '@/shared/stores/alert-store';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
@@ -15,7 +14,6 @@ import { useAlbumDetail } from '../hooks/use-album-detail';
 function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
-  const { openDetailModal } = useMovieDetailStore();
   const { showAlert } = useAlertStore();
   const {
     album,
@@ -195,7 +193,9 @@ function AlbumDetailPage() {
                   <MovieCard
                     key={movie.docId}
                     movie={movie}
-                    onClick={openDetailModal}
+                    onClick={(m) =>
+                      navigate(`/movie/${m.id}${m.media_type === 'tv' ? '?type=tv' : ''}`)
+                    }
                     onEdit={() => {}}
                     onDelete={() =>
                       showAlert({

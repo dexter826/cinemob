@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { PLACEHOLDER_IMAGE } from '@/constants';
 import { classNames } from '@/shared/utils/class-names';
 
 interface PosterCardProps {

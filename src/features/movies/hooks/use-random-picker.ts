@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
 import randomAudioFile from '@/assets/audio/random.mp3';
@@ -6,7 +7,6 @@ import { MOTION_DURATION } from '@/constants/animations';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/add-movie-store';
-import useMovieDetailStore from '../stores/movie-detail-store';
 import useMovieStore from '../stores/movie-store';
 
 export type PoolMovie = Movie | TMDBMovieResult;
@@ -18,8 +18,8 @@ interface UseRandomPickerOptions {
 }
 
 export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
+  const navigate = useNavigate();
   const { openAddModal } = useAddMovieStore();
-  const { openDetailModal } = useMovieDetailStore();
   const { movies } = useMovieStore();
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);
   const [isLoadingPool, setIsLoadingPool] = useState(false);
@@ -181,7 +181,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const handleWatchNow = () => {
     if (currentIndex === null || activePool.length === 0) return;
     const currentItem = activePool[currentIndex];
-    if (poolType === 'watchlist') openDetailModal(currentItem as Movie);
+    if (poolType === 'watchlist') {
+      const item = currentItem as Movie;
+      navigate(`/movie/${item.id}${item.media_type === 'tv' ? '?type=tv' : ''}`);
+    }
     if (poolType === 'trending') {
       const movie = currentItem as TMDBMovieResult;
       openAddModal({
