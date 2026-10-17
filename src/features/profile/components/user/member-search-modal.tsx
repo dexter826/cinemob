@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { Search, Users, X } from 'lucide-react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/Dialog';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import Loading from '@/shared/components/ui/Loading';
-import { useUserSearch } from '../../hooks/useUserSearch';
-import UserCard from './UserCard';
+import { useAuth } from '@/app/providers/auth-provider';
+import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog';
+import EmptyState from '@/shared/components/ui/empty-state';
+import Loading from '@/shared/components/ui/loading';
+import { useUserSearch } from '../../hooks/use-user-search';
+import UserCard from './user-card';
 
 interface MemberSearchModalProps {
   isOpen: boolean;

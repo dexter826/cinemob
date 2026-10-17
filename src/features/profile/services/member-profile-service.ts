@@ -8,7 +8,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { normalizeDate } from '@/shared/utils/dateFormat';
+import { normalizeDate } from '@/shared/utils/date-format';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
 // Collection Firestore của hồ sơ thành viên.

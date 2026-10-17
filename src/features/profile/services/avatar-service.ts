@@ -2,8 +2,8 @@ import { updateProfile } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { MEMBER_PROFILE_COLLECTION } from '@/features/profile/services/memberProfileService';
-import { uploadToCloudinary } from './cloudinaryService';
+import { MEMBER_PROFILE_COLLECTION } from '@/features/profile/services/member-profile-service';
+import { uploadToCloudinary } from './cloudinary-service';
 
 // Đồng bộ ảnh đại diện sang hồ sơ thành viên. Lỗi ở đây không chặn việc đổi ảnh.
 const syncProfilePhotoURL = async (uid: string, photoURL: string): Promise<void> => {

@@ -5,7 +5,7 @@ import type {
   RefObject,
 } from 'react';
 import { ZoomIn, ZoomOut } from 'lucide-react';
-import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '@/features/profile/constants/avatarEditor';
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '@/features/profile/constants/avatar-editor';
 
 interface AvatarCropViewProps {
   imageSrc: string;

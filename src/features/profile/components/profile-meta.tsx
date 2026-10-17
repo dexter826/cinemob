@@ -1,6 +1,6 @@
 import { Cake, User } from 'lucide-react';
-import { classNames } from '@/shared/utils/classNames';
-import { GENDER_LABELS, formatDob } from '../utils/profileFormat';
+import { classNames } from '@/shared/utils/class-names';
+import { GENDER_LABELS, formatDob } from '../utils/profile-format';
 import type { MemberGender } from '@/types';
 
 interface ProfileMetaProps {

@@ -1,27 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'lucide-react';
-import { AvatarCropView } from '@/features/profile/components/avatar/AvatarCropView';
-import { useAuth } from '@/app/providers/AuthProvider';
-import { Button } from '@/shared/components/ui/Button';
-import DatePicker from '@/shared/components/ui/DatePicker';
-import Dropdown from '@/shared/components/ui/Dropdown';
-import IconButton from '@/shared/components/ui/IconButton';
-import Switch from '@/shared/components/ui/Switch';
-import useToastStore from '@/shared/stores/toastStore';
-import useAlertStore from '@/shared/stores/alertStore';
-import { classNames } from '@/shared/utils/classNames';
-import { ACCEPTED_IMAGE_TYPES, CROP_SIZE } from '../constants/avatarEditor';
-import { useAvatarCrop } from '../hooks/useAvatarCrop';
-import { formatJoinDate, GENDER_LABELS } from '../utils/profileFormat';
-import { BIO_MAX_LENGTH, GENDER_OPTIONS } from '../services/memberProfileService';
+import { AvatarCropView } from '@/features/profile/components/avatar/avatar-crop-view';
+import { useAuth } from '@/app/providers/auth-provider';
+import { Button } from '@/shared/components/ui/button';
+import DatePicker from '@/shared/components/ui/date-picker';
+import Dropdown from '@/shared/components/ui/dropdown';
+import IconButton from '@/shared/components/ui/icon-button';
+import Switch from '@/shared/components/ui/switch';
+import useToastStore from '@/shared/stores/toast-store';
+import useAlertStore from '@/shared/stores/alert-store';
+import { classNames } from '@/shared/utils/class-names';
+import { ACCEPTED_IMAGE_TYPES, CROP_SIZE } from '../constants/avatar-editor';
+import { useAvatarCrop } from '../hooks/use-avatar-crop';
+import { formatJoinDate, GENDER_LABELS } from '../utils/profile-format';
+import { BIO_MAX_LENGTH, GENDER_OPTIONS } from '../services/member-profile-service';
 import {
   FALLBACK_DISPLAY_NAME,
   updateDisplayName,
   validateDisplayName,
-} from '../services/profileService';
-import ProfileMeta from './ProfileMeta';
-import type { OwnProfileDetails } from '../hooks/useOwnProfile';
+} from '../services/profile-service';
+import ProfileMeta from './profile-meta';
+import type { OwnProfileDetails } from '../hooks/use-own-profile';
 import type { MemberProfile } from '@/types';
 
 interface OwnProfileEditorProps {

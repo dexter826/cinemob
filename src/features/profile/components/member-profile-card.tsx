@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Mail } from 'lucide-react';
-import ProfileMeta from './ProfileMeta';
+import ProfileMeta from './profile-meta';
 import type { MemberProfile } from '@/types';
 
 interface MemberProfileCardProps {

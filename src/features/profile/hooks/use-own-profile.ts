@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useToastStore from '@/shared/stores/toastStore';
-import { clearPublicProfileCache } from '@/features/profile/hooks/useUserSearch';
+import { useAuth } from '@/app/providers/auth-provider';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
 import {
   getMemberProfile,
   saveProfileDetails,
@@ -10,7 +10,7 @@ import {
   validateBio,
   validateDob,
   validateGender,
-} from '../services/memberProfileService';
+} from '../services/member-profile-service';
 import type { MemberGender, MemberProfile } from '@/types';
 
 export interface OwnProfileDetails {

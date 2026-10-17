@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Film, Search, X } from 'lucide-react';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import Dropdown from '@/shared/components/ui/Dropdown';
-import SkeletonCard from '@/shared/components/ui/SkeletonCard';
-import ProfileMovieCard from './ProfileMovieCard';
+import EmptyState from '@/shared/components/ui/empty-state';
+import Dropdown from '@/shared/components/ui/dropdown';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import ProfileMovieCard from './profile-movie-card';
 import type { ProfileMovie } from '@/types';
 import {
   filterAndSortProfileMovies,
   getVisibleProfileMovies,
   type ProfileSortOption,
-} from '../utils/profileSelectors';
+} from '../utils/profile-selectors';
 
 const SORT_OPTIONS = [
   { value: 'default', label: 'Mới xem gần đây' },

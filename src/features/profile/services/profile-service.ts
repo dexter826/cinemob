@@ -2,7 +2,7 @@ import { updateProfile } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { MEMBER_PROFILE_COLLECTION } from './memberProfileService';
+import { MEMBER_PROFILE_COLLECTION } from './member-profile-service';
 
 export const DISPLAY_NAME_MIN = 2;
 export const DISPLAY_NAME_MAX = 50;

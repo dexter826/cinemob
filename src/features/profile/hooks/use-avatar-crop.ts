@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, DragEvent, PointerEvent as ReactPointerEvent, RefObject } from 'react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import { getCroppedImgBlob } from '@/features/profile/services/cloudinaryService';
+import { useAuth } from '@/app/providers/auth-provider';
+import { getCroppedImgBlob } from '@/features/profile/services/cloudinary-service';
 import {
   getOriginalGoogleAvatar,
   revertToGoogleAvatar,
   updateUserAvatar,
-} from '@/features/profile/services/avatarService';
-import useAlertStore from '@/shared/stores/alertStore';
-import useToastStore from '@/shared/stores/toastStore';
+} from '@/features/profile/services/avatar-service';
+import useAlertStore from '@/shared/stores/alert-store';
+import useToastStore from '@/shared/stores/toast-store';
 import {
   CROP_SIZE,
   MAX_FILE_BYTES,
@@ -17,7 +17,7 @@ import {
   OUTPUT_SIZE,
   WEBP_QUALITY,
   WHEEL_ZOOM_STEP,
-} from '../constants/avatarEditor';
+} from '../constants/avatar-editor';
 
 interface ImageMeta {
   width: number;

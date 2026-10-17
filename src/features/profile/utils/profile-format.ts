@@ -1,5 +1,5 @@
 import type { MemberGender } from '@/types';
-import { formatDateDMY } from '@/shared/utils/dateFormat';
+import { formatDateDMY } from '@/shared/utils/date-format';
 
 export const GENDER_LABELS: Record<MemberGender, string> = {
   male: 'Nam',

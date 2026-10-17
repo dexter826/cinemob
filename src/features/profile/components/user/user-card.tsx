@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import type { PublicProfileSummary } from '../../hooks/useUserSearch';
+import type { PublicProfileSummary } from '../../hooks/use-user-search';
 
 interface UserCardProps {
   profile: PublicProfileSummary;

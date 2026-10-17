@@ -1,7 +1,7 @@
 import { Calendar, Eye, Film, Star, Tv } from 'lucide-react';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { formatDateAny } from '@/shared/utils/dateFormat';
+import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 
 interface ProfileMovieCardProps {

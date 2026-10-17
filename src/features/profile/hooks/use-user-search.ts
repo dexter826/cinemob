@@ -2,10 +2,10 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   fetchPublicProfiles,
   type PublicProfileSummary,
-} from '@/features/profile/services/memberProfileService';
+} from '@/features/profile/services/member-profile-service';
 
-export type { PublicProfileSummary } from '@/features/profile/services/memberProfileService';
-export { clearPublicProfileCache } from '@/features/profile/services/memberProfileService';
+export type { PublicProfileSummary } from '@/features/profile/services/member-profile-service';
+export { clearPublicProfileCache } from '@/features/profile/services/member-profile-service';
 
 /** Tìm hồ sơ thành viên theo email */
 export const useUserSearch = (excludeUid?: string) => {

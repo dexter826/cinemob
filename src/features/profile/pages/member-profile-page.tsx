@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
-import { useAuth } from '@/app/providers/AuthProvider';
-import useMovieStore from '@/features/movies/stores/movieStore';
-import useToastStore from '@/shared/stores/toastStore';
-import PageHeader from '@/shared/components/ui/PageHeader';
-import IconButton from '@/shared/components/ui/IconButton';
-import Loading from '@/shared/components/ui/Loading';
-import EmptyState from '@/shared/components/ui/EmptyState';
-import { getMemberProfile, buildProfileMovies } from '../services/memberProfileService';
-import OwnProfileEditor from '../components/OwnProfileEditor';
-import MemberProfileCard from '../components/MemberProfileCard';
-import MovieListSection from '../components/MovieListSection';
-import ProfileMovieCard from '../components/ProfileMovieCard';
-import { useOwnProfile } from '../hooks/useOwnProfile';
-import { getCommonMovies } from '../utils/commonMovies';
+import { useAuth } from '@/app/providers/auth-provider';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import PageHeader from '@/shared/components/ui/page-header';
+import IconButton from '@/shared/components/ui/icon-button';
+import Loading from '@/shared/components/ui/loading';
+import EmptyState from '@/shared/components/ui/empty-state';
+import { getMemberProfile, buildProfileMovies } from '../services/member-profile-service';
+import OwnProfileEditor from '../components/own-profile-editor';
+import MemberProfileCard from '../components/member-profile-card';
+import MovieListSection from '../components/movie-list-section';
+import ProfileMovieCard from '../components/profile-movie-card';
+import { useOwnProfile } from '../hooks/use-own-profile';
+import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
 
 /** Trang cá nhân thành viên: chính chủ chỉnh sửa inline, thành viên khác chỉ xem. */
