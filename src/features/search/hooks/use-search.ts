@@ -85,7 +85,6 @@ export const useSearch = (user: User | null) => {
     const page = Number(searchParams.get('page'));
     return Number.isInteger(page) && page > 1 ? page : 1;
   });
-  const [initialLoading, setInitialLoading] = useState(true);
   // Tăng nonce để nạp lại kết quả TMDB khi bấm Thử lại.
   const [retryNonce, setRetryNonce] = useState(0);
 
@@ -162,10 +161,6 @@ export const useSearch = (user: User | null) => {
   }, [filters.query, submittedQuery]);
 
   useEffect(() => {
-    setInitialLoading(false);
-  }, []);
-
-  useEffect(() => {
     if (
       user?.uid &&
       aiRecommendations.length === 0 &&
@@ -192,6 +187,7 @@ export const useSearch = (user: User | null) => {
     isDiscoverLoading,
     discoverError,
     isSearchMode,
+    mode,
   } = useSearchTMDB(submittedQuery, currentPage, filters, retryNonce);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
@@ -281,7 +277,7 @@ export const useSearch = (user: User | null) => {
   return {
     filters,
     updateFilter,
-    initialLoading,
+    mode,
     currentPage,
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage: goToPage,
