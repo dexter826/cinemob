@@ -10,6 +10,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Button from '@/shared/components/ui/button';
+import { SectionHeader } from '@/shared/components/ui';
 import { normalizeDate } from '@/shared/utils/date-format';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
@@ -213,12 +214,7 @@ function DashboardPage() {
       {continueWatching.length > 0 && (
         <section aria-labelledby="continue-watching-title" className="border-b border-border">
           <div className="py-5">
-            <p
-              id="continue-watching-title"
-              className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary"
-            >
-              Tiếp tục xem
-            </p>
+            <SectionHeader id="continue-watching-title">Tiếp tục xem</SectionHeader>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
               {continueWatching.map((movie) => {
                 const total = movie.total_episodes || 0;

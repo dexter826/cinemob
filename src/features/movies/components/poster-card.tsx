@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Bookmark, CheckCircle, Eye, Star, X } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { Chip } from '@/shared/components/ui';
 import { classNames } from '@/shared/utils/class-names';
 
 interface PosterCardProps {
@@ -117,15 +118,12 @@ function PosterCard({
       {/* Badges góc trái trên */}
       <div className="absolute top-2 left-2 flex flex-col items-start gap-1.5 z-10 pointer-events-none">
         {statusLabel && (
-          <span
-            className={classNames(
-              'flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-[9px] font-bold uppercase tracking-[0.06em]',
-              status === 'history' ? 'bg-success text-on-success' : 'bg-primary text-on-primary',
-            )}
+          <Chip
+            tone={status === 'history' ? 'success' : 'gold'}
+            icon={<Bookmark size={9} className="fill-current" aria-hidden="true" />}
           >
-            <Bookmark size={9} className="fill-current" aria-hidden="true" />
             {statusLabel}
-          </span>
+          </Chip>
         )}
         {showRating && (
           <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[10px] font-bold text-primary tabular-nums">
@@ -137,9 +135,8 @@ function PosterCard({
 
       {/* Review chip */}
       {review && (
-        <span className="absolute bottom-12 left-2.5 z-10 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[9px] font-bold uppercase tracking-[0.06em] text-white pointer-events-none">
-          <Eye size={9} aria-hidden="true" />
-          Review
+        <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
+          <Chip icon={<Eye size={9} aria-hidden="true" />}>Review</Chip>
         </span>
       )}
 

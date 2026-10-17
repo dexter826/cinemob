@@ -1,6 +1,6 @@
-import { Search, X } from 'lucide-react';
+import { Search as SearchIcon, X } from 'lucide-react';
 
-interface SearchInputProps {
+interface SearchProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -16,7 +16,7 @@ interface SearchInputProps {
  * Ô tìm kiếm DUY NHẤT của app: h-11, nền trong suốt + hairline,
  * icon search trái, nút xóa phải — mọi trang dùng chung để không lệch nhịp.
  */
-function SearchInput({
+function Search({
   value,
   onChange,
   placeholder = 'Tìm kiếm…',
@@ -24,12 +24,12 @@ function SearchInput({
   id,
   className,
   autoFocus = false,
-}: SearchInputProps) {
+}: SearchProps) {
   const inputId = id ?? 'search-input';
 
   return (
     <div className={`relative ${className ?? ''}`}>
-      <Search
+      <SearchIcon
         size={16}
         strokeWidth={1.5}
         className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none"
@@ -63,4 +63,4 @@ function SearchInput({
   );
 }
 
-export default SearchInput;
+export default Search;

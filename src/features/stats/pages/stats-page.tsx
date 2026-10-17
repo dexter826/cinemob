@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
-import StatsCard from '../components/stats-card';
+import { Stat } from '@/shared/components/ui';
 import {
   PieChart,
   Pie,
@@ -140,14 +140,14 @@ function StatsPage() {
               Chỉ số tổng quan
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <StatsCard
+              <Stat
                 label="Tổng nội dung"
                 value={totalMovies}
                 subValue={`${movieCount} phim lẻ, ${tvCount} series`}
                 icon={Film}
                 colorClass="text-primary"
               />
-              <StatsCard
+              <Stat
                 label="Đánh giá trung bình"
                 value={avgRating}
                 subValue={`Trên ${ratedCount} phim`}

@@ -28,6 +28,7 @@ import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { formatDateAny } from '@/shared/utils/date-format';
 import { IconButton } from '@/shared/components/ui/icon-button';
+import { SectionHeader, Chip } from '@/shared/components/ui';
 import Button from '@/shared/components/ui/button';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
@@ -206,13 +207,9 @@ function MovieDetailPage() {
           {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
             <div className="mt-7 border border-border rounded-card p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
-                  Tiến độ xem
-                </span>
+                <SectionHeader>Tiến độ xem</SectionHeader>
                 {movie.progress.is_completed && (
-                  <span className="text-success text-[10px] font-bold uppercase tracking-[0.08em] border border-success/30 px-2 py-0.5 rounded-poster">
-                    Hoàn thành
-                  </span>
+                  <Chip tone="success">Hoàn thành</Chip>
                 )}
               </div>
               <p className="font-display text-xl text-text-primary tabular-nums">
@@ -252,9 +249,7 @@ function MovieDetailPage() {
 
           {/* Nội dung */}
           <div className="mt-7">
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
-              Nội dung
-            </h2>
+            <SectionHeader className="">Nội dung</SectionHeader>
             <p className="mt-2.5 text-sm md:text-[15px] leading-[1.7] text-text-primary/90 max-w-[65ch]">
               {overview}
             </p>
@@ -263,10 +258,10 @@ function MovieDetailPage() {
           {/* Đánh giá của bạn */}
           {movie.review && (
             <div className="mt-6 border-l-2 border-primary pl-4">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary flex items-center gap-1.5">
+              <SectionHeader className="flex items-center gap-1.5">
                 <Star size={12} className="fill-primary text-primary" aria-hidden="true" />
                 Đánh giá của bạn
-              </h2>
+              </SectionHeader>
               <p className="mt-2 text-sm leading-[1.7] text-text-primary/90 max-w-[65ch]">
                 {movie.review}
               </p>
@@ -275,18 +270,16 @@ function MovieDetailPage() {
 
           {/* Đạo diễn + diễn viên */}
           {extrasLoading ? (
-            <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
-              Đang tải dàn diễn viên…
-            </p>
+            <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
           ) : (
             credits && (
               <div className="mt-7 space-y-5">
                 {credits.crew?.some((c) => c.job === 'Director') && (
                   <div>
-                    <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary flex items-center gap-1.5">
+                    <SectionHeader className="flex items-center gap-1.5">
                       <User size={12} aria-hidden="true" />
                       Đạo diễn
-                    </h2>
+                    </SectionHeader>
                     <p className="mt-1.5 text-sm text-text-primary">
                       {credits.crew
                         .filter((c) => c.job === 'Director')
@@ -297,10 +290,10 @@ function MovieDetailPage() {
                 )}
                 {credits.cast && credits.cast.length > 0 && (
                   <div>
-                    <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary flex items-center gap-1.5">
+                    <SectionHeader className="flex items-center gap-1.5">
                       <Users size={12} aria-hidden="true" />
                       Diễn viên
-                    </h2>
+                    </SectionHeader>
                     <div className="mt-2.5 flex flex-wrap gap-2">
                       {credits.cast.slice(0, 8).map((actor) => (
                         <Link

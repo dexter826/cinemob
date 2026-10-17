@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Film, Search } from 'lucide-react';
+import { Film, Search as SearchIcon } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PosterCard from '@/features/movies/components/poster-card';
-import SearchInput from '@/shared/components/ui/search-input';
+import Search from '@/shared/components/ui/search';
 import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 import {
@@ -71,7 +71,7 @@ function MovieListSection({
   return (
     <>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <SearchInput
+        <Search
           id="profile-search"
           value={searchQuery}
           onChange={setSearchQuery}
@@ -120,7 +120,7 @@ function MovieListSection({
 
       {filteredMovies.length === 0 ? (
         <EmptyState
-          icon={Search}
+          icon={SearchIcon}
           title="Không tìm thấy phim phù hợp"
           description={`Không có bộ phim nào khớp với từ khóa “${searchQuery}”`}
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}

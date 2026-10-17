@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Edit2, Trash2, X as XIcon, Search } from 'lucide-react';
+import { ArrowLeft, Film, PlusCircle, Edit2, Trash2, X as XIcon, Search as SearchIcon } from 'lucide-react';
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
-import SearchInput from '@/shared/components/ui/search-input';
+import Search from '@/shared/components/ui/search';
 import { formatDateAny } from '@/shared/utils/date-format';
 import useAlertStore from '@/shared/stores/alert-store';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -163,7 +163,7 @@ function AlbumDetailPage() {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
               {!loading && (
-                <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default tabular-nums">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -233,7 +233,7 @@ function AlbumDetailPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
-                <SearchInput
+                <Search
                   value={searchQuery}
                   onChange={setSearchQuery}
                   placeholder="Tìm trong lịch sử…"
@@ -254,7 +254,7 @@ function AlbumDetailPage() {
               />
             ) : filteredAvailableMovies.length === 0 ? (
               <EmptyState
-                icon={Search}
+                icon={SearchIcon}
                 title="Không tìm thấy phim"
                 description={`Không tìm thấy phim phù hợp với từ khóa “${searchQuery}”`}
                 className="py-10"

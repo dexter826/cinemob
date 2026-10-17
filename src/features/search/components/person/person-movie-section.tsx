@@ -2,7 +2,7 @@ import type { RefObject } from 'react';
 import { ArrowDown, ArrowUp, Calendar, Film, Filter, Type } from 'lucide-react';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
-import SearchInput from '@/shared/components/ui/search-input';
+import Search from '@/shared/components/ui/search';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
@@ -69,7 +69,7 @@ export function PersonMovieSection({
       {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 pt-4">
         <div className="flex items-center gap-3 relative md:flex-1">
-          <SearchInput
+          <Search
             value={searchQuery}
             onChange={onSearchQueryChange}
             placeholder="Tìm phim của nghệ sĩ này…"

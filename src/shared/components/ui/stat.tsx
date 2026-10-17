@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 
-interface StatsCardProps {
+interface StatProps {
   label: string;
   value: string | number;
   subValue?: string;
@@ -12,7 +12,7 @@ interface StatsCardProps {
  * Khối chỉ số editorial: số Anton lớn đặt thẳng trên nền, KHÔNG hộp —
  * các khối ngăn nhau bằng border-l của lưới cha (giống hero Dashboard).
  */
-function StatsCard({ label, value, subValue, icon: Icon, colorClass }: StatsCardProps) {
+function Stat({ label, value, subValue, icon: Icon, colorClass }: StatProps) {
   return (
     <div className="flex items-start gap-4 md:border-l md:border-border md:first:border-l-0 md:pl-6 md:first:pl-0">
       <Icon aria-hidden="true" className={`mt-1 shrink-0 ${colorClass}`} size={20} strokeWidth={1.5} />
@@ -33,4 +33,4 @@ function StatsCard({ label, value, subValue, icon: Icon, colorClass }: StatsCard
   );
 }
 
-export default StatsCard;
+export default Stat;
