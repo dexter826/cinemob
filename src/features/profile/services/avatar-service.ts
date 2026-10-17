@@ -53,3 +53,9 @@ export const revertToGoogleAvatar = async (user: User): Promise<string | null> =
 
   return originalPhotoURL;
 };
+
+// Đặt ảnh đại diện về một URL có sẵn — dùng cho hoàn tác (undo).
+export const setUserAvatarUrl = async (user: User, photoURL: string): Promise<void> => {
+  await updateProfile(user, { photoURL });
+  await syncProfilePhotoURL(user.uid, photoURL);
+};

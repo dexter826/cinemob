@@ -17,7 +17,6 @@ export const MESSAGES = {
     DELETE_ERROR: 'Xóa album thất bại',
     ADD_MOVIE_SUCCESS: 'Đã thêm phim vào album',
     ADD_MOVIE_ERROR: 'Thêm phim vào album thất bại',
-    REMOVE_MOVIE_SUCCESS: 'Đã gỡ phim khỏi album',
     REMOVE_MOVIE_ERROR: 'Gỡ phim khỏi album thất bại',
     ALREADY_IN: 'Phim đã có trong album này',
     NAME_REQUIRED: 'Tên album không được để trống',

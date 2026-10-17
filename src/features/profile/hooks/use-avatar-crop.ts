@@ -5,9 +5,9 @@ import { getCroppedImgBlob } from '@/features/profile/services/cloudinary-servic
 import {
   getOriginalGoogleAvatar,
   revertToGoogleAvatar,
+  setUserAvatarUrl,
   updateUserAvatar,
 } from '@/features/profile/services/avatar-service';
-import useAlertStore from '@/shared/stores/alert-store';
 import useToastStore from '@/shared/stores/toast-store';
 import {
   CROP_SIZE,
@@ -18,6 +18,8 @@ import {
   WEBP_QUALITY,
   WHEEL_ZOOM_STEP,
 } from '../constants/avatar-editor';
+
+const UNDO_AVATAR_MS = 7000;
 
 interface ImageMeta {
   width: number;
@@ -66,7 +68,6 @@ function getBaseScale(imageMeta: ImageMeta | null): number {
 export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropResult {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
-  const { showAlert } = useAlertStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -293,36 +294,39 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
     }
   }, [user, refreshUser, showToast, pan, zoom, reset]);
 
-  // Xác nhận rồi khôi phục ảnh gốc tài khoản Google.
+  // Khôi phục ảnh gốc tài khoản Google, kèm undo-toast.
   const handleDelete = useCallback(() => {
     if (!user || isBusy) return;
+    const previousPhotoURL = user.photoURL;
 
-    showAlert({
-      title: 'Xóa ảnh đại diện',
-      message:
-        'Bạn có chắc chắn muốn xóa ảnh này? Ảnh đại diện sẽ được khôi phục về ảnh gốc từ tài khoản Google.',
-      type: 'danger',
-      confirmText: 'Xóa ảnh',
-      cancelText: 'Hủy',
-      onConfirm: async () => {
-        setIsDeleting(true);
-        setErrorMessage(null);
+    setIsDeleting(true);
+    setErrorMessage(null);
 
-        try {
-          await revertToGoogleAvatar(user);
-          await refreshUser();
-          showToast('Đã khôi phục ảnh đại diện Google', 'success');
-        } catch (error: unknown) {
-          const message =
-            error instanceof Error && error.message ? error.message : 'Không thể xóa ảnh đại diện';
-          setErrorMessage(message);
-          showToast(message, 'error');
-        } finally {
-          setIsDeleting(false);
-        }
-      },
-    });
-  }, [user, isBusy, refreshUser, showToast, showAlert]);
+    (async () => {
+      try {
+        await revertToGoogleAvatar(user);
+        await refreshUser();
+        showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
+          label: 'Hoàn tác',
+          onAction: () => {
+            if (!previousPhotoURL) return;
+            setUserAvatarUrl(user, previousPhotoURL)
+              .then(() => refreshUser())
+              .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
+          },
+        });
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error && error.message
+            ? error.message
+            : 'Không thể xóa ảnh đại diện';
+        setErrorMessage(message);
+        showToast(message, 'error');
+      } finally {
+        setIsDeleting(false);
+      }
+    })();
+  }, [user, isBusy, refreshUser, showToast]);
 
   const googleAvatarUrl = user ? getOriginalGoogleAvatar(user) : null;
   const canRevertToGoogle = Boolean(

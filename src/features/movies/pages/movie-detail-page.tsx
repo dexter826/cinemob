@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, FolderPlus, Pencil, Play, Star, Trash2 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
-import useAlertStore from '@/shared/stores/alert-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
 import { useMovieDetail } from '../hooks/use-movie-detail';
 import { useDeleteMovie } from '../hooks/use-delete-movie';
@@ -28,7 +27,6 @@ function MovieDetailPage() {
   const navigate = useNavigate();
   const { movies, loading: collectionLoading } = useMovieStore();
   const { openAddModal } = useAddMovieStore();
-  const { showAlert } = useAlertStore();
   const handleDelete = useDeleteMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
 
@@ -47,19 +45,10 @@ function MovieDetailPage() {
   // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
-  const confirmDelete = () => {
+  const handleDeleteMovie = () => {
     if (!movie?.docId) return;
-    showAlert({
-      title: 'Xóa phim',
-      message: `Bạn có chắc chắn muốn xóa "${mainTitle}" khỏi bộ sưu tập?`,
-      type: 'danger',
-      confirmText: 'Xóa',
-      cancelText: 'Hủy',
-      onConfirm: () => {
-        handleDelete(movie.docId as string);
-        navigate('/');
-      },
-    });
+    handleDelete(movie.docId);
+    navigate('/');
   };
 
   if (!movie) {
@@ -184,7 +173,7 @@ function MovieDetailPage() {
               variant="ghost"
               className="text-danger hover:bg-danger/10"
               leadingIcon={<Trash2 size={14} aria-hidden="true" />}
-              onClick={confirmDelete}
+              onClick={handleDeleteMovie}
             >
               Xóa
             </Button>

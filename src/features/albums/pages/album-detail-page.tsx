@@ -14,7 +14,6 @@ import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
 import Search from '@/shared/components/ui/search';
 import { formatDateAny } from '@/shared/utils/date-format';
-import useAlertStore from '@/shared/stores/alert-store';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
@@ -24,7 +23,6 @@ import { useAlbumDetail } from '../hooks/use-album-detail';
 function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
-  const { showAlert } = useAlertStore();
   const {
     album,
     loading,
@@ -215,15 +213,7 @@ function AlbumDetailPage() {
                     actions={
                       <button
                         type="button"
-                        onClick={() =>
-                          showAlert({
-                            title: 'Bỏ phim khỏi album',
-                            message: `Bỏ “${getMainTitle(movie)}” khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
-                            type: 'danger',
-                            confirmText: 'Bỏ khỏi album',
-                            onConfirm: () => handleRemoveMovie(movie),
-                          })
-                        }
+                        onClick={() => handleRemoveMovie(movie)}
                         aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
                         title="Bỏ khỏi album"
                         className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
