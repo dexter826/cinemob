@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
+import { useNavigationType } from 'react-router-dom';
 
 /**
- * Lưu vị trí scroll vào sessionStorage và phục hồi khi component mount lại
- * (Back từ /movie/:id về Dashboard phải đứng đúng chỗ — spec §8.7).
+ * Lưu vị trí scroll vào sessionStorage và PHỤC HỒI CHỈ khi điều hướng kiểu POP
+ * (Back/Forward từ trang chi tiết về lưới). Bấm nav sang trang khác phải luôn
+ * mở từ đỉnh — không nhảy xuống vị trí cũ gây cảm giác nav đè lên nội dung.
  * Lưu throttle bằng rAF; key theo route để không đè nhau giữa các trang.
  */
 export function useScrollRestore(key: string) {
+  const navigationType = useNavigationType();
+
   useEffect(() => {
     const storageKey = `scroll:${key}`;
     let ticking = false;
@@ -25,18 +29,23 @@ export function useScrollRestore(key: string) {
 
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    const raf = requestAnimationFrame(() => {
-      try {
-        const saved = sessionStorage.getItem(storageKey);
-        if (saved) window.scrollTo({ top: Number(saved), behavior: 'auto' });
-      } catch {
-        /* ignore */
-      }
-    });
+    if (navigationType === 'POP') {
+      const raf = requestAnimationFrame(() => {
+        try {
+          const saved = sessionStorage.getItem(storageKey);
+          if (saved) window.scrollTo({ top: Number(saved), behavior: 'auto' });
+        } catch {
+          /* ignore */
+        }
+      });
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+        cancelAnimationFrame(raf);
+      };
+    }
 
     return () => {
       window.removeEventListener('scroll', onScroll);
-      cancelAnimationFrame(raf);
     };
-  }, [key]);
+  }, [key, navigationType]);
 }

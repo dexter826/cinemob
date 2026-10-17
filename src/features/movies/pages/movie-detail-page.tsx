@@ -93,7 +93,7 @@ function MovieDetailPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-0">
+    <div className="max-w-6xl mx-auto px-4 md:px-0 pt-5 md:pt-6">
       {/* Thanh trên: Back + URL (IA: trang riêng, share được) */}
       <div className="flex items-center justify-between py-4">
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)}>

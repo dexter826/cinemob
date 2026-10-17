@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
@@ -29,13 +29,15 @@ import { getSplashMode, SplashMode } from '@/shared/utils/splash-policy';
 // Fade mount 200ms mỗi điều hướng (fallback editorial cho hero transition — spec §7).
 function AnimatedRoutes() {
   const location = useLocation();
+  const navigationType = useNavigationType();
   const reducedMotion = useReducedMotion() ?? false;
 
-  // Route mới luôn bắt đầu từ đỉnh trang; Back về Dashboard được
-  // use-scroll-restore phục hồi vị trí (chạy sau bằng rAF).
+  // PUSH/REPLACE luôn mở từ đỉnh trang; POP để browser + use-scroll-restore xử lý.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [location.pathname]);
+    if (navigationType !== 'POP') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [location.pathname, navigationType]);
 
   return (
     <motion.div
