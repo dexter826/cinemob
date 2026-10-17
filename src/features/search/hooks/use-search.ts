@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
+import useTrendingStore from '@/features/movies/stores/trending-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
-import { isWatchedMovie } from '@/features/movies/utils/movie-utils';
 import { TMDBMovieResult } from '@/types';
-import type { User } from 'firebase/auth';
 
 export type SearchSortBy =
   | 'popularity.desc'
@@ -44,26 +42,16 @@ const SEARCH_SORT_VALUES: SearchSortBy[] = [
 ];
 
 // Hook điều phối chính cho trang Tìm kiếm.
-export const useSearch = (user: User | null) => {
+export const useSearch = () => {
   const { openAddModal } = useAddMovieStore();
   const {
-    aiRecommendations,
     trendingMovies,
-    isAiLoading,
     isTrendingLoading,
-    hasAttempted,
-    aiError,
     trendingError,
-    refreshRecommendations,
-    removeRecommendation,
-  } = useRecommendationsStore();
+    fetchTrending,
+  } = useTrendingStore();
 
   const { movies: savedMovies } = useMovieStore();
-
-  const filteredAiRecommendations = useMemo(() => {
-    const savedIds = new Set(savedMovies.map((m) => m.id.toString()));
-    return aiRecommendations.filter((m) => !savedIds.has(m.id.toString()));
-  }, [aiRecommendations, savedMovies]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -164,23 +152,10 @@ export const useSearch = (user: User | null) => {
   }, [filters.query, submittedQuery]);
 
   useEffect(() => {
-    if (
-      user?.uid &&
-      !hasAttempted &&
-      aiRecommendations.length === 0 &&
-      trendingMovies.length === 0 &&
-      !isAiLoading
-    ) {
-      refreshRecommendations(user.uid);
+    if (trendingMovies.length === 0 && !isTrendingLoading) {
+      void fetchTrending();
     }
-  }, [
-    user?.uid,
-    hasAttempted,
-    aiRecommendations.length,
-    trendingMovies.length,
-    isAiLoading,
-    refreshRecommendations,
-  ]);
+  }, [trendingMovies.length, isTrendingLoading, fetchTrending]);
 
   const {
     results,
@@ -287,14 +262,10 @@ export const useSearch = (user: User | null) => {
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage: goToPage,
     discoverMovies,
-    aiRecommendations: filteredAiRecommendations,
     trendingMovies,
-    isAiLoading,
     isTrendingLoading,
-    aiError,
     trendingError,
-    refreshRecommendations,
-    removeRecommendation,
+    refreshTrending: (force?: boolean) => fetchTrending(force ?? true),
     filteredResults,
     handleSelectMovie,
     getMovieStatus,
@@ -308,7 +279,6 @@ export const useSearch = (user: User | null) => {
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
     resultsError: isSearchMode ? searchError : discoverError,
     retrySearch: () => setRetryNonce((n) => n + 1),
-    watchedMoviesCount: savedMovies.filter(isWatchedMovie).length,
     // Search states
     submittedQuery,
     suggestions,

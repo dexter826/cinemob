@@ -46,8 +46,6 @@ graph TD
 
     subgraph External_Services["Dịch vụ bên ngoài"]
         TMDB["TMDB API<br/>(Thông tin phim, TV Show, Diễn viên)"]
-        AIProxy["CineProxy<br/>(Cloudflare Worker)"]
-        OpenRouter["OpenRouter API<br/>(Gợi ý phim qua AI)"]
     end
 
     subgraph Firebase_Services["Firebase BaaS"]
@@ -56,8 +54,6 @@ graph TD
     end
 
     Client <-->|Truy vấn dữ liệu phim| TMDB
-    Client <-->|Gửi ngữ cảnh, nhận gợi ý phim| AIProxy
-    AIProxy <-->|Gọi AI với key server-side| OpenRouter
     Client <-->|Xác thực phiên đăng nhập| Auth
     Client <-->|Đồng bộ dữ liệu thời gian thực| Firestore
 ```
@@ -96,7 +92,6 @@ graph TD
    Cập nhật các giá trị tương ứng trong file `.env`:
    - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
-   - `VITE_AI_PROXY_URL`: URL Cloudflare Worker cineproxy dùng cho gợi ý phim qua AI.
    - `VITE_VAPID_PUBLIC_KEY`: Public key tùy chọn cho Web Push; ứng dụng dùng fallback nếu để trống.
    - `VITE_CLOUDINARY_CLOUD_NAME` / `VITE_CLOUDINARY_UPLOAD_PRESET`: Cấu hình Cloudinary dùng cho upload ảnh hồ sơ.
 

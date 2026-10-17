@@ -3,7 +3,6 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '@/features/albums/stores/album-store';
-import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
 import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
 import { syncMemberProfile } from '@/features/profile/services/member-profile-service';
 import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
@@ -31,7 +30,6 @@ export const useAppInit = () => {
     setAlbumCoverMovies,
   } = useAlbumStore();
 
-  const { reset: resetRecommendations, setActiveUser } = useRecommendationsStore();
 
   const { setMovies: setCalendarMovies, setLoading: setCalendarLoading } =
     useReleaseCalendarStore();
@@ -75,14 +73,6 @@ export const useAppInit = () => {
     }
   }, [albums, albumsLoading, moviesInitialized, allMovies, setAlbumCoverMovies]);
 
-  useEffect(() => {
-    if (!userId) {
-      resetRecommendations();
-      return;
-    }
-
-    setActiveUser(userId);
-  }, [userId, setActiveUser, resetRecommendations]);
 
   useEffect(() => {
     const currentMovies = useMovieStore.getState();
