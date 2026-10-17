@@ -49,7 +49,7 @@ function TextField({
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           className={classNames(
-            'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors',
+            'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary transition-colors',
             variant === 'underline'
               ? 'rounded-none border-0 border-b border-border hover:border-b-primary/40 focus-visible:border-b-primary'
               : 'rounded-control border focus-visible:border-primary',

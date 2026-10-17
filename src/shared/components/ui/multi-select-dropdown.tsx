@@ -159,7 +159,7 @@ function MultiSelectDropdown({
           onClick={() => (isOpen ? closeAndRestoreFocus() : openAt(-1))}
           onKeyDown={handleNavigationKey}
           disabled={disabled}
-          className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-card focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:cursor-not-allowed"
+          className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-card focus-visible:ring-1 focus-visible:ring-primary/20 disabled:cursor-not-allowed"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls={listboxId}
@@ -200,7 +200,7 @@ function MultiSelectDropdown({
             onClick={() => onChange([])}
             disabled={disabled}
             aria-label="Xóa tất cả lựa chọn"
-            className="self-center mr-2 p-1.5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40"
+            className="self-center mr-2 p-1.5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-visible:ring-1 focus-visible:ring-primary/40"
           >
             <X size={14} className="text-text-secondary" aria-hidden="true" />
           </button>
@@ -224,7 +224,7 @@ function MultiSelectDropdown({
                 aria-label="Tìm kiếm tùy chọn"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full border-none rounded-lg px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary"
+                className="w-full border-none rounded-lg px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary"
               />
             </div>
           )}

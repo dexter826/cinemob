@@ -154,7 +154,7 @@ function Dropdown({
         disabled={disabled}
         className={`
           w-full h-11 border border-border-default rounded-card px-4 text-left
-          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-300
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -197,7 +197,7 @@ function Dropdown({
                 aria-label="Tìm kiếm tùy chọn"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
+                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
               />
             </div>
           )}

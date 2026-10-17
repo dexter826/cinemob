@@ -62,7 +62,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
             placeholder="Tìm theo email…"
             autoComplete="off"
             spellCheck={false}
-            className="w-full bg-surface border border-border rounded-card pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
+            className="w-full bg-surface border border-border rounded-card pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
           />
           {searchText && (
             <button

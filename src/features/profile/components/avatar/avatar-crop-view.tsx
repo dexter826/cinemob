@@ -85,7 +85,7 @@ export function AvatarCropView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={handleViewportKeyDown}
-        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary ${
+        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-visible:ring-4 focus-visible:ring-primary ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
       >
@@ -130,7 +130,7 @@ export function AvatarCropView({
           onChange={(e) => onZoomChange(parseFloat(e.target.value))}
           disabled={isUploading}
           aria-label="Mức phóng to"
-          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         />
 
         <button

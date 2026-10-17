@@ -220,7 +220,7 @@ function AddMovieModal() {
                         aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+                        className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
                         placeholder="Nhập tên gốc của phim…"
                       />
                       {isAnimating && errors.title && (
@@ -248,7 +248,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                        className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
+                        className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50"
                         placeholder="Nhập tên tiếng Việt…"
                       />
                     </div>
@@ -270,7 +270,7 @@ function AddMovieModal() {
                       autoComplete="off"
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-                      className="w-full h-11 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
+                      className="w-full h-11 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
                       placeholder="https://…"
                     />
                   </div>
@@ -358,7 +358,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 outline-none transition-colors resize-none"
+                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-colors resize-none"
                         placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>

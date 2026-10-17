@@ -410,7 +410,7 @@ function OwnProfileEditor({
                   placeholder="Nhập tên hiển thị…"
                   maxLength={50}
                   aria-invalid={nameError ? true : undefined}
-                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
+                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
                 />
                 {nameError && (
                   <p role="alert" className="mt-1.5 text-xs text-danger">
@@ -430,7 +430,7 @@ function OwnProfileEditor({
                   rows={3}
                   maxLength={BIO_MAX_LENGTH}
                   placeholder="Thêm vài dòng giới thiệu về bạn…"
-                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
+                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
                 />
                 <span className="block text-right text-xs text-text-secondary">
                   {draftBio.length}/{BIO_MAX_LENGTH}

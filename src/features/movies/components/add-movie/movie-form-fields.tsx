@@ -182,7 +182,7 @@ function MovieFormFields({
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
+              className="w-full h-11 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 tabular-nums"
               placeholder={isTVSeries ? 'Nhập số mùa…' : 'Nhập thời lượng (phút)…'}
             />
             {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
@@ -246,7 +246,7 @@ function MovieFormFields({
           autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors resize-none"
+          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors resize-none"
           placeholder="Nhập tóm tắt cốt truyện…"
         />
       </div>

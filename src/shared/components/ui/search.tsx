@@ -47,7 +47,7 @@ function Search({
         autoComplete="off"
         spellCheck={false}
         autoFocus={autoFocus}
-        className="w-full h-11 bg-transparent border border-border rounded-control pl-10 pr-9 text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:outline-none focus-visible:border-primary transition-colors"
+        className="w-full h-11 bg-transparent border border-border rounded-control pl-10 pr-9 text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:border-primary transition-colors"
       />
       {value && (
         <button

@@ -116,7 +116,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             onBlur={handleInputBlur}
             aria-label="Số trang muốn chuyển đến"
             autoComplete="off"
-            className="w-10 h-7 text-center border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50 outline-none"
+            className="w-10 h-7 text-center border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50"
           />
           <span className="text-xs font-bold text-text-secondary opacity-50 tabular-nums">
             / {totalPages}
