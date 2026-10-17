@@ -68,7 +68,7 @@ function PersonDetailPage() {
 
         {loading ? (
           <div className="space-y-6">
-            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 shadow-premium h-96 animate-pulse" />
+            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 h-96 animate-pulse" />
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <SkeletonCard key={i} />
@@ -90,7 +90,7 @@ function PersonDetailPage() {
         ) : (
           <>
             {/* Person Info Section */}
-            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 shadow-premium overflow-hidden relative">
+            <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 overflow-hidden relative">
               <div className="flex flex-col md:flex-row gap-6 sm:gap-8 relative z-10">
                 {/* Person Image */}
                 <div className="flex justify-center md:justify-start shrink-0">
@@ -98,7 +98,7 @@ function PersonDetailPage() {
                     <img
                       src={getTMDBImageUrl(person.profile_path, 'h632')}
                       alt={person.name}
-                      className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-card shadow-premium border border-white/10"
+                      className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-card border border-white/10"
                     />
                   </div>
                 </div>

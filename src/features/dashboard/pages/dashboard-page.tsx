@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useAuth } from '@/features/auth/components/auth-provider';
 import { Film, Search, Plus } from 'lucide-react';
 import PosterCard from '@/features/movies/components/poster-card';
 import Pagination from '@/shared/components/ui/pagination';
@@ -26,7 +25,6 @@ import DashboardFilters from '../components/dashboard-filters';
 
 /** Quản lý bộ sưu tập phim — editorial: hero typography + hairline sections. */
 function DashboardPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion() ?? false;
   useScrollRestore('dashboard');
@@ -49,7 +47,7 @@ function DashboardPage() {
     toggleSortOrder,
     clearFilters,
     movies,
-  } = useDashboard(user);
+  } = useDashboard();
 
   // Hero dùng số liệu toàn bộ bộ sưu tập (không theo tab).
   const totalHours = useMemo(

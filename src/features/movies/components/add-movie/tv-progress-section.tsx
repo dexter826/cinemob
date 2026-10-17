@@ -31,7 +31,7 @@ function TVProgressSection({
   defaultDate,
 }: TVProgressSectionProps) {
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4 shadow-sm">
+    <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-primary flex items-center gap-2">
           <Tv size={14} aria-hidden="true" /> Tiến độ xem
@@ -71,7 +71,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Giảm mùa"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -85,7 +85,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Tăng mùa"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>
@@ -104,7 +104,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Giảm tập"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -121,7 +121,7 @@ function TVProgressSection({
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>

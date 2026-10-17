@@ -65,8 +65,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
-                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
+                    ? 'bg-primary/10 border-primary/30 text-primary'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -83,8 +83,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   editing
-                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
+                    ? 'bg-primary/10 border-primary/30 text-primary'
+                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -120,7 +120,7 @@ function AlbumDetailPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 />
               </div>
 
@@ -233,7 +233,7 @@ function AlbumDetailPage() {
                     aria-label="Tìm phim trong lịch sử để thêm vào album"
                     autoComplete="off"
                     spellCheck={false}
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
+                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium transition-colors ring-1 ring-black/5 dark:ring-white/5"
                   />
                 </div>
                 <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">

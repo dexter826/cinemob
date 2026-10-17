@@ -6,10 +6,9 @@ import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useDeleteMovie } from '@/features/movies/hooks/use-delete-movie';
 import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
 import { useDashboardStats } from './use-dashboard-stats';
-import type { User } from 'firebase/auth';
 
 // Hook điều phối chính cho Dashboard.
-export const useDashboard = (user: User | null) => {
+export const useDashboard = () => {
   const { openAddModal } = useAddMovieStore();
   const handleDelete = useDeleteMovie();
 

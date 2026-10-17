@@ -88,7 +88,7 @@ function DashboardFilters({
             onChange={(e) => updateFilter('searchQuery', e.target.value)}
             placeholder="Lọc phim…"
             aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
+            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors ring-1 ring-black/5 dark:ring-white/5"
           />
           {filters.searchQuery && (
             <button
@@ -320,7 +320,7 @@ function DashboardFilters({
                         aria-pressed={Boolean(isActive)}
                         className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
                           isActive
-                            ? 'text-warning bg-warning/15 shadow-sm'
+                            ? 'text-warning bg-warning/15'
                             : 'text-text-secondary/40 hover:text-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
                         } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
                       >

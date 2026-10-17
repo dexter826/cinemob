@@ -55,7 +55,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
         aria-label="Trang trước"
-        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
+        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"
       >
         <ChevronLeft size={18} aria-hidden="true" />
       </button>
@@ -104,7 +104,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       </div>
 
       {/* Mobile Pagination with Input */}
-      <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-control shadow-premium">
+      <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-control">
         <span className="text-xs font-medium text-text-secondary">Trang</span>
         <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
           <input
@@ -130,7 +130,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
         aria-label="Trang sau"
-        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors shadow-premium cursor-pointer"
+        className="p-2.5 rounded-control bg-surface border border-border-default text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"
       >
         <ChevronRight size={18} aria-hidden="true" />
       </button>

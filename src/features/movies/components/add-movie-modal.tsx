@@ -182,7 +182,7 @@ function AddMovieModal() {
                   type="button"
                   aria-pressed={activeTab === 'info'}
                   onClick={() => setActiveTab('info')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Film size={15} aria-hidden="true" />
                   <span>Thông tin phim</span>
@@ -191,7 +191,7 @@ function AddMovieModal() {
                   type="button"
                   aria-pressed={activeTab === 'review'}
                   onClick={() => setActiveTab('review')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Star size={15} aria-hidden="true" />
                   <span>Đánh giá</span>
@@ -323,7 +323,7 @@ function AddMovieModal() {
                       >
                         <span
                           aria-hidden="true"
-                          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`}
+                          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`}
                         />
                       </button>
                     </div>

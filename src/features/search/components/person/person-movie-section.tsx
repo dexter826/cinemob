@@ -81,7 +81,7 @@ export function PersonMovieSection({
               placeholder="Tìm phim của nghệ sĩ này…"
               autoComplete="off"
               spellCheck={false}
-              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-control sm:rounded-card pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-primary focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/30 shadow-premium transition-colors"
+              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-control sm:rounded-card pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-primary focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
             />
             {searchQuery && (
               <button
@@ -101,7 +101,7 @@ export function PersonMovieSection({
               onShowFiltersChange(!showFilters);
             }}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
+            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
           >
             <Filter size={20} aria-hidden="true" />
           </button>

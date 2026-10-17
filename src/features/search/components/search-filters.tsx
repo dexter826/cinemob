@@ -94,7 +94,7 @@ function SearchFilters({
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
+          className="w-full h-11 sm:h-12 bg-surface border border-border-default dark:border-white/5 rounded-card pl-11 sm:pl-12 pr-24 sm:pr-28 focus-visible:outline-none focus-visible:border-primary transition-colors ring-1 ring-black/5 dark:ring-white/5 text-sm sm:text-base md:text-lg text-text-primary placeholder-text-secondary/40"
           ref={searchInputRef}
         />
 

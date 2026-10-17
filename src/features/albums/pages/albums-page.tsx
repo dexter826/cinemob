@@ -71,7 +71,7 @@ function AlbumsPage() {
 
       <form
         onSubmit={handleCreate}
-        className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4 shadow-premium"
+        className="bg-surface border border-border-default dark:border-white/5 rounded-dialog p-3 sm:p-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
           <div className="flex-1 space-y-1.5 sm:space-y-2">
@@ -96,7 +96,7 @@ function AlbumsPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 placeholder="Ví dụ: Phim Mafia Ý…"
               />
             </div>
@@ -104,7 +104,7 @@ function AlbumsPage() {
           <button
             type="submit"
             disabled={creating}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-on-primary text-xs sm:text-sm font-bold shadow-premium hover:shadow-premium-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-control sm:rounded-card bg-primary text-on-primary text-xs sm:text-sm font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap cursor-pointer"
           >
             <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
             <span>{creating ? 'Đang tạo…' : 'Tạo album'}</span>

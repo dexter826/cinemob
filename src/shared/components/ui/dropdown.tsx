@@ -156,9 +156,9 @@ function Dropdown({
           w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
           focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-300
-          flex items-center justify-between shadow-sm
+          flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20 shadow-premium' : ''}
+          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
