@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Film, Search, Plus } from 'lucide-react';
@@ -11,16 +10,9 @@ import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Button from '@/shared/components/ui/button';
 import { PageHeader } from '@/shared/components/ui';
-import { normalizeDate } from '@/shared/utils/date-format';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
-import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
-import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import {
-  getSeasonWatchedDates,
-  getMainTitle,
-  getSubTitle,
-} from '@/features/movies/utils/movie-utils';
+import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
 import DashboardTabs from '../components/dashboard-tabs';
@@ -52,69 +44,11 @@ function DashboardPage() {
     toggleSortOrder,
     clearFilters,
     movies,
+    statusCounts,
+    availableYears,
+    availableCountries,
+    availableGenres,
   } = useDashboard();
-
-  // Hero dùng số liệu toàn bộ bộ sưu tập (không theo tab).
-  const statusCounts = useMemo(
-    () => ({
-      history: movies.filter((m) => (m.status || 'history') === 'history').length,
-      watchlist: movies.filter((m) => m.status === 'watchlist').length,
-    }),
-    [movies],
-  );
-
-  /** Danh sách năm cho bộ lọc. */
-  const availableYears = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies.flatMap((m) => {
-          const d = normalizeDate(m.watched_at);
-          const years = d ? [d.getFullYear()] : [];
-          getSeasonWatchedDates(m).forEach(({ date }) => years.push(date.getFullYear()));
-          return years;
-        }),
-      ),
-    )
-      .sort((a, b) => b - a)
-      .map((year) => ({
-        value: year,
-        label: year.toString(),
-      }));
-  }, [movies]);
-
-  /** Danh sách quốc gia cho bộ lọc. */
-  const availableCountries = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies
-          .filter((m) => m.country && m.country.trim().length > 0)
-          .flatMap((m) => (m.country ?? '').split(',').map((c) => c.trim()))
-          .filter((c) => c.length > 0),
-      ),
-    )
-      .sort()
-      .map((country) => ({
-        value: country,
-        label: COUNTRY_TRANSLATIONS[country] || country,
-      }));
-  }, [movies]);
-
-  /** Danh sách thể loại cho bộ lọc. */
-  const availableGenres = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies
-          .filter((m) => m.genres && m.genres.trim().length > 0)
-          .flatMap((m) => (m.genres ?? '').split(',').map((g) => g.trim()))
-          .filter((g) => g.length > 0),
-      ),
-    )
-      .sort((a, b) => a.localeCompare(b))
-      .map((genre) => ({
-        value: genre,
-        label: GENRE_TRANSLATIONS[genre] || genre,
-      }));
-  }, [movies]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
@@ -230,13 +164,19 @@ function DashboardPage() {
         ) : (
           <>
             <motion.div
+              key={`${activeTab}-${currentPage}`}
               variants={staggerContainer}
               initial={reducedMotion ? false : 'hidden'}
               animate="show"
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
             >
               {processedMovies.map((movie) => (
-                <motion.div key={movie.docId} variants={staggerItem}>
+                <motion.div
+                  key={movie.docId}
+                  variants={staggerItem}
+                  initial={reducedMotion ? false : 'hidden'}
+                  animate="show"
+                >
                   <PosterCard
                     title={getMainTitle(movie)}
                     posterPath={movie.poster_path}

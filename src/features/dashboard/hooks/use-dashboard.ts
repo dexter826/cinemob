@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
 import useMovieStore from '@/features/movies/stores/movie-store';
@@ -36,6 +36,14 @@ export const useDashboard = () => {
 
   const { stats, contentTypeStats } = useDashboardStats(filters.currentTabMovies);
 
+  const statusCounts = useMemo(
+    () => ({
+      history: movies.filter((m) => (m.status || 'history') === 'history').length,
+      watchlist: movies.filter((m) => m.status === 'watchlist').length,
+    }),
+    [movies],
+  );
+
   const handleEdit = (movie: Movie) => {
     openAddModal({ movieToEdit: movie });
   };
@@ -56,6 +64,7 @@ export const useDashboard = () => {
     loading,
     stats,
     contentTypeStats,
+    statusCounts,
     activeTab,
     setActiveTab,
     handleDelete,
