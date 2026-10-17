@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -27,13 +27,19 @@ export const useOwnProfile = () => {
   const uid = user?.uid || '';
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [loadedUid, setLoadedUid] = useState('');
+  const [retryNonce, setRetryNonce] = useState(0);
+  const activeUid = useRef(uid);
+  activeUid.current = uid;
+  const ready = !!uid && loadedUid === uid && !loading && !error;
   const [saving, setSaving] = useState(false);
   const [toggling, setToggling] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!uid) return;
     const next = await getMemberProfile(uid);
-    setProfile(next);
+    if (activeUid.current === uid) setProfile(next);
   }, [uid]);
 
   useEffect(() => {
@@ -44,12 +50,18 @@ export const useOwnProfile = () => {
     }
     let cancelled = false;
     setLoading(true);
+    setError(null);
+    setLoadedUid('');
+    setProfile(null);
     getMemberProfile(uid)
       .then((data) => {
-        if (!cancelled) setProfile(data);
+        if (!cancelled) {
+          setProfile(data);
+          setLoadedUid(uid);
+        }
       })
       .catch(() => {
-        if (!cancelled) setProfile(null);
+        if (!cancelled) setError('Không tải được hồ sơ. Thử lại.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -57,11 +69,11 @@ export const useOwnProfile = () => {
     return () => {
       cancelled = true;
     };
-  }, [uid]);
+  }, [uid, retryNonce]);
 
   const saveDetails = useCallback(
     async (details: OwnProfileDetails): Promise<boolean> => {
-      if (!uid || saving) return false;
+      if (!ready || activeUid.current !== uid || saving) return false;
       setSaving(true);
       try {
         await saveProfileDetails(uid, {
@@ -80,11 +92,11 @@ export const useOwnProfile = () => {
         setSaving(false);
       }
     },
-    [refresh, saving, showToast, uid],
+    [ready, refresh, saving, showToast, uid],
   );
 
   const toggleMovieListHidden = useCallback(async (): Promise<boolean> => {
-    if (!uid || toggling) return false;
+    if (!ready || activeUid.current !== uid || toggling) return false;
     const next = !(profile?.isMovieListHidden ?? false);
     setToggling(true);
     try {
@@ -99,7 +111,17 @@ export const useOwnProfile = () => {
     } finally {
       setToggling(false);
     }
-  }, [movies, profile?.isMovieListHidden, refresh, showToast, toggling, uid]);
+  }, [ready, movies, profile?.isMovieListHidden, refresh, showToast, toggling, uid]);
 
-  return { profile, loading, saving, toggling, saveDetails, toggleMovieListHidden };
+  return {
+    profile: loadedUid === uid ? profile : null,
+    loading: !!uid && (loading || (loadedUid !== uid && !error)),
+    error,
+    ready,
+    retry: () => setRetryNonce((n) => n + 1),
+    saving,
+    toggling,
+    saveDetails,
+    toggleMovieListHidden,
+  };
 };

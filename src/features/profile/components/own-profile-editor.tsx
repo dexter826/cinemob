@@ -27,6 +27,9 @@ import type { MemberProfile } from '@/types';
 interface OwnProfileEditorProps {
   profile: MemberProfile | null;
   loading?: boolean;
+  ready: boolean;
+  error: string | null;
+  onRetry: () => void;
   saving: boolean;
   toggling: boolean;
   onSaveDetails: (details: OwnProfileDetails) => Promise<boolean>;
@@ -42,6 +45,9 @@ const GENDER_DROPDOWN_OPTIONS = [
 function OwnProfileEditor({
   profile,
   loading = false,
+  ready,
+  error,
+  onRetry,
   saving,
   toggling,
   onSaveDetails,
@@ -125,6 +131,7 @@ function OwnProfileEditor({
   };
 
   const startEditing = () => {
+    if (!ready) return;
     setDraftName(displayName);
     setDraftBio(profile?.bio ?? '');
     setDraftGender(profile?.gender ?? '');
@@ -153,6 +160,7 @@ function OwnProfileEditor({
   };
 
   const submitEditing = async () => {
+    if (!ready || isSubmitting || saving) return;
     const checked = validateDisplayName(draftName);
     if (!checked.ok) {
       setNameError(checked.error);
@@ -360,6 +368,7 @@ function OwnProfileEditor({
                     variant="secondary"
                     size="sm"
                     onClick={startEditing}
+                    disabled={!ready}
                     leadingIcon={<Pencil size={14} aria-hidden="true" />}
                     className="shrink-0"
                   >
@@ -370,7 +379,14 @@ function OwnProfileEditor({
 
               {!isEditing && (
                 <div className="mt-1">
-                  {loading ? (
+                  {error ? (
+                    <div role="alert" className="text-sm text-danger">
+                      {error}
+                      <Button variant="ghost" onClick={onRetry}>
+                        Thử lại
+                      </Button>
+                    </div>
+                  ) : loading ? (
                     <div aria-hidden="true" className="space-y-2 max-w-prose">
                       <div className="h-3 w-32 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
                       <div className="h-3 w-3/4 rounded-md motion-safe:animate-pulse motion-reduce:animate-none" />
@@ -465,7 +481,7 @@ function OwnProfileEditor({
                   variant="primary"
                   size="md"
                   onClick={() => void submitEditing()}
-                  disabled={isBusy}
+                  disabled={isBusy || !ready}
                   loading={isSubmitting || saving}
                 >
                   Lưu thay đổi
@@ -495,7 +511,7 @@ function OwnProfileEditor({
                 checked={isHidden}
                 onToggle={() => void onToggleHidden()}
                 label="Ẩn danh sách phim"
-                disabled={toggling}
+                disabled={toggling || !ready}
               />
             </div>
           </div>

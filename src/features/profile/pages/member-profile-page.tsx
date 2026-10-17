@@ -145,6 +145,9 @@ function MemberProfilePage() {
         <OwnProfileEditor
           profile={own.profile}
           loading={own.loading}
+          ready={own.ready}
+          error={own.error}
+          onRetry={own.retry}
           saving={own.saving}
           toggling={own.toggling}
           onSaveDetails={own.saveDetails}
