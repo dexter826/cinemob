@@ -68,6 +68,7 @@ function PosterCard({
       : null;
   const showRating = typeof rating === 'number' && rating > 0;
   const statusLabel = status === 'history' ? 'Đã xem' : status === 'watchlist' ? 'Sẽ xem' : null;
+  const kindLabel = mediaType === 'tv' ? 'Series' : 'Phim';
 
   return (
     <motion.article
@@ -85,7 +86,7 @@ function PosterCard({
         <button
           type="button"
           onClick={onClick}
-          aria-label={ariaLabel ?? `Xem chi tiết phim ${title}`}
+          aria-label={ariaLabel ?? `Xem chi tiết ${kindLabel.toLowerCase()} ${title}`}
           className="absolute inset-0 w-full h-full cursor-pointer p-0 text-left"
         >
           <img
