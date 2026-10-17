@@ -154,16 +154,16 @@ function DashboardPage() {
       <section className="border-b border-border">
         <div className="md:px-0 pt-6 pb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
+            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary">
               Thư viện
             </p>
-            <p className="font-display uppercase leading-[0.95] text-6xl md:text-8xl mt-2 tabular-nums">
+            <p className="font-display leading-[0.95] text-6xl md:text-8xl mt-2 tabular-nums">
               {movies.length}
             </p>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary mt-2">
+            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mt-2">
               Phim trong bộ sưu tập
             </p>
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
               <span>{totalHours} giờ xem</span>
               <span className="border-l border-border pl-4">{allContent.movies} phim</span>
               <span className="border-l border-border pl-4">{allContent.tv} series</span>
@@ -225,10 +225,10 @@ function DashboardPage() {
                     key={movie.docId}
                     className="sm:border-l sm:border-border-default sm:pl-4 first:sm:border-l-0 first:sm:pl-0"
                   >
-                    <p className="text-xs font-bold uppercase tracking-[0.05em] truncate">
+                    <p className="text-xs font-bold tracking-[0.05em] truncate">
                       {getMainTitle(movie)}
                     </p>
-                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                    <p className="mt-1 text-[10px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                       S{movie.progress?.current_season ?? 1} · E
                       {movie.progress?.current_episode ?? 0}/{total} · {percent}%
                     </p>

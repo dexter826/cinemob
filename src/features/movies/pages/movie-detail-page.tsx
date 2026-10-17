@@ -101,7 +101,7 @@ function MovieDetailPage() {
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} aria-hidden="true" />
         </IconButton>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-secondary tabular-nums">
+        <span className="text-[10px] font-semibold tracking-[0.1em] text-text-secondary tabular-nums">
           /movie/{id}
         </span>
       </div>
@@ -117,7 +117,7 @@ function MovieDetailPage() {
             className="w-full rounded-poster border border-border"
           />
           {movie.status !== 'watchlist' && (
-            <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary flex items-center gap-1.5 tabular-nums">
+            <p className="mt-3 text-[10px] font-semibold tracking-[0.08em] text-text-secondary flex items-center gap-1.5 tabular-nums">
               <Calendar size={12} aria-hidden="true" />
               Đã xem: {formatDateAny(movie.watched_at)}
             </p>
@@ -126,7 +126,7 @@ function MovieDetailPage() {
 
         {/* Thông tin */}
         <div className="flex-1 min-w-0">
-          <h1 className="font-display uppercase tracking-wide leading-[1.02] text-3xl sm:text-4xl md:text-5xl text-text-primary">
+          <h1 className="font-display tracking-wide leading-[1.02] text-3xl sm:text-4xl md:text-5xl text-text-primary">
             {mainTitle}
           </h1>
           {subTitle && movie.title_vi !== mainTitle && (
@@ -134,7 +134,7 @@ function MovieDetailPage() {
           )}
 
           {/* Meta caps */}
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
             {movie.release_date && (
               <span>{new Date(movie.release_date).getFullYear()}</span>
             )}
@@ -235,7 +235,7 @@ function MovieDetailPage() {
                 />
               </div>
               {getSeasonWatchedDates(movie).length >= 2 && (
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {getSeasonWatchedDates(movie).map(({ season, date }) => (
                     <span key={season}>
                       Phần {season}:{' '}

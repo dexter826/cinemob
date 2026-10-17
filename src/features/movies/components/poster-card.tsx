@@ -168,18 +168,18 @@ function PosterCard({
       {/* Info trên scrim */}
       <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
         <h3
-          className="text-[11px] font-bold uppercase tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
+          className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
           title={title}
         >
           {title}
         </h3>
         {meta && (
-          <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-white/55 truncate">
+          <p className="mt-0.5 text-[9px] font-semibold tracking-[0.08em] text-white/55 truncate">
             {meta}
           </p>
         )}
         {credit && (
-          <p className="mt-1 pt-1 border-t border-white/15 text-[9px] font-semibold uppercase tracking-[0.08em] text-primary truncate">
+          <p className="mt-1 pt-1 border-t border-white/15 text-[9px] font-semibold tracking-[0.08em] text-primary truncate">
             {credit}
           </p>
         )}

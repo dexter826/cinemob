@@ -27,7 +27,7 @@ Không có.
 
 ## Minor
 
-1. **`client.ts:44`** — `export const API_KEY = TMDB_API_KEY` re-export không cần thiết; chỉ client.ts dùng. Bỏ export (encapsulation).
+1. ~~`client.ts:44` re-export `API_KEY`~~ — **RÚT LẠI** sau khi kiểm: export hợp lệ, 2 consumer dùng thật (search-service, movie-service guard `if (!API_KEY)`).
 2. **`push-notification-service.ts:5-7`** — fallback hard-code VAPID public key. Là public key (không phải secret) nên không phải blocker, nhưng key stale nếu CI đổi key mà env thiếu → bỏ fallback, `console.warn` + disable push khi thiếu env.
 3. **`movie-detail-page.tsx`** — runtime xuất hiện 2 lần (meta caps đầu + dòng Clock cuối trang) — đúng loại trùng lặp thông tin như hình 2 bạn bắt. Bỏ dòng Clock cuối.
 4. **File render khổng lồ**: `own-profile-editor.tsx` (507), `add-movie-modal.tsx` (466), `date-picker.tsx` (412), `use-add-movie-form.ts` (389) — nhiều trạng thái nội bộ trong 1 hàm render/hook. Tách subcomponent/hook **khi chạm tới lần tới** (không tách ồ ạt trong đợt này — rủi ro regression cao hơn lợi ích).

@@ -172,7 +172,7 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="hidden sm:inline text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                <span className="hidden sm:inline text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {totalInYear} phim · {selectedYear}
                 </span>
                 <Dropdown

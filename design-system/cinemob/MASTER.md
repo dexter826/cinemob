@@ -19,7 +19,7 @@
 - **Font:** Anton (display — TOÀN BỘ CHỮ HOA, kiểu áp phích; có subset tiếng Việt ✓ đã verify) + Be Vietnam Pro (body, labels caps).
 - **Palette:** nền đen sâu phẳng `#0A0A0A`, chữ trắng ấm `#F5F5F2`, hairline phân tách, gold `#CA8A04` phẳng (không gradient) dùng tiết chế như mực dấu. **Không** navy, **không** khí quyển.
 - **Cấm tuyệt đối (chống AI-slop):** gradient trang trí, glow, spotlight, vignette, bóng mềm bồng bềnh, bo pill 999px mọi thứ, serif-italic + gold trên navy. Nâng tầng = hairline, không phải bóng.
-- **Theme:** dark mặc định; light = "giấy in" ấm.
+- **Theme:** dark mặc định; light = trắng thuần ấm.
 - **Motion:** 7/10 nhưng thi hành kiểu editorial — gạch chân trượt, stagger grid 40–60ms fade phẳng, hover poster: viền gold 1px + art scale 1.03, hero transition (layoutId) giữ nguyên. Tôn trọng `prefers-reduced-motion`.
 - **Nền tảng:** mobile + desktop ngang nhau. **IA:** chi tiết phim thành trang riêng `/movie/:id`; dashboard phân cấp bằng typography.
 - Stack giữ nguyên: Tailwind v4 + framer-motion + react-router; thêm đúng 1 font mới (Anton).
@@ -30,9 +30,9 @@
 
 ### Color Palette (dark-first)
 
-| Role | Dark (mặc định) | Light (giấy in) | CSS Variable |
+| Role | Dark (mặc định) | Light trắng | CSS Variable |
 |------|-----------------|-----------------|--------------|
-| Background | `#0A0A0A` | `#F4F1EA` | `--color-background` |
+| Background | `#0A0A0A` | `#FFFFFF` | `--color-background` |
 | Foreground | `#F5F5F2` | `#141414` | `--color-foreground` |
 | Surface (dùng tiết chế) | `#141414` | `#FFFFFF` | `--color-surface` |
 | Muted Foreground | `#8A8A85` | `#6B6B66` | `--color-muted-foreground` |

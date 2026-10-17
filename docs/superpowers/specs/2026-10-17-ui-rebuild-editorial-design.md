@@ -19,7 +19,7 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 **Goals**
 - Toàn bộ màn hình + modal (8 routes, 5 modal, login, 404) mang đúng ngôn ngữ Editorial Print theo MASTER.md.
 - IA mới: chi tiết phim thành trang riêng `/movie/:id`; dashboard phân cấp lại bằng typography (hero số + tabs + lưới poster + dải "tiếp tục xem").
-- Dark mode mặc định + light mode "giấy in" đầy đủ (tokens có sẵn trong MASTER).
+- Dark mode mặc định + light mode trắng thuần đầy đủ (tokens có sẵn trong MASTER).
 - Mobile và desktop ngang tầm quan trọng.
 - Accessibility giữ mức hiện có hoặc tốt hơn (app đã có skip-link, focus trap, focus-visible, reduced-motion).
 
@@ -59,7 +59,7 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 | 9 | Nav | Giữ 5 mục: Thư viện, Tìm phim, Thống kê, Album, Lịch |
 | 10 | Quy trình | Mockup duyệt trước (đã xong) → design doc → plan → code theo phase |
 
-**Palette dark (tóm tắt — đầy đủ trong MASTER.md):** background `#0A0A0A`, foreground `#F5F5F2`, surface `#141414`, muted-fg `#8A8A85`, hairline `rgba(255,255,255,.14)` / mềm `.07`, accent `#CA8A04` (on-accent `#0A0A0A`), destructive `#DC2626`. Light: nền giấy `#F4F1EA`, mực `#141414`, hairline đen, accent `#8F6400`.
+**Palette dark (tóm tắt — đầy đủ trong MASTER.md):** background `#0A0A0A`, foreground `#F5F5F2`, surface `#141414`, muted-fg `#8A8A85`, hairline `rgba(255,255,255,.14)` / mềm `.07`, accent `#CA8A04` (on-accent `#0A0A0A`), destructive `#DC2626`. Light: nền trắng `#FFFFFF`, mực `#141414`, hairline đen, accent `#8F6400`.
 
 ## 5. IA: trước → sau
 

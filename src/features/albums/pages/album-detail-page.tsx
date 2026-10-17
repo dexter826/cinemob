@@ -163,7 +163,7 @@ function AlbumDetailPage() {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
               {!loading && (
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -240,7 +240,7 @@ function AlbumDetailPage() {
                   label="Tìm phim trong lịch sử để thêm vào album"
                   className="flex-1 md:w-80"
                 />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary whitespace-nowrap tabular-nums">
+                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>

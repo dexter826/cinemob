@@ -144,7 +144,7 @@ export function DialogHeader({
         <div className="min-w-0">
           <h2
             id={titleId}
-            className="text-base sm:text-lg font-bold uppercase tracking-wide font-display truncate"
+            className="text-base sm:text-lg font-bold tracking-wide font-display truncate"
           >
             {title}
           </h2>

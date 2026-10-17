@@ -50,9 +50,9 @@ function Login() {
             aria-hidden="true"
             className="w-11 h-[3px] bg-primary mb-6"
           />
-          <p className="font-display text-2xl uppercase tracking-wide">Cine<span className="text-primary">MOB</span></p>
+          <p className="font-display text-2xl tracking-wide">Cine<span className="text-primary">MOB</span></p>
 
-          <h1 className="font-display uppercase tracking-wide leading-[1.05] text-3xl sm:text-4xl lg:text-5xl mt-8 lg:mt-12 max-w-xl">
+          <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl lg:text-5xl mt-8 lg:mt-12 max-w-xl">
             Mỗi phim bạn xem đều xứng đáng được nhớ.
           </h1>
 
@@ -62,7 +62,7 @@ function Login() {
           </p>
         </div>
 
-        <p className="pt-2 hidden sm:block text-[10px] font-semibold uppercase tracking-[0.14em] text-text-secondary">
+        <p className="pt-2 hidden sm:block text-[10px] font-semibold tracking-[0.14em] text-text-secondary">
           Rạp phim của riêng bạn, mở cửa mọi lúc
         </p>
       </div>
@@ -71,7 +71,7 @@ function Login() {
       <div className="relative z-10 w-full lg:w-[440px] xl:w-[480px] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 bg-surface overflow-y-auto lg:overflow-hidden shrink-0">
         <div className="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto space-y-6 sm:space-y-8">
           <div className="space-y-2">
-            <h2 className="font-display uppercase tracking-wide text-2xl sm:text-3xl text-text-primary">
+            <h2 className="font-display tracking-wide text-2xl sm:text-3xl text-text-primary">
               Bắt đầu
             </h2>
             <p className="text-xs sm:text-sm text-text-secondary">
@@ -83,7 +83,7 @@ function Login() {
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-control bg-transparent border border-border hover:border-primary hover:text-primary font-bold uppercase tracking-[0.08em] text-xs text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-control bg-transparent border border-border hover:border-primary hover:text-primary font-bold tracking-[0.08em] text-xs text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >
@@ -95,14 +95,14 @@ function Login() {
               <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
             </button>
 
-            <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
+            <div className="flex items-center gap-2 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
               <Shield size={13} className="shrink-0 text-primary" aria-hidden="true" />
               <span>Bảo mật dữ liệu cá nhân qua tài khoản Google</span>
             </div>
           </div>
 
           {/* Điểm giá trị */}
-          <div className="pt-4 border-t border-border space-y-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
+          <div className="pt-4 border-t border-border space-y-2 text-[10px] font-semibold tracking-[0.08em] text-text-secondary">
             <div className="flex items-center gap-2">
               <CheckCircle2 size={12} className="text-primary shrink-0" aria-hidden="true" />
               <span>Đồng bộ tức thì trên mọi thiết bị</span>
@@ -118,7 +118,7 @@ function Login() {
           </div>
         </div>
 
-        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold uppercase tracking-[0.08em] text-text-secondary flex items-center justify-between shrink-0">
+        <footer className="pt-4 sm:pt-6 border-t border-border text-[10px] font-semibold tracking-[0.08em] text-text-secondary flex items-center justify-between shrink-0">
           <span>&copy; {new Date().getFullYear()} CineMOB</span>
           <span className="opacity-60">Sổ tay điện ảnh</span>
         </footer>

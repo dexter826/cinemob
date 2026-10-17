@@ -149,7 +149,7 @@ export function PersonMovieSection({
         </div>
 
         {paginatedMovies.length > 0 && (
-          <p className="flex items-center justify-end text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary tabular-nums">
+          <p className="flex items-center justify-end text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
             Hiển thị {paginatedMovies.length} / {filteredCount} mục
           </p>
         )}
