@@ -224,6 +224,7 @@ Nâng cấp thị giác bằng **đường kẻ, không phải bóng**:
 - ❌ Bóng mềm float trên card/nav/poster
 - ❌ Bo tròn pill 999px cho mọi thứ; bo góc > 12px
 - ❌ Serif italic + gold trên nền navy (template "premium AI")
+- ❌ **Viền vàng bo tròn dạng chip (outline chip)** — `border-primary/*` + `rounded` + padding trên nền tối. Thay bằng: chữ vàng trần không hộp, hoặc fill đặc `bg-primary text-on-primary` cho trạng thái chọn, hoặc hairline neutral. (Đã lặp 2 lần: chip "202 phim", chip "Hôm nay" — pattern phải tuyệt chủng.)
 - ❌ Emoji làm icon; icon không đồng bộ (chỉ Lucide, stroke 1.5)
 - ❌ Chữ trắng trên nền gold; muted-foreground cho nội dung chính
 - ❌ Instant state changes (dùng transition 150–200ms)
