@@ -1,8 +1,7 @@
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
-interface TextFieldProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className'> {
+interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className'> {
   /** Nhãn hiển thị phía trên (không truyền → không render label). */
   label?: string;
   /** Icon dẫn đầu (lucide element). */

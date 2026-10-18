@@ -23,9 +23,33 @@ export function CineMobSymbol({ className = 'h-6 w-6', ...props }: CineMobSymbol
         />
         <polygon points="-10,-24 56,0 -10,24" fill="var(--color-text-primary, #F5F5F2)" />
         <circle cx="-14" cy="0" r="10" fill="currentColor" />
-        <line x1="-84" y1="0" x2="-70" y2="0" stroke="var(--color-background, #0A0A0A)" strokeWidth="3" strokeLinecap="round" />
-        <line x1="0" y1="-84" x2="0" y2="-70" stroke="var(--color-background, #0A0A0A)" strokeWidth="3" strokeLinecap="round" />
-        <line x1="0" y1="70" x2="0" y2="84" stroke="var(--color-background, #0A0A0A)" strokeWidth="3" strokeLinecap="round" />
+        <line
+          x1="-84"
+          y1="0"
+          x2="-70"
+          y2="0"
+          stroke="var(--color-background, #0A0A0A)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <line
+          x1="0"
+          y1="-84"
+          x2="0"
+          y2="-70"
+          stroke="var(--color-background, #0A0A0A)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <line
+          x1="0"
+          y1="70"
+          x2="0"
+          y2="84"
+          stroke="var(--color-background, #0A0A0A)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
       </g>
     </svg>
   );
