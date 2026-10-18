@@ -3,7 +3,7 @@ import { Clock, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 interface TimePickerProps {
   value: string; // HH:mm format
@@ -38,12 +38,7 @@ function TimePicker({
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
   const reducedMotion = useReducedMotion() ?? false;
-  const popoverEnter = getMotionTransition(
-    reducedMotion,
-    MOTION_DURATION.fast,
-    MOTION_EASING.enter,
-  );
-  const popoverExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const popoverMotion = getPanelMotion(reducedMotion);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hourListRef = useRef<HTMLDivElement>(null);
@@ -170,10 +165,10 @@ function TimePicker({
       role={isMobile ? undefined : 'dialog'}
       aria-label={isMobile ? undefined : 'Chọn giờ'}
       onClick={(e) => isMobile && e.stopPropagation()}
-      initial={isMobile ? undefined : { opacity: 0, y: -4 }}
-      animate={isMobile ? undefined : { opacity: 1, y: 0 }}
-      exit={isMobile ? undefined : { opacity: 0, y: -4, transition: popoverExit }}
-      transition={popoverEnter}
+      initial={isMobile ? undefined : popoverMotion.initial}
+      animate={isMobile ? undefined : popoverMotion.animate}
+      exit={isMobile ? undefined : popoverMotion.exit}
+      transition={popoverMotion.transition}
     >
       {isMobile && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
