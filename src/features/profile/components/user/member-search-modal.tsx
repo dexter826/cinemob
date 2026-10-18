@@ -14,7 +14,6 @@ interface MemberSearchModalProps {
   onExited?: () => void;
 }
 
-/** Modal tìm thành viên mở từ nút Users trên navbar. */
 function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps) {
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);

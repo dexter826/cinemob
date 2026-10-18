@@ -33,7 +33,6 @@ interface MovieListSectionProps {
   emptyDescription: string;
 }
 
-// Danh sách phim đã xem: tìm kiếm, sắp xếp, phân trang kiểu "Xem thêm".
 function MovieListSection({
   movies,
   isLoading = false,

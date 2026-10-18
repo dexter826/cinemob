@@ -64,7 +64,6 @@ function getBaseScale(imageMeta: ImageMeta | null): number {
   return Math.max(CROP_SIZE / imageMeta.width, CROP_SIZE / imageMeta.height);
 }
 
-// Quản lý chọn ảnh, căn chỉnh, cắt và tải lên ảnh đại diện.
 export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropResult {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
@@ -127,7 +126,6 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
     [imageMeta],
   );
 
-  // Kiểm tra tệp hợp lệ rồi nạp vào khung crop.
   const selectFile = useCallback(
     (file: File) => {
       setErrorMessage(null);
@@ -202,7 +200,6 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
 
   const cancelCrop = reset;
 
-  // Kéo chuột hoặc ngón tay để căn góc ảnh.
   const handlePointerDown = useCallback(
     (event: ReactPointerEvent) => {
       if (isBusy) return;
@@ -319,9 +316,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       });
     } catch (error: unknown) {
       const message =
-        error instanceof Error && error.message
-          ? error.message
-          : 'Không thể xóa ảnh đại diện';
+        error instanceof Error && error.message ? error.message : 'Không thể xóa ảnh đại diện';
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {

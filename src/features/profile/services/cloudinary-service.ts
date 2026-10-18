@@ -8,7 +8,6 @@ export interface CropParams {
   quality?: number;
 }
 
-// Cắt và nén ảnh theo toạ độ di chuyển và mức phóng to.
 export const getCroppedImgBlob = (img: HTMLImageElement, params: CropParams): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const { pan, zoom, cropSize, outputSize = 256, quality = 0.85 } = params;
@@ -72,7 +71,6 @@ export const getCroppedImgBlob = (img: HTMLImageElement, params: CropParams): Pr
   });
 };
 
-// Tải ảnh lên Cloudinary qua unsigned upload.
 export const uploadToCloudinary = async (
   fileOrBlob: Blob | File,
   folder = 'avatars',

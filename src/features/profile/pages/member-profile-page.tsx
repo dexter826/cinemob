@@ -22,7 +22,6 @@ import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
 
-/** Trang cá nhân thành viên: chính chủ chỉnh sửa inline, thành viên khác chỉ xem. */
 function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
@@ -39,7 +38,6 @@ function MemberProfilePage() {
 
   const { showToast } = useToastStore();
 
-  // Copy link trang cá nhân hiện tại vào clipboard kèm toast xác nhận.
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);

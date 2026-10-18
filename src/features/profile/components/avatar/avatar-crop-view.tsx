@@ -28,7 +28,6 @@ interface AvatarCropViewProps {
 
 const PAN_STEP_PX = 8;
 
-// Màn hình cắt & căn chỉnh ảnh (kéo hoặc phím mũi tên để căn góc, cuộn/trượt để phóng to).
 export function AvatarCropView({
   imageSrc,
   imgRef,
@@ -73,7 +72,6 @@ export function AvatarCropView({
 
   return (
     <div className="w-full flex flex-col items-center select-none">
-      {/* Viewport cắt ảnh */}
       <div
         ref={viewportRef}
         role="application"
@@ -105,11 +103,9 @@ export function AvatarCropView({
             userSelect: 'none',
           }}
         />
-        {/* Lưới định tâm nhẹ nhàng */}
         <div className="absolute inset-0 pointer-events-none rounded-full border border-white/20" />
       </div>
 
-      {/* Thanh điều khiển phóng to/thu nhỏ */}
       <div className="w-full mt-5 px-3 flex items-center gap-3">
         <button
           type="button"

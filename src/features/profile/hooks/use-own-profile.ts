@@ -19,7 +19,6 @@ export interface OwnProfileDetails {
   dob: string;
 }
 
-/** Nạp và lưu phần hồ sơ chính chủ chỉnh sửa trên trang cá nhân. */
 export const useOwnProfile = () => {
   const { user } = useAuth();
   const {

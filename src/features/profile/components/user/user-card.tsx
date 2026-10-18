@@ -8,7 +8,6 @@ interface UserCardProps {
   onClick?: () => void;
 }
 
-/** Thẻ thành viên trong kết quả tìm người dùng. */
 function UserCard({ profile, onClick }: UserCardProps) {
   return (
     <Link

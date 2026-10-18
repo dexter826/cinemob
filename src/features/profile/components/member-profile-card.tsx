@@ -7,7 +7,6 @@ interface MemberProfileCardProps {
   profile: MemberProfile;
 }
 
-// Thẻ định danh của thành viên khác trên trang cá nhân (chỉ xem).
 function MemberProfileCard({ profile }: MemberProfileCardProps) {
   const [isAvatarLoadFailed, setIsAvatarLoadFailed] = useState(false);
 

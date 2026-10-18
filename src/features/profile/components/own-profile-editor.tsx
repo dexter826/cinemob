@@ -46,7 +46,6 @@ const GENDER_DROPDOWN_OPTIONS = [
   { value: '', label: 'Không cập nhật' },
 ];
 
-// Thẻ hồ sơ chính chủ: mặc định là chế độ xem, nút "Chỉnh sửa" mới bật form.
 function OwnProfileEditor({
   profile,
   loading = false,

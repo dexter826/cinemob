@@ -7,7 +7,6 @@ import {
 export type { PublicProfileSummary } from '@/features/profile/services/member-profile-service';
 export { clearPublicProfileCache } from '@/features/profile/services/member-profile-service';
 
-/** Tìm hồ sơ thành viên theo email */
 export const useUserSearch = (excludeUid?: string) => {
   const [searchText, setSearchText] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');

@@ -9,7 +9,6 @@ interface ProfileMetaProps {
   className?: string;
 }
 
-// Các dòng thông tin giới tính, ngày sinh cùng kiểu với dòng email.
 function ProfileMeta({ gender, dob, className }: ProfileMetaProps) {
   if (!gender && !dob) return null;
   return (
