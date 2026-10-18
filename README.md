@@ -18,7 +18,7 @@
 **CineMOB** là ứng dụng web client-side (CSR) dạng PWA xây dựng bằng React 19 và TypeScript, hỗ trợ theo dõi danh mục phim ảnh, quản lý lịch chiếu và phân tích lịch sử xem phim, với giao diện thích ứng cho thiết bị di động.
 
 <div align="center">
-  <img src="docs/images/mockup.jpg" alt="CineMOB Interface Mockup" width="800" />
+  <img src="docs/images/mockup.png" alt="CineMOB Interface Mockup" width="800" />
 </div>
 
 ### Tính năng nổi bật
