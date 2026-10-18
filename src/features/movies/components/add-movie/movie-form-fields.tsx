@@ -106,7 +106,7 @@ function MovieFormFields({
           </label>
           <div
             ref={refs.country}
-            className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
           >
             <Dropdown
               id="movie-country"
@@ -133,7 +133,7 @@ function MovieFormFields({
           </label>
           <div
             ref={refs.releaseDate}
-            className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
           >
             <DatePicker
               id="movie-release-date"
@@ -162,7 +162,7 @@ function MovieFormFields({
             {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
           <div
-            className={`transition-transform duration-300 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
           >
             <input
               id="movie-runtime"

@@ -5,6 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Album } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { MOTION_DURATION } from '@/constants/animations';
 
 interface AlbumCardProps {
   album: Album;
@@ -29,7 +30,7 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
 
   const fanClasses = (variant: 'left' | 'right') => `
     absolute inset-0 rounded-poster border border-border bg-surface overflow-hidden
-    transition-transform duration-300 ease-out
+    transition-transform duration-200 ease-out
     ${
       variant === 'left'
         ? 'rotate-[-1.5deg] -translate-x-[2%] group-hover:-rotate-[6deg] group-hover:-translate-x-[6%]'
@@ -41,7 +42,10 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
     <motion.article
       initial={reducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.3, delay: reducedMotion ? 0 : Math.min(index * 0.05, 0.4) }}
+      transition={{
+        duration: MOTION_DURATION.medium,
+        delay: reducedMotion ? 0 : Math.min(index * 0.05, 0.4),
+      }}
       className="group relative block aspect-2/3"
     >
       <Link
@@ -101,7 +105,7 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
               if (image.getAttribute('src') !== PLACEHOLDER_IMAGE) image.src = PLACEHOLDER_IMAGE;
             }}
             draggable={false}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
 
           {/* Scrim chức năng: nền tối để chữ đọc được trên ảnh */}

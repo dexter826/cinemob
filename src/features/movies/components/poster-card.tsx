@@ -1,6 +1,5 @@
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Bookmark, CheckCircle, Eye, Star, X } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { Chip } from '@/shared/components/ui';
@@ -33,7 +32,6 @@ interface PosterCardProps {
   /** Không truyền → card chỉ hiển thị, không bấm được (vd profile công khai). */
   onClick?: () => void;
   ariaLabel?: string;
-  layoutId?: string;
   className?: string;
 }
 
@@ -58,10 +56,8 @@ function PosterCard({
   selected = false,
   onClick,
   ariaLabel,
-  layoutId,
   className,
 }: PosterCardProps) {
-  const reducedMotion = useReducedMotion() ?? false;
   const imageUrl =
     posterPath && source === 'manual' ? posterPath : getTMDBImageUrl(posterPath, 'w500');
   const progressPercent =
@@ -73,8 +69,7 @@ function PosterCard({
   const kindLabel = mediaType === 'tv' ? 'Series' : 'Phim';
 
   return (
-    <motion.article
-      layoutId={!reducedMotion && layoutId ? layoutId : undefined}
+    <article
       className={classNames(
         'group relative block aspect-2/3 rounded-poster overflow-hidden',
         'bg-surface border border-border',
@@ -102,7 +97,7 @@ function PosterCard({
               if (image.getAttribute('src') !== PLACEHOLDER_IMAGE) image.src = PLACEHOLDER_IMAGE;
             }}
             draggable={false}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
         </button>
       ) : (
@@ -201,7 +196,7 @@ function PosterCard({
           <span className="block h-full bg-primary" style={{ width: `${progressPercent}%` }} />
         </span>
       )}
-    </motion.article>
+    </article>
   );
 }
 

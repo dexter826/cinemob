@@ -60,9 +60,9 @@ function TVProgressSection({
               type="checkbox"
               checked={isCompleted}
               onChange={(e) => setIsCompleted(e.target.checked)}
-              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors duration-300 cursor-pointer"
+              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors cursor-pointer"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform duration-300 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform pointer-events-none">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
                 <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
               </svg>

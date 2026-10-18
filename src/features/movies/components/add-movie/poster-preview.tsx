@@ -16,7 +16,7 @@ function PosterPreview({ posterPath, title }: PosterPreviewProps) {
             <img
               src={getTMDBImageUrl(posterPath, 'w500')}
               alt={title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
             />
           </>
         ) : (

@@ -224,7 +224,7 @@ function MovieDetailPage() {
               </p>
               <div className="mt-3 h-0.5 bg-border-default" role="presentation">
                 <div
-                  className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out"
+                  className="h-full w-full bg-primary origin-left transition-transform duration-250 ease-out"
                   style={{
                     transform: `scaleX(${Math.min(
                       1,

@@ -271,7 +271,7 @@ function StatsPage() {
                     </div>
                     <div className="flex-1 h-0.5 bg-border-default overflow-hidden">
                       <div
-                        className="h-full w-full bg-warning origin-left transition-transform duration-700 ease-out"
+                        className="h-full w-full bg-warning origin-left transition-transform duration-250 ease-out"
                         style={{
                           transform: `scaleX(${Math.min(
                             1,
@@ -304,7 +304,7 @@ function StatsPage() {
                 {topCountries.map(([country, count], index) => (
                   <div
                     key={country}
-                    className="flex items-center justify-between p-4 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors duration-300 group"
+                    className="flex items-center justify-between p-4 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors group"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">
