@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { useReducedMotion } from 'framer-motion';
 
 interface PaginationProps {
   currentPage: number;
@@ -10,7 +10,7 @@ interface PaginationProps {
 
 function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const [inputValue, setInputValue] = useState(currentPage.toString());
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
   // Update input value when currentPage changes
   React.useEffect(() => {

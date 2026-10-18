@@ -24,6 +24,7 @@ import PageHeader from '@/shared/components/ui/page-header';
 import { useStats } from '../hooks/use-stats';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { useReducedMotion } from 'framer-motion';
 import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
 // Palette biểu đồ derive từ token — tự đúng ở cả 2 theme (spec 2026-10-17).
@@ -82,7 +83,7 @@ function StatsPage() {
     [setSearchParams],
   );
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
   // Danh sách năm cho dropdown.
   const yearOptions = useMemo(

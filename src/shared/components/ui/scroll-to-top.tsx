@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowUpToLine } from 'lucide-react';
-import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { useReducedMotion } from 'framer-motion';
 
 function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const [hasModal, setHasModal] = useState(false);
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     const toggleVisibility = () => {
