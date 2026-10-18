@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/images/logo_text.png" alt="CineMOB Logo" width="280" />
+  <img src="docs/images/cinemob-logo.png" alt="CineMOB Logo" width="320" />
   <p>PWA theo dõi và quản lý danh mục phim ảnh, TV show cá nhân.</p>
 
   <p>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><title>CineMOB</title><g transform="translate(-41.27 -59.26) scale(1.463)" fill="none">
+  <title id="title">CineMOB Brand Symbol</title>
+  <g transform="translate(128, 128)">
+    <!-- Outer 'C' Arc in Spotlight Gold (#CA8A04) -->
+    <!-- Arc from 45 deg to 315 deg, R=84, r=52 -->
+    <path fill="#CA8A04" fill-rule="evenodd" d="
+      M 59.4 -59.4
+      A 84 84 0 1 0 59.4 59.4
+      L 36.77 36.77
+      A 52 52 0 1 1 36.77 -36.77
+      Z
+    "/>
+
+    <!-- Inner Cinema Lens / Projector Beam (Crisp White #F5F5F2) -->
+    <!-- Projector cone expanding through the opening -->
+    <polygon points="-10,-24 56,0 -10,24" fill="#F5F5F2"/>
+    <!-- Center lens core (Spotlight Gold) -->
+    <circle cx="-14" cy="0" r="10" fill="#CA8A04"/>
+
+    <!-- Viewfinder Hairline Ticks (Hairline negative space / contrast) -->
+    <line x1="-84" y1="0" x2="-70" y2="0" stroke="#0A0A0A" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="-84" x2="0" y2="-70" stroke="#0A0A0A" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="70" x2="0" y2="84" stroke="#0A0A0A" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</g></svg>

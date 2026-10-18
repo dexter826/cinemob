@@ -1,4 +1,5 @@
 import Spinner from '@/shared/components/ui/spinner';
+import CineMobSymbol from '@/shared/components/ui/cinemob-symbol';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
@@ -88,10 +89,12 @@ function Login() {
       <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l min-h-0">
         <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20 overflow-y-auto">
           <div className="w-full max-w-sm">
-            <p aria-hidden="true" className="w-11 h-[3px] bg-primary mb-7" />
-            <p className="font-display text-2xl tracking-wide">
-              Cine<span className="text-primary">MOB</span>
-            </p>
+            <div className="flex items-center gap-3 mb-7">
+              <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
+              <p className="font-display text-2xl tracking-wide">
+                Cine<span className="text-primary">MOB</span>
+              </p>
+            </div>
 
             <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9">
               Theo dõi mọi bộ phim bạn xem.
