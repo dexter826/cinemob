@@ -21,6 +21,7 @@ interface DialogProps {
   children: React.ReactNode;
   className?: string;
   overlayClassName?: string;
+  onExitComplete?: () => void;
 }
 
 const sizeClasses: Record<DialogSize, string> = {
@@ -73,6 +74,7 @@ export function Dialog({
   children,
   className = '',
   overlayClassName,
+  onExitComplete,
 }: DialogProps) {
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
@@ -111,7 +113,7 @@ export function Dialog({
   useFocusTrap({ active: open, containerRef: dialogRef, initialFocusRef, onEscape: onClose });
 
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {open && (
         <motion.div
           key="dialog-overlay"

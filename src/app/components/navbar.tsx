@@ -248,14 +248,14 @@ function Navbar() {
         onClose={() => setIsRandomOpen(false)}
         title="Chọn phim ngẫu nhiên"
         loader={loadRandomPicker}
-        componentProps={{ isOpen: true, onClose: () => setIsRandomOpen(false) }}
+        componentProps={{ isOpen: isRandomOpen, onClose: () => setIsRandomOpen(false) }}
       />
       <LazyDialog
         open={isMemberSearchOpen}
         onClose={() => setIsMemberSearchOpen(false)}
         title="Tìm thành viên"
         loader={loadMemberSearch}
-        componentProps={{ isOpen: true, onClose: () => setIsMemberSearchOpen(false) }}
+        componentProps={{ isOpen: isMemberSearchOpen, onClose: () => setIsMemberSearchOpen(false) }}
       />
     </>
   );

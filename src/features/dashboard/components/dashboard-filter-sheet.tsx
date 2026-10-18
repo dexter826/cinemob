@@ -5,6 +5,7 @@ import type { ActiveTab, FilterState, FilterUpdateFn } from '../hooks/use-dashbo
 import { FilterControls } from './dashboard-filter-controls';
 
 export interface DashboardFilterSheetProps {
+  isOpen: boolean;
   filters: FilterState;
   updateFilter: FilterUpdateFn;
   activeTab: ActiveTab;
@@ -14,10 +15,12 @@ export interface DashboardFilterSheetProps {
   hasHiddenFilters: boolean;
   clearFilters: () => void;
   onClose: () => void;
+  onExited?: () => void;
 }
 
 /** Bottom sheet bộ lọc cho mobile — cập nhật trực tiếp, không có nút Áp dụng. */
 function DashboardFilterSheet({
+  isOpen,
   filters,
   updateFilter,
   activeTab,
@@ -27,11 +30,18 @@ function DashboardFilterSheet({
   hasHiddenFilters,
   clearFilters,
   onClose,
+  onExited,
 }: DashboardFilterSheetProps) {
   const titleId = useId();
 
   return (
-    <Dialog open onClose={onClose} titleId={titleId} presentation="sheet">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      titleId={titleId}
+      presentation="sheet"
+      onExitComplete={onExited}
+    >
       <DialogHeader titleId={titleId} title="Bộ lọc" onClose={onClose} />
       <DialogBody>
         <FilterControls

@@ -15,6 +15,7 @@ import ConfettiBurst from '@/shared/components/feedback/confetti-burst';
 interface RandomPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onExited?: () => void;
 }
 
 const getPoolPoster = (movie: PoolMovie | undefined, poolType: PoolType): string => {
@@ -37,7 +38,7 @@ const getWheelMovie = (
   return pool[(currentIndex + offset + pool.length) % pool.length];
 };
 
-function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
+function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps) {
   const {
     activePool,
     poolType,
@@ -69,6 +70,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
       titleId="random-picker-title"
       descriptionId="random-picker-description"
       presentation="dialog"
+      onExitComplete={onExited}
     >
       <DialogBody className="relative">
         <div className="relative flex flex-col gap-4">

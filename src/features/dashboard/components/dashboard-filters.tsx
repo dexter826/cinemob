@@ -348,6 +348,7 @@ function DashboardFilters({
         presentation="sheet"
         loader={loadFilterSheet}
         componentProps={{
+          isOpen: !isDesktop && sheetOpen,
           filters,
           updateFilter,
           activeTab,

@@ -11,10 +11,11 @@ import UserCard from './user-card';
 interface MemberSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onExited?: () => void;
 }
 
 /** Modal tìm thành viên mở từ nút Users trên navbar. */
-function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
+function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps) {
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const { searchText, setSearchText, submit, results, loading, error, submittedQuery } =
@@ -35,6 +36,7 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
       size="md"
       className="h-72"
       initialFocusRef={inputRef}
+      onExitComplete={onExited}
     >
       <DialogHeader titleId="member-search-title" title="Tìm thành viên" onClose={onClose} />
       <DialogBody className="flex flex-col gap-4">

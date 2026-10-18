@@ -24,7 +24,7 @@ import TimePicker from '@/shared/components/ui/time-picker';
 import { useAddMovieForm } from '../hooks/use-add-movie-form';
 import { COUNTRY_OPTIONS } from '@/constants';
 
-function AddMovieModal() {
+function AddMovieModal({ onExited }: { onExited?: () => void }) {
   const {
     isOpen,
     initialData,
@@ -120,6 +120,7 @@ function AddMovieModal() {
       titleId="add-movie-title"
       presentation="fullscreen-mobile"
       size="4xl"
+      onExitComplete={onExited}
     >
       <div className="flex items-center justify-between px-5 py-4 sm:px-6 sm:py-5 border-b border-border shrink-0">
         <div className="min-w-0">
