@@ -1,6 +1,8 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Check, ChevronDown, X } from 'lucide-react';
 import ListboxSearchInput from './listbox-search-input';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 interface Option {
   value: string | number;
@@ -51,6 +53,9 @@ function MultiSelectDropdown({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const reducedMotion = useReducedMotion() ?? false;
+  const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+  const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 
   const selectedOptions = useMemo(
     () => options.filter((option) => values.includes(option.value)),
@@ -151,7 +156,7 @@ function MultiSelectDropdown({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <div
-        className={`flex min-h-11 bg-surface border border-border-default rounded-card transition-colors duration-200 ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}
+        className={`flex min-h-11 bg-surface border border-border-default rounded-card transition-colors ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}
       >
         <button
           id={controlId}
@@ -191,7 +196,7 @@ function MultiSelectDropdown({
           <ChevronDown
             size={16}
             aria-hidden="true"
-            className={`text-text-secondary shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`text-text-secondary shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -208,75 +213,87 @@ function MultiSelectDropdown({
         )}
       </div>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-control z-50 overflow-hidden">
-          {searchable && (
-            <ListboxSearchInput
-              inputRef={inputRef}
-              value={searchQuery}
-              onChange={(next) => {
-                setSearchQuery(next);
-                setActiveIndex(-1);
-              }}
-              onKeyDown={handleNavigationKey}
-            />
-          )}
-
-          {values.length > 0 && (
-            <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
-              <span className="text-xs text-text-secondary">Đã chọn {values.length} mục</span>
-              <button
-                type="button"
-                onClick={() => onChange([])}
-                className="text-xs text-primary hover:text-primary/80 transition-colors"
-              >
-                Xóa tất cả
-              </button>
-            </div>
-          )}
-
-          <div
-            id={listboxId}
-            role="listbox"
-            aria-multiselectable="true"
-            className="overflow-y-auto custom-scrollbar p-2"
-            style={{ maxHeight }}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4, transition: panelExit }}
+            transition={panelEnter}
+            className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-control z-50 overflow-hidden"
           >
-            {filteredOptions.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-text-secondary text-center">
-                {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
-              </div>
-            ) : (
-              filteredOptions.map((option, index) => {
-                const isSelected = values.includes(option.value);
-                return (
-                  <button
-                    key={option.value}
-                    ref={(element) => {
-                      optionRefs.current[index] = element;
-                    }}
-                    type="button"
-                    onClick={() => toggleOption(option)}
-                    onKeyDown={handleNavigationKey}
-                    className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-control transition-colors duration-150 flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
-                    role="option"
-                    aria-selected={isSelected}
-                  >
-                    <span
-                      className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
-                    >
-                      {isSelected && <Check size={12} className="text-white" aria-hidden="true" />}
-                    </span>
-                    <span className={isSelected ? 'text-primary font-medium' : 'text-text-primary'}>
-                      {option.label}
-                    </span>
-                  </button>
-                );
-              })
+            {searchable && (
+              <ListboxSearchInput
+                inputRef={inputRef}
+                value={searchQuery}
+                onChange={(next) => {
+                  setSearchQuery(next);
+                  setActiveIndex(-1);
+                }}
+                onKeyDown={handleNavigationKey}
+              />
             )}
-          </div>
-        </div>
-      )}
+
+            {values.length > 0 && (
+              <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
+                <span className="text-xs text-text-secondary">Đã chọn {values.length} mục</span>
+                <button
+                  type="button"
+                  onClick={() => onChange([])}
+                  className="text-xs text-primary hover:text-primary/80 transition-colors"
+                >
+                  Xóa tất cả
+                </button>
+              </div>
+            )}
+
+            <div
+              id={listboxId}
+              role="listbox"
+              aria-multiselectable="true"
+              className="overflow-y-auto custom-scrollbar p-2"
+              style={{ maxHeight }}
+            >
+              {filteredOptions.length === 0 ? (
+                <div className="px-4 py-3 text-sm text-text-secondary text-center">
+                  {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
+                </div>
+              ) : (
+                filteredOptions.map((option, index) => {
+                  const isSelected = values.includes(option.value);
+                  return (
+                    <button
+                      key={option.value}
+                      ref={(element) => {
+                        optionRefs.current[index] = element;
+                      }}
+                      type="button"
+                      onClick={() => toggleOption(option)}
+                      onKeyDown={handleNavigationKey}
+                      className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-control transition-colors flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <span
+                        className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
+                      >
+                        {isSelected && (
+                          <Check size={12} className="text-white" aria-hidden="true" />
+                        )}
+                      </span>
+                      <span
+                        className={isSelected ? 'text-primary font-medium' : 'text-text-primary'}
+                      >
+                        {option.label}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
