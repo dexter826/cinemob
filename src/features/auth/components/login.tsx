@@ -31,7 +31,6 @@ function GoogleIcon({ className }: { className?: string }) {
 
 const WALL_COUNT = 6;
 
-/** Lấy poster trending để dựng tường nền login — trang trí thuần, lỗi thì bỏ qua. */
 function useWallPosters(): TMDBMovieResult[] {
   const [posters, setPosters] = useState<TMDBMovieResult[]>([]);
 
@@ -65,7 +64,6 @@ function PosterTile({ poster }: { poster: TMDBMovieResult }) {
   );
 }
 
-/** Màn đăng nhập — bìa tạp chí: tường poster bên trái, cột form lệch trục trái bên phải. */
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);

@@ -57,7 +57,6 @@ const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   return null;
 };
 
-/** Thống kê hoạt động xem phim, điểm số và thể loại. */
 function StatsPage() {
   const { movies, loading, error, retry } = useMovieStore();
   const {
@@ -73,7 +72,6 @@ function StatsPage() {
     getMonthlyDataForYear,
   } = useStats(movies);
 
-  // Năm thống kê sync theo query param ?year=.
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedYear = searchParams.get('year') ?? '';
   const setSelectedYear = useCallback(

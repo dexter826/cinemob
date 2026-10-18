@@ -82,7 +82,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Làm mới thông tin người dùng từ Firebase Auth.
   const refreshUser = useCallback(async () => {
     if (!auth.currentUser) return;
     await auth.currentUser.reload();
