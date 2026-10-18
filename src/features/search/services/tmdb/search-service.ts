@@ -2,14 +2,14 @@ import { tmdbFetch, API_KEY, withLimit } from './client';
 import { TMDBMovieResult, TMDBPerson, TMDBMovieDetail } from '@/types';
 import { decodeMovieDetail, decodeMovieResultPage, decodePersonPage } from './decoders';
 
-// Tìm kiếm phim và TV show.
 export const searchMovies = async (
   query: string,
   page: number = 1,
   year?: string,
   signal?: AbortSignal,
 ): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
-  if (!query || !API_KEY) return { results: [], totalPages: 0 };
+  if (!query) return { results: [], totalPages: 0 };
+  if (!API_KEY) throw new Error('TMDB API key is unavailable');
 
   try {
     const params: Record<string, string> = {
@@ -30,6 +30,7 @@ export const searchMovies = async (
       ),
     ]);
 
+    if (!movieData || !tvData) throw new Error('Incomplete TMDB search response');
     const rawMovies = (movieData?.results || []).map((item) => ({
       ...item,
       media_type: 'movie' as const,
@@ -69,11 +70,10 @@ export const searchMovies = async (
     };
   } catch (error) {
     console.error('Failed to search movies:', error);
-    return { results: [], totalPages: 0 };
+    throw error;
   }
 };
 
-// Tìm kiếm người nổi tiếng.
 export const searchPeople = async (
   query: string,
   page: number = 1,

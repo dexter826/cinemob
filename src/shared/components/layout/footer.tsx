@@ -1,5 +1,4 @@
-import { Facebook, Instagram, Github, Mail, Heart } from 'lucide-react';
-import logoText from '@/assets/images/logo_text.png';
+import { Facebook, Instagram, Github, Mail } from 'lucide-react';
 
 function Footer() {
   const socialLinks = [
@@ -10,19 +9,14 @@ function Footer() {
   ];
 
   return (
-    <footer className="hidden md:block relative bg-surface border-t border-border-default py-6 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        {/* Khối 1: Thương hiệu */}
+    <footer className="hidden md:block relative bg-background border-t border-border py-6 mt-auto">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex-1 text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-2">
-            <img src={logoText} alt="CineMOB" className="h-7 select-none" />
-          </div>
-          <p className="text-xs text-text-secondary mt-1.5 flex items-center justify-center md:justify-start gap-1">
-            Sổ tay điện ảnh của riêng bạn.
-          </p>
+          <span className="font-display text-lg tracking-wide select-none">
+            Cine<span className="text-primary">MOB</span>
+          </span>
         </div>
 
-        {/* Khối 2: Mạng xã hội */}
         <div className="flex-1 flex items-center justify-center gap-5">
           {socialLinks.map((link) => {
             const Icon = link.icon;
@@ -41,20 +35,8 @@ function Footer() {
           })}
         </div>
 
-        {/* Khối 3: Bản quyền */}
-        <div className="flex-1 text-xs text-text-secondary flex items-center justify-center md:justify-end gap-1">
-          <span>© {new Date().getFullYear()}</span>
-          <span>Made with</span>
-          <Heart className="w-3 h-3 text-primary inline-block" aria-hidden="true" />
-          <span>by</span>
-          <a
-            href="https://github.com/dexter826"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary font-medium hover:underline"
-          >
-            MOB
-          </a>
+        <div className="flex-1 text-[10px] font-medium tracking-[0.1em] text-text-secondary flex items-center justify-center md:justify-end">
+          <span>© {new Date().getFullYear()} CineMOB</span>
         </div>
       </div>
     </footer>

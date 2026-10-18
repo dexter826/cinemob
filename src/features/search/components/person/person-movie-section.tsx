@@ -1,7 +1,9 @@
 import type { RefObject } from 'react';
-import { ArrowDown, ArrowUp, Calendar, Film, Filter, Search, Type, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calendar, Film, Filter, Type } from 'lucide-react';
 import type { PersonMovie } from '@/types';
-import TMDBMovieCard from '../tmdb-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import SearchField from '@/shared/components/ui/search-field';
+import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -27,7 +29,6 @@ interface PersonMovieSectionProps {
   onPageChange: (page: number) => void;
 }
 
-// Thanh tìm/lọc + lưới phim của nghệ sĩ.
 export function PersonMovieSection({
   searchQuery,
   onSearchQueryChange,
@@ -64,36 +65,16 @@ export function PersonMovieSection({
 
   return (
     <>
-      {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 pt-4">
         <div className="flex items-center gap-3 relative md:flex-1">
-          <div className="relative group flex-1">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-              size={18}
-              aria-hidden="true"
-            />
-            <input
-              type="text"
-              aria-label="Tìm phim của nghệ sĩ này"
-              value={searchQuery}
-              onChange={(e) => onSearchQueryChange(e.target.value)}
-              placeholder="Tìm phim của nghệ sĩ này…"
-              autoComplete="off"
-              spellCheck={false}
-              className="w-full h-11 sm:h-12 bg-surface border border-border-default rounded-control sm:rounded-card pl-11 sm:pl-12 pr-10 text-xs sm:text-sm font-medium text-text-primary focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/30 shadow-premium transition-colors"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => onSearchQueryChange('')}
-                type="button"
-                aria-label="Xóa từ khóa tìm kiếm"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 text-text-secondary transition-colors cursor-pointer"
-              >
-                <X size={14} aria-hidden="true" />
-              </button>
-            )}
-          </div>
+          <SearchField
+            variant="underline"
+            value={searchQuery}
+            onChange={onSearchQueryChange}
+            placeholder="Tìm phim của nghệ sĩ này…"
+            label="Tìm phim của nghệ sĩ này"
+            className="flex-1"
+          />
 
           <button
             onClick={(e) => {
@@ -101,34 +82,34 @@ export function PersonMovieSection({
               onShowFiltersChange(!showFilters);
             }}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-control sm:rounded-card border transition-colors shadow-premium cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border-default text-text-secondary hover:border-primary/50'}`}
+            className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-primary'}`}
           >
-            <Filter size={20} aria-hidden="true" />
+            <Filter size={18} aria-hidden="true" />
           </button>
 
           {showFilters && (
             <div
               ref={filterRef}
-              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border shadow-elevated flex flex-col gap-6 md:min-w-[320px]"
+              className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border flex flex-col gap-6 md:min-w-[320px]"
             >
               <div className="space-y-3">
                 <div className="text-xs font-semibold text-text-secondary">Sắp xếp theo</div>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary shadow-lg shadow-primary/20' : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold bg-black/5 dark:bg-white/5 text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
                   >
                     {sortOrder === 'asc' ? (
                       <ArrowUp size={14} aria-hidden="true" />
@@ -158,7 +139,7 @@ export function PersonMovieSection({
                     options={availableYears.map((year) => ({ value: year, label: year }))}
                     values={selectedYears}
                     onChange={(values) => onSelectedYearsChange(values.map((v) => v.toString()))}
-                    placeholder="Tất cả các năm"
+                    placeholder="Chọn năm…"
                   />
                 </div>
               </div>
@@ -167,25 +148,24 @@ export function PersonMovieSection({
         </div>
 
         {paginatedMovies.length > 0 && (
-          <div className="flex items-center justify-end">
-            <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-control border border-border tabular-nums">
-              Hiển thị {paginatedMovies.length} / {filteredCount} mục
-            </span>
-          </div>
+          <p className="flex items-center justify-end text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+            Hiển thị {paginatedMovies.length} / {filteredCount} mục
+          </p>
         )}
       </div>
 
-      {/* Results */}
       {paginatedMovies.length > 0 ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
             {paginatedMovies.map((movie) => (
-              <TMDBMovieCard
+              <PosterCard
                 key={`${movie.id}-${movie.media_type}`}
-                movie={movie}
+                title={getMainTitleForTMDB(movie)}
+                posterPath={movie.poster_path}
+                mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
+                meta={(movie.release_date || movie.first_air_date || '').split('-')[0]}
+                credit={movie.character || movie.job}
                 onClick={() => handleMovieClick(movie)}
-                character={movie.character}
-                job={movie.job}
               />
             ))}
           </div>

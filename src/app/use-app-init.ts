@@ -1,17 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import useInitialLoadStore from '@/shared/stores/initial-load-store';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '@/features/albums/stores/album-store';
-import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
 import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
-import { subscribeToAlbums } from '@/features/albums/services/album-service';
 import { syncMemberProfile } from '@/features/profile/services/member-profile-service';
 import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
-import { Album, Movie } from '@/types';
+import { Movie } from '@/types';
 
-// Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
   const { user } = useAuth();
   const userId = user?.uid;
@@ -23,99 +19,57 @@ export const useAppInit = () => {
     movies: allMovies,
     loading: moviesLoading,
   } = useMovieStore();
-  const { markInitialLoadComplete } = useInitialLoadStore();
   const { showToast } = useToastStore();
 
   const {
     albums,
     loading: albumsLoading,
-    setAlbums,
-    setLoading: setAlbumsLoading,
+    initialize: initAlbums,
+    cleanup: cleanupAlbums,
     setAlbumCoverMovies,
   } = useAlbumStore();
-  const coverMovieIdsRef = useRef<Record<string, string>>({});
-
-  const { reset: resetRecommendations, setActiveUser } = useRecommendationsStore();
 
   const { setMovies: setCalendarMovies, setLoading: setCalendarLoading } =
     useReleaseCalendarStore();
 
   useEffect(() => {
-    if (user) {
-      initMovies(user.uid);
+    if (userId) {
+      initMovies(userId);
     } else {
       cleanupMovies();
     }
-  }, [user, initMovies, cleanupMovies]);
+  }, [userId, initMovies, cleanupMovies]);
 
   useEffect(() => {
-    if (moviesInitialized) {
-      markInitialLoadComplete();
-    }
-  }, [moviesInitialized, markInitialLoadComplete]);
-
-  useEffect(() => {
-    if (!user) {
-      setAlbums([]);
-      setAlbumsLoading(false);
-      return;
-    }
-
-    const unsubscribe = subscribeToAlbums(user.uid, (data: Album[]) => {
-      setAlbums(data);
-      setAlbumsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [user, setAlbums, setAlbumsLoading]);
+    if (userId) initAlbums(userId);
+    else cleanupAlbums();
+    return cleanupAlbums;
+  }, [userId, initAlbums, cleanupAlbums]);
 
   useEffect(() => {
     if (albumsLoading || !moviesInitialized) return;
 
-    const updates: Record<string, Movie | null> = {};
+    const updates: Record<string, Movie[]> = {};
     let hasUpdates = false;
 
     albums.forEach((album) => {
       const albumId = album.docId;
       if (!albumId) return;
 
-      if (!album.movieDocIds || album.movieDocIds.length === 0) {
-        updates[albumId] = null;
-        hasUpdates = true;
-        return;
-      }
+      // Bìa album = tối đa 3 phim đầu tiên theo thứ tự trong album.
+      const covers = (album.movieDocIds || [])
+        .map((docId) => allMovies.find((m) => m.docId === docId))
+        .filter((movie): movie is Movie => movie !== undefined)
+        .slice(0, 3);
 
-      let selectedMovieId = coverMovieIdsRef.current[albumId];
-
-      if (!selectedMovieId || !album.movieDocIds.includes(selectedMovieId)) {
-        const randomIndex = Math.floor(Math.random() * album.movieDocIds.length);
-        selectedMovieId = album.movieDocIds[randomIndex];
-        coverMovieIdsRef.current[albumId] = selectedMovieId;
-      }
-
-      const movieData = allMovies.find((m) => m.docId === selectedMovieId);
-      if (movieData) {
-        updates[albumId] = movieData;
-        hasUpdates = true;
-      } else {
-        updates[albumId] = null;
-        hasUpdates = true;
-      }
+      updates[albumId] = covers;
+      hasUpdates = true;
     });
 
     if (hasUpdates) {
       setAlbumCoverMovies(updates);
     }
   }, [albums, albumsLoading, moviesInitialized, allMovies, setAlbumCoverMovies]);
-
-  useEffect(() => {
-    if (!userId) {
-      resetRecommendations();
-      return;
-    }
-
-    setActiveUser(userId);
-  }, [userId, setActiveUser, resetRecommendations]);
 
   useEffect(() => {
     const currentMovies = useMovieStore.getState();

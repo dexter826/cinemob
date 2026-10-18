@@ -43,7 +43,6 @@ interface MovieFormFieldsProps {
   };
 }
 
-// Các trường thông tin chi tiết phim
 function MovieFormFields({
   isManualMode,
   manualMediaType,
@@ -62,7 +61,6 @@ function MovieFormFields({
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Media Type */}
         <div className="space-y-2">
           <label
             htmlFor="movie-media-type"
@@ -88,13 +86,12 @@ function MovieFormFields({
               placeholder="Chọn loại…"
             />
           ) : (
-            <div className="w-full h-11 flex items-center bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-secondary">
+            <div className="w-full h-11 flex items-center border border-border rounded-card px-4 text-sm font-semibold text-text-secondary">
               {isTVSeries ? 'Series' : 'Phim lẻ'}
             </div>
           )}
         </div>
 
-        {/* Country */}
         <div className="space-y-2">
           <label
             htmlFor="movie-country"
@@ -106,7 +103,7 @@ function MovieFormFields({
           </label>
           <div
             ref={refs.country}
-            className={`transition-transform duration-300 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && errors.country ? 'scale-[1.02]' : ''}`}
           >
             <Dropdown
               id="movie-country"
@@ -121,7 +118,6 @@ function MovieFormFields({
           </div>
         </div>
 
-        {/* Release Date */}
         <div className="space-y-2">
           <label
             htmlFor="movie-release-date"
@@ -133,7 +129,7 @@ function MovieFormFields({
           </label>
           <div
             ref={refs.releaseDate}
-            className={`transition-transform duration-300 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && errors.releaseDate ? 'scale-[1.02]' : ''}`}
           >
             <DatePicker
               id="movie-release-date"
@@ -147,7 +143,6 @@ function MovieFormFields({
           </div>
         </div>
 
-        {/* Runtime / Seasons */}
         <div className="space-y-2">
           <label
             htmlFor="movie-runtime"
@@ -162,7 +157,7 @@ function MovieFormFields({
             {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
           <div
-            className={`transition-transform duration-300 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
+            className={`transition-transform duration-200 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
           >
             <input
               id="movie-runtime"
@@ -182,8 +177,8 @@ function MovieFormFields({
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums"
-              placeholder={isTVSeries ? 'Số mùa…' : 'Phút…'}
+              className="w-full h-11 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 tabular-nums"
+              placeholder={isTVSeries ? 'Nhập số mùa…' : 'Nhập thời lượng (phút)…'}
             />
             {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
               <p role="alert" className="text-xs font-medium text-danger ml-1 mt-1">
@@ -196,7 +191,6 @@ function MovieFormFields({
         </div>
       </div>
 
-      {/* Genres */}
       <div className="space-y-2">
         <label
           htmlFor="movie-genres"
@@ -229,7 +223,6 @@ function MovieFormFields({
         />
       </div>
 
-      {/* Overview */}
       <div className="space-y-2">
         <label
           htmlFor="movie-overview"
@@ -246,8 +239,8 @@ function MovieFormFields({
           autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors resize-none"
-          placeholder="Giới thiệu ngắn về cốt truyện…"
+          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors resize-none"
+          placeholder="Nhập tóm tắt cốt truyện…"
         />
       </div>
     </div>

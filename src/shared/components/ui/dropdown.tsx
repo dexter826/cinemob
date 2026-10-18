@@ -1,5 +1,8 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import ListboxSearchInput from './listbox-search-input';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { getPanelMotion } from '@/constants/animations';
 
 interface Option {
   value: string | number;
@@ -48,6 +51,8 @@ function Dropdown({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const reducedMotion = useReducedMotion() ?? false;
+  const panelMotion = getPanelMotion(reducedMotion);
 
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value),
@@ -153,12 +158,12 @@ function Dropdown({
         onKeyDown={handleNavigationKey}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
-          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
-          hover:border-primary/30 transition-colors duration-300
-          flex items-center justify-between shadow-sm
+          w-full h-11 border border-border-default rounded-card px-4 text-left
+          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          hover:border-primary/30 transition-colors
+          flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20 shadow-premium' : ''}
+          ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -169,73 +174,67 @@ function Dropdown({
         aria-invalid={ariaInvalid}
       >
         <span
-          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-secondary/60'}`}
+          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-muted'}`}
         >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           size={16}
           aria-hidden="true"
-          className={`text-text-secondary transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`}
+          className={`text-text-secondary transition-transform ${isOpen ? 'rotate-180 text-primary' : ''}`}
         />
       </button>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card shadow-elevated z-50 overflow-hidden">
-          {searchable && (
-            <div className="p-3 border-b border-border-default bg-black/5 dark:bg-white/5">
-              <input
-                ref={inputRef}
-                type="text"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            {...panelMotion}
+            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
+          >
+            {searchable && (
+              <ListboxSearchInput
+                inputRef={inputRef}
                 value={searchQuery}
-                onChange={(event) => {
-                  setSearchQuery(event.target.value);
+                onChange={(next) => {
+                  setSearchQuery(next);
                   setActiveIndex(-1);
                 }}
                 onKeyDown={handleNavigationKey}
-                placeholder="Tìm kiếm…"
-                aria-label="Tìm kiếm tùy chọn"
-                autoComplete="off"
-                spellCheck={false}
-                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder-text-secondary/50"
               />
-            </div>
-          )}
-
-          <div
-            id={listboxId}
-            role="listbox"
-            className="overflow-y-auto custom-scrollbar p-2"
-            style={{ maxHeight }}
-          >
-            {filteredOptions.length === 0 ? (
-              <div className="px-4 py-4 text-sm text-text-secondary text-center italic opacity-60">
-                {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
-              </div>
-            ) : (
-              filteredOptions.map((option, index) => (
-                <button
-                  key={option.value}
-                  ref={(element) => {
-                    optionRefs.current[index] = element;
-                  }}
-                  type="button"
-                  onClick={() => handleSelect(option)}
-                  onKeyDown={handleNavigationKey}
-                  className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors duration-200 flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold shadow-lg shadow-primary/20' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
-                  role="option"
-                  aria-selected={option.value === value}
-                >
-                  <span>{option.label}</span>
-                  {option.value === value && (
-                    <Check size={16} className="text-white" aria-hidden="true" />
-                  )}
-                </button>
-              ))
             )}
-          </div>
-        </div>
-      )}
+
+            <div
+              id={listboxId}
+              role="listbox"
+              className="overflow-y-auto custom-scrollbar p-2"
+              style={{ maxHeight }}
+            >
+              {filteredOptions.length === 0 ? (
+                <div className="px-4 py-4 text-sm text-text-secondary text-center italic opacity-60">
+                  {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
+                </div>
+              ) : (
+                filteredOptions.map((option, index) => (
+                  <button
+                    key={option.value}
+                    ref={(element) => {
+                      optionRefs.current[index] = element;
+                    }}
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    onKeyDown={handleNavigationKey}
+                    className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
+                    role="option"
+                    aria-selected={option.value === value}
+                  >
+                    <span>{option.label}</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

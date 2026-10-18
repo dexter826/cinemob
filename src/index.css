@@ -5,111 +5,117 @@
 
 /* Design tokens: giá trị sáng mặc định, .dark ghi đè bằng biến CSS cùng tên. */
 @theme {
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Be Vietnam Pro', sans-serif;
+  --font-sans: 'Be Vietnam Pro', sans-serif;
+  --font-display: 'Anton', sans-serif;
 
-  --color-background: #fafafa; /* zinc-50 */
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-primary: #10b981; /* emerald-500 */
-  --color-primary-hover: #059669; /* emerald-600 */
-  --color-on-primary: #09090b;
-  --color-secondary: #71717a; /* zinc-500 */
-  --color-text-primary: #09090b; /* zinc-950 */
-  --color-text-secondary: #52525b; /* zinc-600 */
-  --color-border: #e4e4e7; /* zinc-200 */
-  --color-focus: #059669;
+  --color-background: #f7f4ed;
+  --color-surface: #fdfbf6;
+  --color-surface-elevated: #fffefa;
+  --color-primary: #8f6400;
+  --color-primary-hover: #7a5600;
+  --color-on-primary: #fffefa;
+  --color-secondary: #6b6b66;
+  --color-text-primary: #0a0a0a;
+  --color-text-secondary: #6b6b66;
+  --color-text-muted: #5f5b53; /* chữ phụ đặc ≥4.5:1 — placeholder, hint */
+  --color-text-faint: #8a857c; /* chữ trang trí/cỡ lớn ≥3:1 — số mờ, rule phụ */
+  --color-border: rgb(20 20 20 / 0.16);
+  --color-skeleton: color-mix(in srgb, var(--color-text-primary) 8%, var(--color-surface));
+  --color-focus: #8f6400;
   --color-success: #15803d; /* green-700 */
-  --color-on-success: #ffffff;
+  --color-on-success: #fffefa;
   --color-warning: #a16207; /* yellow-700 */
   --color-danger: #b91c1c; /* red-700 */
-  --color-on-danger: #ffffff;
+  --color-on-danger: #fffefa;
   --color-info: #0369a1; /* sky-700 */
   /* Hairline border cho vạch chia mảnh trên nền tint. */
-  --color-border-default: rgb(9 9 11 / 0.06);
+  --color-border-default: rgb(20 20 20 / 0.07);
 
-  --radius-control: 12px;
-  --radius-card: 16px;
-  --radius-dialog: 24px;
+  --radius-control: 8px;
+  --radius-card: 8px;
+  --radius-dialog: 8px;
+  --radius-poster: 4px;
 
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-  --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
-  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  /* Elevation bằng hairline, không bóng — token giữ tên và giá trị none để không vỡ utility. */
+  --shadow-card: 0 0 #0000;
+  --shadow-elevated: 0 0 #0000;
+  --shadow-premium: 0 0 #0000;
+  --shadow-premium-hover: 0 0 #0000;
+  --shadow-glass: 0 0 #0000;
 
-  --animate-slide-in-right: slide-in-right 0.3s ease-out forwards;
-  --animate-slide-down: slide-down 0.3s ease-out forwards;
-  --animate-fade-in: fade-in 0.2s ease-out forwards;
-  --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
 
-  @keyframes slide-in-right {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
+  --animate-page-enter: page-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-confetti: confetti-burst 1s ease-out forwards;
 
-  @keyframes slide-down {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes fade-in {
+  @keyframes splash-brand {
     from {
       opacity: 0;
+      transform: scale(0.96);
     }
     to {
       opacity: 1;
-    }
-  }
-
-  @keyframes zoom-in-95 {
-    from {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    to {
       transform: scale(1);
+    }
+  }
+
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
       opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes confetti-burst {
+    from {
+      opacity: 1;
+      transform: rotate(var(--confetti-angle)) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: rotate(var(--confetti-angle)) translateY(calc(var(--confetti-distance) * -1));
     }
   }
 }
 
 .dark {
-  --color-background: #09090b; /* zinc-950 */
-  --color-surface: #141417; /* zinc-900 deep */
-  --color-surface-elevated: #1c1c20; /* raised zinc */
-  --color-primary-hover: #34d399; /* emerald-400 */
-  --color-secondary: #a1a1aa; /* zinc-400 */
+  --color-background: #0a0a0a;
+  --color-surface: #141414;
+  --color-surface-elevated: #1a1a1a;
+  --color-primary: #ca8a04;
+  --color-primary-hover: #dfa60b;
+  --color-on-primary: #0a0a0a;
+  --color-secondary: #8a8a85;
   --color-success: #4ade80; /* green-400 */
   --color-on-success: #09090b;
   --color-warning: #fbbf24; /* amber-400 */
   --color-danger: #f87171; /* red-400 */
   --color-on-danger: #09090b;
   --color-info: #38bdf8; /* sky-400 */
-  --color-text-primary: #fafafa; /* zinc-50 */
-  --color-text-secondary: #a1a1aa; /* zinc-400 */
-  --color-border: #27272a; /* zinc-800 */
-  --color-focus: #34d399;
-  --color-border-default: rgb(250 250 250 / 0.06);
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  --shadow-elevated: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  --color-text-primary: #f5f5f2;
+  --color-text-secondary: #8a8a85;
+  --color-text-muted: #9c9c97;
+  --color-text-faint: #6e6e69;
+  --color-border: rgb(255 255 255 / 0.14);
+  --color-focus: #ca8a04;
+  --color-border-default: rgb(255 255 255 / 0.07);
 }
 
 @layer base {
   html {
     scrollbar-gutter: stable;
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: clip;
   }
 
   :root {
@@ -126,7 +132,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Chặn double-tap zoom delay trên nút và liên kết */
+  /* Chặn double-tap zoom delay */
   button,
   a {
     touch-action: manipulation;
@@ -148,7 +154,6 @@
     }
   }
 
-  /* Custom Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -175,7 +180,6 @@
     background: color-mix(in srgb, var(--color-text-secondary) 70%, transparent);
   }
 
-  /* Scrollbar cho Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 30%, transparent) transparent;
@@ -186,7 +190,6 @@
     scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 50%, transparent) transparent;
   }
 
-  /* Horizontal scrollbar */
   ::-webkit-scrollbar-horizontal {
     height: 6px;
   }
@@ -205,7 +208,6 @@
     background: color-mix(in srgb, var(--color-text-secondary) 40%, transparent);
   }
 
-  /* High contrast mode support */
   @media (prefers-contrast: high) {
     ::-webkit-scrollbar-thumb {
       background: var(--color-text-primary);
@@ -217,7 +219,6 @@
     }
   }
 
-  /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     ::-webkit-scrollbar-thumb {
       transition: none;
@@ -232,54 +233,20 @@
     }
   }
 
-  /* Random Picker Animations */
-  @keyframes pulse-soft {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-  }
-
-  @keyframes card-float {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
-
-  .animate-pulse-soft {
-    animation: pulse-soft 1.5s ease-in-out infinite;
-  }
-
-  .animate-card-float {
-    animation: card-float 3s ease-in-out infinite;
-  }
-
-  /* 3D perspective for movie cards */
   .movie-wheel-container {
     perspective: 1200px;
     transform-style: preserve-3d;
   }
 
+  /* Heading mặc định = body font; chữ display Anton áp qua class .font-display ở từng component. */
   h1,
   h2,
-  h3,
-  .font-display {
-    font-family: 'Be Vietnam Pro', sans-serif;
+  h3 {
+    font-family: var(--font-sans);
   }
 
-  .center-card-glow {
-    box-shadow:
-      0 20px 50px -10px rgba(0, 0, 0, 0.5),
-      0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  .font-display {
+    font-family: var(--font-display);
   }
 }
 

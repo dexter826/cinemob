@@ -11,7 +11,6 @@ import { db } from '@/shared/lib/firebase';
 import { normalizeDate } from '@/shared/utils/date-format';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
-// Collection Firestore của hồ sơ thành viên.
 export const MEMBER_PROFILE_COLLECTION = 'member_profiles';
 
 export interface PublicProfileSummary {
@@ -43,7 +42,6 @@ const profileDocCache = new Map<string, { data: MemberProfile | null; at: number
 const PUBLIC_PROFILE_CACHE_TTL = 5 * 60 * 1000;
 let publicProfileCache: { profiles: PublicProfileSummary[]; fetchedAt: number } | null = null;
 
-// Fetch một lần mỗi phiên, cache 5 phút.
 export const fetchPublicProfiles = async (): Promise<PublicProfileSummary[]> => {
   if (publicProfileCache && Date.now() - publicProfileCache.fetchedAt < PUBLIC_PROFILE_CACHE_TTL) {
     return publicProfileCache.profiles;
@@ -106,7 +104,6 @@ const readMemberProfile = async (uid: string): Promise<MemberProfile | null> => 
   };
 };
 
-// Ưu tiên cache còn hạn, hết hạn mới đọc lại Firestore.
 export const getMemberProfile = async (uid: string): Promise<MemberProfile | null> => {
   const cached = profileDocCache.get(uid);
   if (cached && Date.now() - cached.at < PROFILE_CACHE_TTL) return cached.data;

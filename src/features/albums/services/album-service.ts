@@ -32,7 +32,6 @@ const mapDocToAlbum = (docId: string, data: Record<string, unknown>): Album => {
   };
 };
 
-// Thêm album mới vào bộ sưu tập.
 export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updatedAt'>) => {
   const payload = {
     ...album,
@@ -44,11 +43,26 @@ export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updat
   return docRef.id;
 };
 
-// Cập nhật thông tin album.
 export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
   const albumRef = doc(db, COLLECTION_NAME, docId);
   await updateDoc(albumRef, {
     ...updates,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+export const addMovieToAlbum = async (albumId: string, movieDocId: string) => {
+  const albumRef = doc(db, COLLECTION_NAME, albumId);
+  await updateDoc(albumRef, {
+    movieDocIds: arrayUnion(movieDocId),
+    updatedAt: serverTimestamp(),
+  });
+};
+
+export const removeMovieFromAlbum = async (albumId: string, movieDocId: string) => {
+  const albumRef = doc(db, COLLECTION_NAME, albumId);
+  await updateDoc(albumRef, {
+    movieDocIds: arrayRemove(movieDocId),
     updatedAt: serverTimestamp(),
   });
 };
@@ -85,12 +99,10 @@ export const syncMovieAlbums = async (
   await batch.commit();
 };
 
-// Xóa album.
 export const deleteAlbum = async (docId: string) => {
   await deleteDoc(doc(db, COLLECTION_NAME, docId));
 };
 
-// Theo dõi danh sách album theo người dùng.
 export const subscribeToAlbums = (
   uid: string,
   callback: (albums: Album[]) => void,
@@ -115,23 +127,27 @@ export const subscribeToAlbums = (
   );
 };
 
-// Theo dõi chi tiết một album.
 export const subscribeToAlbum = (
   uid: string,
   docId: string,
   callback: (album: Album | null) => void,
+  onError?: (error: unknown) => void,
 ) => {
   const ref = doc(db, COLLECTION_NAME, docId);
-  return onSnapshot(ref, (snapshot) => {
-    if (!snapshot.exists()) {
-      callback(null);
-      return;
-    }
-    const data = snapshot.data();
-    if (data.uid !== uid) {
-      callback(null);
-      return;
-    }
-    callback(mapDocToAlbum(snapshot.id, data as Record<string, unknown>));
-  });
+  return onSnapshot(
+    ref,
+    (snapshot) => {
+      if (!snapshot.exists()) {
+        callback(null);
+        return;
+      }
+      const data = snapshot.data();
+      if (data.uid !== uid) {
+        callback(null);
+        return;
+      }
+      callback(mapDocToAlbum(snapshot.id, data as Record<string, unknown>));
+    },
+    onError,
+  );
 };

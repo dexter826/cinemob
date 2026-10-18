@@ -51,7 +51,7 @@ function RatingSection({
         </span>
       </div>
       <div
-        className={`bg-black/5 dark:bg-white/5 border border-border rounded-control p-4 transition-colors shadow-sm ${
+        className={`border border-border rounded-control p-4 transition-colors ${
           isAnimating ? 'border-danger/50' : ''
         }`}
       >
@@ -80,7 +80,7 @@ function RatingSection({
               <Star
                 aria-hidden="true"
                 className={`w-4 h-4 sm:w-6 sm:h-6 transition-colors ${
-                  star <= displayRating ? 'fill-warning text-warning' : 'text-text-secondary/40'
+                  star <= displayRating ? 'fill-warning text-warning' : 'text-text-muted'
                 }`}
               />
             </button>

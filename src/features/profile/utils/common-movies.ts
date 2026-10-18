@@ -4,7 +4,6 @@ import type { Movie, ProfileMovie } from '@/types';
 export const getCommonMovieKey = (id: string | number, mediaType?: 'movie' | 'tv'): string =>
   `${String(id)}|${mediaType ?? 'movie'}`;
 
-/** Giao phim đã xem của mình với danh sách phim của đối phương. */
 export const getCommonMovies = (
   myMovies: Movie[],
   profileMovies: ProfileMovie[],

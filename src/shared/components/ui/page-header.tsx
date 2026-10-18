@@ -5,7 +5,6 @@ import { IconButton } from './icon-button';
 interface PageHeaderProps {
   title: string;
   description?: string;
-  eyebrow?: string;
   onBack?: () => void;
   actions?: React.ReactNode;
   leading?: React.ReactNode;
@@ -19,7 +18,6 @@ interface PageHeaderProps {
 function PageHeader({
   title,
   description,
-  eyebrow,
   onBack,
   actions,
   leading,
@@ -34,7 +32,9 @@ function PageHeader({
       <LegacyIcon className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
     ) : undefined);
   return (
-    <div className={`flex items-start justify-between gap-3 sm:gap-6 ${className}`}>
+    <div
+      className={`flex items-center justify-between gap-3 sm:gap-6 pb-5 border-b border-border ${className}`}
+    >
       <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
         {onBack && (
           <IconButton label="Quay lại trang trước" onClick={onBack} variant="secondary" size="md">
@@ -43,8 +43,7 @@ function PageHeader({
         )}
         {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}
         <div className="min-w-0">
-          {eyebrow && <p className="text-xs font-semibold text-text-secondary mb-1">{eyebrow}</p>}
-          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-text-primary truncate font-display">
+          <h1 className="font-display tracking-wide text-2xl sm:text-3xl md:text-4xl text-text-primary truncate">
             {title}
           </h1>
           {description && (

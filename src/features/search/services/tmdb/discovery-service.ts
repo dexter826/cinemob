@@ -2,7 +2,6 @@ import { tmdbFetch, API_KEY } from './client';
 import { TMDBMovieResult, TMDBPerson } from '@/types';
 import { decodeMovieResultPage, decodePerson } from './decoders';
 
-// Lấy phim đang thịnh hành.
 export const getTrendingMovies = async (
   page: number = 1,
   signal?: AbortSignal,
@@ -17,6 +16,7 @@ export const getTrendingMovies = async (
     signal,
   );
 
+  if (!data) throw new Error('Failed to load trending movies');
   let results = (data?.results || []).filter(
     (item: TMDBMovieResult) => item.media_type === 'movie' || item.media_type === 'tv',
   );
@@ -25,7 +25,6 @@ export const getTrendingMovies = async (
   return { results, totalPages: data?.total_pages || 1 };
 };
 
-// Khám phá phim với bộ lọc.
 export const getDiscoverMovies = async (
   params: {
     page?: number;
@@ -38,7 +37,7 @@ export const getDiscoverMovies = async (
   } = {},
   signal?: AbortSignal,
 ): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
-  if (!API_KEY) return { results: [], totalPages: 0 };
+  if (!API_KEY) throw new Error('TMDB API key is unavailable');
 
   const page = params.page || 1;
   const sortBy = params.sortBy || 'popularity.desc';
@@ -73,10 +72,12 @@ export const getDiscoverMovies = async (
         decodeMovieResultPage,
         signal,
       );
+      if (!data) throw new Error('Failed to load discovery results');
       combinedResults = (data?.results || []).map((i) => ({ ...i, media_type: 'movie' as const }));
       totalPages = data?.total_pages || 1;
     } else if (params.type === 'tv') {
       const data = await tmdbFetch(`discover/tv`, buildParams('tv'), decodeMovieResultPage, signal);
+      if (!data) throw new Error('Failed to load discovery results');
       combinedResults = (data?.results || []).map((i) => ({ ...i, media_type: 'tv' as const }));
       totalPages = data?.total_pages || 1;
     } else {
@@ -84,6 +85,7 @@ export const getDiscoverMovies = async (
         tmdbFetch(`discover/movie`, buildParams('movie'), decodeMovieResultPage, signal),
         tmdbFetch(`discover/tv`, buildParams('tv'), decodeMovieResultPage, signal),
       ]);
+      if (!movieData || !tvData) throw new Error('Incomplete discovery results');
       combinedResults = [
         ...(movieData?.results || []).map((i) => ({ ...i, media_type: 'movie' as const })),
         ...(tvData?.results || []).map((i) => ({ ...i, media_type: 'tv' as const })),
@@ -112,11 +114,10 @@ export const getDiscoverMovies = async (
     return { results: combinedResults, totalPages };
   } catch (error) {
     console.error('Failed to discover movies:', error);
-    return { results: [], totalPages: 0 };
+    throw error;
   }
 };
 
-// Lấy thông tin chi tiết nghệ sĩ từ TMDB.
 export const getPersonDetails = async (
   personId: number | string,
   signal?: AbortSignal,
@@ -129,6 +130,7 @@ export const getPersonDetails = async (
       },
       decodePerson,
       signal,
+      true,
     );
 
     if (!personData) return null;
@@ -150,6 +152,6 @@ export const getPersonDetails = async (
     return personData;
   } catch (error) {
     console.error(`Failed to fetch person details for ${personId}:`, error);
-    return null;
+    throw error;
   }
 };

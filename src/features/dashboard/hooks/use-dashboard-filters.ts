@@ -7,6 +7,8 @@ import {
   getLatestWatchedDate,
 } from '@/features/movies/utils/movie-utils';
 import { normalizeDate } from '@/shared/utils/date-format';
+import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
+import { GENRE_TRANSLATIONS } from '@/constants/genres';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
@@ -41,9 +43,8 @@ const INITIAL_FILTER_STATE: FilterState = {
   sourceType: 'all',
 };
 
-const MOVIES_PER_PAGE = 20;
+const MOVIES_PER_PAGE = 24;
 
-// Xử lý lọc và sắp xếp danh sách phim.
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -80,7 +81,13 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     return Number.isInteger(page) && page > 1 ? page : 1;
   });
 
-  // Chép bộ lọc vào query string, bỏ qua giá trị mặc định.
+  // Đồng bộ currentPage khi URL thay đổi (Back/Forward trình duyệt).
+  useEffect(() => {
+    const pageParam = Number(searchParams.get('page'));
+    const targetPage = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
+    setCurrentPage((prev) => (prev !== targetPage ? targetPage : prev));
+  }, [searchParams]);
+
   const syncParams = useCallback(
     (next: FilterState, page: number, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
@@ -181,8 +188,9 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     if (filters.country) {
       const q = filters.country.toLowerCase();
       result = result.filter((m) => {
+        const rawCountry = (m.country || '').toLowerCase();
         const translatedCountry = getTranslatedCountries(m.country || '').toLowerCase();
-        return translatedCountry.includes(q);
+        return rawCountry.includes(q) || translatedCountry.includes(q);
       });
     }
 
@@ -220,7 +228,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
     result.sort((a, b) => {
       let comp = 0;
-      if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title);
+      if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title, 'vi');
       else {
         const da = getLatestWatchedDate(a)?.getTime() || 0;
         const db = getLatestWatchedDate(b)?.getTime() || 0;
@@ -233,10 +241,68 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   }, [currentTabMovies, filters, activeTab]);
 
   const totalPages = Math.ceil(processedMovies.length / MOVIES_PER_PAGE);
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+      syncParams(filters, totalPages);
+    }
+  }, [totalPages, currentPage, syncParams, filters]);
+
   const paginatedMovies = useMemo(() => {
     const start = (currentPage - 1) * MOVIES_PER_PAGE;
     return processedMovies.slice(start, start + MOVIES_PER_PAGE);
   }, [processedMovies, currentPage]);
+
+  const availableYears = useMemo(() => {
+    return Array.from(
+      new Set(
+        movies.flatMap((m) => {
+          const d = normalizeDate(m.watched_at);
+          const years = d ? [d.getFullYear()] : [];
+          getSeasonWatchedDates(m).forEach(({ date }) => years.push(date.getFullYear()));
+          return years;
+        }),
+      ),
+    )
+      .sort((a, b) => b - a)
+      .map((year) => ({
+        value: year,
+        label: year.toString(),
+      }));
+  }, [movies]);
+
+  const availableCountries = useMemo(() => {
+    return Array.from(
+      new Set(
+        movies
+          .filter((m) => m.country && m.country.trim().length > 0)
+          .flatMap((m) => (m.country ?? '').split(',').map((c) => c.trim()))
+          .filter((c) => c.length > 0),
+      ),
+    )
+      .sort()
+      .map((country) => ({
+        value: country,
+        label: COUNTRY_TRANSLATIONS[country] || country,
+      }));
+  }, [movies]);
+
+  const availableGenres = useMemo(() => {
+    return Array.from(
+      new Set(
+        movies
+          .filter((m) => m.genres && m.genres.trim().length > 0)
+          .flatMap((m) => (m.genres ?? '').split(',').map((g) => g.trim()))
+          .filter((g) => g.length > 0),
+      ),
+    )
+      .sort((a, b) => a.localeCompare(b, 'vi'))
+      .map((genre) => ({
+        value: genre,
+        label: GENRE_TRANSLATIONS[genre] || genre,
+      }));
+  }, [movies]);
 
   return {
     showFilters,
@@ -249,9 +315,13 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     setCurrentPage: goToPage,
     totalPages,
     processedMovies: paginatedMovies,
+    paginatedMovies,
     allProcessedMoviesCount: processedMovies.length,
     clearFilters,
     currentTabMovies,
+    availableYears,
+    availableCountries,
+    availableGenres,
     toggleSortOrder: () => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc'),
   };
 };

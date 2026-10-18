@@ -1,7 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import Spinner from '@/shared/components/ui/spinner';
+import CineMobSymbol from '@/shared/components/ui/cinemob-symbol';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Shield, Loader2, Star, CheckCircle2 } from 'lucide-react';
-import logoText from '@/assets/images/logo_text.png';
+import { getTrendingMovies } from '@/features/search/services/tmdb';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import type { TMDBMovieResult } from '@/types';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -26,40 +29,45 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-const SHOWCASE_FILMS = [
-  {
-    title: 'Vùng Đất Linh Hồn',
-    year: '2001',
-    rating: '9.5',
-    poster: 'https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg',
-    tiltClass: '-rotate-6 -translate-y-1 sm:-translate-y-2',
-    zIndex: 'z-10',
-    scaleClass: 'scale-90 sm:scale-95',
-  },
-  {
-    title: 'Interstellar',
-    year: '2014',
-    rating: '9.3',
-    poster: 'https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg',
-    tiltClass: 'rotate-0 translate-y-0',
-    zIndex: 'z-20',
-    scaleClass: 'scale-100 sm:scale-105 shadow-primary/20',
-  },
-  {
-    title: 'Dune: Part Two',
-    year: '2024',
-    rating: '9.0',
-    poster: 'https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg',
-    tiltClass: 'rotate-6 translate-y-1 sm:translate-y-2',
-    zIndex: 'z-10',
-    scaleClass: 'scale-90 sm:scale-95',
-  },
-];
+const WALL_COUNT = 6;
 
-/** Màn hình đăng nhập tài khoản CineMOB. */
+function useWallPosters(): TMDBMovieResult[] {
+  const [posters, setPosters] = useState<TMDBMovieResult[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getTrendingMovies()
+      .then((data) => {
+        if (cancelled) return;
+        setPosters((data?.results ?? []).filter((m) => m.poster_path).slice(0, WALL_COUNT));
+      })
+      .catch(() => {
+        // Poster trang trí nền: bỏ qua nếu gặp lỗi mạng hoặc rate-limit
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return posters;
+}
+
+function PosterTile({ poster }: { poster: TMDBMovieResult }) {
+  return (
+    <img
+      src={getTMDBImageUrl(poster.poster_path, 'w500')}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      className="w-full h-full object-cover"
+    />
+  );
+}
+
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const posters = useWallPosters();
 
   const handleLogin = useCallback(async () => {
     setIsLoading(true);
@@ -72,138 +80,66 @@ function Login() {
     }
   }, [signInWithGoogle]);
 
+  const hasWall = posters.length >= WALL_COUNT;
+
   return (
-    <main className="h-dvh max-h-dvh overflow-hidden flex flex-col lg:flex-row bg-background text-text-primary relative selection:bg-primary/20 selection:text-primary">
-      {/* Brand & Showcase Panel */}
-      <div className="relative z-10 flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 border-b lg:border-b-0 lg:border-r border-border-default bg-surface/20 overflow-y-auto lg:overflow-hidden">
-        {/* Header Section */}
-        <div>
-          <div className="flex items-center gap-3">
-            <img src={logoText} alt="CineMOB" className="h-7 sm:h-8 w-auto" />
-          </div>
+    <main className="min-h-dvh lg:h-dvh lg:overflow-hidden grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr] lg:grid-rows-1">
+      <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l min-h-0">
+        <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20 overflow-y-auto">
+          <div className="w-full max-w-sm">
+            <div className="flex items-center gap-3 mb-7">
+              <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
+              <p className="font-display text-2xl tracking-wide">
+                Cine<span className="text-primary">MOB</span>
+              </p>
+            </div>
 
-          <div className="mt-6 sm:mt-8 lg:mt-10 max-w-xl space-y-2 sm:space-y-3">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.15] text-text-primary font-display">
-              Mỗi phim bạn xem đều xứng đáng được nhớ.
+            <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9">
+              Theo dõi mọi bộ phim bạn xem.
             </h1>
-
-            <p className="text-xs sm:text-sm lg:text-base text-text-secondary leading-relaxed font-normal max-w-lg">
-              CineMOB là cuốn sổ tay điện ảnh của riêng bạn, nơi lưu lại từng tác phẩm, theo dõi
-              từng series và tìm ra phim hay tiếp theo.
+            <p className="mt-3 text-sm text-text-secondary leading-relaxed">
+              Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
             </p>
-          </div>
-        </div>
 
-        {/* Visual Layered Movie Showcase */}
-        <div className="relative my-4 sm:my-6 flex items-center justify-center py-2 sm:py-4">
-          {/* Ambient Glow Backdrop */}
-          <div className="absolute w-72 h-44 sm:w-96 sm:h-56 bg-linear-to-r from-primary/15 to-transparent blur-3xl -z-10 rounded-full pointer-events-none" />
-
-          {/* Decorative poster showcase, not interactive */}
-          <div
-            aria-hidden="true"
-            className="flex items-center justify-center -space-x-8 sm:-space-x-12 lg:-space-x-14"
-          >
-            {SHOWCASE_FILMS.map((film) => (
-              <div
-                key={film.title}
-                className={`relative rounded-card overflow-hidden border border-white/10 shadow-2xl w-28 sm:w-36 lg:w-44 aspect-2/3 shrink-0 bg-surface ${film.tiltClass} ${film.zIndex} ${film.scaleClass}`}
-              >
-                <img
-                  src={film.poster}
-                  alt=""
-                  width={300}
-                  height={450}
-                  className="w-full h-full object-cover select-none"
-                  loading="eager"
-                  draggable={false}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
-
-                <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-black/70 border border-white/10 text-text-secondary text-xs font-bold tabular-nums">
-                  <Star
-                    size={10}
-                    className="fill-text-secondary text-text-secondary"
-                    aria-hidden="true"
-                  />
-                  <span>{film.rating}</span>
-                </div>
-
-                <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                  <p className="text-white text-xs sm:text-sm font-bold truncate leading-tight">
-                    {film.title}
-                  </p>
-                  <p className="text-white/60 text-xs mt-0.5 font-medium">{film.year}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Tagline */}
-        <div className="pt-2 hidden sm:block">
-          <p className="text-xs text-text-secondary">Rạp phim của riêng bạn, mở cửa mọi lúc.</p>
-        </div>
-      </div>
-
-      {/* Auth Panel */}
-      <div className="relative z-10 w-full lg:w-[440px] xl:w-[480px] flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 bg-surface overflow-y-auto lg:overflow-hidden shrink-0">
-        <div className="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto space-y-6 sm:space-y-8">
-          <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary font-display">
-              Bắt đầu
-            </h2>
-            <p className="text-xs sm:text-sm text-text-secondary">
-              Đăng nhập để đồng bộ thư viện trên mọi thiết bị.
-            </p>
-          </div>
-
-          <div className="space-y-4">
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 rounded-card bg-surface border border-border hover:border-primary/40 hover:bg-black/5 dark:hover:bg-white/5 font-semibold text-text-primary transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >
               {isLoading ? (
-                <Loader2 size={20} className="animate-spin text-primary" aria-hidden="true" />
+                <Spinner size={18} className="text-current" />
               ) : (
                 <GoogleIcon className="w-5 h-5 shrink-0" />
               )}
-              <span className="text-sm font-semibold">
-                {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
-              </span>
+              <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
             </button>
-
-            <div className="flex items-center gap-2 text-xs text-text-secondary">
-              <Shield size={14} className="shrink-0 text-primary" aria-hidden="true" />
-              <span>Bảo mật dữ liệu cá nhân qua tài khoản Google</span>
-            </div>
-          </div>
-
-          {/* Feature Highlights / Value Points */}
-          <div className="pt-4 border-t border-border-default space-y-2 text-xs text-text-secondary">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Đồng bộ tức thì trên mọi thiết bị</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Nhắc lịch chiếu tập mới của series đang theo dõi</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={13} className="text-primary shrink-0" aria-hidden="true" />
-              <span>Miễn phí, không quảng cáo</span>
-            </div>
           </div>
         </div>
 
-        <footer className="pt-4 sm:pt-6 border-t border-border-default text-xs text-text-secondary flex items-center justify-between shrink-0">
-          <span>&copy; {new Date().getFullYear()} CineMOB</span>
-          <span className="text-xs opacity-60">Sổ tay điện ảnh</span>
+        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-[10px] font-semibold tracking-[0.08em] text-text-secondary shrink-0">
+          &copy; {new Date().getFullYear()} CineMOB
         </footer>
       </div>
+
+      {hasWall && (
+        <div className="order-2 lg:order-1 overflow-hidden min-h-0 h-full">
+          <div aria-hidden="true" className="grid grid-cols-6 gap-0.5 h-24 sm:h-28 lg:hidden">
+            {posters.map((poster) => (
+              <PosterTile key={poster.id} poster={poster} />
+            ))}
+          </div>
+          <div
+            aria-hidden="true"
+            className="hidden lg:grid grid-cols-3 grid-rows-2 gap-0.5 h-full w-full"
+          >
+            {posters.map((poster) => (
+              <PosterTile key={poster.id} poster={poster} />
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

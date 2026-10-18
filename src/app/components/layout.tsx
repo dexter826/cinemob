@@ -3,18 +3,12 @@ import Navbar from './navbar';
 import Footer from '@/shared/components/layout/footer';
 import MobileBottomNav from '@/shared/components/layout/mobile-bottom-nav';
 import ScrollToTop from '@/shared/components/ui/scroll-to-top';
-import useInitialLoadStore from '@/shared/stores/initial-load-store';
 
 interface LayoutProps {
   children: React.ReactNode;
-  appReady?: boolean;
 }
 
-function Layout({ children, appReady = true }: LayoutProps) {
-  const { isInitialLoadComplete, isPageLoading } = useInitialLoadStore();
-
-  const showFooter = appReady && isInitialLoadComplete && !isPageLoading;
-
+function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
       <a
@@ -27,12 +21,12 @@ function Layout({ children, appReady = true }: LayoutProps) {
       <main
         id="main-content"
         tabIndex={-1}
-        className="flex-1 relative pb-[calc(5rem+env(safe-area-inset-bottom,12px))] md:pb-0 min-h-[50vh] focus-visible:outline-none"
+        className="flex-1 relative pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0 min-h-[50vh]"
       >
         {children}
       </main>
 
-      {showFooter && <Footer />}
+      <Footer />
 
       <MobileBottomNav />
       <ScrollToTop />

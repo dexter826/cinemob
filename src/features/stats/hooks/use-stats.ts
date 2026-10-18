@@ -5,14 +5,12 @@ import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { normalizeDate } from '@/shared/utils/date-format';
 import { monthLabel } from '@/shared/utils/date-format';
 
-// Hook xử lý logic thống kê toàn diện.
 export const useStats = (movies: Movie[]) => {
   const watchedMovies = useMemo(
     () => movies.filter((m) => (m.status || 'history') === 'history'),
     [movies],
   );
 
-  // Danh sách các năm có dữ liệu phim.
   const availableYears = useMemo(() => {
     const years = new Set<string>();
     watchedMovies.forEach((m) => {
@@ -22,7 +20,6 @@ export const useStats = (movies: Movie[]) => {
     return Array.from(years).sort((a, b) => b.localeCompare(a));
   }, [watchedMovies]);
 
-  // Thống kê theo tháng cho một năm cụ thể.
   const getMonthlyDataForYear = useCallback(
     (year: string) => {
       const months = Array.from({ length: 12 }, (_, i) => ({
@@ -44,14 +41,12 @@ export const useStats = (movies: Movie[]) => {
   );
 
   const stats = useMemo(() => {
-    // Chỉ số cơ bản.
     const totalMovies = watchedMovies.length;
     const movieCount = watchedMovies.filter(
       (m) => m.media_type === 'movie' || !m.media_type,
     ).length;
     const tvCount = watchedMovies.filter((m) => m.media_type === 'tv').length;
 
-    // Đánh giá trung bình.
     const ratedMovies = watchedMovies.filter((m) => m.rating && m.rating > 0);
     const avgRating =
       ratedMovies.length > 0
@@ -60,7 +55,6 @@ export const useStats = (movies: Movie[]) => {
           ).toFixed(1)
         : '0';
 
-    // Phân bổ đánh giá.
     const moviesByRating: Record<string, number> = {
       1: 0,
       2: 0,
@@ -80,7 +74,6 @@ export const useStats = (movies: Movie[]) => {
       moviesByRating[bucket] = (moviesByRating[bucket] || 0) + 1;
     });
 
-    // Top Quốc gia.
     const moviesByCountry: Record<string, number> = {};
     watchedMovies.forEach((m) => {
       if (m.country) {
@@ -95,7 +88,6 @@ export const useStats = (movies: Movie[]) => {
       }
     });
 
-    // Phân bổ thể loại.
     const moviesByGenre: Record<string, number> = {};
     watchedMovies.forEach((m) => {
       if (m.genres) {

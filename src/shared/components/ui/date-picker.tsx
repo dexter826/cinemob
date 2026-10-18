@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatDateDMY, monthLabel } from '@/shared/utils/date-format';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { getPanelMotion } from '@/constants/animations';
 
 interface DatePickerProps {
   value: string;
@@ -51,6 +53,8 @@ function DatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
   const useDialogPresentation = isMobile || popupMode === 'dialog';
+  const reducedMotion = useReducedMotion() ?? false;
+  const popoverMotion = getPanelMotion(reducedMotion);
   const [viewDate, setViewDate] = useState(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -94,7 +98,6 @@ function DatePicker({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, useDialogPresentation]);
 
-  // Update viewDate when value changes externally
   useEffect(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -214,12 +217,12 @@ function DatePicker({
   };
 
   const renderCalendar = () => (
-    <div
+    <motion.div
       ref={popoverRef}
       id={useDialogPresentation ? undefined : `${controlId}-dialog`}
       tabIndex={useDialogPresentation ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card shadow-elevated p-4
+                bg-surface border border-border-default rounded-card p-4
                 ${
                   useDialogPresentation
                     ? 'relative w-full max-w-[320px] mx-auto'
@@ -229,6 +232,10 @@ function DatePicker({
       role={useDialogPresentation ? undefined : 'dialog'}
       aria-label={useDialogPresentation ? undefined : 'Chọn ngày'}
       onClick={(e) => useDialogPresentation && e.stopPropagation()}
+      initial={useDialogPresentation ? undefined : popoverMotion.initial}
+      animate={useDialogPresentation ? undefined : popoverMotion.animate}
+      exit={useDialogPresentation ? undefined : popoverMotion.exit}
+      transition={popoverMotion.transition}
     >
       {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
@@ -246,7 +253,7 @@ function DatePicker({
         </div>
       )}
 
-      {/* Header: Year Navigation */}
+      {/* Điều hướng năm */}
       <div className="flex items-center justify-between mb-2">
         <button
           type="button"
@@ -269,7 +276,7 @@ function DatePicker({
         </button>
       </div>
 
-      {/* Header: Month Navigation */}
+      {/* Điều hướng tháng */}
       <div className="flex items-center justify-between mb-3">
         <button
           type="button"
@@ -292,19 +299,16 @@ function DatePicker({
         </button>
       </div>
 
-      {/* Day Headers */}
+      {/* Nhãn thứ */}
       <div className="grid grid-cols-7 gap-1 mb-1">
         {DAYS_VI.map((day) => (
-          <div
-            key={day}
-            className="text-center text-xs font-bold text-text-secondary/60 py-1 uppercase"
-          >
+          <div key={day} className="text-center text-xs font-bold text-text-muted py-1 uppercase">
             {day}
           </div>
         ))}
       </div>
 
-      {/* Calendar Grid */}
+      {/* Lưới ngày */}
       <div className="grid grid-cols-7 gap-1">
         {daysInMonth.map((item) => {
           const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
@@ -326,7 +330,7 @@ function DatePicker({
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-primary font-medium' : ''}
                                 ${isDisabled ? 'text-text-secondary/20 cursor-not-allowed' : ''}
                                 ${isTodayDate && !isSelectedDate ? 'border border-primary/50 text-primary font-bold' : ''}
-                                ${isSelectedDate ? 'bg-primary text-on-primary font-bold shadow-lg shadow-primary/30 scale-110' : ''}
+                                ${isSelectedDate ? 'bg-primary text-on-primary font-bold ' : ''}
                             `}
             >
               {item.day}
@@ -335,7 +339,7 @@ function DatePicker({
         })}
       </div>
 
-      {/* Today Button */}
+      {/* Nút hôm nay */}
       <div className="mt-4 pt-3 border-t border-border-default">
         <button
           type="button"
@@ -345,17 +349,17 @@ function DatePicker({
             onChange(formatDateToString(today));
             closePicker();
           }}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-primary/20"
+          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
         >
           Hôm nay
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
+      {/* Nút trigger */}
       <button
         id={controlId}
         ref={triggerRef}
@@ -364,10 +368,10 @@ function DatePicker({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
-          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          w-full h-11 border border-border-default rounded-card px-4 text-left
+          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-200
-          flex items-center justify-between shadow-sm
+          flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
@@ -389,22 +393,21 @@ function DatePicker({
         </div>
       </button>
 
-      {/* Calendar UI */}
-      {isOpen &&
-        (useDialogPresentation ? (
-          <Dialog
-            open={isOpen}
-            onClose={closePicker}
-            titleId={dialogTitleId}
-            presentation="dialog"
-            size="sm"
-            className="bg-transparent shadow-none overflow-visible"
-          >
-            <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
-          </Dialog>
-        ) : (
-          renderCalendar()
-        ))}
+      {/* Khung lịch */}
+      {useDialogPresentation ? (
+        <Dialog
+          open={isOpen}
+          onClose={closePicker}
+          titleId={dialogTitleId}
+          presentation="dialog"
+          size="sm"
+          className="bg-transparent shadow-none overflow-visible"
+        >
+          <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
+        </Dialog>
+      ) : (
+        <AnimatePresence>{isOpen && renderCalendar()}</AnimatePresence>
+      )}
     </div>
   );
 }

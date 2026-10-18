@@ -28,7 +28,6 @@ interface AvatarCropViewProps {
 
 const PAN_STEP_PX = 8;
 
-// Màn hình cắt & căn chỉnh ảnh (kéo hoặc phím mũi tên để căn góc, cuộn/trượt để phóng to).
 export function AvatarCropView({
   imageSrc,
   imgRef,
@@ -73,7 +72,6 @@ export function AvatarCropView({
 
   return (
     <div className="w-full flex flex-col items-center select-none">
-      {/* Viewport cắt ảnh */}
       <div
         ref={viewportRef}
         role="application"
@@ -85,7 +83,7 @@ export function AvatarCropView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={handleViewportKeyDown}
-        className={`relative rounded-full overflow-hidden ring-4 ring-primary/40 shadow-xl touch-none bg-black/80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary ${
+        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-visible:ring-4 focus-visible:ring-primary ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
       >
@@ -105,11 +103,9 @@ export function AvatarCropView({
             userSelect: 'none',
           }}
         />
-        {/* Lưới định tâm nhẹ nhàng */}
         <div className="absolute inset-0 pointer-events-none rounded-full border border-white/20" />
       </div>
 
-      {/* Thanh điều khiển phóng to/thu nhỏ */}
       <div className="w-full mt-5 px-3 flex items-center gap-3">
         <button
           type="button"
@@ -130,7 +126,7 @@ export function AvatarCropView({
           onChange={(e) => onZoomChange(parseFloat(e.target.value))}
           disabled={isUploading}
           aria-label="Mức phóng to"
-          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         />
 
         <button

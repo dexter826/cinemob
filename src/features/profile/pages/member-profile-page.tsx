@@ -1,3 +1,7 @@
+import Skeleton from '@/shared/components/ui/skeleton';
+import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
@@ -12,24 +16,28 @@ import { getMemberProfile, buildProfileMovies } from '../services/member-profile
 import OwnProfileEditor from '../components/own-profile-editor';
 import MemberProfileCard from '../components/member-profile-card';
 import MovieListSection from '../components/movie-list-section';
-import ProfileMovieCard from '../components/profile-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import { formatDateAny } from '@/shared/utils/date-format';
 import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
 
-/** Trang cá nhân thành viên: chính chủ chỉnh sửa inline, thành viên khác chỉ xem. */
 function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { movies: myMovies, loading: myMoviesLoading } = useMovieStore();
+  const {
+    movies: myMovies,
+    loading: myMoviesLoading,
+    error: myMoviesError,
+    retry: retryMovies,
+  } = useMovieStore();
   const own = useOwnProfile();
 
   const isOwn = Boolean(user && uid && user.uid === uid);
 
   const { showToast } = useToastStore();
 
-  // Copy link trang cá nhân hiện tại vào clipboard kèm toast xác nhận.
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -51,6 +59,9 @@ function MemberProfilePage() {
   );
 
   const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+  const [loadedUid, setLoadedUid] = useState<string | undefined>();
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -92,14 +103,21 @@ function MemberProfilePage() {
     lastUidRef.current = uid;
     let cancelled = false;
     setLoading(true);
+    setProfile(null);
+    setProfileError(null);
+    setLoadedUid(undefined);
     getMemberProfile(uid)
       .then((data) => {
         if (cancelled) return;
         setProfile(data);
+        setLoadedUid(uid);
         setNotFound(data === null);
       })
       .catch(() => {
-        if (!cancelled) setNotFound(true);
+        if (!cancelled) {
+          setProfileError('Không tải được hồ sơ thành viên.');
+          setLoadedUid(uid);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -107,7 +125,7 @@ function MemberProfilePage() {
     return () => {
       cancelled = true;
     };
-  }, [isOwn, uid, setSearchParams]);
+  }, [isOwn, uid, setSearchParams, retryNonce]);
 
   const otherMovies = useMemo(() => (isOwn ? [] : (profile?.movies ?? [])), [isOwn, profile]);
   const ownListMovies = useMemo(
@@ -120,11 +138,11 @@ function MemberProfilePage() {
     return getCommonMovies(myMovies, profile.movies);
   }, [isOwn, myMovies, profile]);
 
-  if (!user || !uid) return <Loading fullScreen />;
+  if (!user || !uid) return <Loading />;
 
   if (isOwn) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           title="Trang cá nhân"
           actions={
@@ -144,8 +162,12 @@ function MemberProfilePage() {
         <OwnProfileEditor
           profile={own.profile}
           loading={own.loading}
+          ready={own.ready}
+          error={own.error}
+          onRetry={own.retry}
           saving={own.saving}
           toggling={own.toggling}
+          canToggle={own.canToggle}
           onSaveDetails={own.saveDetails}
           onToggleHidden={own.toggleMovieListHidden}
         />
@@ -155,6 +177,8 @@ function MemberProfilePage() {
           <MovieListSection
             movies={ownListMovies}
             isLoading={myMoviesLoading}
+            error={myMoviesError ? 'Không tải được danh sách phim' : null}
+            onRetry={retryMovies}
             emptyTitle="Chưa có phim nào"
             emptyDescription="Thêm phim vào lịch sử xem."
           />
@@ -163,22 +187,43 @@ function MemberProfilePage() {
     );
   }
 
-  if (loading) return <Loading fullScreen />;
+  if (profileError && loadedUid === uid)
+    return (
+      <ErrorState
+        title={profileError}
+        description="Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: () => setRetryNonce((n) => n + 1) }}
+      />
+    );
+  if (loading || loadedUid !== uid)
+    return (
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-6">
+        <LoadingStatus>Đang tải hồ sơ thành viên…</LoadingStatus>
+        <div aria-busy="true">
+          <Skeleton className="h-56 w-full" />
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {Array.from({ length: 6 }, (_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
 
   if (notFound || !profile) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <EmptyState
           icon={EyeOff}
           title="Không tìm thấy hồ sơ"
-          description="Hồ sơ không tồn tại hoặc thành viên chưa mở app sau bản cập nhật."
+          description="Không tìm thấy hồ sơ này."
         />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Hồ sơ thành viên" actions={copyLinkButton} />
       <MemberProfileCard profile={profile} />
 
@@ -194,48 +239,69 @@ function MemberProfilePage() {
             <div
               role="group"
               aria-label="Phim của thành viên"
-              className="inline-flex items-center bg-black/5 dark:bg-white/5 rounded-full p-1 relative border border-border-default overflow-hidden"
+              className="flex items-center border-b border-border"
             >
-              <div
-                aria-hidden="true"
-                className={`absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-sm transition-transform duration-300 ease-out ${
-                  activeTab === 'common' ? 'translate-x-0' : 'translate-x-full'
-                }`}
-              />
-              <button
-                type="button"
-                aria-pressed={activeTab === 'common'}
-                onClick={() => setActiveTab('common')}
-                className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'common'
-                    ? 'text-white'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                Phim chung
-              </button>
-              <button
-                type="button"
-                aria-pressed={activeTab === 'all'}
-                onClick={() => setActiveTab('all')}
-                className={`px-4 py-1.5 text-sm font-bold rounded-full transition-colors cursor-pointer relative z-10 ${
-                  activeTab === 'all' ? 'text-white' : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                Tất cả phim
-              </button>
+              {(
+                [
+                  { key: 'common', label: 'Phim chung' },
+                  { key: 'all', label: 'Tất cả phim' },
+                ] as const
+              ).map((tab) => {
+                const isActive = activeTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`relative flex items-center h-11 px-3.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+                      isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+                    }`}
+                  >
+                    {tab.label}
+                    {isActive && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {activeTab === 'common' &&
-              (commonMovies && commonMovies.length > 0 ? (
+              (myMoviesError ? (
+                <ErrorState
+                  title="Không tải được bộ sưu tập của bạn"
+                  description="Thử lại để xem phim chung."
+                  retry={{ label: 'Thử lại', onClick: retryMovies }}
+                />
+              ) : myMoviesLoading ? (
+                <Loading text="Đang tải phim chung…" />
+              ) : commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm sm:text-base font-bold text-text-primary tracking-tight font-display">
+                  <p className="text-sm sm:text-base text-text-primary tracking-tight font-display">
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>
-                  <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+                  <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                     {commonMovies.map((movie) => (
-                      <ProfileMovieCard key={String(movie.id)} movie={movie} />
+                      <PosterCard
+                        key={String(movie.id)}
+                        title={movie.title_vi || movie.title}
+                        posterPath={movie.poster_path ?? null}
+                        mediaType={movie.media_type}
+                        rating={movie.rating}
+                        review={movie.is_review}
+                        meta={
+                          movie.watched_at
+                            ? formatDateAny(movie.watched_at)
+                            : movie.release_date
+                              ? movie.release_date.slice(0, 4)
+                              : undefined
+                        }
+                      />
                     ))}
                   </div>
                 </div>

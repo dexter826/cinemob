@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import useRecommendationsStore from '@/features/movies/stores/recommendations-store';
+import useTrendingStore from '@/features/movies/stores/trending-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
-import { isWatchedMovie } from '@/features/movies/utils/movie-utils';
 import { TMDBMovieResult } from '@/types';
-import type { User } from 'firebase/auth';
 
 export type SearchSortBy =
   | 'popularity.desc'
@@ -43,24 +41,11 @@ const SEARCH_SORT_VALUES: SearchSortBy[] = [
   'title.desc',
 ];
 
-// Hook điều phối chính cho trang Tìm kiếm.
-export const useSearch = (user: User | null) => {
+export const useSearch = () => {
   const { openAddModal } = useAddMovieStore();
-  const {
-    aiRecommendations,
-    trendingMovies,
-    isAiLoading,
-    isTrendingLoading,
-    refreshRecommendations,
-    removeRecommendation,
-  } = useRecommendationsStore();
+  const { trendingMovies, isTrendingLoading, trendingError, fetchTrending } = useTrendingStore();
 
   const { movies: savedMovies } = useMovieStore();
-
-  const filteredAiRecommendations = useMemo(() => {
-    const savedIds = new Set(savedMovies.map((m) => m.id.toString()));
-    return aiRecommendations.filter((m) => !savedIds.has(m.id.toString()));
-  }, [aiRecommendations, savedMovies]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -85,11 +70,9 @@ export const useSearch = (user: User | null) => {
     const page = Number(searchParams.get('page'));
     return Number.isInteger(page) && page > 1 ? page : 1;
   });
-  const [initialLoading, setInitialLoading] = useState(true);
   // Tăng nonce để nạp lại kết quả TMDB khi bấm Thử lại.
   const [retryNonce, setRetryNonce] = useState(0);
 
-  // Chép trạng thái tìm kiếm vào query string, bỏ qua giá trị mặc định.
   const syncParams = useCallback(
     (next: SearchFormFilters, page: number, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
@@ -162,25 +145,10 @@ export const useSearch = (user: User | null) => {
   }, [filters.query, submittedQuery]);
 
   useEffect(() => {
-    setInitialLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (
-      user?.uid &&
-      aiRecommendations.length === 0 &&
-      trendingMovies.length === 0 &&
-      !isAiLoading
-    ) {
-      refreshRecommendations(user.uid);
+    if (trendingMovies.length === 0 && !isTrendingLoading) {
+      void fetchTrending();
     }
-  }, [
-    user?.uid,
-    aiRecommendations.length,
-    trendingMovies.length,
-    isAiLoading,
-    refreshRecommendations,
-  ]);
+  }, [trendingMovies.length, isTrendingLoading, fetchTrending]);
 
   const {
     results,
@@ -192,6 +160,7 @@ export const useSearch = (user: User | null) => {
     isDiscoverLoading,
     discoverError,
     isSearchMode,
+    mode,
   } = useSearchTMDB(submittedQuery, currentPage, filters, retryNonce);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
@@ -247,7 +216,15 @@ export const useSearch = (user: User | null) => {
     return result;
   }, [displayMovies, filters.type, filters.country, isSearchMode, filters.sortBy]);
 
+  const navigate = useNavigate();
+
   const handleSelectMovie = (movie: TMDBMovieResult) => {
+    // Phim đã trong bộ sưu tập → trang chi tiết; chưa có → mở form thêm nhanh.
+    if (getMovieStatus(movie.id)) {
+      const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+      navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
+      return;
+    }
     openAddModal({
       movie: movie,
       mediaType:
@@ -273,17 +250,15 @@ export const useSearch = (user: User | null) => {
   return {
     filters,
     updateFilter,
-    initialLoading,
+    mode,
     currentPage,
     totalPages: isSearchMode ? totalSearchPages : totalDiscoverPages,
     setCurrentPage: goToPage,
     discoverMovies,
-    aiRecommendations: filteredAiRecommendations,
     trendingMovies,
-    isAiLoading,
     isTrendingLoading,
-    refreshRecommendations,
-    removeRecommendation,
+    trendingError,
+    refreshTrending: (force?: boolean) => fetchTrending(force ?? true),
     filteredResults,
     handleSelectMovie,
     getMovieStatus,
@@ -297,8 +272,6 @@ export const useSearch = (user: User | null) => {
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
     resultsError: isSearchMode ? searchError : discoverError,
     retrySearch: () => setRetryNonce((n) => n + 1),
-    watchedMoviesCount: savedMovies.filter(isWatchedMovie).length,
-    // Search states
     submittedQuery,
     suggestions,
     isSuggesting,

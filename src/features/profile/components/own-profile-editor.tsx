@@ -1,3 +1,5 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'lucide-react';
@@ -23,12 +25,18 @@ import {
 import ProfileMeta from './profile-meta';
 import type { OwnProfileDetails } from '../hooks/use-own-profile';
 import type { MemberProfile } from '@/types';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { getPanelMotion } from '@/constants/animations';
 
 interface OwnProfileEditorProps {
   profile: MemberProfile | null;
   loading?: boolean;
+  ready: boolean;
+  error: string | null;
+  onRetry: () => void;
   saving: boolean;
   toggling: boolean;
+  canToggle: boolean;
   onSaveDetails: (details: OwnProfileDetails) => Promise<boolean>;
   onToggleHidden: () => Promise<boolean>;
 }
@@ -38,12 +46,15 @@ const GENDER_DROPDOWN_OPTIONS = [
   { value: '', label: 'Không cập nhật' },
 ];
 
-// Thẻ hồ sơ chính chủ: mặc định là chế độ xem, nút "Chỉnh sửa" mới bật form.
 function OwnProfileEditor({
   profile,
   loading = false,
+  ready,
+  error,
+  onRetry,
   saving,
   toggling,
+  canToggle,
   onSaveDetails,
   onToggleHidden,
 }: OwnProfileEditorProps) {
@@ -65,6 +76,8 @@ function OwnProfileEditor({
   const nameInputRef = useRef<HTMLInputElement>(null);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
+  const reducedMotion = useReducedMotion() ?? false;
+  const panelMotion = getPanelMotion(reducedMotion);
 
   useEffect(() => {
     if (!isAvatarMenuOpen) return;
@@ -125,6 +138,7 @@ function OwnProfileEditor({
   };
 
   const startEditing = () => {
+    if (!ready) return;
     setDraftName(displayName);
     setDraftBio(profile?.bio ?? '');
     setDraftGender(profile?.gender ?? '');
@@ -153,6 +167,7 @@ function OwnProfileEditor({
   };
 
   const submitEditing = async () => {
+    if (!ready || isSubmitting || saving) return;
     const checked = validateDisplayName(draftName);
     if (!checked.ok) {
       setNameError(checked.error);
@@ -295,54 +310,59 @@ function OwnProfileEditor({
                   aria-label="Tuỳ chọn ảnh đại diện"
                   aria-haspopup="menu"
                   aria-expanded={isAvatarMenuOpen}
-                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-elevated hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Pencil size={15} aria-hidden="true" />
                 </button>
               )}
-              {isEditing && isAvatarMenuOpen && (
-                <div
-                  ref={avatarMenuRef}
-                  role="menu"
-                  onKeyDown={handleMenuKeyDown}
-                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 shadow-elevated overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-                >
-                  <button
-                    ref={firstMenuItemRef}
-                    type="button"
-                    role="menuitem"
-                    onClick={() => {
-                      setIsAvatarMenuOpen(false);
-                      crop.openFilePicker();
-                    }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
-                  >
-                    <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
-                    <span>Tải ảnh mới</span>
-                  </button>
-
-                  {crop.canRevertToGoogle && (
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => {
-                        setIsAvatarMenuOpen(false);
-                        crop.handleDelete();
-                      }}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+              {isEditing && (
+                <AnimatePresence>
+                  {isAvatarMenuOpen && (
+                    <motion.div
+                      ref={avatarMenuRef}
+                      role="menu"
+                      onKeyDown={handleMenuKeyDown}
+                      {...panelMotion}
+                      className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden"
                     >
-                      <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
-                      <span>Khôi phục ảnh gốc</span>
-                    </button>
+                      <button
+                        ref={firstMenuItemRef}
+                        type="button"
+                        role="menuitem"
+                        onClick={() => {
+                          setIsAvatarMenuOpen(false);
+                          crop.openFilePicker();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+                      >
+                        <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
+                        <span>Tải ảnh mới</span>
+                      </button>
+
+                      {crop.canRevertToGoogle && (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setIsAvatarMenuOpen(false);
+                            crop.handleDelete();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+                        >
+                          <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
+                          <span>Khôi phục ảnh gốc</span>
+                        </button>
+                      )}
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
               )}
             </div>
 
             <div className="flex-1 min-w-0 text-left">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-xl sm:text-2xl font-bold text-text-primary truncate tracking-tight font-display">
+                  <h2 className="text-xl sm:text-2xl text-text-primary truncate tracking-tight font-display">
                     {displayName}
                   </h2>
                   <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
@@ -355,11 +375,13 @@ function OwnProfileEditor({
                   </p>
                 </div>
 
+                <LoadingStatus>{loading ? 'Đang tải hồ sơ…' : ''}</LoadingStatus>
                 {!isEditing && (
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={startEditing}
+                    disabled={!ready}
                     leadingIcon={<Pencil size={14} aria-hidden="true" />}
                     className="shrink-0"
                   >
@@ -370,11 +392,18 @@ function OwnProfileEditor({
 
               {!isEditing && (
                 <div className="mt-1">
-                  {loading ? (
+                  {error ? (
+                    <div role="alert" className="text-sm text-danger">
+                      {error}
+                      <Button variant="ghost" onClick={onRetry}>
+                        Thử lại
+                      </Button>
+                    </div>
+                  ) : loading ? (
                     <div aria-hidden="true" className="space-y-2 max-w-prose">
-                      <div className="h-3 w-32 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-3/4 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
-                      <div className="h-3 w-1/2 rounded-md bg-black/5 dark:bg-white/5 motion-safe:animate-pulse motion-reduce:animate-none" />
+                      <Skeleton className="h-3 w-32 rounded-md  " />
+                      <Skeleton className="h-3 w-3/4 rounded-md  " />
+                      <Skeleton className="h-3 w-1/2 rounded-md  " />
                     </div>
                   ) : (
                     <>
@@ -407,9 +436,10 @@ function OwnProfileEditor({
                   autoComplete="nickname"
                   value={draftName}
                   onChange={(e) => setDraftName(e.target.value)}
+                  placeholder="Nhập tên hiển thị…"
                   maxLength={50}
                   aria-invalid={nameError ? true : undefined}
-                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
+                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
                 />
                 {nameError && (
                   <p role="alert" className="mt-1.5 text-xs text-danger">
@@ -429,7 +459,7 @@ function OwnProfileEditor({
                   rows={3}
                   maxLength={BIO_MAX_LENGTH}
                   placeholder="Thêm vài dòng giới thiệu về bạn…"
-                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
+                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
                 />
                 <span className="block text-right text-xs text-text-secondary">
                   {draftBio.length}/{BIO_MAX_LENGTH}
@@ -464,7 +494,7 @@ function OwnProfileEditor({
                   variant="primary"
                   size="md"
                   onClick={() => void submitEditing()}
-                  disabled={isBusy}
+                  disabled={isBusy || !ready}
                   loading={isSubmitting || saving}
                 >
                   Lưu thay đổi
@@ -494,7 +524,7 @@ function OwnProfileEditor({
                 checked={isHidden}
                 onToggle={() => void onToggleHidden()}
                 label="Ẩn danh sách phim"
-                disabled={toggling}
+                disabled={toggling || !canToggle}
               />
             </div>
           </div>

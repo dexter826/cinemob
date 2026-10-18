@@ -1,7 +1,12 @@
+import Loading from '@/shared/components/ui/loading';
+import ErrorState from '@/shared/components/ui/error-state';
 import { Tv } from 'lucide-react';
 import DatePicker from '@/shared/components/ui/date-picker';
 
 interface TVProgressSectionProps {
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
   isCompleted: boolean;
   setIsCompleted: (completed: boolean) => void;
   currentSeason: number;
@@ -17,6 +22,9 @@ interface TVProgressSectionProps {
 }
 
 function TVProgressSection({
+  loading,
+  error,
+  onRetry,
   isCompleted,
   setIsCompleted,
   currentSeason,
@@ -30,8 +38,18 @@ function TVProgressSection({
   onSeasonDateChange,
   defaultDate,
 }: TVProgressSectionProps) {
+  if (loading) return <Loading text="Đang cập nhật tiến độ TV…" />;
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Dữ liệu đã lưu vẫn được giữ."
+        retry={{ label: 'Thử lại', onClick: onRetry }}
+        compact
+      />
+    );
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-dialog p-5 space-y-4 shadow-sm">
+    <div className="border border-border rounded-dialog p-5 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-primary flex items-center gap-2">
           <Tv size={14} aria-hidden="true" /> Tiến độ xem
@@ -42,9 +60,9 @@ function TVProgressSection({
               type="checkbox"
               checked={isCompleted}
               onChange={(e) => setIsCompleted(e.target.checked)}
-              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors duration-300 cursor-pointer"
+              className="peer appearance-none w-5 h-5 rounded-lg border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors cursor-pointer"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform duration-300 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform pointer-events-none">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
                 <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
               </svg>
@@ -65,13 +83,13 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-season-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
+              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
                 aria-label="Giảm mùa"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -85,7 +103,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Tăng mùa"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>
@@ -98,13 +116,13 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-episode-label"
-              className="flex items-center gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border-default"
+              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
                 aria-label="Giảm tập"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 -
               </button>
@@ -121,7 +139,7 @@ function TVProgressSection({
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default shadow-sm text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
               >
                 +
               </button>
@@ -131,13 +149,13 @@ function TVProgressSection({
       )}
 
       {totalEpisodes > 0 && !isCompleted && (
-        <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-primary/20">
+        <div className="text-xs font-semibold text-primary/80 text-center pt-4 border-t border-border">
           Tổng {totalEpisodes}&nbsp;tập, mùa&nbsp;{currentSeason}:{' '}
           {episodesPerSeason[currentSeason] || '?'} tập
         </div>
       )}
 
-      <div className="space-y-2 pt-4 border-t border-primary/20">
+      <div className="space-y-2 pt-4 border-t border-border">
         <span className="text-xs font-semibold text-text-secondary ml-1 block">
           Ngày xem từng phần
         </span>

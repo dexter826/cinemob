@@ -1,4 +1,4 @@
-import Lottie from 'lottie-react';
+import ErrorState from '@/shared/components/ui/error-state';
 import { Dice5, Volume2, VolumeX } from 'lucide-react';
 import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -10,10 +10,12 @@ import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import { PickerWheel } from './random-picker/picker-wheel';
+import ConfettiBurst from '@/shared/components/feedback/confetti-burst';
 
 interface RandomPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onExited?: () => void;
 }
 
 const getPoolPoster = (movie: PoolMovie | undefined, poolType: PoolType): string => {
@@ -36,15 +38,16 @@ const getWheelMovie = (
   return pool[(currentIndex + offset + pool.length) % pool.length];
 };
 
-function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
+function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps) {
   const {
     activePool,
     poolType,
     currentIndex,
     isLoadingPool,
+    poolError,
+    retryPool,
     isShuffling,
     hasResult,
-    confettiData,
     reducedMotion,
     isMuted,
     toggleMuted,
@@ -58,7 +61,7 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
       ? (currentItem as Movie).title
       : (currentItem as TMDBMovieResult).title || (currentItem as TMDBMovieResult).name || ''
     : '';
-  const showConfetti = hasResult && !reducedMotion && confettiData !== null;
+  const showConfetti = hasResult && !reducedMotion;
 
   return (
     <Dialog
@@ -67,22 +70,16 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
       titleId="random-picker-title"
       descriptionId="random-picker-description"
       presentation="dialog"
+      onExitComplete={onExited}
     >
       <DialogBody className="relative">
         <div className="relative flex flex-col gap-4">
-          {showConfetti && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-90"
-            >
-              <Lottie animationData={confettiData} loop={false} />
-            </div>
-          )}
+          {showConfetti && <ConfettiBurst />}
           <div className="flex items-center justify-between gap-2 relative z-10">
             <div className="flex items-center gap-2 min-w-0">
               <div
                 aria-hidden="true"
-                className="w-9 h-9 rounded-card bg-primary/10 flex items-center justify-center text-primary shrink-0"
+                className="flex items-center justify-center text-primary shrink-0"
               >
                 <Dice5 size={18} aria-hidden="true" />
               </div>
@@ -123,11 +120,19 @@ function RandomPickerModal({ isOpen, onClose }: RandomPickerModalProps) {
                 <Loading fullScreen={false} text="Đang chuẩn bị danh sách đề xuất…" />
               </div>
             )}
-            {!isLoadingPool && !hasPool && (
+            {!isLoadingPool && poolError && !hasPool && (
+              <ErrorState
+                title={poolError}
+                description="Vui lòng thử tải lại."
+                retry={{ label: 'Thử lại', onClick: retryPool }}
+                compact
+              />
+            )}
+            {!isLoadingPool && !poolError && !hasPool && (
               <EmptyState
                 icon={Dice5}
                 title="Không tìm thấy phim"
-                description="Hiện chưa có phim trong watchlist và không lấy được danh sách thịnh hành để quay ngẫu nhiên."
+                description="Không có phim sẽ xem và không tải được danh sách thịnh hành."
                 compact
               />
             )}

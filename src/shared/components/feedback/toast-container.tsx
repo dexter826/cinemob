@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION } from '@/constants/animations';
+import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 import useToastStore from '../../stores/toast-store';
 import { IconButton } from '../ui/icon-button';
 
-const toastTransition = { duration: MOTION_DURATION.standard, ease: 'easeOut' as const };
+const toastTransition = { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter };
 
 function ToastIcon({ type }: { type: string }) {
   const iconClass = 'mr-3 shrink-0';
@@ -17,6 +17,13 @@ function ToastIcon({ type }: { type: string }) {
     return <AlertTriangle size={18} className={`${iconClass} text-warning`} aria-hidden="true" />;
   return <Info size={18} className={`${iconClass} text-info`} aria-hidden="true" />;
 }
+
+const PROGRESS_BAR_COLORS: Record<string, string> = {
+  success: 'bg-success/70',
+  error: 'bg-danger/70',
+  warning: 'bg-warning/70',
+  info: 'bg-info/70',
+};
 
 function ToastList({
   types,
@@ -42,11 +49,15 @@ function ToastList({
             exit={
               reducedMotion
                 ? { opacity: 0 }
-                : { opacity: 0, y: 8, transition: { duration: MOTION_DURATION.fast } }
+                : {
+                    opacity: 0,
+                    y: 8,
+                    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASING.exit },
+                  }
             }
             transition={toastTransition}
             aria-atomic="true"
-            className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card shadow-elevated border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
+            className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
           >
             <ToastIcon type={toast.type} />
             <span className="text-xs sm:text-sm font-semibold flex-1 tracking-tight mr-4 leading-tight">
@@ -70,15 +81,15 @@ function ToastList({
             {reducedMotion ? (
               <div
                 aria-hidden="true"
-                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50"
+                className={`absolute bottom-0 left-0 h-0.5 w-full ${PROGRESS_BAR_COLORS[toast.type] ?? 'bg-info/70'}`}
               />
             ) : (
               <motion.div
                 aria-hidden="true"
-                initial={{ width: '100%' }}
-                animate={{ width: '0%' }}
+                initial={{ scaleX: 1 }}
+                animate={{ scaleX: 0 }}
                 transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
-                className="absolute bottom-0 left-0 h-0.5 bg-primary/50"
+                className={`absolute bottom-0 left-0 h-0.5 w-full origin-left ${PROGRESS_BAR_COLORS[toast.type] ?? 'bg-info/70'}`}
               />
             )}
           </motion.div>

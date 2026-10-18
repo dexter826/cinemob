@@ -28,9 +28,9 @@ interface TMDBLookupResult {
   };
 }
 
-// Xử lý tra cứu thông tin phim từ TMDB.
 export const useTMDBLookup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [movieExists, setMovieExists] = useState(false);
   const { showToast } = useToastStore();
   const requestRef = useRef<{ id: number; controller: AbortController } | null>(null);
@@ -52,6 +52,7 @@ export const useTMDBLookup = () => {
       const isCurrent = () => requestRef.current?.id === requestId && !controller.signal.aborted;
 
       setIsLoading(true);
+      setError(null);
       try {
         const [exists, details] = await Promise.all([
           user && id ? checkMovieExists(user.uid, id) : Promise.resolve(false),
@@ -59,7 +60,7 @@ export const useTMDBLookup = () => {
         ]);
         if (!isCurrent()) return null;
         setMovieExists(exists);
-        if (!details) return null;
+        if (!details) throw new Error('Movie details unavailable');
 
         const originalTitle = details.title || details.name || '';
         let viTitle = '',
@@ -90,6 +91,8 @@ export const useTMDBLookup = () => {
         if (type === 'tv' && seasons > 0) {
           const info = await getTVShowEpisodeInfo(Number(id), seasons, controller.signal);
           if (!isCurrent()) return null;
+          if (Object.keys(info.episodes_per_season).length < seasons)
+            throw new Error('Incomplete TV episode data');
           tvInfo = {
             totalEpisodes: info.total_episodes,
             episodesPerSeason: info.episodes_per_season,
@@ -113,7 +116,10 @@ export const useTMDBLookup = () => {
           tvInfo,
         };
       } catch (error) {
-        if (isCurrent()) showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
+        if (isCurrent()) {
+          setError('Không tải được thông tin phim.');
+          showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
+        }
         return null;
       } finally {
         signal?.removeEventListener('abort', abortFromCaller);
@@ -125,5 +131,5 @@ export const useTMDBLookup = () => {
     [showToast],
   );
 
-  return { fetchDetails, isLoading, movieExists, setMovieExists };
+  return { fetchDetails, isLoading, error, movieExists, setMovieExists };
 };

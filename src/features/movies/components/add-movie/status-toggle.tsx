@@ -24,7 +24,7 @@ function StatusToggle({ status, setStatus }: StatusToggleProps) {
           moveTo(status === 'history' ? 'watchlist' : 'history');
         }
       }}
-      className="bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border relative flex"
+      className="p-1 rounded-card border border-border relative flex"
     >
       <button
         type="button"

@@ -1,7 +1,10 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Film, Star, Globe } from 'lucide-react';
-import StatsCard from '../components/stats-card';
+import { Stat } from '@/shared/components/ui';
 import {
   PieChart,
   Pie,
@@ -21,18 +24,19 @@ import PageHeader from '@/shared/components/ui/page-header';
 import { useStats } from '../hooks/use-stats';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { useReducedMotion } from 'framer-motion';
 import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
-// Palette biểu đồ bám hệ màu của app: emerald chủ đạo, teal kề sắc, slate trung tính.
+// Palette biểu đồ derive từ token — tự đúng ở cả 2 theme.
 const COLORS = [
-  '#10b981', // primary (emerald-500)
-  '#0d9488', // teal-600
-  '#059669', // emerald-600
-  '#14b8a6', // teal-500
-  '#047857', // emerald-700
-  '#64748b', // slate-500
-  '#94a3b8', // slate-400
-  '#475569', // slate-600
+  'var(--color-primary)',
+  'color-mix(in srgb, var(--color-primary) 78%, var(--color-text-secondary))',
+  'color-mix(in srgb, var(--color-primary) 56%, var(--color-text-secondary))',
+  'var(--color-text-secondary)',
+  'color-mix(in srgb, var(--color-text-secondary) 76%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 58%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 42%, var(--color-surface))',
+  'color-mix(in srgb, var(--color-text-secondary) 28%, var(--color-surface))',
 ];
 
 interface ChartTooltipProps {
@@ -44,7 +48,7 @@ interface ChartTooltipProps {
 const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-surface-elevated border border-border rounded-card p-4 shadow-elevated">
+      <div className="bg-surface-elevated border border-border rounded-card p-4">
         <p className="text-text-primary font-bold mb-1">{label || payload[0].name}</p>
         <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
       </div>
@@ -53,9 +57,8 @@ const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   return null;
 };
 
-/** Thống kê hoạt động xem phim, điểm số và thể loại. */
 function StatsPage() {
-  const { movies, loading } = useMovieStore();
+  const { movies, loading, error, retry } = useMovieStore();
   const {
     totalMovies,
     movieCount,
@@ -69,7 +72,6 @@ function StatsPage() {
     getMonthlyDataForYear,
   } = useStats(movies);
 
-  // Năm thống kê sync theo query param ?year=.
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedYear = searchParams.get('year') ?? '';
   const setSelectedYear = useCallback(
@@ -79,9 +81,8 @@ function StatsPage() {
     [setSearchParams],
   );
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const prefersReducedMotion = useReducedMotion() ?? false;
 
-  // Danh sách năm cho dropdown.
   const yearOptions = useMemo(
     () => availableYears.map((year) => ({ value: year, label: year })),
     [availableYears],
@@ -94,7 +95,6 @@ function StatsPage() {
     }
   }, [availableYears, selectedYear, setSelectedYear]);
 
-  // Thống kê theo tháng cho năm đã chọn.
   const monthlyData = useMemo(() => {
     return selectedYear ? getMonthlyDataForYear(selectedYear) : [];
   }, [selectedYear, getMonthlyDataForYear]);
@@ -111,20 +111,30 @@ function StatsPage() {
     return buildGenreChartData(moviesByGenre);
   }, [moviesByGenre]);
 
+  if (error)
+    return (
+      <ErrorState
+        title="Không tải được dữ liệu thống kê"
+        description="Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: retry }}
+      />
+    );
+
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+        <LoadingStatus>Đang tải thống kê…</LoadingStatus>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
-          <div className="h-32 bg-surface rounded-dialog animate-pulse" />
+          <Skeleton className="h-32  rounded-dialog " />
+          <Skeleton className="h-32  rounded-dialog " />
         </div>
-        <div className="h-96 bg-surface rounded-dialog animate-pulse" />
+        <Skeleton className="h-96  rounded-dialog " />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader title="Thống kê điện ảnh" />
 
       {totalMovies === 0 ? (
@@ -140,14 +150,14 @@ function StatsPage() {
               Chỉ số tổng quan
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <StatsCard
+              <Stat
                 label="Tổng nội dung"
                 value={totalMovies}
                 subValue={`${movieCount} phim lẻ, ${tvCount} series`}
                 icon={Film}
                 colorClass="text-primary"
               />
-              <StatsCard
+              <Stat
                 label="Đánh giá trung bình"
                 value={avgRating}
                 subValue={`Trên ${ratedCount} phim`}
@@ -172,9 +182,9 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex px-3 h-10 items-center bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5">
-                  <span className="text-xs font-bold text-primary">{totalInYear} phim</span>
-                </div>
+                <span className="hidden sm:inline text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+                  {totalInYear} phim · {selectedYear}
+                </span>
                 <Dropdown
                   options={yearOptions}
                   value={selectedYear}
@@ -192,12 +202,6 @@ function StatsPage() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.85} />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0.15} />
-                    </linearGradient>
-                  </defs>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     vertical={false}
@@ -223,8 +227,8 @@ function StatsPage() {
                   />
                   <Bar
                     dataKey="count"
-                    fill="url(#barGradient)"
-                    radius={[4, 4, 0, 0]}
+                    fill="var(--color-primary)"
+                    radius={[2, 2, 0, 0]}
                     barSize={isSmallScreen ? 12 : 24}
                     animationDuration={1000}
                     isAnimationActive={!prefersReducedMotion}
@@ -261,15 +265,18 @@ function StatsPage() {
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="flex-1 h-2.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden border border-border-default dark:border-white/5 shadow-inner">
+                    <div className="flex-1 h-0.5 bg-border-default overflow-hidden">
                       <div
-                        className="h-full bg-warning rounded-full transition-colors duration-700 ease-out"
+                        className="h-full w-full bg-warning origin-left transition-transform duration-250 ease-out"
                         style={{
-                          width: `${((moviesByRating[rating] ?? 0) / (ratedCount || 1)) * 100}%`,
+                          transform: `scaleX(${Math.min(
+                            1,
+                            (moviesByRating[rating] ?? 0) / (ratedCount || 1),
+                          )})`,
                         }}
                       />
                     </div>
-                    <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
+                    <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
                       {moviesByRating[rating] ?? 0}
                     </span>
                   </div>
@@ -293,7 +300,7 @@ function StatsPage() {
                 {topCountries.map(([country, count], index) => (
                   <div
                     key={country}
-                    className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 hover:shadow-md transition-colors duration-300 group"
+                    className="flex items-center justify-between p-4 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors group"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">
@@ -303,7 +310,7 @@ function StatsPage() {
                         {country}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-control border border-primary/20 tabular-nums">
+                    <span className="text-xs font-semibold text-primary tabular-nums">
                       {count} phim
                     </span>
                   </div>

@@ -18,7 +18,6 @@ const syncProfilePhotoURL = async (uid: string, photoURL: string): Promise<void>
   }
 };
 
-// Tải ảnh lên Cloudinary và đồng bộ thông tin người dùng.
 export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Promise<string> => {
   const secureUrl = await uploadToCloudinary(fileOrBlob, 'avatars');
 
@@ -33,13 +32,11 @@ export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Pro
   return secureUrl;
 };
 
-// Lấy ảnh đại diện gốc từ nhà cung cấp Google.
 export const getOriginalGoogleAvatar = (user: User): string | null => {
   const googleProvider = user.providerData.find((p) => p.providerId === 'google.com');
   return googleProvider?.photoURL || user.providerData[0]?.photoURL || null;
 };
 
-// Khôi phục ảnh đại diện về ảnh gốc tài khoản Google.
 export const revertToGoogleAvatar = async (user: User): Promise<string | null> => {
   const originalPhotoURL = getOriginalGoogleAvatar(user);
 
@@ -52,4 +49,10 @@ export const revertToGoogleAvatar = async (user: User): Promise<string | null> =
   await syncProfilePhotoURL(user.uid, originalPhotoURL || '');
 
   return originalPhotoURL;
+};
+
+// Dùng cho hoàn tác (undo).
+export const setUserAvatarUrl = async (user: User, photoURL: string): Promise<void> => {
+  await updateProfile(user, { photoURL });
+  await syncProfilePhotoURL(user.uid, photoURL);
 };

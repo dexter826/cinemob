@@ -1,29 +1,33 @@
-import { useMemo } from 'react';
+import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { Film, Search, Plus } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Film } from 'lucide-react';
-import MovieCard from '@/features/movies/components/movie-card';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import PosterCard from '@/features/movies/components/poster-card';
 import Pagination from '@/shared/components/ui/pagination';
 import EmptyState from '@/shared/components/ui/empty-state';
+import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
-import { normalizeDate } from '@/shared/utils/date-format';
-import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
-import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { getSeasonWatchedDates } from '@/features/movies/utils/movie-utils';
-import PageHeader from '@/shared/components/ui/page-header';
+import Button from '@/shared/components/ui/button';
+import { PageHeader } from '@/shared/components/ui';
+import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
+import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
+import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
-import DashboardActions from '../components/dashboard-actions';
 import DashboardTabs from '../components/dashboard-tabs';
 import DashboardFilters from '../components/dashboard-filters';
 
-/** Quản lý bộ sưu tập phim. */
 function DashboardPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const reducedMotion = useReducedMotion() ?? false;
+  useScrollRestore('dashboard');
+  const { user } = useAuth();
+  const { error: libraryError, initialize: initMovies, cleanup: cleanupMovies } = useMovieStore();
+
   const {
     loading,
-    contentTypeStats,
     processedMovies,
     totalPages,
     currentPage,
@@ -36,111 +40,92 @@ function DashboardPage() {
     setShowFilters,
     filterRef,
     toggleRef,
-    handleDelete,
-    handleEdit,
     openAddModal,
-    handleMarkAsWatched,
-    handleMovieClick,
     toggleSortOrder,
     clearFilters,
     movies,
-  } = useDashboard(user);
-
-  /** Danh sách năm cho bộ lọc. */
-  const availableYears = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies.flatMap((m) => {
-          const d = normalizeDate(m.watched_at);
-          const years = d ? [d.getFullYear()] : [];
-          getSeasonWatchedDates(m).forEach(({ date }) => years.push(date.getFullYear()));
-          return years;
-        }),
-      ),
-    )
-      .sort((a, b) => b - a)
-      .map((year) => ({
-        value: year,
-        label: year.toString(),
-      }));
-  }, [movies]);
-
-  /** Danh sách quốc gia cho bộ lọc. */
-  const availableCountries = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies
-          .filter((m) => m.country && m.country.trim().length > 0)
-          .flatMap((m) => (m.country ?? '').split(',').map((c) => c.trim()))
-          .filter((c) => c.length > 0),
-      ),
-    )
-      .sort()
-      .map((country) => ({
-        value: country,
-        label: COUNTRY_TRANSLATIONS[country] || country,
-      }));
-  }, [movies]);
-
-  /** Danh sách thể loại cho bộ lọc. */
-  const availableGenres = useMemo(() => {
-    return Array.from(
-      new Set(
-        movies
-          .filter((m) => m.genres && m.genres.trim().length > 0)
-          .flatMap((m) => (m.genres ?? '').split(',').map((g) => g.trim()))
-          .filter((g) => g.length > 0),
-      ),
-    )
-      .sort((a, b) => a.localeCompare(b))
-      .map((genre) => ({
-        value: genre,
-        label: GENRE_TRANSLATIONS[genre] || genre,
-      }));
-  }, [movies]);
+    statusCounts,
+    availableYears,
+    availableCountries,
+    availableGenres,
+  } = useDashboard();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title="Thư viện điện ảnh" />
+    <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
+      {/* Số liệu nằm ở tabs + thống kê riêng, không đưa lên header */}
+      <PageHeader
+        title="Thư viện"
+        actions={
+          <>
+            <Button
+              onClick={() => navigate('/search')}
+              leadingIcon={<Search size={14} aria-hidden="true" />}
+            >
+              Tìm phim
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => openAddModal()}
+              leadingIcon={<Plus size={14} aria-hidden="true" />}
+            >
+              Thêm thủ công
+            </Button>
+          </>
+        }
+      />
 
-      <DashboardActions onOpenAddModal={() => openAddModal()} />
+      <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-4">
+        <DashboardTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          historyCount={statusCounts.history}
+          watchlistCount={statusCounts.watchlist}
+        />
+        {movies.length > 0 && (
+          <DashboardFilters
+            filters={filters}
+            updateFilter={updateFilter}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+            filterRef={filterRef}
+            toggleRef={toggleRef}
+            toggleSortOrder={toggleSortOrder}
+            activeTab={activeTab}
+            availableYears={availableYears}
+            availableCountries={availableCountries}
+            availableGenres={availableGenres}
+            clearFilters={clearFilters}
+          />
+        )}
+      </div>
 
-      <section aria-labelledby="library-content-title" className="space-y-4">
+      <section aria-labelledby="library-content-title" className="py-5">
         <h2 id="library-content-title" className="sr-only">
           Nội dung thư viện
         </h2>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <DashboardTabs
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            moviesCount={contentTypeStats.moviesCount}
-            tvCount={contentTypeStats.tvCount}
-          />
-
-          {movies.length > 0 && (
-            <DashboardFilters
-              filters={filters}
-              updateFilter={updateFilter}
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-              filterRef={filterRef}
-              toggleRef={toggleRef}
-              toggleSortOrder={toggleSortOrder}
-              activeTab={activeTab}
-              availableYears={availableYears}
-              availableCountries={availableCountries}
-              availableGenres={availableGenres}
-              clearFilters={clearFilters}
-            />
-          )}
-        </div>
-
+        <LoadingStatus>{loading ? 'Đang tải thư viện…' : ''}</LoadingStatus>
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {Array.from({ length: 10 }).map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+            {Array.from({ length: 12 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
+        ) : libraryError ? (
+          <ErrorState
+            title="Không tải được thư viện"
+            description="Lỗi kết nối tới dữ liệu phim. Bộ sưu tập của bạn vẫn an toàn."
+            retry={
+              user
+                ? {
+                    label: 'Thử lại',
+                    onClick: () => {
+                      cleanupMovies();
+                      initMovies(user.uid);
+                    },
+                  }
+                : undefined
+            }
+          />
         ) : processedMovies.length === 0 ? (
           <EmptyState
             icon={Film}
@@ -148,15 +133,15 @@ function DashboardPage() {
               filters.searchQuery
                 ? 'Không tìm thấy nội dung phù hợp'
                 : activeTab === 'history'
-                  ? 'Chưa có nội dung nào trong lịch sử'
-                  : 'Danh sách Sẽ xem đang trống'
+                  ? 'Chưa có phim đã xem'
+                  : 'Chưa có phim sẽ xem'
             }
             description={
               filters.searchQuery
                 ? 'Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại.'
                 : activeTab === 'history'
-                  ? 'Bắt đầu xây dựng lịch sử điện ảnh của bạn bằng cách thêm bộ phim đầu tiên.'
-                  : 'Khám phá và thêm những bộ phim bạn muốn xem vào đây.'
+                  ? 'Thêm phim đầu tiên vào lịch sử.'
+                  : 'Thêm phim từ trang Tìm phim.'
             }
             action={
               filters.searchQuery ||
@@ -177,18 +162,43 @@ function DashboardPage() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            <motion.div
+              key={`${activeTab}-${currentPage}`}
+              variants={staggerContainer}
+              initial={reducedMotion ? false : 'hidden'}
+              animate="show"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+            >
               {processedMovies.map((movie) => (
-                <MovieCard
+                <motion.div
                   key={movie.docId}
-                  movie={movie}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                  onClick={handleMovieClick}
-                  onMarkAsWatched={activeTab === 'watchlist' ? handleMarkAsWatched : undefined}
-                />
+                  variants={staggerItem}
+                  initial={reducedMotion ? false : 'hidden'}
+                  animate="show"
+                >
+                  <PosterCard
+                    title={getMainTitle(movie)}
+                    posterPath={movie.poster_path}
+                    mediaType={movie.media_type}
+                    source={movie.source}
+                    rating={movie.rating}
+                    review={movie.is_review}
+                    meta={getSubTitle(movie)}
+                    progress={
+                      movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed
+                        ? {
+                            current: movie.progress.watched_episodes ?? 0,
+                            total: movie.total_episodes ?? 0,
+                          }
+                        : null
+                    }
+                    onClick={() =>
+                      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
+                    }
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             <Pagination
               currentPage={currentPage}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
 import randomAudioFile from '@/assets/audio/random.mp3';
@@ -6,7 +7,6 @@ import { MOTION_DURATION } from '@/constants/animations';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/add-movie-store';
-import useMovieDetailStore from '../stores/movie-detail-store';
 import useMovieStore from '../stores/movie-store';
 
 export type PoolMovie = Movie | TMDBMovieResult;
@@ -18,21 +18,21 @@ interface UseRandomPickerOptions {
 }
 
 export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
+  const navigate = useNavigate();
   const { openAddModal } = useAddMovieStore();
-  const { openDetailModal } = useMovieDetailStore();
   const { movies } = useMovieStore();
   const [trending, setTrending] = useState<TMDBMovieResult[]>([]);
+  const [poolError, setPoolError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
   const [isLoadingPool, setIsLoadingPool] = useState(false);
   const [poolType, setPoolType] = useState<PoolType>(null);
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
   const [isShuffling, setIsShuffling] = useState(false);
   const [hasResult, setHasResult] = useState(false);
-  const [confettiData, setConfettiData] = useState<Record<string, unknown> | null>(null);
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const confettiFetchedRef = useRef(false);
   const reducedMotion = useReducedMotion() ?? false;
 
   const clearShuffleTimers = useCallback(() => {
@@ -40,15 +40,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     if (audioStopTimeoutRef.current) clearTimeout(audioStopTimeoutRef.current);
     shuffleTimeoutRef.current = null;
     audioStopTimeoutRef.current = null;
-  }, []);
-
-  const ensureConfetti = useCallback(() => {
-    if (confettiFetchedRef.current) return;
-    confettiFetchedRef.current = true;
-    fetch('/data/confetti.json')
-      .then((response) => response.json())
-      .then((data) => setConfettiData(data))
-      .catch((error) => console.warn('Confetti animation failed to load:', error));
   }, []);
 
   useEffect(() => {
@@ -60,10 +51,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       audio.unload();
     };
   }, [clearShuffleTimers]);
-
-  useEffect(() => {
-    if (isOpen) ensureConfetti();
-  }, [ensureConfetti, isOpen]);
 
   const watchlistMovies = useMemo(
     () => movies.filter((movie) => (movie.status || 'history') === 'watchlist'),
@@ -96,11 +83,14 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     setPoolType('trending');
     if (trending.length === 0) {
       setIsLoadingPool(true);
+      setPoolError(null);
       getTrendingMovies(1, controller.signal)
         .then(({ results }) => {
           if (!controller.signal.aborted) setTrending(results);
         })
-        .catch(() => undefined)
+        .catch(() => {
+          if (!controller.signal.aborted) setPoolError('Không tải được phim thịnh hành.');
+        })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoadingPool(false);
         });
@@ -108,7 +98,14 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       setIsLoadingPool(false);
     }
     return () => controller.abort();
-  }, [clearShuffleTimers, isOpen, randomAudio, trending.length, watchlistMovies.length]);
+  }, [
+    clearShuffleTimers,
+    isOpen,
+    randomAudio,
+    trending.length,
+    watchlistMovies.length,
+    retryNonce,
+  ]);
 
   const startShuffle = useCallback(
     (source: Exclude<PoolType, null>) => {
@@ -121,7 +118,6 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       }
 
       clearShuffleTimers();
-      ensureConfetti();
       setPoolType(source);
       setHasResult(false);
 
@@ -163,15 +159,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       };
       shuffleTimeoutRef.current = setTimeout(tick, 70);
     },
-    [
-      clearShuffleTimers,
-      ensureConfetti,
-      isMuted,
-      randomAudio,
-      reducedMotion,
-      trending,
-      watchlistMovies,
-    ],
+    [clearShuffleTimers, isMuted, randomAudio, reducedMotion, trending, watchlistMovies],
   );
 
   useEffect(() => {
@@ -181,7 +169,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const handleWatchNow = () => {
     if (currentIndex === null || activePool.length === 0) return;
     const currentItem = activePool[currentIndex];
-    if (poolType === 'watchlist') openDetailModal(currentItem as Movie);
+    if (poolType === 'watchlist') {
+      const item = currentItem as Movie;
+      navigate(`/movie/${item.id}${item.media_type === 'tv' ? '?type=tv' : ''}`);
+    }
     if (poolType === 'trending') {
       const movie = currentItem as TMDBMovieResult;
       openAddModal({
@@ -198,9 +189,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     poolType,
     currentIndex,
     isLoadingPool,
+    poolError,
+    retryPool: () => setRetryNonce((n) => n + 1),
     isShuffling,
     hasResult,
-    confettiData,
     reducedMotion,
     isMuted,
     toggleMuted: () => setIsMuted((muted) => !muted),

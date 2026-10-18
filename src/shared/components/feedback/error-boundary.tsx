@@ -9,7 +9,6 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-// Chặn crash render lan toàn app, tránh trắng trang khi 1 page/modal lỗi.
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false };
 

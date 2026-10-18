@@ -1,12 +1,9 @@
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '@/shared/lib/firebase';
 
-// Khớp với key trong GitHub Actions.
-const VAPID_PUBLIC_KEY =
-  import.meta.env.VITE_VAPID_PUBLIC_KEY ||
-  'BFBK097ne-pKAkExp7CqZtA9sPf9VdrwazPIFktU753xdoUMM2Rw2gZpxmugVoX-anvHb7T8KVj-rZQwar7vPp8';
+// Khóa VAPID public — chỉ từ env; thiếu thì push bị tắt (tránh key stale khi CI đổi key).
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
-// Định dạng khóa VAPID cho Web Push.
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -47,7 +44,6 @@ export function isMobileDevice(): boolean {
   return isIOS || isAndroid;
 }
 
-// Kiểm tra khả năng sử dụng push notification.
 export function isPushUsable(): boolean {
   return isPushSupported() && (isMobileDevice() || isInstalledPWA());
 }
@@ -57,7 +53,6 @@ export function getNotificationPermission(): NotificationPermission {
   return Notification.permission;
 }
 
-// Đăng ký Service Worker cho thông báo.
 async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
   if ('serviceWorker' in navigator) {
     const registrations = await navigator.serviceWorker.getRegistrations();
@@ -72,10 +67,13 @@ async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
   throw new Error('Service Worker not supported');
 }
 
-// Đăng ký nhận thông báo mới.
 export async function subscribeToPushNotifications(): Promise<PushSubscription | null> {
   if (!isPushSupported()) {
     console.warn('Push notifications are not supported');
+    return null;
+  }
+  if (!VAPID_PUBLIC_KEY) {
+    console.warn('[push] Thiếu VITE_VAPID_PUBLIC_KEY — thông báo bị tắt');
     return null;
   }
 
@@ -115,9 +113,9 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     if (error instanceof Error) {
       if (error.message.includes('not active')) {
-        throw new Error('Service worker chưa sẵn sàng. Vui lòng refresh trang và thử lại.');
+        throw new Error('Service worker chưa sẵn sàng. Refresh trang rồi thử lại.');
       } else if (error.message.includes('timeout')) {
-        throw new Error('Service worker mất quá nhiều thời gian. Vui lòng refresh trang.');
+        throw new Error('Service worker mất quá nhiều thời gian. Refresh trang rồi thử lại.');
       } else if (error.name === 'AbortError') {
         throw new Error('Push notification không được hỗ trợ trên thiết bị này hoặc cần HTTPS.');
       }
@@ -127,7 +125,6 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
   }
 }
 
-// Hủy đăng ký nhận thông báo.
 export async function unsubscribeFromPushNotifications(): Promise<void> {
   if (!isPushSupported()) return;
 
@@ -157,7 +154,6 @@ export async function isSubscribedToPush(): Promise<boolean> {
   }
 }
 
-// Lưu thông tin đăng ký vào Firestore.
 async function saveSubscriptionToFirestore(subscription: PushSubscription): Promise<void> {
   const user = auth.currentUser;
   if (!user) {

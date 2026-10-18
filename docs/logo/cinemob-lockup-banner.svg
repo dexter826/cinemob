@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 64" width="248" height="64" fill="none" role="img" aria-labelledby="lockupTitle">
+  <title id="lockupTitle">CineMOB Logo</title>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Anton&amp;display=swap');
+      .brand-title { font-family: 'Anton', Impact, -apple-system, sans-serif; font-size: 38px; letter-spacing: 1.5px; }
+    </style>
+  </defs>
+  <rect width="248" height="64" fill="#0A0A0A" rx="10"/>
+  <g transform="translate(43.5, 32) scale(0.25)">
+    <path fill="#CA8A04" fill-rule="evenodd" d="
+      M 59.4 -59.4
+      A 84 84 0 1 0 59.4 59.4
+      L 36.77 36.77
+      A 52 52 0 1 1 36.77 -36.77
+      Z
+    "/>
+    <polygon points="-10,-24 56,0 -10,24" fill="#F5F5F2"/>
+    <circle cx="-14" cy="0" r="10" fill="#CA8A04"/>
+    <line x1="-84" y1="0" x2="-68" y2="0" stroke="#0A0A0A" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="0" y1="-84" x2="0" y2="-68" stroke="#0A0A0A" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="0" y1="68" x2="0" y2="84" stroke="#0A0A0A" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <text x="77.5" y="46" class="brand-title">
+    <tspan fill="#F5F5F2">Cine</tspan><tspan fill="#CA8A04">MOB</tspan>
+  </text>
+</svg>

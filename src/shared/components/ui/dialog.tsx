@@ -1,8 +1,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
 import { X } from 'lucide-react';
-import { DIALOG_VARIANTS, OVERLAY_VARIANTS, getMotionTransition } from '@/constants/animations';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 import { useFocusTrap } from '@/shared/hooks/use-focus-trap';
 import { usePreventScroll } from '@/shared/hooks/use-prevent-scroll';
 import { classNames } from '@/shared/utils/class-names';
@@ -21,6 +21,7 @@ interface DialogProps {
   children: React.ReactNode;
   className?: string;
   overlayClassName?: string;
+  onExitComplete?: () => void;
 }
 
 const sizeClasses: Record<DialogSize, string> = {
@@ -61,6 +62,33 @@ const getPresentationClasses = (
   }
 };
 
+function buildDialogVariants(
+  isSheet: boolean,
+  reducedMotion: boolean,
+): { overlayVariants: Variants; panelVariants: Variants } {
+  const enter = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+    MOTION_EASING.enter,
+  );
+  const exit = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+    MOTION_EASING.exit,
+  );
+  const overlayVariants: Variants = {
+    closed: { opacity: 0, transition: exit },
+    open: { opacity: 1, transition: enter },
+  };
+  const panelVariants: Variants = {
+    closed: isSheet
+      ? { opacity: 0, y: '100%', transition: exit }
+      : { opacity: 0, y: 8, transition: exit },
+    open: { opacity: 1, y: 0, transition: enter },
+  };
+  return { overlayVariants, panelVariants };
+}
+
 export function Dialog({
   open,
   onClose,
@@ -73,27 +101,32 @@ export function Dialog({
   children,
   className = '',
   overlayClassName,
+  onExitComplete,
 }: DialogProps) {
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
+  const isSheet = presentation === 'sheet';
+  const { overlayVariants, panelVariants } = React.useMemo(
+    () => buildDialogVariants(isSheet, reducedMotion),
+    [isSheet, reducedMotion],
+  );
   usePreventScroll(open);
   useFocusTrap({ active: open, containerRef: dialogRef, initialFocusRef, onEscape: onClose });
 
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {open && (
         <motion.div
           key="dialog-overlay"
           role="presentation"
           className={classNames(
-            'fixed inset-0 flex flex-col bg-black/60 p-0 sm:p-4',
+            'fixed inset-0 flex flex-col bg-black/72 p-0 sm:p-4',
             overlayClassName || 'z-50',
           )}
-          variants={OVERLAY_VARIANTS}
+          variants={overlayVariants}
           initial="closed"
           animate="open"
           exit="closed"
-          transition={getMotionTransition(reducedMotion)}
           onClick={(event) => {
             if (closeOnOverlay && event.target === event.currentTarget) onClose();
           }}
@@ -106,15 +139,14 @@ export function Dialog({
             aria-describedby={descriptionId}
             tabIndex={-1}
             className={classNames(
-              'flex flex-col overflow-hidden bg-surface-elevated text-text-primary shadow-elevated',
+              'flex flex-col overflow-hidden bg-surface-elevated text-text-primary',
               getPresentationClasses(presentation, size),
               className,
             )}
-            variants={DIALOG_VARIANTS}
+            variants={panelVariants}
             initial="closed"
             animate="open"
             exit="closed"
-            transition={getMotionTransition(reducedMotion)}
           >
             {children}
           </motion.section>
@@ -142,10 +174,7 @@ export function DialogHeader({
     <div className="shrink-0 border-b border-border px-4 py-3 sm:px-6 sm:py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2
-            id={titleId}
-            className="text-base sm:text-lg font-bold tracking-tight font-display truncate"
-          >
+          <h2 id={titleId} className="text-base sm:text-lg font-bold tracking-wide truncate">
             {title}
           </h2>
           {description && (

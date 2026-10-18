@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Folder, CalendarDays } from 'lucide-react';
+import { Home, Search, Folder, CalendarDays, BarChart2 } from 'lucide-react';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 
 const NAV_ICONS: Record<string, typeof Home> = {
   '/': Home,
   '/search': Search,
+  '/stats': BarChart2,
   '/albums': Folder,
   '/calendar': CalendarDays,
 };
@@ -15,10 +16,10 @@ function MobileBottomNav() {
   return (
     <nav
       aria-label="Điều hướng dưới"
-      className="md:hidden fixed left-4 right-4 bg-surface-elevated border border-border rounded-card shadow-elevated z-40"
-      style={{ bottom: 'calc(12px + env(safe-area-inset-bottom, 12px))' }}
+      className="md:hidden fixed inset-x-0 bottom-0 z-40 bg-background border-t border-border"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
-      <div className="flex justify-around items-center h-16">
+      <div className="flex items-stretch h-14">
         {NAV_ITEMS.map((item) => {
           const Icon = NAV_ICONS[item.to] ?? Home;
           const isActive = isNavItemActive(location.pathname, item);
@@ -29,17 +30,27 @@ function MobileBottomNav() {
               to={item.to}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
-              className="relative flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-16 px-1 cursor-pointer"
+              className="relative flex flex-col items-center justify-center gap-1 flex-1 min-h-14 cursor-pointer"
             >
               <span
-                className={`relative p-2 transition-colors ${isActive ? 'text-primary' : 'text-text-secondary'}`}
-              >
-                <Icon size={24} strokeWidth={isActive ? 2 : 1.5} aria-hidden="true" />
-              </span>
-              <span
                 aria-hidden="true"
-                className={`h-1 w-6 rounded-full transition-colors ${isActive ? 'bg-primary' : 'bg-transparent'}`}
+                className={`absolute top-0 inset-x-[22%] h-0.5 bg-primary transition-opacity ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
               />
+              <Icon
+                size={20}
+                strokeWidth={isActive ? 2 : 1.5}
+                aria-hidden="true"
+                className={isActive ? 'text-primary' : 'text-text-secondary'}
+              />
+              <span
+                className={`text-[9px] font-semibold uppercase tracking-[0.05em] ${
+                  isActive ? 'text-primary' : 'text-text-secondary'
+                }`}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}

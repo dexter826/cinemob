@@ -50,7 +50,6 @@ export default defineConfig(() => {
             vendor: ['react', 'react-dom'],
             firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
             charts: ['recharts'],
-            lottie: ['lottie-react'],
           },
         },
       },

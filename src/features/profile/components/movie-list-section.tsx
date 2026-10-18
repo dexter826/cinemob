@@ -1,9 +1,13 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useMemo, useState } from 'react';
-import { Film, Search, X } from 'lucide-react';
+import { Film, Search as SearchIcon } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
-import ProfileMovieCard from './profile-movie-card';
+import PosterCard from '@/features/movies/components/poster-card';
+import SearchField from '@/shared/components/ui/search-field';
+import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 import {
   filterAndSortProfileMovies,
@@ -23,14 +27,17 @@ const LOAD_MORE_SIZE = 40;
 interface MovieListSectionProps {
   movies: ProfileMovie[];
   isLoading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
   emptyTitle: string;
   emptyDescription: string;
 }
 
-// Danh sách phim đã xem: tìm kiếm, sắp xếp, phân trang kiểu "Xem thêm".
 function MovieListSection({
   movies,
   isLoading = false,
+  error,
+  onRetry,
   emptyTitle,
   emptyDescription,
 }: MovieListSectionProps) {
@@ -52,13 +59,28 @@ function MovieListSection({
     setVisibleCount(LOAD_MORE_SIZE);
   }, [searchQuery, sortBy]);
 
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Vui lòng thử lại."
+        retry={onRetry ? { label: 'Thử lại', onClick: onRetry } : undefined}
+      />
+    );
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <SkeletonCard key={i} />
-        ))}
-      </div>
+      <>
+        <LoadingStatus>Đang tải danh sách phim…</LoadingStatus>
+        <div
+          aria-busy="true"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+        >
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -69,35 +91,15 @@ function MovieListSection({
   return (
     <>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="relative flex-1">
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary"
-            aria-hidden="true"
-          />
-          <label htmlFor="profile-search" className="sr-only">
-            Tìm phim trong hồ sơ này
-          </label>
-          <input
-            id="profile-search"
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm phim trong hồ sơ này…"
-            autoComplete="off"
-            spellCheck={false}
-            className="w-full bg-surface border border-border rounded-card pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors p-1"
-              aria-label="Xóa từ khóa tìm kiếm"
-            >
-              <X size={15} aria-hidden="true" />
-            </button>
-          )}
-        </div>
+        <SearchField
+          variant="underline"
+          id="profile-search"
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Tìm phim trong hồ sơ này…"
+          label="Tìm phim trong hồ sơ này"
+          className="flex-1"
+        />
 
         <div className="flex items-center gap-2 sm:w-64 shrink-0">
           <div className="w-full">
@@ -105,7 +107,7 @@ function MovieListSection({
               options={SORT_OPTIONS}
               value={sortBy}
               onChange={(val) => setSortBy(val as ProfileSortOption)}
-              placeholder="Sắp xếp"
+              placeholder="Sắp xếp theo…"
             />
           </div>
         </div>
@@ -139,15 +141,29 @@ function MovieListSection({
 
       {filteredMovies.length === 0 ? (
         <EmptyState
-          icon={Search}
+          icon={SearchIcon}
           title="Không tìm thấy phim phù hợp"
           description={`Không có bộ phim nào khớp với từ khóa “${searchQuery}”`}
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
           {visibleMovies.map((movie) => (
-            <ProfileMovieCard key={String(movie.id)} movie={movie} />
+            <PosterCard
+              key={String(movie.id)}
+              title={movie.title_vi || movie.title}
+              posterPath={movie.poster_path ?? null}
+              mediaType={movie.media_type}
+              rating={movie.rating}
+              review={movie.is_review}
+              meta={
+                movie.watched_at
+                  ? formatDateAny(movie.watched_at)
+                  : movie.release_date
+                    ? movie.release_date.slice(0, 4)
+                    : undefined
+              }
+            />
           ))}
         </div>
       )}

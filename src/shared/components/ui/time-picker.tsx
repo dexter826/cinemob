@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { Clock, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { getPanelMotion } from '@/constants/animations';
 
 interface TimePickerProps {
-  value: string; // HH:mm format
+  value: string; // định dạng HH:mm
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
@@ -35,6 +37,8 @@ function TimePicker({
   const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
+  const reducedMotion = useReducedMotion() ?? false;
+  const popoverMotion = getPanelMotion(reducedMotion);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hourListRef = useRef<HTMLDivElement>(null);
@@ -69,7 +73,7 @@ function TimePicker({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, isMobile]);
 
-  // Popover desktop là dialog: nhận focus khi mở.
+  // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
   useEffect(() => {
     if (isOpen && !isMobile) popoverRef.current?.focus();
   }, [isOpen, isMobile]);
@@ -146,12 +150,12 @@ function TimePicker({
   );
 
   const renderPicker = () => (
-    <div
+    <motion.div
       ref={popoverRef}
       id={isMobile ? undefined : `${controlId}-dialog`}
       tabIndex={isMobile ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card shadow-elevated p-4
+                bg-surface border border-border-default rounded-card p-4
                 ${
                   isMobile
                     ? 'relative w-full max-w-[280px] mx-auto'
@@ -161,6 +165,10 @@ function TimePicker({
       role={isMobile ? undefined : 'dialog'}
       aria-label={isMobile ? undefined : 'Chọn giờ'}
       onClick={(e) => isMobile && e.stopPropagation()}
+      initial={isMobile ? undefined : popoverMotion.initial}
+      animate={isMobile ? undefined : popoverMotion.animate}
+      exit={isMobile ? undefined : popoverMotion.exit}
+      transition={popoverMotion.transition}
     >
       {isMobile && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
@@ -178,9 +186,9 @@ function TimePicker({
         </div>
       )}
 
-      {/* Quick Select Lists */}
+      {/* Danh sách chọn nhanh */}
       <div className="flex gap-2 max-h-40">
-        {/* Hour List */}
+        {/* Danh sách giờ */}
         <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Giờ
@@ -195,7 +203,7 @@ function TimePicker({
                                 w-full py-1.5 text-sm rounded-lg transition-colors
                                 ${
                                   h === hours
-                                    ? 'bg-primary text-on-primary font-bold shadow-md shadow-primary/20'
+                                    ? 'bg-primary text-on-primary font-bold'
                                     : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}
@@ -205,7 +213,7 @@ function TimePicker({
           ))}
         </div>
 
-        {/* Minute List */}
+        {/* Danh sách phút */}
         <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Phút
@@ -220,7 +228,7 @@ function TimePicker({
                                 w-full py-1.5 text-sm rounded-lg transition-colors
                                 ${
                                   m === minutes
-                                    ? 'bg-primary text-on-primary font-bold shadow-md shadow-primary/20'
+                                    ? 'bg-primary text-on-primary font-bold'
                                     : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
                                 }
                             `}
@@ -231,22 +239,22 @@ function TimePicker({
         </div>
       </div>
 
-      {/* Now Button */}
+      {/* Nút bây giờ */}
       <div className="mt-4 pt-3 border-t border-border-default">
         <button
           type="button"
           onClick={setCurrentTime}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-primary/20"
+          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
         >
           Bây giờ
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
+      {/* Nút trigger */}
       <button
         id={controlId}
         ref={triggerRef}
@@ -255,10 +263,10 @@ function TimePicker({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         className={`
-          w-full h-11 bg-black/5 dark:bg-white/5 border border-border-default rounded-card px-4 text-left
-          focus-visible:outline-none focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          w-full h-11 border border-border-default rounded-card px-4 text-left
+          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
           hover:border-primary/30 transition-colors duration-200
-          flex items-center justify-between shadow-sm
+          flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}
         `}
@@ -279,22 +287,21 @@ function TimePicker({
         </div>
       </button>
 
-      {/* Picker UI */}
-      {isOpen &&
-        (isMobile ? (
-          <Dialog
-            open={isOpen}
-            onClose={closePicker}
-            titleId={dialogTitleId}
-            presentation="dialog"
-            size="sm"
-            className="bg-transparent shadow-none overflow-visible"
-          >
-            <div id={`${controlId}-dialog`}>{renderPicker()}</div>
-          </Dialog>
-        ) : (
-          renderPicker()
-        ))}
+      {/* Khung chọn giờ */}
+      {isMobile ? (
+        <Dialog
+          open={isOpen}
+          onClose={closePicker}
+          titleId={dialogTitleId}
+          presentation="dialog"
+          size="sm"
+          className="bg-transparent shadow-none overflow-visible"
+        >
+          <div id={`${controlId}-dialog`}>{renderPicker()}</div>
+        </Dialog>
+      ) : (
+        <AnimatePresence>{isOpen && renderPicker()}</AnimatePresence>
+      )}
     </div>
   );
 }

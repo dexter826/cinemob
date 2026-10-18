@@ -1,26 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie } from '@/types';
-import { deleteMovie } from '@/features/movies/services/movie-service';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import useToastStore from '@/shared/stores/toast-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
-import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
-import { getMainTitle } from '@/features/movies/utils/movie-utils';
+import { useDeleteMovie } from '@/features/movies/hooks/use-delete-movie';
 import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
 import { useDashboardStats } from './use-dashboard-stats';
-import { MESSAGES } from '@/constants/messages';
-import type { User } from 'firebase/auth';
 
-const UNDO_DELETE_MS = 7000;
-
-// Hook điều phối chính cho Dashboard.
-export const useDashboard = (user: User | null) => {
-  const { showToast } = useToastStore();
+export const useDashboard = () => {
   const { openAddModal } = useAddMovieStore();
-  const { openDetailModal } = useMovieDetailStore();
+  const handleDelete = useDeleteMovie();
 
-  const { movies, loading, removeLocal, restoreMovie, clearPendingDelete } = useMovieStore();
+  const { movies, loading } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTabState] = useState<ActiveTab>(() =>
     searchParams.get('tab') === 'watchlist' ? 'watchlist' : 'history',
@@ -44,30 +35,13 @@ export const useDashboard = (user: User | null) => {
 
   const { stats, contentTypeStats } = useDashboardStats(filters.currentTabMovies);
 
-  const handleDelete = (docId: string) => {
-    if (!user) return;
-    const movie = movies.find((m) => m.docId === docId);
-    if (!movie) return;
-
-    removeLocal(docId);
-    const timer = setTimeout(async () => {
-      try {
-        await deleteMovie(user.uid, docId);
-        clearPendingDelete(docId);
-      } catch {
-        restoreMovie(movie);
-        showToast(MESSAGES.MOVIE.DELETE_ERROR, 'error');
-      }
-    }, UNDO_DELETE_MS);
-
-    showToast(`Đã xóa ${getMainTitle(movie)}`, 'info', UNDO_DELETE_MS, {
-      label: 'Hoàn tác',
-      onAction: () => {
-        clearTimeout(timer);
-        restoreMovie(movie);
-      },
-    });
-  };
+  const statusCounts = useMemo(
+    () => ({
+      history: movies.filter((m) => (m.status || 'history') === 'history').length,
+      watchlist: movies.filter((m) => m.status === 'watchlist').length,
+    }),
+    [movies],
+  );
 
   const handleEdit = (movie: Movie) => {
     openAddModal({ movieToEdit: movie });
@@ -89,12 +63,12 @@ export const useDashboard = (user: User | null) => {
     loading,
     stats,
     contentTypeStats,
+    statusCounts,
     activeTab,
     setActiveTab,
     handleDelete,
     handleEdit,
     handleMarkAsWatched,
-    handleMovieClick: openDetailModal,
     openAddModal,
     ...filters,
   };

@@ -43,14 +43,17 @@ export const withLimit = <T>(
 export const BASE_URL = TMDB_BASE_URL;
 export const API_KEY = TMDB_API_KEY;
 
-// Gọi API từ TMDB.
 export const tmdbFetch = async <T>(
   endpoint: string,
   params: Record<string, string>,
   decode: Decoder<T>,
   signal?: AbortSignal,
+  strict = false,
 ): Promise<T | null> => {
-  if (!API_KEY) return null;
+  if (!API_KEY) {
+    if (strict) throw new Error('TMDB API key is unavailable');
+    return null;
+  }
 
   try {
     const queryParams = new URLSearchParams({
@@ -63,17 +66,24 @@ export const tmdbFetch = async <T>(
     const response = await fetch(`${BASE_URL}/${endpoint}?${queryParams.toString()}`, {
       signal: requestSignal,
     });
+    if (strict && response.status === 404) return null;
     if (!response.ok)
       throw new Error(`TMDB API Error: ${response.status}`, { cause: { endpoint } });
     const raw: unknown = await response.json();
     const decoded = decode(raw);
     if (decoded === null) {
       console.error(`Invalid TMDB response [${endpoint}]`);
+      if (strict) throw new Error('Invalid TMDB response');
       return null;
     }
     return decoded;
   } catch (error) {
+    // Abort do unmount/đổi tham số là huỷ bình thường — không log như lỗi.
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return null;
+    }
     console.error(`Failed to fetch from TMDB [${endpoint}]:`, error);
+    if (strict) throw error;
     return null;
   }
 };

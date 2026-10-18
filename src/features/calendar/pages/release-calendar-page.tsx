@@ -1,3 +1,7 @@
+import Spinner from '@/shared/components/ui/spinner';
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { Tv, Bell, BellOff, BellRing } from 'lucide-react';
 import { todayISO } from '@/shared/utils/date-format';
@@ -8,7 +12,6 @@ import CalendarGrid from '../components/calendar-grid';
 import EpisodeList from '../components/episode-list';
 import PageHeader from '@/shared/components/ui/page-header';
 
-/** Trang Lịch phát sóng các tập phim mới của Series. */
 type PushStatus = 'loading' | 'on' | 'blocked' | 'off';
 
 const getPushStatus = (
@@ -32,6 +35,8 @@ const PUSH_LABEL: Record<PushStatus, string> = {
 function ReleaseCalendarPage() {
   const {
     loading,
+    collectionError,
+    retryCollection,
     loadingEpisodes,
     tvSeries,
     monthEpisodes,
@@ -56,7 +61,7 @@ function ReleaseCalendarPage() {
   const today = todayISO();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
       <PageHeader
         title="Lịch phát sóng"
         className="flex-col sm:flex-row items-stretch sm:items-center"
@@ -69,20 +74,15 @@ function ReleaseCalendarPage() {
               aria-label={
                 pushSubscribed ? 'Tắt thông báo tập phim mới' : 'Bật thông báo tập phim mới'
               }
-              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card border transition-colors flex items-center justify-center gap-2 font-semibold text-xs cursor-pointer ${
                 pushStatus === 'on'
-                  ? 'bg-success text-on-success'
+                  ? 'bg-success text-on-success border-transparent'
                   : pushStatus === 'blocked'
-                    ? 'bg-danger/10 text-danger border border-danger/20 cursor-not-allowed'
-                    : 'bg-surface border border-border text-text-primary hover:border-primary/30'
+                    ? 'border-transparent text-danger cursor-not-allowed'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-primary'
               } ${pushLoading || loading ? 'opacity-50 cursor-wait' : ''}`}
             >
-              {pushStatus === 'loading' && (
-                <div
-                  aria-hidden="true"
-                  className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"
-                />
-              )}
+              {pushStatus === 'loading' && <Spinner size={14} className="text-current" />}
               {pushStatus === 'on' && <BellRing size={16} strokeWidth={1.5} aria-hidden="true" />}
               {pushStatus === 'blocked' && (
                 <BellOff size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -94,17 +94,32 @@ function ReleaseCalendarPage() {
         }
       />
 
-      {loading ? (
+      <LoadingStatus>
+        {loading
+          ? 'Đang tải series…'
+          : loadingEpisodes
+            ? 'Đang tải lịch phát sóng…'
+            : episodesError || ''}
+      </LoadingStatus>
+      {collectionError ? (
+        <ErrorState
+          title="Không tải được danh sách series"
+          description="Vui lòng thử lại."
+          retry={{ label: 'Thử lại', onClick: retryCollection }}
+        />
+      ) : loading ? (
         <div className="space-y-6">
-          <div className="h-28 bg-surface rounded-dialog animate-pulse border border-border" />
+          <Skeleton className="h-28  rounded-dialog  border border-border" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 h-80 bg-surface rounded-dialog animate-pulse border border-border" />
-            <div className="h-80 bg-surface rounded-dialog animate-pulse border border-border" />
+            <Skeleton className="lg:col-span-2 h-80  rounded-dialog  border border-border" />
+            <Skeleton className="h-80  rounded-dialog  border border-border" />
           </div>
         </div>
       ) : (
         <>
           <CalendarStats
+            episodesLoading={loadingEpisodes}
+            episodesError={episodesError}
             tvSeriesCount={tvSeries.length}
             monthEpisodesCount={monthEpisodes.length}
             airedEpisodesCount={monthEpisodes.filter((ep) => ep.episode.air_date < today).length}

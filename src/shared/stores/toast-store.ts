@@ -20,7 +20,6 @@ interface ToastState {
   removeToast: (id: number) => void;
 }
 
-// Quản lý thông báo toast toàn cục.
 let toastSeq = 0;
 const useToastStore = create<ToastState>((set, get) => ({
   toasts: [],

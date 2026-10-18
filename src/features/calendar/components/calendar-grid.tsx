@@ -1,3 +1,4 @@
+import Skeleton from '@/shared/components/ui/skeleton';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { monthLabel } from '@/shared/utils/date-format';
 import { UpcomingEpisode } from '@/types';
@@ -14,7 +15,6 @@ interface CalendarGridProps {
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-/** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
   currentDate,
   navigateMonth,
@@ -29,14 +29,12 @@ function CalendarGrid({
   const getFirstDayOfMonth = (date: Date) =>
     new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
+  const todayDate = new Date();
+
+  const isToday = (date: Date) =>
+    date.getDate() === todayDate.getDate() &&
+    date.getMonth() === todayDate.getMonth() &&
+    date.getFullYear() === todayDate.getFullYear();
 
   const isSelected = (date: Date) => {
     if (!selectedDate) return false;
@@ -60,7 +58,7 @@ function CalendarGrid({
       days.push(
         <div
           key={`prev-${day}`}
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-control sm:rounded-card flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-secondary">{day}</div>
         </div>,
@@ -82,10 +80,10 @@ function CalendarGrid({
           aria-current={today ? 'date' : undefined}
           aria-pressed={selected}
           className={`
-            h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors duration-300
-            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group 
-            ${today ? 'bg-primary/5 border-primary/50 dark:border-primary/40 shadow-lg shadow-primary/10' : 'border-border-default dark:border-white/5 bg-black/5 dark:bg-white/5'}
-            ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary shadow-premium' : ''}
+            h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors
+            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group
+            ${today ? 'border-primary' : 'border-border-default dark:border-white/5'}
+            ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
           `}
         >
@@ -99,7 +97,7 @@ function CalendarGrid({
               {episodes.slice(0, 2).map((ep) => (
                 <div
                   key={`${ep.seriesId}-${ep.episode.id}`}
-                  className="text-xs sm:text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-md truncate font-bold border border-primary/20"
+                  className="text-xs sm:text-xs text-primary truncate font-bold"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
@@ -118,7 +116,7 @@ function CalendarGrid({
                 {episodes.slice(0, 3).map((ep, dotIndex) => (
                   <div
                     key={`${ep.seriesId}-${ep.episode.id}-dot-${dotIndex}`}
-                    className="w-1.5 h-1.5 rounded-[3px] bg-primary shadow-[0_0_4px_rgba(16,185,129,0.4)]"
+                    className="w-1.5 h-1.5 rounded-[3px] bg-primary"
                   ></div>
                 ))}
               </div>
@@ -129,12 +127,14 @@ function CalendarGrid({
     }
 
     const totalCells = days.length;
-    const nextMonthDaysNeeded = 42 - totalCells;
+    // Chỉ điền đủ số ô của tháng sau để hoàn tất hàng cuối — không nhét cứng 6 tuần.
+    const remainder = totalCells % 7;
+    const nextMonthDaysNeeded = remainder === 0 ? 0 : 7 - remainder;
     for (let day = 1; day <= nextMonthDaysNeeded; day++) {
       days.push(
         <div
           key={`next-${day}`}
-          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 bg-black/5 dark:bg-white/5 rounded-control sm:rounded-card flex flex-col justify-between"
+          className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
           <div className="text-xs font-bold text-text-secondary">{day}</div>
         </div>,
@@ -145,13 +145,13 @@ function CalendarGrid({
   };
 
   return (
-    <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-dialog flex flex-col h-full">
+    <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-dialog flex flex-col">
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <button
           type="button"
           onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -163,7 +163,7 @@ function CalendarGrid({
             type="button"
             onClick={goToToday}
             aria-label="Về hôm nay"
-            className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs font-bold bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors cursor-pointer"
+            className="text-xs font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
           >
             Hôm nay
           </button>
@@ -172,7 +172,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-lg sm:rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>
@@ -191,10 +191,13 @@ function CalendarGrid({
 
       {loadingEpisodes ? (
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {Array.from({ length: 42 }).map((_, idx) => (
-            <div
+          {Array.from({
+            length:
+              Math.ceil((getDaysInMonth(currentDate) + getFirstDayOfMonth(currentDate)) / 7) * 7,
+          }).map((_, idx) => (
+            <Skeleton
               key={idx}
-              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card animate-pulse bg-black/5 dark:bg-white/5"
+              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card "
             />
           ))}
         </div>

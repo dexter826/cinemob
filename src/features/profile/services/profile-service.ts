@@ -21,7 +21,6 @@ export function validateDisplayName(raw: string): ValidateResult {
   return { ok: true, value };
 }
 
-// Cập nhật displayName Auth + đồng bộ hồ sơ thành viên nếu doc đã có.
 export const updateDisplayName = async (user: User, rawName: string): Promise<string> => {
   const checked = validateDisplayName(rawName);
   if (!checked.ok) {

@@ -1,9 +1,15 @@
+import Loading from '@/shared/components/ui/loading';
+import ErrorState from '@/shared/components/ui/error-state';
+import Spinner from '@/shared/components/ui/spinner';
 import { useEffect, useRef } from 'react';
-import { FolderPlus, Plus, X, Loader2 } from 'lucide-react';
+import { FolderPlus, Plus, X } from 'lucide-react';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import { Album } from '@/types';
 
 interface AlbumSectionProps {
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
   isEditMode: boolean;
   showCreateAlbum: boolean;
   setShowCreateAlbum: (show: boolean) => void;
@@ -17,6 +23,9 @@ interface AlbumSectionProps {
 }
 
 function AlbumSection({
+  loading,
+  error,
+  onRetry,
   isEditMode,
   showCreateAlbum,
   setShowCreateAlbum,
@@ -37,6 +46,16 @@ function AlbumSection({
     }
   }, [showCreateAlbum]);
 
+  if (loading) return <Loading text="Đang tải album…" />;
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Tải lại album trước khi lưu phim."
+        retry={{ label: 'Thử lại', onClick: onRetry }}
+        compact
+      />
+    );
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
@@ -47,7 +66,7 @@ function AlbumSection({
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20'}`}
+          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
         >
           {showCreateAlbum ? (
             <>
@@ -62,14 +81,14 @@ function AlbumSection({
       </div>
 
       {showCreateAlbum && (
-        <div className="flex gap-3 p-4 bg-black/5 dark:bg-white/5 rounded-card border border-border">
+        <div className="flex gap-3 p-4 rounded-card border border-border">
           <input
             ref={newAlbumInputRef}
             name="new-album-name"
             type="text"
             autoComplete="off"
             aria-label="Tên album mới"
-            placeholder="Tên album mới…"
+            placeholder="Nhập tên album…"
             value={newAlbumName}
             onChange={(e) => setNewAlbumName(e.target.value)}
             onKeyDown={(e) => {
@@ -78,19 +97,15 @@ function AlbumSection({
                 handleCreateAlbum();
               }
             }}
-            className="flex-1 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
+            className="flex-1 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
           />
           <button
             type="button"
             onClick={handleCreateAlbum}
             disabled={creatingAlbum || !newAlbumName.trim()}
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-sm font-bold hover:shadow-premium disabled:opacity-40 transition-colors shadow-lg shadow-primary/20"
+            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-sm font-bold disabled:opacity-40 transition-colors"
           >
-            {creatingAlbum ? (
-              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
-            ) : (
-              'Tạo'
-            )}
+            {creatingAlbum ? <Spinner size={18} className="text-current" /> : 'Tạo'}
           </button>
         </div>
       )}

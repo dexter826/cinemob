@@ -1,5 +1,6 @@
+import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useRef, useState } from 'react';
-import { FolderPlus, Film } from 'lucide-react';
+import { FolderPlus, Film, X } from 'lucide-react';
 import { Movie, Album } from '@/types';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
@@ -8,7 +9,7 @@ import { updateAlbum, addAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
 import Loading from '@/shared/components/ui/loading';
 import EmptyState from '@/shared/components/ui/empty-state';
-import logoText from '@/assets/images/logo_text.png';
+import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
@@ -20,11 +21,10 @@ interface AlbumSelectorModalProps {
   movie: Movie | null;
 }
 
-/** Sheet on mobile, centered dialog above sm. Create/select with parent-dialog-safe locks. */
 function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps) {
   const { user } = useAuth();
   const { showToast } = useToastStore();
-  const { albums, loading } = useAlbumStore();
+  const { albums, loading, error, retry } = useAlbumStore();
   const [addingToAlbum, setAddingToAlbum] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
@@ -99,11 +99,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           {movie && (
             <span className="w-12 h-[72px] rounded-control overflow-hidden border border-border shrink-0 block">
               <img
-                src={
-                  movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                    : logoText
-                }
+                src={getTMDBImageUrl(movie.poster_path, 'w200')}
                 alt=""
                 width={200}
                 height={300}
@@ -115,22 +111,20 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             <span className="text-xs font-semibold text-primary mb-1 block">Thêm vào album</span>
             <h2
               id="album-selector-title"
-              className="text-xl font-bold text-text-primary truncate tracking-tight font-display"
+              className="text-xl text-text-primary truncate tracking-tight font-display"
             >
               {movie ? getDisplayTitle(movie) : 'Chọn album'}
             </h2>
           </div>
         </div>
         <IconButton label="Đóng bảng chọn album" onClick={onClose} variant="ghost">
-          <span aria-hidden="true" className="text-lg leading-none">
-            ×
-          </span>
+          <X size={18} strokeWidth={1.8} aria-hidden="true" />
         </IconButton>
       </div>
 
       <DialogBody>
         {showCreateForm ? (
-          <div className="mb-6 p-5 border border-primary/20 rounded-card bg-primary/5">
+          <div className="mb-6 p-5 border border-border rounded-card">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Tạo album mới</h3>
             <div className="space-y-4">
               <label htmlFor="album-selector-new-name" className="sr-only">
@@ -150,7 +144,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                   }
                 }}
                 autoComplete="off"
-                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
+                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
                 ref={newAlbumInputRef}
               />
               <div className="flex gap-3">
@@ -173,12 +167,12 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           <button
             type="button"
             onClick={() => setShowCreateForm(true)}
-            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-primary/30 hover:border-primary/60 hover:bg-primary/5 transition-colors text-left cursor-pointer"
+            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-border hover:border-primary/60 transition-colors text-left cursor-pointer"
           >
             <span className="flex items-center gap-4">
               <span
                 aria-hidden="true"
-                className="w-12 h-12 bg-primary/10 rounded-control flex items-center justify-center shrink-0 border border-primary/20"
+                className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
               >
                 <FolderPlus size={24} className="text-primary" />
               </span>
@@ -189,7 +183,13 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           </button>
         )}
 
-        {loading ? (
+        {error ? (
+          <ErrorState
+            title={error}
+            description="Vui lòng thử tải lại album."
+            retry={{ label: 'Thử lại', onClick: retry }}
+          />
+        ) : loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loading size={40} fullScreen={false} />
             <p className="text-xs font-semibold text-text-secondary">Đang tải album…</p>
@@ -220,7 +220,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 <span className="flex items-center gap-4">
                   <span
                     aria-hidden="true"
-                    className="w-12 h-12 bg-black/5 dark:bg-white/5 rounded-control flex items-center justify-center shrink-0 border border-border"
+                    className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
                   >
                     <Film size={22} className="text-text-secondary" />
                   </span>

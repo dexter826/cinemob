@@ -1,24 +1,15 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import Skeleton from '@/shared/components/ui/skeleton';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useState, useEffect } from 'react';
 
-import {
-  X,
-  Save,
-  Loader2,
-  Film,
-  Star,
-  Type,
-  Image,
-  MessageSquare,
-  Calendar,
-  Clock,
-} from 'lucide-react';
+import { X, Save, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
 
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import useAlertStore from '@/shared/stores/alert-store';
 
-// Sub-components
 import StatusToggle from './add-movie/status-toggle';
 import RatingSection from './add-movie/rating-section';
 import TVProgressSection from './add-movie/tv-progress-section';
@@ -28,11 +19,10 @@ import PosterPreview from './add-movie/poster-preview';
 import DatePicker from '@/shared/components/ui/date-picker';
 import TimePicker from '@/shared/components/ui/time-picker';
 
-// Hooks
 import { useAddMovieForm } from '../hooks/use-add-movie-form';
 import { COUNTRY_OPTIONS } from '@/constants';
 
-function AddMovieModal() {
+function AddMovieModal({ onExited }: { onExited?: () => void }) {
   const {
     isOpen,
     initialData,
@@ -46,6 +36,12 @@ function AddMovieModal() {
     isDirty,
     isSubmitting,
     isLoadingDetails,
+    detailsError,
+    retryDetails,
+    tvProgressLoading,
+    tvProgressError,
+    retryTVProgress,
+    canSubmit,
     movieExists,
     ratingError,
     setRatingError,
@@ -80,6 +76,9 @@ function AddMovieModal() {
     refs,
     errors,
     albums,
+    albumsLoading,
+    albumsError,
+    retryAlbums,
   } = useAddMovieForm();
 
   const [activeTab, setActiveTab] = useState<'info' | 'review'>(
@@ -94,7 +93,8 @@ function AddMovieModal() {
   }, [errors]);
 
   const isEditMode = !!initialData?.movieToEdit;
-  const submitDisabled = isSubmitting || !isDirty || (movieExists && !isEditMode);
+  const submitDisabled =
+    !canSubmit || isSubmitting || (movieExists && !isEditMode) || (isEditMode && !isDirty);
 
   // Chặn đóng modal khi form còn thay đổi chưa lưu.
   const requestClose = () => {
@@ -118,37 +118,47 @@ function AddMovieModal() {
       titleId="add-movie-title"
       presentation="fullscreen-mobile"
       size="4xl"
+      onExitComplete={onExited}
     >
       <div className="flex items-center justify-between px-5 py-4 sm:px-6 sm:py-5 border-b border-border shrink-0">
         <div className="min-w-0">
           <h2
             id="add-movie-title"
-            className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate font-display"
+            className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate"
           >
             {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
         </div>
-        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="secondary">
+        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="ghost">
           <X size={18} aria-hidden="true" />
         </IconButton>
       </div>
 
       <DialogBody className="p-5 sm:p-6 lg:p-7">
-        {isLoadingDetails ? (
+        <LoadingStatus>
+          {isLoadingDetails ? 'Đang tải thông tin phim…' : isSubmitting ? 'Đang lưu phim…' : ''}
+        </LoadingStatus>
+        {detailsError ? (
+          <ErrorState
+            title={detailsError}
+            description="Thử tải lại thông tin phim hoặc đóng hộp thoại."
+            retry={{ label: 'Thử lại', onClick: retryDetails }}
+          />
+        ) : isLoadingDetails ? (
           <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
-            <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 bg-black/5 dark:bg-white/5 rounded-card sm:rounded-dialog animate-pulse shrink-0 mx-auto md:mx-0" />
+            <Skeleton className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog  shrink-0 mx-auto md:mx-0" />
             <div className="flex-1 w-full space-y-6">
-              <div className="h-11 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
+              <Skeleton className="h-11 rounded-card w-full " />
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
-                  <div className="h-20 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
+                  <Skeleton className="h-20 rounded-card " />
+                  <Skeleton className="h-20 rounded-card " />
                 </div>
-                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
-                <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card w-full animate-pulse" />
+                <Skeleton className="h-12 rounded-card w-full " />
+                <Skeleton className="h-12 rounded-card w-full " />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
-                  <div className="h-12 bg-black/5 dark:bg-white/5 rounded-card animate-pulse" />
+                  <Skeleton className="h-12 rounded-card " />
+                  <Skeleton className="h-12 rounded-card " />
                 </div>
               </div>
             </div>
@@ -176,13 +186,13 @@ function AddMovieModal() {
               <div
                 role="group"
                 aria-label="Phần của biểu mẫu"
-                className="flex bg-black/5 dark:bg-white/5 p-1 rounded-card border border-border"
+                className="flex p-1 rounded-card border border-border"
               >
                 <button
                   type="button"
                   aria-pressed={activeTab === 'info'}
                   onClick={() => setActiveTab('info')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Film size={15} aria-hidden="true" />
                   <span>Thông tin phim</span>
@@ -191,7 +201,7 @@ function AddMovieModal() {
                   type="button"
                   aria-pressed={activeTab === 'review'}
                   onClick={() => setActiveTab('review')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
                   <Star size={15} aria-hidden="true" />
                   <span>Đánh giá</span>
@@ -220,8 +230,8 @@ function AddMovieModal() {
                         aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className={`w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
-                        placeholder="Tên gốc của phim…"
+                        className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+                        placeholder="Nhập tên gốc của phim…"
                       />
                       {isAnimating && errors.title && (
                         <p
@@ -248,8 +258,8 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                        className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50"
-                        placeholder="Tên tiếng Việt…"
+                        className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50"
+                        placeholder="Nhập tên tiếng Việt…"
                       />
                     </div>
                   </div>
@@ -270,7 +280,7 @@ function AddMovieModal() {
                       autoComplete="off"
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-                      className="w-full h-11 bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 outline-none transition-colors"
+                      className="w-full h-11 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
                       placeholder="https://…"
                     />
                   </div>
@@ -298,11 +308,11 @@ function AddMovieModal() {
                   <StatusToggle status={status} setStatus={setStatus} />
 
                   {status === 'history' && (
-                    <div className="flex items-center justify-between gap-3 p-4 bg-black/5 dark:bg-white/5 border border-border rounded-card">
+                    <div className="flex items-center justify-between gap-3 p-4 border border-border rounded-card">
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           aria-hidden="true"
-                          className={`w-10 h-10 flex items-center justify-center rounded-control transition-colors shrink-0 ${formData.is_review ? 'bg-primary/20 text-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}
+                          className={`w-10 h-10 flex items-center justify-center rounded-control transition-colors shrink-0 ${formData.is_review ? 'bg-primary text-on-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}
                         >
                           <MessageSquare size={20} />
                         </div>
@@ -323,7 +333,7 @@ function AddMovieModal() {
                       >
                         <span
                           aria-hidden="true"
-                          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`}
+                          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`}
                         />
                       </button>
                     </div>
@@ -358,7 +368,7 @@ function AddMovieModal() {
                         autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                        className="w-full bg-black/5 dark:bg-white/5 border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder-text-secondary focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 outline-none transition-colors resize-none"
+                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-colors resize-none"
                         placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>
@@ -399,6 +409,9 @@ function AddMovieModal() {
 
                   {status === 'history' && isTVSeries && (
                     <TVProgressSection
+                      loading={tvProgressLoading}
+                      error={tvProgressError}
+                      onRetry={retryTVProgress}
                       isCompleted={isCompleted}
                       setIsCompleted={setIsCompleted}
                       currentSeason={currentSeason}
@@ -416,6 +429,9 @@ function AddMovieModal() {
 
                   {status === 'history' && (
                     <AlbumSection
+                      loading={albumsLoading}
+                      error={albumsError}
+                      onRetry={retryAlbums}
                       isEditMode={isEditMode}
                       showCreateAlbum={showCreateAlbum}
                       setShowCreateAlbum={setShowCreateAlbum}
@@ -444,19 +460,15 @@ function AddMovieModal() {
           onClick={handleSubmit}
           disabled={submitDisabled}
           loading={isSubmitting}
-          leadingIcon={
-            isSubmitting ? (
-              <Loader2 className="animate-spin" size={16} aria-hidden="true" />
-            ) : (
-              <Save size={16} aria-hidden="true" />
-            )
-          }
+          leadingIcon={<Save size={16} aria-hidden="true" />}
         >
-          {movieExists && !isEditMode
-            ? 'Đã có trong thư viện'
-            : isEditMode
-              ? 'Cập nhật'
-              : 'Lưu phim'}
+          {isSubmitting
+            ? 'Đang lưu…'
+            : movieExists && !isEditMode
+              ? 'Đã có trong thư viện'
+              : isEditMode
+                ? 'Cập nhật'
+                : 'Lưu phim'}
         </Button>
       </div>
     </Dialog>

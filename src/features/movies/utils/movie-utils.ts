@@ -3,20 +3,16 @@ import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { normalizeDate } from '@/shared/utils/date-format';
 
-// Phim có quốc gia Việt Nam hay không, dùng để chọn tiêu đề chính/phụ.
 const isVietnameseOrigin = (country: string): boolean =>
   ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
 
-// Phim đã xem, thiếu status thì coi là history.
 export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
 
-// Ưu tiên tiêu đề Tiếng Việt.
 export const getMainTitle = (movie: Movie): string => {
   const isVN = isVietnameseOrigin(movie.country || '');
   return isVN && movie.title_vi ? movie.title_vi : movie.title_vi || movie.title;
 };
 
-// Lấy tên gốc của phim.
 export const getSubTitle = (movie: Movie): string => {
   const isVN = isVietnameseOrigin(movie.country || '');
   const mainTitle = getMainTitle(movie);
@@ -32,19 +28,16 @@ export const getSubTitle = (movie: Movie): string => {
   return '';
 };
 
-// Tiêu đề kết hợp (Chính + Phụ).
 export const getDisplayTitle = (movie: Movie): string => {
   const main = getMainTitle(movie);
   const sub = getSubTitle(movie);
   return sub ? `${main} (${sub})` : main;
 };
 
-// Dịch tên quốc gia sang Tiếng Việt.
 export const getTranslatedCountries = (countryStr: string): string => {
   return translateCountries(countryStr);
 };
 
-// Dịch danh sách thể loại sang Tiếng Việt.
 export const getTranslatedGenres = (genreStr: string): string => {
   if (!genreStr) return '';
   return genreStr
@@ -56,7 +49,6 @@ export const getTranslatedGenres = (genreStr: string): string => {
     .join(', ');
 };
 
-// Đọc season_dates thành danh sách {season, date} sắp theo số mùa.
 export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; date: Date }> => {
   const seasonDates = movie.progress?.season_dates;
   if (!seasonDates) return [];
@@ -69,7 +61,6 @@ export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; dat
     .sort((a, b) => a.season - b.season);
 };
 
-// Ngày xem muộn nhất trong watched_at và các mùa — dùng cho hiển thị và lọc năm.
 export const getLatestWatchedDate = (movie: Movie): Date | null => {
   let latest = normalizeDate(movie.watched_at);
   for (const { date } of getSeasonWatchedDates(movie)) {

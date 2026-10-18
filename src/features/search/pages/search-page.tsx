@@ -1,33 +1,27 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
 import { useSearch } from '../hooks/use-search';
-import { useAuth } from '@/features/auth/components/auth-provider';
-import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
 import SearchFilters from '../components/search-filters';
 import SearchResults from '../components/search-results';
 
-/** Trang tìm kiếm và khám phá phim từ TMDB. */
 function SearchPage() {
-  const { user } = useAuth();
   const {
     filters,
     updateFilter,
-    initialLoading,
+    mode,
     currentPage,
     totalPages,
     setCurrentPage,
-    discoverMovies,
-    aiRecommendations,
     trendingMovies,
-    isAiLoading,
     isTrendingLoading,
-    refreshRecommendations,
-    removeRecommendation,
+    trendingError,
+    refreshTrending,
     filteredResults,
     handleSelectMovie,
     getMovieStatus,
     handleClear,
     isLoading,
-    watchedMoviesCount,
     suggestions,
     isSuggesting,
     showSuggestions,
@@ -36,11 +30,11 @@ function SearchPage() {
     submittedQuery,
     resultsError,
     retrySearch,
-  } = useSearch(user);
+  } = useSearch();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
-      <PageHeader title={discoverMovies.length > 0 ? 'Khám phá điện ảnh' : 'Tìm kiếm phim'} />
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+      <PageHeader title={mode === 'discover' ? 'Khám phá điện ảnh' : 'Tìm kiếm phim'} />
 
       <SearchFilters
         filters={filters}
@@ -54,35 +48,51 @@ function SearchPage() {
         handleSelectMovie={handleSelectMovie}
       />
 
-      {initialLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      ) : (
+      <LoadingStatus>
+        {isLoading
+          ? 'Đang tải kết quả…'
+          : resultsError
+            ? 'Không tải được kết quả.'
+            : mode !== 'home'
+              ? `Có ${filteredResults.length} kết quả trên trang này.`
+              : isTrendingLoading
+                ? 'Đang tải phim thịnh hành…'
+                : ''}
+      </LoadingStatus>
+
+      {mode === 'home' && trendingError && (
+        <ErrorState
+          compact
+          title={trendingError}
+          description="Vui lòng thử lại."
+          retry={{
+            label: 'Thử lại',
+            onClick: () => {
+              void refreshTrending(true);
+            },
+          }}
+        />
+      )}
+
+      <div aria-busy={isLoading}>
         <SearchResults
+          mode={mode}
+          onClear={handleClear}
           isLoading={isLoading}
           query={submittedQuery}
           totalPages={totalPages}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          isAiLoading={isAiLoading}
           isTrendingLoading={isTrendingLoading}
-          aiRecommendations={aiRecommendations}
           trendingMovies={trendingMovies}
-          discoverMovies={discoverMovies}
           filteredResults={filteredResults}
-          watchedMoviesCount={watchedMoviesCount}
           getMovieStatus={getMovieStatus}
           handleSelectMovie={handleSelectMovie}
-          refreshRecommendations={refreshRecommendations}
-          removeRecommendation={removeRecommendation}
-          userId={user?.uid || ''}
+          refreshTrending={() => void refreshTrending(true)}
           resultsError={resultsError}
           retrySearch={retrySearch}
         />
-      )}
+      </div>
     </div>
   );
 }

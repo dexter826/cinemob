@@ -7,7 +7,6 @@ interface MemberProfileCardProps {
   profile: MemberProfile;
 }
 
-// Thẻ định danh của thành viên khác trên trang cá nhân (chỉ xem).
 function MemberProfileCard({ profile }: MemberProfileCardProps) {
   const [isAvatarLoadFailed, setIsAvatarLoadFailed] = useState(false);
 
@@ -17,7 +16,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
 
   return (
     <div className="bg-surface border border-border rounded-dialog p-5 sm:p-6 flex flex-col items-center text-center">
-      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-4 ring-primary/20 shrink-0">
+      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border border-border shrink-0">
         {profile.photoURL && !isAvatarLoadFailed ? (
           <img
             src={profile.photoURL}
@@ -32,7 +31,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
         )}
       </div>
 
-      <h2 className="mt-2 text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
+      <h2 className="mt-2 text-xl sm:text-2xl text-text-primary tracking-tight font-display">
         {profile.displayName}
       </h2>
       {profile.email && (

@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { auth } from '@/shared/lib/firebase';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -31,11 +32,18 @@ export interface MovieFormData {
   is_review: boolean;
 }
 
-// Quản lý form thêm/sửa phim và series.
 export const useAddMovieForm = () => {
   const { user } = useAuth();
+  const uid = user?.uid;
+  const currentUser = useRef(user);
+  currentUser.current = user;
+  const [detailsAttempt, setDetailsAttempt] = useState(0);
+  const [readyDetails, setReadyDetails] = useState<{
+    data: typeof initialData;
+    uid: string | undefined;
+  } | null>(null);
   const { showToast } = useToastStore();
-  const { isOpen, initialData, closeAddModal } = useAddMovieStore();
+  const { isOpen, initialData, ownerUid, generation, closeAddModal } = useAddMovieStore();
 
   const [formData, setFormData] = useState<MovieFormData>({
     title: '',
@@ -57,11 +65,19 @@ export const useAddMovieForm = () => {
 
   const [status, setStatus] = useState<'history' | 'watchlist'>('history');
   const [manualMediaType, setManualMediaType] = useState<'movie' | 'tv'>('movie');
+  const [isTouched, setIsTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLock = useRef(false);
   const [hoverRating, setHoverRating] = useState(0);
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>([]);
 
-  const { fetchDetails, isLoading: isTMDBLoading, movieExists, setMovieExists } = useTMDBLookup();
+  const {
+    fetchDetails,
+    isLoading: isTMDBLoading,
+    error: detailsError,
+    movieExists,
+    setMovieExists,
+  } = useTMDBLookup();
   const { ratingError, setRatingError, errors, isAnimating, refs, clearErrors, validate } =
     useMovieValidation();
 
@@ -83,6 +99,19 @@ export const useAddMovieForm = () => {
     isOpen,
   });
 
+  const requiresDetails = !initialData?.movieToEdit && !isManualMode;
+  const detailsReady = readyDetails?.data === initialData && readyDetails?.uid === uid;
+  const initialDetailsLoading =
+    requiresDetails && (!detailsReady || isTMDBLoading) && !detailsError;
+  const canSubmit =
+    isOpen &&
+    ownerUid === uid &&
+    (!requiresDetails || detailsReady) &&
+    !isTMDBLoading &&
+    !isSubmitting &&
+    !tvProgress.isLoading &&
+    (!tvProgress.error || tvProgress.hasUsableSnapshot);
+
   const {
     setTotalEpisodes: setTvTotalEpisodes,
     setEpisodesPerSeason: setTvEpisodesPerSeason,
@@ -100,6 +129,7 @@ export const useAddMovieForm = () => {
     if (isOpen) {
       clearErrors();
       setHoverRating(0);
+      setIsTouched(false);
     }
   }, [isOpen, clearErrors]);
 
@@ -167,8 +197,9 @@ export const useAddMovieForm = () => {
 
         const initTMDB = async () => {
           if (!id) return;
-          const details = await fetchDetails(id, type, user, controller.signal);
-          if (!details) return;
+          const details = await fetchDetails(id, type, currentUser.current, controller.signal);
+          if (!details || controller.signal.aborted) return;
+          setReadyDetails({ data: initialData, uid });
 
           if (type === 'tv' && details.tvInfo) {
             setTvTotalEpisodes(details.tvInfo.totalEpisodes);
@@ -189,7 +220,8 @@ export const useAddMovieForm = () => {
   }, [
     isOpen,
     initialData,
-    user,
+    uid,
+    detailsAttempt,
     fetchDetails,
     setMovieExists,
     setTvTotalEpisodes,
@@ -199,8 +231,19 @@ export const useAddMovieForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !validate(isManualMode, isTVSeries, status, formData)) return;
+    const isCurrent = () => {
+      const modal = useAddMovieStore.getState();
+      return (
+        modal.isOpen &&
+        modal.ownerUid === uid &&
+        modal.generation === generation &&
+        auth.currentUser?.uid === uid
+      );
+    };
+    if (submitLock.current || !isCurrent() || (status === 'history' && !albumSync.ready)) return;
+    if (!canSubmit || !user || !validate(isManualMode, isTVSeries, status, formData)) return;
 
+    submitLock.current = true;
     setIsSubmitting(true);
     try {
       const [y, m, d] = formData.date.split('-').map(Number);
@@ -261,26 +304,29 @@ export const useAddMovieForm = () => {
         movieDocId = await addMovie(docData as Movie);
       }
 
+      if (!isCurrent()) return;
       if (status === 'history' && movieDocId) {
         await albumSync.syncAlbums(movieDocId);
       }
 
+      if (!isCurrent()) return;
       showToast(
         initialData?.movieToEdit ? MESSAGES.MOVIE.UPDATE_SUCCESS : MESSAGES.MOVIE.ADD_SUCCESS,
         'success',
       );
       if (initialData?.onMovieAdded)
         initialData.onMovieAdded(initialData?.tmdbId || initialData?.movie?.id || Date.now());
-      closeAddModal();
+      if (isCurrent()) closeAddModal();
     } catch (error) {
-      showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
+      if (isCurrent()) showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
     } finally {
+      submitLock.current = false;
       setIsSubmitting(false);
     }
   };
 
   const isDirty = useMemo(() => {
-    if (!initialData?.movieToEdit) return true;
+    if (!initialData?.movieToEdit) return isTouched;
     const m = initialData.movieToEdit;
 
     const isBasicDirty =
@@ -331,6 +377,7 @@ export const useAddMovieForm = () => {
     formData,
     status,
     initialData,
+    isTouched,
     isTVSeries,
     tvProgress.currentSeason,
     tvProgress.currentEpisode,
@@ -338,16 +385,25 @@ export const useAddMovieForm = () => {
     tvProgress.seasonDates,
   ]);
 
+  // Bọc setter để đánh dấu người dùng đã thao tác; prefill TMDB nội bộ không tính là dirty.
+  const touched =
+    <A extends unknown[]>(fn: (...args: A) => void) =>
+    (...args: A) => {
+      setIsTouched(true);
+      fn(...args);
+    };
+
+  const readyToSave = canSubmit && (status !== 'history' || albumSync.ready);
   return {
     isOpen,
     initialData,
     closeAddModal,
     formData,
-    setFormData,
+    setFormData: touched(setFormData),
     status,
-    setStatus,
+    setStatus: touched(setStatus),
     manualMediaType,
-    setManualMediaType,
+    setManualMediaType: touched(setManualMediaType),
     isDirty,
     isSubmitting,
     movieExists,
@@ -356,30 +412,40 @@ export const useAddMovieForm = () => {
     hoverRating,
     setHoverRating,
     isAnimating,
-    isLoadingDetails: isTMDBLoading || tvProgress.isLoading,
+    isLoadingDetails: initialDetailsLoading,
+    initialDetailsLoading,
+    detailsError: requiresDetails ? detailsError : null,
+    retryDetails: () => setDetailsAttempt((n) => n + 1),
+    tvProgressLoading: tvProgress.isLoading,
+    tvProgressError: tvProgress.error,
+    retryTVProgress: tvProgress.retry,
+    canSubmit: readyToSave,
     currentSeason: tvProgress.currentSeason,
-    setCurrentSeason: tvProgress.setCurrentSeason,
+    setCurrentSeason: touched(tvProgress.setCurrentSeason),
     currentEpisode: tvProgress.currentEpisode,
-    setCurrentEpisode: tvProgress.setCurrentEpisode,
+    setCurrentEpisode: touched(tvProgress.setCurrentEpisode),
     isCompleted: tvProgress.isCompleted,
-    setIsCompleted: tvProgress.setIsCompleted,
+    setIsCompleted: touched(tvProgress.setIsCompleted),
     seasonDates: tvProgress.seasonDates,
-    setSeasonDate: tvProgress.setSeasonDate,
+    setSeasonDate: touched(tvProgress.setSeasonDate),
     resolvedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,
     selectedAlbumIds: albumSync.selectedAlbumIds,
-    setSelectedAlbumIds: albumSync.setSelectedAlbumIds,
+    albumsLoading: albumSync.loading,
+    albumsError: albumSync.error,
+    retryAlbums: albumSync.retry,
+    setSelectedAlbumIds: touched(albumSync.setSelectedAlbumIds),
     showCreateAlbum: albumSync.showCreateAlbum,
     setShowCreateAlbum: albumSync.setShowCreateAlbum,
     newAlbumName: albumSync.newAlbumName,
-    setNewAlbumName: albumSync.setNewAlbumName,
+    setNewAlbumName: touched(albumSync.setNewAlbumName),
     creatingAlbum: albumSync.creatingAlbum,
     handleCreateAlbum: albumSync.handleCreateAlbum,
     handleSubmit,
     genreOptions: GENRE_OPTIONS,
     selectedGenreIds,
-    setSelectedGenreIds,
+    setSelectedGenreIds: touched(setSelectedGenreIds),
     isManualMode,
     isTVSeries,
     albums: albumSync.albums,

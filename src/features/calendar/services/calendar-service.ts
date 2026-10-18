@@ -81,7 +81,7 @@ export const fetchEpisodesForMonth = async (
     2,
   );
   if (results.some((result) => result === null)) {
-    throw new Error('Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại.');
+    throw new Error('Không tải được đủ lịch phát sóng. Thử lại.');
   }
   const episodes = results
     .flatMap((result) => result ?? [])

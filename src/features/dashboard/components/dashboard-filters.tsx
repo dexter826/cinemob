@@ -1,37 +1,72 @@
-import React from 'react';
-import { Search, X, Filter, Calendar, Type, ArrowUp, ArrowDown, Star } from 'lucide-react';
-import Dropdown from '@/shared/components/ui/dropdown';
+import React, { useEffect, useState } from 'react';
+import { X, Filter, ArrowUp, ArrowDown } from 'lucide-react';
+import LazyDialog from '@/shared/components/ui/lazy-dialog';
+import SearchField from '@/shared/components/ui/search-field';
+import { classNames } from '@/shared/utils/class-names';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import {
-  SortOption,
-  SortOrder,
-  SourceType,
+  type ActiveTab,
+  type FilterState,
   type FilterUpdateFn,
 } from '../hooks/use-dashboard-filters';
+import { FilterControls, formatRatingRange } from './dashboard-filter-controls';
+import type { DashboardFilterSheetProps } from './dashboard-filter-sheet';
 
 interface DashboardFiltersProps {
-  filters: {
-    sortBy: SortOption;
-    sortOrder: SortOrder;
-    searchQuery: string;
-    ratingRange: [number, number] | null;
-    year: number | null;
-    country: string;
-    genre: string;
-    contentType: 'all' | 'movie' | 'tv';
-    watchStatus: 'all' | 'watching' | 'completed';
-    sourceType: 'all' | 'normal' | 'review';
-  };
+  filters: FilterState;
   updateFilter: FilterUpdateFn;
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   filterRef: React.RefObject<HTMLDivElement | null>;
   toggleRef: React.RefObject<HTMLButtonElement | null>;
   toggleSortOrder: () => void;
-  activeTab: 'history' | 'watchlist';
+  activeTab: ActiveTab;
   availableYears: { value: string | number; label: string }[];
   availableCountries: { value: string; label: string }[];
   availableGenres: { value: string; label: string }[];
   clearFilters: () => void;
+}
+
+interface ActiveFilterChip {
+  key: string;
+  label: string;
+  clear: () => void;
+}
+
+const DESKTOP_QUERY = '(min-width: 1024px)';
+const loadFilterSheet = () => import('./dashboard-filter-sheet');
+
+function CapsButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={classNames(
+        'group relative h-9 px-2.5 inline-flex items-center text-[11px] font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer',
+        active ? 'text-primary' : 'text-text-secondary hover:text-text-primary',
+      )}
+    >
+      {children}
+      <span
+        aria-hidden="true"
+        className={classNames(
+          'pointer-events-none absolute inset-x-2 bottom-0 h-0.5 bg-primary transition-opacity duration-200',
+          active
+            ? 'opacity-100'
+            : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
+        )}
+      />
+    </button>
+  );
 }
 
 function DashboardFilters({
@@ -48,322 +83,282 @@ function DashboardFilters({
   availableGenres,
   clearFilters,
 }: DashboardFiltersProps) {
-  const hasActiveFilters =
-    filters.ratingRange !== null ||
-    filters.year !== null ||
-    filters.country ||
-    filters.genre ||
-    filters.contentType !== 'all' ||
-    filters.watchStatus !== 'all' ||
-    filters.sourceType !== 'all';
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-  const handleRatingSelect = (star: number) => {
-    if (!filters.ratingRange) {
-      updateFilter('ratingRange', [star, star]);
-      return;
-    }
-    const [currMin, currMax] = filters.ratingRange;
-    if (star === currMin && star === currMax) updateFilter('ratingRange', null);
-    else if (star < currMin) updateFilter('ratingRange', [star, currMax]);
-    else if (star > currMax) updateFilter('ratingRange', [currMin, star]);
-    else updateFilter('ratingRange', [star, star]);
+  // Đổi breakpoint thì đóng bề mặt đang mở để tránh trạng thái mở "mồ côi".
+  useEffect(() => {
+    if (isDesktop) setSheetOpen(false);
+    else setShowFilters(false);
+  }, [isDesktop, setShowFilters]);
+
+  // Escape đóng popover desktop (bỏ qua khi listbox con đã xử lý sự kiện).
+  useEffect(() => {
+    if (!isDesktop || !showFilters) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !event.defaultPrevented) setShowFilters(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isDesktop, showFilters, setShowFilters]);
+
+  const chipItems: ActiveFilterChip[] = [];
+
+  if (filters.genre) {
+    const genreLabel =
+      availableGenres.find((option) => option.value === filters.genre)?.label ?? filters.genre;
+    chipItems.push({
+      key: 'genre',
+      label: `Thể loại: ${genreLabel}`,
+      clear: () => updateFilter('genre', ''),
+    });
+  }
+  if (filters.year !== null) {
+    chipItems.push({
+      key: 'year',
+      label: `Năm: ${filters.year}`,
+      clear: () => updateFilter('year', null),
+    });
+  }
+  if (filters.country) {
+    const countryLabel =
+      availableCountries.find((option) => option.value === filters.country)?.label ??
+      filters.country;
+    chipItems.push({
+      key: 'country',
+      label: `Quốc gia: ${countryLabel}`,
+      clear: () => updateFilter('country', ''),
+    });
+  }
+  if (activeTab === 'history' && filters.watchStatus !== 'all') {
+    chipItems.push({
+      key: 'watchStatus',
+      label: `Trạng thái: ${
+        filters.watchStatus === 'watching' ? 'Đang theo dõi' : 'Đã hoàn thành'
+      }`,
+      clear: () => updateFilter('watchStatus', 'all'),
+    });
+  }
+  if (filters.sourceType !== 'all') {
+    chipItems.push({
+      key: 'sourceType',
+      label: `Nguồn: ${filters.sourceType === 'normal' ? 'Xem trực tiếp' : 'Xem qua review'}`,
+      clear: () => updateFilter('sourceType', 'all'),
+    });
+  }
+  const ratingChipLabel = formatRatingRange(filters.ratingRange, 'compact');
+  if (ratingChipLabel) {
+    chipItems.push({
+      key: 'rating',
+      label: ratingChipLabel,
+      clear: () => updateFilter('ratingRange', null),
+    });
+  }
+
+  const filtersOpen = isDesktop ? showFilters : sheetOpen;
+  const toggleLabel = filtersOpen
+    ? 'Đóng bộ lọc nâng cao'
+    : chipItems.length > 0
+      ? `Mở bộ lọc nâng cao (${chipItems.length} điều kiện đang bật)`
+      : 'Mở bộ lọc nâng cao';
+
+  const handleToggle = () => {
+    if (isDesktop) setShowFilters(!showFilters);
+    else setSheetOpen((open) => !open);
   };
 
   return (
-    <div className="flex flex-col items-end gap-3 relative">
-      <div className="flex items-center gap-2 w-full sm:w-auto">
-        <div className="relative group flex-1 sm:flex-none">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-            size={16}
-            strokeWidth={1.5}
-            aria-hidden="true"
-          />
-          <input
-            type="text"
-            name="library-search"
-            autoComplete="off"
-            spellCheck={false}
-            value={filters.searchQuery}
-            onChange={(e) => updateFilter('searchQuery', e.target.value)}
-            placeholder="Lọc phim…"
-            aria-label="Lọc phim trong thư viện"
-            className="w-full sm:w-64 h-11 bg-surface border border-border-default dark:border-white/5 rounded-card pl-10 pr-8 text-sm text-text-primary placeholder-text-secondary/40 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors shadow-premium ring-1 ring-black/5 dark:ring-white/5"
-          />
-          {filters.searchQuery && (
-            <button
-              onClick={() => updateFilter('searchQuery', '')}
-              aria-label="Xóa từ khóa lọc"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-1"
+    <div ref={filterRef} className="relative flex flex-col items-end gap-2.5 w-full lg:w-auto">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 w-full lg:w-auto lg:flex-nowrap justify-end">
+        <SearchField
+          variant="underline"
+          name="library-search"
+          value={filters.searchQuery}
+          onChange={(next) => updateFilter('searchQuery', next)}
+          placeholder="Tìm kiếm phim…"
+          label="Lọc phim trong thư viện"
+          className="flex-1 lg:flex-none lg:w-72 min-w-0"
+        />
+
+        <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
+
+        <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 w-full lg:w-auto max-lg:order-last">
+          <div role="group" aria-label="Sắp xếp" className="flex items-center">
+            <CapsButton
+              active={filters.sortBy === 'date'}
+              onClick={() => updateFilter('sortBy', 'date')}
             >
-              <X size={14} strokeWidth={1.5} />
+              Ngày
+            </CapsButton>
+            <CapsButton
+              active={filters.sortBy === 'title'}
+              onClick={() => updateFilter('sortBy', 'title')}
+            >
+              Tên
+            </CapsButton>
+            <button
+              type="button"
+              onClick={toggleSortOrder}
+              title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
+              aria-label={
+                filters.sortOrder === 'asc'
+                  ? 'Đang sắp xếp tăng dần, bấm để đổi chiều'
+                  : 'Đang sắp xếp giảm dần, bấm để đổi chiều'
+              }
+              className="ml-0.5 inline-flex items-center justify-center w-8 h-8 rounded-control text-text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            >
+              {filters.sortOrder === 'asc' ? (
+                <ArrowUp size={15} strokeWidth={1.5} aria-hidden="true" />
+              ) : (
+                <ArrowDown size={15} strokeWidth={1.5} aria-hidden="true" />
+              )}
             </button>
-          )}
+          </div>
+
+          <span aria-hidden="true" className="hidden sm:block w-px h-5 bg-border-default" />
+
+          <div role="group" aria-label="Loại nội dung" className="flex items-center">
+            <CapsButton
+              active={filters.contentType === 'all'}
+              onClick={() => updateFilter('contentType', 'all')}
+            >
+              Tất cả
+            </CapsButton>
+            <CapsButton
+              active={filters.contentType === 'movie'}
+              onClick={() => updateFilter('contentType', 'movie')}
+            >
+              Phim lẻ
+            </CapsButton>
+            <CapsButton
+              active={filters.contentType === 'tv'}
+              onClick={() => updateFilter('contentType', 'tv')}
+            >
+              Series
+            </CapsButton>
+          </div>
         </div>
 
         <button
           ref={toggleRef}
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
-            setShowFilters(!showFilters);
+            handleToggle();
           }}
-          aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-          className={`w-11 h-11 flex items-center justify-center rounded-card border transition-colors duration-200 cursor-pointer ${
-            showFilters
-              ? 'bg-primary/15 border-primary/40 text-primary'
-              : 'bg-surface border-border-default dark:border-white/5 text-text-secondary hover:text-text-primary hover:border-primary/40 dark:hover:border-white/10'
-          }`}
+          aria-expanded={filtersOpen}
+          aria-label={toggleLabel}
+          className={classNames(
+            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-200 cursor-pointer',
+            filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
+          )}
         >
-          {showFilters ? (
+          {filtersOpen ? (
             <X size={18} strokeWidth={1.5} aria-hidden="true" />
           ) : (
             <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
           )}
+          {!filtersOpen && chipItems.length > 0 && (
+            <span
+              aria-hidden="true"
+              className="absolute top-1 right-0.5 min-w-[15px] h-[15px] px-0.5 inline-flex items-center justify-center rounded-[4px] bg-primary text-on-primary text-[9px] font-bold leading-none tabular-nums"
+            >
+              {chipItems.length}
+            </span>
+          )}
+          <span
+            aria-hidden="true"
+            className={classNames(
+              'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-200',
+              filtersOpen
+                ? 'opacity-100'
+                : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
+            )}
+          />
         </button>
       </div>
 
-      {showFilters && (
+      {chipItems.length > 0 && (
         <div
-          ref={filterRef}
-          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border shadow-elevated flex flex-col gap-5 min-w-[320px] max-h-[calc(100dvh-24rem)] overflow-y-auto overscroll-contain"
+          role="group"
+          aria-label="Bộ lọc đang áp dụng"
+          className="flex flex-wrap items-center justify-end gap-1.5 w-full"
         >
-          <div className="space-y-3">
-            <div className="text-xs font-semibold text-text-secondary">Sắp xếp</div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => updateFilter('sortBy', 'date')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
-                  filters.sortBy === 'date'
-                    ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                <Calendar size={13} strokeWidth={1.5} aria-hidden="true" />
-                <span>Ngày</span>
-              </button>
-              <button
-                onClick={() => updateFilter('sortBy', 'title')}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-control text-xs font-bold transition-colors cursor-pointer border ${
-                  filters.sortBy === 'title'
-                    ? 'bg-primary/10 border-primary/20 text-primary'
-                    : 'bg-black/5 dark:bg-white/5 border-transparent text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                <Type size={13} strokeWidth={1.5} aria-hidden="true" />
-                <span>Tên</span>
-              </button>
-              <button
-                onClick={toggleSortOrder}
-                className="flex items-center justify-center p-2.5 rounded-control bg-black/5 dark:bg-white/5 border border-transparent text-text-secondary hover:text-text-primary hover:bg-black/10 transition-colors cursor-pointer"
-                title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
-                aria-label={filters.sortOrder === 'asc' ? 'Sắp xếp tăng dần' : 'Sắp xếp giảm dần'}
-              >
-                {filters.sortOrder === 'asc' ? (
-                  <ArrowUp size={16} strokeWidth={1.5} aria-hidden="true" />
-                ) : (
-                  <ArrowDown size={16} strokeWidth={1.5} aria-hidden="true" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className="h-px bg-border-default" />
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-semibold text-text-secondary">Bộ lọc</div>
-              {hasActiveFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="text-xs font-semibold text-primary hover:underline cursor-pointer"
-                >
-                  Xóa tất cả
-                </button>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="df-content-type"
-                  id="df-content-type-label"
-                  className="text-xs font-medium text-text-secondary mb-2 block"
-                >
-                  Loại nội dung
-                </label>
-                <Dropdown
-                  id="df-content-type"
-                  aria-labelledby="df-content-type-label"
-                  options={[
-                    { value: 'all', label: 'Tất cả nội dung' },
-                    { value: 'movie', label: 'Phim lẻ' },
-                    { value: 'tv', label: 'Series' },
-                  ]}
-                  value={filters.contentType}
-                  onChange={(value) => updateFilter('contentType', value as 'all' | 'movie' | 'tv')}
-                  placeholder="Chọn loại…"
-                />
-              </div>
-
-              {activeTab === 'history' && (
-                <div>
-                  <label
-                    htmlFor="df-watch-status"
-                    id="df-watch-status-label"
-                    className="text-xs font-medium text-text-secondary mb-2 block"
-                  >
-                    Trạng thái
-                  </label>
-                  <Dropdown
-                    id="df-watch-status"
-                    aria-labelledby="df-watch-status-label"
-                    options={[
-                      { value: 'all', label: 'Tất cả trạng thái' },
-                      { value: 'watching', label: 'Đang theo dõi' },
-                      { value: 'completed', label: 'Đã hoàn thành' },
-                    ]}
-                    value={filters.watchStatus}
-                    onChange={(value) =>
-                      updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')
-                    }
-                    placeholder="Chọn trạng thái…"
-                  />
-                </div>
-              )}
-
-              <div>
-                <label
-                  htmlFor="df-genre"
-                  id="df-genre-label"
-                  className="text-xs font-medium text-text-secondary mb-2 block"
-                >
-                  Thể loại
-                </label>
-                <Dropdown
-                  id="df-genre"
-                  aria-labelledby="df-genre-label"
-                  options={[{ value: '', label: 'Tất cả thể loại' }, ...availableGenres]}
-                  value={filters.genre}
-                  onChange={(value) => updateFilter('genre', value as string)}
-                  placeholder="Chọn thể loại…"
-                  searchable={true}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="df-year"
-                    id="df-year-label"
-                    className="text-xs font-medium text-text-secondary block"
-                  >
-                    Năm xem
-                  </label>
-                  <Dropdown
-                    id="df-year"
-                    aria-labelledby="df-year-label"
-                    options={[{ value: '', label: 'Tất cả năm' }, ...availableYears]}
-                    value={filters.year || ''}
-                    onChange={(value) => updateFilter('year', value === '' ? null : Number(value))}
-                    placeholder="Chọn năm…"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="df-country"
-                    id="df-country-label"
-                    className="text-xs font-medium text-text-secondary block"
-                  >
-                    Quốc gia
-                  </label>
-                  <Dropdown
-                    id="df-country"
-                    aria-labelledby="df-country-label"
-                    options={[{ value: '', label: 'Tất cả quốc gia' }, ...availableCountries]}
-                    value={filters.country}
-                    onChange={(value) => updateFilter('country', value as string)}
-                    placeholder="Chọn quốc gia…"
-                    searchable={true}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span
-                    id="df-rating-label"
-                    className="text-xs font-medium text-text-secondary block"
-                  >
-                    Khoảng đánh giá
-                  </span>
-                  {filters.ratingRange && (
-                    <span className="text-xs font-semibold text-primary tabular-nums">
-                      {filters.ratingRange[0]} - {filters.ratingRange[1]} sao
-                    </span>
-                  )}
-                </div>
-                <div
-                  role="group"
-                  aria-labelledby="df-rating-label"
-                  className="flex gap-1 p-1.5 bg-black/5 dark:bg-white/5 rounded-control border border-border-default dark:border-white/5"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => {
-                    const [min, max] = filters.ratingRange || [0, 0];
-                    const isActive = filters.ratingRange && star >= min && star <= max;
-                    const isEdge = filters.ratingRange && (star === min || star === max);
-
-                    return (
-                      <button
-                        key={star}
-                        onClick={() => handleRatingSelect(star)}
-                        aria-label={`Chọn ${star} sao`}
-                        aria-pressed={Boolean(isActive)}
-                        className={`flex-1 flex items-center justify-center p-1.5 rounded-lg transition-colors cursor-pointer  ${
-                          isActive
-                            ? 'text-warning bg-warning/15 shadow-sm'
-                            : 'text-text-secondary/40 hover:text-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
-                        } ${isEdge ? 'ring-1 ring-warning/30' : ''}`}
-                      >
-                        <Star
-                          size={14}
-                          fill={isActive ? 'currentColor' : 'none'}
-                          strokeWidth={1.5}
-                          aria-hidden="true"
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-xs text-text-secondary mt-2 opacity-60 text-center">
-                  Nhấn hai điểm khác nhau để chọn khoảng
-                </p>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="df-source-type"
-                  id="df-source-type-label"
-                  className="text-xs font-medium text-text-secondary mb-2 block"
-                >
-                  Nguồn nội dung
-                </label>
-                <Dropdown
-                  id="df-source-type"
-                  aria-labelledby="df-source-type-label"
-                  options={[
-                    { value: 'all', label: 'Tất cả nguồn' },
-                    { value: 'normal', label: 'Xem trực tiếp' },
-                    { value: 'review', label: 'Xem qua review' },
-                  ]}
-                  value={filters.sourceType}
-                  onChange={(value) => updateFilter('sourceType', value as SourceType)}
-                  placeholder="Chọn nguồn…"
-                />
-              </div>
-            </div>
-          </div>
+          {chipItems.map((chip) => (
+            <button
+              key={chip.key}
+              type="button"
+              onClick={chip.clear}
+              aria-label={`Gỡ lọc ${chip.label}`}
+              className="group inline-flex items-center gap-1 px-1.5 py-1 rounded-poster border border-border-default text-[9px] font-bold uppercase tracking-[0.06em] text-text-secondary hover:text-text-primary hover:border-primary/40 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {chip.label}
+              <X
+                size={10}
+                strokeWidth={2}
+                aria-hidden="true"
+                className="text-text-muted group-hover:text-primary"
+              />
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="px-1.5 py-1 text-[9px] font-bold uppercase tracking-[0.06em] text-primary hover:underline cursor-pointer whitespace-nowrap"
+          >
+            Xóa tất cả
+          </button>
         </div>
       )}
+
+      {showFilters && isDesktop && (
+        <div
+          role="dialog"
+          aria-label="Bộ lọc"
+          className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border flex flex-col gap-5 w-80 max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-24rem)] overflow-y-auto overscroll-contain"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-text-secondary">Bộ lọc</span>
+            {chipItems.length > 0 && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-xs font-semibold text-primary hover:underline cursor-pointer"
+              >
+                Xóa tất cả
+              </button>
+            )}
+          </div>
+          <FilterControls
+            filters={filters}
+            updateFilter={updateFilter}
+            activeTab={activeTab}
+            availableYears={availableYears}
+            availableCountries={availableCountries}
+            availableGenres={availableGenres}
+          />
+        </div>
+      )}
+
+      <LazyDialog<DashboardFilterSheetProps>
+        open={!isDesktop && sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title="Bộ lọc"
+        presentation="sheet"
+        loader={loadFilterSheet}
+        componentProps={{
+          isOpen: !isDesktop && sheetOpen,
+          filters,
+          updateFilter,
+          activeTab,
+          availableYears,
+          availableCountries,
+          availableGenres,
+          hasHiddenFilters: chipItems.length > 0,
+          clearFilters,
+          onClose: () => setSheetOpen(false),
+        }}
+      />
     </div>
   );
 }

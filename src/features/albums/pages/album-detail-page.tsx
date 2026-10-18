@@ -1,25 +1,38 @@
+import LoadingStatus from '@/shared/components/ui/loading-status';
+import ErrorState from '@/shared/components/ui/error-state';
+import useMovieStore from '@/features/movies/stores/movie-store';
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Film, PlusCircle, Edit2, X as XIcon, Search } from 'lucide-react';
-import MovieCard from '@/features/movies/components/movie-card';
+import {
+  ArrowLeft,
+  Film,
+  PlusCircle,
+  Edit2,
+  Trash2,
+  X as XIcon,
+  Search as SearchIcon,
+} from 'lucide-react';
+import PosterCard from '@/features/movies/components/poster-card';
+import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
+import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
-import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
-import useAlertStore from '@/shared/stores/alert-store';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
 import { useAlbumDetail } from '../hooks/use-album-detail';
 
-/** Quản lý chi tiết album và thêm/bớt phim trong album. */
 function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
-  const { openDetailModal } = useMovieDetailStore();
-  const { showAlert } = useAlertStore();
   const {
     album,
     loading,
+    error,
+    retry,
+    moviesLoading,
+    moviesError,
+    pendingMovieIds,
     editing,
     setEditing,
     name,
@@ -41,9 +54,25 @@ function AlbumDetailPage() {
     handleRemoveMovie,
   } = useAlbumDetail(albumId);
 
+  const retryMovies = useMovieStore((state) => state.retry);
+  if (error)
+    return (
+      <ErrorState
+        title={error}
+        description="Không thể đọc album. Vui lòng thử lại."
+        retry={{ label: 'Thử lại', onClick: retry }}
+      />
+    );
   return (
-    <div className="text-text-primary transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div className="text-text-primary transition-colors">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+        <LoadingStatus>
+          {loading || moviesLoading
+            ? 'Đang tải phim trong album…'
+            : pendingMovieIds.size
+              ? 'Đang cập nhật album…'
+              : ''}
+        </LoadingStatus>
         <PageHeader
           onBack={() => navigate('/albums')}
           icon={Film}
@@ -67,8 +96,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
-                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
+                    ? 'bg-primary border-primary text-on-primary'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -85,8 +114,8 @@ function AlbumDetailPage() {
                 flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
                 ${
                   editing
-                    ? 'bg-primary/10 border-primary/30 text-primary shadow-inner'
-                    : 'bg-surface border-border-default dark:border-white/5 text-text-primary hover:border-primary/50 shadow-premium'
+                    ? 'bg-primary border-primary text-on-primary'
+                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
                 }
                 ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
               `}
@@ -120,9 +149,10 @@ function AlbumDetailPage() {
                   type="text"
                   autoComplete="off"
                   required
+                  placeholder="Nhập tên album…"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-black/5 dark:bg-white/5 border border-border-default dark:border-white/5 rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors shadow-inner"
+                  className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
                 />
               </div>
 
@@ -137,7 +167,7 @@ function AlbumDetailPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-on-primary font-bold hover:shadow-premium shadow-lg disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>
@@ -162,16 +192,22 @@ function AlbumDetailPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
-              {!loading && (
-                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default tabular-nums">
+              {!loading && !moviesLoading && !moviesError && (
+                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
             </div>
 
-            {loading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                {Array.from({ length: 5 }).map((_, i) => (
+            {moviesError ? (
+              <ErrorState
+                title="Không tải được danh sách phim"
+                description="Vui lòng thử lại."
+                retry={{ label: 'Thử lại', onClick: retryMovies }}
+              />
+            ) : loading || moviesLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                {Array.from({ length: 12 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
               </div>
@@ -190,21 +226,35 @@ function AlbumDetailPage() {
                 }
               />
             ) : (
-              <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+              <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                 {albumMovies.map((movie) => (
-                  <MovieCard
+                  <PosterCard
                     key={movie.docId}
-                    movie={movie}
-                    onClick={openDetailModal}
-                    onEdit={() => {}}
-                    onDelete={() =>
-                      showAlert({
-                        title: 'Bỏ phim khỏi album',
-                        message: `Bỏ “${movie.title}” khỏi album này? Phim vẫn còn trong thư viện đã xem của bạn.`,
-                        type: 'danger',
-                        confirmText: 'Bỏ khỏi album',
-                        onConfirm: () => handleRemoveMovie(movie),
-                      })
+                    title={getMainTitle(movie)}
+                    posterPath={movie.poster_path}
+                    source={movie.source}
+                    mediaType={movie.media_type}
+                    rating={movie.rating}
+                    review={movie.is_review}
+                    onClick={() =>
+                      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
+                    }
+                    actions={
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMovie(movie)}
+                        disabled={pendingMovieIds.has(movie.docId!)}
+                        aria-busy={pendingMovieIds.has(movie.docId!)}
+                        aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
+                        title="Bỏ khỏi album"
+                        className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+                      >
+                        {pendingMovieIds.has(movie.docId!) ? (
+                          <span className="text-[9px]">Đang gỡ…</span>
+                        ) : (
+                          <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
+                        )}
+                      </button>
                     }
                   />
                 ))}
@@ -213,30 +263,20 @@ function AlbumDetailPage() {
           </div>
         )}
 
-        {managingMovies && (
+        {managingMovies && !moviesLoading && !moviesError && !loading && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="relative group flex-1 md:w-80">
-                  <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors"
-                    size={16}
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Tìm trong lịch sử…"
-                    aria-label="Tìm phim trong lịch sử để thêm vào album"
-                    autoComplete="off"
-                    spellCheck={false}
-                    className="w-full bg-surface border border-border-default dark:border-white/5 rounded-control sm:rounded-card pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 focus-visible:outline-none focus-visible:border-primary text-xs sm:text-sm font-medium shadow-sm transition-colors ring-1 ring-black/5 dark:ring-white/5"
-                  />
-                </div>
-                <span className="text-xs font-semibold text-text-secondary bg-black/5 dark:bg-white/5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-control border border-border-default dark:border-white/5 whitespace-nowrap tabular-nums">
+                <SearchField
+                  variant="underline"
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  placeholder="Tìm phim trong lịch sử…"
+                  label="Tìm phim trong lịch sử để thêm vào album"
+                  className="flex-1 md:w-80"
+                />
+                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>
@@ -245,25 +285,33 @@ function AlbumDetailPage() {
             {availableMovies.length === 0 ? (
               <EmptyState
                 title="Đã hết phim để thêm"
-                description="Tất cả phim trong lịch sử của bạn đều đã có trong album này."
+                description="Mọi phim đã xem đều đã nằm trong album này."
                 className="py-10"
               />
             ) : filteredAvailableMovies.length === 0 ? (
               <EmptyState
-                icon={Search}
+                icon={SearchIcon}
                 title="Không tìm thấy phim"
                 description={`Không tìm thấy phim phù hợp với từ khóa “${searchQuery}”`}
                 className="py-10"
               />
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
                   {paginatedMovies.map((movie) => (
-                    <MovieCard
+                    <PosterCard
                       key={movie.docId}
-                      mode="select"
-                      movie={movie}
-                      onSelect={handleAddMovie}
+                      title={getMainTitle(movie)}
+                      posterPath={movie.poster_path}
+                      source={movie.source}
+                      mediaType={movie.media_type}
+                      rating={movie.rating}
+                      selectable
+                      ariaLabel={`Thêm ${getMainTitle(movie)} vào album`}
+                      onClick={
+                        pendingMovieIds.has(movie.docId!) ? undefined : () => handleAddMovie(movie)
+                      }
+                      credit={pendingMovieIds.has(movie.docId!) ? 'Đang thêm…' : undefined}
                     />
                   ))}
                 </div>

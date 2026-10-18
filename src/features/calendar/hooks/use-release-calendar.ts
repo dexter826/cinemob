@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import useMovieDetailStore from '@/features/movies/stores/movie-detail-store';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useReleaseCalendarStore from '../stores/release-calendar-store';
 import useAlertStore from '@/shared/stores/alert-store';
@@ -31,11 +30,12 @@ const parseDateParam = (value: string | null): Date | null => {
     : null;
 };
 
-// Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { user } = useAuth();
+  const collectionError = useMovieStore((state) => state.error);
+  const retryCollection = useMovieStore((state) => state.retry);
   const userId = user?.uid;
-  const { openDetailModal } = useMovieDetailStore();
+  const navigate = useNavigate();
   const {
     movies,
     monthEpisodes: storedEpisodes,
@@ -73,13 +73,14 @@ export const useReleaseCalendar = () => {
 
   useEffect(() => {
     initializeForUser(userId ?? '');
-    if (!userId || loading) return;
+    if (!userId || loading || collectionError) return;
     const movieState = useMovieStore.getState();
     if (movieState.activeUid !== userId || movieState.loading) return;
     void fetchMonthEpisodes(userId, movies, monthKey);
     return cancelMonthRequest;
   }, [
     userId,
+    collectionError,
     loading,
     movies,
     monthKey,
@@ -229,11 +230,13 @@ export const useReleaseCalendar = () => {
   const handleSeriesClick = (episode: UpcomingEpisode) => {
     const movie = movies.find((m) => Number(m.id) === episode.seriesId);
     if (movie) {
-      openDetailModal(movie);
+      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`);
     }
   };
 
   return {
+    collectionError,
+    retryCollection,
     movies,
     monthEpisodes,
     loading,
