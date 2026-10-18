@@ -12,11 +12,6 @@ interface AlbumCardProps {
   onDelete: (album: Album) => void;
 }
 
-/**
- * Thẻ album (editorial): chồng poster kiểu túi đựng ảnh — poster bìa trước,
- * 2 poster sau lệch nhẹ, hover xòe ra. Không bóng: lớp sau phân tách bằng
- * hairline. Album trống = ô đứt nét + chữ "TRỐNG" mờ.
- */
 function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
   const count = album.movieDocIds.length;
   const cover = coverPosters[0] ?? null;

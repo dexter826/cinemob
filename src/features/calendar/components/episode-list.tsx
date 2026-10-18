@@ -16,7 +16,7 @@ interface EpisodeListProps {
   handleSeriesClick: (episode: UpcomingEpisode) => void;
 }
 
-/** Danh sách tập phim — flat rows chia hairline, không hộp (editorial). */
+/** Danh sách tập phim — rows phẳng chia hairline, không hộp. */
 function EpisodeList({
   currentDate,
   episodesError,

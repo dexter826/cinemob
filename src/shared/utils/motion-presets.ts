@@ -2,7 +2,7 @@ import type { Variants } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 
 /**
- * Editorial stagger: fade phẳng, không overshoot (spec Editorial Print).
+ * Stagger fade phẳng, không overshoot.
  * Caller bọc grid bằng <motion.div variants={staggerContainer} initial="hidden" animate="show">
  * và mỗi item <motion.div variants={staggerItem}>; khi useReducedMotion() → animate="show" tĩnh.
  */

@@ -8,11 +8,10 @@
   --font-sans: 'Be Vietnam Pro', sans-serif;
   --font-display: 'Anton', sans-serif;
 
-  /* Editorial Print — light giấy ấm 3 tầng, bỏ pure white (gate 7, spec 2026-10-17) */
   --color-background: #f7f4ed;
   --color-surface: #fdfbf6;
   --color-surface-elevated: #fffefa;
-  --color-primary: #8f6400; /* mực vàng trên giấy */
+  --color-primary: #8f6400;
   --color-primary-hover: #7a5600;
   --color-on-primary: #fffefa;
   --color-secondary: #6b6b66;
@@ -37,15 +36,13 @@
   --radius-dialog: 8px;
   --radius-poster: 4px;
 
-  /* Editorial Print: không bóng mềm — elevation bằng hairline.
-     Shadow tokens giữ tên để không vỡ utility đang dùng, giá trị = none. */
+  /* Elevation bằng hairline, không bóng — token giữ tên và giá trị none để không vỡ utility. */
   --shadow-card: 0 0 #0000;
   --shadow-elevated: 0 0 #0000;
   --shadow-premium: 0 0 #0000;
   --shadow-premium-hover: 0 0 #0000;
   --shadow-glass: 0 0 #0000;
 
-  /* Motion — spec 2026-10-18: 3 curve + thang 120/150/200/250ms. */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
@@ -89,7 +86,6 @@
 }
 
 .dark {
-  /* Editorial Print — dark mặc định: đen sâu + mực vàng spotlight */
   --color-background: #0a0a0a;
   --color-surface: #141414;
   --color-surface-elevated: #1a1a1a;
@@ -136,7 +132,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Chặn double-tap zoom delay trên nút và liên kết */
+  /* Chặn double-tap zoom delay */
   button,
   a {
     touch-action: manipulation;
@@ -158,7 +154,6 @@
     }
   }
 
-  /* Tùy biến scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -185,7 +180,6 @@
     background: color-mix(in srgb, var(--color-text-secondary) 70%, transparent);
   }
 
-  /* Scrollbar cho Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 30%, transparent) transparent;
@@ -196,7 +190,6 @@
     scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 50%, transparent) transparent;
   }
 
-  /* Scrollbar ngang */
   ::-webkit-scrollbar-horizontal {
     height: 6px;
   }
@@ -215,7 +208,6 @@
     background: color-mix(in srgb, var(--color-text-secondary) 40%, transparent);
   }
 
-  /* Hỗ trợ chế độ tương phản cao */
   @media (prefers-contrast: high) {
     ::-webkit-scrollbar-thumb {
       background: var(--color-text-primary);
@@ -227,7 +219,6 @@
     }
   }
 
-  /* Hỗ trợ giảm chuyển động */
   @media (prefers-reduced-motion: reduce) {
     ::-webkit-scrollbar-thumb {
       transition: none;
@@ -242,14 +233,12 @@
     }
   }
 
-  /* Phối cảnh 3D cho thẻ phim */
   .movie-wheel-container {
     perspective: 1200px;
     transform-style: preserve-3d;
   }
 
-  /* Heading mặc định = body font; chữ display Anton áp qua class .font-display
-     ở từng component (kèm uppercase theo design). */
+  /* Heading mặc định = body font; chữ display Anton áp qua class .font-display ở từng component. */
   h1,
   h2,
   h3 {

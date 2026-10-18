@@ -36,8 +36,8 @@ interface PosterCardProps {
 }
 
 /**
- * Card DUY NHẤT của app (editorial): poster là cả thẻ, chữ trên scrim.
- * Hover = viền vàng 1px + ảnh phóng nhẹ bên trong — không lift, không bóng.
+ * Card DUY NHẤT của app: poster là cả thẻ, chữ phủ trên scrim.
+ * Hover chỉ viền + zoom nhẹ — không lift, không bóng.
  */
 function PosterCard({
   title,

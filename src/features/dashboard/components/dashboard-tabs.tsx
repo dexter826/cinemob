@@ -13,8 +13,12 @@ const TABS: { key: ActiveTab; label: string }[] = [
   { key: 'watchlist', label: 'Sẽ xem' },
 ];
 
-/** Tabs caps + gạch chân vàng trượt (editorial). */
-function DashboardTabs({ activeTab, onTabChange, historyCount, watchlistCount }: DashboardTabsProps) {
+function DashboardTabs({
+  activeTab,
+  onTabChange,
+  historyCount,
+  watchlistCount,
+}: DashboardTabsProps) {
   const reducedMotion = useReducedMotion() ?? false;
   const counts: Record<ActiveTab, number> = { history: historyCount, watchlist: watchlistCount };
 
@@ -34,9 +38,7 @@ function DashboardTabs({ activeTab, onTabChange, historyCount, watchlistCount }:
               }`}
             >
               {tab.label}
-              <span
-                className={`ml-1.5 tabular-nums ${isActive ? 'text-primary' : 'opacity-60'}`}
-              >
+              <span className={`ml-1.5 tabular-nums ${isActive ? 'text-primary' : 'opacity-60'}`}>
                 {String(counts[tab.key]).padStart(2, '0')}
               </span>
               {isActive && (

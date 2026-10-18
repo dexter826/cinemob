@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 
-// Trang báo khi đường link sai hoặc không còn tồn tại — editorial.
 function NotFoundPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-0 py-16 md:py-24 text-center">

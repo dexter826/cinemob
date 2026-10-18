@@ -39,7 +39,10 @@ export function ThemeProvider({
     const applyResolvedTheme = (resolved: 'dark' | 'light') => {
       root.classList.remove('light', 'dark');
       root.classList.add(resolved);
-      const background = window.getComputedStyle(root).getPropertyValue('--color-background').trim();
+      const background = window
+        .getComputedStyle(root)
+        .getPropertyValue('--color-background')
+        .trim();
       document
         .querySelectorAll('meta[name="theme-color"]')
         .forEach((meta) => meta.setAttribute('content', background));

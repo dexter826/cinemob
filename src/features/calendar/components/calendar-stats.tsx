@@ -10,7 +10,7 @@ interface CalendarStatsProps {
   airedEpisodesCount: number;
 }
 
-/** Chỉ số trang Lịch — Stat kit: số trần không hộp, vạch phân cách kiểu editorial. */
+/** Chỉ số trang Lịch — dùng Stat kit. */
 function CalendarStats({
   episodesLoading,
   episodesError,

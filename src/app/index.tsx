@@ -32,7 +32,7 @@ import LazyDialog from '@/shared/components/ui/lazy-dialog';
 import ErrorState from '@/shared/components/ui/error-state';
 import useMovieStore from '@/features/movies/stores/movie-store';
 
-// Fade mount 200ms mỗi điều hướng (fallback editorial cho hero transition — spec §7).
+// Fade mount 200ms mỗi điều hướng (fallback cho hero transition).
 function AnimatedRoutes() {
   const location = useLocation();
   const navigationType = useNavigationType();

@@ -29,7 +29,6 @@ export const useAppInit = () => {
     setAlbumCoverMovies,
   } = useAlbumStore();
 
-
   const { setMovies: setCalendarMovies, setLoading: setCalendarLoading } =
     useReleaseCalendarStore();
 
@@ -71,7 +70,6 @@ export const useAppInit = () => {
       setAlbumCoverMovies(updates);
     }
   }, [albums, albumsLoading, moviesInitialized, allMovies, setAlbumCoverMovies]);
-
 
   useEffect(() => {
     const currentMovies = useMovieStore.getState();

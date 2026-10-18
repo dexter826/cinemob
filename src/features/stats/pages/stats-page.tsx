@@ -27,7 +27,7 @@ import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { useReducedMotion } from 'framer-motion';
 import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
 
-// Palette biểu đồ derive từ token — tự đúng ở cả 2 theme (spec 2026-10-17).
+// Palette biểu đồ derive từ token — tự đúng ở cả 2 theme.
 const COLORS = [
   'var(--color-primary)',
   'color-mix(in srgb, var(--color-primary) 78%, var(--color-text-secondary))',
@@ -85,7 +85,6 @@ function StatsPage() {
   const isSmallScreen = useMediaQuery('(max-width: 639px)');
   const prefersReducedMotion = useReducedMotion() ?? false;
 
-  // Danh sách năm cho dropdown.
   const yearOptions = useMemo(
     () => availableYears.map((year) => ({ value: year, label: year })),
     [availableYears],
@@ -98,7 +97,6 @@ function StatsPage() {
     }
   }, [availableYears, selectedYear, setSelectedYear]);
 
-  // Thống kê theo tháng cho năm đã chọn.
   const monthlyData = useMemo(() => {
     return selectedYear ? getMonthlyDataForYear(selectedYear) : [];
   }, [selectedYear, getMonthlyDataForYear]);
