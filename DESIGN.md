@@ -9,18 +9,18 @@ Không bóng mềm, không gradient trang trí, không bo tròn lớn.
 
 ## 2. Token (2 theme — giá trị trong `src/index.css`)
 
-| Token | Dark | Light | Vai trò |
-|---|---|---|---|
-| `--color-background` | `#0a0a0a` | `#f7f4ed` | nền trang |
-| `--color-surface` | `#141414` | `#fdfbf6` | panel, card |
-| `--color-surface-elevated` | `#1a1a1a` | `#fffefa` | dialog, dropdown, toast |
-| `--color-primary` | `#ca8a04` | `#8f6400` | accent duy nhất — link, active, CTA |
-| `--color-text-primary` | `#f5f5f2` | `#0a0a0a` | mực chính |
-| `--color-text-secondary` | `#8a8a85` | `#6b6b66` | chữ phụ ≥4.5:1 |
-| `--color-text-muted` | `#9c9c97` | `#5f5b53` | placeholder, hint, weekday |
-| `--color-text-faint` | `#6e6e69` | `#8a857c` | decorative/large ≥3:1 |
-| `--color-border` | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control |
-| `--color-focus` | `#ca8a04` | `#8f6400` | outline focus |
+| Token                      | Dark                     | Light                 | Vai trò                             |
+| -------------------------- | ------------------------ | --------------------- | ----------------------------------- |
+| `--color-background`       | `#0a0a0a`                | `#f7f4ed`             | nền trang                           |
+| `--color-surface`          | `#141414`                | `#fdfbf6`             | panel, card                         |
+| `--color-surface-elevated` | `#1a1a1a`                | `#fffefa`             | dialog, dropdown, toast             |
+| `--color-primary`          | `#ca8a04`                | `#8f6400`             | accent duy nhất — link, active, CTA |
+| `--color-text-primary`     | `#f5f5f2`                | `#0a0a0a`             | mực chính                           |
+| `--color-text-secondary`   | `#8a8a85`                | `#6b6b66`             | chữ phụ ≥4.5:1                      |
+| `--color-text-muted`       | `#9c9c97`                | `#5f5b53`             | placeholder, hint, weekday          |
+| `--color-text-faint`       | `#6e6e69`                | `#8a857c`             | decorative/large ≥3:1               |
+| `--color-border`           | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control                        |
+| `--color-focus`            | `#ca8a04`                | `#8f6400`             | outline focus                       |
 
 Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng hairline (`--shadow-*` = none by design).
 
@@ -54,3 +54,18 @@ Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng
 - Lỗi đọc khác dữ liệu rỗng; lỗi có retry, pending không kéo dài sau lỗi hoặc hủy.
 - Skeleton dùng token skeleton và motion-safe; status nằm ngoài vùng aria-busy. Không dùng phần trăm giả.
 - Khởi động kết thúc trạng thái chờ khi xác thực xong; không ép thời lượng splash. Tải nội dung trang giữ thanh điều hướng.
+
+## 7. Motion
+
+Ngắn, đằm, không phô diễn — chỉ transform/opacity, không parallax, không overshoot.
+
+- Thang thời lượng: 120 / 150 / 200 / 250 ms — chỉ 4 giá trị. `transition-*` mặc định 150 ms;
+  khác thì `duration-*` đúng thang.
+- Curve trong `@theme`: `ease-standard` (micro, cũng là default), `ease-enter` (mở),
+  `ease-exit` (đóng). Không curve nào khác.
+- Engine: framer-motion chỉ cho overlay enter/exit, layout (`layoutId`), stagger, toast;
+  hover/focus/micro và route enter là CSS + token.
+- Overlay luôn có enter + exit: dropdown/popover/suggestions 120 ms; dialog 200 vào / 150 ra;
+  sheet trượt đáy 250 vào / 200 ra; toast 200 vào / 150 ra; route chỉ enter 200 ms.
+- CSS animation dùng `motion-safe:`; component framer gate qua `useReducedMotion`.
+  Splash, confetti, picker, charts: giữ riêng nhưng bắt buộc gate reduced-motion.
