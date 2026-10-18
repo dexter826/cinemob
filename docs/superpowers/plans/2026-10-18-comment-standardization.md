@@ -46,8 +46,8 @@ Template báo cáo batch (số liệu + 5–8 dòng before/after; pilot 10–15 
 ```markdown
 Batch <tên>: quét <N> file · sửa <M> · xoá <X> comment · viết lại <Y> · EN→VI <Z>
 
-| File | Trước | Sau | Loại |
-| ---- | ----- | --- | ---- |
+| File | Trước | Sau | Loại               |
+| ---- | ----- | --- | ------------------ |
 | ...  | ...   | ... | xoá/viết lại/EN→VI |
 
 Ngoài phạm vi: <ghi chú nếu có>
@@ -59,9 +59,11 @@ Verify: prettier (tồn đọng: ...) · typecheck pass · lint pass
 ### Task 1: PILOT — `src/shared/components/ui` (27 file) + checkpoint người dùng
 
 **Files:**
+
 - Modify (theo quy trình chuẩn): `src/shared/components/ui/` — 26 file .tsx + `index.ts`
 
 **Hotspot đã biết:**
+
 - Comment EN cần chuyển VI: `skeleton-card.tsx:2`, `lazy-dialog.tsx:15`, `loading.tsx:9`
 - JSDoc: `chip.tsx:8-20` (giữ, làm gọn)
 - JSX section label dày: `date-picker.tsx` (~257-397) — áp quy tắc file dài/ngắn
@@ -91,10 +93,12 @@ Expected: prettier chỉ còn 4 lỗi tồn đọng đã biết (trừ khi dòng
 ### Task 2: `src` root + `src/app` (9 file)
 
 **Files:**
+
 - Modify: `src/index.tsx`, `src/vite-env.d.ts`, `src/index.css`, `src/sw.ts` (4)
 - Modify: `src/app/` (2 file) + `src/app/components/` (2) + `src/app/providers/` (1)
 
 **Hotspot đã biết:**
+
 - `use-app-init.ts`: có comment VI + dòng trắng đôi có sẵn (:32, :75) — chỉ báo cáo
 - `index.css`: nếu có comment CSS thì chuẩn hóa; batch này BẮT BUỘC thêm `npm run build`
 - Prettier đỏ sẵn (chỉ báo cáo): `theme-provider.tsx`, `use-app-init.ts`
@@ -119,9 +123,11 @@ npm run build
 ### Task 3: `src/constants` + `src/types` (11 file)
 
 **Files:**
+
 - Modify: `src/constants/` (6 file) + `src/types/` (5 file)
 
 **Hotspot đã biết:**
+
 - `src/constants/messages.ts`: CHỈ sửa comment — tuyệt đối không đụng string UI
 
 - [x] **Step 1: Chạy Quy trình chuẩn cho 11 file**
@@ -143,10 +149,12 @@ npm run lint
 ### Task 4: `src/shared` phần còn lại A — components (ngoài ui) + config + lib + pages (10 file)
 
 **Files:**
+
 - Modify: `src/shared/components/feedback/` (5) + `src/shared/components/layout/` (2)
 - Modify: `src/shared/config/` (1) + `src/shared/lib/` (1) + `src/shared/pages/` (1)
 
 **Hotspot đã biết:**
+
 - Prettier đỏ sẵn (chỉ báo cáo): `splash-screen.tsx`
 
 - [ ] **Step 1: Chạy Quy trình chuẩn cho 10 file**
@@ -168,9 +176,11 @@ Commit khi verify xanh: `chore(comments): standardize shared component comments`
 ### Task 5: `src/shared` phần còn lại B — hooks + stores + utils (10 file)
 
 **Files:**
+
 - Modify: `src/shared/hooks/` (4) + `src/shared/stores/` (2) + `src/shared/utils/` (4)
 
 **Hotspot đã biết:**
+
 - `use-scroll-restore.ts` có `/* ignore */` (:24, :38) — đọc kỹ ngữ nghĩa trước khi dịch; giữ đúng nghĩa gốc
 
 - [ ] **Step 1: Chạy Quy trình chuẩn cho 10 file**
@@ -192,9 +202,11 @@ Commit khi verify xanh: `chore(comments): standardize shared hooks, stores, util
 ### Task 6: `src/features/albums` (10 file)
 
 **Files:**
+
 - Modify: `src/features/albums/` — components (3), hooks (2), pages (2), services (1), stores (1), utils (1)
 
 **Hotspot đã biết:**
+
 - `album-selector-modal.tsx:24`: comment EN
 - Prettier đỏ sẵn (chỉ báo cáo): `create-album-modal.tsx`
 
@@ -217,6 +229,7 @@ Commit khi verify xanh: `chore(comments): standardize albums feature comments`
 ### Task 7: `src/features/auth` + `src/features/stats` (5 file)
 
 **Files:**
+
 - Modify: `src/features/auth/` (2) + `src/features/stats/` (hooks 1, pages 1, utils 1)
 
 - [ ] **Step 1: Chạy Quy trình chuẩn cho 5 file**
@@ -238,9 +251,11 @@ Commit khi verify xanh: `chore(comments): standardize auth and stats comments`
 ### Task 8: `src/features/calendar` (8 file)
 
 **Files:**
+
 - Modify: `src/features/calendar/` — components (3), hooks (1), pages (1), services (2), stores (1)
 
 **Hotspot đã biết:**
+
 - `services/calendar-service.ts` (:53, :69, :95): comment VI rationale — giữ ý, rút gọn nếu dài dòng
 
 - [ ] **Step 1: Chạy Quy trình chuẩn cho 8 file**
@@ -262,9 +277,11 @@ Commit khi verify xanh: `chore(comments): standardize calendar feature comments`
 ### Task 9: `src/features/dashboard` (8 file)
 
 **Files:**
+
 - Modify: `src/features/dashboard/` — components (4), hooks (3), pages (1)
 
 **Hotspot đã biết:**
+
 - Prettier đỏ sẵn (chỉ báo cáo): `dashboard-tabs.tsx`
 
 - [ ] **Step 1: Chạy Quy trình chuẩn cho 8 file**
@@ -286,9 +303,11 @@ Commit khi verify xanh: `chore(comments): standardize dashboard feature comments
 ### Task 10: `src/features/movies` (22 file)
 
 **Files:**
+
 - Modify: `src/features/movies/` — components (3), components/add-movie (6), components/random-picker (1), hooks (6), pages (1), services (1), stores (3), utils (1)
 
 **Hotspot đã biết:**
+
 - `poster-card.tsx:11-38`: JSDoc props — giữ cấu trúc, rút gọn từng dòng
 - `movie-detail-page.tsx` (:99-272): nhiều JSX section label VI — áp quy tắc file dài/ngắn
 - Prettier đỏ sẵn (chỉ báo cáo): `use-movie-validation.ts`
@@ -312,9 +331,11 @@ Commit khi verify xanh: `chore(comments): standardize movies feature comments`
 ### Task 11: `src/features/profile` (19 file)
 
 **Files:**
+
 - Modify: `src/features/profile/` — components (4), components/avatar (1), components/user (2), constants (1), hooks (3), pages (1), services (4), utils (3)
 
 **Hotspot đã biết:**
+
 - `services/member-profile-service.ts` (:14-213): nhiều comment rationale dài — giữ ý, rút gọn câu chữ
 - Prettier đỏ sẵn (chỉ báo cáo): `use-avatar-crop.ts`
 
@@ -337,9 +358,11 @@ Commit khi verify xanh: `chore(comments): standardize profile feature comments`
 ### Task 12: `src/features/search` (17 file)
 
 **Files:**
+
 - Modify: `src/features/search/` — components (2), components/person (1), hooks (4), pages (2), services/tmdb (7), utils (1)
 
 **Hotspot đã biết:**
+
 - `services/tmdb/client.ts` (:4, :46, :82): comment VI — `:46` kiểu lặp tên hàm, cân nhắc xoá
 - Prettier đỏ sẵn (chỉ báo cáo): `use-search.ts`
 
@@ -362,9 +385,11 @@ Commit khi verify xanh: `chore(comments): standardize search feature comments`
 ### Task 13: `.github/scripts` (3 file .js)
 
 **Files:**
+
 - Modify: `.github/scripts/check-episodes.js`, `.github/scripts/notification-targets.js`, `.github/scripts/notification-targets.node-test.js`
 
 **Hotspot đã biết:**
+
 - `check-episodes.js:1-5`: JSDoc EN + banner section EN; `:100` comment VI — thống nhất VI toàn file
 - Không sửa `package.json`/lockfile trong folder này
 
@@ -389,6 +414,7 @@ Commit khi verify xanh: `chore(comments): standardize ci script comments`
 ### Task 14: Audit cuối + build + báo cáo tổng
 
 **Files:**
+
 - Audit (không sửa): toàn bộ `src/**`, `.github/scripts/*.js`
 
 - [ ] **Step 1: Build cuối**

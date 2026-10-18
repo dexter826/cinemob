@@ -32,11 +32,13 @@ git status --short          # kỳ vọng: sạch (docs đã commit)
 ## Task 1: Token foundation — giấy ấm light + muted/faint + chặn tràn ngang
 
 **Files:**
+
 - Modify: `src/index.css` (lines 11-30, 93-113, 115-118)
 - Modify: `src/features/dashboard/components/dashboard-filters.tsx:142`
 - Modify: `index.html:6`
 
 **Interfaces:**
+
 - Produces: class utilities `text-text-muted`, `text-text-faint` (dùng ở Task 2, 6, 9); `overflow-x: clip` trên html/body (Task 5 dựa vào để không tràn ngang).
 
 - [ ] **Step 1: Sửa token light trong `src/index.css` (dòng 11-27)**
@@ -44,25 +46,25 @@ git status --short          # kỳ vọng: sạch (docs đã commit)
 Thay block:
 
 ```css
-  /* Editorial Print — light trắng thuần (de-default: bỏ AI-cream) (spec 2026-10-17) */
-  --color-background: #ffffff;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-primary: #8f6400; /* mực vàng trên giấy */
-  --color-primary-hover: #7a5600;
-  --color-on-primary: #ffffff;
+/* Editorial Print — light trắng thuần (de-default: bỏ AI-cream) (spec 2026-10-17) */
+--color-background: #ffffff;
+--color-surface: #ffffff;
+--color-surface-elevated: #ffffff;
+--color-primary: #8f6400; /* mực vàng trên giấy */
+--color-primary-hover: #7a5600;
+--color-on-primary: #ffffff;
 ```
 
 bằng:
 
 ```css
-  /* Editorial Print — light giấy ấm 3 tầng, bỏ pure white (gate 7, spec 2026-10-17) */
-  --color-background: #f7f4ed;
-  --color-surface: #fdfbf6;
-  --color-surface-elevated: #fffefa;
-  --color-primary: #8f6400; /* mực vàng trên giấy */
-  --color-primary-hover: #7a5600;
-  --color-on-primary: #fffefa;
+/* Editorial Print — light giấy ấm 3 tầng, bỏ pure white (gate 7, spec 2026-10-17) */
+--color-background: #f7f4ed;
+--color-surface: #fdfbf6;
+--color-surface-elevated: #fffefa;
+--color-primary: #8f6400; /* mực vàng trên giấy */
+--color-primary-hover: #7a5600;
+--color-on-primary: #fffefa;
 ```
 
 Và đổi 2 on-color còn lại: `--color-on-success: #ffffff;` → `--color-on-success: #fffefa;`, `--color-on-danger: #ffffff;` → `--color-on-danger: #fffefa;`.
@@ -70,8 +72,8 @@ Và đổi 2 on-color còn lại: `--color-on-success: #ffffff;` → `--color-on
 Thêm sau dòng `--color-text-secondary: #6b6b66;` (light):
 
 ```css
-  --color-text-muted: #5f5b53; /* chữ phụ đặc ≥4.5:1 — placeholder, hint */
-  --color-text-faint: #8a857c; /* decorative/large ≥3:1 — số mờ, rule phụ */
+--color-text-muted: #5f5b53; /* chữ phụ đặc ≥4.5:1 — placeholder, hint */
+--color-text-faint: #8a857c; /* decorative/large ≥3:1 — số mờ, rule phụ */
 ```
 
 - [ ] **Step 2: Thêm token dark trong block `.dark`**
@@ -79,8 +81,8 @@ Thêm sau dòng `--color-text-secondary: #6b6b66;` (light):
 Thêm sau `--color-text-secondary: #8a8a85;` (dòng 109):
 
 ```css
-  --color-text-muted: #9c9c97;
-  --color-text-faint: #6e6e69;
+--color-text-muted: #9c9c97;
+--color-text-faint: #6e6e69;
 ```
 
 - [ ] **Step 3: `overflow-x: clip` trong `@layer base`**
@@ -88,22 +90,22 @@ Thêm sau `--color-text-secondary: #8a8a85;` (dòng 109):
 Thay:
 
 ```css
-  html {
-    scrollbar-gutter: stable;
-  }
+html {
+  scrollbar-gutter: stable;
+}
 ```
 
 bằng:
 
 ```css
-  html {
-    scrollbar-gutter: stable;
-    overflow-x: clip;
-  }
+html {
+  scrollbar-gutter: stable;
+  overflow-x: clip;
+}
 
-  body {
-    overflow-x: clip;
-  }
+body {
+  overflow-x: clip;
+}
 ```
 
 (Dùng `clip` chứ không `hidden` — `clip` không tạo scroll container nên không phá `position: sticky` của navbar.)
@@ -137,12 +139,14 @@ git commit -m "fix(ui): nền giấy ấm light theme + token chữ phụ, chặ
 ## Task 2: Contrast sweep — alpha chữ phụ → token muted
 
 **Files:**
+
 - Modify: `src/shared/components/ui/date-picker.tsx:300`
 - Modify: `src/shared/components/ui/dropdown.tsx:172,200`
 - Modify: `src/features/dashboard/components/dashboard-filters.tsx:338`
 - Modify: `src/features/movies/components/add-movie/rating-section.tsx:83`
 
 **Interfaces:**
+
 - Consumes: `text-text-muted` từ Task 1.
 
 - [ ] **Step 1: date-picker — weekday header**
@@ -188,6 +192,7 @@ git commit -m "fix(ui): thay alpha chữ phụ bằng token muted đạt tương
 ## Task 3: Focus sweep — gỡ toàn bộ outline suppression (27 điểm)
 
 **Files:**
+
 - Modify: 18 file/dòng có `focus-visible:outline-none` (danh sách dưới)
 - Modify: 9 dòng có `outline-none` trần (danh sách dưới)
 
@@ -195,42 +200,42 @@ git commit -m "fix(ui): thay alpha chữ phụ bằng token muted đạt tương
 
 - [ ] **Step 1: Gỡ `focus-visible:outline-none` (18 dòng)**
 
-| # | File | Dòng |
-|---|---|---|
-| 1 | `src/app/components/layout.tsx` | 30 |
-| 2 | `src/features/albums/pages/album-detail-page.tsx` | 134 |
-| 3 | `src/shared/components/ui/dropdown.tsx` | 157 |
-| 4 | `src/shared/components/ui/dropdown.tsx` | 200 |
-| 5 | `src/shared/components/ui/time-picker.tsx` | 259 |
-| 6 | `src/shared/components/ui/text-field.tsx` | 52 |
-| 7 | `src/features/dashboard/components/dashboard-filters.tsx` | 91 |
-| 8 | `src/shared/components/ui/search.tsx` | 50 |
-| 9 | `src/shared/components/ui/multi-select-dropdown.tsx` | 162 |
-| 10 | `src/shared/components/ui/multi-select-dropdown.tsx` | 203 |
-| 11 | `src/shared/components/ui/multi-select-dropdown.tsx` | 227 |
-| 12 | `src/features/search/components/search-filters.tsx` | 97 |
-| 13 | `src/shared/components/ui/date-picker.tsx` | 368 |
-| 14 | `src/features/profile/components/avatar/avatar-crop-view.tsx` | 88 |
-| 15 | `src/features/profile/components/avatar/avatar-crop-view.tsx` | 133 |
-| 16 | `src/features/profile/components/own-profile-editor.tsx` | 413 |
-| 17 | `src/features/profile/components/own-profile-editor.tsx` | 433 |
-| 18 | `src/features/profile/components/user/member-search-modal.tsx` | 65 |
+| #   | File                                                           | Dòng |
+| --- | -------------------------------------------------------------- | ---- |
+| 1   | `src/app/components/layout.tsx`                                | 30   |
+| 2   | `src/features/albums/pages/album-detail-page.tsx`              | 134  |
+| 3   | `src/shared/components/ui/dropdown.tsx`                        | 157  |
+| 4   | `src/shared/components/ui/dropdown.tsx`                        | 200  |
+| 5   | `src/shared/components/ui/time-picker.tsx`                     | 259  |
+| 6   | `src/shared/components/ui/text-field.tsx`                      | 52   |
+| 7   | `src/features/dashboard/components/dashboard-filters.tsx`      | 91   |
+| 8   | `src/shared/components/ui/search.tsx`                          | 50   |
+| 9   | `src/shared/components/ui/multi-select-dropdown.tsx`           | 162  |
+| 10  | `src/shared/components/ui/multi-select-dropdown.tsx`           | 203  |
+| 11  | `src/shared/components/ui/multi-select-dropdown.tsx`           | 227  |
+| 12  | `src/features/search/components/search-filters.tsx`            | 97   |
+| 13  | `src/shared/components/ui/date-picker.tsx`                     | 368  |
+| 14  | `src/features/profile/components/avatar/avatar-crop-view.tsx`  | 88   |
+| 15  | `src/features/profile/components/avatar/avatar-crop-view.tsx`  | 133  |
+| 16  | `src/features/profile/components/own-profile-editor.tsx`       | 413  |
+| 17  | `src/features/profile/components/own-profile-editor.tsx`       | 433  |
+| 18  | `src/features/profile/components/user/member-search-modal.tsx` | 65   |
 
 Ví dụ chuẩn (text-field.tsx:52): `'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors'` → `'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary transition-colors'`.
 
 - [ ] **Step 2: Gỡ `outline-none` trần (9 dòng)**
 
-| # | File | Dòng | Ghi chú |
-|---|---|---|---|
-| 1 | `src/shared/components/ui/pagination.tsx` | 119 | `... focus-visible:ring-primary/50 outline-none"` → bỏ `outline-none` |
-| 2 | `src/features/albums/components/album-selector-modal.tsx` | 153 | `... focus-visible:ring-primary/20 outline-none transition-colors"` |
-| 3 | `src/features/movies/components/add-movie-modal.tsx` | 223 | `... focus-visible:ring-primary/20 outline-none transition-colors` |
-| 4 | `src/features/movies/components/add-movie-modal.tsx` | 251 | như trên |
-| 5 | `src/features/movies/components/add-movie-modal.tsx` | 273 | như trên |
-| 6 | `src/features/movies/components/add-movie-modal.tsx` | 361 | `... placeholder-text-secondary [giữ Task 9 sửa] ... outline-none transition-colors resize-none` — chỉ bỏ `outline-none` |
-| 7 | `src/features/movies/components/add-movie/album-section.tsx` | 81 | `... focus-visible:ring-primary/20 outline-none transition-colors` |
-| 8 | `src/features/movies/components/add-movie/movie-form-fields.tsx` | 185 | `... focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums` |
-| 9 | `src/features/movies/components/add-movie/movie-form-fields.tsx` | 249 | `... placeholder-text-secondary [giữ Task 9] ... outline-none transition-colors resize-none` |
+| #   | File                                                             | Dòng | Ghi chú                                                                                                                  |
+| --- | ---------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `src/shared/components/ui/pagination.tsx`                        | 119  | `... focus-visible:ring-primary/50 outline-none"` → bỏ `outline-none`                                                    |
+| 2   | `src/features/albums/components/album-selector-modal.tsx`        | 153  | `... focus-visible:ring-primary/20 outline-none transition-colors"`                                                      |
+| 3   | `src/features/movies/components/add-movie-modal.tsx`             | 223  | `... focus-visible:ring-primary/20 outline-none transition-colors`                                                       |
+| 4   | `src/features/movies/components/add-movie-modal.tsx`             | 251  | như trên                                                                                                                 |
+| 5   | `src/features/movies/components/add-movie-modal.tsx`             | 273  | như trên                                                                                                                 |
+| 6   | `src/features/movies/components/add-movie-modal.tsx`             | 361  | `... placeholder-text-secondary [giữ Task 9 sửa] ... outline-none transition-colors resize-none` — chỉ bỏ `outline-none` |
+| 7   | `src/features/movies/components/add-movie/album-section.tsx`     | 81   | `... focus-visible:ring-primary/20 outline-none transition-colors`                                                       |
+| 8   | `src/features/movies/components/add-movie/movie-form-fields.tsx` | 185  | `... focus-visible:ring-primary/20 outline-none transition-colors disabled:opacity-50 tabular-nums`                      |
+| 9   | `src/features/movies/components/add-movie/movie-form-fields.tsx` | 249  | `... placeholder-text-secondary [giữ Task 9] ... outline-none transition-colors resize-none`                             |
 
 - [ ] **Step 3: Verify**
 
@@ -254,6 +259,7 @@ git commit -m "fix(ui): dùng vòng focus outline toàn cục, gỡ outline-none
 ## Task 4: Lottie → CSS/SVG (splash + confetti), gỡ dep + 2 JSON 2.3MB
 
 **Files:**
+
 - Modify: `src/shared/components/feedback/splash-screen.tsx` (viết lại toàn file)
 - Create: `src/shared/components/feedback/confetti-burst.tsx`
 - Modify: `src/index.css` (@theme — thêm 3 animate + 3 keyframes)
@@ -264,50 +270,51 @@ git commit -m "fix(ui): dùng vòng focus outline toàn cục, gỡ outline-none
 - Modify: `package.json` + `package-lock.json` (qua npm uninstall)
 
 **Interfaces:**
+
 - Produces: `ConfettiBurst` (default export, không props — Task này tự dùng); các class `animate-splash-brand`, `animate-splash-rule`, `animate-confetti`.
 - SplashScreen giữ nguyên props `{ onAnimationFinish: () => void; staticMode?: boolean }` — không nơi gọi nào phải sửa.
 
 - [ ] **Step 1: Thêm keyframes vào `src/index.css` (@theme, sau `--animate-zoom-in-95`)**
 
 ```css
-  --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-splash-rule: splash-rule 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-  --animate-confetti: confetti-burst 1s ease-out forwards;
+--animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+--animate-splash-rule: splash-rule 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+--animate-confetti: confetti-burst 1s ease-out forwards;
 ```
 
 Và thêm 3 block `@keyframes` (cạnh các keyframes hiện có trong @theme):
 
 ```css
-  @keyframes splash-brand {
-    from {
-      opacity: 0;
-      transform: scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+@keyframes splash-brand {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
   }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-  @keyframes splash-rule {
-    from {
-      transform: scaleX(0);
-    }
-    to {
-      transform: scaleX(1);
-    }
+@keyframes splash-rule {
+  from {
+    transform: scaleX(0);
   }
+  to {
+    transform: scaleX(1);
+  }
+}
 
-  @keyframes confetti-burst {
-    from {
-      opacity: 1;
-      transform: rotate(var(--confetti-angle)) translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: rotate(var(--confetti-angle)) translateY(calc(var(--confetti-distance) * -1));
-    }
+@keyframes confetti-burst {
+  from {
+    opacity: 1;
+    transform: rotate(var(--confetti-angle)) translateY(0);
   }
+  to {
+    opacity: 0;
+    transform: rotate(var(--confetti-angle)) translateY(calc(var(--confetti-distance) * -1));
+  }
+}
 ```
 
 - [ ] **Step 2: Viết lại `src/shared/components/feedback/splash-screen.tsx` (toàn bộ)**
@@ -411,6 +418,7 @@ export default ConfettiBurst;
 - [ ] **Step 4: Dọn confetti khỏi `src/features/movies/hooks/use-random-picker.ts`**
 
 Xoá từng phần sau, giữ nguyên phần còn lại:
+
 - Dòng 30: `const [confettiData, setConfettiData] = useState<Record<string, unknown> | null>(null);`
 - Dòng 35: `const confettiFetchedRef = useRef(false);`
 - Cả block `ensureConfetti` (dòng 45-52).
@@ -427,7 +435,9 @@ Xoá từng phần sau, giữ nguyên phần còn lại:
 - Thay block dòng 73-80:
 
 ```tsx
-          {showConfetti && <ConfettiBurst />}
+{
+  showConfetti && <ConfettiBurst />;
+}
 ```
 
 - [ ] **Step 6: Sửa `vite.config.ts` — bỏ chunk lottie**
@@ -464,9 +474,11 @@ git commit -m "perf(ui): thay Lottie bằng animation CSS, gỡ lottie-react và
 ## Task 5: Login — bố cục bìa tạp chí (phá centred-everything)
 
 **Files:**
+
 - Modify: `src/features/auth/components/login.tsx` (viết lại phần thân; giữ GoogleIcon + handleLogin)
 
 **Interfaces:**
+
 - Consumes: token `-muted/-faint` (Task 1), `overflow-x: clip` (Task 1).
 - Produces: không API mới. Giữ `hasWall` gate: `posters.length >= 12`.
 
@@ -550,18 +562,12 @@ function Login() {
 
       {hasWall && (
         <div className="order-2 lg:order-1 overflow-hidden">
-          <div
-            aria-hidden="true"
-            className="grid grid-cols-6 grid-rows-2 gap-0.5 h-40 lg:hidden"
-          >
+          <div aria-hidden="true" className="grid grid-cols-6 grid-rows-2 gap-0.5 h-40 lg:hidden">
             {posters.slice(0, WALL_STRIP_COUNT).map((poster) => (
               <PosterTile key={poster.id} poster={poster} />
             ))}
           </div>
-          <div
-            aria-hidden="true"
-            className="hidden lg:grid grid-cols-4 grid-rows-5 gap-0.5 h-full"
-          >
+          <div aria-hidden="true" className="hidden lg:grid grid-cols-4 grid-rows-5 gap-0.5 h-full">
             {posters.map((poster) => (
               <PosterTile key={poster.id} poster={poster} />
             ))}
@@ -598,9 +604,11 @@ git commit -m "fix(ui): bố cục login bìa tạp chí, phá centred-everythin
 ## Task 6: Desktop nav — masthead strip
 
 **Files:**
+
 - Modify: `src/app/components/navbar.tsx` (dòng 82-95, 97-122, 124, 246-247)
 
 **Interfaces:**
+
 - Consumes: `text-text-faint` (Task 1), `NAV_ITEMS`/`isNavItemActive` (sẵn có).
 - Produces: không API mới. Mobile (`< md`) và `mobile-bottom-nav.tsx` giữ nguyên hành vi cũ.
 
@@ -613,56 +621,53 @@ Dòng 82: `<header className="sticky top-0 z-50 bg-background border-b border-bo
 Thay block Link wordmark (dòng 87-95) và div links giữa (dòng 97-122) bằng:
 
 ```tsx
-          <div className="flex items-center gap-4 xl:gap-6 min-w-0">
-            <Link
-              to="/"
-              className="flex items-baseline gap-2.5 shrink-0 cursor-pointer"
-              aria-label="Về Thư viện CineMOB"
-            >
-              <span className="font-display text-xl uppercase tracking-wide select-none">
-                Cine<span className="text-primary">MOB</span>
-              </span>
-              <span
-                aria-hidden="true"
-                className="hidden xl:inline text-[9px] font-semibold tracking-[0.18em] uppercase text-text-faint whitespace-nowrap"
-              >
-                Phòng chiếu gia đình
-              </span>
-            </Link>
+<div className="flex items-center gap-4 xl:gap-6 min-w-0">
+  <Link
+    to="/"
+    className="flex items-baseline gap-2.5 shrink-0 cursor-pointer"
+    aria-label="Về Thư viện CineMOB"
+  >
+    <span className="font-display text-xl uppercase tracking-wide select-none">
+      Cine<span className="text-primary">MOB</span>
+    </span>
+    <span
+      aria-hidden="true"
+      className="hidden xl:inline text-[9px] font-semibold tracking-[0.18em] uppercase text-text-faint whitespace-nowrap"
+    >
+      Phòng chiếu gia đình
+    </span>
+  </Link>
 
-            <div className="hidden md:flex items-center min-w-0">
-              {NAV_ITEMS.map((item, index) => {
-                const active = isNavItemActive(location.pathname, item);
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    aria-label={item.label}
-                    aria-current={active ? 'page' : undefined}
-                    className={`relative flex items-center gap-1.5 h-14 px-2 lg:px-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
-                      active ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`hidden lg:inline text-[9px] tabular-nums tracking-[0.1em] ${
-                        active ? 'text-primary' : 'text-text-faint'
-                      }`}
-                    >
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    {item.label}
-                    {active && (
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-x-2 bottom-0 h-0.5 bg-primary"
-                      />
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+  <div className="hidden md:flex items-center min-w-0">
+    {NAV_ITEMS.map((item, index) => {
+      const active = isNavItemActive(location.pathname, item);
+      return (
+        <Link
+          key={item.to}
+          to={item.to}
+          aria-label={item.label}
+          aria-current={active ? 'page' : undefined}
+          className={`relative flex items-center gap-1.5 h-14 px-2 lg:px-2.5 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
+            active ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`hidden lg:inline text-[9px] tabular-nums tracking-[0.1em] ${
+              active ? 'text-primary' : 'text-text-faint'
+            }`}
+          >
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          {item.label}
+          {active && (
+            <span aria-hidden="true" className="absolute inset-x-2 bottom-0 h-0.5 bg-primary" />
+          )}
+        </Link>
+      );
+    })}
+  </div>
+</div>
 ```
 
 - [ ] **Step 3: Cụm icon phải + rule đôi**
@@ -671,10 +676,10 @@ Thay block Link wordmark (dòng 87-95) và div links giữa (dòng 97-122) bằn
 - Thêm ngay trước `</header>` (sau `</nav>`, dòng 246-247):
 
 ```tsx
-        <div aria-hidden="true" className="max-w-6xl mx-auto px-4 md:px-6">
-          <div className="h-px bg-border" />
-          <div className="mt-[3px] h-px bg-border-default" />
-        </div>
+<div aria-hidden="true" className="max-w-6xl mx-auto px-4 md:px-6">
+  <div className="h-px bg-border" />
+  <div className="mt-[3px] h-px bg-border-default" />
+</div>
 ```
 
 - [ ] **Step 4: Verify**
@@ -698,10 +703,12 @@ git commit -m "fix(ui): navbar masthead — mục lục đánh số cụm trái,
 ## Task 7: Token improvisation — theme-color + chart palette
 
 **Files:**
+
 - Modify: `src/app/providers/theme-provider.tsx:38-45`
 - Modify: `src/features/stats/pages/stats-page.tsx:26-36`
 
 **Interfaces:**
+
 - Consumes: token `--color-background` (mọi theme), `--color-primary`, `--color-text-secondary`, `--color-surface` (Task 1 chỉ đổi giá trị, tên không đổi).
 
 - [ ] **Step 1: `theme-provider.tsx` — meta theme-color derive từ token**
@@ -709,15 +716,15 @@ git commit -m "fix(ui): navbar masthead — mục lục đánh số cụm trái,
 Thay dòng 38-45:
 
 ```tsx
-    // Áp class theme lên root và đồng bộ màu theme-color theo token
-    const applyResolvedTheme = (resolved: 'dark' | 'light') => {
-      root.classList.remove('light', 'dark');
-      root.classList.add(resolved);
-      const background = window.getComputedStyle(root).getPropertyValue('--color-background').trim();
-      document
-        .querySelectorAll('meta[name="theme-color"]')
-        .forEach((meta) => meta.setAttribute('content', background));
-    };
+// Áp class theme lên root và đồng bộ màu theme-color theo token
+const applyResolvedTheme = (resolved: 'dark' | 'light') => {
+  root.classList.remove('light', 'dark');
+  root.classList.add(resolved);
+  const background = window.getComputedStyle(root).getPropertyValue('--color-background').trim();
+  document
+    .querySelectorAll('meta[name="theme-color"]')
+    .forEach((meta) => meta.setAttribute('content', background));
+};
 ```
 
 - [ ] **Step 2: `stats-page.tsx` — palette chart từ token**
@@ -799,12 +806,14 @@ git grep -nE "#[0-9a-fA-F]{3,8}" -- src/features/stats src/app/providers   # tr�
 ## Task 9: Placeholder typo ×4
 
 **Files:**
+
 - Modify: `src/features/albums/components/album-selector-modal.tsx:153`
 - Modify: `src/features/movies/components/add-movie-modal.tsx:361`
 - Modify: `src/features/movies/components/add-movie/movie-form-fields.tsx:249`
 - Modify: `src/shared/components/ui/multi-select-dropdown.tsx:227`
 
 **Interfaces:**
+
 - Consumes: `text-text-muted` (Task 1). (Site thứ 5 — `dropdown.tsx:200` — đã fix ở Task 2.)
 
 - [ ] **Step 1: Thay `placeholder-text-secondary` → `placeholder:text-text-muted` tại đúng 4 dòng trên.**
@@ -831,6 +840,7 @@ git commit -m "fix(ui): khôi phục màu placeholder cho 4 ô nhập"
 ## Task 10: Motion — progress scaleX + reduced-motion scroll guard
 
 **Files:**
+
 - Modify: `src/shared/components/feedback/toast-container.tsx:76-82`
 - Modify: `src/features/movies/pages/movie-detail-page.tsx:211-223`
 - Modify: `src/features/movies/hooks/use-movie-validation.ts:77`
@@ -840,13 +850,13 @@ git commit -m "fix(ui): khôi phục màu placeholder cho 4 ô nhập"
 Thay block dòng 76-82:
 
 ```tsx
-              <motion.div
-                aria-hidden="true"
-                initial={{ scaleX: 1 }}
-                animate={{ scaleX: 0 }}
-                transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
-                className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50 origin-left"
-              />
+<motion.div
+  aria-hidden="true"
+  initial={{ scaleX: 1 }}
+  animate={{ scaleX: 0 }}
+  transition={{ duration: (toast.duration ?? 3000) / 1000, ease: 'linear' }}
+  className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/50 origin-left"
+/>
 ```
 
 (Nhánh reduced-motion dòng 70-74 giữ nguyên.)
@@ -856,19 +866,19 @@ Thay block dòng 76-82:
 Thay block dòng 211-223:
 
 ```tsx
-              <div className="mt-3 h-0.5 bg-border-default" role="presentation">
-                <div
-                  className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out"
-                  style={{
-                    transform: `scaleX(${Math.min(
-                      1,
-                      movie.progress.is_completed
-                        ? 1
-                        : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1),
-                    )})`,
-                  }}
-                />
-              </div>
+<div className="mt-3 h-0.5 bg-border-default" role="presentation">
+  <div
+    className="h-full w-full bg-primary origin-left transition-transform duration-700 ease-out"
+    style={{
+      transform: `scaleX(${Math.min(
+        1,
+        movie.progress.is_completed
+          ? 1
+          : (movie.progress.watched_episodes ?? 0) / (movie.total_episodes || 1),
+      )})`,
+    }}
+  />
+</div>
 ```
 
 - [ ] **Step 3: Scroll guard trong `use-movie-validation.ts`**
@@ -876,13 +886,11 @@ Thay block dòng 211-223:
 Dòng 77: `el.scrollIntoView({ behavior: 'smooth', block: 'center' });` →
 
 ```ts
-        const prefersReducedMotion = window.matchMedia(
-          '(prefers-reduced-motion: reduce)',
-        ).matches;
-        el.scrollIntoView({
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          block: 'center',
-        });
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+el.scrollIntoView({
+  behavior: prefersReducedMotion ? 'auto' : 'smooth',
+  block: 'center',
+});
 ```
 
 (Giữ nguyên comment dòng 78 phía dưới.)
@@ -907,6 +915,7 @@ git commit -m "fix(ui): animate progress bằng scaleX, tôn trọng reduced-mot
 ## Task 11: Hover — một tín hiệu duy nhất (scale ảnh), ring về focus-visible
 
 **Files:**
+
 - Modify: `src/features/movies/components/poster-card.tsx:77-84` (bỏ dòng 81)
 - Modify: `src/features/albums/components/album-card.tsx:84`
 
@@ -965,6 +974,7 @@ git commit -m "fix(ui): một tín hiệu hover cho card, ring về focus-visibl
 ## Task 12: Confirm thừa → undo-toast (3 chỗ), giữ confirm xoá album
 
 **Files:**
+
 - Modify: `src/features/movies/pages/movie-detail-page.tsx` (dòng 6, 31, 50-63, 186)
 - Modify: `src/features/albums/pages/album-detail-page.tsx` (dòng 17, 27, 216-233)
 - Modify: `src/features/albums/hooks/use-album-detail.ts` (dòng 7-9, 98-107)
@@ -973,6 +983,7 @@ git commit -m "fix(ui): một tín hiệu hover cho card, ring về focus-visibl
 - Modify: `src/constants/messages.ts` (xoá dòng 20)
 
 **Interfaces:**
+
 - Consumes: pattern `showToast(msg, 'info', 7000, { label, onAction })` của `use-delete-movie.ts`.
 - Produces: `setUserAvatarUrl(user: User, photoURL: string): Promise<void>` (avatar-service).
 
@@ -981,11 +992,11 @@ git commit -m "fix(ui): một tín hiệu hover cho card, ring về focus-visibl
 - Thay `confirmDelete` (dòng 50-63) bằng:
 
 ```tsx
-  const handleDeleteMovie = () => {
-    if (!movie?.docId) return;
-    handleDelete(movie.docId);
-    navigate('/');
-  };
+const handleDeleteMovie = () => {
+  if (!movie?.docId) return;
+  handleDelete(movie.docId);
+  navigate('/');
+};
 ```
 
 (`handleDelete` từ `use-delete-movie` đã tự show undo-toast 7s; toast là global nên vẫn thấy sau khi điều hướng về `/`.)
@@ -998,15 +1009,15 @@ git commit -m "fix(ui): một tín hiệu hover cho card, ring về focus-visibl
 Thay block onClick (dòng 216-233):
 
 ```tsx
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveMovie(movie)}
-                        aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
-                        title="Bỏ khỏi album"
-                        className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
-                      </button>
+<button
+  type="button"
+  onClick={() => handleRemoveMovie(movie)}
+  aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
+  title="Bỏ khỏi album"
+  className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+>
+  <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
+</button>
 ```
 
 - Xoá dòng 17 `import useAlertStore...` và dòng 27 `const { showAlert } = useAlertStore();` (orphan của task).
@@ -1018,24 +1029,24 @@ Thay block onClick (dòng 216-233):
 - Thay `handleRemoveMovie` (dòng 98-107):
 
 ```ts
-  const handleRemoveMovie = async (movie: Movie) => {
-    if (!album?.docId || !movie.docId) return;
-    const previousIds = album.movieDocIds || [];
-    try {
-      const newIds = previousIds.filter((id) => id !== movie.docId);
-      await updateAlbum(album.docId, { movieDocIds: newIds });
-      showToast(`Đã bỏ "${getMainTitle(movie)}" khỏi album`, 'info', UNDO_REMOVE_MS, {
-        label: 'Hoàn tác',
-        onAction: () => {
-          updateAlbum(album.docId, { movieDocIds: previousIds }).catch(() =>
-            showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error'),
-          );
-        },
-      });
-    } catch {
-      showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
-    }
-  };
+const handleRemoveMovie = async (movie: Movie) => {
+  if (!album?.docId || !movie.docId) return;
+  const previousIds = album.movieDocIds || [];
+  try {
+    const newIds = previousIds.filter((id) => id !== movie.docId);
+    await updateAlbum(album.docId, { movieDocIds: newIds });
+    showToast(`Đã bỏ "${getMainTitle(movie)}" khỏi album`, 'info', UNDO_REMOVE_MS, {
+      label: 'Hoàn tác',
+      onAction: () => {
+        updateAlbum(album.docId, { movieDocIds: previousIds }).catch(() =>
+          showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error'),
+        );
+      },
+    });
+  } catch {
+    showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
+  }
+};
 ```
 
 (`MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS` không còn dùng — xoá ở Step 5.)
@@ -1059,39 +1070,37 @@ export const setUserAvatarUrl = async (user: User, photoURL: string): Promise<vo
   - Thay `handleDelete` (dòng 296-325):
 
 ```ts
-  // Khôi phục ảnh gốc tài khoản Google, kèm undo-toast.
-  const handleDelete = useCallback(() => {
-    if (!user || isBusy) return;
-    const previousPhotoURL = user.photoURL;
+// Khôi phục ảnh gốc tài khoản Google, kèm undo-toast.
+const handleDelete = useCallback(() => {
+  if (!user || isBusy) return;
+  const previousPhotoURL = user.photoURL;
 
-    setIsDeleting(true);
-    setErrorMessage(null);
+  setIsDeleting(true);
+  setErrorMessage(null);
 
-    (async () => {
-      try {
-        await revertToGoogleAvatar(user);
-        await refreshUser();
-        showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
-          label: 'Hoàn tác',
-          onAction: () => {
-            if (!previousPhotoURL) return;
-            setUserAvatarUrl(user, previousPhotoURL)
-              .then(() => refreshUser())
-              .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
-          },
-        });
-      } catch (error: unknown) {
-        const message =
-          error instanceof Error && error.message
-            ? error.message
-            : 'Không thể xóa ảnh đại diện';
-        setErrorMessage(message);
-        showToast(message, 'error');
-      } finally {
-        setIsDeleting(false);
-      }
-    })();
-  }, [user, isBusy, refreshUser, showToast]);
+  (async () => {
+    try {
+      await revertToGoogleAvatar(user);
+      await refreshUser();
+      showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
+        label: 'Hoàn tác',
+        onAction: () => {
+          if (!previousPhotoURL) return;
+          setUserAvatarUrl(user, previousPhotoURL)
+            .then(() => refreshUser())
+            .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
+        },
+      });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error && error.message ? error.message : 'Không thể xóa ảnh đại diện';
+      setErrorMessage(message);
+      showToast(message, 'error');
+    } finally {
+      setIsDeleting(false);
+    }
+  })();
+}, [user, isBusy, refreshUser, showToast]);
 ```
 
 - [ ] **Step 5: `messages.ts` — xoá hằng orphan**
@@ -1121,6 +1130,7 @@ git commit -m "fix(ui): thay confirm thừa bằng undo-toast, giữ confirm xo�
 ## Task 13: Micro-batch — glyph ×, ngữ nghĩa link, tap target, viewport-fit, copyright
 
 **Files:**
+
 - Modify: `src/features/albums/components/album-selector-modal.tsx:2,124-128`
 - Modify: `src/shared/pages/not-found-page.tsx`
 - Modify: `src/features/dashboard/components/dashboard-filters.tsx:97`
@@ -1133,9 +1143,9 @@ git commit -m "fix(ui): thay confirm thừa bằng undo-toast, giữ confirm xo�
 - Dòng 124-128:
 
 ```tsx
-        <IconButton label="Đóng bảng chọn album" onClick={onClose} variant="ghost">
-          <X size={18} strokeWidth={1.8} aria-hidden="true" />
-        </IconButton>
+<IconButton label="Đóng bảng chọn album" onClick={onClose} variant="ghost">
+  <X size={18} strokeWidth={1.8} aria-hidden="true" />
+</IconButton>
 ```
 
 - [ ] **Step 2: not-found-page — Link nhận class button (hết `<Link><Button>`)**
@@ -1207,6 +1217,7 @@ git commit -m "fix(ui): micro-batch — glyph ×, ngữ nghĩa link, tap target,
 ## Task 14: Dọn class chết (animate-in + shadow no-op)
 
 **Files:**
+
 - Modify: `src/features/profile/components/own-profile-editor.tsx:308`
 - Modify: 10 dòng `shadow-elevated` + 1 dòng `poster-preview.tsx:13`
 
@@ -1218,18 +1229,18 @@ Dòng 308: `... overflow-hidden animate-in fade-in zoom-in-95 duration-150"` →
 
 Xoá đúng token ` shadow-elevated` khỏi class string (giữ mọi class khác):
 
-| File | Dòng |
-|---|---|
-| `src/features/stats/pages/stats-page.tsx` | 47 |
-| `src/features/dashboard/components/dashboard-filters.tsx` | 142 |
-| `src/features/search/components/search-filters.tsx` | 107 |
-| `src/shared/components/feedback/toast-container.tsx` | 49 |
-| `src/features/search/components/person/person-movie-section.tsx` | 94 |
-| `src/shared/components/ui/dialog.tsx` | 109 |
-| `src/shared/components/ui/date-picker.tsx` | 222 |
-| `src/shared/components/ui/dropdown.tsx` | 184 |
-| `src/shared/components/ui/time-picker.tsx` | 154 |
-| `src/shared/components/ui/multi-select-dropdown.tsx` | 211 |
+| File                                                             | Dòng |
+| ---------------------------------------------------------------- | ---- |
+| `src/features/stats/pages/stats-page.tsx`                        | 47   |
+| `src/features/dashboard/components/dashboard-filters.tsx`        | 142  |
+| `src/features/search/components/search-filters.tsx`              | 107  |
+| `src/shared/components/feedback/toast-container.tsx`             | 49   |
+| `src/features/search/components/person/person-movie-section.tsx` | 94   |
+| `src/shared/components/ui/dialog.tsx`                            | 109  |
+| `src/shared/components/ui/date-picker.tsx`                       | 222  |
+| `src/shared/components/ui/dropdown.tsx`                          | 184  |
+| `src/shared/components/ui/time-picker.tsx`                       | 154  |
+| `src/shared/components/ui/multi-select-dropdown.tsx`             | 211  |
 
 - [ ] **Step 3: poster-preview — xoá bộ 3 class shadow/transition no-op**
 
@@ -1256,6 +1267,7 @@ git commit -m "refactor(ui): dọn class chết animate-in và shadow no-op"
 ## Task 15: DESIGN.md thật + gỡ prop `eyebrow` chết
 
 **Files:**
+
 - Modify (viết lại): `DESIGN.md`
 - Modify: `src/shared/components/ui/page-header.tsx` (dòng 8, 23, 46-50)
 
@@ -1273,18 +1285,18 @@ Không bóng mềm, không gradient trang trí, không bo tròn lớn.
 
 ## 2. Token (2 theme — giá trị trong `src/index.css`)
 
-| Token | Dark | Light | Vai trò |
-|---|---|---|---|
-| `--color-background` | `#0a0a0a` | `#f7f4ed` | nền trang |
-| `--color-surface` | `#141414` | `#fdfbf6` | panel, card |
-| `--color-surface-elevated` | `#1a1a1a` | `#fffefa` | dialog, dropdown, toast |
-| `--color-primary` | `#ca8a04` | `#8f6400` | accent duy nhất — link, active, CTA |
-| `--color-text-primary` | `#f5f5f2` | `#0a0a0a` | mực chính |
-| `--color-text-secondary` | `#8a8a85` | `#6b6b66` | chữ phụ ≥4.5:1 |
-| `--color-text-muted` | `#9c9c97` | `#5f5b53` | placeholder, hint, weekday |
-| `--color-text-faint` | `#6e6e69` | `#8a857c` | decorative/large ≥3:1 |
-| `--color-border` | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control |
-| `--color-focus` | `#ca8a04` | `#8f6400` | outline focus |
+| Token                      | Dark                     | Light                 | Vai trò                             |
+| -------------------------- | ------------------------ | --------------------- | ----------------------------------- |
+| `--color-background`       | `#0a0a0a`                | `#f7f4ed`             | nền trang                           |
+| `--color-surface`          | `#141414`                | `#fdfbf6`             | panel, card                         |
+| `--color-surface-elevated` | `#1a1a1a`                | `#fffefa`             | dialog, dropdown, toast             |
+| `--color-primary`          | `#ca8a04`                | `#8f6400`             | accent duy nhất — link, active, CTA |
+| `--color-text-primary`     | `#f5f5f2`                | `#0a0a0a`             | mực chính                           |
+| `--color-text-secondary`   | `#8a8a85`                | `#6b6b66`             | chữ phụ ≥4.5:1                      |
+| `--color-text-muted`       | `#9c9c97`                | `#5f5b53`             | placeholder, hint, weekday          |
+| `--color-text-faint`       | `#6e6e69`                | `#8a857c`             | decorative/large ≥3:1               |
+| `--color-border`           | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control                        |
+| `--color-focus`            | `#ca8a04`                | `#8f6400`             | outline focus                       |
 
 Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng hairline (`--shadow-*` = none by design).
 
@@ -1318,11 +1330,11 @@ Radius: control/card/dialog 8px, poster 4px. Shadow: không — elevation bằng
 - Xoá block dòng 46-50:
 
 ```tsx
-          {eyebrow && (
-            <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mb-1">
-              {eyebrow}
-            </p>
-          )}
+{
+  eyebrow && (
+    <p className="text-[11px] font-semibold tracking-[0.1em] text-text-secondary mb-1">{eyebrow}</p>
+  );
+}
 ```
 
 - [ ] **Step 3: Verify**
@@ -1383,17 +1395,17 @@ git grep -n "REMOVE_MOVIE_SUCCESS" -- src                  # trống
 
 **1. Spec coverage — map finding → task:**
 
-| Spec | Task | Spec | Task |
-|---|---|---|---|
-| P1-1 login | Task 5 | P2-1 typo | Task 9 (+Task 2 cho site dropdown) |
-| P1-2 contrast | Task 2 | P2-2 animate width | Task 10 |
-| P1-3 lottie | Task 4 | P2-3 scroll guard | Task 10 |
-| P1-4 focus | Task 3 | P2-4 hover | Task 11 |
-| P1-5 overflow | Task 1 | P2-5 confirm→undo | Task 12 |
-| P1-6 nav | Task 6 | P2-6/7/8/9/12 | Task 13 |
-| P1-7 token impro | Task 7 | P2-10 dead class | Task 14 |
-| P1-8 light | Task 1 | P2-11 DESIGN.md + eyebrow | Task 15 |
-| Checkpoint P1/P2 | Task 8 / 16 | Gate 49 (two-line clickable) | checklist Task 8 §3 |
+| Spec             | Task        | Spec                         | Task                               |
+| ---------------- | ----------- | ---------------------------- | ---------------------------------- |
+| P1-1 login       | Task 5      | P2-1 typo                    | Task 9 (+Task 2 cho site dropdown) |
+| P1-2 contrast    | Task 2      | P2-2 animate width           | Task 10                            |
+| P1-3 lottie      | Task 4      | P2-3 scroll guard            | Task 10                            |
+| P1-4 focus       | Task 3      | P2-4 hover                   | Task 11                            |
+| P1-5 overflow    | Task 1      | P2-5 confirm→undo            | Task 12                            |
+| P1-6 nav         | Task 6      | P2-6/7/8/9/12                | Task 13                            |
+| P1-7 token impro | Task 7      | P2-10 dead class             | Task 14                            |
+| P1-8 light       | Task 1      | P2-11 DESIGN.md + eyebrow    | Task 15                            |
+| Checkpoint P1/P2 | Task 8 / 16 | Gate 49 (two-line clickable) | checklist Task 8 §3                |
 
 Không thiếu finding nào của audit (1 critical · 7 major · 12 minor).
 

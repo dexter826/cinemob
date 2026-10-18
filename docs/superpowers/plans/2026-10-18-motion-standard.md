@@ -27,50 +27,55 @@
 ## Task 1: Token CSS — thêm 3 ease + page-enter, xoá 4 animate chết
 
 **Files:**
+
 - Modify: `src/index.css`
 
 **Interfaces:**
+
 - Produces: `--ease-standard`, `--ease-enter`, `--ease-exit` (utility `ease-*`); `--animate-page-enter` + `@keyframes page-enter` (dùng ở Task 4 qua `motion-safe:animate-page-enter`).
 - Giữ nguyên: `--animate-zoom-in-95` (xoá ở Task 7), `--animate-splash-brand`, `--animate-confetti`.
 
 - [ ] **Step 1: Thay khối token animate (dòng 48–54)**
 
 Old:
-```css
-  --animate-slide-in-right: slide-in-right 0.3s ease-out forwards;
-  --animate-slide-down: slide-down 0.3s ease-out forwards;
-  --animate-fade-in: fade-in 0.2s ease-out forwards;
-  --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
-  --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-splash-rule: splash-rule 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
-  --animate-confetti: confetti-burst 1s ease-out forwards;
-```
-New:
-```css
-  /* Motion — spec 2026-10-18: 3 curve + thang 120/150/200/250ms. */
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
 
-  --animate-page-enter: page-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
-  --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-confetti: confetti-burst 1s ease-out forwards;
+```css
+--animate-slide-in-right: slide-in-right 0.3s ease-out forwards;
+--animate-slide-down: slide-down 0.3s ease-out forwards;
+--animate-fade-in: fade-in 0.2s ease-out forwards;
+--animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
+--animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+--animate-splash-rule: splash-rule 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+--animate-confetti: confetti-burst 1s ease-out forwards;
+```
+
+New:
+
+```css
+/* Motion — spec 2026-10-18: 3 curve + thang 120/150/200/250ms. */
+--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+--ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+--ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+
+--animate-page-enter: page-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+--animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
+--animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+--animate-confetti: confetti-burst 1s ease-out forwards;
 ```
 
 - [ ] **Step 2: Thêm keyframes `page-enter` (đặt cạnh các keyframes khác)**
 
 ```css
-  @keyframes page-enter {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 ```
 
 - [ ] **Step 3: Xoá các keyframes chết**
@@ -90,12 +95,14 @@ Suggested commit: `feat(ui): add motion easing tokens and page-enter animation`
 ## Task 2: Constants mới + dialog/sheet variants + toast + presets
 
 **Files:**
+
 - Modify: `src/constants/animations.ts`
 - Modify: `src/shared/components/ui/dialog.tsx`
 - Modify: `src/shared/components/feedback/toast-container.tsx`
 - Modify: `src/shared/utils/motion-presets.ts`
 
 **Interfaces:**
+
 - Consumes: token mới của Task 1 (song song CSS/TS cùng giá trị).
 - Produces:
   - `MOTION_DURATION = { fast: 0.12, base: 0.15, medium: 0.2, slow: 0.25, picker: 3.15, pickerAudioTail: 1.95 }`
@@ -118,7 +125,10 @@ export const MOTION_DURATION = {
   pickerAudioTail: 1.95,
 } as const;
 
-export const MOTION_EASING: Record<'standard' | 'enter' | 'exit', [number, number, number, number]> = {
+export const MOTION_EASING: Record<
+  'standard' | 'enter' | 'exit',
+  [number, number, number, number]
+> = {
   standard: [0.4, 0, 0.2, 1],
   enter: [0.16, 1, 0.3, 1],
   exit: [0.7, 0, 0.84, 0],
@@ -137,47 +147,53 @@ export const getMotionTransition = (
 - [ ] **Step 2: `dialog.tsx` — import + block transitions theo `presentation`**
 
 Đổi import (dòng 5):
+
 ```tsx
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Thêm `type Variants` vào import framer (dòng 3):
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
 ```
+
 Trong thân `Dialog`, sau `const reducedMotion = useReducedMotion() ?? false;` chèn:
+
 ```tsx
-  const isSheet = presentation === 'sheet';
-  const backdropEnter = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
-    MOTION_EASING.enter,
-  );
-  const backdropExit = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
-    MOTION_EASING.exit,
-  );
-  const panelEnter = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
-    MOTION_EASING.enter,
-  );
-  const panelExit = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
-    MOTION_EASING.exit,
-  );
-  const overlayVariants: Variants = {
-    closed: { opacity: 0, transition: backdropExit },
-    open: { opacity: 1, transition: backdropEnter },
-  };
-  const panelVariants: Variants = {
-    closed: isSheet
-      ? { opacity: 0, y: '100%', transition: panelExit }
-      : { opacity: 0, y: 8, transition: panelExit },
-    open: { opacity: 1, y: 0, transition: panelEnter },
-  };
+const isSheet = presentation === 'sheet';
+const backdropEnter = getMotionTransition(
+  reducedMotion,
+  isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+  MOTION_EASING.enter,
+);
+const backdropExit = getMotionTransition(
+  reducedMotion,
+  isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+  MOTION_EASING.exit,
+);
+const panelEnter = getMotionTransition(
+  reducedMotion,
+  isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+  MOTION_EASING.enter,
+);
+const panelExit = getMotionTransition(
+  reducedMotion,
+  isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+  MOTION_EASING.exit,
+);
+const overlayVariants: Variants = {
+  closed: { opacity: 0, transition: backdropExit },
+  open: { opacity: 1, transition: backdropEnter },
+};
+const panelVariants: Variants = {
+  closed: isSheet
+    ? { opacity: 0, y: '100%', transition: panelExit }
+    : { opacity: 0, y: 8, transition: panelExit },
+  open: { opacity: 1, y: 0, transition: panelEnter },
+};
 ```
+
 JSX: `variants={OVERLAY_VARIANTS}` → `variants={overlayVariants}`; `variants={DIALOG_VARIANTS}` → `variants={panelVariants}`; xoá cả hai `transition={getMotionTransition(reducedMotion)}`.
 
 Kết quả: dialog = backdrop/panel 200 vào (ease-enter) / 150 ra (ease-exit); sheet = backdrop 250/200, panel trượt `y: '100%' → 0` 250/200; `fullscreen-mobile` đi nhánh dialog (giữ nguyên hình khối).
@@ -185,14 +201,19 @@ Kết quả: dialog = backdrop/panel 200 vào (ease-enter) / 150 ra (ease-exit);
 - [ ] **Step 3: `toast-container.tsx` — token medium/base + ease mới**
 
 Đổi import (dòng 4):
+
 ```tsx
 import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 ```
+
 Dòng 8:
+
 ```tsx
 const toastTransition = { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter };
 ```
+
 Exit (dòng 52):
+
 ```tsx
                 : { opacity: 0, y: 8, transition: { duration: MOTION_DURATION.base, ease: MOTION_EASING.exit } }
 ```
@@ -200,14 +221,20 @@ Exit (dòng 52):
 - [ ] **Step 4: `motion-presets.ts` — staggerItem dùng token**
 
 Đổi import + dòng 15:
+
 ```ts
 import type { Variants } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 ```
+
 ```ts
 export const staggerItem: Variants = {
   hidden: { opacity: 0, y: 8 },
-  show: { opacity: 1, y: 0, transition: { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter },
+  },
 };
 ```
 
@@ -223,6 +250,7 @@ Suggested commit: `refactor(ui): rebuild motion constants and dialog transitions
 ## Task 3: LazyDialog chạy exit — onExitComplete xuyên chuỗi dialog
 
 **Files:**
+
 - Modify: `src/shared/components/ui/dialog.tsx`
 - Modify: `src/shared/components/ui/lazy-dialog.tsx`
 - Modify: `src/features/movies/components/add-movie-modal.tsx`
@@ -233,6 +261,7 @@ Suggested commit: `refactor(ui): rebuild motion constants and dialog transitions
 - Modify: `src/app/components/navbar.tsx`
 
 **Interfaces:**
+
 - Produces: `Dialog` nhận prop optional `onExitComplete?: () => void` (gắn vào `AnimatePresence`).
 - Produces: consumer lazy nhận prop optional `onExited?: () => void`, truyền tiếp `onExitComplete={onExited}` vào `Dialog` của mình.
 - Giữ nguyên: unmount sau đóng để reset state consumer (add-movie `activeTab`, member search `searchText`…), loader/retry/focus trap.
@@ -386,9 +415,11 @@ Suggested commit: `fix(ui): let lazy dialogs play their exit animation`
 ## Task 4: Route enter bằng CSS
 
 **Files:**
+
 - Modify: `src/app/index.tsx`
 
 **Interfaces:**
+
 - Consumes: `--animate-page-enter` (Task 1).
 - Giữ nguyên: `key={location.pathname}` (remount để replay), scroll-to-top khi PUSH/REPLACE.
 
@@ -396,6 +427,7 @@ Suggested commit: `fix(ui): let lazy dialogs play their exit animation`
 
 Xoá import dòng 9 (`import { motion, useReducedMotion } from 'framer-motion';`) và dòng 40 (`const reducedMotion = useReducedMotion() ?? false;`).
 Đổi JSX (dòng 49–69):
+
 ```tsx
     <motion.div
       key={location.pathname}
@@ -404,10 +436,13 @@ Xoá import dòng 9 (`import { motion, useReducedMotion } from 'framer-motion';`
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
 ```
+
 →
+
 ```tsx
     <div key={location.pathname} className="motion-safe:animate-page-enter">
 ```
+
 và `</motion.div>` → `</div>`.
 
 - [ ] **Step 2: Verify**
@@ -422,30 +457,36 @@ Suggested commit: `refactor(ui): route enter via motion-safe css`
 ## Task 5: Dropdown + MultiSelect panel enter/exit, unify timing
 
 **Files:**
+
 - Modify: `src/shared/components/ui/dropdown.tsx`
 - Modify: `src/shared/components/ui/multi-select-dropdown.tsx`
 
 **Interfaces:**
+
 - Consumes: `MOTION_DURATION.fast`, `MOTION_EASING`, `getMotionTransition` (Task 2).
 - Giữ nguyên: toàn bộ logic keyboard/focus/click-outside (effects theo `isOpen`, không theo mount).
 
 - [ ] **Step 1: `dropdown.tsx` — imports + transitions**
 
 Thêm:
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Sau khối refs (dòng 51), thêm:
+
 ```tsx
-  const reducedMotion = useReducedMotion() ?? false;
-  const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+const reducedMotion = useReducedMotion() ?? false;
+const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 ```
 
 - [ ] **Step 2: `dropdown.tsx` — bọc panel**
 
 `{isOpen && ( <div className="absolute top-full left-0 right-0 mt-2 ..."> ... </div> )}` →
+
 ```tsx
       <AnimatePresence>
         {isOpen && (
@@ -457,6 +498,7 @@ Sau khối refs (dòng 51), thêm:
             className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
           >
 ```
+
 Giữ nguyên 100% children bên trong (ListboxSearchInput + listbox) — chỉ đổi thẻ `div` bao ngoài thành `motion.div` có props trên.
 
 - [ ] **Step 3: `dropdown.tsx` — đưa duration về thang**
@@ -470,6 +512,7 @@ Giữ nguyên 100% children bên trong (ListboxSearchInput + listbox) — chỉ 
 Imports + reducedMotion/panelEnter/panelExit như Step 1 (sau refs dòng 53).
 Panel `{isOpen && (<div className="absolute top-full left-0 right-0 mt-1 ...">` → bọc `AnimatePresence` + `motion.div` (giữ nguyên `mt-1`, cùng props motion như trên).
 Duration:
+
 - Dòng 154: `transition-colors duration-200` → `transition-colors`
 - Dòng 194: `transition-transform duration-200` → `transition-transform`
 - Dòng 261: `transition-colors duration-150` → `transition-colors`
@@ -487,25 +530,30 @@ Suggested commit: `refactor(ui): animate dropdown and multiselect panels`
 ## Task 6: Navbar menu + chevron + nav underline; mobile bottom nav
 
 **Files:**
+
 - Modify: `src/app/components/navbar.tsx`
 - Modify: `src/shared/components/layout/mobile-bottom-nav.tsx`
 
 **Interfaces:**
+
 - Consumes: Task 2 constants.
 - Giữ nguyên: keyboard ARIA menu (`handleMenuKeyDown`, focus mục đầu khi mở, Escape trả focus), route Link.
 
 - [ ] **Step 1: `navbar.tsx` — imports + transitions**
 
 Thêm:
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Trong component (sau khối refs dòng 28–30), thêm:
+
 ```tsx
-  const reducedMotion = useReducedMotion() ?? false;
-  const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+const reducedMotion = useReducedMotion() ?? false;
+const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 ```
 
 - [ ] **Step 2: `navbar.tsx` — chevron rotate có transition**
@@ -515,6 +563,7 @@ Dòng 178: `className={`hidden md:block transition-colors shrink-0 ${isDropdownO
 - [ ] **Step 3: `navbar.tsx` — menu tài khoản enter/exit**
 
 `{isDropdownOpen && ( <div id="account-menu" ...> ... </div> )}` → bọc `AnimatePresence` + `motion.div`:
+
 ```tsx
               <AnimatePresence>
                 {isDropdownOpen && (
@@ -531,39 +580,43 @@ Dòng 178: `className={`hidden md:block transition-colors shrink-0 ${isDropdownO
                     className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
                   >
 ```
+
 Giữ nguyên 100% children bên trong (header tên user + 3 menu item) — chỉ đổi thẻ `div` bao ngoài thành `motion.div` có props trên.
 
 - [ ] **Step 4: `navbar.tsx` — nav underline fade thay vì mount/unmount**
 
 Dòng 110–115, thay:
+
 ```tsx
-                  {active && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
-                    />
-                  )}
+{
+  active && (
+    <span aria-hidden="true" className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary" />
+  );
+}
 ```
+
 →
+
 ```tsx
-                  <span
-                    aria-hidden="true"
-                    className={`absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary transition-opacity ${
-                      active ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  />
+<span
+  aria-hidden="true"
+  className={`absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary transition-opacity ${
+    active ? 'opacity-100' : 'opacity-0'
+  }`}
+/>
 ```
 
 - [ ] **Step 5: `mobile-bottom-nav.tsx` — cùng pattern underline**
 
 Dòng 35–40 thay bằng:
+
 ```tsx
-              <span
-                aria-hidden="true"
-                className={`absolute top-0 inset-x-[22%] h-0.5 bg-primary transition-opacity ${
-                  isActive ? 'opacity-100' : 'opacity-0'
-                }`}
-              />
+<span
+  aria-hidden="true"
+  className={`absolute top-0 inset-x-[22%] h-0.5 bg-primary transition-opacity ${
+    isActive ? 'opacity-100' : 'opacity-0'
+  }`}
+/>
 ```
 
 - [ ] **Step 6: Verify**
@@ -578,6 +631,7 @@ Suggested commit: `refactor(ui): animate navbar menu and unify nav underlines`
 ## Task 7: Suggestions + popover own-profile + date/time picker + xoá zoom-in-95
 
 **Files:**
+
 - Modify: `src/features/search/components/search-filters.tsx`
 - Modify: `src/features/profile/components/own-profile-editor.tsx`
 - Modify: `src/shared/components/ui/date-picker.tsx`
@@ -585,67 +639,81 @@ Suggested commit: `refactor(ui): animate navbar menu and unify nav underlines`
 - Modify: `src/index.css`
 
 **Interfaces:**
+
 - Consumes: Task 2 constants; Dialog từ Task 2/3 (picker mobile leg: Dialog luôn mounted, `open={isOpen}`).
 - Giữ nguyên: toàn bộ keyboard/click-outside/focus của picker (`useDialogPresentation` desktop = AnimatePresence; mobile = Dialog), `popoverRef.focus()`.
 
 - [ ] **Step 1: `search-filters.tsx` — suggestions enter/exit**
 
 Imports thêm:
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Sau `containerRef`/`searchInputRef` (dòng 41–42) thêm reducedMotion + `panelEnter`/`panelExit` (fast, như Task 5).
 Bọc khối suggestions (dòng 100–190): `{showSuggestions && suggestions.length > 0 && (<div id="search-suggestions" ...>` → `AnimatePresence` + `motion.div` cùng id/role/aria/className, thêm initial/animate/exit `y: -4` + transitions như Task 5.
 
 - [ ] **Step 2: `own-profile-editor.tsx` — popover thay `animate-zoom-in-95` bằng framer**
 
 Imports thêm:
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Sau khối state (dòng 65–77) thêm reducedMotion + `menuEnter`/`menuExit` (fast).
 Khối dòng 315–351: `{isEditing && isAvatarMenuOpen && (<div ref={avatarMenuRef} ... animate-zoom-in-95 duration-150>` → `{isEditing && (<AnimatePresence>{isAvatarMenuOpen && (<motion.div ...>` với:
+
 ```tsx
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4, transition: menuExit }}
                     transition={menuEnter}
 ```
+
 và className bỏ `animate-zoom-in-95 duration-150` (giữ nguyên phần còn lại: `absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden`). Đóng `</motion.div>)}</AnimatePresence>)}` tương ứng.
 
 - [ ] **Step 3: `date-picker.tsx` — 2 leg**
 
 Imports thêm:
+
 ```tsx
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 ```
+
 Sau `useDialogPresentation` (dòng 53) thêm reducedMotion + `popoverEnter`/`popoverExit` (fast).
 `renderCalendar` root `div` (dòng 216–232) → `motion.div`, giữ nguyên ref/id/tabIndex/className/role/aria/onClick, thêm:
+
 ```tsx
       initial={useDialogPresentation ? undefined : { opacity: 0, y: -4 }}
       animate={useDialogPresentation ? undefined : { opacity: 1, y: 0 }}
       exit={useDialogPresentation ? undefined : { opacity: 0, y: -4, transition: popoverExit }}
       transition={popoverEnter}
 ```
+
 Khối return (dòng 393–407) thay:
+
 ```tsx
-      {useDialogPresentation ? (
-        <Dialog
-          open={isOpen}
-          onClose={closePicker}
-          titleId={dialogTitleId}
-          presentation="dialog"
-          size="sm"
-          className="bg-transparent shadow-none overflow-visible"
-        >
-          <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
-        </Dialog>
-      ) : (
-        <AnimatePresence>{isOpen && renderCalendar()}</AnimatePresence>
-      )}
+{
+  useDialogPresentation ? (
+    <Dialog
+      open={isOpen}
+      onClose={closePicker}
+      titleId={dialogTitleId}
+      presentation="dialog"
+      size="sm"
+      className="bg-transparent shadow-none overflow-visible"
+    >
+      <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
+    </Dialog>
+  ) : (
+    <AnimatePresence>{isOpen && renderCalendar()}</AnimatePresence>
+  );
+}
 ```
 
 - [ ] **Step 4: `time-picker.tsx` — 2 leg (tương tự, cờ `isMobile`)**
@@ -671,11 +739,13 @@ Suggested commit: `refactor(ui): enter-exit for suggestions, profile popover, an
 ## Task 8: Một API reduced-motion — migrate 3 file
 
 **Files:**
+
 - Modify: `src/shared/components/ui/pagination.tsx`
 - Modify: `src/shared/components/ui/scroll-to-top.tsx`
 - Modify: `src/features/stats/pages/stats-page.tsx`
 
 **Interfaces:**
+
 - Giữ nguyên hành vi: `behavior: 'auto' | 'smooth'` của scroll (pagination, scroll-to-top); các nhánh của stats-page.
 
 - [ ] **Step 1: `pagination.tsx`**
@@ -705,6 +775,7 @@ Suggested commit: `refactor(ui): unify reduced-motion detection on framer hook`
 ## Task 9: Sweep duration ngoài thang + dead code poster-card + album stagger
 
 **Files:**
+
 - Modify: `src/features/movies/components/poster-card.tsx`
 - Modify: `src/features/albums/components/album-card.tsx`
 - Modify: `src/features/movies/components/add-movie/movie-form-fields.tsx`
@@ -755,6 +826,7 @@ Suggested commit: `refactor(ui): align off-scale durations and drop dead motion 
 ## Task 10: DESIGN.md mục 7 + audit cuối
 
 **Files:**
+
 - Modify: `DESIGN.md`
 - Modify (audit only): toàn `src/**`, spec.
 
@@ -782,6 +854,7 @@ Ngắn, đằm, không phô diễn — chỉ transform/opacity, không parallax,
 - [ ] **Step 2: Audit đối chiếu spec §6 + §10**
 
 Chạy chuỗi grep (báo cáo trước/sau):
+
 1. `duration-(75|100|300|500|700|1000)` → 0 hit.
 2. `animate-(slide-in-right|slide-down|fade-in|splash-rule|zoom-in-95)` → 0 hit.
 3. `prefers-reduced-motion` → chỉ còn `src/index.css` (backstop + scrollbar) và `use-movie-validation.ts`.

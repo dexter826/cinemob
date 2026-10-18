@@ -30,12 +30,14 @@
 ### Task 1: Dọn dẹp cấu hình môi trường và tài liệu kiến trúc
 
 **Files:**
+
 - Modify: `src/constants/config.ts:30-31`
 - Modify: `.env:10-11`
 - Modify: `.env.example:12-14`
 - Modify: `README.md:47-63,99`
 
 **Interfaces:**
+
 - Consumes: None
 - Produces: `src/constants/config.ts` không còn export `AI_PROXY_URL`.
 
@@ -61,6 +63,7 @@ Expected: Chỉ có thể báo lỗi ở `ai-service.ts` (nếu có tham chiếu
 ### Task 2: Tạo `trending-store.ts`, xóa bỏ AI services và cập nhật `use-app-init.ts`
 
 **Files:**
+
 - Create: `src/features/movies/stores/trending-store.ts`
 - Delete: `src/features/movies/services/ai-service.ts`
 - Delete: `src/features/movies/services/recommendation-service.ts`
@@ -68,6 +71,7 @@ Expected: Chỉ có thể báo lỗi ở `ai-service.ts` (nếu có tham chiếu
 - Modify: `src/app/use-app-init.ts:6,34,78-85`
 
 **Interfaces:**
+
 - Consumes: `getTrendingMovies` từ `@/features/search/services/tmdb`
 - Produces: `useTrendingStore` cung cấp:
   - `trendingMovies: TMDBMovieResult[]`
@@ -97,9 +101,11 @@ Expected: Lỗi chỉ còn xuất hiện tại các file thuộc feature search 
 ### Task 3: Tinh gọn hook `useSearch` và kết nối `useTrendingStore`
 
 **Files:**
+
 - Modify: `src/features/search/hooks/use-search.ts`
 
 **Interfaces:**
+
 - Consumes: `useTrendingStore` từ `@/features/movies/stores/trending-store`
 - Produces: `useSearch` trả về:
   - `trendingMovies: TMDBMovieResult[]`
@@ -129,10 +135,12 @@ Expected: Lỗi chỉ còn tập trung tại `search-page.tsx` và `search-resul
 ### Task 4: Cập nhật giao diện `SearchResults` và `SearchPage`
 
 **Files:**
+
 - Modify: `src/features/search/components/search-results.tsx`
 - Modify: `src/features/search/pages/search-page.tsx`
 
 **Interfaces:**
+
 - Consumes: `useSearch` (không còn AI props)
 - Produces: Giao diện trang Tìm kiếm sạch sẽ, hiển thị trực tiếp khối "Phim thịnh hành" khi `mode === 'home'`.
 
@@ -160,6 +168,7 @@ Expected: Cả hai lệnh kết thúc với exit code 0, không có lỗi type h
 ### Task 5: Kiểm thử toàn diện và dọn dẹp cuối cùng
 
 **Files:**
+
 - Verify toàn bộ repository
 
 - [ ] **Step 1: Grep toàn bộ codebase để đảm bảo không còn tàn dư AI**
@@ -175,6 +184,7 @@ Expected: Build thành công không có bất kỳ lỗi biên dịch nào.
 - [ ] **Step 3: Kiểm tra giao diện qua browser / dev server**
 
 Truy cập trang `/search` trên server dev (đang chạy ở cổng 3000):
+
 - Kiểm tra trạng thái ban đầu: Tiêu đề "Phim thịnh hành" hiển thị cùng danh sách phim thịnh hành từ TMDB.
 - Kiểm tra nút "Làm mới": bấm vào tải lại danh sách phim thịnh hành mượt mà.
 - Kiểm tra tính năng tìm kiếm bằng từ khóa: nhập từ khóa -> chuyển sang hiển thị kết quả tìm kiếm đúng như cũ.

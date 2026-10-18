@@ -17,6 +17,7 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 ## 2. Goals / Non-goals / Anti-goals
 
 **Goals**
+
 - Toàn bộ màn hình + modal (8 routes, 5 modal, login, 404) mang đúng ngôn ngữ Editorial Print theo MASTER.md.
 - IA mới: chi tiết phim thành trang riêng `/movie/:id`; dashboard phân cấp lại bằng typography (hero số + tabs + lưới poster + dải "tiếp tục xem").
 - Dark mode mặc định + light mode trắng thuần đầy đủ (tokens có sẵn trong MASTER).
@@ -24,6 +25,7 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 - Accessibility giữ mức hiện có hoặc tốt hơn (app đã có skip-link, focus trap, focus-visible, reduced-motion).
 
 **Non-goals (không làm trong đợt này)**
+
 - Không đổi logic, state (Zustand stores), API, Firebase, schema Firestore, service worker push.
 - Không thêm tính năng mới ngoài thay đổi IA đã nêu.
 - Không thêm dependency mới (chỉ thêm font Anton vào Google Fonts link; bỏ Inter nếu không còn dùng).
@@ -31,6 +33,7 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 - Không redesign animation splash (chỉ đổi màu nền container cho khớp tokens).
 
 **Anti-goals (cấm — thất bại nếu xuất hiện)**
+
 - Gradient **trang trí** (radial "khí quyển", blob), spotlight/vignette, glow, text-shadow phát sáng. Ngoại lệ được phép: scrim tối chức năng trên ảnh poster để chữ đọc được, và gradient poster-art trong mockup (placeholder cho ảnh poster TMDB thật).
 - Bóng mềm float trong app UI (modal/dropdown dùng nền đặc + hairline).
 - Bo pill 999px cho mọi thứ; bo góc > 12px; serif-italic + gold trên nền navy.
@@ -46,18 +49,18 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 
 ## 4. Các quyết định đã chốt (theo thứ tự phỏng vấn)
 
-| # | Quyết định | Giá trị |
-|---|-----------|---------|
-| 1 | Độ sâu | Đập lại UX + hình thức toàn bộ; giữ logic/state/API/routing paths (trừ IA mới dưới đây) |
-| 2 | Hướng thiết kế | Editorial Print (Mubi/Criterion) — flat, typography-led, poster-only color |
-| 3 | Nền tảng | Mobile + desktop ngang nhau |
-| 4 | Theme | Dark mặc định (thiết kế kỹ nhất) + light "giấy in" đầy đủ |
-| 5 | Font | Anton (display) + Be Vietnam Pro (body) |
-| 6 | Accent | Vàng mực `#CA8A04` phẳng (thay emerald); light mode dùng `#8F6400` |
-| 7 | Motion | 7/10 thi hành editorial: hero transition (`layoutId`), stagger fade 40–60ms, underline trượt; KHÔNG parallax; không overshoot/back.out |
-| 8 | IA | Chi tiết phim thành trang riêng `/movie/:id` (Back/share được) — đã duyệt qua mockup |
-| 9 | Nav | Giữ 5 mục: Thư viện, Tìm phim, Thống kê, Album, Lịch |
-| 10 | Quy trình | Mockup duyệt trước (đã xong) → design doc → plan → code theo phase |
+| #   | Quyết định     | Giá trị                                                                                                                                |
+| --- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Độ sâu         | Đập lại UX + hình thức toàn bộ; giữ logic/state/API/routing paths (trừ IA mới dưới đây)                                                |
+| 2   | Hướng thiết kế | Editorial Print (Mubi/Criterion) — flat, typography-led, poster-only color                                                             |
+| 3   | Nền tảng       | Mobile + desktop ngang nhau                                                                                                            |
+| 4   | Theme          | Dark mặc định (thiết kế kỹ nhất) + light "giấy in" đầy đủ                                                                              |
+| 5   | Font           | Anton (display) + Be Vietnam Pro (body)                                                                                                |
+| 6   | Accent         | Vàng mực `#CA8A04` phẳng (thay emerald); light mode dùng `#8F6400`                                                                     |
+| 7   | Motion         | 7/10 thi hành editorial: hero transition (`layoutId`), stagger fade 40–60ms, underline trượt; KHÔNG parallax; không overshoot/back.out |
+| 8   | IA             | Chi tiết phim thành trang riêng `/movie/:id` (Back/share được) — đã duyệt qua mockup                                                   |
+| 9   | Nav            | Giữ 5 mục: Thư viện, Tìm phim, Thống kê, Album, Lịch                                                                                   |
+| 10  | Quy trình      | Mockup duyệt trước (đã xong) → design doc → plan → code theo phase                                                                     |
 
 **Palette dark (tóm tắt — đầy đủ trong MASTER.md):** background `#0A0A0A`, foreground `#F5F5F2`, surface `#141414`, muted-fg `#8A8A85`, hairline `rgba(255,255,255,.14)` / mềm `.07`, accent `#CA8A04` (on-accent `#0A0A0A`), destructive `#DC2626`. Light: nền trắng `#FFFFFF`, mực `#141414`, hairline đen, accent `#8F6400`.
 
@@ -65,18 +68,19 @@ CineMOB là PWA quản lý bộ sưu tập phim cá nhân (React 19 + Vite + Tai
 
 **Routes giữ nguyên vị trí, đổi nội dung/bề mặt:**
 
-| Route | Hiện tại | Sau |
-|-------|----------|-----|
-| `/` | Dashboard thư viện (filters + tabs chồng lớp) | Hero thống kê chữ lớn (số phim Anton 72–84px + stats caps) → tabs caps gạch chân vàng (kèm số lượng) → lưới poster → dải "TIẾP TỤC XEM" (progress 2px). Theo đúng mockup "Thư viện · Desktop/Mobile" đã duyệt |
-| `/search` | TMDB search & discovery | Giữ chức năng; bề mặt editorial: kết quả = lưới/danh sách poster cùng component với dashboard |
-| `/stats` | 3 stat cards + recharts | Stat chữ lớn kiểu editorial (số Anton); recharts giữ nhưng flat: grid hairline, series gold/neutral, không gradient fill, tooltip nền đặc |
-| `/albums`, `/albums/:albumId` | Albums + detail | Giữ chức năng; bề mặt editorial; poster grid dùng chung component |
-| `/calendar` | Lịch phát sóng + push | Giữ chức năng; hàng/ngày phân tách hairline, label caps |
-| `/person/:personId` | Chi tiết người | Giữ chức năng; filmography = poster grid dùng chung |
-| `/profile/:uid` | Profile thành viên | Giữ chức năng; inline editing giữ nguyên logic, bề mặt editorial |
-| `*` | Not found | Editorial: "404" Anton lớn + liên kết về Thư viện |
+| Route                         | Hiện tại                                      | Sau                                                                                                                                                                                                           |
+| ----------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                           | Dashboard thư viện (filters + tabs chồng lớp) | Hero thống kê chữ lớn (số phim Anton 72–84px + stats caps) → tabs caps gạch chân vàng (kèm số lượng) → lưới poster → dải "TIẾP TỤC XEM" (progress 2px). Theo đúng mockup "Thư viện · Desktop/Mobile" đã duyệt |
+| `/search`                     | TMDB search & discovery                       | Giữ chức năng; bề mặt editorial: kết quả = lưới/danh sách poster cùng component với dashboard                                                                                                                 |
+| `/stats`                      | 3 stat cards + recharts                       | Stat chữ lớn kiểu editorial (số Anton); recharts giữ nhưng flat: grid hairline, series gold/neutral, không gradient fill, tooltip nền đặc                                                                     |
+| `/albums`, `/albums/:albumId` | Albums + detail                               | Giữ chức năng; bề mặt editorial; poster grid dùng chung component                                                                                                                                             |
+| `/calendar`                   | Lịch phát sóng + push                         | Giữ chức năng; hàng/ngày phân tách hairline, label caps                                                                                                                                                       |
+| `/person/:personId`           | Chi tiết người                                | Giữ chức năng; filmography = poster grid dùng chung                                                                                                                                                           |
+| `/profile/:uid`               | Profile thành viên                            | Giữ chức năng; inline editing giữ nguyên logic, bề mặt editorial                                                                                                                                              |
+| `*`                           | Not found                                     | Editorial: "404" Anton lớn + liên kết về Thư viện                                                                                                                                                             |
 
 **Thay đổi IA duy nhất (đã duyệt):**
+
 - **Mới:** `/movie/:id` — trang chi tiết phim theo mockup "Chi tiết phim · Desktop/Mobile": poster lớn trái (desktop) / giữa (mobile), tiêu đề Anton, meta caps, điểm số Anton vàng, actions (Đánh giá / Thêm vào Album / Yêu thích), overview, cast (thumb vuông hairline), dải "TƯƠNG TỰ". Back button trong app bar; URL share được.
 - **MovieDetailModal:** ngừng sử dụng — mọi điểm mở chi tiết phim điều hướng đến `/movie/:id`. Sau khi thay xong, nếu component không còn tham chiếu thì xóa file.
 - **Các modal khác giữ nguyên chức năng** (AddMovieModal, RandomPickerModal, MemberSearchModal, AlbumSelectorModal), chỉ đổi bề mặt theo tokens: overlay `rgba(0,0,0,.72)`, modal nền đặc `#141414` + hairline + radius 8px.

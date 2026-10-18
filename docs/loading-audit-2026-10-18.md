@@ -22,47 +22,47 @@ Phạm vi: toàn bộ `src`, gồm startup/auth, lazy routes/modals, skeleton tr
 
 Điểm dưới đây là đánh giá trong phạm vi loading, dựa trên source và mẫu DOM đã kiểm tra; không phải chứng nhận WCAG hay benchmark toàn ứng dụng.
 
-| Chiều đánh giá | Điểm /4 | Căn cứ chính |
-|---|---:|---|
-| Accessibility | 2 | Spinner chung có status; nhiều nhánh skeleton không có thông báo tương đương |
-| Performance | 3 | CSS pulse/spin nhẹ, ảnh có lazy loading; còn thay nội dung đang dùng được khi refresh; chưa profile CPU/GPU |
-| Responsive/layout | 2 | Có breakpoint, nhưng skeleton/card khác chiều cao và số cột |
-| Theming | 2 | Có token và dark mode; placeholder còn tự dựng và có chỗ trong suốt |
-| Implementation integrity | 1 | Component chung tồn tại nhưng hợp đồng pending/error/empty và phạm vi khóa UI chưa thống nhất |
-| **Tổng** | **10/20** | **Cần sửa đáng kể trong hệ thống loading** |
+| Chiều đánh giá           |   Điểm /4 | Căn cứ chính                                                                                                |
+| ------------------------ | --------: | ----------------------------------------------------------------------------------------------------------- |
+| Accessibility            |         2 | Spinner chung có status; nhiều nhánh skeleton không có thông báo tương đương                                |
+| Performance              |         3 | CSS pulse/spin nhẹ, ảnh có lazy loading; còn thay nội dung đang dùng được khi refresh; chưa profile CPU/GPU |
+| Responsive/layout        |         2 | Có breakpoint, nhưng skeleton/card khác chiều cao và số cột                                                 |
+| Theming                  |         2 | Có token và dark mode; placeholder còn tự dựng và có chỗ trong suốt                                         |
+| Implementation integrity |         1 | Component chung tồn tại nhưng hợp đồng pending/error/empty và phạm vi khóa UI chưa thống nhất               |
+| **Tổng**                 | **10/20** | **Cần sửa đáng kể trong hệ thống loading**                                                                  |
 
 ## Danh mục vị trí
 
 Các đường dẫn trong báo cáo tính từ thư mục dự án `C:\MyProject\cinemob`. Số dòng là vị trí source tại thời điểm audit.
 
-| Vùng | Nơi triển khai | Loading hiện tại | Đánh giá |
-|---|---|---|---|
-| Primitive | `src/shared/components/ui/skeleton-card.tsx:2` | Poster + metadata rời | Dùng chung tốt, hình học đã cũ |
-| Primitive | `src/shared/components/ui/loading.tsx:40` | Inline/contained/fullscreen spinner | Có status; mặc định fullscreen và side effect toàn cục cần thu hẹp |
-| Button | `src/shared/components/ui/button.tsx:44` | Disable + aria-busy | Hợp lý; caller tự quyết định text/icon nên hình thức chưa đồng nhất |
-| Startup/auth | `src/app/index.tsx:82`, `src/shared/components/feedback/splash-screen.tsx:43` | Splash 1.500 ms, auth pending trả null | Splash không gắn với readiness |
-| Route chunk | `src/app/index.tsx:91` | Spinner trong main | Phạm vi hợp lý; chưa có quy tắc chuyển tiếp sang data skeleton |
-| Modal chunk | `src/app/index.tsx:95`, `src/app/components/navbar.tsx:250` | Suspense fallback null | Click có thể chưa có phản hồi khi tải chunk lần đầu |
-| Dashboard | `src/features/dashboard/pages/dashboard-page.tsx:108` | 12 SkeletonCard | Đúng thứ tự loading/error/empty; hình học primitive sai |
-| Search initial/results | `src/features/search/pages/search-page.tsx:57`, `components/search-results.tsx:54` | 10 SkeletonCard | Có cả flag mount-only và pending thật; có lỗi khi bỏ lọc |
-| Search AI/trending | `src/features/search/components/search-results.tsx:75` | Skeleton theo từng khu vực | Trending giữ nội dung cũ; AI refresh thay nội dung cũ |
-| Autocomplete | `src/features/search/components/search-filters.tsx:62` | Spinner trong input | Đúng phạm vi; thiếu pending announcement |
-| Person | `src/features/search/pages/person-detail-page.tsx:69` | Khối profile + 10 thẻ | Cần làm hình học sát nội dung hơn; lỗi có copy nhưng chưa có retry tại chỗ |
-| Movie detail | `src/features/movies/pages/movie-detail-page.tsx:56` | Một SkeletonCard toàn chiều rộng; extras có text riêng | Initial không giống layout thật; giữ nội dung chính khi tải extras là đúng |
-| Add/edit movie | `src/features/movies/components/add-movie-modal.tsx:137` | Skeleton form tự dựng; spinner khi lưu | Placeholder không có nền; TV refresh chặn cả form |
-| Albums list | `src/features/albums/pages/albums-page.tsx:90` | 5 poster block | Tỉ lệ và grid sát card; thiếu state lỗi subscription |
-| Album detail | `src/features/albums/pages/album-detail-page.tsx:179` | SkeletonCard | Thiếu xử lý lỗi listener, grid sai và thiếu chờ collection phụ thuộc |
-| Album selector | `src/features/albums/components/album-selector-modal.tsx:186` | Spinner local, text xử lý từng album | Hợp lý về phạm vi; cần xử lý lỗi nguồn album |
-| Calendar page | `src/features/calendar/pages/release-calendar-page.tsx:97` | Khối tổng quan + hai panel | Skeleton cục bộ tồn tại nhưng totals không theo pending/error |
-| Calendar grid/list | `src/features/calendar/components/calendar-grid.tsx:195`, `episode-list.tsx:63` | Ô lịch và hàng episode | List phân biệt lỗi/rỗng tốt; grid skeleton cố định 42 ô |
-| Stats | `src/features/stats/pages/stats-page.tsx:114` | Hai khối summary + chart | Có skeleton; thiếu nhánh collection error; đổi năm local không cần loading |
-| Own profile | `src/features/profile/components/own-profile-editor.tsx:373` | Skeleton metadata local | Đúng phạm vi nhưng trong suốt và vẫn cho chỉnh sửa sớm |
-| Profile movies | `src/features/profile/components/movie-list-section.tsx:57` | SkeletonCard | Khác grid thật; chưa nhận state lỗi collection |
-| Public profile | `src/features/profile/pages/member-profile-page.tsx:167` | Fullscreen Loading | Khóa cả shell cho một request profile; lỗi đọc thành not-found |
-| Member search | `src/features/profile/components/user/member-search-modal.tsx:79` | Spinner trong modal | Có error và vùng kết quả live; filtering local không cần loading lại |
-| Random picker | `src/features/movies/components/random-picker-modal.tsx:113` | Spinner local có text | Đúng phạm vi; thiếu retry rõ ràng khi nguồn fallback lỗi |
-| Auth/mutations/upload | `login.tsx:108`, `own-profile-editor.tsx:246,469`, `album-selector-modal.tsx:155`, `release-calendar-page.tsx:80` | Text/icon/disabled/aria-busy tùy caller | Có phản hồi theo thao tác; chưa thành một quy ước thống nhất |
-| Ảnh | `src/features/movies/components/poster-card.tsx:79,98`, `src/features/albums/components/album-card.tsx:64` | Lazy load, vùng ảnh giữ tỉ lệ | Không cần skeleton cho từng ảnh mặc định; chưa có fallback lỗi tải ảnh ở các card này |
+| Vùng                   | Nơi triển khai                                                                                                    | Loading hiện tại                                       | Đánh giá                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| Primitive              | `src/shared/components/ui/skeleton-card.tsx:2`                                                                    | Poster + metadata rời                                  | Dùng chung tốt, hình học đã cũ                                                        |
+| Primitive              | `src/shared/components/ui/loading.tsx:40`                                                                         | Inline/contained/fullscreen spinner                    | Có status; mặc định fullscreen và side effect toàn cục cần thu hẹp                    |
+| Button                 | `src/shared/components/ui/button.tsx:44`                                                                          | Disable + aria-busy                                    | Hợp lý; caller tự quyết định text/icon nên hình thức chưa đồng nhất                   |
+| Startup/auth           | `src/app/index.tsx:82`, `src/shared/components/feedback/splash-screen.tsx:43`                                     | Splash 1.500 ms, auth pending trả null                 | Splash không gắn với readiness                                                        |
+| Route chunk            | `src/app/index.tsx:91`                                                                                            | Spinner trong main                                     | Phạm vi hợp lý; chưa có quy tắc chuyển tiếp sang data skeleton                        |
+| Modal chunk            | `src/app/index.tsx:95`, `src/app/components/navbar.tsx:250`                                                       | Suspense fallback null                                 | Click có thể chưa có phản hồi khi tải chunk lần đầu                                   |
+| Dashboard              | `src/features/dashboard/pages/dashboard-page.tsx:108`                                                             | 12 SkeletonCard                                        | Đúng thứ tự loading/error/empty; hình học primitive sai                               |
+| Search initial/results | `src/features/search/pages/search-page.tsx:57`, `components/search-results.tsx:54`                                | 10 SkeletonCard                                        | Có cả flag mount-only và pending thật; có lỗi khi bỏ lọc                              |
+| Search AI/trending     | `src/features/search/components/search-results.tsx:75`                                                            | Skeleton theo từng khu vực                             | Trending giữ nội dung cũ; AI refresh thay nội dung cũ                                 |
+| Autocomplete           | `src/features/search/components/search-filters.tsx:62`                                                            | Spinner trong input                                    | Đúng phạm vi; thiếu pending announcement                                              |
+| Person                 | `src/features/search/pages/person-detail-page.tsx:69`                                                             | Khối profile + 10 thẻ                                  | Cần làm hình học sát nội dung hơn; lỗi có copy nhưng chưa có retry tại chỗ            |
+| Movie detail           | `src/features/movies/pages/movie-detail-page.tsx:56`                                                              | Một SkeletonCard toàn chiều rộng; extras có text riêng | Initial không giống layout thật; giữ nội dung chính khi tải extras là đúng            |
+| Add/edit movie         | `src/features/movies/components/add-movie-modal.tsx:137`                                                          | Skeleton form tự dựng; spinner khi lưu                 | Placeholder không có nền; TV refresh chặn cả form                                     |
+| Albums list            | `src/features/albums/pages/albums-page.tsx:90`                                                                    | 5 poster block                                         | Tỉ lệ và grid sát card; thiếu state lỗi subscription                                  |
+| Album detail           | `src/features/albums/pages/album-detail-page.tsx:179`                                                             | SkeletonCard                                           | Thiếu xử lý lỗi listener, grid sai và thiếu chờ collection phụ thuộc                  |
+| Album selector         | `src/features/albums/components/album-selector-modal.tsx:186`                                                     | Spinner local, text xử lý từng album                   | Hợp lý về phạm vi; cần xử lý lỗi nguồn album                                          |
+| Calendar page          | `src/features/calendar/pages/release-calendar-page.tsx:97`                                                        | Khối tổng quan + hai panel                             | Skeleton cục bộ tồn tại nhưng totals không theo pending/error                         |
+| Calendar grid/list     | `src/features/calendar/components/calendar-grid.tsx:195`, `episode-list.tsx:63`                                   | Ô lịch và hàng episode                                 | List phân biệt lỗi/rỗng tốt; grid skeleton cố định 42 ô                               |
+| Stats                  | `src/features/stats/pages/stats-page.tsx:114`                                                                     | Hai khối summary + chart                               | Có skeleton; thiếu nhánh collection error; đổi năm local không cần loading            |
+| Own profile            | `src/features/profile/components/own-profile-editor.tsx:373`                                                      | Skeleton metadata local                                | Đúng phạm vi nhưng trong suốt và vẫn cho chỉnh sửa sớm                                |
+| Profile movies         | `src/features/profile/components/movie-list-section.tsx:57`                                                       | SkeletonCard                                           | Khác grid thật; chưa nhận state lỗi collection                                        |
+| Public profile         | `src/features/profile/pages/member-profile-page.tsx:167`                                                          | Fullscreen Loading                                     | Khóa cả shell cho một request profile; lỗi đọc thành not-found                        |
+| Member search          | `src/features/profile/components/user/member-search-modal.tsx:79`                                                 | Spinner trong modal                                    | Có error và vùng kết quả live; filtering local không cần loading lại                  |
+| Random picker          | `src/features/movies/components/random-picker-modal.tsx:113`                                                      | Spinner local có text                                  | Đúng phạm vi; thiếu retry rõ ràng khi nguồn fallback lỗi                              |
+| Auth/mutations/upload  | `login.tsx:108`, `own-profile-editor.tsx:246,469`, `album-selector-modal.tsx:155`, `release-calendar-page.tsx:80` | Text/icon/disabled/aria-busy tùy caller                | Có phản hồi theo thao tác; chưa thành một quy ước thống nhất                          |
+| Ảnh                    | `src/features/movies/components/poster-card.tsx:79,98`, `src/features/albums/components/album-card.tsx:64`        | Lazy load, vùng ảnh giữ tỉ lệ                          | Không cần skeleton cho từng ảnh mặc định; chưa có fallback lỗi tải ảnh ở các card này |
 
 ## Các phát hiện
 
@@ -203,22 +203,22 @@ initialLoading khởi tạo true rồi false ngay trong effect, không gắn req
 
 Đây là đề xuất dựa trên tình huống của CineMOB, chưa được áp dụng. Skeleton có ích khi biết trước cấu trúc nội dung; indicator nên ở đúng vùng thiếu dữ liệu và tránh khóa phần còn lại của trang, phù hợp với [Fluent 2 Skeleton guidance](https://fluent2.microsoft.design/components/web/react/core/skeleton/usage/). Hướng dẫn này không yêu cầu đổi thư viện giao diện.
 
-| Tình huống | Cách hiển thị | Điều kiện kết thúc/phục hồi |
-|---|---|---|
-| Auth/bootstrap chưa biết session | Một loading có text/status; giữ nền có nghĩa | Sẵn sàng hoặc lỗi có hướng phục hồi; animation thương hiệu không làm nguồn readiness |
-| Route chunk chưa đến | Indicator ở main, giữ navigation | Chunk đến hoặc ErrorBoundary; không fullscreen mặc định |
-| Modal chunk chưa đến | Phản hồi mở modal/status ngay | Shell + nội dung; có thể đóng |
-| Lần đầu tải grid/card chưa có data | Skeleton đúng aspect, grid, gap của nội dung thật | Success → cards/empty; error → retry |
-| Detail/profile chưa có data | Skeleton theo bố cục detail/profile | Không cho chỉnh sửa/lưu dữ liệu chưa xác định |
-| Refresh cùng scope đã có data | Giữ nội dung hợp lệ, báo cập nhật cục bộ | Thay data khi thành công; thất bại giữ cũ và nói rõ |
-| Đổi scope user/query/month | Không trình bày data scope cũ như kết quả mới | Pending/error/data gắn đúng key; hủy request không để cờ treo |
-| Autocomplete | Spinner/status trong input | Clear/submit/cancel cũng reset pending |
-| Tạo/lưu/upload | Pending ngay ở nút/vùng thao tác, text rõ, chống submit lặp | finally kết thúc; error giữ input và cho thử lại |
-| Thêm/gỡ từng item | Busy theo item hoặc optimistic update + rollback | Không khóa toàn grid |
-| Chart/totals phụ thuộc request | Placeholder/unknown trong pending/error | Chỉ hiển thị 0 khi request thành công và thực sự bằng 0 |
-| Lọc/sort dữ liệu local | Cập nhật trực tiếp | Không thêm loading mạng giả |
-| Ảnh lazy | Giữ tỉ lệ + nền/fallback khi lỗi | Không thay cả card bằng skeleton chỉ vì ảnh chưa đến |
-| Chờ lâu/AI | Text rõ tác vụ; giữ phần độc lập dùng được; timeout/retry phù hợp | Không tạo phần trăm hoặc tiến độ giả |
+| Tình huống                         | Cách hiển thị                                                     | Điều kiện kết thúc/phục hồi                                                          |
+| ---------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Auth/bootstrap chưa biết session   | Một loading có text/status; giữ nền có nghĩa                      | Sẵn sàng hoặc lỗi có hướng phục hồi; animation thương hiệu không làm nguồn readiness |
+| Route chunk chưa đến               | Indicator ở main, giữ navigation                                  | Chunk đến hoặc ErrorBoundary; không fullscreen mặc định                              |
+| Modal chunk chưa đến               | Phản hồi mở modal/status ngay                                     | Shell + nội dung; có thể đóng                                                        |
+| Lần đầu tải grid/card chưa có data | Skeleton đúng aspect, grid, gap của nội dung thật                 | Success → cards/empty; error → retry                                                 |
+| Detail/profile chưa có data        | Skeleton theo bố cục detail/profile                               | Không cho chỉnh sửa/lưu dữ liệu chưa xác định                                        |
+| Refresh cùng scope đã có data      | Giữ nội dung hợp lệ, báo cập nhật cục bộ                          | Thay data khi thành công; thất bại giữ cũ và nói rõ                                  |
+| Đổi scope user/query/month         | Không trình bày data scope cũ như kết quả mới                     | Pending/error/data gắn đúng key; hủy request không để cờ treo                        |
+| Autocomplete                       | Spinner/status trong input                                        | Clear/submit/cancel cũng reset pending                                               |
+| Tạo/lưu/upload                     | Pending ngay ở nút/vùng thao tác, text rõ, chống submit lặp       | finally kết thúc; error giữ input và cho thử lại                                     |
+| Thêm/gỡ từng item                  | Busy theo item hoặc optimistic update + rollback                  | Không khóa toàn grid                                                                 |
+| Chart/totals phụ thuộc request     | Placeholder/unknown trong pending/error                           | Chỉ hiển thị 0 khi request thành công và thực sự bằng 0                              |
+| Lọc/sort dữ liệu local             | Cập nhật trực tiếp                                                | Không thêm loading mạng giả                                                          |
+| Ảnh lazy                           | Giữ tỉ lệ + nền/fallback khi lỗi                                  | Không thay cả card bằng skeleton chỉ vì ảnh chưa đến                                 |
+| Chờ lâu/AI                         | Text rõ tác vụ; giữ phần độc lập dùng được; timeout/retry phù hợp | Không tạo phần trăm hoặc tiến độ giả                                                 |
 
 Chỉ cần chuẩn hóa primitive hình dạng, status vùng, và một vài composition theo layout đang có. Không cần tạo một loading manager tổng quát hoặc chuyển mọi async state vào một store.
 

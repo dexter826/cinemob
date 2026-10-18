@@ -20,7 +20,7 @@
 ## Review Focus
 
 1. Caps vô nghĩa trên heading/label → trang nào còn, xóa trang đó (task P2 grep `uppercase` từng file).
-2. Dot-join ` · ` trang trí (lặp thông tin đã có chỗ khác) — bài học từ hình 2.
+2. Dot-join `·` trang trí (lặp thông tin đã có chỗ khác) — bài học từ hình 2.
 3. Component kit: mọi call-site input/chip phải đi qua kit, cấm inline custom mới.
 4. Contrast cặp mới sau đổi light (#0A0A0A ink trên #FFFFFF; gold #8F6400 trên trắng).
 5. 8 states cho component kit: default/hover/focus-visible/active/disabled (+loading/error/success nơi có nghĩa).
@@ -30,6 +30,7 @@
 ### Task P0: Code-refactor toàn bộ src/ (7 trục, mode A)
 
 **Files:** đọc toàn bộ `src/app`, `src/shared`, `src/features` (~60 file); không sửa trong task này.
+
 - [ ] Bước 1: Đọc từng file, chấm 7 trục (naming / size / DRY / error / structure / security / testability).
 - [ ] Bước 2: Ghi báo cáo `docs/superpowers/specs/2026-10-17-code-review-report.md` — BLOCKER/MAJOR/MINOR/NIT, mỗi mục `file:dòng` + cách sửa; findings BLOCKER/MAJOR trở thành task riêng bên dưới (P0.1…n).
 - [ ] Bước 3: Chủ dự án duyệt report → mới sửa.
@@ -37,10 +38,12 @@
 ### Task P1: UI kit chuẩn hóa (đặt tên ngắn, 8 states)
 
 **Files:**
+
 - Create: `src/shared/components/ui/search.tsx` (đổi tên từ search-input; props giữ nguyên), `text-field.tsx`, `chip.tsx`, `stat.tsx` (đổi tên từ stats-card), `section-header.tsx`, `index.ts` (barrel).
 - Modify: các file đang inline input/chip/stat → đi qua kit.
 
 **Interfaces (kit cuối):** Button, IconButton, Search, TextField, Dropdown, MultiSelectDropdown, DatePicker, TimePicker, Switch, Chip (variant: status|stamp|neutral), Stat, SectionHeader, PageHeader, PosterCard (features/movies), Dialog, Pagination, EmptyState, ErrorState, SkeletonCard, ScrollToTop, Toast/Alert.
+
 - [ ] Bước 1: Viết `Chip`, `TextField`, `SectionHeader`, `Stat`, đổi tên `search-input.tsx` → `search.tsx` (+ update imports).
 - [ ] Bước 2: Mỗi component docs 8 states ở đầu file; thiếu state nào bổ sung state đó (vd TextField error state).
 - [ ] Bước 3: Thay call-site inline: inputs rời → TextField/Search; chip đếm còn sót → Chip; stat block → Stat.
@@ -50,9 +53,10 @@
 ### Task P2: De-default pass
 
 **Files:** toàn bộ trang + MASTER.md.
+
 - [ ] Bước 1: Light mode `#F4F1EA` → `#FFFFFF`; ink → `#0A0A0A`; border light đậm hơn 1 bậc để hairline còn thấy (#00000026); check contrast cặp mới; cập nhật MASTER.md.
 - [ ] Bước 2: Grep `uppercase` từng file — giữ: tabs, badge status, chip hệ thống, nhãn SectionHeader (1 cấp duy nhất); bỏ caps eyebrow trang trí + caps trên heading lớn (heading Anton giữ uppercase? — quyết: Anton heading BỎ uppercase, dùng capitalization tự nhiên để thoát broadsheet-tell).
-- [ ] Bước 3: Grep ` · ` — xóa join trùng thông tin; giữ meta một-câu-thật.
+- [ ] Bước 3: Grep `·` — xóa join trùng thông tin; giữ meta một-câu-thật.
 - [ ] Bước 4: Verify build + so sánh từng trang với danh sách default-tells (frontend-design §calibration).
 
 ### Task P3: Chất điện ảnh riêng từng trang (one boldness per page)

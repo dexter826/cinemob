@@ -14,6 +14,7 @@
 ## Critical
 
 ### 1. Login — centred-everything (gate 6, auto-fail)
+
 **Where:** `src/features/auth/components/login.tsx:96-110`
 **Tell:** Eyebrow/brand + h1 + lede + CTA xếp cùng một trục giữa. Gate 6 auto-fail; genre editorial cũng chỉ cho centred-narrow khi eyebrow **hoặc** CTA lệch trục — ở đây cả hai đều giữa. Audit verb: template shape → critical structural.
 **Fix:** kéo eyebrow hoặc CTA lệch trục (trái/flush phải), giữ tối đa 2 phần tử centred.
@@ -23,36 +24,43 @@
 ## Major
 
 ### 2. Tương phản chữ phụ dưới ngưỡng (gate 40, universal)
+
 **Where:** `date-picker.tsx:300` (`/60` ≈2.9:1), `dropdown.tsx:172` (`/60`), `dropdown.tsx:200` (`/50`), `multi-select-dropdown.tsx:161` (`/50`), `dashboard-filters.tsx:338` (`/40` ≈2.2:1)
 **Tell:** Body text <24px cần 4.5:1 — các alpha này rớt ngưỡng trên nền #0a0a0a/#141414.
 **Fix:** chữ phụ dùng màu đặc đạt ≥4.5:1, bỏ alpha cho text nhỏ.
 
 ### 3. Lottie shortcut (anti-pattern Major + gate 31)
+
 **Where:** `public/data/splashscreen.json` **1.111.722 B**, `public/data/confetti.json` **1.214.806 B**; `splash-screen.tsx`, `random-picker-modal.tsx`
 **Tell:** Lottie là "last resort, not the default"; 50–500KB đã là tax, đây gấp đôi–ba lần ngưỡng trên, splash tải mỗi lần mở app.
 **Fix:** splash bằng CSS/SVG (fallback tĩnh đã có sẵn), confetti bằng CSS; nếu giữ thì nén <150KB và lazy-load.
 
 ### 4. Focus ring dựng bằng border + fade-in (gates 39 + 15, universal)
+
 **Where:** `text-field.tsx:52`, `search.tsx:50`, `multi-select-dropdown.tsx:162/203/227`, `pagination.tsx:119`, `time-picker.tsx:259`, `dropdown.tsx:157/200`, `date-picker.tsx:368`, `add-movie-modal.tsx:223/251/273/361`, `movie-form-fields.tsx:185/249`, `album-selector-modal.tsx:153`, `album-section.tsx:81`, `search-filters.tsx:97`, `own-profile-editor.tsx:413/433`, `member-search-modal.tsx:65`, `avatar-crop-modal.tsx:88/133`, `album-detail-page.tsx:134`
 **Tell:** Focus = đổi `border`/`ring` thay vì `outline: 2px solid var(--color-focus)` (gate 39), và các indicator này `transition-colors` → fade-in khi focus (gate 15). Ring 1px vàng /20–/50 quá nhạt cho 3:1.
 **Fix:** một class focus thống nhất — `outline: 2px solid <token>; outline-offset: 1px`, không transition property này.
 
 ### 5. Tràn ngang: thiếu `overflow-x: clip` + panel 320px (gate 34, hard requirement)
+
 **Where:** root `index.css` (không có `overflow-x: clip` trên html/body); `dashboard-filters.tsx:142` (`min-w-[320px]` > 288px vùng chứa tại 320 → tràn ~16px)
 **Tell:** Gate 34 là hard requirement trên mọi trang, không chờ quan sát mới fix; panel là vi phạm cụ thể.
 **Fix:** thêm `overflow-x: clip` cả html + body; panel `max-w-[calc(100vw-2rem)]`.
 
 ### 6. Nav fingerprint (gate 42)
+
 **Where:** `src/app/components/navbar.tsx`
 **Tell:** Wordmark trái + inline text links + icon phải + full viewport + sticky + hairline border-b — đúng AI nav fingerprint (chỉ khác nền tối). N1a không được justify (không phải 2 destinations, routing table không cho).
 **Fix:** luân chuyển sang pattern N khác (editorial → masthead kiểu N6), hoặc nêu rationale 1 dòng nếu chấp nhận có chủ đích.
 
 ### 7. Token improvisation (gate 48)
+
 **Where:** `theme-provider.tsx:44` (meta `#09090b`/`#fafafa` — lệch cả token lẫn `index.html`), `stats-page.tsx:28-35` (palette chart 8 hex hardcode), `login.tsx:94` (radial `rgba(10,10,10,…)` + `saturate(0.85)` inline)
 **Tell:** Mọi màu/font phải qua token; hex/rgba ngoài token block = freestyle.
 **Fix:** meta theme-color derive từ token; chart palette = `var(--color-*)`; vignette (nếu giữ) thành token.
 
 ### 8. Pure white — nền light `#ffffff` (gate 7 + anti-pattern "Pure black, pure white")
+
 **Where:** `src/index.css:12`
 **Tell:** `#ffffff` làm surface/base. Không genre override (không phải modern-minimal có khai báo). Light chỉ là theme phụ → major; nếu light là first-class thì critical.
 **Fix:** về giấy ấm/off-white (#fafafa–#FAF9F5).

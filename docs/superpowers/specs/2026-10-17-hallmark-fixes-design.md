@@ -22,49 +22,49 @@ Nguyên tắc:
 
 ## 2. Quyết định đã chốt (phỏng vấn 2 vòng)
 
-| # | Quyết định | Giá trị |
-|---|---|---|
-| 1 | Phạm vi | 1 spec, 2 pha P1 → P2, P1 ship trước |
-| 2 | Veto | Không veto — fix hết 20 finding |
-| 3 | Login | Chia đôi kiểu bìa tạp chí: tường poster bên trái, cột form bên phải trên nền giấy; mobile: form trên, dải poster dưới |
-| 4 | Lottie | Dựng lại splash bằng SVG/CSS + confetti bằng CSS; xoá `lottie-react` + 2 file JSON (2.3MB) |
-| 5 | Focus | Rule `:focus-visible` global sẵn có (`index.css:140`); gỡ toàn bộ `focus-visible:outline-none`; outline 2px vàng hiện tức thì, border/ring vàng chỉ là lớp phụ |
-| 6 | Contrast | Thêm 2 token đặc: `--color-text-muted` (≥4.5:1) và `--color-text-faint` (≥3:1, chỉ decorative/large); sweep mọi alpha `/40–/60` trên text |
-| 7 | Hover | Scale ảnh (1.03) là tín hiệu hover **duy nhất**; vòng vàng chuyển hẳn về `focus-visible` |
-| 8 | Confirm/Undo | Bỏ confirm ở 3 chỗ đảo ngược được (bỏ khỏi album, reset avatar, xoá phim) → dùng undo-toast sẵn có; **giữ confirm** cho xoá album |
-| 9 | Verification | Mỗi pha: `npm run typecheck` + `npm run lint` + `npm run build` xanh + checklist click-through chủ dự án (dark/light, 320px, tab, reduced-motion) |
-| 10 | Git | Branch mới `fix/hallmark-audit` (đã tạo); commit audit doc + spec trước, fix chia commit theo nhóm |
-| 11 | Nav | Masthead strip: wordmark + tagline + mục lục đánh số (01–05) dồn **cụm trái**; icons phải; bỏ hairline full-bleed → rule đôi kiểu báo trong container; giữ sticky. Mobile bottom nav không đụng |
-| 12 | Light theme | Giấy ấm 3 tầng, bảng hex dưới §3 để duyệt trong spec; không còn `#ffffff` ở đâu |
-| 13 | DESIGN.md | Viết lại thật, ~1 trang (token + luật + giọng); thay MASTER.md làm nguồn tham chiếu |
-| 14 | Code chết | Sweep xoá class chết khỏi JSX; giữ token `--shadow-*` zeroed (ghi chú "no shadows by design") |
+| #   | Quyết định   | Giá trị                                                                                                                                                                                         |
+| --- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Phạm vi      | 1 spec, 2 pha P1 → P2, P1 ship trước                                                                                                                                                            |
+| 2   | Veto         | Không veto — fix hết 20 finding                                                                                                                                                                 |
+| 3   | Login        | Chia đôi kiểu bìa tạp chí: tường poster bên trái, cột form bên phải trên nền giấy; mobile: form trên, dải poster dưới                                                                           |
+| 4   | Lottie       | Dựng lại splash bằng SVG/CSS + confetti bằng CSS; xoá `lottie-react` + 2 file JSON (2.3MB)                                                                                                      |
+| 5   | Focus        | Rule `:focus-visible` global sẵn có (`index.css:140`); gỡ toàn bộ `focus-visible:outline-none`; outline 2px vàng hiện tức thì, border/ring vàng chỉ là lớp phụ                                  |
+| 6   | Contrast     | Thêm 2 token đặc: `--color-text-muted` (≥4.5:1) và `--color-text-faint` (≥3:1, chỉ decorative/large); sweep mọi alpha `/40–/60` trên text                                                       |
+| 7   | Hover        | Scale ảnh (1.03) là tín hiệu hover **duy nhất**; vòng vàng chuyển hẳn về `focus-visible`                                                                                                        |
+| 8   | Confirm/Undo | Bỏ confirm ở 3 chỗ đảo ngược được (bỏ khỏi album, reset avatar, xoá phim) → dùng undo-toast sẵn có; **giữ confirm** cho xoá album                                                               |
+| 9   | Verification | Mỗi pha: `npm run typecheck` + `npm run lint` + `npm run build` xanh + checklist click-through chủ dự án (dark/light, 320px, tab, reduced-motion)                                               |
+| 10  | Git          | Branch mới `fix/hallmark-audit` (đã tạo); commit audit doc + spec trước, fix chia commit theo nhóm                                                                                              |
+| 11  | Nav          | Masthead strip: wordmark + tagline + mục lục đánh số (01–05) dồn **cụm trái**; icons phải; bỏ hairline full-bleed → rule đôi kiểu báo trong container; giữ sticky. Mobile bottom nav không đụng |
+| 12  | Light theme  | Giấy ấm 3 tầng, bảng hex dưới §3 để duyệt trong spec; không còn `#ffffff` ở đâu                                                                                                                 |
+| 13  | DESIGN.md    | Viết lại thật, ~1 trang (token + luật + giọng); thay MASTER.md làm nguồn tham chiếu                                                                                                             |
+| 14  | Code chết    | Sweep xoá class chết khỏi JSX; giữ token `--shadow-*` zeroed (ghi chú "no shadows by design")                                                                                                   |
 
 ## 3. Bảng token màu (duyệt kèm spec)
 
 ### Dark (giữ base, thêm 2 token chữ phụ)
 
-| Token | Cũ | Mới | Ghi chú contrast (computed) |
-|---|---|---|---|
-| `--color-background` | `#0a0a0a` | giữ | |
-| `--color-surface` | `#141414` | giữ | |
-| `--color-surface-elevated` | `#1a1a1a` | giữ | |
-| `--color-text-secondary` | `#8a8a85` | giữ | 5.7:1 trên bg, 5.0:1 trên elevated |
-| `--color-text-muted` **(mới)** | — | `#9c9c97` | 6.3:1 trên elevated — dùng cho placeholder, weekday, hint text |
-| `--color-text-faint` **(mới)** | — | `#6e6e69` | 3.4:1 trên elevated — **chỉ** decorative/large (số mờ, rule phụ) |
-| `--color-border` | `rgb(255 255 255 / .14)` | giữ | |
-| `--color-focus` | `#ca8a04` | giữ | 6.7:1 trên bg — đạt ngưỡng ring ≥3:1 |
+| Token                          | Cũ                       | Mới       | Ghi chú contrast (computed)                                      |
+| ------------------------------ | ------------------------ | --------- | ---------------------------------------------------------------- |
+| `--color-background`           | `#0a0a0a`                | giữ       |                                                                  |
+| `--color-surface`              | `#141414`                | giữ       |                                                                  |
+| `--color-surface-elevated`     | `#1a1a1a`                | giữ       |                                                                  |
+| `--color-text-secondary`       | `#8a8a85`                | giữ       | 5.7:1 trên bg, 5.0:1 trên elevated                               |
+| `--color-text-muted` **(mới)** | —                        | `#9c9c97` | 6.3:1 trên elevated — dùng cho placeholder, weekday, hint text   |
+| `--color-text-faint` **(mới)** | —                        | `#6e6e69` | 3.4:1 trên elevated — **chỉ** decorative/large (số mờ, rule phụ) |
+| `--color-border`               | `rgb(255 255 255 / .14)` | giữ       |                                                                  |
+| `--color-focus`                | `#ca8a04`                | giữ       | 6.7:1 trên bg — đạt ngưỡng ring ≥3:1                             |
 
 ### Light (giấy ấm 3 tầng — đảo quyết định "trắng thuần" cũ vì gate 7)
 
-| Token | Cũ | Mới | Ghi chú |
-|---|---|---|---|
-| `--color-background` | `#ffffff` | `#f7f4ed` | giấy ngà, bão hoà thấp (không rơi vào AI-cream beige) |
-| `--color-surface` | `#ffffff` | `#fdfbf6` | |
-| `--color-surface-elevated` | `#ffffff` | `#fffefa` | vẫn phân tầng bằng lightness như dark |
-| `--color-text-secondary` | `#6b6b66` | giữ | 5.3:1 trên surface |
-| `--color-text-muted` **(mới)** | — | `#5f5b53` | 6.6:1 trên surface |
-| `--color-text-faint` **(mới)** | — | `#8a857c` | 3.6:1 trên surface |
-| `--color-border` | `rgb(20 20 20 / .16)` | giữ | |
+| Token                          | Cũ                    | Mới       | Ghi chú                                               |
+| ------------------------------ | --------------------- | --------- | ----------------------------------------------------- |
+| `--color-background`           | `#ffffff`             | `#f7f4ed` | giấy ngà, bão hoà thấp (không rơi vào AI-cream beige) |
+| `--color-surface`              | `#ffffff`             | `#fdfbf6` |                                                       |
+| `--color-surface-elevated`     | `#ffffff`             | `#fffefa` | vẫn phân tầng bằng lightness như dark                 |
+| `--color-text-secondary`       | `#6b6b66`             | giữ       | 5.3:1 trên surface                                    |
+| `--color-text-muted` **(mới)** | —                     | `#5f5b53` | 6.6:1 trên surface                                    |
+| `--color-text-faint` **(mới)** | —                     | `#8a857c` | 3.6:1 trên surface                                    |
+| `--color-border`               | `rgb(20 20 20 / .16)` | giữ       |                                                       |
 
 Màu accent/status giữ nguyên (đã đạt contrast; `on-primary`/`on-danger` đều ≥5:1).
 
@@ -105,20 +105,20 @@ Cụm trái: wordmark `CineMOB` + tagline nhỏ (gợi ý "Phòng chiếu gia đ
 
 ## 5. P2 — Chi tiết & acceptance
 
-| # | Finding | Fix | Acceptance |
-|---|---|---|---|
-| P2-1 | Placeholder typo ×5 | `placeholder-text-secondary` → `placeholder:text-text-secondary` (dùng muted token) | grep = 0 |
-| P2-2 | Animate width (gate 14) | toast progress + TV progress (`movie-detail-page:213`) → `transform: scaleX` | grep `transition-\[width\]` = 0 |
-| P2-3 | Smooth scroll no reduced-motion (gate 27) | `use-movie-validation.ts:77` guard `matchMedia` | code review |
-| P2-4 | Hover 2 tín hiệu (gate 13) | poster-card + album-card: ring chỉ còn `group-focus-within`; hover = scale 1.03 ảnh | hover không đổi viền; keyboard vẫn có ring |
-| P2-5 | Confirm thừa (micro tell) | album-detail "Bỏ khỏi album" + avatar reset + movie delete → undo-toast; giữ confirm xoá album; xoá `confirmDelete` thừa ở movie-detail | 3 chỗ mất confirm, xoá album vẫn confirm |
-| P2-6 | `×` glyph | `album-selector-modal:125` → `<X size={18} strokeWidth={1.5}/>` | icon đồng nhất |
-| P2-7 | a>button | `not-found-page:15-17` → Link nhận class button (hoặc Button `asChild`) | không còn `<Link><Button>` |
-| P2-8 | Tap target 22px | nút xoá `dashboard-filters:94-101` → min 32px | đo devtools |
-| P2-9 | viewport-fit | `index.html` viewport thêm `viewport-fit=cover` | env() hoạt động iOS |
-| P2-10 | Class chết | Sweep: `animate-in fade-in zoom-in-95` (own-profile-editor:308) → `animate-zoom-in-95` (có sẵn trong theme); xoá mọi `shadow-card/elevated/premium/glass` no-op khỏi JSX; giữ token zeroed | grep `animate-in\|shadow-elevated\|shadow-premium` = 0 trong src |
-| P2-11 | DESIGN.md + eyebrow | Viết `DESIGN.md` thật ~1 trang (bảng token 2 theme + luật cấm chính + giọng copy); xoá prop `eyebrow` chết ở `page-header.tsx` | file mới tồn tại, prop gỡ sạch |
-| P2-12 | Copy | footer "© 2026 MOB" → "© 2026 CineMOB" | grep |
+| #     | Finding                                   | Fix                                                                                                                                                                                        | Acceptance                                                       |
+| ----- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| P2-1  | Placeholder typo ×5                       | `placeholder-text-secondary` → `placeholder:text-text-secondary` (dùng muted token)                                                                                                        | grep = 0                                                         |
+| P2-2  | Animate width (gate 14)                   | toast progress + TV progress (`movie-detail-page:213`) → `transform: scaleX`                                                                                                               | grep `transition-\[width\]` = 0                                  |
+| P2-3  | Smooth scroll no reduced-motion (gate 27) | `use-movie-validation.ts:77` guard `matchMedia`                                                                                                                                            | code review                                                      |
+| P2-4  | Hover 2 tín hiệu (gate 13)                | poster-card + album-card: ring chỉ còn `group-focus-within`; hover = scale 1.03 ảnh                                                                                                        | hover không đổi viền; keyboard vẫn có ring                       |
+| P2-5  | Confirm thừa (micro tell)                 | album-detail "Bỏ khỏi album" + avatar reset + movie delete → undo-toast; giữ confirm xoá album; xoá `confirmDelete` thừa ở movie-detail                                                    | 3 chỗ mất confirm, xoá album vẫn confirm                         |
+| P2-6  | `×` glyph                                 | `album-selector-modal:125` → `<X size={18} strokeWidth={1.5}/>`                                                                                                                            | icon đồng nhất                                                   |
+| P2-7  | a>button                                  | `not-found-page:15-17` → Link nhận class button (hoặc Button `asChild`)                                                                                                                    | không còn `<Link><Button>`                                       |
+| P2-8  | Tap target 22px                           | nút xoá `dashboard-filters:94-101` → min 32px                                                                                                                                              | đo devtools                                                      |
+| P2-9  | viewport-fit                              | `index.html` viewport thêm `viewport-fit=cover`                                                                                                                                            | env() hoạt động iOS                                              |
+| P2-10 | Class chết                                | Sweep: `animate-in fade-in zoom-in-95` (own-profile-editor:308) → `animate-zoom-in-95` (có sẵn trong theme); xoá mọi `shadow-card/elevated/premium/glass` no-op khỏi JSX; giữ token zeroed | grep `animate-in\|shadow-elevated\|shadow-premium` = 0 trong src |
+| P2-11 | DESIGN.md + eyebrow                       | Viết `DESIGN.md` thật ~1 trang (bảng token 2 theme + luật cấm chính + giọng copy); xoá prop `eyebrow` chết ở `page-header.tsx`                                                             | file mới tồn tại, prop gỡ sạch                                   |
+| P2-12 | Copy                                      | footer "© 2026 MOB" → "© 2026 CineMOB"                                                                                                                                                     | grep                                                             |
 
 ## 6. Ngoài phạm vi
 

@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- **KHÔNG `git commit`** — quy ước dự án của chủ dự án: chỉ `git add` (staging) nếu cần; commit chỉ khi được yêu cầu rõ ràng. *(Các step "Commit" của quy trình được thay bằng "Stage + Verify".)*
+- **KHÔNG `git commit`** — quy ước dự án của chủ dự án: chỉ `git add` (staging) nếu cần; commit chỉ khi được yêu cầu rõ ràng. _(Các step "Commit" của quy trình được thay bằng "Stage + Verify".)_
 - **KHÔNG thêm dependency/package mới** (chỉ thay Google Fonts link). Repo không có unit-test runner → kiểm chứng bằng `npm run typecheck`, `npm run build`, `npm run lint`, grep, và kiểm thử tay có mốc rõ ràng.
 - File **kebab-case**, comment **tiếng Việt**, UI text tiếng Việt.
 - Màu chỉ lấy từ tokens trong `src/index.css`; cấm hex mới trong components (ngoại lệ duy nhất: scrim đen chức năng `rgba(0,0,0,…)` trên ảnh poster).
@@ -35,11 +35,13 @@
 ### Task 1: Tokens + fonts + manifest
 
 **Files:**
+
 - Modify: `src/index.css`
 - Modify: `index.html`
 - Modify: `public/manifest.json`
 
 **Interfaces:**
+
 - Consumes: cấu trúc `@theme` hiện có (giữ nguyên tên biến vai trò).
 - Produces: token values mới mà mọi task sau dựa vào — `--font-sans: 'Be Vietnam Pro'`, `--font-display: 'Anton'`, `--color-primary: #CA8A04` (dark)/`#8F6400` (light), `--radius-poster: 4px`, shadow tokens = none.
 
@@ -52,17 +54,17 @@
 --font-display: 'Anton', sans-serif;
 
 /* Light = giấy in */
---color-background: #F4F1EA;
---color-surface: #FFFFFF;
---color-surface-elevated: #FFFFFF;
---color-primary: #8F6400;
---color-primary-hover: #7A5600;
---color-on-primary: #FFFFFF;
---color-secondary: #6B6B66;
+--color-background: #f4f1ea;
+--color-surface: #ffffff;
+--color-surface-elevated: #ffffff;
+--color-primary: #8f6400;
+--color-primary-hover: #7a5600;
+--color-on-primary: #ffffff;
+--color-secondary: #6b6b66;
 --color-text-primary: #141414;
---color-text-secondary: #6B6B66;
+--color-text-secondary: #6b6b66;
 --color-border: rgb(20 20 20 / 0.16);
---color-focus: #8F6400;
+--color-focus: #8f6400;
 --color-border-default: rgb(20 20 20 / 0.07);
 /* success/warning/danger/info giữ giá trị hiện có */
 
@@ -82,17 +84,17 @@ Khối `.dark` ghi đè:
 
 ```css
 .dark {
-  --color-background: #0A0A0A;
+  --color-background: #0a0a0a;
   --color-surface: #141414;
-  --color-surface-elevated: #1A1A1A;
-  --color-primary: #CA8A04;
-  --color-primary-hover: #DFA60B;
-  --color-on-primary: #0A0A0A;
-  --color-secondary: #8A8A85;
-  --color-text-primary: #F5F5F2;
-  --color-text-secondary: #8A8A85;
+  --color-surface-elevated: #1a1a1a;
+  --color-primary: #ca8a04;
+  --color-primary-hover: #dfa60b;
+  --color-on-primary: #0a0a0a;
+  --color-secondary: #8a8a85;
+  --color-text-primary: #f5f5f2;
+  --color-text-secondary: #8a8a85;
   --color-border: rgb(255 255 255 / 0.14);
-  --color-focus: #CA8A04;
+  --color-focus: #ca8a04;
   --color-border-default: rgb(255 255 255 / 0.07);
 }
 ```
@@ -104,6 +106,7 @@ Khối `.dark` ghi đè:
 ### Task 2: App shell — app bar, bottom nav, layout, footer, splash
 
 **Files:**
+
 - Modify: `src/app/components/navbar.tsx`
 - Modify: `src/app/components/layout.tsx`
 - Modify: `src/shared/components/layout/mobile-bottom-nav.tsx`
@@ -111,6 +114,7 @@ Khối `.dark` ghi đè:
 - Modify: `src/shared/components/feedback/splash-screen.tsx` (chỉ màu container)
 
 **Interfaces:**
+
 - Consumes: tokens Task 1 (`font-display`, `--color-primary`, `--radius-control`), `useLocation` (react-router) cho active state.
 - Produces: app bar flat + bottom nav flat mà mọi route dùng; hằng active-map `NAV_PARENT_BY_PATTERN` (xuất từ `navbar.tsx`, mobile nav import lại dùng chung): `/person/*` và `/search*` → 'search'; `/albums*` → 'albums'; còn lại khớp path tuyệt đối.
 
@@ -124,10 +128,12 @@ Khối `.dark` ghi đè:
 ### Task 3: UI kit + feedback restyle
 
 **Files:**
+
 - Modify: toàn bộ `src/shared/components/ui/` — `button.tsx`, `icon-button.tsx`, `dialog.tsx`, `dropdown.tsx`, `multi-select-dropdown.tsx`, `date-picker.tsx`, `time-picker.tsx`, `switch.tsx`, `pagination.tsx`, `page-header.tsx`, `empty-state.tsx`, `error-state.tsx`, `loading.tsx`, `skeleton-card.tsx`, `scroll-to-top.tsx`
 - Modify: `src/shared/components/feedback/` — `toast-container.tsx`, `alert-container.tsx`, `error-boundary.tsx`
 
 **Interfaces:**
+
 - Consumes: tokens Task 1.
 - Produces: **API component giữ nguyên 100%** (props/variant names như cũ — không sửa call-site nào); `page-header` mới render `<h1 class="font-display uppercase …">` + label caps; dialog nền đặc `bg-surface-elevated border border-border rounded-dialog` + overlay `bg-black/72` (bỏ mọi `backdrop-blur`).
 
@@ -141,23 +147,25 @@ Khối `.dark` ghi đè:
 ### Task 4: PosterCard + motion presets
 
 **Files:**
+
 - Create: `src/features/movies/components/poster-card.tsx`
 - Create: `src/shared/utils/motion-presets.ts`
 - Modify: `src/features/movies/components/movie-card.tsx` (đổi内部 dùng PosterCard hoặc xóa nếu PosterCard thay thế hoàn toàn — quyết định theo mức tham chiếu, grep `movie-card`)
 
 **Interfaces:**
+
 - Consumes: `useNavigate` (react-router), tokens Task 1, `useReducedMotion` (framer-motion).
 - Produces (Task 5/7/8/9 tiêu thụ — dùng đúng chữ ký này):
 
 ```tsx
 interface PosterCardProps {
-  id: number | string;              // TMDB id (Movie.id)
+  id: number | string; // TMDB id (Movie.id)
   title: string;
   posterPath: string | null;
   mediaType?: 'movie' | 'tv';
-  rating?: number;                  // điểm người dùng; fallback TMDB vote_average
-  meta?: string;                    //vd "Tâm lý · 2025" — caps 9px dưới title
-  progress?: { current: number; total: number } | null;  // TV: vẽ thanh 2px dưới title
+  rating?: number; // điểm người dùng; fallback TMDB vote_average
+  meta?: string; //vd "Tâm lý · 2025" — caps 9px dưới title
+  progress?: { current: number; total: number } | null; // TV: vẽ thanh 2px dưới title
   className?: string;
 }
 // Hành vi: click → navigate(`/movie/${id}${mediaType === 'tv' ? '?type=tv' : ''}`)
@@ -186,12 +194,14 @@ export const staggerItem = {
 ### Task 5: Dashboard `/` — hero + tabs + grid + "Tiếp tục xem"
 
 **Files:**
+
 - Modify: `src/features/dashboard/pages/dashboard-page.tsx`
 - Modify: `src/features/dashboard/components/` — `dashboard-tabs.tsx`, `dashboard-filters.tsx`, `dashboard-actions.tsx` (tổ chức lại; xóa file thừa nếu component gộp)
 - Modify: `src/features/dashboard/hooks/use-dashboard.ts` (bỏ openDetailModal — xem Task 6 nếu chồng)
 - Create: `src/shared/hooks/use-scroll-restore.ts`
 
 **Interfaces:**
+
 - Consumes: PosterCard (Task 4), motion presets (Task 4), tokens, `useMovieStore`/`useDashboard` hiện có (không đổi logic dữ liệu).
 - Produces: `use-scroll-restore(key: string)` — lưu `scrollY` vào `sessionStorage` (`scroll:<key>`) throttle 200ms khi scroll, restore sau mount khi document sẵn sàng; Dashboard dùng `use-scroll-restore('dashboard')`.
 
@@ -205,6 +215,7 @@ export const staggerItem = {
 ### Task 6: `/movie/:id` + chuyển call-site + HỦY MovieDetailModal
 
 **Files:**
+
 - Create: `src/features/movies/pages/movie-detail-page.tsx`
 - Create: `src/features/movies/hooks/use-movie-detail.ts` (nếu modal có logic fetch inline — tách ra để page dùng)
 - Modify: `src/app/index.tsx` (thêm route lazy + xóa mount MovieDetailModal + import)
@@ -212,6 +223,7 @@ export const staggerItem = {
 - Delete: `src/features/movies/components/movie-detail-modal.tsx`, `src/features/movies/stores/movie-detail-store.ts`
 
 **Interfaces:**
+
 - Consumes: PosterCard, `use-scroll-restore`, `movie-service`/TMDB services hiện có (đọc `movie-detail-modal.tsx` trước khi xóa để tái sử dụng đúng service/hàm — các section đánh giá/album/progress di chuyển thành component con trong `src/features/movies/components/movie-detail/`, giữ logic).
 - Produces: route `/movie/:id` (`:id` = TMDB id; `?type=tv` cho TV). Page resolve: entry bộ sưu tập từ `useMovieStore` theo id (nếu `source: 'manual'` → chỉ dùng dữ liệu bộ sưu tập, không fetch TMDB); TMDB detail cho enrichment; actions Đánh giá/Album/progress giữ nguyên hành vi cũ.
 
@@ -226,10 +238,12 @@ export const staggerItem = {
 ### Task 7: Search + Person
 
 **Files:**
+
 - Modify: `src/features/search/pages/search-page.tsx`, `src/features/search/components/search-results.tsx`, `src/features/search/components/search-filters.tsx`, `src/features/search/components/tmdb-movie-card.tsx`
 - Modify: `src/features/search/pages/person-detail-page.tsx`, `src/features/search/components/person/person-movie-section.tsx`
 
 **Interfaces:**
+
 - Consumes: PosterCard (Task 4), tokens.
 - Produces: không — chỉ tiêu thụ; `tmdb-movie-card` chuyển thành wrapper mỏng quanh PosterCard hoặc bị thay trực tiếp (giữ export nếu file khác import).
 
@@ -241,10 +255,12 @@ export const staggerItem = {
 ### Task 8: Albums + Calendar
 
 **Files:**
+
 - Modify: `src/features/albums/pages/albums-page.tsx`, `src/features/albums/pages/album-detail-page.tsx`, modal album selector (`src/features/movies/components/add-movie/album-section.tsx` nếu chứa)
 - Modify: `src/features/calendar/pages/release-calendar-page.tsx` + component ngày/tuần của nó
 
 **Interfaces:**
+
 - Consumes: PosterCard, UI kit Task 3, tokens.
 - Produces: không mới.
 
@@ -256,12 +272,14 @@ export const staggerItem = {
 ### Task 9: Profile + Stats + 404 + Login
 
 **Files:**
+
 - Modify: `src/features/profile/pages/member-profile-page.tsx` + `own-profile-editor`, `avatar-crop`, `member-profile-card`, `common-movies` (surface)
 - Modify: `src/features/stats/pages/stats-page.tsx`, `src/features/stats/components/stats-card.tsx`
 - Modify: `src/shared/pages/not-found-page.tsx`
 - Modify: `src/features/auth/components/login.tsx`
 
 **Interfaces:**
+
 - Consumes: PosterCard, UI kit, tokens; `recharts` (đã có).
 - Produces: không mới.
 
@@ -275,10 +293,12 @@ export const staggerItem = {
 ### Task 10: Quét chống-slop + nghiệm thu toàn app
 
 **Files:**
+
 - Modify: bất kỳ file còn sót (theo kết quả grep)
 - Delete: asset thừa (vd. `src/assets/images/logo_text.png` nếu đã 0 tham chiếu; font Inter còn sót)
 
 **Interfaces:**
+
 - Consumes: mọi task trước.
 - Produces: app đạt checklist §8 của spec.
 

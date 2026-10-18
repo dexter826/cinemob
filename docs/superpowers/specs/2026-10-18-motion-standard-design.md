@@ -57,12 +57,12 @@ Motion ngắn, đằm, không phô diễn — kế thừa spec 2026-10-17:
 
 ### 4.2 Thang thời lượng — luật dùng, không phải biến mới
 
-| Bậc | Giá trị | Dùng cho |
-|---|---|---|
-| fast | 120 ms | enter/exit dropdown, popover, suggestions, navbar menu |
-| base | 150 ms | hover/focus/active/selected, chevron, exit dialog/toast, micro |
-| medium | 200 ms | enter dialog, toast enter, route enter, sheet exit, tab underline |
-| slow | 250 ms | sheet enter, mặt phẳng lớn |
+| Bậc    | Giá trị | Dùng cho                                                          |
+| ------ | ------- | ----------------------------------------------------------------- |
+| fast   | 120 ms  | enter/exit dropdown, popover, suggestions, navbar menu            |
+| base   | 150 ms  | hover/focus/active/selected, chevron, exit dialog/toast, micro    |
+| medium | 200 ms  | enter dialog, toast enter, route enter, sheet exit, tab underline |
+| slow   | 250 ms  | sheet enter, mặt phẳng lớn                                        |
 
 - `transition-*` mặc định = 150 ms (`--default-transition-duration`) — đúng bậc base, không cần khai báo. Chỉ khai báo `duration-120|200|250` khi khác base.
 - Cấm mọi giá trị ngoài 4 bậc (300, 500, 75…). Hiện vi phạm: chevron dropdown `duration-300` (`dropdown.tsx:159,180`), hover poster `duration-300` (`poster-card.tsx:105`) — apply map về thang.
@@ -93,18 +93,18 @@ Motion ngắn, đằm, không phô diễn — kế thừa spec 2026-10-17:
 
 Mọi overlay có cả enter và exit. Exit cùng bậc hoặc ngắn hơn enter một bậc.
 
-| Lớp | Enter | Exit | Cơ chế |
-|---|---|---|---|
-| Dialog — backdrop | fade 200, ease-enter | fade 150, ease-exit | framer (đang có) |
-| Dialog — panel | fade + y8 200, ease-enter | fade + y8 150, ease-exit | framer (đang có) |
-| Sheet — panel | trượt đáy y 100%→0, 250, ease-enter | trượt xuống, 200, ease-exit | framer — variants theo `presentation` (mới) |
-| Sheet — backdrop | fade 250 | fade 200 | framer |
-| Dropdown / MultiSelect panel | fade + y4 hướng panel, 120, ease-enter | fade 120, ease-exit | framer + AnimatePresence (mới) |
-| Suggestions (combobox search) | như dropdown — 120 | 120 | framer (mới) |
-| Popover (visibility, own-profile) | fade + y4, 120 | 120 | framer (thay `animate-zoom-in-95` CSS) |
-| Menu tài khoản (navbar) | fade + y4, 120 | 120 | framer (mới) |
-| Toast | fade + y8, 200, ease-enter | fade + y8, 150, ease-exit | framer (đang có — đổi token) |
-| Route | fade + y8, 200, ease-enter | — (chủ ý không có exit) | CSS `motion-safe` (thay motion.div) |
+| Lớp                               | Enter                                  | Exit                        | Cơ chế                                      |
+| --------------------------------- | -------------------------------------- | --------------------------- | ------------------------------------------- |
+| Dialog — backdrop                 | fade 200, ease-enter                   | fade 150, ease-exit         | framer (đang có)                            |
+| Dialog — panel                    | fade + y8 200, ease-enter              | fade + y8 150, ease-exit    | framer (đang có)                            |
+| Sheet — panel                     | trượt đáy y 100%→0, 250, ease-enter    | trượt xuống, 200, ease-exit | framer — variants theo `presentation` (mới) |
+| Sheet — backdrop                  | fade 250                               | fade 200                    | framer                                      |
+| Dropdown / MultiSelect panel      | fade + y4 hướng panel, 120, ease-enter | fade 120, ease-exit         | framer + AnimatePresence (mới)              |
+| Suggestions (combobox search)     | như dropdown — 120                     | 120                         | framer (mới)                                |
+| Popover (visibility, own-profile) | fade + y4, 120                         | 120                         | framer (thay `animate-zoom-in-95` CSS)      |
+| Menu tài khoản (navbar)           | fade + y4, 120                         | 120                         | framer (mới)                                |
+| Toast                             | fade + y8, 200, ease-enter             | fade + y8, 150, ease-exit   | framer (đang có — đổi token)                |
+| Route                             | fade + y8, 200, ease-enter             | — (chủ ý không có exit)     | CSS `motion-safe` (thay motion.div)         |
 
 Ghi chú:
 

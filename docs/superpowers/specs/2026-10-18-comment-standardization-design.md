@@ -14,16 +14,16 @@ Hiện trạng khảo sát 18/10/2026: comment chủ yếu tiếng Việt; tiế
 
 ## 2. Các quyết định đã chốt (từ phỏng vấn)
 
-| # | Quyết định |
-| - | ---------- |
-| 1 | Phạm vi = comment trong source; docs và UI copy tách đợt riêng |
-| 2 | Ngôn ngữ đích = tiếng Việt toàn bộ; thuật ngữ kỹ thuật giữ nguyên tiếng Anh |
-| 3 | Chuẩn tham chiếu = AGENTS.md §5 + house style hiện có + nguyên tắc vi-humanizer |
-| 4 | Quy trình = pilot `src/shared/components/ui` (27 file) → người dùng duyệt → chạy tự động theo batch thư mục, báo cáo mỗi batch |
-| 5 | Ranh giới = chỉ sửa comment hiện có; không thêm comment mới; không sửa code; lỗi tồn đọng ngoài comment chỉ báo cáo |
-| 6 | Mức dọn = cân bằng: xoá comment hiển nhiên/lặp code/sai/lỗi thời; giữ + rút gọn comment giải thích lý do |
-| 7 | Verify = mỗi batch `typecheck` + `lint` + `prettier --check` theo file đã sửa; cuối cùng `npm run build`; batch `.github/scripts` thêm `node --check` + `npm test` |
-| 8 | Git = ở nhánh hiện tại `fix/hallmark-audit`, không commit; người dùng tự review diff và commit |
+| #   | Quyết định                                                                                                                                                         |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Phạm vi = comment trong source; docs và UI copy tách đợt riêng                                                                                                     |
+| 2   | Ngôn ngữ đích = tiếng Việt toàn bộ; thuật ngữ kỹ thuật giữ nguyên tiếng Anh                                                                                        |
+| 3   | Chuẩn tham chiếu = AGENTS.md §5 + house style hiện có + nguyên tắc vi-humanizer                                                                                    |
+| 4   | Quy trình = pilot `src/shared/components/ui` (27 file) → người dùng duyệt → chạy tự động theo batch thư mục, báo cáo mỗi batch                                     |
+| 5   | Ranh giới = chỉ sửa comment hiện có; không thêm comment mới; không sửa code; lỗi tồn đọng ngoài comment chỉ báo cáo                                                |
+| 6   | Mức dọn = cân bằng: xoá comment hiển nhiên/lặp code/sai/lỗi thời; giữ + rút gọn comment giải thích lý do                                                           |
+| 7   | Verify = mỗi batch `typecheck` + `lint` + `prettier --check` theo file đã sửa; cuối cùng `npm run build`; batch `.github/scripts` thêm `node --check` + `npm test` |
+| 8   | Git = ở nhánh hiện tại `fix/hallmark-audit`, không commit; người dùng tự review diff và commit                                                                     |
 
 Điều chỉnh khi lập kế hoạch (phát hiện thêm từ khảo sát, không đổi các quyết định trên):
 
@@ -64,14 +64,14 @@ Hiện trạng khảo sát 18/10/2026: comment chủ yếu tiếng Việt; tiế
 
 Ví dụ minh họa:
 
-| Trường hợp | Xử lý |
-| ---------- | ----- |
-| `/** "2026-10-04" → "04/10/2026". */` | Giữ (gọn, mang thông tin) |
-| `// Gọi API từ TMDB.` trên hàm có tên đã nói rõ việc đó | Xoá (lặp code) |
-| `// Same geometry as PosterCard…` | Viết lại tiếng Việt, giữ ý |
-| Long rationale giải thích vì sao chặn thao tác | Giữ, rút gọn nếu dài dòng |
-| `{/* Header */}` trong file ngắn | Xoá |
-| `{/* Thứ tự tính toán khớp bảng tháng */}` trong file dài | Giữ |
+| Trường hợp                                                | Xử lý                      |
+| --------------------------------------------------------- | -------------------------- |
+| `/** "2026-10-04" → "04/10/2026". */`                     | Giữ (gọn, mang thông tin)  |
+| `// Gọi API từ TMDB.` trên hàm có tên đã nói rõ việc đó   | Xoá (lặp code)             |
+| `// Same geometry as PosterCard…`                         | Viết lại tiếng Việt, giữ ý |
+| Long rationale giải thích vì sao chặn thao tác            | Giữ, rút gọn nếu dài dòng  |
+| `{/* Header */}` trong file ngắn                          | Xoá                        |
+| `{/* Thứ tự tính toán khớp bảng tháng */}` trong file dài | Giữ                        |
 
 ### 3.4 Ranh giới
 

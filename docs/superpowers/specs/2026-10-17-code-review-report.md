@@ -14,11 +14,13 @@ Không có.
 ## Major
 
 ### 1. Lỗi snapshot Firestore biến thành "kho trống" — `src/features/movies/services/movie-service.ts:133-136`
+
 **Vấn đề:** `subscribeToMovies` callback lỗi → `callback([])`.
 **Vì sao:** Lỗi mạng/quyền Firestore khiến store set `movies=[], loading=false` — UI hiển thị "Chưa có phim" + EmptyState thay vì báo lỗi. Người dùng nghĩ bộ sưu tập bị mất.
 **Cách sửa:** Thêm `onError` callback riêng → `movie-store` giữ state `error`; Dashboard/EmptyState phân biệt `error` vs `empty`.
 
 ### 2. Hai `catch {}` nuốt lỗi im lặng
+
 - `src/app/providers/theme-provider.tsx:66` (localStorage parse)
 - `src/features/profile/hooks/use-user-search.ts:45`
 
