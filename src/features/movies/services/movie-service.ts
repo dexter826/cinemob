@@ -17,7 +17,6 @@ import { Movie } from '@/types';
 
 const COLLECTION_NAME = 'movies';
 
-// Lưu phim mới vào kho cá nhân.
 export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   try {
     const payload = {
@@ -33,7 +32,6 @@ export const addMovie = async (movie: Omit<Movie, 'docId'>) => {
   }
 };
 
-// Cập nhật thông tin phim.
 export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   try {
     const movieRef = doc(db, COLLECTION_NAME, docId);
@@ -44,7 +42,6 @@ export const updateMovie = async (docId: string, updates: Partial<Movie>) => {
   }
 };
 
-// Xóa phim khỏi danh sách.
 export const deleteMovie = async (uid: string, docId: string) => {
   try {
     const albumsQuery = query(
@@ -69,7 +66,7 @@ export const deleteMovie = async (uid: string, docId: string) => {
   }
 };
 
-// Kiểm tra phim đã tồn tại chưa. Ném lỗi để caller phân biệt lỗi mạng/quyền với "chưa tồn tại".
+// Ném lỗi để caller phân biệt lỗi mạng/quyền với "chưa tồn tại".
 export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
   try {
     const q = query(
@@ -85,7 +82,6 @@ export const checkMovieExists = async (uid: string, movieId: string | number): P
   }
 };
 
-// Chuyển dữ liệu Firestore sang Object Movie.
 export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Movie => {
   const d = data as Partial<Movie> & Record<string, unknown>;
   return {
@@ -114,8 +110,7 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
   };
 };
 
-// Theo dõi danh sách phim thời gian thực. onError tách riêng để UI phân biệt
-// "kho trống" với "lỗi mạng/quyền" (tránh hiển thị EmptyState khi lỗi).
+// onError tách riêng để UI phân biệt "kho trống" với "lỗi mạng/quyền" (tránh hiển thị EmptyState khi lỗi).
 export const subscribeToMovies = (
   uid: string,
   callback: (movies: Movie[]) => void,

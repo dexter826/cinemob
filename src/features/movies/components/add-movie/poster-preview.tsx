@@ -6,7 +6,6 @@ interface PosterPreviewProps {
   title: string;
 }
 
-// Xem trước poster phim
 function PosterPreview({ posterPath, title }: PosterPreviewProps) {
   return (
     <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-full mx-auto shrink-0">

@@ -21,7 +21,6 @@ interface MovieState {
 
 let movieGeneration = 0;
 
-// Quản lý và đồng bộ danh sách phim.
 const useMovieStore = create<MovieState>((set, get) => ({
   movies: [],
   loading: true,

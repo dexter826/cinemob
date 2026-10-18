@@ -10,7 +10,6 @@ import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import useAlertStore from '@/shared/stores/alert-store';
 
-// Sub-components
 import StatusToggle from './add-movie/status-toggle';
 import RatingSection from './add-movie/rating-section';
 import TVProgressSection from './add-movie/tv-progress-section';
@@ -20,7 +19,6 @@ import PosterPreview from './add-movie/poster-preview';
 import DatePicker from '@/shared/components/ui/date-picker';
 import TimePicker from '@/shared/components/ui/time-picker';
 
-// Hooks
 import { useAddMovieForm } from '../hooks/use-add-movie-form';
 import { COUNTRY_OPTIONS } from '@/constants';
 

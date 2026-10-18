@@ -19,7 +19,6 @@ interface AddMovieState {
   closeAddModal: () => void;
 }
 
-// Quản lý modal thêm/sửa phim.
 const useAddMovieStore = create<AddMovieState>((set) => ({
   isOpen: false,
   ownerUid: null,

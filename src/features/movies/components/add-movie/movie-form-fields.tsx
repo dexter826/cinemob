@@ -43,7 +43,6 @@ interface MovieFormFieldsProps {
   };
 }
 
-// Các trường thông tin chi tiết phim
 function MovieFormFields({
   isManualMode,
   manualMediaType,
@@ -62,7 +61,6 @@ function MovieFormFields({
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Media Type */}
         <div className="space-y-2">
           <label
             htmlFor="movie-media-type"
@@ -94,7 +92,6 @@ function MovieFormFields({
           )}
         </div>
 
-        {/* Country */}
         <div className="space-y-2">
           <label
             htmlFor="movie-country"
@@ -121,7 +118,6 @@ function MovieFormFields({
           </div>
         </div>
 
-        {/* Release Date */}
         <div className="space-y-2">
           <label
             htmlFor="movie-release-date"
@@ -147,7 +143,6 @@ function MovieFormFields({
           </div>
         </div>
 
-        {/* Runtime / Seasons */}
         <div className="space-y-2">
           <label
             htmlFor="movie-runtime"
@@ -196,7 +191,6 @@ function MovieFormFields({
         </div>
       </div>
 
-      {/* Genres */}
       <div className="space-y-2">
         <label
           htmlFor="movie-genres"
@@ -229,7 +223,6 @@ function MovieFormFields({
         />
       </div>
 
-      {/* Overview */}
       <div className="space-y-2">
         <label
           htmlFor="movie-overview"

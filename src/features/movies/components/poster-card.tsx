@@ -120,7 +120,6 @@ function PosterCard({
         className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none"
       />
 
-      {/* Badges góc trái trên */}
       <div className="absolute top-2 left-2 flex flex-col items-start gap-1.5 z-10 pointer-events-none">
         {statusLabel && (
           <Chip
@@ -138,14 +137,12 @@ function PosterCard({
         )}
       </div>
 
-      {/* Review chip */}
       {review && (
         <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
           <Chip icon={<Eye size={9} aria-hidden="true" />}>Review</Chip>
         </span>
       )}
 
-      {/* Cột phải trên: nút bỏ gợi ý + actions tùy chọn */}
       {(onRemove || actions) && (
         <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-200">
           {onRemove && (
@@ -163,14 +160,12 @@ function PosterCard({
         </div>
       )}
 
-      {/* Overlay chọn (album selector) */}
       {selectable && selected && (
         <div className="absolute inset-0 z-10 bg-primary/25 border border-primary flex items-center justify-center pointer-events-none">
           <CheckCircle className="text-white" size={40} strokeWidth={1.5} aria-hidden="true" />
         </div>
       )}
 
-      {/* Info trên scrim */}
       <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
         <h3
           className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
@@ -190,7 +185,6 @@ function PosterCard({
         )}
       </div>
 
-      {/* Progress TV */}
       {progressPercent !== null && (
         <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-0.5 bg-black/40">
           <span className="block h-full bg-primary" style={{ width: `${progressPercent}%` }} />

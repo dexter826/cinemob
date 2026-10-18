@@ -23,7 +23,6 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import Skeleton from '@/shared/components/ui/skeleton';
 import LoadingStatus from '@/shared/components/ui/loading-status';
 
-/** Trang chi tiết phim /movie/:id — thay cho MovieDetailModal (IA đã duyệt). */
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -96,7 +95,6 @@ function MovieDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
-      {/* Thanh trên: Back */}
       <div className="flex items-center justify-between pb-4 md:pb-5">
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
           <ArrowLeft size={20} aria-hidden="true" />
@@ -104,7 +102,6 @@ function MovieDetailPage() {
       </div>
 
       <article className="pb-10 flex flex-col md:flex-row gap-6 md:gap-10">
-        {/* Poster */}
         <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
           <img
             src={posterUrl}
@@ -121,7 +118,6 @@ function MovieDetailPage() {
           )}
         </div>
 
-        {/* Thông tin */}
         <div className="flex-1 min-w-0">
           <h1 className="font-display tracking-wide leading-[1.02] text-3xl sm:text-4xl md:text-5xl text-text-primary">
             {mainTitle}
@@ -130,7 +126,6 @@ function MovieDetailPage() {
             <p className="text-text-secondary text-base sm:text-lg mt-2">{subTitle}</p>
           )}
 
-          {/* Meta caps */}
           <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
             {movie.release_date && <span>{new Date(movie.release_date).getFullYear()}</span>}
             {movie.media_type === 'tv'
@@ -143,7 +138,6 @@ function MovieDetailPage() {
             )}
           </div>
 
-          {/* Điểm */}
           {!!movie.rating && movie.rating > 0 && (
             <p className="mt-4 flex items-baseline gap-2">
               <Star
@@ -157,7 +151,6 @@ function MovieDetailPage() {
             </p>
           )}
 
-          {/* Actions */}
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
             {movie.status === 'watchlist' ? (
               hasValidTrailer ? (
@@ -205,7 +198,6 @@ function MovieDetailPage() {
             </Button>
           </div>
 
-          {/* TV progress */}
           {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
             <div className="mt-7 border border-border rounded-card p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2.5">
@@ -248,7 +240,6 @@ function MovieDetailPage() {
             </div>
           )}
 
-          {/* Nội dung */}
           <div className="mt-7">
             <SectionHeader className="">Nội dung</SectionHeader>
             <p className="mt-2.5 text-sm md:text-[15px] leading-[1.7] text-text-primary/90 max-w-[65ch]">
@@ -256,7 +247,6 @@ function MovieDetailPage() {
             </p>
           </div>
 
-          {/* Đánh giá của bạn */}
           {movie.review && (
             <div className="mt-6 border-l-2 border-primary pl-4">
               <SectionHeader className="flex items-center gap-1.5">
@@ -269,7 +259,6 @@ function MovieDetailPage() {
             </div>
           )}
 
-          {/* Đạo diễn + diễn viên — khối credit kiểu press-kit */}
           {extrasLoading ? (
             <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
           ) : (

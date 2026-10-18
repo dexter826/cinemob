@@ -10,10 +10,7 @@ export interface MovieDetailExtras {
   videos: TMDBVideo[];
 }
 
-/**
- * Fetch dữ liệu enrichment TMDB cho trang chi tiết: credits luôn, videos chỉ cho
- * watchlist (để hiện trailer) — hành vi y như MovieDetailModal cũ.
- */
+/** Fetch enrichment TMDB: credits luôn, videos chỉ cho watchlist (để hiện trailer). */
 export function useMovieDetail(movie: Movie | null): MovieDetailExtras {
   const [loading, setLoading] = useState(false);
   const [credits, setCredits] = useState<TMDBCredits | null>(null);

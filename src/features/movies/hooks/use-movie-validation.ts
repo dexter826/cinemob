@@ -28,7 +28,6 @@ export interface FormFieldRefs {
   rating: React.RefObject<HTMLDivElement | null>;
 }
 
-// Xử lý validation và hiệu ứng lỗi cho form.
 export const useMovieValidation = () => {
   const { showToast } = useToastStore();
   const [ratingError, setRatingError] = useState(false);
@@ -74,9 +73,7 @@ export const useMovieValidation = () => {
       const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
       if (targetRef?.current) {
         const el = targetRef.current;
-        const prefersReducedMotion = window.matchMedia(
-          '(prefers-reduced-motion: reduce)',
-        ).matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         el.scrollIntoView({
           behavior: prefersReducedMotion ? 'auto' : 'smooth',
           block: 'center',

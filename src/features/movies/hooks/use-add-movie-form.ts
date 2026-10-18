@@ -32,7 +32,6 @@ export interface MovieFormData {
   is_review: boolean;
 }
 
-// Quản lý form thêm/sửa phim và series.
 export const useAddMovieForm = () => {
   const { user } = useAuth();
   const uid = user?.uid;

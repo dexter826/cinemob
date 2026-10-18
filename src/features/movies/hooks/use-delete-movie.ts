@@ -7,10 +7,7 @@ import { MESSAGES } from '@/constants';
 
 const UNDO_DELETE_MS = 7000;
 
-/**
- * Xóa phim khỏi bộ sưu tập với toast hoàn tác (dùng chung Dashboard và
- * trang chi tiết phim). Logic tách từ use-dashboard để không lặp.
- */
+/** Xóa phim khỏi bộ sưu tập với toast hoàn tác (dùng chung Dashboard và trang chi tiết phim). */
 export function useDeleteMovie() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
