@@ -1,21 +1,20 @@
 /**
- * GitHub Actions script to check today's episodes and send Web Push notifications
- * Reads TV series from Firestore, checks TMDB for today's episodes
- * Sends Web Push to all subscribed devices
+ * Script GitHub Actions kiểm tra tập phim chiếu hôm nay và gửi Web Push.
+ * Đọc TV series từ Firestore, kiểm tra TMDB cho các tập chiếu trong ngày, gửi push tới mọi thiết bị đã đăng ký.
  */
 
 import admin from 'firebase-admin';
 import webpush from 'web-push';
 import { getPushSubscriptionForUser, removeExpiredSubscription } from './notification-targets.js';
 
-// ============ Configuration ============
+// ============ Cấu hình ============
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const USER_UID = process.env.USER_UID;
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 const VAPID_EMAIL = process.env.VAPID_EMAIL || 'mailto:cinemob@example.com';
 
-// ============ Initialize Firebase Admin ============
+// ============ Khởi tạo Firebase Admin ============
 const initFirebase = () => {
   if (admin.apps.length > 0) return;
 
@@ -30,12 +29,12 @@ const initFirebase = () => {
   });
 };
 
-// ============ Initialize Web Push ============
+// ============ Khởi tạo Web Push ============
 const initWebPush = () => {
   webpush.setVapidDetails(VAPID_EMAIL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 };
 
-// ============ Firestore Functions ============
+// ============ Hàm Firestore ============
 const getWatchlistFromFirestore = async () => {
   const db = admin.firestore();
   const snapshot = await db
@@ -80,9 +79,9 @@ const getPushSubscriptions = async () => {
   return subscriptions;
 };
 
-// ============ TMDB Functions ============
+// ============ Hàm TMDB ============
 const getTodayDateString = () => {
-  // Get current time in Vietnam (UTC+7)
+  // Giờ Việt Nam (UTC+7)
   const now = new Date();
   const vnTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
   return vnTime.toISOString().split('T')[0];
@@ -146,7 +145,7 @@ const getUpcomingEpisodes = async (tvId) => {
   }
 };
 
-// ============ Notification Functions ============
+// ============ Hàm gửi thông báo ============
 const sendWebPushNotification = async (subscription, payload) => {
   try {
     const pushSubscription = {
@@ -160,7 +159,7 @@ const sendWebPushNotification = async (subscription, payload) => {
   } catch (error) {
     console.error(`❌ Push failed for ${subscription.id}:`, error.message);
 
-    // If subscription is expired/invalid, remove it from Firestore
+    // Subscription hết hạn/vô hiệu thì gỡ khỏi Firestore.
     if (error.statusCode === 404 || error.statusCode === 410) {
       console.log(`🗑️ Removing expired subscription ${subscription.id}`);
       const db = admin.firestore();
@@ -192,12 +191,12 @@ const sendToAllSubscriptions = async (subscriptions, title, body) => {
   return successCount;
 };
 
-// ============ Main Function ============
+// ============ Hàm chính ============
 const main = async () => {
   console.log('🚀 Starting episode check...');
   console.log(`📅 Today: ${getTodayDateString()}`);
 
-  // Validate environment variables
+  // Kiểm tra biến môi trường
   if (!TMDB_API_KEY || !USER_UID) {
     console.error('❌ Missing required environment variables');
     console.error('Required: TMDB_API_KEY, USER_UID');
@@ -210,18 +209,18 @@ const main = async () => {
     process.exit(1);
   }
 
-  // Initialize Firebase and Web Push
+  // Khởi tạo Firebase và Web Push
   initFirebase();
   initWebPush();
 
-  // Get push subscriptions
+  // Lấy danh sách push subscription
   const subscriptions = await getPushSubscriptions();
   if (subscriptions.length === 0) {
     console.log('📭 No push subscriptions found, skipping...');
     return;
   }
 
-  // Get items from Firestore
+  // Lấy dữ liệu từ Firestore
   const { tvSeries, movies } = await getWatchlistFromFirestore();
 
   if (tvSeries.length === 0 && movies.length === 0) {
@@ -233,7 +232,7 @@ const main = async () => {
   const todayEpisodes = [];
   const todayMovies = [];
 
-  // Check each series for today's episodes
+  // Kiểm tra từng series xem hôm nay có tập không
   for (const series of tvSeries) {
     const episodes = await getUpcomingEpisodes(series.id);
     for (const episode of episodes) {
@@ -254,7 +253,7 @@ const main = async () => {
     if (movie.release_date === targetDate) todayMovies.push(movie);
   }
 
-  // If no episodes or movies today, exit
+  // Hôm nay không có tập/phim nào thì dừng
   if (todayEpisodes.length === 0 && todayMovies.length === 0) {
     console.log('📭 No episodes or movies airing today');
     return;
@@ -271,7 +270,7 @@ const main = async () => {
     console.log(`  • [Movie] ${movie.title_vi || movie.title}`);
   });
 
-  // Build notification content
+  // Soạn nội dung thông báo
   let title, body;
 
   if (todayEpisodes.length + todayMovies.length === 1) {
@@ -302,7 +301,7 @@ const main = async () => {
     }
   }
 
-  // Send to all subscriptions
+  // Gửi tới mọi subscription
   console.log(`\n📤 Sending push notifications...`);
   const successCount = await sendToAllSubscriptions(subscriptions, title, body);
 
@@ -311,7 +310,7 @@ const main = async () => {
   );
 };
 
-// Run
+// Chạy
 main().catch((error) => {
   console.error('❌ Script failed:', error);
   process.exit(1);
