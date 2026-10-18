@@ -18,7 +18,6 @@ export interface DashboardFilterSheetProps {
   onExited?: () => void;
 }
 
-/** Bottom sheet bộ lọc cho mobile — cập nhật trực tiếp, không có nút Áp dụng. */
 function DashboardFilterSheet({
   isOpen,
   filters,

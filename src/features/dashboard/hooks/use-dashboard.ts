@@ -7,7 +7,6 @@ import { useDeleteMovie } from '@/features/movies/hooks/use-delete-movie';
 import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
 import { useDashboardStats } from './use-dashboard-stats';
 
-// Hook điều phối chính cho Dashboard.
 export const useDashboard = () => {
   const { openAddModal } = useAddMovieStore();
   const handleDelete = useDeleteMovie();

@@ -36,7 +36,6 @@ interface ActiveFilterChip {
 const DESKTOP_QUERY = '(min-width: 1024px)';
 const loadFilterSheet = () => import('./dashboard-filter-sheet');
 
-/** Nút caps cho hàng lối tắt — active hiển thị bằng gạch chân vàng. */
 function CapsButton({
   active,
   onClick,

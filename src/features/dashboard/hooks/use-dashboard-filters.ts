@@ -45,7 +45,6 @@ const INITIAL_FILTER_STATE: FilterState = {
 
 const MOVIES_PER_PAGE = 24;
 
-// Xử lý lọc và sắp xếp danh sách phim.
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
@@ -89,7 +88,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     setCurrentPage((prev) => (prev !== targetPage ? targetPage : prev));
   }, [searchParams]);
 
-  // Chép bộ lọc vào query string, bỏ qua giá trị mặc định.
   const syncParams = useCallback(
     (next: FilterState, page: number, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
@@ -256,7 +254,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     return processedMovies.slice(start, start + MOVIES_PER_PAGE);
   }, [processedMovies, currentPage]);
 
-  /** Danh sách năm cho bộ lọc. */
   const availableYears = useMemo(() => {
     return Array.from(
       new Set(
@@ -275,7 +272,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       }));
   }, [movies]);
 
-  /** Danh sách quốc gia cho bộ lọc. */
   const availableCountries = useMemo(() => {
     return Array.from(
       new Set(
@@ -292,7 +288,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       }));
   }, [movies]);
 
-  /** Danh sách thể loại cho bộ lọc. */
   const availableGenres = useMemo(() => {
     return Array.from(
       new Set(

@@ -52,7 +52,7 @@ function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
-      {/* Header đồng bộ với mọi trang — số liệu chỉ ở tabs + thống kê riêng */}
+      {/* Số liệu nằm ở tabs + thống kê riêng, không đưa lên header */}
       <PageHeader
         title="Thư viện"
         actions={
@@ -74,7 +74,6 @@ function DashboardPage() {
         }
       />
 
-      {/* Tabs + filters */}
       <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-4">
         <DashboardTabs
           activeTab={activeTab}
@@ -100,7 +99,6 @@ function DashboardPage() {
         )}
       </div>
 
-      {/* Lưới poster */}
       <section aria-labelledby="library-content-title" className="py-5">
         <h2 id="library-content-title" className="sr-only">
           Nội dung thư viện
