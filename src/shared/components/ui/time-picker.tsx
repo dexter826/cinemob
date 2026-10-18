@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
 import { Clock, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 interface TimePickerProps {
   value: string; // HH:mm format
@@ -35,6 +37,13 @@ function TimePicker({
   const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
+  const reducedMotion = useReducedMotion() ?? false;
+  const popoverEnter = getMotionTransition(
+    reducedMotion,
+    MOTION_DURATION.fast,
+    MOTION_EASING.enter,
+  );
+  const popoverExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hourListRef = useRef<HTMLDivElement>(null);
@@ -146,7 +155,7 @@ function TimePicker({
   );
 
   const renderPicker = () => (
-    <div
+    <motion.div
       ref={popoverRef}
       id={isMobile ? undefined : `${controlId}-dialog`}
       tabIndex={isMobile ? undefined : -1}
@@ -161,6 +170,10 @@ function TimePicker({
       role={isMobile ? undefined : 'dialog'}
       aria-label={isMobile ? undefined : 'Chọn giờ'}
       onClick={(e) => isMobile && e.stopPropagation()}
+      initial={isMobile ? undefined : { opacity: 0, y: -4 }}
+      animate={isMobile ? undefined : { opacity: 1, y: 0 }}
+      exit={isMobile ? undefined : { opacity: 0, y: -4, transition: popoverExit }}
+      transition={popoverEnter}
     >
       {isMobile && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
@@ -241,7 +254,7 @@ function TimePicker({
           Bây giờ
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -280,21 +293,20 @@ function TimePicker({
       </button>
 
       {/* Picker UI */}
-      {isOpen &&
-        (isMobile ? (
-          <Dialog
-            open={isOpen}
-            onClose={closePicker}
-            titleId={dialogTitleId}
-            presentation="dialog"
-            size="sm"
-            className="bg-transparent shadow-none overflow-visible"
-          >
-            <div id={`${controlId}-dialog`}>{renderPicker()}</div>
-          </Dialog>
-        ) : (
-          renderPicker()
-        ))}
+      {isMobile ? (
+        <Dialog
+          open={isOpen}
+          onClose={closePicker}
+          titleId={dialogTitleId}
+          presentation="dialog"
+          size="sm"
+          className="bg-transparent shadow-none overflow-visible"
+        >
+          <div id={`${controlId}-dialog`}>{renderPicker()}</div>
+        </Dialog>
+      ) : (
+        <AnimatePresence>{isOpen && renderPicker()}</AnimatePresence>
+      )}
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
 import { getTMDBImageUrl, getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import type { SearchSortBy, SearchFormFilters } from '../hooks/use-search';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 interface SearchFiltersProps {
   filters: SearchFormFilters;
@@ -40,6 +42,9 @@ function SearchFilters({
     filters.sortBy !== 'popularity.desc';
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const reducedMotion = useReducedMotion() ?? false;
+  const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+  const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 
   // Chỉ focus sẵn ô tìm kiếm trên desktop; mobile tránh bật keyboard ngay khi mở trang.
   useEffect(() => {
@@ -97,97 +102,103 @@ function SearchFilters({
         />
 
         {/* Suggestion Dropdown */}
-        {showSuggestions && suggestions.length > 0 && (
-          <div
-            id="search-suggestions"
-            role="listbox"
-            aria-label="Gợi ý tìm kiếm"
-            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
-          >
-            <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
-              <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
-                Gợi ý tìm kiếm
-              </div>
-              {suggestions.map((movie) => {
-                const title = getMainTitleForTMDB(movie);
-                const year = (movie.release_date || movie.first_air_date)?.split('-')[0];
-                const isTV =
-                  movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+        <AnimatePresence>
+          {showSuggestions && suggestions.length > 0 && (
+            <motion.div
+              id="search-suggestions"
+              role="listbox"
+              aria-label="Gợi ý tìm kiếm"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4, transition: panelExit }}
+              transition={panelEnter}
+              className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
+            >
+              <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
+                <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
+                  Gợi ý tìm kiếm
+                </div>
+                {suggestions.map((movie) => {
+                  const title = getMainTitleForTMDB(movie);
+                  const year = (movie.release_date || movie.first_air_date)?.split('-')[0];
+                  const isTV =
+                    movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
 
-                return (
-                  <button
-                    key={movie.id}
-                    role="option"
-                    aria-selected={false}
-                    onClick={() => handleSelectMovie(movie)}
-                    aria-label={`Chọn phim ${title}`}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
-                  >
-                    <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
-                      <img
-                        src={getTMDBImageUrl(movie.poster_path, 'w92')}
-                        alt=""
-                        width={80}
-                        height={112}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm text-text-primary group-hover/item:text-primary transition-colors line-clamp-1">
-                        {title}
-                      </h4>
-                      <div className="flex items-center gap-3 mt-0.5">
-                        <div className="flex items-center gap-1 text-xs text-text-secondary">
-                          {isTV ? (
-                            <Tv
-                              size={12}
-                              className="text-info"
-                              strokeWidth={1.5}
-                              aria-hidden="true"
-                            />
-                          ) : (
-                            <Film
-                              size={12}
-                              className="text-success"
-                              strokeWidth={1.5}
-                              aria-hidden="true"
-                            />
-                          )}
-                          <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
-                        </div>
-                        {year && (
-                          <div className="flex items-center gap-1 text-xs text-text-secondary">
-                            <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
-                            <span>{year}</span>
-                          </div>
-                        )}
-                        {(movie.vote_average ?? 0) > 0 && (
-                          <div className="flex items-center gap-1 text-xs text-warning font-bold">
-                            <Star
-                              size={12}
-                              fill="currentColor"
-                              strokeWidth={1.5}
-                              aria-hidden="true"
-                            />
-                            <span>{(movie.vote_average ?? 0).toFixed(1)}</span>
-                          </div>
-                        )}
+                  return (
+                    <button
+                      key={movie.id}
+                      role="option"
+                      aria-selected={false}
+                      onClick={() => handleSelectMovie(movie)}
+                      aria-label={`Chọn phim ${title}`}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
+                    >
+                      <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
+                        <img
+                          src={getTMDBImageUrl(movie.poster_path, 'w92')}
+                          alt=""
+                          width={80}
+                          height={112}
+                          loading="lazy"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    </div>
-                  </button>
-                );
-              })}
-              <button
-                onClick={handleSearch}
-                className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Search size={14} strokeWidth={1.5} aria-hidden="true" />
-                Xem tất cả kết quả cho “{filters.query}”
-              </button>
-            </div>
-          </div>
-        )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm text-text-primary group-hover/item:text-primary transition-colors line-clamp-1">
+                          {title}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-0.5">
+                          <div className="flex items-center gap-1 text-xs text-text-secondary">
+                            {isTV ? (
+                              <Tv
+                                size={12}
+                                className="text-info"
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <Film
+                                size={12}
+                                className="text-success"
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
+                          </div>
+                          {year && (
+                            <div className="flex items-center gap-1 text-xs text-text-secondary">
+                              <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
+                              <span>{year}</span>
+                            </div>
+                          )}
+                          {(movie.vote_average ?? 0) > 0 && (
+                            <div className="flex items-center gap-1 text-xs text-warning font-bold">
+                              <Star
+                                size={12}
+                                fill="currentColor"
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                              />
+                              <span>{(movie.vote_average ?? 0).toFixed(1)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={handleSearch}
+                  className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Search size={14} strokeWidth={1.5} aria-hidden="true" />
+                  Xem tất cả kết quả cho “{filters.query}”
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">

@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatDateDMY, monthLabel } from '@/shared/utils/date-format';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 interface DatePickerProps {
   value: string;
@@ -51,6 +53,13 @@ function DatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
   const useDialogPresentation = isMobile || popupMode === 'dialog';
+  const reducedMotion = useReducedMotion() ?? false;
+  const popoverEnter = getMotionTransition(
+    reducedMotion,
+    MOTION_DURATION.fast,
+    MOTION_EASING.enter,
+  );
+  const popoverExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
   const [viewDate, setViewDate] = useState(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -214,7 +223,7 @@ function DatePicker({
   };
 
   const renderCalendar = () => (
-    <div
+    <motion.div
       ref={popoverRef}
       id={useDialogPresentation ? undefined : `${controlId}-dialog`}
       tabIndex={useDialogPresentation ? undefined : -1}
@@ -229,6 +238,10 @@ function DatePicker({
       role={useDialogPresentation ? undefined : 'dialog'}
       aria-label={useDialogPresentation ? undefined : 'Chọn ngày'}
       onClick={(e) => useDialogPresentation && e.stopPropagation()}
+      initial={useDialogPresentation ? undefined : { opacity: 0, y: -4 }}
+      animate={useDialogPresentation ? undefined : { opacity: 1, y: 0 }}
+      exit={useDialogPresentation ? undefined : { opacity: 0, y: -4, transition: popoverExit }}
+      transition={popoverEnter}
     >
       {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
@@ -295,10 +308,7 @@ function DatePicker({
       {/* Day Headers */}
       <div className="grid grid-cols-7 gap-1 mb-1">
         {DAYS_VI.map((day) => (
-          <div
-            key={day}
-            className="text-center text-xs font-bold text-text-muted py-1 uppercase"
-          >
+          <div key={day} className="text-center text-xs font-bold text-text-muted py-1 uppercase">
             {day}
           </div>
         ))}
@@ -350,7 +360,7 @@ function DatePicker({
           Hôm nay
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -390,21 +400,20 @@ function DatePicker({
       </button>
 
       {/* Calendar UI */}
-      {isOpen &&
-        (useDialogPresentation ? (
-          <Dialog
-            open={isOpen}
-            onClose={closePicker}
-            titleId={dialogTitleId}
-            presentation="dialog"
-            size="sm"
-            className="bg-transparent shadow-none overflow-visible"
-          >
-            <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
-          </Dialog>
-        ) : (
-          renderCalendar()
-        ))}
+      {useDialogPresentation ? (
+        <Dialog
+          open={isOpen}
+          onClose={closePicker}
+          titleId={dialogTitleId}
+          presentation="dialog"
+          size="sm"
+          className="bg-transparent shadow-none overflow-visible"
+        >
+          <div id={`${controlId}-dialog`}>{renderCalendar()}</div>
+        </Dialog>
+      ) : (
+        <AnimatePresence>{isOpen && renderCalendar()}</AnimatePresence>
+      )}
     </div>
   );
 }

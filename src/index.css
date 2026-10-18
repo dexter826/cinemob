@@ -51,7 +51,6 @@
   --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
 
   --animate-page-enter: page-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
   --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-confetti: confetti-burst 1s ease-out forwards;
 
@@ -85,17 +84,6 @@
     to {
       opacity: 0;
       transform: rotate(var(--confetti-angle)) translateY(calc(var(--confetti-distance) * -1));
-    }
-  }
-
-  @keyframes zoom-in-95 {
-    from {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
     }
   }
 }

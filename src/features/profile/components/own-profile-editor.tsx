@@ -25,6 +25,8 @@ import {
 import ProfileMeta from './profile-meta';
 import type { OwnProfileDetails } from '../hooks/use-own-profile';
 import type { MemberProfile } from '@/types';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 interface OwnProfileEditorProps {
   profile: MemberProfile | null;
@@ -75,6 +77,9 @@ function OwnProfileEditor({
   const nameInputRef = useRef<HTMLInputElement>(null);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
+  const reducedMotion = useReducedMotion() ?? false;
+  const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+  const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 
   useEffect(() => {
     if (!isAvatarMenuOpen) return;
@@ -312,42 +317,50 @@ function OwnProfileEditor({
                   <Pencil size={15} aria-hidden="true" />
                 </button>
               )}
-              {isEditing && isAvatarMenuOpen && (
-                <div
-                  ref={avatarMenuRef}
-                  role="menu"
-                  onKeyDown={handleMenuKeyDown}
-                  className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden animate-zoom-in-95 duration-150"
-                >
-                  <button
-                    ref={firstMenuItemRef}
-                    type="button"
-                    role="menuitem"
-                    onClick={() => {
-                      setIsAvatarMenuOpen(false);
-                      crop.openFilePicker();
-                    }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
-                  >
-                    <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
-                    <span>Tải ảnh mới</span>
-                  </button>
-
-                  {crop.canRevertToGoogle && (
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={() => {
-                        setIsAvatarMenuOpen(false);
-                        crop.handleDelete();
-                      }}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+              {isEditing && (
+                <AnimatePresence>
+                  {isAvatarMenuOpen && (
+                    <motion.div
+                      ref={avatarMenuRef}
+                      role="menu"
+                      onKeyDown={handleMenuKeyDown}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4, transition: menuExit }}
+                      transition={menuEnter}
+                      className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden"
                     >
-                      <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
-                      <span>Khôi phục ảnh gốc</span>
-                    </button>
+                      <button
+                        ref={firstMenuItemRef}
+                        type="button"
+                        role="menuitem"
+                        onClick={() => {
+                          setIsAvatarMenuOpen(false);
+                          crop.openFilePicker();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+                      >
+                        <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
+                        <span>Tải ảnh mới</span>
+                      </button>
+
+                      {crop.canRevertToGoogle && (
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setIsAvatarMenuOpen(false);
+                            crop.handleDelete();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+                        >
+                          <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
+                          <span>Khôi phục ảnh gốc</span>
+                        </button>
+                      )}
+                    </motion.div>
                   )}
-                </div>
+                </AnimatePresence>
               )}
             </div>
 
