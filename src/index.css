@@ -19,7 +19,7 @@
   --color-text-primary: #0a0a0a;
   --color-text-secondary: #6b6b66;
   --color-text-muted: #5f5b53; /* chữ phụ đặc ≥4.5:1 — placeholder, hint */
-  --color-text-faint: #8a857c; /* decorative/large ≥3:1 — số mờ, rule phụ */
+  --color-text-faint: #8a857c; /* chữ trang trí/cỡ lớn ≥3:1 — số mờ, rule phụ */
   --color-border: rgb(20 20 20 / 0.16);
   --color-skeleton: color-mix(in srgb, var(--color-text-primary) 8%, var(--color-surface));
   --color-focus: #8f6400;
@@ -158,7 +158,7 @@
     }
   }
 
-  /* Custom Scrollbar Styles */
+  /* Tùy biến scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -196,7 +196,7 @@
     scrollbar-color: color-mix(in srgb, var(--color-text-secondary) 50%, transparent) transparent;
   }
 
-  /* Horizontal scrollbar */
+  /* Scrollbar ngang */
   ::-webkit-scrollbar-horizontal {
     height: 6px;
   }
@@ -215,7 +215,7 @@
     background: color-mix(in srgb, var(--color-text-secondary) 40%, transparent);
   }
 
-  /* High contrast mode support */
+  /* Hỗ trợ chế độ tương phản cao */
   @media (prefers-contrast: high) {
     ::-webkit-scrollbar-thumb {
       background: var(--color-text-primary);
@@ -227,7 +227,7 @@
     }
   }
 
-  /* Reduced motion support */
+  /* Hỗ trợ giảm chuyển động */
   @media (prefers-reduced-motion: reduce) {
     ::-webkit-scrollbar-thumb {
       transition: none;
@@ -242,7 +242,7 @@
     }
   }
 
-  /* 3D perspective for movie cards */
+  /* Phối cảnh 3D cho thẻ phim */
   .movie-wheel-container {
     perspective: 1200px;
     transform-style: preserve-3d;

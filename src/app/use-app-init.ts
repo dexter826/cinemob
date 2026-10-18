@@ -8,7 +8,6 @@ import { syncMemberProfile } from '@/features/profile/services/member-profile-se
 import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
 import { Movie } from '@/types';
 
-// Khởi tạo ứng dụng sau khi đăng nhập.
 export const useAppInit = () => {
   const { user } = useAuth();
   const userId = user?.uid;
