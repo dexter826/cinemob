@@ -12,7 +12,6 @@ interface AlbumSyncProps {
   showToast: (message: string, type: 'success' | 'error') => void;
 }
 
-// Quản lý việc thêm phim vào Album.
 export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSyncProps) => {
   const { albums, loading, error, activeUid, retry } = useAlbumStore();
   const uid = user?.uid;
@@ -51,8 +50,7 @@ export const useAlbumSync = ({ user, movieToEdit, isOpen, showToast }: AlbumSync
   }, [isOpen, movieToEdit, albums, sourceReady, scope]);
 
   const creatingRef = useRef(false);
-  // Ref-guard chống double-submit trong cùng một tick render (state `creatingAlbum`
-  // chưa kịp cập nhật khi người dùng bấm Enter lần thứ hai).
+  // Ref-guard chống double-submit trong cùng một tick render.
   const handleCreateAlbum = async () => {
     if (!ready || creatingRef.current || !newAlbumName.trim() || !user) return;
     creatingRef.current = true;

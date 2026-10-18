@@ -41,7 +41,6 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
         <span className="sr-only">Mở album {album.name}</span>
       </Link>
 
-      {/* Chồng sau: các phim tiếp theo trong album (xòe khi hover) */}
       {backLeft && (
         <div className={fanClasses('left')}>
           <img
@@ -90,13 +89,11 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
 
-          {/* Scrim chức năng: nền tối để chữ đọc được trên ảnh */}
           <span
             aria-hidden="true"
             className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none"
           />
 
-          {/* Info trên scrim */}
           <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
             <h3
               className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
@@ -110,7 +107,6 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
           </div>
         </div>
       ) : (
-        /* Album trống: ô đứt nét + nhãn mờ */
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 rounded-poster border border-dashed border-border bg-surface">
           <span className="text-[10px] font-semibold tracking-[0.1em] text-text-secondary opacity-60 uppercase">
             Trống
@@ -118,7 +114,6 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
         </div>
       )}
 
-      {/* Nút xóa: mobile luôn hiện, desktop hiện khi hover */}
       <button
         type="button"
         aria-label={`Xóa album ${album.name}`}

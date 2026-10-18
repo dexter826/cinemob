@@ -18,7 +18,6 @@ import AlbumCard from '../components/album-card';
 
 const ALBUMS_PER_PAGE = 12;
 
-/** Quản lý và hiển thị danh sách các album phim cá nhân — lưới thẻ chồng poster. */
 function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();

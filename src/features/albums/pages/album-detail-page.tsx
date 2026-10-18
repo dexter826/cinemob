@@ -22,7 +22,6 @@ import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
 import { useAlbumDetail } from '../hooks/use-album-detail';
 
-/** Quản lý chi tiết album và thêm/bớt phim trong album. */
 function AlbumDetailPage() {
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();

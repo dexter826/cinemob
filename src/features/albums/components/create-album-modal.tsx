@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogBody, DialogFooter, DialogHeader, TextField, Button } from '@/shared/components/ui';
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  TextField,
+  Button,
+} from '@/shared/components/ui';
 
 interface CreateAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  /** Nhận tên album đã trim; success/failure do caller xử lý (toast + đóng modal). */
+  /** Caller xử lý success/failure (toast + đóng modal). */
   onSubmit: (name: string) => Promise<void>;
 }
 
-/** Modal tạo album mới. */
 function CreateAlbumModal({ isOpen, onClose, onSubmit }: CreateAlbumModalProps) {
   const [name, setName] = useState('');
   const [submitting, setSubmitting] = useState(false);

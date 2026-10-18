@@ -21,7 +21,6 @@ interface AlbumSelectorModalProps {
   movie: Movie | null;
 }
 
-/** Sheet on mobile, centered dialog above sm. Create/select with parent-dialog-safe locks. */
 function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps) {
   const { user } = useAuth();
   const { showToast } = useToastStore();

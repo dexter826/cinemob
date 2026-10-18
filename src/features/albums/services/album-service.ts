@@ -32,7 +32,6 @@ const mapDocToAlbum = (docId: string, data: Record<string, unknown>): Album => {
   };
 };
 
-// Thêm album mới vào bộ sưu tập.
 export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updatedAt'>) => {
   const payload = {
     ...album,
@@ -44,7 +43,6 @@ export const addAlbum = async (album: Omit<Album, 'docId' | 'createdAt' | 'updat
   return docRef.id;
 };
 
-// Cập nhật thông tin album.
 export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
   const albumRef = doc(db, COLLECTION_NAME, docId);
   await updateDoc(albumRef, {
@@ -53,7 +51,6 @@ export const updateAlbum = async (docId: string, updates: Partial<Album>) => {
   });
 };
 
-// Thêm phim vào album bằng arrayUnion nguyên tử.
 export const addMovieToAlbum = async (albumId: string, movieDocId: string) => {
   const albumRef = doc(db, COLLECTION_NAME, albumId);
   await updateDoc(albumRef, {
@@ -62,7 +59,6 @@ export const addMovieToAlbum = async (albumId: string, movieDocId: string) => {
   });
 };
 
-// Gỡ phim khỏi album bằng arrayRemove nguyên tử.
 export const removeMovieFromAlbum = async (albumId: string, movieDocId: string) => {
   const albumRef = doc(db, COLLECTION_NAME, albumId);
   await updateDoc(albumRef, {
@@ -103,12 +99,10 @@ export const syncMovieAlbums = async (
   await batch.commit();
 };
 
-// Xóa album.
 export const deleteAlbum = async (docId: string) => {
   await deleteDoc(doc(db, COLLECTION_NAME, docId));
 };
 
-// Theo dõi danh sách album theo người dùng.
 export const subscribeToAlbums = (
   uid: string,
   callback: (albums: Album[]) => void,
@@ -133,7 +127,6 @@ export const subscribeToAlbums = (
   );
 };
 
-// Theo dõi chi tiết một album.
 export const subscribeToAlbum = (
   uid: string,
   docId: string,

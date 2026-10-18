@@ -19,7 +19,6 @@ import { useDashboard } from '../hooks/use-dashboard';
 import DashboardTabs from '../components/dashboard-tabs';
 import DashboardFilters from '../components/dashboard-filters';
 
-/** Quản lý bộ sưu tập phim. */
 function DashboardPage() {
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion() ?? false;
