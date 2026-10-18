@@ -1,5 +1,5 @@
 import Skeleton from './skeleton';
-/** Same geometry as PosterCard; metadata stays within the poster. */
+/** Cùng hình học với PosterCard; metadata giữ trong khung poster. */
 export default function SkeletonCard() {
   return (
     <div

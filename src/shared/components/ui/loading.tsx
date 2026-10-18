@@ -6,7 +6,7 @@ interface LoadingProps {
   text?: string;
   className?: string;
 }
-/** Loading is local unless the caller explicitly owns app bootstrap. */
+/** Loading mặc định cục bộ; fullscreen phải chọn tường minh (dành cho bootstrap). */
 function Loading({
   size = 40,
   fullScreen = false,

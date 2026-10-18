@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { getPanelMotion } from '@/constants/animations';
 
 interface TimePickerProps {
-  value: string; // HH:mm format
+  value: string; // định dạng HH:mm
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
@@ -73,7 +73,7 @@ function TimePicker({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, isMobile]);
 
-  // Popover desktop là dialog: nhận focus khi mở.
+  // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
   useEffect(() => {
     if (isOpen && !isMobile) popoverRef.current?.focus();
   }, [isOpen, isMobile]);
@@ -186,9 +186,9 @@ function TimePicker({
         </div>
       )}
 
-      {/* Quick Select Lists */}
+      {/* Danh sách chọn nhanh */}
       <div className="flex gap-2 max-h-40">
-        {/* Hour List */}
+        {/* Danh sách giờ */}
         <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Giờ
@@ -213,7 +213,7 @@ function TimePicker({
           ))}
         </div>
 
-        {/* Minute List */}
+        {/* Danh sách phút */}
         <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
             Phút
@@ -239,7 +239,7 @@ function TimePicker({
         </div>
       </div>
 
-      {/* Now Button */}
+      {/* Nút bây giờ */}
       <div className="mt-4 pt-3 border-t border-border-default">
         <button
           type="button"
@@ -254,7 +254,7 @@ function TimePicker({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
+      {/* Nút trigger */}
       <button
         id={controlId}
         ref={triggerRef}
@@ -287,7 +287,7 @@ function TimePicker({
         </div>
       </button>
 
-      {/* Picker UI */}
+      {/* Khung chọn giờ */}
       {isMobile ? (
         <Dialog
           open={isOpen}

@@ -12,7 +12,7 @@ interface LazyDialogProps<P extends object> {
   size?: DialogSize;
   presentation?: 'dialog' | 'sheet' | 'fullscreen-mobile';
 }
-/** Loads dialog code on demand, while keeping a closeable fallback visible. */
+/** Nạp code dialog theo nhu cầu; luôn giữ fallback có thể đóng trong lúc chờ. */
 export default function LazyDialog<P extends object>({
   open,
   onClose,

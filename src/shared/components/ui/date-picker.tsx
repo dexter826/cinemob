@@ -98,7 +98,6 @@ function DatePicker({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, useDialogPresentation]);
 
-  // Update viewDate when value changes externally
   useEffect(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -254,7 +253,7 @@ function DatePicker({
         </div>
       )}
 
-      {/* Header: Year Navigation */}
+      {/* Điều hướng năm */}
       <div className="flex items-center justify-between mb-2">
         <button
           type="button"
@@ -277,7 +276,7 @@ function DatePicker({
         </button>
       </div>
 
-      {/* Header: Month Navigation */}
+      {/* Điều hướng tháng */}
       <div className="flex items-center justify-between mb-3">
         <button
           type="button"
@@ -300,7 +299,7 @@ function DatePicker({
         </button>
       </div>
 
-      {/* Day Headers */}
+      {/* Nhãn thứ */}
       <div className="grid grid-cols-7 gap-1 mb-1">
         {DAYS_VI.map((day) => (
           <div key={day} className="text-center text-xs font-bold text-text-muted py-1 uppercase">
@@ -309,7 +308,7 @@ function DatePicker({
         ))}
       </div>
 
-      {/* Calendar Grid */}
+      {/* Lưới ngày */}
       <div className="grid grid-cols-7 gap-1">
         {daysInMonth.map((item) => {
           const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
@@ -340,7 +339,7 @@ function DatePicker({
         })}
       </div>
 
-      {/* Today Button */}
+      {/* Nút hôm nay */}
       <div className="mt-4 pt-3 border-t border-border-default">
         <button
           type="button"
@@ -360,7 +359,7 @@ function DatePicker({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Trigger Button */}
+      {/* Nút trigger */}
       <button
         id={controlId}
         ref={triggerRef}
@@ -394,7 +393,7 @@ function DatePicker({
         </div>
       </button>
 
-      {/* Calendar UI */}
+      {/* Khung lịch */}
       {useDialogPresentation ? (
         <Dialog
           open={isOpen}

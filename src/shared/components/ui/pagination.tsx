@@ -12,7 +12,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
   const [inputValue, setInputValue] = useState(currentPage.toString());
   const prefersReducedMotion = useReducedMotion() ?? false;
 
-  // Update input value when currentPage changes
   React.useEffect(() => {
     setInputValue(currentPage.toString());
   }, [currentPage]);
@@ -49,7 +48,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
   return (
     <nav aria-label="Phân trang" className="flex items-center justify-center gap-2 pt-6">
-      {/* Previous Button */}
       <button
         type="button"
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
@@ -60,7 +58,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         <ChevronLeft size={18} aria-hidden="true" />
       </button>
 
-      {/* Desktop Pagination */}
       <div className="hidden md:flex items-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
           const isActive = currentPage === page;
@@ -103,7 +100,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         })}
       </div>
 
-      {/* Mobile Pagination with Input */}
       <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-control">
         <span className="text-xs font-medium text-text-secondary">Trang</span>
         <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
@@ -124,7 +120,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         </form>
       </div>
 
-      {/* Next Button */}
       <button
         type="button"
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
