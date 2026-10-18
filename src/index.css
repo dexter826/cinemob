@@ -45,12 +45,14 @@
   --shadow-premium-hover: 0 0 #0000;
   --shadow-glass: 0 0 #0000;
 
-  --animate-slide-in-right: slide-in-right 0.3s ease-out forwards;
-  --animate-slide-down: slide-down 0.3s ease-out forwards;
-  --animate-fade-in: fade-in 0.2s ease-out forwards;
+  /* Motion — spec 2026-10-18: 3 curve + thang 120/150/200/250ms. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+
+  --animate-page-enter: page-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-zoom-in-95: zoom-in-95 0.2s ease-out forwards;
   --animate-splash-brand: splash-brand 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-splash-rule: splash-rule 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
   --animate-confetti: confetti-burst 1s ease-out forwards;
 
   @keyframes splash-brand {
@@ -64,12 +66,14 @@
     }
   }
 
-  @keyframes splash-rule {
+  @keyframes page-enter {
     from {
-      transform: scaleX(0);
+      opacity: 0;
+      transform: translateY(8px);
     }
     to {
-      transform: scaleX(1);
+      opacity: 1;
+      transform: none;
     }
   }
 
@@ -81,37 +85,6 @@
     to {
       opacity: 0;
       transform: rotate(var(--confetti-angle)) translateY(calc(var(--confetti-distance) * -1));
-    }
-  }
-
-  @keyframes slide-in-right {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slide-down {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
     }
   }
 
