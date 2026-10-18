@@ -6,7 +6,6 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
 import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import Login from '@/features/auth/components/login';
@@ -37,7 +36,6 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 function AnimatedRoutes() {
   const location = useLocation();
   const navigationType = useNavigationType();
-  const reducedMotion = useReducedMotion() ?? false;
 
   // PUSH/REPLACE luôn mở từ đỉnh trang; POP để browser + use-scroll-restore xử lý.
   useEffect(() => {
@@ -47,12 +45,7 @@ function AnimatedRoutes() {
   }, [location.pathname, navigationType]);
 
   return (
-    <motion.div
-      key={location.pathname}
-      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-    >
+    <div key={location.pathname} className="motion-safe:animate-page-enter">
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/movie/:id" element={<MovieDetailPage />} />
@@ -65,7 +58,7 @@ function AnimatedRoutes() {
         <Route path="/profile/:uid" element={<MemberProfilePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </motion.div>
+    </div>
   );
 }
 
