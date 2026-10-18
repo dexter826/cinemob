@@ -11,14 +11,12 @@ function Footer() {
   return (
     <footer className="hidden md:block relative bg-background border-t border-border py-6 mt-auto">
       <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        {/* Khối 1: Thương hiệu */}
         <div className="flex-1 text-center md:text-left">
           <span className="font-display text-lg tracking-wide select-none">
             Cine<span className="text-primary">MOB</span>
           </span>
         </div>
 
-        {/* Khối 2: Mạng xã hội */}
         <div className="flex-1 flex items-center justify-center gap-5">
           {socialLinks.map((link) => {
             const Icon = link.icon;
@@ -37,7 +35,6 @@ function Footer() {
           })}
         </div>
 
-        {/* Khối 3: Bản quyền */}
         <div className="flex-1 text-[10px] font-medium tracking-[0.1em] text-text-secondary flex items-center justify-center md:justify-end">
           <span>© {new Date().getFullYear()} CineMOB</span>
         </div>
