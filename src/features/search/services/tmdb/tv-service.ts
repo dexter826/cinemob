@@ -27,7 +27,6 @@ interface TVSeasonEpisodesResponse {
   }>;
 }
 
-// Lấy thông tin mùa phim.
 export const getTVSeasonDetails = async (
   tvId: number,
   seasonNumber: number,
@@ -42,7 +41,6 @@ export const getTVSeasonDetails = async (
   return data ? { episode_count: data.episodes?.length || 0 } : null;
 };
 
-// Lấy số mùa hiện tại của series từ TMDB (null nếu không đọc được).
 export const getTVShowSeasonCount = async (
   tvId: number,
   signal?: AbortSignal,
@@ -51,7 +49,6 @@ export const getTVShowSeasonCount = async (
   return data?.number_of_seasons ?? null;
 };
 
-// Lấy tổng số tập phim theo mùa.
 export const getTVShowEpisodeInfo = async (
   tvId: number,
   numberOfSeasons: number,
@@ -103,7 +100,6 @@ export const parseLocalDate = (dateStr: string): Date | null => {
   return d;
 };
 
-// Lấy danh sách tập phim sắp chiếu.
 export const getTVShowUpcomingEpisodes = async (
   tvId: number,
   signal?: AbortSignal,
@@ -166,7 +162,6 @@ export const getTVShowUpcomingEpisodes = async (
   );
 };
 
-// Đọc cả lịch sử và lịch đã công bố trong khoảng ngày của lịch tháng.
 export const getTVShowEpisodesInRange = async (
   tvId: number,
   startDate: string,
@@ -204,7 +199,6 @@ export const getTVShowEpisodesInRange = async (
     .sort((a, b) => a.air_date.localeCompare(b.air_date));
 };
 
-// Lấy thông tin tập phim tiếp theo.
 export const getTVShowNextEpisode = async (
   tvId: number,
   signal?: AbortSignal,

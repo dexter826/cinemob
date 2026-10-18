@@ -29,7 +29,6 @@ interface PersonMovieSectionProps {
   onPageChange: (page: number) => void;
 }
 
-// Thanh tìm/lọc + lưới phim của nghệ sĩ.
 export function PersonMovieSection({
   searchQuery,
   onSearchQueryChange,
@@ -66,7 +65,6 @@ export function PersonMovieSection({
 
   return (
     <>
-      {/* Search & Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-6 pt-4">
         <div className="flex items-center gap-3 relative md:flex-1">
           <SearchField
@@ -156,7 +154,6 @@ export function PersonMovieSection({
         )}
       </div>
 
-      {/* Results */}
       {paginatedMovies.length > 0 ? (
         <div className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">

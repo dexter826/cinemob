@@ -41,15 +41,9 @@ const SEARCH_SORT_VALUES: SearchSortBy[] = [
   'title.desc',
 ];
 
-// Hook điều phối chính cho trang Tìm kiếm.
 export const useSearch = () => {
   const { openAddModal } = useAddMovieStore();
-  const {
-    trendingMovies,
-    isTrendingLoading,
-    trendingError,
-    fetchTrending,
-  } = useTrendingStore();
+  const { trendingMovies, isTrendingLoading, trendingError, fetchTrending } = useTrendingStore();
 
   const { movies: savedMovies } = useMovieStore();
 
@@ -79,7 +73,6 @@ export const useSearch = () => {
   // Tăng nonce để nạp lại kết quả TMDB khi bấm Thử lại.
   const [retryNonce, setRetryNonce] = useState(0);
 
-  // Chép trạng thái tìm kiếm vào query string, bỏ qua giá trị mặc định.
   const syncParams = useCallback(
     (next: SearchFormFilters, page: number, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
@@ -279,7 +272,6 @@ export const useSearch = () => {
     isLoading: isSearchMode ? isSearchLoading : isDiscoverLoading,
     resultsError: isSearchMode ? searchError : discoverError,
     retrySearch: () => setRetryNonce((n) => n + 1),
-    // Search states
     submittedQuery,
     suggestions,
     isSuggesting,

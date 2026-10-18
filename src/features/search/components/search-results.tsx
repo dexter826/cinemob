@@ -26,7 +26,6 @@ interface SearchResultsProps {
   retrySearch?: () => void;
 }
 
-/** Hiển thị kết quả tìm kiếm, lọc phim hoặc danh sách phim thịnh hành. */
 function SearchResults({
   mode,
   onClear,

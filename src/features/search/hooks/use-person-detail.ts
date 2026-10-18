@@ -39,7 +39,6 @@ export function usePersonDetail(personId?: string) {
   const [showFilters, setShowFilters] = useState(false);
   const requestSequence = useRef(0);
 
-  // Chép bộ lọc vào query string, bỏ qua giá trị mặc định.
   const syncParams = useCallback(
     (
       next: {

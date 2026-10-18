@@ -12,7 +12,6 @@ import PageHeader from '@/shared/components/ui/page-header';
 import { PersonMovieSection } from '../components/person/person-movie-section';
 import { usePersonDetail } from '../hooks/use-person-detail';
 
-/** Chi tiết nghệ sĩ, diễn viên và danh sách phim liên quan. */
 function PersonDetailPage() {
   const { personId } = useParams<{ personId: string }>();
   const navigate = useNavigate();
@@ -100,10 +99,8 @@ function PersonDetailPage() {
           </div>
         ) : (
           <>
-            {/* Person Info Section */}
             <div className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6 overflow-hidden relative">
               <div className="flex flex-col md:flex-row gap-6 sm:gap-8 relative z-10">
-                {/* Person Image */}
                 <div className="flex justify-center md:justify-start shrink-0">
                   <div className="relative group">
                     <img
@@ -114,7 +111,6 @@ function PersonDetailPage() {
                   </div>
                 </div>
 
-                {/* Person Details */}
                 <div className="flex-1 space-y-6">
                   <div>
                     <div className="flex items-center justify-between mb-6">
@@ -232,7 +228,6 @@ function PersonDetailPage() {
               </div>
             </div>
 
-            {/* Search & Filter Bar + Results */}
             <PersonMovieSection
               searchQuery={searchQuery}
               onSearchQueryChange={setSearchQuery}

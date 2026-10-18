@@ -2,7 +2,6 @@ import { tmdbFetch, API_KEY } from './client';
 import { TMDBMovieResult, TMDBPerson } from '@/types';
 import { decodeMovieResultPage, decodePerson } from './decoders';
 
-// Lấy phim đang thịnh hành.
 export const getTrendingMovies = async (
   page: number = 1,
   signal?: AbortSignal,
@@ -26,7 +25,6 @@ export const getTrendingMovies = async (
   return { results, totalPages: data?.total_pages || 1 };
 };
 
-// Khám phá phim với bộ lọc.
 export const getDiscoverMovies = async (
   params: {
     page?: number;
@@ -120,7 +118,6 @@ export const getDiscoverMovies = async (
   }
 };
 
-// Lấy thông tin chi tiết nghệ sĩ từ TMDB.
 export const getPersonDetails = async (
   personId: number | string,
   signal?: AbortSignal,

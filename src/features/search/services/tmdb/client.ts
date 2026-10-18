@@ -43,7 +43,6 @@ export const withLimit = <T>(
 export const BASE_URL = TMDB_BASE_URL;
 export const API_KEY = TMDB_API_KEY;
 
-// Gọi API từ TMDB.
 export const tmdbFetch = async <T>(
   endpoint: string,
   params: Record<string, string>,

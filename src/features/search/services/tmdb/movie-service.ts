@@ -22,7 +22,6 @@ const toPersonMovie = (item: TMDBCreditItem, media_type: 'movie' | 'tv'): Person
   department: item.department,
 });
 
-// Lấy thông tin chi tiết phim.
 export const getMovieDetails = async (
   id: number,
   mediaType: 'movie' | 'tv' = 'movie',
@@ -31,7 +30,6 @@ export const getMovieDetails = async (
   return tmdbFetch(`${mediaType}/${id}`, {}, decodeMovieDetail, signal);
 };
 
-// Lấy thông tin chi tiết phim theo ngôn ngữ.
 export const getMovieDetailsWithLanguage = async (
   id: number,
   mediaType: 'movie' | 'tv' = 'movie',
@@ -41,7 +39,6 @@ export const getMovieDetailsWithLanguage = async (
   return tmdbFetch(`${mediaType}/${id}`, { language }, decodeMovieDetail, signal);
 };
 
-// Lấy danh sách trailer/video.
 export const getMovieVideos = async (
   id: number,
   mediaType: 'movie' | 'tv' = 'movie',
@@ -53,7 +50,6 @@ export const getMovieVideos = async (
   );
 };
 
-// Lấy danh sách diễn viên và đoàn phim.
 export const getMovieCredits = async (
   id: number,
   mediaType: 'movie' | 'tv' = 'movie',
@@ -62,7 +58,6 @@ export const getMovieCredits = async (
   return tmdbFetch(`${mediaType}/${id}/credits`, {}, decodeCredits, signal);
 };
 
-// Lấy phim theo diễn viên.
 export const getPersonMovieCredits = async (
   personId: number,
   signal?: AbortSignal,

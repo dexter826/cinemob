@@ -23,7 +23,6 @@ interface SearchFiltersProps {
   handleSelectMovie: (movie: TMDBMovieResult) => void;
 }
 
-/** Bộ lọc và tìm kiếm cho trang Khám phá. */
 function SearchFilters({
   filters,
   updateFilter,
@@ -100,7 +99,6 @@ function SearchFilters({
           }
         />
 
-        {/* Suggestion Dropdown */}
         <AnimatePresence>
           {showSuggestions && suggestions.length > 0 && (
             <motion.div

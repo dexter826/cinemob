@@ -28,7 +28,6 @@ interface TMDBLookupResult {
   };
 }
 
-// Xử lý tra cứu thông tin phim từ TMDB.
 export const useTMDBLookup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

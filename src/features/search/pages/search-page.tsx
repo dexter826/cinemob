@@ -5,7 +5,6 @@ import PageHeader from '@/shared/components/ui/page-header';
 import SearchFilters from '../components/search-filters';
 import SearchResults from '../components/search-results';
 
-/** Trang tìm kiếm và khám phá phim từ TMDB. */
 function SearchPage() {
   const {
     filters,

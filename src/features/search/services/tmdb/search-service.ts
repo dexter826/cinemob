@@ -2,7 +2,6 @@ import { tmdbFetch, API_KEY, withLimit } from './client';
 import { TMDBMovieResult, TMDBPerson, TMDBMovieDetail } from '@/types';
 import { decodeMovieDetail, decodeMovieResultPage, decodePersonPage } from './decoders';
 
-// Tìm kiếm phim và TV show.
 export const searchMovies = async (
   query: string,
   page: number = 1,
@@ -75,7 +74,6 @@ export const searchMovies = async (
   }
 };
 
-// Tìm kiếm người nổi tiếng.
 export const searchPeople = async (
   query: string,
   page: number = 1,
