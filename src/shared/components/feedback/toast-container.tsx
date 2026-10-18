@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION } from '@/constants/animations';
+import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 import useToastStore from '../../stores/toast-store';
 import { IconButton } from '../ui/icon-button';
 
-const toastTransition = { duration: MOTION_DURATION.standard, ease: 'easeOut' as const };
+const toastTransition = { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter };
 
 function ToastIcon({ type }: { type: string }) {
   const iconClass = 'mr-3 shrink-0';
@@ -49,7 +49,11 @@ function ToastList({
             exit={
               reducedMotion
                 ? { opacity: 0 }
-                : { opacity: 0, y: 8, transition: { duration: MOTION_DURATION.fast } }
+                : {
+                    opacity: 0,
+                    y: 8,
+                    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASING.exit },
+                  }
             }
             transition={toastTransition}
             aria-atomic="true"

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
 import { X } from 'lucide-react';
-import { DIALOG_VARIANTS, OVERLAY_VARIANTS, getMotionTransition } from '@/constants/animations';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 import { useFocusTrap } from '@/shared/hooks/use-focus-trap';
 import { usePreventScroll } from '@/shared/hooks/use-prevent-scroll';
 import { classNames } from '@/shared/utils/class-names';
@@ -76,6 +76,37 @@ export function Dialog({
 }: DialogProps) {
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
+  const isSheet = presentation === 'sheet';
+  const backdropEnter = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+    MOTION_EASING.enter,
+  );
+  const backdropExit = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+    MOTION_EASING.exit,
+  );
+  const panelEnter = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+    MOTION_EASING.enter,
+  );
+  const panelExit = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+    MOTION_EASING.exit,
+  );
+  const overlayVariants: Variants = {
+    closed: { opacity: 0, transition: backdropExit },
+    open: { opacity: 1, transition: backdropEnter },
+  };
+  const panelVariants: Variants = {
+    closed: isSheet
+      ? { opacity: 0, y: '100%', transition: panelExit }
+      : { opacity: 0, y: 8, transition: panelExit },
+    open: { opacity: 1, y: 0, transition: panelEnter },
+  };
   usePreventScroll(open);
   useFocusTrap({ active: open, containerRef: dialogRef, initialFocusRef, onEscape: onClose });
 
@@ -89,11 +120,10 @@ export function Dialog({
             'fixed inset-0 flex flex-col bg-black/72 p-0 sm:p-4',
             overlayClassName || 'z-50',
           )}
-          variants={OVERLAY_VARIANTS}
+          variants={overlayVariants}
           initial="closed"
           animate="open"
           exit="closed"
-          transition={getMotionTransition(reducedMotion)}
           onClick={(event) => {
             if (closeOnOverlay && event.target === event.currentTarget) onClose();
           }}
@@ -110,11 +140,10 @@ export function Dialog({
               getPresentationClasses(presentation, size),
               className,
             )}
-            variants={DIALOG_VARIANTS}
+            variants={panelVariants}
             initial="closed"
             animate="open"
             exit="closed"
-            transition={getMotionTransition(reducedMotion)}
           >
             {children}
           </motion.section>
