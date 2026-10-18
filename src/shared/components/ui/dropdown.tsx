@@ -2,7 +2,7 @@ import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import ListboxSearchInput from './listbox-search-input';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 interface Option {
   value: string | number;
@@ -52,8 +52,7 @@ function Dropdown({
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const reducedMotion = useReducedMotion() ?? false;
-  const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const panelMotion = getPanelMotion(reducedMotion);
 
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value),
@@ -189,10 +188,7 @@ function Dropdown({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4, transition: panelExit }}
-            transition={panelEnter}
+            {...panelMotion}
             className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
           >
             {searchable && (

@@ -49,7 +49,7 @@ export default function LazyDialog<P extends object>({
     };
   }, [open, loader, loaded, attempt]);
   const handleExited = useCallback(() => setShouldRender(false), []);
-  if (!shouldRender) return null;
+  if (!shouldRender && !open) return null;
   const retry = () => {
     setLoaded(null);
     setError(false);

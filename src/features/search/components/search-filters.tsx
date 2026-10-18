@@ -9,7 +9,7 @@ import { TMDBMovieResult } from '@/types';
 import { getTMDBImageUrl, getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import type { SearchSortBy, SearchFormFilters } from '../hooks/use-search';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 interface SearchFiltersProps {
   filters: SearchFormFilters;
@@ -43,8 +43,7 @@ function SearchFilters({
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const reducedMotion = useReducedMotion() ?? false;
-  const panelEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const panelExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const panelMotion = getPanelMotion(reducedMotion);
 
   // Chỉ focus sẵn ô tìm kiếm trên desktop; mobile tránh bật keyboard ngay khi mở trang.
   useEffect(() => {
@@ -108,10 +107,7 @@ function SearchFilters({
               id="search-suggestions"
               role="listbox"
               aria-label="Gợi ý tìm kiếm"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4, transition: panelExit }}
-              transition={panelEnter}
+              {...panelMotion}
               className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
             >
               <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">

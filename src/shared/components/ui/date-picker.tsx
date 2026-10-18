@@ -4,7 +4,7 @@ import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatDateDMY, monthLabel } from '@/shared/utils/date-format';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 interface DatePickerProps {
   value: string;
@@ -54,12 +54,7 @@ function DatePicker({
   const isMobile = useMediaQuery('(max-width: 639px)');
   const useDialogPresentation = isMobile || popupMode === 'dialog';
   const reducedMotion = useReducedMotion() ?? false;
-  const popoverEnter = getMotionTransition(
-    reducedMotion,
-    MOTION_DURATION.fast,
-    MOTION_EASING.enter,
-  );
-  const popoverExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const popoverMotion = getPanelMotion(reducedMotion);
   const [viewDate, setViewDate] = useState(() => {
     if (value) {
       const [y, m] = value.split('-').map(Number);
@@ -238,10 +233,10 @@ function DatePicker({
       role={useDialogPresentation ? undefined : 'dialog'}
       aria-label={useDialogPresentation ? undefined : 'Chọn ngày'}
       onClick={(e) => useDialogPresentation && e.stopPropagation()}
-      initial={useDialogPresentation ? undefined : { opacity: 0, y: -4 }}
-      animate={useDialogPresentation ? undefined : { opacity: 1, y: 0 }}
-      exit={useDialogPresentation ? undefined : { opacity: 0, y: -4, transition: popoverExit }}
-      transition={popoverEnter}
+      initial={useDialogPresentation ? undefined : popoverMotion.initial}
+      animate={useDialogPresentation ? undefined : popoverMotion.animate}
+      exit={useDialogPresentation ? undefined : popoverMotion.exit}
+      transition={popoverMotion.transition}
     >
       {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">

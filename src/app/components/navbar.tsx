@@ -9,7 +9,7 @@ import useAlertStore from '@/shared/stores/alert-store';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 const loadRandomPicker = () => import('@/features/movies/components/random-picker-modal');
 const loadMemberSearch = () => import('@/features/profile/components/user/member-search-modal');
@@ -31,8 +31,7 @@ function Navbar() {
   const accountMenuRef = React.useRef<HTMLDivElement>(null);
   const { showAlert } = useAlertStore();
   const reducedMotion = useReducedMotion() ?? false;
-  const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const panelMotion = getPanelMotion(reducedMotion);
 
   const closeDropdown = () => setIsDropdownOpen(false);
   const closeAndRestoreFocus = () => {
@@ -192,10 +191,7 @@ function Navbar() {
                     role="menu"
                     aria-label="Menu tài khoản"
                     onKeyDown={handleMenuKeyDown}
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4, transition: menuExit }}
-                    transition={menuEnter}
+                    {...panelMotion}
                     className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
                   >
                     <div className="px-4 py-3 border-b border-border">

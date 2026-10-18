@@ -62,6 +62,33 @@ const getPresentationClasses = (
   }
 };
 
+function buildDialogVariants(
+  isSheet: boolean,
+  reducedMotion: boolean,
+): { overlayVariants: Variants; panelVariants: Variants } {
+  const enter = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
+    MOTION_EASING.enter,
+  );
+  const exit = getMotionTransition(
+    reducedMotion,
+    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
+    MOTION_EASING.exit,
+  );
+  const overlayVariants: Variants = {
+    closed: { opacity: 0, transition: exit },
+    open: { opacity: 1, transition: enter },
+  };
+  const panelVariants: Variants = {
+    closed: isSheet
+      ? { opacity: 0, y: '100%', transition: exit }
+      : { opacity: 0, y: 8, transition: exit },
+    open: { opacity: 1, y: 0, transition: enter },
+  };
+  return { overlayVariants, panelVariants };
+}
+
 export function Dialog({
   open,
   onClose,
@@ -79,36 +106,10 @@ export function Dialog({
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
   const isSheet = presentation === 'sheet';
-  const backdropEnter = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
-    MOTION_EASING.enter,
+  const { overlayVariants, panelVariants } = React.useMemo(
+    () => buildDialogVariants(isSheet, reducedMotion),
+    [isSheet, reducedMotion],
   );
-  const backdropExit = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
-    MOTION_EASING.exit,
-  );
-  const panelEnter = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.slow : MOTION_DURATION.medium,
-    MOTION_EASING.enter,
-  );
-  const panelExit = getMotionTransition(
-    reducedMotion,
-    isSheet ? MOTION_DURATION.medium : MOTION_DURATION.base,
-    MOTION_EASING.exit,
-  );
-  const overlayVariants: Variants = {
-    closed: { opacity: 0, transition: backdropExit },
-    open: { opacity: 1, transition: backdropEnter },
-  };
-  const panelVariants: Variants = {
-    closed: isSheet
-      ? { opacity: 0, y: '100%', transition: panelExit }
-      : { opacity: 0, y: 8, transition: panelExit },
-    open: { opacity: 1, y: 0, transition: panelEnter },
-  };
   usePreventScroll(open);
   useFocusTrap({ active: open, containerRef: dialogRef, initialFocusRef, onEscape: onClose });
 

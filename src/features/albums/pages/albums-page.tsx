@@ -114,7 +114,7 @@ function AlbumsPage() {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
-          {paginatedAlbums.map((album, index) => {
+          {paginatedAlbums.map((album) => {
             const coverPosters: (string | null)[] =
               (album.docId ? albumCoverMovies[album.docId] : undefined)?.map(
                 (movie) => movie.poster_path,
@@ -126,7 +126,6 @@ function AlbumsPage() {
                 album={album}
                 coverPosters={coverPosters}
                 onDelete={handleDelete}
-                index={index}
               />
             );
           })}

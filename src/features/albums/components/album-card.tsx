@@ -1,19 +1,15 @@
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Album } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { MOTION_DURATION } from '@/constants/animations';
 
 interface AlbumCardProps {
   album: Album;
   /** Poster của tối đa 3 phim đầu tiên (bìa + 2 lớp chồng sau). */
   coverPosters: (string | null)[];
   onDelete: (album: Album) => void;
-  /** Vị trí trong lưới — dùng cho stagger fade khi tải. */
-  index: number;
 }
 
 /**
@@ -21,8 +17,7 @@ interface AlbumCardProps {
  * 2 poster sau lệch nhẹ, hover xòe ra. Không bóng: lớp sau phân tách bằng
  * hairline. Album trống = ô đứt nét + chữ "TRỐNG" mờ.
  */
-function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
-  const reducedMotion = useReducedMotion() ?? false;
+function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
   const count = album.movieDocIds.length;
   const cover = coverPosters[0] ?? null;
   const backRight = coverPosters[2] ?? null;
@@ -39,15 +34,7 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
   `;
 
   return (
-    <motion.article
-      initial={reducedMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{
-        duration: MOTION_DURATION.medium,
-        delay: reducedMotion ? 0 : Math.min(index * 0.05, 0.4),
-      }}
-      className="group relative block aspect-2/3"
-    >
+    <article className="group relative block aspect-2/3">
       <Link
         to={`/albums/${album.docId}`}
         aria-label={`Mở album ${album.name}, ${count} phim`}
@@ -145,7 +132,7 @@ function AlbumCard({ album, coverPosters, onDelete, index }: AlbumCardProps) {
       >
         <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
       </button>
-    </motion.article>
+    </article>
   );
 }
 

@@ -26,7 +26,7 @@ import ProfileMeta from './profile-meta';
 import type { OwnProfileDetails } from '../hooks/use-own-profile';
 import type { MemberProfile } from '@/types';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
+import { getPanelMotion } from '@/constants/animations';
 
 interface OwnProfileEditorProps {
   profile: MemberProfile | null;
@@ -78,8 +78,7 @@ function OwnProfileEditor({
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
   const reducedMotion = useReducedMotion() ?? false;
-  const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
-  const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
+  const panelMotion = getPanelMotion(reducedMotion);
 
   useEffect(() => {
     if (!isAvatarMenuOpen) return;
@@ -324,10 +323,7 @@ function OwnProfileEditor({
                       ref={avatarMenuRef}
                       role="menu"
                       onKeyDown={handleMenuKeyDown}
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4, transition: menuExit }}
-                      transition={menuEnter}
+                      {...panelMotion}
                       className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden"
                     >
                       <button

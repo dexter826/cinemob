@@ -26,3 +26,14 @@ export const getMotionTransition = (
   duration: reducedMotion ? 0 : duration,
   ease,
 });
+
+export const getPanelMotion = (reducedMotion: boolean) => ({
+  initial: { opacity: 0, y: -4 },
+  animate: { opacity: 1, y: 0 },
+  exit: {
+    opacity: 0,
+    y: -4,
+    transition: getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit),
+  },
+  transition: getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter),
+});
