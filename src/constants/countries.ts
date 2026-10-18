@@ -1,4 +1,3 @@
-// Ánh xạ tên quốc gia sang Tiếng Việt.
 export const COUNTRY_TRANSLATIONS: Record<string, string> = {
   'United States of America': 'Mỹ',
   'United States': 'Mỹ',
@@ -27,7 +26,6 @@ export const COUNTRY_TRANSLATIONS: Record<string, string> = {
   Mexico: 'Mexico',
 };
 
-// Các quốc gia phổ biến cho form.
 export const COUNTRY_OPTIONS = [
   { value: 'Mỹ', label: 'Mỹ' },
   { value: 'Việt Nam', label: 'Việt Nam' },
@@ -46,7 +44,6 @@ export const COUNTRY_OPTIONS = [
   { value: 'Khác', label: 'Khác' },
 ];
 
-// ISO country codes
 export const TMDB_COUNTRY_OPTIONS = [
   { value: '', label: 'Tất cả quốc gia' },
   { value: 'VN', label: 'Việt Nam' },
@@ -61,7 +58,6 @@ export const TMDB_COUNTRY_OPTIONS = [
   { value: 'IN', label: 'Ấn Độ' },
 ];
 
-// Hỗ trợ dịch danh sách quốc gia.
 export const translateCountries = (countriesString: string): string => {
   if (!countriesString) return '';
   return countriesString

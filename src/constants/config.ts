@@ -19,7 +19,6 @@ if (FIREBASE_CONFIG.apiKey === 'mock_key' || FIREBASE_CONFIG.projectId === 'mock
   );
 }
 
-// Ảnh mặc định khi thiếu poster.
 export const PLACEHOLDER_IMAGE = 'https://picsum.photos/300/450?grayscale&blur=2';
 
 export const CLOUDINARY_CONFIG = {

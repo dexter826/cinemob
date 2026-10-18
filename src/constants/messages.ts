@@ -1,4 +1,3 @@
-// Danh sách thông báo trong ứng dụng.
 export const MESSAGES = {
   MOVIE: {
     ADD_SUCCESS: 'Đã thêm phim mới',

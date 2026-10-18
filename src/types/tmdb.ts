@@ -55,7 +55,7 @@ export interface TMDBPerson {
   place_of_birth?: string | null;
   biography?: string | null;
   homepage?: string | null;
-  known_for?: TMDBMovieResult[]; // For search results
+  known_for?: TMDBMovieResult[];
 }
 
 export interface TMDBCast extends TMDBPerson {
@@ -86,7 +86,6 @@ export interface PersonMovie {
   department?: string;
 }
 
-// Release Calendar types
 export interface TMDBEpisode {
   id: number;
   name: string;
