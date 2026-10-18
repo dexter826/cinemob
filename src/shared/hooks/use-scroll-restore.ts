@@ -2,10 +2,8 @@ import { useEffect } from 'react';
 import { useNavigationType } from 'react-router-dom';
 
 /**
- * Lưu vị trí scroll vào sessionStorage và PHỤC HỒI CHỈ khi điều hướng kiểu POP
- * (Back/Forward từ trang chi tiết về lưới). Bấm nav sang trang khác phải luôn
- * mở từ đỉnh — không nhảy xuống vị trí cũ gây cảm giác nav đè lên nội dung.
- * Lưu throttle bằng rAF; key theo route để không đè nhau giữa các trang.
+ * Lưu vị trí scroll vào sessionStorage, CHỈ phục hồi khi điều hướng kiểu POP
+ * (Back/Forward từ trang chi tiết về lưới). Bấm nav sang trang khác luôn mở từ đỉnh.
  */
 export function useScrollRestore(key: string) {
   const navigationType = useNavigationType();
@@ -34,9 +32,7 @@ export function useScrollRestore(key: string) {
         try {
           const saved = sessionStorage.getItem(storageKey);
           if (saved) window.scrollTo({ top: Number(saved), behavior: 'auto' });
-        } catch {
-          /* ignore */
-        }
+        } catch {}
       });
       return () => {
         window.removeEventListener('scroll', onScroll);

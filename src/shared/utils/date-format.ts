@@ -1,4 +1,3 @@
-// Bộ format ngày/giờ dùng Intl với locale vi-VN — tránh format hardcode rải rác.
 const dayMonthYear = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',
   month: '2-digit',

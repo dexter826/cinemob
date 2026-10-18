@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-// Khóa cuộn trang khi mở modal và giữ nguyên layout.
 export const usePreventScroll = (isOpen: boolean) => {
   useEffect(() => {
     if (!isOpen) return;
