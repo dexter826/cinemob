@@ -8,6 +8,8 @@ import { Link, useLocation } from 'react-router-dom';
 import useAlertStore from '@/shared/stores/alert-store';
 import { NAV_ITEMS, isNavItemActive } from '@/shared/config/navigation';
 import { IconButton } from '@/shared/components/ui/icon-button';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MOTION_DURATION, MOTION_EASING, getMotionTransition } from '@/constants/animations';
 
 const loadRandomPicker = () => import('@/features/movies/components/random-picker-modal');
 const loadMemberSearch = () => import('@/features/profile/components/user/member-search-modal');
@@ -28,6 +30,9 @@ function Navbar() {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const accountMenuRef = React.useRef<HTMLDivElement>(null);
   const { showAlert } = useAlertStore();
+  const reducedMotion = useReducedMotion() ?? false;
+  const menuEnter = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.enter);
+  const menuExit = getMotionTransition(reducedMotion, MOTION_DURATION.fast, MOTION_EASING.exit);
 
   const closeDropdown = () => setIsDropdownOpen(false);
   const closeAndRestoreFocus = () => {
@@ -107,12 +112,12 @@ function Navbar() {
                   }`}
                 >
                   {item.label}
-                  {active && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
-                    />
-                  )}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary transition-opacity ${
+                      active ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
                 </Link>
               );
             })}
@@ -175,69 +180,75 @@ function Navbar() {
                 <ChevronDown
                   size={14}
                   aria-hidden="true"
-                  className={`hidden md:block transition-colors shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`hidden md:block transition-transform shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
-              {isDropdownOpen && (
-                <div
-                  id="account-menu"
-                  ref={accountMenuRef}
-                  role="menu"
-                  aria-label="Menu tài khoản"
-                  onKeyDown={handleMenuKeyDown}
-                  className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
-                >
-                  <div className="px-4 py-3 border-b border-border">
-                    <p className="text-sm font-semibold text-text-primary truncate">
-                      {user?.displayName}
-                    </p>
-                  </div>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    id="account-menu"
+                    ref={accountMenuRef}
+                    role="menu"
+                    aria-label="Menu tài khoản"
+                    onKeyDown={handleMenuKeyDown}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4, transition: menuExit }}
+                    transition={menuEnter}
+                    className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
+                  >
+                    <div className="px-4 py-3 border-b border-border">
+                      <p className="text-sm font-semibold text-text-primary truncate">
+                        {user?.displayName}
+                      </p>
+                    </div>
 
-                  <div className="p-1.5 space-y-0.5">
-                    <Link
-                      to={user ? `/profile/${user.uid}` : '/'}
-                      role="menuitem"
-                      tabIndex={-1}
-                      onClick={closeDropdown}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
-                    >
-                      <User size={18} strokeWidth={1.5} aria-hidden="true" />
-                      <span>Hồ sơ</span>
-                    </Link>
-                    <Link
-                      to="/stats"
-                      role="menuitem"
-                      tabIndex={-1}
-                      onClick={closeDropdown}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
-                    >
-                      <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
-                      <span>Thống kê</span>
-                    </Link>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      tabIndex={-1}
-                      onClick={() => {
-                        showAlert({
-                          title: 'Xác nhận đăng xuất',
-                          message: 'Bạn có chắc chắn muốn đăng xuất?',
-                          type: 'danger',
-                          confirmText: 'Đăng xuất',
-                          cancelText: 'Hủy',
-                          onConfirm: logout,
-                        });
-                        closeDropdown();
-                      }}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
-                    >
-                      <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </div>
-                </div>
-              )}
+                    <div className="p-1.5 space-y-0.5">
+                      <Link
+                        to={user ? `/profile/${user.uid}` : '/'}
+                        role="menuitem"
+                        tabIndex={-1}
+                        onClick={closeDropdown}
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                      >
+                        <User size={18} strokeWidth={1.5} aria-hidden="true" />
+                        <span>Hồ sơ</span>
+                      </Link>
+                      <Link
+                        to="/stats"
+                        role="menuitem"
+                        tabIndex={-1}
+                        onClick={closeDropdown}
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                      >
+                        <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
+                        <span>Thống kê</span>
+                      </Link>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        tabIndex={-1}
+                        onClick={() => {
+                          showAlert({
+                            title: 'Xác nhận đăng xuất',
+                            message: 'Bạn có chắc chắn muốn đăng xuất?',
+                            type: 'danger',
+                            confirmText: 'Đăng xuất',
+                            cancelText: 'Hủy',
+                            onConfirm: logout,
+                          });
+                          closeDropdown();
+                        }}
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
+                      >
+                        <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
+                        <span>Đăng xuất</span>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </nav>

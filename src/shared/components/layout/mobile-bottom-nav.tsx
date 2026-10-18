@@ -32,12 +32,12 @@ function MobileBottomNav() {
               aria-current={isActive ? 'page' : undefined}
               className="relative flex flex-col items-center justify-center gap-1 flex-1 min-h-14 cursor-pointer"
             >
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute top-0 inset-x-[22%] h-0.5 bg-primary"
-                />
-              )}
+              <span
+                aria-hidden="true"
+                className={`absolute top-0 inset-x-[22%] h-0.5 bg-primary transition-opacity ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
               <Icon
                 size={20}
                 strokeWidth={isActive ? 2 : 1.5}
