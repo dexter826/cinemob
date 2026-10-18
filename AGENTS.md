@@ -65,6 +65,19 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Commenting Rules
+
+**Comment the "why", not the "what". Code shows what; comments explain intent.**
+
+- Explain reasons, design decisions, and tradeoffs - not what the code literally does.
+- Don't comment the obvious (e.g. `i++ // increment i`).
+- Keep comments in sync with code - an outdated comment is worse than none.
+- Use doc comments (JSDoc/docstring) for public APIs, classes, and modules.
+- Never leave dead code as comments - use git history instead.
+- Use TODO/FIXME deliberately, with context - don't overuse.
+- Keep comments short, grammatical, and consistent with the codebase language.
+- DO NOT ADD ANY COMMENTS unless asked or required by the rules above.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
