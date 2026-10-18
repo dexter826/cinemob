@@ -15,7 +15,6 @@ interface CalendarGridProps {
 
 const DAYS_OF_WEEK = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
-/** Hiển thị lưới lịch tháng và xử lý điều hướng thời gian. */
 function CalendarGrid({
   currentDate,
   navigateMonth,

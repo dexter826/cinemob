@@ -30,7 +30,6 @@ const parseDateParam = (value: string | null): Date | null => {
     : null;
 };
 
-// Quản lý lịch phát sóng và thông báo đẩy.
 export const useReleaseCalendar = () => {
   const { user } = useAuth();
   const collectionError = useMovieStore((state) => state.error);

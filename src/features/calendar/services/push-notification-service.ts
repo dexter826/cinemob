@@ -4,7 +4,6 @@ import { db, auth } from '@/shared/lib/firebase';
 // Khóa VAPID public — chỉ từ env; thiếu thì push bị tắt (tránh key stale khi CI đổi key).
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
-// Định dạng khóa VAPID cho Web Push.
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -45,7 +44,6 @@ export function isMobileDevice(): boolean {
   return isIOS || isAndroid;
 }
 
-// Kiểm tra khả năng sử dụng push notification.
 export function isPushUsable(): boolean {
   return isPushSupported() && (isMobileDevice() || isInstalledPWA());
 }
@@ -55,7 +53,6 @@ export function getNotificationPermission(): NotificationPermission {
   return Notification.permission;
 }
 
-// Đăng ký Service Worker cho thông báo.
 async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
   if ('serviceWorker' in navigator) {
     const registrations = await navigator.serviceWorker.getRegistrations();
@@ -70,7 +67,6 @@ async function registerPushServiceWorker(): Promise<ServiceWorkerRegistration> {
   throw new Error('Service Worker not supported');
 }
 
-// Đăng ký nhận thông báo mới.
 export async function subscribeToPushNotifications(): Promise<PushSubscription | null> {
   if (!isPushSupported()) {
     console.warn('Push notifications are not supported');
@@ -129,7 +125,6 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
   }
 }
 
-// Hủy đăng ký nhận thông báo.
 export async function unsubscribeFromPushNotifications(): Promise<void> {
   if (!isPushSupported()) return;
 
@@ -159,7 +154,6 @@ export async function isSubscribedToPush(): Promise<boolean> {
   }
 }
 
-// Lưu thông tin đăng ký vào Firestore.
 async function saveSubscriptionToFirestore(subscription: PushSubscription): Promise<void> {
   const user = auth.currentUser;
   if (!user) {

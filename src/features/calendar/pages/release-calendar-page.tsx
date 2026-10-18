@@ -12,7 +12,6 @@ import CalendarGrid from '../components/calendar-grid';
 import EpisodeList from '../components/episode-list';
 import PageHeader from '@/shared/components/ui/page-header';
 
-/** Trang Lịch phát sóng các tập phim mới của Series. */
 type PushStatus = 'loading' | 'on' | 'blocked' | 'off';
 
 const getPushStatus = (

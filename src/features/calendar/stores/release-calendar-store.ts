@@ -17,7 +17,6 @@ interface ReleaseCalendarState {
   fetchMonthEpisodes: (userId: string, movies: Movie[], monthKey: string) => Promise<void>;
 }
 
-// Quản lý trạng thái lịch phát sóng tập phim mới.
 let calendarRequestId = 0;
 const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   movies: [],
