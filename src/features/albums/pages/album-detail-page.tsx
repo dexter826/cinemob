@@ -15,7 +15,7 @@ import {
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import Pagination from '@/shared/components/ui/pagination';
-import Search from '@/shared/components/ui/search';
+import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
@@ -269,7 +269,8 @@ function AlbumDetailPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
               <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
-                <Search
+                <SearchField
+                  variant="underline"
                   value={searchQuery}
                   onChange={setSearchQuery}
                   placeholder="Tìm phim trong lịch sử…"

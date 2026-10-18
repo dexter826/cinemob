@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Search, X, Filter, ArrowUp, ArrowDown } from 'lucide-react';
+import { X, Filter, ArrowUp, ArrowDown } from 'lucide-react';
 import LazyDialog from '@/shared/components/ui/lazy-dialog';
+import SearchField from '@/shared/components/ui/search-field';
 import { classNames } from '@/shared/utils/class-names';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import {
@@ -170,44 +171,15 @@ function DashboardFilters({
   return (
     <div ref={filterRef} className="relative flex flex-col items-end gap-2.5 w-full lg:w-auto">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 w-full lg:w-auto lg:flex-nowrap justify-end">
-        <div className="relative group flex-1 lg:flex-none lg:w-72 min-w-0 h-12 flex items-center">
-          <Search
-            className="absolute left-2 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors pointer-events-none"
-            size={16}
-            strokeWidth={1.5}
-            aria-hidden="true"
-          />
-          <input
-            type="text"
-            name="library-search"
-            autoComplete="off"
-            spellCheck={false}
-            value={filters.searchQuery}
-            onChange={(e) => updateFilter('searchQuery', e.target.value)}
-            placeholder="Tìm kiếm phim…"
-            aria-label="Lọc phim trong thư viện"
-            className="w-full h-12 bg-transparent rounded-none border-0 pl-8 pr-7 text-sm text-text-primary placeholder:text-text-secondary focus-visible:outline-none transition-colors"
-          />
-          {filters.searchQuery && (
-            <button
-              type="button"
-              onClick={() => updateFilter('searchQuery', '')}
-              aria-label="Xóa từ khóa lọc"
-              className="absolute right-1 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary cursor-pointer p-2"
-            >
-              <X size={14} strokeWidth={1.5} />
-            </button>
-          )}
-          <span
-            aria-hidden="true"
-            className={classNames(
-              'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-200',
-              filters.searchQuery
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-40 group-focus-within:opacity-100',
-            )}
-          />
-        </div>
+        <SearchField
+          variant="underline"
+          name="library-search"
+          value={filters.searchQuery}
+          onChange={(next) => updateFilter('searchQuery', next)}
+          placeholder="Tìm kiếm phim…"
+          label="Lọc phim trong thư viện"
+          className="flex-1 lg:flex-none lg:w-72 min-w-0"
+        />
 
         <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
 

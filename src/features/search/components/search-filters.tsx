@@ -1,7 +1,8 @@
 import Spinner from '@/shared/components/ui/spinner';
 import LoadingStatus from '@/shared/components/ui/loading-status';
+import SearchField from '@/shared/components/ui/search-field';
 import { useRef, useEffect } from 'react';
-import { Search, X, RotateCcw, Star, Calendar, Film, Tv } from 'lucide-react';
+import { Search, RotateCcw, Star, Calendar, Film, Tv } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
@@ -62,40 +63,37 @@ function SearchFilters({
       <LoadingStatus>
         {isSuggesting ? 'Đang tìm gợi ý…' : showSuggestions ? `${suggestions.length} gợi ý.` : ''}
       </LoadingStatus>
-      <div className="relative w-full group" ref={containerRef}>
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {isSuggesting ? (
-            <Spinner size={18} />
-          ) : (
-            <Search
-              className="text-text-secondary group-focus-within:text-primary transition-colors"
-              size={18}
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
-          )}
-        </div>
-        <input
-          type="text"
+      <div className="relative w-full" ref={containerRef}>
+        <SearchField
+          ref={searchInputRef}
+          variant="underline"
           name="search-query"
-          aria-label="Tìm kiếm phim hoặc series"
           role="combobox"
           aria-expanded={showSuggestions && suggestions.length > 0}
           aria-controls="search-suggestions"
           aria-autocomplete="list"
           placeholder="Tìm kiếm phim hoặc series…"
+          label="Tìm kiếm phim hoặc series"
+          leadingIcon={isSuggesting ? <Spinner size={16} /> : undefined}
           value={filters.query}
-          autoComplete="off"
-          spellCheck={false}
           onFocus={() => {
             if (suggestions.length > 0) setShowSuggestions(true);
           }}
-          onChange={(e) => updateFilter('query', e.target.value)}
+          onChange={(next) => updateFilter('query', next)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSearch();
           }}
-          className="w-full h-11 bg-transparent rounded-none border-0 border-b border-border hover:border-b-primary/50 focus-visible:border-b-primary focus-visible:outline-none transition-colors pl-10 pr-24 sm:pr-28 text-sm text-text-primary placeholder:text-text-secondary"
-          ref={searchInputRef}
+          inputClassName="pr-24 sm:pr-28"
+          endSlot={
+            <button
+              type="button"
+              onClick={handleSearch}
+              aria-label="Tìm kiếm phim"
+              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold cursor-pointer"
+            >
+              Tìm
+            </button>
+          }
         />
 
         {/* Suggestion Dropdown */}
@@ -190,25 +188,6 @@ function SearchFilters({
             </div>
           </div>
         )}
-
-        <div className="absolute right-1.5 sm:right-2 bottom-2 flex items-center gap-1 sm:gap-2">
-          {filters.query && (
-            <button
-              onClick={() => updateFilter('query', '')}
-              aria-label="Xóa nội dung tìm kiếm"
-              className="p-1.5 sm:p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-text-secondary transition-colors cursor-pointer"
-            >
-              <X size={20} strokeWidth={1.5} aria-hidden="true" />
-            </button>
-          )}
-          <button
-            onClick={handleSearch}
-            aria-label="Tìm kiếm phim"
-            className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold cursor-pointer"
-          >
-            Tìm
-          </button>
-        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">

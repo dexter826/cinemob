@@ -6,7 +6,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PosterCard from '@/features/movies/components/poster-card';
-import Search from '@/shared/components/ui/search';
+import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
 import {
@@ -92,7 +92,8 @@ function MovieListSection({
   return (
     <>
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <Search
+        <SearchField
+          variant="underline"
           id="profile-search"
           value={searchQuery}
           onChange={setSearchQuery}

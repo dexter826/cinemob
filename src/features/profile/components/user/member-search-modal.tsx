@@ -1,7 +1,8 @@
 import { useRef } from 'react';
-import { Search, Users, X } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog';
+import SearchField from '@/shared/components/ui/search-field';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Loading from '@/shared/components/ui/loading';
 import { useUserSearch } from '../../hooks/use-user-search';
@@ -38,42 +39,23 @@ function MemberSearchModal({ isOpen, onClose }: MemberSearchModalProps) {
       <DialogHeader titleId="member-search-title" title="Tìm thành viên" onClose={onClose} />
       <DialogBody className="flex flex-col gap-4">
         <form
-          className="relative shrink-0"
+          className="shrink-0"
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
             void submit();
           }}
         >
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary"
-            aria-hidden="true"
-          />
-          <label htmlFor="member-search-input" className="sr-only">
-            Tìm thành viên theo email
-          </label>
-          <input
-            id="member-search-input"
+          <SearchField
             ref={inputRef}
+            variant="boxed"
+            id="member-search-input"
             type="email"
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={setSearchText}
             placeholder="Tìm theo email…"
-            autoComplete="off"
-            spellCheck={false}
-            className="w-full bg-surface border border-border rounded-card pl-10 pr-9 py-2.5 sm:py-3 text-xs sm:text-sm font-medium focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 transition-colors"
+            label="Tìm thành viên theo email"
           />
-          {searchText && (
-            <button
-              type="button"
-              onClick={() => setSearchText('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors p-1"
-              aria-label="Xóa từ khóa tìm kiếm"
-            >
-              <X size={15} aria-hidden="true" />
-            </button>
-          )}
         </form>
 
         {loading ? (

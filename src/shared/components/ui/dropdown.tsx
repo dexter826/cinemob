@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import ListboxSearchInput from './listbox-search-input';
 
 interface Option {
   value: string | number;
@@ -183,23 +184,15 @@ function Dropdown({
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden">
           {searchable && (
-            <div className="p-3 border-b border-border-default">
-              <input
-                ref={inputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(event) => {
-                  setSearchQuery(event.target.value);
-                  setActiveIndex(-1);
-                }}
-                onKeyDown={handleNavigationKey}
-                placeholder="Tìm kiếm…"
-                aria-label="Tìm kiếm tùy chọn"
-                autoComplete="off"
-                spellCheck={false}
-                className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
-              />
-            </div>
+            <ListboxSearchInput
+              inputRef={inputRef}
+              value={searchQuery}
+              onChange={(next) => {
+                setSearchQuery(next);
+                setActiveIndex(-1);
+              }}
+              onKeyDown={handleNavigationKey}
+            />
           )}
 
           <div
