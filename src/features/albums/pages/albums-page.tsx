@@ -99,7 +99,7 @@ function AlbumsPage() {
         />
       ) : loading ? (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton key={i} className="aspect-2/3 rounded-poster  " />
           ))}
         </div>

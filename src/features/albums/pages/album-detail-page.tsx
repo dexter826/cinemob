@@ -208,7 +208,7 @@ function AlbumDetailPage() {
               />
             ) : loading || moviesLoading ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-                {Array.from({ length: 5 }).map((_, i) => (
+                {Array.from({ length: 12 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
               </div>
