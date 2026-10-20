@@ -1,6 +1,6 @@
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import React from 'react';
-import { Bookmark, CheckCircle, Eye, Star, X } from 'lucide-react';
+import { Bookmark, CheckCircle, Clapperboard, Eye, Star, Tv, X } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { Chip } from '@/shared/components/ui';
 import { classNames } from '@/shared/utils/class-names';
@@ -66,7 +66,7 @@ function PosterCard({
       : null;
   const showRating = typeof rating === 'number' && rating > 0;
   const statusLabel = status === 'history' ? 'Đã xem' : status === 'watchlist' ? 'Sẽ xem' : null;
-  const kindLabel = mediaType === 'tv' ? 'Series' : 'Phim';
+  const kindLabel = mediaType === 'tv' ? 'Series' : 'Movie';
 
   return (
     <article
@@ -133,6 +133,19 @@ function PosterCard({
             }
           >
             {statusLabel}
+          </Chip>
+        )}
+        {mediaType && (
+          <Chip
+            icon={
+              mediaType === 'tv' ? (
+                <Tv size={9} strokeWidth={1.5} aria-hidden="true" />
+              ) : (
+                <Clapperboard size={9} strokeWidth={1.5} aria-hidden="true" />
+              )
+            }
+          >
+            {kindLabel}
           </Chip>
         )}
         {showRating && (
