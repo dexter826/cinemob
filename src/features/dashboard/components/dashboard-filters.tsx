@@ -51,7 +51,7 @@ function CapsButton({
       onClick={onClick}
       aria-pressed={active}
       className={classNames(
-        'group relative h-10 px-2.5 inline-flex items-center text-label-caps font-bold transition-colors cursor-pointer',
+        'group relative h-10 px-2 sm:px-2.5 inline-flex items-center text-label-caps font-bold transition-colors cursor-pointer',
         active ? 'text-primary' : 'text-text-secondary hover:text-text-primary',
       )}
     >
@@ -59,7 +59,7 @@ function CapsButton({
       <span
         aria-hidden="true"
         className={classNames(
-          'pointer-events-none absolute inset-x-2 bottom-0 h-0.5 bg-primary transition-opacity duration-150',
+          'pointer-events-none absolute inset-x-1.5 sm:inset-x-2 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-150',
           active
             ? 'opacity-100'
             : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
@@ -168,8 +168,11 @@ function DashboardFilters({
   };
 
   return (
-    <div ref={filterRef} className="relative flex flex-col items-end gap-2.5 w-full lg:w-auto">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 w-full lg:w-auto lg:flex-nowrap justify-end">
+    <div
+      ref={filterRef}
+      className="relative flex flex-col items-stretch lg:items-end gap-2.5 w-full lg:w-auto"
+    >
+      <div className="flex flex-wrap items-center gap-x-0 lg:gap-x-3 gap-y-1 w-full lg:w-auto lg:flex-nowrap justify-end">
         <SearchField
           variant="underline"
           name="library-search"
@@ -182,8 +185,31 @@ function DashboardFilters({
 
         <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
 
-        <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5 w-full lg:w-auto max-lg:order-last">
-          <div role="group" aria-label="Sắp xếp" className="flex items-center">
+        <div className="flex items-center justify-between lg:justify-end gap-x-1 sm:gap-x-2 lg:gap-x-3 w-full lg:w-auto max-lg:order-last">
+          <div role="group" aria-label="Loại nội dung" className="flex items-center shrink-0">
+            <CapsButton
+              active={filters.contentType === 'all'}
+              onClick={() => updateFilter('contentType', 'all')}
+            >
+              Tất cả
+            </CapsButton>
+            <CapsButton
+              active={filters.contentType === 'movie'}
+              onClick={() => updateFilter('contentType', 'movie')}
+            >
+              Phim lẻ
+            </CapsButton>
+            <CapsButton
+              active={filters.contentType === 'tv'}
+              onClick={() => updateFilter('contentType', 'tv')}
+            >
+              Series
+            </CapsButton>
+          </div>
+
+          <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
+
+          <div role="group" aria-label="Sắp xếp" className="flex items-center shrink-0">
             <CapsButton
               active={filters.sortBy === 'date'}
               onClick={() => updateFilter('sortBy', 'date')}
@@ -205,7 +231,7 @@ function DashboardFilters({
                   ? 'Đang sắp xếp tăng dần, bấm để đổi chiều'
                   : 'Đang sắp xếp giảm dần, bấm để đổi chiều'
               }
-              className="ml-0.5 inline-flex items-center justify-center w-10 h-10 rounded-control text-text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+              className="ml-0.5 inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-control text-text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
             >
               {filters.sortOrder === 'asc' ? (
                 <ArrowUp size={15} strokeWidth={1.5} aria-hidden="true" />
@@ -213,29 +239,6 @@ function DashboardFilters({
                 <ArrowDown size={15} strokeWidth={1.5} aria-hidden="true" />
               )}
             </button>
-          </div>
-
-          <span aria-hidden="true" className="hidden sm:block w-px h-5 bg-border-default" />
-
-          <div role="group" aria-label="Loại nội dung" className="flex items-center">
-            <CapsButton
-              active={filters.contentType === 'all'}
-              onClick={() => updateFilter('contentType', 'all')}
-            >
-              Tất cả
-            </CapsButton>
-            <CapsButton
-              active={filters.contentType === 'movie'}
-              onClick={() => updateFilter('contentType', 'movie')}
-            >
-              Phim lẻ
-            </CapsButton>
-            <CapsButton
-              active={filters.contentType === 'tv'}
-              onClick={() => updateFilter('contentType', 'tv')}
-            >
-              Series
-            </CapsButton>
           </div>
         </div>
 
@@ -249,7 +252,7 @@ function DashboardFilters({
           aria-expanded={filtersOpen}
           aria-label={toggleLabel}
           className={classNames(
-            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer',
+            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer border-b border-border lg:border-b-0',
             filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
           )}
         >
@@ -282,7 +285,7 @@ function DashboardFilters({
         <div
           role="group"
           aria-label="Bộ lọc đang áp dụng"
-          className="flex flex-wrap items-center justify-end gap-1.5 w-full"
+          className="flex flex-wrap items-center justify-start lg:justify-end gap-1.5 w-full pt-1 pb-1.5"
         >
           {chipItems.map((chip) => (
             <button

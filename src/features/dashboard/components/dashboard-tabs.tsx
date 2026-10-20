@@ -23,7 +23,7 @@ function DashboardTabs({
   const counts: Record<ActiveTab, number> = { history: historyCount, watchlist: watchlistCount };
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 w-full md:w-auto border-b border-border md:border-b-0">
       <div role="group" aria-label="Bộ lọc trạng thái xem phim" className="flex items-center">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
