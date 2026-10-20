@@ -546,3 +546,25 @@ Một lệnh sửa phát sinh trong lúc gate: `dashboard-filters.tsx` chip remo
 - Các visual delta đã ghi ở từng phase (chiều cao button, line-height poster, uppercase meta, cỡ chữ label form, skeleton grid 5→6 cột, route loading từ overlay sang local, chữ cái avatar chuyển Anton) cần người dùng kiểm tra bằng trình duyệt.
 
 **Tổng kết chuỗi Phase 0-6:** 15 commit trên nhánh `feat/ui-standardization`, 82 file thay đổi (+4392/−1886). Mọi phase có log review 7 trục trong `docs/ui-standardization-progress-2026-10-20.md`.
+
+## Review độc lập toàn nhánh (code-refactor, chế độ A → C)
+
+Review lại toàn bộ diff `master..HEAD` (83 file) theo 7 trục + bẫy React 19.2/TS, chia 4 nhóm file cho 4 subagent review độc lập, tự kiểm chứng lại từng phát hiện bằng `git show master:…`, đọc file và probe CSS build.
+
+Kết quả: **0 BLOCKER, 1 MAJOR, 11 MINOR, 3 NIT** — nhánh giữ đúng cam kết presentation-only ngoại trừ 1 vấn đề mang tính hệ thống: `text-label-caps`/`text-micro-caps` mang `text-transform: uppercase` nên áp cho _nội dung_ đã đổi copy hiển thị ở ~15 chỗ.
+
+Đã sửa (chưa commit, đang trong working tree):
+
+| Nhóm            | Sửa                                                                                                                                                                                                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Copy/case       | 12 site nội dung thêm `normal-case` (404 câu, sub-value stat, "12 phim · 2024", "Hiển thị 12 / 40 mục", "Đã xem: …", hàng meta phim, "Phần 1: …", "{n} phim" ×3, "Đang gỡ…", meta/credit poster, copyright footer ×2)                                                                                              |
+| Copy            | hoàn nguyên "Đang tải dàn diễn viên…" trong `movie-detail-page.tsx`                                                                                                                                                                                                                                                |
+| A11y            | vùng extras → `role="status"` (bỏ `aria-busy` không bao giờ false); thông báo lỗi refresh AI tách nút "Thử lại" ra khỏi live region + `aria-label`/`aria-busy` động cho nút; nhánh lỗi member-search dùng `ErrorState blocking` (`role="alert"`)                                                                   |
+| Trùng thông báo | gỡ caption lỗi lịch trong `calendar-stats` (đã có status ở trang + alert ở episode-list)                                                                                                                                                                                                                           |
+| DESIGN          | núm switch thêm `border border-border` (`DESIGN.md:238`); nhãn nhóm filter → `text-label-caps`; nhãn "Tên album mới" → `text-label-caps`; `<label>` không gắn control ở `album-section` → `<span>`                                                                                                                 |
+| Dọn class       | bỏ `uppercase`/`tracking-[…]` thừa cạnh caps token (6 site), `tracking-wide` thừa cạnh display token (6 site), `font-bold`/`font-medium` thừa (4 site), `rounded-[4px]` → `rounded-poster`, `rounded-[3px]` → `rounded-full`, gỡ `focus-ring` thừa trên range input, `width/height` ảnh người → 192/256 khớp khung |
+| Docs            | `DESIGN.md` ghi luật: caps token chỉ dùng cho nhãn ngắn; metadata/câu phải kèm `normal-case`                                                                                                                                                                                                                       |
+
+Verify sau khi sửa: Prettier/typecheck/lint/build exit 0; `git diff --check` sạch; gate toàn repo: raw size 0 · radius thô 0 (trừ `rounded-[1px]` của hạt confetti, ngoại lệ trang trí) · focus ring thô 0 · caps+uppercase/tracking thừa 0 · display+tracking-wide thừa 0.
+
+Hai điểm **giữ nguyên có chủ đích**: tên hồ sơ ở `member-profile-card.tsx` (20px cố định) và `member-profile-page.tsx` (20px) — không có token Anton 20/24 responsive trong scale nên giữ `text-display-md`, đánh đổi 4px ở một breakpoint; chữ cái avatar đổi sang Anton là chủ đích của chuẩn display.

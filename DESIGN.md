@@ -203,6 +203,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 
 - Anton chỉ cho display, số liệu lớn và wordmark; không dùng cho body.
 - Caps label chỉ có hai style: `label-caps` 11px và `micro-caps` 9px. Không dùng 10px, 11.5px hay 15px.
+- `label-caps`/`micro-caps` mang `text-transform: uppercase`: chỉ dùng cho **nhãn ngắn**. Metadata số/ngày, tên phim, tên người và câu thông báo phải kèm `normal-case` để giữ nguyên case.
 - Chữ display có tên đầy đủ: `text-display-xl` (30→36→48), `text-display-lg` (24→30→36), `text-display-md` (20px), `text-display-stat` (48→60), `text-display-404` (72→96), `text-brand` (36→48).
 - `text-brand` là wordmark thương hiệu ở splash: 36→48px. Wordmark login dùng `text-display-lg` (24→36px), navbar/footer dùng `text-display-md` (20px). `text-display-md` cũng dùng cho display title 20px (tên phim/người dùng hiển thị lớn).
 - Ngoại lệ data-viz: chart axis dùng 10px/700/50%; không dùng cho text UI.
