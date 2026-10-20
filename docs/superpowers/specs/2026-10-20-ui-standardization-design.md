@@ -1,6 +1,6 @@
 # Chuẩn hoá toàn bộ UI CineMOB theo DESIGN.md
 
-Ngày: 20/10/2026. Trạng thái: thiết kế và spec đã được người dùng duyệt; chưa sửa code.
+Ngày: 20/10/2026. Trạng thái: thiết kế và spec đã được người dùng duyệt; Phase 0-1 đã hoàn tất, Phase 2-6 chưa.
 
 ## 1. Mục tiêu và phạm vi
 
@@ -55,8 +55,8 @@ Thêm 8 utility trong `src/index.css` (Tailwind v4 `@utility`) theo bảng Typog
 
 | Utility           | Font           | Size | Weight | Line-height | Tracking | Uppercase |
 | ----------------- | -------------- | ---- | ------ | ----------- | -------- | --------- |
-| `text-display-xl` | Anton          | 48px | 400    | 1.0         | .025em   | có        |
-| `text-display-lg` | Anton          | 36px | 400    | 1.05        | .025em   | có        |
+| `text-display-xl` | Anton          | 48px | 400    | 1.0         | .025em   | không     |
+| `text-display-lg` | Anton          | 36px | 400    | 1.05        | .025em   | không     |
 | `text-title-lg`   | Be Vietnam Pro | 20px | 700    | 1.3         | 0        | không     |
 | `text-title-md`   | Be Vietnam Pro | 18px | 700    | 1.35        | 0        | không     |
 | `text-body`       | Be Vietnam Pro | 14px | 500    | 1.5         | 0        | không     |
@@ -68,6 +68,7 @@ Thêm 8 utility trong `src/index.css` (Tailwind v4 `@utility`) theo bảng Typog
 - `display-lg` responsive: 24 → 30 → 36.
 - `text-display-404` cho 404: 72 → 96.
 - Feature code không dùng `text-[…px]`, `text-xs/sm/base/lg/xl/2xl/3xl/4xl/5xl/6xl/7xl/9xl` cho size; chỉ dùng 8 utility và modifier có tên.
+- Display dùng title case như hiện tại; chỉ `label-caps`/`micro-caps` uppercase.
 - Weight emphasis 600/700 được phép; không đổi size.
 - `tabular-nums` giữ cho số liệu; `text-wrap: balance/pretty` giữ theo `DESIGN.md`.
 - `micro-caps` mặc định uppercase; metadata số/ngày được phép `normal-case`.
