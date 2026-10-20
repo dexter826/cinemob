@@ -151,6 +151,7 @@ function StatsPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Stat
+                align="center"
                 label="Tổng nội dung"
                 value={totalMovies}
                 subValue={`${movieCount} phim lẻ, ${tvCount} series`}
@@ -158,6 +159,7 @@ function StatsPage() {
                 colorClass="text-primary"
               />
               <Stat
+                align="center"
                 label="Đánh giá trung bình"
                 value={avgRating}
                 subValue={`Trên ${ratedCount} phim`}
