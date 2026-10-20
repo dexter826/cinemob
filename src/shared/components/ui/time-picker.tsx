@@ -265,7 +265,7 @@ function TimePicker({
         className={`
           w-full h-11 border border-border-default rounded-card px-4 text-left
           focus-ring
-          hover:border-primary/30 transition-colors duration-200
+          hover:border-primary/30 transition-colors duration-150
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''}

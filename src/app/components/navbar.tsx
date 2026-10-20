@@ -209,7 +209,7 @@ function Navbar() {
                         role="menuitem"
                         tabIndex={-1}
                         onClick={closeDropdown}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-150 cursor-pointer rounded-control"
                       >
                         <User size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Hồ sơ</span>
@@ -219,7 +219,7 @@ function Navbar() {
                         role="menuitem"
                         tabIndex={-1}
                         onClick={closeDropdown}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-150 cursor-pointer rounded-control"
                       >
                         <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Thống kê</span>
@@ -239,7 +239,7 @@ function Navbar() {
                           });
                           closeDropdown();
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-danger/10 text-danger transition-colors duration-150 cursor-pointer rounded-control"
                       >
                         <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Đăng xuất</span>

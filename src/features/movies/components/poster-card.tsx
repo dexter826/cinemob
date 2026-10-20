@@ -150,7 +150,7 @@ function PosterCard({
       )}
 
       {(onRemove || actions) && (
-        <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-200">
+        <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-150">
           {onRemove && (
             <button
               type="button"

@@ -26,7 +26,7 @@ function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-primary transition-colors duration-200"
+                className="text-text-secondary hover:text-primary transition-colors duration-150"
                 aria-label={link.label}
               >
                 <Icon size={20} strokeWidth={1.5} aria-hidden="true" />

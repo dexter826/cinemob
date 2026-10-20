@@ -74,7 +74,7 @@ function SearchField({
         <span
           aria-hidden="true"
           className={classNames(
-            'pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-primary transition-opacity duration-200',
+            'pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-primary transition-opacity duration-150',
             value
               ? 'opacity-100'
               : 'opacity-0 group-hover:opacity-40 group-focus-within:opacity-100',

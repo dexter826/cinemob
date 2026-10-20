@@ -117,7 +117,7 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
         type="button"
         aria-label={`Xóa album ${album.name}`}
         onClick={() => onDelete(album)}
-        className="absolute top-2 right-2 z-40 min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-[opacity,color,background-color] duration-200 cursor-pointer"
+        className="absolute top-2 right-2 z-40 min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-[opacity,color,background-color] duration-150 cursor-pointer"
       >
         <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
       </button>

@@ -59,7 +59,7 @@ function CapsButton({
       <span
         aria-hidden="true"
         className={classNames(
-          'pointer-events-none absolute inset-x-2 bottom-0 h-0.5 bg-primary transition-opacity duration-200',
+          'pointer-events-none absolute inset-x-2 bottom-0 h-0.5 bg-primary transition-opacity duration-150',
           active
             ? 'opacity-100'
             : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
@@ -249,7 +249,7 @@ function DashboardFilters({
           aria-expanded={filtersOpen}
           aria-label={toggleLabel}
           className={classNames(
-            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-200 cursor-pointer',
+            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer',
             filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
           )}
         >
@@ -269,7 +269,7 @@ function DashboardFilters({
           <span
             aria-hidden="true"
             className={classNames(
-              'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-200',
+              'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-150',
               filtersOpen
                 ? 'opacity-100'
                 : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',

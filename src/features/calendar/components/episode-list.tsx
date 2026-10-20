@@ -118,7 +118,7 @@ function EpisodeList({
                       type="button"
                       onClick={() => handleSeriesClick(ep)}
                       aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
-                      className="w-full flex gap-3 sm:gap-4 py-3 hover:bg-primary/5 transition-colors duration-200 cursor-pointer text-left items-start overflow-hidden"
+                      className="w-full flex gap-3 sm:gap-4 py-3 hover:bg-primary/5 transition-colors duration-150 cursor-pointer text-left items-start overflow-hidden"
                     >
                       <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-poster overflow-hidden border border-border">
                         <img
