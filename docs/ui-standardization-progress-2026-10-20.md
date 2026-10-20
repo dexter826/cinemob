@@ -408,3 +408,47 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 5 N
 Trạng thái git: 28 file `src/` + plan 3C untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
 
 Phase 3 (static sweep) hoàn tất toàn app. Tiếp theo: Phase 4 (motion) — sweep `duration-200` micro, verify bảng overlay §5.2, dọn dead code.
+
+## Phase 4 — Motion (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-4.md`.
+
+### Task 1 — Sweep micro hover
+
+16 site `duration-200` → `duration-150`: navbar (3 menu row), album-card (nút xoá), episode-list (row hover), dashboard-filters (2 gạch chân bộ lọc + 1 nút icon), movie-form-fields (3 scale lỗi), poster-card (nhóm action), footer (link), search-field (gạch chân), date-picker + time-picker (hover border).
+
+Giữ nguyên: `duration-200` cho zoom/rotate poster & album (4 site) và `duration-250` cho progress bar (2 site) — đúng bảng role §5.1.
+
+### Task 2 — Verify bảng overlay, constants, dead code
+
+| Lớp                    | Kỳ vọng               | Kết quả                                                                                                                              |
+| ---------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Dialog backdrop        | enter 200 / exit 150  | ✅ `buildDialogVariants`: enter `medium`, exit `base`                                                                                |
+| Dialog panel           | fade + y8 200 / 150   | ✅ cùng hàm, `y: 8`                                                                                                                  |
+| Sheet backdrop + panel | enter 250 / exit 200  | ✅ `isSheet` → `slow` / `medium`                                                                                                     |
+| Dropdown / MultiSelect | 120 / 120             | ✅ `getPanelMotion` (`fast`)                                                                                                         |
+| Popover date/time      | 120 / 120             | ✅ `getPanelMotion`                                                                                                                  |
+| Menu tài khoản         | 120 / 120             | ✅ `navbar.tsx` `getPanelMotion`                                                                                                     |
+| Toast                  | enter 200 / exit 150  | ✅ `toastTransition` = medium, exit = base                                                                                           |
+| Route                  | enter 200, không exit | ✅ `--animate-page-enter: page-enter 0.2s`                                                                                           |
+| Suggestions            | 120                   | ⚠️ `random-suggestions-section.tsx` là section tĩnh trong trang, không có overlay enter/exit → bảng overlay không áp dụng; không sửa |
+
+Constants `MOTION_DURATION` (fast .12 / base .15 / medium .2 / slow .25 + picker 3.15 / pickerAudioTail 1.95) và `MOTION_EASING` (standard/enter/exit) khớp spec. Token `--ease-standard/enter/exit` + `--animate-page-enter` có trong `src/index.css`.
+
+Tailwind sinh đủ `duration-150`/`duration-200`/`duration-250` trong CSS build → lo lắng của spec §5.4 ("kiểm tra duration có được sinh") đã được giải quyết, không cần token riêng.
+
+Dead code: không còn token `slide-in-right`/`slide-down`/`fade-in`/`splash-rule`; chỉ còn `layoutId="dashboard-tab-underline"` (chuyển tab, hợp lệ theo §5.1 "layoutId tab underline").
+
+### Task 3 — Gate toàn phase
+
+Giá trị duration còn lại trong `src/`: **150 ×17**, **200 ×4** (zoom poster/album), **250 ×2** (progress). Không có `duration-75/300/500/1000`. Prettier/typecheck/lint/build exit 0; `git diff --check` sạch.
+
+Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 2 NIT:
+
+- NIT: 16 micro hover chuyển 200 → 150ms — chuyển động hơi nhanh hơn trước; đúng chuẩn "Tailwind transition mặc định 150" nhưng nên xác nhận bằng trình duyệt.
+- NIT: section "Gợi ý ngẫu nhiên" không có animation enter/exit trong khi bảng overlay §5.2 có ghi dòng "Suggestions 120" → giữ nguyên vì đó là section trang, không phải overlay; nếu sau này nó trở thành overlay thì cần bổ sung 120ms.
+- Đã rà và thấy sạch: chỉ đổi giá trị `duration-*`, không đổi `transition-property`, timing của framer, hay token; không đổi logic/state/props; không có nhánh lỗi/dependency/secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+Trạng thái git: 10 file `src/` + plan 4 untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
+
+Phase 4 xong. Tiếp theo: Phase 5 — loading: đối chiếu L01–L17 trong `docs/loading-audit-2026-10-18.md` với code, sửa phần còn thiếu, không thêm test/mock/browser.
