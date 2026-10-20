@@ -92,7 +92,7 @@ function Navbar() {
             className="flex items-center cursor-pointer"
             aria-label="Về Thư viện CineMOB"
           >
-            <span className="font-display text-xl tracking-wide select-none">
+            <span className="text-display-md tracking-wide select-none">
               Cine<span className="text-primary">MOB</span>
             </span>
           </Link>
@@ -106,7 +106,7 @@ function Navbar() {
                   to={item.to}
                   aria-label={item.label}
                   aria-current={active ? 'page' : undefined}
-                  className={`relative flex items-center h-full px-3 text-[11.5px] font-semibold uppercase tracking-[0.08em] transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`relative flex items-center h-full px-3 text-label-caps transition-colors cursor-pointer whitespace-nowrap ${
                     active ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
@@ -168,16 +168,19 @@ function Navbar() {
                   <img
                     src={user.photoURL}
                     alt="Avatar"
+                    width={28}
+                    height={28}
                     onError={() => setIsAvatarLoadFailed(true)}
                     className="w-7 h-7 rounded-full object-cover shrink-0"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-primary text-body-sm font-bold shrink-0">
                     {user?.displayName?.charAt(0) || 'U'}
                   </div>
                 )}
                 <ChevronDown
                   size={14}
+                  strokeWidth={1.5}
                   aria-hidden="true"
                   className={`hidden md:block transition-transform shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
@@ -195,7 +198,7 @@ function Navbar() {
                     className="absolute right-0 mt-2 w-56 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
                   >
                     <div className="px-4 py-3 border-b border-border">
-                      <p className="text-sm font-semibold text-text-primary truncate">
+                      <p className="text-body font-semibold text-text-primary truncate">
                         {user?.displayName}
                       </p>
                     </div>
@@ -206,7 +209,7 @@ function Navbar() {
                         role="menuitem"
                         tabIndex={-1}
                         onClick={closeDropdown}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
                       >
                         <User size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Hồ sơ</span>
@@ -216,7 +219,7 @@ function Navbar() {
                         role="menuitem"
                         tabIndex={-1}
                         onClick={closeDropdown}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer rounded-control"
                       >
                         <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Thống kê</span>
@@ -236,7 +239,7 @@ function Navbar() {
                           });
                           closeDropdown();
                         }}
-                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-danger/10 text-danger transition-colors duration-200 cursor-pointer rounded-control"
                       >
                         <LogOut size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Đăng xuất</span>

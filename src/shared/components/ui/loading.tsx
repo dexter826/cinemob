@@ -27,7 +27,7 @@ function Loading({
       className={`flex flex-col items-center justify-center gap-3 ${placement} ${className}`}
     >
       <Spinner size={size} />
-      <span className="text-xs font-medium text-text-secondary">{text}</span>
+      <span className="text-body-sm font-medium text-text-secondary">{text}</span>
     </div>
   );
 }

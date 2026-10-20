@@ -27,8 +27,8 @@ export function ErrorState({
         className,
       )}
     >
-      <h3 className="text-lg font-bold text-text-primary tracking-tight text-balance">{title}</h3>
-      <p className="text-text-secondary text-sm mb-6 max-w-xs leading-relaxed mt-1">
+      <h3 className="text-title-md text-text-primary tracking-tight text-balance">{title}</h3>
+      <p className="text-text-secondary text-body mb-6 max-w-xs leading-relaxed mt-1">
         {description}
       </p>
       {retry && (

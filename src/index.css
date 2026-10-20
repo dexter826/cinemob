@@ -368,3 +368,23 @@
     outline-offset: 3px;
   }
 }
+
+@utility text-display-md {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+@utility text-brand {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+
+  @media (min-width: 40rem) {
+    font-size: 48px;
+  }
+}

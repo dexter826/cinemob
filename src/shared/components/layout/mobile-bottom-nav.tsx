@@ -45,9 +45,7 @@ function MobileBottomNav() {
                 className={isActive ? 'text-primary' : 'text-text-secondary'}
               />
               <span
-                className={`text-[9px] font-semibold uppercase tracking-[0.05em] ${
-                  isActive ? 'text-primary' : 'text-text-secondary'
-                }`}
+                className={`text-micro-caps ${isActive ? 'text-primary' : 'text-text-secondary'}`}
               >
                 {item.label}
               </span>

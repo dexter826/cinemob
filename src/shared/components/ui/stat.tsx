@@ -19,16 +19,12 @@ function Stat({ label, value, subValue, icon: Icon, colorClass }: StatProps) {
         strokeWidth={1.5}
       />
       <div className="min-w-0">
-        <p className="text-text-secondary text-[11px] font-semibold tracking-[0.1em] mb-1.5">
-          {label}
-        </p>
-        <p className="font-display tracking-wide text-5xl sm:text-6xl text-text-primary leading-none tabular-nums">
+        <p className="text-label-caps text-text-secondary mb-1.5">{label}</p>
+        <p className="text-display-stat tracking-wide text-text-primary leading-none tabular-nums">
           {value}
         </p>
         {subValue && (
-          <p className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary mt-2 tabular-nums">
-            {subValue}
-          </p>
+          <p className="text-micro-caps text-text-secondary mt-2 tabular-nums">{subValue}</p>
         )}
       </div>
     </div>

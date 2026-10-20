@@ -58,6 +58,8 @@ function PosterTile({ poster }: { poster: TMDBMovieResult }) {
       src={getTMDBImageUrl(poster.poster_path, 'w500')}
       alt=""
       aria-hidden="true"
+      width={500}
+      height={750}
       draggable={false}
       className="w-full h-full object-cover"
     />
@@ -89,22 +91,22 @@ function Login() {
           <div className="w-full max-w-sm">
             <div className="flex items-center gap-3 mb-7">
               <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
-              <p className="font-display text-2xl tracking-wide">
+              <p className="text-display-lg tracking-wide">
                 Cine<span className="text-primary">MOB</span>
               </p>
             </div>
 
-            <h1 className="font-display tracking-wide leading-[1.05] text-3xl sm:text-4xl mt-9">
+            <h1 className="text-display-xl tracking-wide leading-[1.05] mt-9">
               Theo dõi mọi bộ phim bạn xem.
             </h1>
-            <p className="mt-3 text-sm text-text-secondary leading-relaxed">
+            <p className="mt-3 text-body text-text-secondary leading-relaxed">
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
             </p>
 
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-body-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >
@@ -118,7 +120,7 @@ function Login() {
           </div>
         </div>
 
-        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-[10px] font-semibold tracking-[0.08em] text-text-secondary shrink-0">
+        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-micro-caps text-text-secondary shrink-0">
           &copy; {new Date().getFullYear()} CineMOB
         </footer>
       </div>

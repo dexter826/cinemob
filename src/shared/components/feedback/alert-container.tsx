@@ -45,9 +45,13 @@ function AlertContainer() {
                       : 'bg-info/10 text-info'
                 }`}
               >
-                {alert.type === 'info' ? <Info size={24} /> : <AlertTriangle size={24} />}
+                {alert.type === 'info' ? (
+                  <Info size={24} strokeWidth={1.5} aria-hidden="true" />
+                ) : (
+                  <AlertTriangle size={24} strokeWidth={1.5} aria-hidden="true" />
+                )}
               </span>
-              <h2 id={TITLE_ID} className="text-xl font-bold text-text-primary tracking-tight">
+              <h2 id={TITLE_ID} className="text-title-md text-text-primary tracking-tight">
                 {alert.title}
               </h2>
             </div>

@@ -10,11 +10,11 @@ export default function SplashScreen() {
         className={`flex flex-col items-center gap-4 ${reducedMotion ? '' : 'animate-splash-brand'}`}
       >
         <CineMobSymbol className="h-16 w-16 sm:h-20 sm:w-20 text-primary" />
-        <span className="font-display text-4xl sm:text-5xl tracking-wide text-text-primary">
+        <span className="text-brand tracking-wide text-text-primary">
           Cine<span className="text-primary">MOB</span>
         </span>
       </div>
-      <LoadingStatus className="text-sm text-text-secondary">Đang xác thực…</LoadingStatus>
+      <LoadingStatus className="text-body text-text-secondary">Đang xác thực…</LoadingStatus>
     </div>
   );
 }

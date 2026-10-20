@@ -43,11 +43,9 @@ function PageHeader({
         )}
         {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}
         <div className="min-w-0">
-          <h1 className="font-display tracking-wide text-2xl sm:text-3xl md:text-4xl text-text-primary truncate">
-            {title}
-          </h1>
+          <h1 className="text-display-lg tracking-wide text-text-primary truncate">{title}</h1>
           {description && (
-            <p className="text-xs sm:text-sm text-text-secondary font-medium line-clamp-2 mt-0.5">
+            <p className="text-body-sm sm:text-body text-text-secondary font-medium line-clamp-2 mt-0.5">
               {description}
             </p>
           )}

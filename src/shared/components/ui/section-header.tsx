@@ -11,13 +11,7 @@ interface SectionHeaderProps {
 /** Nhãn mục caps duy nhất được phép dùng trong app (1 cấp, không xếp tầng). */
 function SectionHeader({ children, id, className }: SectionHeaderProps) {
   return (
-    <p
-      id={id}
-      className={classNames(
-        'text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary',
-        className ?? '',
-      )}
-    >
+    <p id={id} className={classNames('text-label-caps text-text-secondary', className ?? '')}>
       {children}
     </p>
   );
