@@ -295,7 +295,7 @@ function DashboardFilters({
               {chip.label}
               <X
                 size={10}
-                strokeWidth={2}
+                strokeWidth={1.5}
                 aria-hidden="true"
                 className="text-text-muted group-hover:text-primary"
               />

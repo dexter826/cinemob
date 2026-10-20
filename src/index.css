@@ -120,6 +120,8 @@
 
   :root {
     color-scheme: light;
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 3px;
   }
 
   .dark {
@@ -139,8 +141,8 @@
   }
 
   :where(button, a, input, textarea, select, [role='button'], [tabindex]):focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 3px;
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -364,8 +366,8 @@
 
 @utility focus-ring {
   &:focus-visible {
-    outline: 2px solid var(--color-focus);
-    outline-offset: 3px;
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
