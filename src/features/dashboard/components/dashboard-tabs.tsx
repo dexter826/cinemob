@@ -33,7 +33,7 @@ function DashboardTabs({
               type="button"
               aria-pressed={isActive}
               onClick={() => onTabChange(tab.key)}
-              className={`relative flex items-center h-12 px-3.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+              className={`relative flex items-center h-12 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
                 isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
               }`}
             >

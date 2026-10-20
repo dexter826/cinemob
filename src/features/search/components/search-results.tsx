@@ -68,8 +68,8 @@ function SearchResults({
     <>
       {mode === 'home' && (
         <div className="mb-4 flex items-center gap-2 min-w-0">
-          <Star className="text-primary shrink-0" size={18} aria-hidden="true" />
-          <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
+          <Star className="text-primary shrink-0" size={18} strokeWidth={1.5} aria-hidden="true" />
+          <h2 className="text-title-md text-primary font-bold">Phim thịnh hành</h2>
         </div>
       )}
 

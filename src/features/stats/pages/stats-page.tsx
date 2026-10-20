@@ -50,7 +50,7 @@ const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
     return (
       <div className="bg-surface-elevated border border-border rounded-card p-4">
         <p className="text-text-primary font-bold mb-1">{label || payload[0].name}</p>
-        <p className="text-primary font-bold text-sm">Số lượng: {payload[0].value} phim</p>
+        <p className="text-primary font-bold text-body">Số lượng: {payload[0].value} phim</p>
       </div>
     );
   }
@@ -175,14 +175,14 @@ function StatsPage() {
               <div className="flex items-center gap-3">
                 <h3
                   id="stats-trend-title"
-                  className="text-lg font-bold tracking-tight text-text-primary"
+                  className="text-title-md font-bold tracking-tight text-text-primary"
                 >
                   Hoạt động theo tháng
                 </h3>
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+                <span className="text-micro-caps font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {totalInYear} phim · {selectedYear}
                 </span>
                 <Dropdown
@@ -246,7 +246,7 @@ function StatsPage() {
               <div className="flex items-center gap-3 mb-8">
                 <h3
                   id="stats-rating-title"
-                  className="text-lg font-bold tracking-tight text-text-primary"
+                  className="text-title-md font-bold tracking-tight text-text-primary"
                 >
                   Phân bổ đánh giá
                 </h3>
@@ -255,7 +255,7 @@ function StatsPage() {
                 {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rating) => (
                   <div key={rating} className="flex items-center gap-4 group">
                     <div className="flex items-center gap-1 w-12 shrink-0">
-                      <span className="font-bold text-base text-text-primary tabular-nums">
+                      <span className="font-bold text-body text-text-primary tabular-nums">
                         {rating}
                       </span>
                       <Star
@@ -276,7 +276,7 @@ function StatsPage() {
                         }}
                       />
                     </div>
-                    <span className="text-xs font-semibold text-text-secondary px-2.5 py-1 rounded-lg w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
+                    <span className="text-body-sm font-semibold text-text-secondary px-2.5 py-1 rounded-control w-10 text-center border border-border-default dark:border-white/5 group-hover:text-primary transition-colors tabular-nums">
                       {moviesByRating[rating] ?? 0}
                     </span>
                   </div>
@@ -291,7 +291,7 @@ function StatsPage() {
               <div className="flex items-center gap-3 mb-8">
                 <h3
                   id="stats-countries-title"
-                  className="text-lg font-bold tracking-tight text-text-primary"
+                  className="text-title-md font-bold tracking-tight text-text-primary"
                 >
                   Top 5 quốc gia
                 </h3>
@@ -303,14 +303,14 @@ function StatsPage() {
                     className="flex items-center justify-between p-4 rounded-card border border-transparent hover:border-border-default dark:hover:border-white/5 transition-colors group"
                   >
                     <div className="flex items-center gap-4">
-                      <span className="text-xl font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">
+                      <span className="text-title-lg font-bold text-primary/20 group-hover:text-primary transition-colors tabular-nums">
                         0{index + 1}
                       </span>
-                      <span className="font-bold text-sm text-text-primary truncate max-w-[150px]">
+                      <span className="font-bold text-body text-text-primary truncate max-w-[150px]">
                         {country}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-primary tabular-nums">
+                    <span className="text-body-sm font-semibold text-primary tabular-nums">
                       {count} phim
                     </span>
                   </div>
@@ -334,7 +334,7 @@ function StatsPage() {
             <div className="flex items-center gap-3 mb-8">
               <h3
                 id="stats-genres-title"
-                className="text-lg font-bold tracking-tight text-text-primary"
+                className="text-title-md font-bold tracking-tight text-text-primary"
               >
                 Phân bổ thể loại
               </h3>

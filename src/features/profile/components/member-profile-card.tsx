@@ -21,22 +21,24 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
           <img
             src={profile.photoURL}
             alt={profile.displayName}
+            width={80}
+            height={80}
             onError={() => setIsAvatarLoadFailed(true)}
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-2xl sm:text-3xl font-bold">
+          <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-display-lg">
             {profile.displayName.charAt(0).toUpperCase()}
           </span>
         )}
       </div>
 
-      <h2 className="mt-2 text-xl sm:text-2xl text-text-primary tracking-tight font-display">
+      <h2 className="mt-2 text-display-md text-text-primary tracking-tight">
         {profile.displayName}
       </h2>
       {profile.email && (
-        <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
-          <Mail size={12} className="shrink-0" aria-hidden="true" />
+        <p className="mt-1 inline-flex items-center gap-1.5 text-body-sm text-text-secondary max-w-full">
+          <Mail size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
           <span className="truncate">{profile.email}</span>
         </p>
       )}
@@ -44,11 +46,11 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
       <ProfileMeta gender={profile.gender} dob={profile.dob} className="mt-1 items-center" />
 
       {profile.bio ? (
-        <p className="mt-3 text-sm text-text-secondary leading-relaxed whitespace-pre-line break-words max-w-prose">
+        <p className="mt-3 text-body text-text-secondary leading-relaxed whitespace-pre-line break-words max-w-prose">
           {profile.bio}
         </p>
       ) : (
-        <p className="mt-3 text-sm text-text-secondary italic">Chưa có giới thiệu.</p>
+        <p className="mt-3 text-body text-text-secondary italic">Chưa có giới thiệu.</p>
       )}
     </div>
   );

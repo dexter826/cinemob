@@ -57,7 +57,7 @@ function MemberProfilePage() {
       size="md"
       onClick={() => void handleCopyLink()}
     >
-      <Link2 size={18} aria-hidden="true" />
+      <Link2 size={18} strokeWidth={1.5} aria-hidden="true" />
     </IconButton>
   );
 
@@ -158,7 +158,7 @@ function MemberProfilePage() {
                 size="md"
                 onClick={() => navigate('/stats')}
               >
-                <BarChart2 size={18} aria-hidden="true" />
+                <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
               </IconButton>
               {copyLinkButton}
             </>
@@ -259,7 +259,7 @@ function MemberProfilePage() {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`relative flex items-center h-11 px-3.5 text-xs font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+                    className={`relative flex items-center h-11 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
                       isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                     }`}
                   >
@@ -286,7 +286,7 @@ function MemberProfilePage() {
                 <Loading text="Đang tải phim chung…" />
               ) : commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
-                  <p className="text-sm sm:text-base text-text-primary tracking-tight font-display">
+                  <p className="text-display-md text-text-primary tracking-tight">
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>
@@ -316,7 +316,7 @@ function MemberProfilePage() {
                         onClick={() =>
                           setVisibleCommonCount((current) => current + COMMON_MOVIES_INITIAL)
                         }
-                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-sm font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
                       >
                         Xem thêm
                       </button>

@@ -91,6 +91,8 @@ function PosterCard({
             src={imageUrl}
             alt=""
             aria-hidden="true"
+            width={500}
+            height={750}
             loading="lazy"
             onError={(event) => {
               const image = event.currentTarget;
@@ -104,6 +106,8 @@ function PosterCard({
         <img
           src={imageUrl}
           alt={title}
+          width={500}
+          height={750}
           loading="lazy"
           onError={(event) => {
             const image = event.currentTarget;

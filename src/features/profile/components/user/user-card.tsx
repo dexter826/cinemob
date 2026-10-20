@@ -19,26 +19,29 @@ function UserCard({ profile, onClick }: UserCardProps) {
         <img
           src={profile.photoURL}
           alt={profile.displayName}
+          width={48}
+          height={48}
           className="w-12 h-12 rounded-full object-cover border border-border-default shrink-0"
         />
       ) : (
-        <span className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-lg font-bold text-primary shrink-0">
+        <span className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-title-md font-bold text-primary shrink-0">
           {profile.displayName.charAt(0).toUpperCase()}
         </span>
       )}
       <span className="flex-1 min-w-0">
-        <span className="block text-sm font-bold text-text-primary group-hover:text-primary transition-colors truncate">
+        <span className="block text-body font-bold text-text-primary group-hover:text-primary transition-colors truncate">
           {profile.displayName}
         </span>
         {profile.email && profile.email !== profile.displayName && (
-          <span className="block text-xs text-text-secondary truncate">{profile.email}</span>
+          <span className="block text-body-sm text-text-secondary truncate">{profile.email}</span>
         )}
-        <span className="block text-xs text-text-secondary mt-0.5">
+        <span className="block text-body-sm text-text-secondary mt-0.5">
           {profile.totalCount} phim đã xem
         </span>
       </span>
       <ChevronRight
         size={18}
+        strokeWidth={1.5}
         className="text-text-secondary group-hover:text-primary transition-colors shrink-0"
         aria-hidden="true"
       />

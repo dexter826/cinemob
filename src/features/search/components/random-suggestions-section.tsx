@@ -34,8 +34,8 @@ function RandomSuggestionsSection({
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Dice5 className="text-primary shrink-0" size={18} aria-hidden="true" />
-          <h2 id="random-suggestions-title" className="text-lg sm:text-xl text-primary font-bold">
+          <Dice5 className="text-primary shrink-0" size={18} strokeWidth={1.5} aria-hidden="true" />
+          <h2 id="random-suggestions-title" className="text-title-md text-primary font-bold">
             Đề xuất cho bạn
           </h2>
         </div>
@@ -45,10 +45,11 @@ function RandomSuggestionsSection({
           disabled={isLoading}
           aria-label="Làm mới gợi ý"
           title="Làm mới gợi ý"
-          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
+          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-body-sm sm:text-body bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
         >
           <RotateCcw
             size={16}
+            strokeWidth={1.5}
             aria-hidden="true"
             className={isLoading ? 'animate-spin' : undefined}
           />

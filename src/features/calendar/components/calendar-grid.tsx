@@ -60,7 +60,7 @@ function CalendarGrid({
           key={`prev-${day}`}
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
-          <div className="text-xs font-bold text-text-secondary">{day}</div>
+          <div className="text-body-sm font-bold text-text-secondary">{day}</div>
         </div>,
       );
     }
@@ -88,7 +88,7 @@ function CalendarGrid({
           `}
         >
           <div
-            className={`text-xs font-bold ${today ? 'text-primary' : 'text-text-primary opacity-60'}`}
+            className={`text-body-sm font-bold ${today ? 'text-primary' : 'text-text-primary opacity-60'}`}
           >
             {day}
           </div>
@@ -97,14 +97,14 @@ function CalendarGrid({
               {episodes.slice(0, 2).map((ep) => (
                 <div
                   key={`${ep.seriesId}-${ep.episode.id}`}
-                  className="text-xs sm:text-xs text-primary truncate font-bold"
+                  className="text-body-sm text-primary truncate font-bold"
                   title={`${ep.seriesNameVi || ep.seriesName} - S${ep.episode.season_number}E${ep.episode.episode_number}`}
                 >
                   {ep.seriesNameVi || ep.seriesName}
                 </div>
               ))}
               {episodes.length > 2 && (
-                <div className="text-xs sm:text-xs text-text-secondary font-bold opacity-60 pl-1">
+                <div className="text-body-sm text-text-secondary font-bold opacity-60 pl-1">
                   +{episodes.length - 2}
                 </div>
               )}
@@ -136,7 +136,7 @@ function CalendarGrid({
           key={`next-${day}`}
           className="h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border border-border-default/30 dark:border-white/5 opacity-20 rounded-control sm:rounded-card flex flex-col justify-between"
         >
-          <div className="text-xs font-bold text-text-secondary">{day}</div>
+          <div className="text-body-sm font-bold text-text-secondary">{day}</div>
         </div>,
       );
     }
@@ -156,14 +156,14 @@ function CalendarGrid({
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-text-primary tracking-tight whitespace-nowrap">
+          <h2 className="text-title-md font-bold text-text-primary tracking-tight whitespace-nowrap">
             {monthLabel(currentDate.getMonth())} {currentDate.getFullYear()}
           </h2>
           <button
             type="button"
             onClick={goToToday}
             aria-label="Về hôm nay"
-            className="text-xs font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
+            className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
           >
             Hôm nay
           </button>
@@ -182,7 +182,7 @@ function CalendarGrid({
         {DAYS_OF_WEEK.map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-semibold text-text-secondary py-2 sm:py-3"
+            className="text-center text-body-sm font-semibold text-text-secondary py-2 sm:py-3"
           >
             {day}
           </div>

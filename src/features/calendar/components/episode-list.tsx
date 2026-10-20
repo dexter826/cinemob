@@ -46,7 +46,7 @@ function EpisodeList({
     <div className="lg:col-span-1 lg:relative min-w-0 min-h-0 lg:border-l lg:border-border lg:pl-6">
       <div className="flex flex-col min-h-0 lg:absolute lg:inset-y-0 lg:right-0 lg:left-6">
         <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
-          <h2 className="font-bold text-text-primary text-lg sm:text-xl tracking-tight truncate">
+          <h2 className="font-bold text-text-primary text-title-md tracking-tight truncate">
             {selectedDate ? `Ngày ${formatDateDMY(selectedDate)}` : monthTitle}
           </h2>
           {selectedDate && (
@@ -54,7 +54,7 @@ function EpisodeList({
               onClick={() => setSelectedDate(null)}
               type="button"
               aria-label="Xem cả tháng"
-              className="text-xs font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               Xem cả tháng
             </button>
@@ -75,21 +75,26 @@ function EpisodeList({
           </div>
         ) : episodesError ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 py-12 text-center">
-            <p role="alert" className="text-text-secondary text-sm">
+            <p role="alert" className="text-text-secondary text-body">
               {episodesError}
             </p>
             <button
               type="button"
               onClick={retryEpisodes}
-              className="px-4 py-2 rounded-control border border-border text-text-primary text-xs font-bold hover:border-primary hover:text-primary transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-control border border-border text-text-primary text-body-sm font-bold hover:border-primary hover:text-primary transition-colors cursor-pointer"
             >
               Thử lại
             </button>
           </div>
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
-            <Info size={32} className="text-text-secondary opacity-40 mb-4" aria-hidden="true" />
-            <p className="text-text-secondary font-semibold text-xs">
+            <Info
+              size={32}
+              strokeWidth={1.5}
+              className="text-text-secondary opacity-40 mb-4"
+              aria-hidden="true"
+            />
+            <p className="text-text-secondary font-semibold text-body-sm">
               {selectedDate
                 ? 'Không có tập phim nào trong ngày này'
                 : monthKey > today.slice(0, 7)
@@ -102,7 +107,7 @@ function EpisodeList({
             {Object.entries(episodesByDate).map(([date, episodes]) => (
               <div key={date} className="mb-6 last:mb-0">
                 <div className="sticky top-0 z-10 pb-2 -mt-1 pt-1 flex justify-start bg-background">
-                  <h4 className="text-xs font-bold text-primary whitespace-nowrap">
+                  <h4 className="text-body-sm font-bold text-primary whitespace-nowrap">
                     {formatDate(date)}
                   </h4>
                 </div>
@@ -126,18 +131,18 @@ function EpisodeList({
                         />
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
-                        <h5 className="font-bold text-text-primary text-sm truncate tracking-tight leading-snug">
+                        <h5 className="font-bold text-text-primary text-body truncate tracking-tight leading-snug">
                           {ep.seriesNameVi || ep.seriesName}
                         </h5>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs font-black text-primary tabular-nums">
+                          <span className="text-body-sm font-black text-primary tabular-nums">
                             S{ep.episode.season_number}E{ep.episode.episode_number}
                           </span>
                         </div>
-                        <p className="text-xs font-medium text-text-secondary truncate mt-1">
+                        <p className="text-body-sm font-medium text-text-secondary truncate mt-1">
                           {ep.episode.name || `Tập ${ep.episode.episode_number}`}
                         </p>
-                        <p className="text-xs text-text-secondary mt-1">
+                        <p className="text-body-sm text-text-secondary mt-1">
                           {date < today
                             ? 'Đã phát sóng'
                             : date === today
@@ -146,7 +151,11 @@ function EpisodeList({
                         </p>
                       </div>
                       <div className="self-center pl-1 sm:pl-2" aria-hidden="true">
-                        <ChevronRight size={16} className="text-text-secondary shrink-0" />
+                        <ChevronRight
+                          size={16}
+                          strokeWidth={1.5}
+                          className="text-text-secondary shrink-0"
+                        />
                       </div>
                     </button>
                   ))}

@@ -231,7 +231,7 @@ function OwnProfileEditor({
           {crop.errorMessage && (
             <p
               role="alert"
-              className="w-full mt-4 p-2.5 text-xs rounded-control bg-danger/10 border border-danger/20 text-danger text-center"
+              className="w-full mt-4 p-2.5 text-body-sm rounded-control bg-danger/10 border border-danger/20 text-danger text-center"
             >
               {crop.errorMessage}
             </p>
@@ -244,7 +244,7 @@ function OwnProfileEditor({
               disabled={crop.isBusy}
               size="md"
             >
-              <X size={16} aria-hidden="true" />
+              <X size={16} strokeWidth={1.5} aria-hidden="true" />
             </IconButton>
             <IconButton
               label="Chọn ảnh khác"
@@ -252,7 +252,7 @@ function OwnProfileEditor({
               disabled={crop.isBusy}
               size="md"
             >
-              <RotateCcw size={16} aria-hidden="true" />
+              <RotateCcw size={16} strokeWidth={1.5} aria-hidden="true" />
             </IconButton>
             <Button
               variant="primary"
@@ -283,11 +283,13 @@ function OwnProfileEditor({
                   <img
                     src={user.photoURL}
                     alt="Ảnh đại diện"
+                    width={80}
+                    height={80}
                     onError={() => setIsAvatarLoadFailed(true)}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-3xl font-bold">
+                  <span className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-display-lg">
                     {displayName.charAt(0).toUpperCase()}
                   </span>
                 )}
@@ -296,7 +298,7 @@ function OwnProfileEditor({
                     aria-hidden="true"
                     className="absolute inset-0 flex items-center justify-center bg-primary/85 text-on-primary"
                   >
-                    <Upload size={26} />
+                    <Upload size={26} strokeWidth={1.5} />
                   </span>
                 )}
               </div>
@@ -312,7 +314,7 @@ function OwnProfileEditor({
                   aria-expanded={isAvatarMenuOpen}
                   className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Pencil size={15} aria-hidden="true" />
+                  <Pencil size={15} strokeWidth={1.5} aria-hidden="true" />
                 </button>
               )}
               {isEditing && (
@@ -333,9 +335,14 @@ function OwnProfileEditor({
                           setIsAvatarMenuOpen(false);
                           crop.openFilePicker();
                         }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
                       >
-                        <Upload size={14} className="text-primary shrink-0" aria-hidden="true" />
+                        <Upload
+                          size={14}
+                          strokeWidth={1.5}
+                          className="text-primary shrink-0"
+                          aria-hidden="true"
+                        />
                         <span>Tải ảnh mới</span>
                       </button>
 
@@ -347,9 +354,14 @@ function OwnProfileEditor({
                             setIsAvatarMenuOpen(false);
                             crop.handleDelete();
                           }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
                         >
-                          <RotateCcw size={14} className="shrink-0" aria-hidden="true" />
+                          <RotateCcw
+                            size={14}
+                            strokeWidth={1.5}
+                            className="shrink-0"
+                            aria-hidden="true"
+                          />
                           <span>Khôi phục ảnh gốc</span>
                         </button>
                       )}
@@ -362,15 +374,15 @@ function OwnProfileEditor({
             <div className="flex-1 min-w-0 text-left">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-xl sm:text-2xl text-text-primary truncate tracking-tight font-display">
+                  <h2 className="text-display-md text-text-primary truncate tracking-tight">
                     {displayName}
                   </h2>
-                  <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-text-secondary max-w-full">
-                    <Mail size={12} className="shrink-0" aria-hidden="true" />
+                  <p className="mt-1 inline-flex items-center gap-1.5 text-body-sm text-text-secondary max-w-full">
+                    <Mail size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
                     <span className="truncate">{user.email || 'Chưa có email'}</span>
                   </p>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs text-text-secondary">
-                    <CalendarDays size={12} aria-hidden="true" /> Tham gia{' '}
+                  <p className="mt-1 flex items-center gap-1.5 text-body-sm text-text-secondary">
+                    <CalendarDays size={12} strokeWidth={1.5} aria-hidden="true" /> Tham gia{' '}
                     {formatJoinDate(user.metadata?.creationTime)}
                   </p>
                 </div>
@@ -383,7 +395,7 @@ function OwnProfileEditor({
                     onClick={startEditing}
                     disabled={!ready}
                     aria-label="Chỉnh sửa hồ sơ"
-                    leadingIcon={<Pencil size={14} aria-hidden="true" />}
+                    leadingIcon={<Pencil size={14} strokeWidth={1.5} aria-hidden="true" />}
                     className="shrink-0 px-3 sm:px-4"
                   >
                     <span className="hidden sm:inline">Chỉnh sửa</span>
@@ -394,7 +406,7 @@ function OwnProfileEditor({
               {!isEditing && (
                 <div className="mt-1">
                   {error ? (
-                    <div role="alert" className="text-sm text-danger">
+                    <div role="alert" className="text-body text-danger">
                       {error}
                       <Button variant="ghost" onClick={onRetry}>
                         Thử lại
@@ -402,19 +414,19 @@ function OwnProfileEditor({
                     </div>
                   ) : loading ? (
                     <div aria-hidden="true" className="space-y-2 max-w-prose">
-                      <Skeleton className="h-3 w-32 rounded-md  " />
-                      <Skeleton className="h-3 w-3/4 rounded-md  " />
-                      <Skeleton className="h-3 w-1/2 rounded-md  " />
+                      <Skeleton className="h-3 w-32 rounded-poster  " />
+                      <Skeleton className="h-3 w-3/4 rounded-poster  " />
+                      <Skeleton className="h-3 w-1/2 rounded-poster  " />
                     </div>
                   ) : (
                     <>
                       <ProfileMeta gender={profile?.gender} dob={profile?.dob} />
                       {profile?.bio ? (
-                        <p className="mt-3 text-sm text-text-secondary leading-relaxed whitespace-pre-line max-w-prose">
+                        <p className="mt-3 text-body text-text-secondary leading-relaxed whitespace-pre-line max-w-prose">
                           {profile.bio}
                         </p>
                       ) : (
-                        <p className="mt-3 text-sm text-text-secondary italic">
+                        <p className="mt-3 text-body text-text-secondary italic">
                           Chưa có giới thiệu.
                         </p>
                       )}
@@ -428,9 +440,7 @@ function OwnProfileEditor({
           {isEditing && (
             <div className="mt-5 space-y-4">
               <label className="block">
-                <span className="block text-xs font-semibold text-text-secondary mb-1">
-                  Tên hiển thị
-                </span>
+                <span className="block text-label-caps text-text-secondary mb-1">Tên hiển thị</span>
                 <input
                   ref={nameInputRef}
                   name="display-name"
@@ -440,19 +450,17 @@ function OwnProfileEditor({
                   placeholder="Nhập tên hiển thị…"
                   maxLength={50}
                   aria-invalid={nameError ? true : undefined}
-                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30"
+                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring"
                 />
                 {nameError && (
-                  <p role="alert" className="mt-1.5 text-xs text-danger">
+                  <p role="alert" className="mt-1.5 text-body-sm text-danger">
                     {nameError}
                   </p>
                 )}
               </label>
 
               <label className="block">
-                <span className="block text-xs font-semibold text-text-secondary mb-1">
-                  Giới thiệu
-                </span>
+                <span className="block text-label-caps text-text-secondary mb-1">Giới thiệu</span>
                 <textarea
                   name="bio"
                   value={draftBio}
@@ -460,18 +468,16 @@ function OwnProfileEditor({
                   rows={3}
                   maxLength={BIO_MAX_LENGTH}
                   placeholder="Thêm vài dòng giới thiệu về bạn…"
-                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-sm text-text-primary focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30 resize-none"
+                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring resize-none"
                 />
-                <span className="block text-right text-xs text-text-secondary">
+                <span className="block text-right text-body-sm text-text-secondary">
                   {draftBio.length}/{BIO_MAX_LENGTH}
                 </span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label>
-                  <span className="block text-xs font-semibold text-text-secondary mb-1">
-                    Giới tính
-                  </span>
+                  <span className="block text-label-caps text-text-secondary mb-1">Giới tính</span>
                   <Dropdown
                     options={GENDER_DROPDOWN_OPTIONS}
                     value={draftGender}
@@ -480,9 +486,7 @@ function OwnProfileEditor({
                   />
                 </label>
                 <label>
-                  <span className="block text-xs font-semibold text-text-secondary mb-1">
-                    Ngày sinh
-                  </span>
+                  <span className="block text-label-caps text-text-secondary mb-1">Ngày sinh</span>
                   <DatePicker value={draftDob} onChange={setDraftDob} className="min-w-0" />
                 </label>
               </div>
@@ -507,15 +511,25 @@ function OwnProfileEditor({
           <div className="mt-5 pt-4 border-t border-border-default">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
+                <p className="text-body-sm font-semibold text-text-primary flex items-center gap-1.5">
                   {isHidden ? (
-                    <EyeOff size={13} className="text-text-secondary shrink-0" aria-hidden="true" />
+                    <EyeOff
+                      size={13}
+                      strokeWidth={1.5}
+                      className="text-text-secondary shrink-0"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <Eye size={13} className="text-primary shrink-0" aria-hidden="true" />
+                    <Eye
+                      size={13}
+                      strokeWidth={1.5}
+                      className="text-primary shrink-0"
+                      aria-hidden="true"
+                    />
                   )}
                   Ẩn danh sách phim
                 </p>
-                <p className="text-xs text-text-secondary mt-0.5">
+                <p className="text-body-sm text-text-secondary mt-0.5">
                   {isHidden
                     ? 'Danh sách phim đang ẩn, chỉ bạn nhìn thấy.'
                     : 'Danh sách phim đã xem hiển thị với mọi thành viên.'}

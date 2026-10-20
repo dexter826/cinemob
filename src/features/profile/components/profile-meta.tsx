@@ -14,14 +14,14 @@ function ProfileMeta({ gender, dob, className }: ProfileMetaProps) {
   return (
     <div className={classNames('flex flex-col items-start gap-1', className)}>
       {gender && (
-        <p className="inline-flex items-center gap-1.5 text-xs text-text-secondary">
-          <User size={12} className="shrink-0" aria-hidden="true" />
+        <p className="inline-flex items-center gap-1.5 text-body-sm text-text-secondary">
+          <User size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
           {GENDER_LABELS[gender]}
         </p>
       )}
       {dob && (
-        <p className="inline-flex items-center gap-1.5 text-xs text-text-secondary">
-          <Cake size={12} className="shrink-0" aria-hidden="true" />
+        <p className="inline-flex items-center gap-1.5 text-body-sm text-text-secondary">
+          <Cake size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
           {formatDob(dob)}
         </p>
       )}

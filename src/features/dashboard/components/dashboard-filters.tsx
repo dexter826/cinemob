@@ -51,7 +51,7 @@ function CapsButton({
       onClick={onClick}
       aria-pressed={active}
       className={classNames(
-        'group relative h-10 px-2.5 inline-flex items-center text-[11px] font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer',
+        'group relative h-10 px-2.5 inline-flex items-center text-label-caps font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer',
         active ? 'text-primary' : 'text-text-secondary hover:text-text-primary',
       )}
     >
@@ -261,7 +261,7 @@ function DashboardFilters({
           {!filtersOpen && chipItems.length > 0 && (
             <span
               aria-hidden="true"
-              className="absolute top-1 right-0.5 min-w-[15px] h-[15px] px-0.5 inline-flex items-center justify-center rounded-[4px] bg-primary text-on-primary text-[9px] font-bold leading-none tabular-nums"
+              className="absolute top-1 right-0.5 min-w-[15px] h-[15px] px-0.5 inline-flex items-center justify-center rounded-[4px] bg-primary text-on-primary text-micro-caps font-bold leading-none tabular-nums"
             >
               {chipItems.length}
             </span>
@@ -290,7 +290,7 @@ function DashboardFilters({
               type="button"
               onClick={chip.clear}
               aria-label={`Gỡ lọc ${chip.label}`}
-              className="group inline-flex items-center gap-1 px-2 py-1.5 rounded-poster border border-border-default text-[10px] font-bold uppercase tracking-[0.06em] text-text-secondary hover:text-text-primary hover:border-primary/40 transition-colors cursor-pointer whitespace-nowrap"
+              className="group inline-flex items-center gap-1 px-2 py-1.5 rounded-poster border border-border-default text-micro-caps font-bold uppercase tracking-[0.06em] text-text-secondary hover:text-text-primary hover:border-primary/40 transition-colors cursor-pointer whitespace-nowrap"
             >
               {chip.label}
               <X
@@ -304,7 +304,7 @@ function DashboardFilters({
           <button
             type="button"
             onClick={clearFilters}
-            className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-[0.06em] text-primary hover:underline cursor-pointer whitespace-nowrap"
+            className="px-2 py-1.5 text-micro-caps font-bold uppercase tracking-[0.06em] text-primary hover:underline cursor-pointer whitespace-nowrap"
           >
             Xóa tất cả
           </button>
@@ -318,12 +318,12 @@ function DashboardFilters({
           className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border flex flex-col gap-5 w-80 max-w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto overscroll-contain"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-text-secondary">Bộ lọc</span>
+            <span className="text-label-caps font-semibold text-text-secondary">Bộ lọc</span>
             {chipItems.length > 0 && (
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-xs font-semibold text-primary hover:underline cursor-pointer"
+                className="text-body-sm font-semibold text-primary hover:underline cursor-pointer"
               >
                 Xóa tất cả
               </button>

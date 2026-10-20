@@ -47,6 +47,8 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
             src={getTMDBImageUrl(backLeft, 'w185')}
             alt=""
             aria-hidden="true"
+            width={185}
+            height={278}
             loading="lazy"
             onError={(event) => {
               const image = event.currentTarget;
@@ -63,6 +65,8 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
             src={getTMDBImageUrl(backRight, 'w185')}
             alt=""
             aria-hidden="true"
+            width={185}
+            height={278}
             loading="lazy"
             onError={(event) => {
               const image = event.currentTarget;
@@ -80,6 +84,8 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
             src={getTMDBImageUrl(cover, 'w500')}
             alt=""
             aria-hidden="true"
+            width={500}
+            height={750}
             loading="lazy"
             onError={(event) => {
               const image = event.currentTarget;

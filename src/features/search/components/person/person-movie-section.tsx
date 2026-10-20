@@ -84,7 +84,7 @@ export function PersonMovieSection({
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
             className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-primary'}`}
           >
-            <Filter size={18} aria-hidden="true" />
+            <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>
 
           {showFilters && (
@@ -93,28 +93,30 @@ export function PersonMovieSection({
               className="absolute top-full left-0 right-0 md:right-0 md:left-auto mt-3 z-30 bg-surface-elevated p-6 rounded-dialog border border-border flex flex-col gap-6 md:min-w-[320px]"
             >
               <div className="space-y-3">
-                <div className="text-xs font-semibold text-text-secondary">Sắp xếp theo</div>
+                <div className="text-label-caps font-semibold text-text-secondary">
+                  Sắp xếp theo
+                </div>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
-                    <Calendar size={14} aria-hidden="true" /> <span>Năm</span>
+                    <Calendar size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
-                    <Type size={14} aria-hidden="true" /> <span>Tên</span>
+                    <Type size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-xs font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
                   >
                     {sortOrder === 'asc' ? (
-                      <ArrowUp size={14} aria-hidden="true" />
+                      <ArrowUp size={14} strokeWidth={1.5} aria-hidden="true" />
                     ) : (
-                      <ArrowDown size={14} aria-hidden="true" />
+                      <ArrowDown size={14} strokeWidth={1.5} aria-hidden="true" />
                     )}
                     <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
                   </button>
@@ -124,12 +126,14 @@ export function PersonMovieSection({
               <div className="h-px bg-border-default" />
 
               <div className="space-y-4">
-                <div className="text-xs font-semibold text-text-secondary">Lọc nâng cao</div>
+                <div className="text-label-caps font-semibold text-text-secondary">
+                  Lọc nâng cao
+                </div>
                 <div className="space-y-2">
                   <label
                     htmlFor="person-movie-years"
                     id="person-movie-years-label"
-                    className="text-xs font-semibold text-text-secondary ml-1"
+                    className="text-label-caps font-semibold text-text-secondary ml-1"
                   >
                     Năm phát hành
                   </label>
@@ -148,7 +152,7 @@ export function PersonMovieSection({
         </div>
 
         {paginatedMovies.length > 0 && (
-          <p className="flex items-center justify-end text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+          <p className="flex items-center justify-end text-micro-caps font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
             Hiển thị {paginatedMovies.length} / {filteredCount} mục
           </p>
         )}

@@ -229,7 +229,7 @@ function MovieFormFields({
           id="movie-overview-label"
           className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
         >
-          <AlignLeft size={14} className="text-primary" aria-hidden="true" />
+          <AlignLeft size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Nội dung tóm tắt
         </label>
         <textarea

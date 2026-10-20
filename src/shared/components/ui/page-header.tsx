@@ -38,7 +38,7 @@ function PageHeader({
       <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
         {onBack && (
           <IconButton label="Quay lại trang trước" onClick={onBack} variant="secondary" size="md">
-            <ArrowLeft size={20} aria-hidden="true" />
+            <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
           </IconButton>
         )}
         {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}

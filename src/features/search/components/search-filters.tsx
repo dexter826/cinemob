@@ -92,7 +92,7 @@ function SearchFilters({
               type="button"
               onClick={handleSearch}
               aria-label="Tìm kiếm phim"
-              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-sm font-bold cursor-pointer"
+              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-body font-bold cursor-pointer"
             >
               Tìm
             </button>
@@ -109,7 +109,7 @@ function SearchFilters({
               className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
             >
               <div className="max-h-[350px] overflow-y-auto py-2 custom-scrollbar">
-                <div className="px-4 py-2 text-xs font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
+                <div className="px-4 py-2 text-label-caps font-medium text-text-secondary border-b border-border-default dark:border-white/5 mb-1">
                   Gợi ý tìm kiếm
                 </div>
                 {suggestions.map((movie) => {
@@ -127,7 +127,7 @@ function SearchFilters({
                       aria-label={`Chọn phim ${title}`}
                       className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
                     >
-                      <div className="w-10 h-14 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
+                      <div className="w-10 h-14 rounded-poster overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
                         <img
                           src={getTMDBImageUrl(movie.poster_path, 'w92')}
                           alt=""
@@ -138,11 +138,11 @@ function SearchFilters({
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm text-text-primary group-hover/item:text-primary transition-colors line-clamp-1">
+                        <h4 className="font-bold text-body text-text-primary group-hover/item:text-primary transition-colors line-clamp-1">
                           {title}
                         </h4>
                         <div className="flex items-center gap-3 mt-0.5">
-                          <div className="flex items-center gap-1 text-xs text-text-secondary">
+                          <div className="flex items-center gap-1 text-body-sm text-text-secondary">
                             {isTV ? (
                               <Tv
                                 size={12}
@@ -161,13 +161,13 @@ function SearchFilters({
                             <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
                           </div>
                           {year && (
-                            <div className="flex items-center gap-1 text-xs text-text-secondary">
+                            <div className="flex items-center gap-1 text-body-sm text-text-secondary">
                               <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
                               <span>{year}</span>
                             </div>
                           )}
                           {(movie.vote_average ?? 0) > 0 && (
-                            <div className="flex items-center gap-1 text-xs text-warning font-bold">
+                            <div className="flex items-center gap-1 text-body-sm text-warning font-bold">
                               <Star
                                 size={12}
                                 fill="currentColor"
@@ -184,7 +184,7 @@ function SearchFilters({
                 })}
                 <button
                   onClick={handleSearch}
-                  className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-xs font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-body-sm font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Search size={14} strokeWidth={1.5} aria-hidden="true" />
                   Xem tất cả kết quả cho “{filters.query}”
@@ -253,7 +253,7 @@ function SearchFilters({
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-border"
+            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-body-sm font-bold text-text-secondary cursor-pointer border border-border"
           >
             <FilterX size={14} strokeWidth={1.5} aria-hidden="true" />
             <span className="hidden sm:inline">Đặt lại</span>

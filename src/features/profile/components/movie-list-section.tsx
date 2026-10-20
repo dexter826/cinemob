@@ -113,7 +113,7 @@ function MovieListSection({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 text-xs text-text-secondary px-1 tabular-nums">
+      <div className="flex items-center justify-between gap-3 text-body-sm text-text-secondary px-1 tabular-nums">
         <span>
           {searchQuery.trim() ? (
             <>
@@ -173,7 +173,7 @@ function MovieListSection({
           <button
             type="button"
             onClick={() => setVisibleCount((current) => current + LOAD_MORE_SIZE)}
-            className="px-5 py-2.5 rounded-control border border-border bg-surface text-sm font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+            className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
           >
             Xem thêm
           </button>

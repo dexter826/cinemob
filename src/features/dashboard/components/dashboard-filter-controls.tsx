@@ -35,7 +35,7 @@ export function formatRatingRange(
 
 function GroupLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-text-secondary">
+    <div className="text-micro-caps font-bold uppercase tracking-[0.14em] text-text-secondary">
       {children}
     </div>
   );
@@ -131,7 +131,9 @@ export function FilterControls({
         <div className="flex items-center justify-between gap-2">
           <GroupLabel>Đánh giá</GroupLabel>
           {ratingStatus && (
-            <span className="text-xs font-semibold text-primary tabular-nums">{ratingStatus}</span>
+            <span className="text-body-sm font-semibold text-primary tabular-nums">
+              {ratingStatus}
+            </span>
           )}
         </div>
         <div
@@ -153,7 +155,7 @@ export function FilterControls({
                 }
                 aria-pressed={isActive}
                 className={classNames(
-                  'flex-1 min-w-0 flex items-center justify-center px-1 py-1.5 rounded-lg transition-colors cursor-pointer',
+                  'flex-1 min-w-0 flex items-center justify-center px-1 py-1.5 rounded-control transition-colors cursor-pointer',
                   isActive
                     ? 'text-warning bg-warning/15'
                     : 'text-text-muted hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5',

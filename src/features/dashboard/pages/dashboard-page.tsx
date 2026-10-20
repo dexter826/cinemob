@@ -59,7 +59,7 @@ function DashboardPage() {
           <Button
             variant="secondary"
             onClick={() => openAddModal()}
-            leadingIcon={<Plus size={14} aria-hidden="true" />}
+            leadingIcon={<Plus size={14} strokeWidth={1.5} aria-hidden="true" />}
           >
             Thêm thủ công
           </Button>
