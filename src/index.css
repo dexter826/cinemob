@@ -24,7 +24,7 @@
   --color-focus: #8f6400;
   --color-success: #15803d; /* green-700 */
   --color-on-success: #fffefa;
-  --color-warning: #a16207; /* yellow-700 */
+  --color-warning: #9a5d06; /* warning trên nền sáng */
   --color-danger: #b91c1c; /* red-700 */
   --color-on-danger: #fffefa;
   --color-info: #0369a1; /* sky-700 */
@@ -254,4 +254,117 @@
 @utility cv-auto {
   content-visibility: auto;
   contain-intrinsic-size: auto 300px;
+}
+
+@utility text-display-xl {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.025em;
+
+  @media (min-width: 40rem) {
+    font-size: 36px;
+  }
+
+  @media (min-width: 48rem) {
+    font-size: 48px;
+  }
+}
+
+@utility text-display-lg {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.025em;
+
+  @media (min-width: 40rem) {
+    font-size: 30px;
+  }
+
+  @media (min-width: 48rem) {
+    font-size: 36px;
+  }
+}
+
+@utility text-display-stat {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.025em;
+
+  @media (min-width: 40rem) {
+    font-size: 60px;
+  }
+}
+
+@utility text-display-404 {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+
+  @media (min-width: 48rem) {
+    font-size: 96px;
+  }
+}
+
+@utility text-title-lg {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+@utility text-title-md {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+@utility text-body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+@utility text-body-sm {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+@utility text-label-caps {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@utility text-micro-caps {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
 }
