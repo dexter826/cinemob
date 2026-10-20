@@ -361,3 +361,50 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 5 N
 - Đã rà và thấy sạch: 11 file đều chỉ thay class trình bày, không đổi props/state/handler/logic/copy/motion timing; `text-on-primary` chỉ áp cho nền primary đặc; ảnh thêm `width`/`height` đúng tỉ lệ; không có nhánh lỗi, dependency, secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
 
 Còn lại cho Phase 3C: `status-toggle.tsx`, `create-album-modal.tsx` (movies) + toàn bộ profile/search/calendar/stats/dashboard.
+
+## Phase 3C — Profile, search, calendar, stats, dashboard (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-3c.md`.
+- Nguồn mapping: subagent điều tra trả về 163 dòng thay thế chính xác (file:line → old → new) cho 22 file.
+- Cách áp dụng: **script Node** đọc/ghi UTF-8 (`node:fs`) thay vì PowerShell — lượt 1 áp 151/163 (12 chỗ không khớp do fragment nhiều dòng lệch thụt lề), lượt 2 vá 9 chỗ còn lại. Script tạm đã xoá sau khi chạy. Quét mojibake toàn repo → sạch.
+
+### Task 1-5 — Áp mapping theo khu vực
+
+- Profile (8 file): 165 thay. Chữ cái avatar → `text-display-lg` (Anton 24/30/36, bỏ `font-bold` vì Anton chỉ có 400; `display-xl` 48px sẽ tràn khung 80px). 4 ảnh thêm `width`/`height` (80×80, 80×80, 48×48, 220×220). Nhãn form → `text-label-caps`; input/textarea → `focus-ring`; 3 skeleton `rounded-md` → `rounded-poster`.
+- Search (5 file): 46 thay. Nhãn field → `text-label-caps`; ảnh người 192×288; thumbnail poster → `rounded-poster`.
+- Calendar (3 file): 21 thay. Số ngày/nhãn → `text-body-sm`; heading → `text-title-md`.
+- Stats + dashboard (5 file): 22 thay. Heading → `text-title-md`; số xếp hạng `text-xl` → `text-title-lg` (giữ 20px); badge năm → `rounded-control`; chip/badge → `text-label-caps`/`text-micro-caps`.
+- `status-toggle.tsx`: 2 nhãn tab → `text-body-sm`. `create-album-modal.tsx`: không có phát hiện → không sửa.
+
+### Task 6 — Sweep nốt (phát hiện bằng script quét riêng)
+
+Script Node quét `<LucideIcon ... />` không có `strokeWidth` trong mọi file: còn **4** icon (`AlignLeft` trong movie-form-fields, `ArrowLeft` trong page-header, 2 `ArrowUpToLine` trong scroll-to-top) → thêm `strokeWidth={1.5}`. Script quét `<img>` không có `width`: còn **5** ảnh (poster-card ×2, album-card ×3) → thêm `width`/`height` theo kích thước ảnh TMDB (500×750, 185×278).
+
+### Verify toàn phase 3C + toàn repo
+
+Prettier/typecheck/lint/build exit 0; `git diff --check` sạch; không còn mojibake.
+
+Trạng thái gate toàn repo `src/` sau Phase 3:
+
+| Gate                                   | Kết quả                                                  |
+| -------------------------------------- | -------------------------------------------------------- |
+| raw size (`text-[Npx]`, `text-xs…9xl`) | **0**                                                    |
+| `rounded-md` / `rounded-lg`            | **0**                                                    |
+| `focus-visible:ring-N`                 | **0**                                                    |
+| `strokeWidth={1.8}` / `{undefined}`    | **0**                                                    |
+| icon Lucide thiếu `strokeWidth`        | **0** (script quét toàn repo)                            |
+| `<img>` thiếu `width`/`height`         | **0**                                                    |
+| `text-white`                           | 9 chỗ, đều là ngoại lệ media (poster/album/chip neutral) |
+
+Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 5 NIT:
+
+- MINOR (vẫn mở từ Phase 1): focus outline có hai nguồn sự thật (base layer `src/index.css:141-144` + utility `focus-ring`, nay đã dùng ở ~30 chỗ). Phase 3 đã loại hết ring cục bộ nên chỉ còn global rule và `focus-ring` — đây là thời điểm gộp token (`--focus-ring-width`/`--focus-ring-offset`) hoặc bỏ global rule cho sạch. Đề xuất xử lý ở Phase 6 cùng báo cáo cuối.
+- NIT: chữ cái avatar đổi sang font Anton (trước là sans) — thay đổi thị giác rõ nhất của phase, cần xác nhận bằng trình duyệt.
+- NIT: label form 12px → 11px uppercase (`label-caps`); meta số 11px → 9px (`micro-caps`).
+- NIT: `text-xl` ở một số heading → `text-title-lg` (giữ 20px) thay vì co về 18px; heading `text-lg` → `text-title-md` (giữ 18px).
+- NIT: badge năm trong stats `rounded-lg` → `rounded-control` (8px, không đổi hình học); chip `strokeWidth={2}` giữ nguyên (ngoại lệ nhỏ, đã ghi trong plan).
+- Đã rà và thấy sạch: 28 file đổi đều là thay class trình bày, không đổi props/state/handler/logic/copy/motion timing; ảnh thêm kích thước không đổi layout (đều nằm trong khung có tỉ lệ cố định); không có nhánh lỗi, dependency, secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + script quét + đọc diff.
+
+Trạng thái git: 28 file `src/` + plan 3C untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
+
+Phase 3 (static sweep) hoàn tất toàn app. Tiếp theo: Phase 4 (motion) — sweep `duration-200` micro, verify bảng overlay §5.2, dọn dead code.

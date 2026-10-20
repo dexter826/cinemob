@@ -1,6 +1,6 @@
 # Chuẩn hoá toàn bộ UI CineMOB theo DESIGN.md
 
-Ngày: 20/10/2026. Trạng thái: thiết kế và spec đã được người dùng duyệt; Phase 0-1 đã hoàn tất, Phase 2-6 chưa.
+Ngày: 20/10/2026. Trạng thái: thiết kế và spec đã được người dùng duyệt; Phase 0-3 đã hoàn tất, Phase 4-6 chưa.
 
 ## 1. Mục tiêu và phạm vi
 
