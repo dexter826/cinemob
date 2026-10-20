@@ -2,7 +2,7 @@ import Spinner from '@/shared/components/ui/spinner';
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import SearchField from '@/shared/components/ui/search-field';
 import { useRef, useEffect } from 'react';
-import { Search, RotateCcw, Star, Calendar, Film, Tv } from 'lucide-react';
+import { Search, FilterX, Star, Calendar, Film, Tv } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { TMDB_COUNTRY_OPTIONS } from '@/constants';
 import { TMDBMovieResult } from '@/types';
@@ -246,18 +246,20 @@ function SearchFilters({
           placeholder="Sắp xếp theo…"
           className="w-full"
         />
+      </div>
 
-        {hasActiveFilters && (
+      {hasActiveFilters && (
+        <div className="flex justify-end">
           <button
             onClick={handleClear}
             aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex items-center justify-center gap-2 px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-border"
+            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-xs font-bold text-text-secondary cursor-pointer border border-border"
           >
-            <RotateCcw size={14} strokeWidth={1.5} aria-hidden="true" />
-            <span>Đặt lại</span>
+            <FilterX size={14} strokeWidth={1.5} aria-hidden="true" />
+            <span className="hidden sm:inline">Đặt lại</span>
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

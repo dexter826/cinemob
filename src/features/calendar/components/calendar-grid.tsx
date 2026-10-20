@@ -151,7 +151,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -172,7 +172,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
-          className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>

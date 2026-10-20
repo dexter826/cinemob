@@ -44,17 +44,17 @@ const getPresentationClasses = (
   switch (presentation) {
     case 'dialog':
       return classNames(
-        'm-auto w-[calc(100%-2rem)] max-h-[90vh] rounded-dialog sm:w-full',
+        'm-auto w-[calc(100%-2rem)] max-h-[90dvh] rounded-dialog sm:w-full',
         chosenSize || 'max-w-lg',
       );
     case 'sheet':
       return classNames(
-        'mt-auto w-full max-h-[90vh] rounded-t-dialog rounded-b-none sm:m-auto sm:rounded-dialog',
+        'mt-auto w-full max-h-[90dvh] rounded-t-dialog rounded-b-none sm:m-auto sm:rounded-dialog',
         chosenSize || 'sm:max-w-lg',
       );
     case 'fullscreen-mobile':
       return classNames(
-        'm-0 w-full h-full rounded-none pt-[env(safe-area-inset-top)] sm:m-auto sm:h-auto sm:w-full sm:max-h-[90vh] sm:rounded-dialog sm:pt-0',
+        'm-0 w-full h-full rounded-none pt-[env(safe-area-inset-top)] sm:m-auto sm:h-auto sm:w-full sm:max-h-[90dvh] sm:rounded-dialog sm:pt-0',
         chosenSize || 'sm:max-w-2xl',
       );
     default:
@@ -188,7 +188,7 @@ export function DialogHeader({
             type="button"
             onClick={onClose}
             aria-label="Đóng hộp thoại"
-            className="inline-flex w-9 h-9 items-center justify-center rounded-control text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer shrink-0"
+            className="inline-flex w-10 h-10 items-center justify-center rounded-control text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer shrink-0"
           >
             <X size={18} strokeWidth={1.8} aria-hidden="true" />
           </button>

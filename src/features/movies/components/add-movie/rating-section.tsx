@@ -75,7 +75,7 @@ function RatingSection({
               onMouseLeave={() => setHoverRating(0)}
               onFocus={() => setHoverRating(star)}
               onBlur={() => setHoverRating(0)}
-              className="p-0.5 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-lg"
+              className="px-0.5 py-2 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-lg"
             >
               <Star
                 aria-hidden="true"

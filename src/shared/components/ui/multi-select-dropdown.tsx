@@ -205,7 +205,7 @@ function MultiSelectDropdown({
             onClick={() => onChange([])}
             disabled={disabled}
             aria-label="Xóa tất cả lựa chọn"
-            className="self-center mr-2 p-1.5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-visible:ring-1 focus-visible:ring-primary/40"
+            className="self-center mr-2 p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-visible:ring-1 focus-visible:ring-primary/40"
           >
             <X size={14} className="text-text-secondary" aria-hidden="true" />
           </button>

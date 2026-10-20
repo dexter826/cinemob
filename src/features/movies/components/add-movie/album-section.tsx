@@ -97,7 +97,7 @@ function AlbumSection({
                 handleCreateAlbum();
               }
             }}
-            className="flex-1 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
+            className="flex-1 min-w-0 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
           />
           <button
             type="button"

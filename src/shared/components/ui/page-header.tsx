@@ -47,7 +47,7 @@ function PageHeader({
             {title}
           </h1>
           {description && (
-            <p className="text-xs sm:text-sm text-text-secondary font-medium truncate mt-0.5">
+            <p className="text-xs sm:text-sm text-text-secondary font-medium line-clamp-2 mt-0.5">
               {description}
             </p>
           )}

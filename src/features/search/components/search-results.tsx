@@ -43,7 +43,7 @@ function SearchResults({
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 py-6 sm:py-8">
-        {Array.from({ length: 10 }).map((_, i) => (
+        {Array.from({ length: 20 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
       </div>
@@ -98,7 +98,7 @@ function SearchResults({
       {!showFiltered &&
         (showTrendingSkeleton ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 20 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>

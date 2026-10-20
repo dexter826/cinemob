@@ -171,7 +171,7 @@ function StatsPage() {
             aria-labelledby="stats-trend-title"
             className="bg-surface border border-border p-4 sm:p-6 rounded-dialog"
           >
-            <div className="flex items-center justify-between gap-4 mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
               <div className="flex items-center gap-3">
                 <h3
                   id="stats-trend-title"
@@ -182,14 +182,14 @@ function StatsPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="hidden sm:inline text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
                   {totalInYear} phim · {selectedYear}
                 </span>
                 <Dropdown
                   options={yearOptions}
                   value={selectedYear}
                   onChange={(val) => setSelectedYear(val.toString())}
-                  className="w-28"
+                  className="w-28 shrink-0"
                   aria-label="Năm thống kê"
                 />
               </div>

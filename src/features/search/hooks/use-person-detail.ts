@@ -10,7 +10,7 @@ import {
   type SortOrder,
 } from '../utils/person-selectors';
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 36;
 
 export function usePersonDetail(personId?: string) {
   const [retryNonce, setRetryNonce] = useState(0);

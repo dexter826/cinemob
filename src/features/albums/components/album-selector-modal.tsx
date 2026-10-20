@@ -122,7 +122,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
         </IconButton>
       </div>
 
-      <DialogBody>
+      <DialogBody className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
         {showCreateForm ? (
           <div className="mb-6 p-5 border border-border rounded-card">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Tạo album mới</h3>

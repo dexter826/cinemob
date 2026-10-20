@@ -95,7 +95,7 @@ function SearchField({
               aria-label="Xóa từ khóa tìm kiếm"
               className={classNames(
                 'text-text-secondary hover:text-text-primary transition-colors cursor-pointer',
-                isUnderline ? 'p-2' : 'p-1',
+                isUnderline ? 'p-2.5' : 'p-2',
               )}
             >
               <X

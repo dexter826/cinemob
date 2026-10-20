@@ -5,6 +5,7 @@ import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog'
 import SearchField from '@/shared/components/ui/search-field';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Loading from '@/shared/components/ui/loading';
+import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { useUserSearch } from '../../hooks/use-user-search';
 import UserCard from './user-card';
 
@@ -17,6 +18,7 @@ interface MemberSearchModalProps {
 function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps) {
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useMediaQuery('(max-width: 639px)');
   const { searchText, setSearchText, submit, results, loading, error, submittedQuery } =
     useUserSearch(user?.uid);
   const settled = submittedQuery.length > 0 && searchText.trim().toLowerCase() === submittedQuery;
@@ -33,8 +35,8 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
       titleId="member-search-title"
       presentation="dialog"
       size="md"
-      className="h-72"
-      initialFocusRef={inputRef}
+      className="h-[min(24rem,calc(100dvh-8rem))] sm:h-72"
+      initialFocusRef={isMobile ? undefined : inputRef}
       onExitComplete={onExited}
     >
       <DialogHeader titleId="member-search-title" title="Tìm thành viên" onClose={onClose} />

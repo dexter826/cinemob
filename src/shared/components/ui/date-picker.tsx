@@ -226,7 +226,7 @@ function DatePicker({
                 ${
                   useDialogPresentation
                     ? 'relative w-full max-w-[320px] mx-auto'
-                    : 'absolute top-full left-0 mt-1 z-50 w-72'
+                    : 'absolute top-full right-0 mt-1 z-50 w-72 max-w-[calc(100vw-2rem)]'
                 }
             `}
       role={useDialogPresentation ? undefined : 'dialog'}
@@ -246,7 +246,7 @@ function DatePicker({
             type="button"
             aria-label="Đóng bảng chọn ngày"
             onClick={closePicker}
-            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
+            className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
           >
             <X size={20} className="text-text-secondary" aria-hidden="true" />
           </button>
@@ -258,7 +258,7 @@ function DatePicker({
         <button
           type="button"
           onClick={handlePrevYear}
-          className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
           aria-label="Năm trước"
         >
           <ChevronLeft size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
@@ -268,7 +268,7 @@ function DatePicker({
         <button
           type="button"
           onClick={handleNextYear}
-          className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
           aria-label="Năm sau"
         >
           <ChevronRight size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
@@ -281,7 +281,7 @@ function DatePicker({
         <button
           type="button"
           onClick={handlePrevMonth}
-          className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
           aria-label="Tháng trước"
         >
           <ChevronLeft size={16} className="text-text-secondary" aria-hidden="true" />
@@ -292,7 +292,7 @@ function DatePicker({
         <button
           type="button"
           onClick={handleNextMonth}
-          className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
           aria-label="Tháng sau"
         >
           <ChevronRight size={16} className="text-text-secondary" aria-hidden="true" />
@@ -324,7 +324,7 @@ function DatePicker({
               aria-current={isTodayDate ? 'date' : undefined}
               aria-pressed={isSelectedDate}
               className={`
-                                w-9 h-9 sm:w-9 sm:h-9 text-xs sm:text-sm rounded-lg transition-colors duration-150
+                                aspect-square w-full text-xs sm:text-sm rounded-lg transition-colors duration-150
                                 flex items-center justify-center cursor-pointer
                                 ${!item.isCurrentMonth ? 'text-text-secondary/20 cursor-default' : ''}
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-primary font-medium' : ''}
@@ -383,10 +383,10 @@ function DatePicker({
         aria-describedby={ariaDescribedBy}
         aria-invalid={ariaInvalid}
       >
-        <div className="flex items-center gap-2">
-          <Calendar size={16} className="text-text-secondary" aria-hidden="true" />
+        <div className="flex items-center gap-2 min-w-0">
+          <Calendar size={16} className="text-text-secondary shrink-0" aria-hidden="true" />
           <span
-            className={`text-sm font-medium ${value ? 'text-text-primary' : 'text-text-secondary'}`}
+            className={`text-sm font-medium truncate ${value ? 'text-text-primary' : 'text-text-secondary'}`}
           >
             {value ? formatDateDMY(value) : placeholder}
           </span>

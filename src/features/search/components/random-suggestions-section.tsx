@@ -43,10 +43,16 @@ function RandomSuggestionsSection({
           type="button"
           onClick={onRefresh}
           disabled={isLoading}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
+          aria-label="Làm mới gợi ý"
+          title="Làm mới gợi ý"
+          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
         >
-          <RotateCcw size={16} aria-hidden="true" />
-          <span>{isLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
+          <RotateCcw
+            size={16}
+            aria-hidden="true"
+            className={isLoading ? 'animate-spin' : undefined}
+          />
+          <span className="hidden sm:inline">{isLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
         </button>
       </div>
 

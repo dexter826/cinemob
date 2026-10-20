@@ -22,6 +22,8 @@ import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
 
+const COMMON_MOVIES_INITIAL = 12;
+
 function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ function MemberProfilePage() {
   const isOwn = Boolean(user && uid && user.uid === uid);
 
   const { showToast } = useToastStore();
+  const [visibleCommonCount, setVisibleCommonCount] = useState(COMMON_MOVIES_INITIAL);
 
   const handleCopyLink = async () => {
     try {
@@ -137,6 +140,8 @@ function MemberProfilePage() {
     if (isOwn || !profile || profile.isMovieListHidden) return null;
     return getCommonMovies(myMovies, profile.movies);
   }, [isOwn, myMovies, profile]);
+
+  useEffect(() => setVisibleCommonCount(COMMON_MOVIES_INITIAL), [uid]);
 
   if (!user || !uid) return <Loading />;
 
@@ -286,7 +291,7 @@ function MemberProfilePage() {
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>
                   <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-                    {commonMovies.map((movie) => (
+                    {commonMovies.slice(0, visibleCommonCount).map((movie) => (
                       <PosterCard
                         key={String(movie.id)}
                         title={movie.title_vi || movie.title}
@@ -304,6 +309,19 @@ function MemberProfilePage() {
                       />
                     ))}
                   </div>
+                  {visibleCommonCount < commonMovies.length && (
+                    <div className="flex justify-center pt-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setVisibleCommonCount((current) => current + COMMON_MOVIES_INITIAL)
+                        }
+                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-sm font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+                      >
+                        Xem thêm
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <EmptyState

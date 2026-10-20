@@ -24,8 +24,8 @@ export function PickerWheel({
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Vị trí 3 khung cố định, chỉ nội dung đổi */}
-      <div className="relative w-80 h-60 flex items-center justify-center movie-wheel-container">
-        <div className="absolute left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
+      <div className="relative w-full max-w-80 h-60 flex items-center justify-center movie-wheel-container">
+        <div className="absolute left-4 sm:left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
             <img src={leftSrc} alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30" />
@@ -40,7 +40,7 @@ export function PickerWheel({
           </div>
         </div>
 
-        <div className="absolute right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
+        <div className="absolute right-4 sm:right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
             <img src={rightSrc} alt="" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30" />

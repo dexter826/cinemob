@@ -159,7 +159,7 @@ function TimePicker({
                 ${
                   isMobile
                     ? 'relative w-full max-w-[280px] mx-auto'
-                    : 'absolute top-full left-0 mt-1 z-50 w-56'
+                    : 'absolute top-full right-0 mt-1 z-50 w-56'
                 }
             `}
       role={isMobile ? undefined : 'dialog'}
@@ -200,7 +200,7 @@ function TimePicker({
               data-selected={h === hours}
               onClick={() => handleHourChange(h)}
               className={`
-                                w-full py-1.5 text-sm rounded-lg transition-colors
+                                w-full py-2.5 text-sm rounded-lg transition-colors
                                 ${
                                   h === hours
                                     ? 'bg-primary text-on-primary font-bold'
@@ -225,7 +225,7 @@ function TimePicker({
               data-selected={m === minutes}
               onClick={() => handleMinuteChange(m)}
               className={`
-                                w-full py-1.5 text-sm rounded-lg transition-colors
+                                w-full py-2.5 text-sm rounded-lg transition-colors
                                 ${
                                   m === minutes
                                     ? 'bg-primary text-on-primary font-bold'

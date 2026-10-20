@@ -10,6 +10,8 @@ interface PaginationProps {
 
 function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const [inputValue, setInputValue] = useState(currentPage.toString());
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const skipBlurCommitRef = React.useRef(false);
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   React.useEffect(() => {
@@ -25,8 +27,11 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
     setInputValue(e.target.value);
   };
 
-  const handleInputSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleInputBlur = () => {
+    if (skipBlurCommitRef.current) {
+      skipBlurCommitRef.current = false;
+      return;
+    }
     const page = parseInt(inputValue, 10);
     if (page >= 1 && page <= totalPages) {
       handlePageChange(page);
@@ -35,7 +40,12 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
     }
   };
 
-  const handleInputBlur = () => {
+  const markNavPointerDown = () => {
+    skipBlurCommitRef.current = document.activeElement === inputRef.current;
+  };
+
+  const handleInputSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const page = parseInt(inputValue, 10);
     if (page >= 1 && page <= totalPages) {
       handlePageChange(page);
@@ -51,6 +61,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         type="button"
         onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+        onPointerDown={markNavPointerDown}
         disabled={currentPage === 1}
         aria-label="Trang trước"
         className="p-2.5 rounded-control bg-surface border border-border text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"
@@ -104,7 +115,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         <span className="text-xs font-medium text-text-secondary">Trang</span>
         <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
           <input
+            ref={inputRef}
             type="number"
+            inputMode="numeric"
             min={1}
             max={totalPages}
             value={inputValue}
@@ -112,7 +125,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             onBlur={handleInputBlur}
             aria-label="Số trang muốn chuyển đến"
             autoComplete="off"
-            className="w-10 h-7 text-center border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50"
+            className="w-11 h-9 text-center border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50"
           />
           <span className="text-xs font-bold text-text-secondary opacity-50 tabular-nums">
             / {totalPages}
@@ -123,6 +136,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         type="button"
         onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+        onPointerDown={markNavPointerDown}
         disabled={currentPage === totalPages}
         aria-label="Trang sau"
         className="p-2.5 rounded-control bg-surface border border-border text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"

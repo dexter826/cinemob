@@ -323,7 +323,7 @@ function OwnProfileEditor({
                       role="menu"
                       onKeyDown={handleMenuKeyDown}
                       {...panelMotion}
-                      className="absolute left-1/2 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-card border border-border bg-surface-elevated py-1 overflow-hidden"
+                      className="absolute left-0 top-[calc(100%+0.75rem)] z-20 w-[220px] max-w-[calc(100vw-2rem)] rounded-card border border-border bg-surface-elevated py-1 overflow-hidden"
                     >
                       <button
                         ref={firstMenuItemRef}
@@ -379,13 +379,14 @@ function OwnProfileEditor({
                 {!isEditing && (
                   <Button
                     variant="secondary"
-                    size="sm"
+                    size="md"
                     onClick={startEditing}
                     disabled={!ready}
+                    aria-label="Chỉnh sửa hồ sơ"
                     leadingIcon={<Pencil size={14} aria-hidden="true" />}
-                    className="shrink-0"
+                    className="shrink-0 px-3 sm:px-4"
                   >
-                    Chỉnh sửa
+                    <span className="hidden sm:inline">Chỉnh sửa</span>
                   </Button>
                 )}
               </div>
@@ -466,7 +467,7 @@ function OwnProfileEditor({
                 </span>
               </label>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label>
                   <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Giới tính
@@ -482,7 +483,7 @@ function OwnProfileEditor({
                   <span className="block text-xs font-semibold text-text-secondary mb-1">
                     Ngày sinh
                   </span>
-                  <DatePicker value={draftDob} onChange={setDraftDob} />
+                  <DatePicker value={draftDob} onChange={setDraftDob} className="min-w-0" />
                 </label>
               </div>
 

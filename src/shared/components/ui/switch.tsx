@@ -18,7 +18,7 @@ function Switch({ checked, onToggle, label, disabled = false }: SwitchProps) {
       onClick={onToggle}
       disabled={disabled}
       className={classNames(
-        'relative w-10 h-6 rounded-full transition-colors shrink-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
+        "relative w-10 h-6 rounded-full transition-colors shrink-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed after:absolute after:-inset-2 after:content-['']",
         checked ? 'bg-primary' : 'bg-text-secondary/50',
       )}
     >
