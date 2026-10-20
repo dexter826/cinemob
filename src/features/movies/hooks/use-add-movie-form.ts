@@ -4,13 +4,14 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';
-import { Movie } from '@/types';
+import { Movie, MovieStatus } from '@/types';
 
 import { MESSAGES } from '@/constants/messages';
 import { normalizeDate, todayISO } from '@/shared/utils/date-format';
 import { useTVProgress } from './use-tv-progress';
 import { useAlbumSync } from '@/features/albums/hooks/use-album-sync';
 import { GENRE_OPTIONS } from '@/constants/genres';
+import { resolveMovieStatus } from '../utils/movie-utils';
 import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
 import { useMovieValidation } from './use-movie-validation';
 
@@ -63,7 +64,7 @@ export const useAddMovieForm = () => {
     is_review: false,
   });
 
-  const [status, setStatus] = useState<'history' | 'watchlist'>('history');
+  const [status, setStatus] = useState<MovieStatus>('history');
   const [manualMediaType, setManualMediaType] = useState<'movie' | 'tv'>('movie');
   const [isTouched, setIsTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -240,8 +241,11 @@ export const useAddMovieForm = () => {
         auth.currentUser?.uid === uid
       );
     };
-    if (submitLock.current || !isCurrent() || (status === 'history' && !albumSync.ready)) return;
-    if (!canSubmit || !user || !validate(isManualMode, isTVSeries, status, formData)) return;
+    if (submitLock.current || !isCurrent()) return;
+    const resolvedStatus = resolveMovieStatus(status, isTVSeries, tvProgress.isCompleted);
+    if (resolvedStatus === 'history' && !albumSync.ready) return;
+    if (!canSubmit || !user || !validate(isManualMode, isTVSeries, resolvedStatus, formData))
+      return;
 
     submitLock.current = true;
     setIsSubmitting(true);
@@ -255,8 +259,8 @@ export const useAddMovieForm = () => {
         poster_path: formData.poster,
         runtime: parseInt(formData.runtime) || 0,
         seasons: Math.max(parseInt(formData.seasons) || 0, tvProgress.resolvedSeasonCount || 0),
-        watched_at: status === 'history' ? new Date(y, m - 1, d, h, min, 0) : new Date(),
-        status,
+        watched_at: resolvedStatus === 'watchlist' ? new Date() : new Date(y, m - 1, d, h, min, 0),
+        status: resolvedStatus,
         rating: Number(formData.rating),
         review: formData.review,
         tagline: formData.tagline,
@@ -305,7 +309,7 @@ export const useAddMovieForm = () => {
       }
 
       if (!isCurrent()) return;
-      if (status === 'history' && movieDocId) {
+      if (resolvedStatus === 'history' && movieDocId) {
         await albumSync.syncAlbums(movieDocId);
       }
 
@@ -348,7 +352,7 @@ export const useAddMovieForm = () => {
     const origDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const origTime = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     const isTimeDirty =
-      status === 'history' && (formData.date !== origDate || formData.time !== origTime);
+      status !== 'watchlist' && (formData.date !== origDate || formData.time !== origTime);
 
     let isProgressDirty = false;
     if (isTVSeries && m.progress) {

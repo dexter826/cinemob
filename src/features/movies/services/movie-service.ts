@@ -97,7 +97,7 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     watched_at: (d.watched_at as Movie['watched_at']) ?? new Date(),
     source: d.source === 'manual' ? 'manual' : 'tmdb',
     media_type: d.media_type === 'tv' ? 'tv' : 'movie',
-    status: d.status === 'watchlist' ? 'watchlist' : 'history',
+    status: d.status === 'watchlist' || d.status === 'dropped' ? d.status : 'history',
     rating: typeof d.rating === 'number' ? d.rating : 0,
     review: typeof d.review === 'string' ? d.review : '',
     tagline: typeof d.tagline === 'string' ? d.tagline : '',

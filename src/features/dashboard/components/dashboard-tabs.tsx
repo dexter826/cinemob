@@ -1,16 +1,19 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ActiveTab } from '../hooks/use-dashboard-filters';
+import { MOVIE_STATUS_TAB_LABEL } from '@/constants/movie-status';
 
 interface DashboardTabsProps {
   activeTab: ActiveTab;
   onTabChange: (tab: ActiveTab) => void;
   historyCount: number;
   watchlistCount: number;
+  droppedCount: number;
 }
 
 const TABS: { key: ActiveTab; label: string }[] = [
-  { key: 'history', label: 'Đã xem' },
-  { key: 'watchlist', label: 'Sẽ xem' },
+  { key: 'history', label: MOVIE_STATUS_TAB_LABEL.history },
+  { key: 'watchlist', label: MOVIE_STATUS_TAB_LABEL.watchlist },
+  { key: 'dropped', label: MOVIE_STATUS_TAB_LABEL.dropped },
 ];
 
 function DashboardTabs({
@@ -18,14 +21,22 @@ function DashboardTabs({
   onTabChange,
   historyCount,
   watchlistCount,
+  droppedCount,
 }: DashboardTabsProps) {
   const reducedMotion = useReducedMotion() ?? false;
-  const counts: Record<ActiveTab, number> = { history: historyCount, watchlist: watchlistCount };
+  const counts: Record<ActiveTab, number> = {
+    history: historyCount,
+    watchlist: watchlistCount,
+    dropped: droppedCount,
+  };
+  const visibleTabs = TABS.filter(
+    (tab) => tab.key !== 'dropped' || droppedCount > 0 || activeTab === 'dropped',
+  );
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 w-full md:w-auto border-b border-border md:border-b-0">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
       <div role="group" aria-label="Bộ lọc trạng thái xem phim" className="flex items-center">
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
             <button

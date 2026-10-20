@@ -60,6 +60,7 @@ export const useAppInit = () => {
       const covers = (album.movieDocIds || [])
         .map((docId) => allMovies.find((m) => m.docId === docId))
         .filter((movie): movie is Movie => movie !== undefined)
+        .filter((movie) => (movie.status || 'history') === 'history')
         .slice(0, 3);
 
       updates[albumId] = covers;

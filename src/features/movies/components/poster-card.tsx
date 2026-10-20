@@ -1,9 +1,17 @@
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import React from 'react';
-import { Bookmark, CheckCircle, Clapperboard, Eye, Star, Tv, X } from 'lucide-react';
+import { Bookmark, CheckCircle, Clapperboard, CircleSlash, Eye, Star, Tv, X } from 'lucide-react';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
-import { Chip } from '@/shared/components/ui';
+import { Chip, ChipTone } from '@/shared/components/ui';
 import { classNames } from '@/shared/utils/class-names';
+import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
+import { MovieStatus } from '@/types';
+
+const STATUS_CHIP_TONE: Record<MovieStatus, ChipTone> = {
+  history: 'success',
+  watchlist: 'gold',
+  dropped: 'neutral',
+};
 
 interface PosterCardProps {
   title: string;
@@ -16,8 +24,8 @@ interface PosterCardProps {
   meta?: string;
   /** TV progress: thanh 2px dưới cùng poster. */
   progress?: { current: number; total: number } | null;
-  /** Badge trạng thái bộ sưu tập (Đã xem / Sẽ xem). */
-  status?: 'history' | 'watchlist' | null;
+  /** Badge trạng thái bộ sưu tập (Đã xem / Sẽ xem / Đã bỏ dở). */
+  status?: MovieStatus | null;
   /** Nhân vật / vai trò (trang diễn viên) — dòng vàng dưới meta. */
   credit?: string;
   /** Đánh dấu phim có review. */
@@ -65,7 +73,18 @@ function PosterCard({
       ? Math.min(100, Math.round((progress.current / progress.total) * 100))
       : null;
   const showRating = typeof rating === 'number' && rating > 0;
-  const statusLabel = status === 'history' ? 'Đã xem' : status === 'watchlist' ? 'Sẽ xem' : null;
+  const statusChip = status
+    ? {
+        label: MOVIE_STATUS_LABEL[status],
+        tone: STATUS_CHIP_TONE[status],
+        icon:
+          status === 'dropped' ? (
+            <CircleSlash size={9} strokeWidth={1.5} aria-hidden="true" />
+          ) : (
+            <Bookmark size={9} strokeWidth={1.5} className="fill-current" aria-hidden="true" />
+          ),
+      }
+    : null;
   const kindLabel = mediaType === 'tv' ? 'Series' : 'Movie';
 
   return (
@@ -125,14 +144,9 @@ function PosterCard({
       />
 
       <div className="absolute top-2 left-2 flex flex-col items-start gap-1.5 z-10 pointer-events-none">
-        {statusLabel && (
-          <Chip
-            tone={status === 'history' ? 'success' : 'gold'}
-            icon={
-              <Bookmark size={9} strokeWidth={1.5} className="fill-current" aria-hidden="true" />
-            }
-          >
-            {statusLabel}
+        {statusChip && (
+          <Chip tone={statusChip.tone} icon={statusChip.icon}>
+            {statusChip.label}
           </Chip>
         )}
         {mediaType && (

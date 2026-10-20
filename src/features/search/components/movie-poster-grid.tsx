@@ -1,10 +1,10 @@
-import { TMDBMovieResult } from '@/types';
+import { MovieStatus, TMDBMovieResult } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitleForTMDB, getSubTitleForTMDB } from '@/shared/utils/tmdb';
 
 interface MoviePosterGridProps {
   movies: TMDBMovieResult[];
-  getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
+  getMovieStatus: (id: number) => MovieStatus | null;
   onSelect: (movie: TMDBMovieResult) => void;
 }
 

@@ -6,6 +6,11 @@ export const MESSAGES = {
     SAVE_ERROR: 'Có lỗi khi lưu phim',
     REQUIRED_RATING: 'Chấm điểm phim trước khi lưu',
     ALREADY_EXISTS: 'Phim này đã có trong danh sách',
+    DROP_SUCCESS: (title: string) => `Đã bỏ dở ${title}`,
+    DROP_ERROR: 'Bỏ dở phim thất bại',
+    RESUME_SUCCESS: (title: string) => `Đã đưa ${title} trở lại đang theo dõi`,
+    RESUME_ERROR: 'Cập nhật phim thất bại',
+    UNDO: 'Hoàn tác',
   },
   ALBUM: {
     CREATE_SUCCESS: (name: string) => `Đã tạo album "${name}"`,

@@ -1,4 +1,4 @@
-import { Movie } from '@/types';
+import { Movie, MovieStatus } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { normalizeDate } from '@/shared/utils/date-format';
@@ -7,6 +7,16 @@ const isVietnameseOrigin = (country: string): boolean =>
   ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
 
 export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
+
+/**
+ * Trạng thái sau khi áp dụng quy tắc lưu: đánh dấu hoàn thành một phim đã bỏ dở
+ * thì phim quay lại "Đã xem".
+ */
+export const resolveMovieStatus = (
+  status: MovieStatus,
+  isTVSeries: boolean,
+  isCompleted: boolean,
+): MovieStatus => (status === 'dropped' && isTVSeries && isCompleted ? 'history' : status);
 
 export const getMainTitle = (movie: Movie): string => {
   const isVN = isVietnameseOrigin(movie.country || '');

@@ -1,4 +1,4 @@
-import { TMDBMovieResult } from '@/types';
+import { MovieStatus, TMDBMovieResult } from '@/types';
 import { Dice5, RotateCcw } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
@@ -12,7 +12,7 @@ interface RandomSuggestionsSectionProps {
   hasLoaded: boolean;
   error: string | null;
   onRefresh: () => void;
-  getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
+  getMovieStatus: (id: number) => MovieStatus | null;
   onSelectMovie: (movie: TMDBMovieResult) => void;
 }
 

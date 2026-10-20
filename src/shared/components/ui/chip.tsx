@@ -1,7 +1,7 @@
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
-type ChipTone = 'gold' | 'success' | 'neutral';
+export type ChipTone = 'gold' | 'success' | 'neutral' | 'muted';
 
 interface ChipProps {
   tone?: ChipTone;
@@ -15,11 +15,12 @@ const toneClasses: Record<ChipTone, string> = {
   gold: 'bg-primary text-on-primary',
   success: 'bg-success text-on-success',
   neutral: 'bg-black/60 text-white border border-white/10',
+  muted: 'bg-surface-elevated border border-border text-text-secondary',
 };
 
 /**
  * Chip trạng thái/hệ thống (Đã xem, Sẽ xem, Hoàn thành, Review…) — Caps 9px.
- * Trên ảnh dùng tone neutral (nền tối); trên nền app dùng gold/success.
+ * Trên ảnh dùng tone neutral (nền tối); trên nền app dùng gold/success/muted.
  */
 function Chip({ tone = 'neutral', icon, children, className }: ChipProps) {
   return (

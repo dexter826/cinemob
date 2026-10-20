@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
+import { MovieStatus } from '@/types';
 
 export interface FormErrors {
   title: boolean;
@@ -102,7 +103,7 @@ export const useMovieValidation = () => {
   const validate = (
     isManualMode: boolean,
     isTVSeries: boolean,
-    status: 'history' | 'watchlist',
+    status: MovieStatus,
     formData: FormValidationData,
   ): boolean => {
     if (isManualMode) {

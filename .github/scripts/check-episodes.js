@@ -60,7 +60,7 @@ const getWatchlistFromFirestore = async () => {
       release_date: data.release_date,
     };
 
-    if (data.media_type === 'tv') {
+    if (data.media_type === 'tv' && data.status !== 'dropped') {
       tvSeries.push(item);
     } else if (data.media_type === 'movie' && data.status === 'watchlist') {
       movies.push(item);

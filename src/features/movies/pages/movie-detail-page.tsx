@@ -1,12 +1,22 @@
 import ErrorState from '@/shared/components/ui/error-state';
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Calendar, FolderPlus, Pencil, Play, Star, Trash2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  CircleSlash,
+  FolderPlus,
+  Pencil,
+  Play,
+  Star,
+  Trash2,
+} from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
 import { useMovieDetail } from '../hooks/use-movie-detail';
 import { useDeleteMovie } from '../hooks/use-delete-movie';
+import { useDropMovie } from '../hooks/use-drop-movie';
 import {
   getMainTitle,
   getSubTitle,
@@ -14,6 +24,7 @@ import {
   getSeasonWatchedDates,
 } from '../utils/movie-utils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
+import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { formatDateAny } from '@/shared/utils/date-format';
 import { IconButton } from '@/shared/components/ui/icon-button';
@@ -34,6 +45,7 @@ function MovieDetailPage() {
   } = useMovieStore();
   const { openAddModal } = useAddMovieStore();
   const handleDelete = useDeleteMovie();
+  const { dropMovie, resumeMovie, isPending } = useDropMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
 
   const movie = useMemo(() => movies.find((m) => String(m.id) === id), [movies, id]);
@@ -47,6 +59,13 @@ function MovieDetailPage() {
       ? getTMDBImageUrl(movie.poster_path, 'w780')
       : movie?.poster_path || PLACEHOLDER_IMAGE;
   const canAddToAlbum = !!movie && (movie.status || 'history') === 'history' && !!movie.docId;
+  const isDropped = movie?.status === 'dropped';
+  const isWatching =
+    !!movie &&
+    (movie.status || 'history') === 'history' &&
+    movie.media_type === 'tv' &&
+    !!movie.progress &&
+    !movie.progress.is_completed;
   const trailerKey = videos[0]?.key ?? '';
   // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
@@ -93,6 +112,43 @@ function MovieDetailPage() {
     );
   }
 
+  const primaryAction =
+    movie.status === 'watchlist' ? (
+      hasValidTrailer ? (
+        <Button
+          leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+          onClick={() =>
+            window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank', 'noopener')
+          }
+        >
+          Xem trailer
+        </Button>
+      ) : (
+        <Button
+          disabled
+          leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+        >
+          Không có trailer
+        </Button>
+      )
+    ) : isDropped ? (
+      <Button
+        leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+        loading={isPending}
+        onClick={() => void resumeMovie(movie)}
+      >
+        Xem tiếp
+      </Button>
+    ) : (
+      <Button
+        leadingIcon={<FolderPlus size={16} strokeWidth={1.5} aria-hidden="true" />}
+        disabled={!canAddToAlbum}
+        onClick={() => setShowAlbumSelector(true)}
+      >
+        Thêm vào Album
+      </Button>
+    );
+
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
       <div className="flex items-center justify-between pb-4 md:pb-5">
@@ -119,7 +175,10 @@ function MovieDetailPage() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h1 className="text-display-xl leading-[1.02] text-text-primary">{mainTitle}</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-display-xl leading-[1.02] text-text-primary">{mainTitle}</h1>
+            {isDropped && <Chip tone="muted">{MOVIE_STATUS_LABEL.dropped}</Chip>}
+          </div>
           {subTitle && subTitle !== mainTitle && (
             <p className="text-text-secondary text-body mt-2">{subTitle}</p>
           )}
@@ -151,37 +210,16 @@ function MovieDetailPage() {
           )}
 
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
-            {movie.status === 'watchlist' ? (
-              hasValidTrailer ? (
-                <Button
-                  leadingIcon={
-                    <Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
-                  }
-                  onClick={() =>
-                    window.open(
-                      `https://www.youtube.com/watch?v=${trailerKey}`,
-                      '_blank',
-                      'noopener',
-                    )
-                  }
-                >
-                  Xem trailer
-                </Button>
-              ) : (
-                <Button
-                  disabled
-                  leadingIcon={<Play size={16} strokeWidth={1.5} aria-hidden="true" />}
-                >
-                  Không có trailer
-                </Button>
-              )
-            ) : (
+            {primaryAction}
+
+            {isWatching && (
               <Button
-                leadingIcon={<FolderPlus size={16} strokeWidth={1.5} aria-hidden="true" />}
-                disabled={!canAddToAlbum}
-                onClick={() => setShowAlbumSelector(true)}
+                variant="secondary"
+                leadingIcon={<CircleSlash size={14} strokeWidth={1.5} aria-hidden="true" />}
+                loading={isPending}
+                onClick={() => void dropMovie(movie)}
               >
-                Thêm vào Album
+                Bỏ dở
               </Button>
             )}
 

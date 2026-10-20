@@ -72,6 +72,7 @@ function DashboardPage() {
           onTabChange={setActiveTab}
           historyCount={statusCounts.history}
           watchlistCount={statusCounts.watchlist}
+          droppedCount={statusCounts.dropped}
         />
         {movies.length > 0 && (
           <DashboardFilters
@@ -121,19 +122,11 @@ function DashboardPage() {
         ) : processedMovies.length === 0 ? (
           <EmptyState
             icon={Film}
-            title={
-              filters.searchQuery
-                ? 'Không tìm thấy nội dung phù hợp'
-                : activeTab === 'history'
-                  ? 'Chưa có phim đã xem'
-                  : 'Chưa có phim sẽ xem'
-            }
+            title={filters.searchQuery ? 'Không tìm thấy nội dung phù hợp' : 'Chưa có nội dung'}
             description={
               filters.searchQuery
                 ? 'Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại.'
-                : activeTab === 'history'
-                  ? 'Thêm phim đầu tiên vào lịch sử.'
-                  : 'Thêm phim từ trang Tìm phim.'
+                : 'Thêm phim từ trang Tìm phim.'
             }
             action={
               filters.searchQuery ||

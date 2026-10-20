@@ -1,5 +1,5 @@
 import type { SearchMode } from '../hooks/use-search-tmdb';
-import { TMDBMovieResult } from '@/types';
+import { MovieStatus, TMDBMovieResult } from '@/types';
 import Pagination from '@/shared/components/ui/pagination';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -18,7 +18,7 @@ interface SearchResultsProps {
   isTrendingLoading: boolean;
   trendingMovies: TMDBMovieResult[];
   filteredResults: TMDBMovieResult[];
-  getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
+  getMovieStatus: (id: number) => MovieStatus | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
   resultsError?: boolean;
   retrySearch?: () => void;

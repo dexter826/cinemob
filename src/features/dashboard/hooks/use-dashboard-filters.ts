@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Movie } from '@/types';
+import { Movie, MovieStatus } from '@/types';
 import {
   getTranslatedCountries,
   getSeasonWatchedDates,
@@ -12,7 +12,7 @@ import { GENRE_TRANSLATIONS } from '@/constants/genres';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
-export type ActiveTab = 'history' | 'watchlist';
+export type ActiveTab = MovieStatus;
 export type SourceType = 'all' | 'normal' | 'review';
 
 export interface FilterState {

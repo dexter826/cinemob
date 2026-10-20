@@ -13,17 +13,18 @@ export const useDashboard = () => {
 
   const { movies, loading } = useMovieStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTabState] = useState<ActiveTab>(() =>
-    searchParams.get('tab') === 'watchlist' ? 'watchlist' : 'history',
-  );
+  const [activeTab, setActiveTabState] = useState<ActiveTab>(() => {
+    const tab = searchParams.get('tab');
+    return tab === 'watchlist' || tab === 'dropped' ? tab : 'history';
+  });
 
   const setActiveTab = useCallback(
     (tab: ActiveTab) => {
       setActiveTabState(tab);
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
-        if (tab === 'watchlist') params.set('tab', tab);
-        else params.delete('tab');
+        if (tab === 'history') params.delete('tab');
+        else params.set('tab', tab);
         params.delete('page');
         return params;
       });
@@ -39,6 +40,7 @@ export const useDashboard = () => {
     () => ({
       history: movies.filter((m) => (m.status || 'history') === 'history').length,
       watchlist: movies.filter((m) => m.status === 'watchlist').length,
+      dropped: movies.filter((m) => m.status === 'dropped').length,
     }),
     [movies],
   );

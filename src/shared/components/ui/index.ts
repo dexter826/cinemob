@@ -7,6 +7,7 @@ export { default as IconButton } from './icon-button';
 export { default as SearchField } from './search-field';
 export { default as TextField } from './text-field';
 export { default as Chip } from './chip';
+export type { ChipTone } from './chip';
 export { default as Stat } from './stat';
 export { default as SectionHeader } from './section-header';
 export { default as PageHeader } from './page-header';

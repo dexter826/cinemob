@@ -1,5 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
+export type MovieStatus = 'history' | 'watchlist' | 'dropped';
+
 export interface Movie {
   docId?: string;
   uid: string;
@@ -13,7 +15,7 @@ export interface Movie {
   watched_at: Timestamp | Date;
   source: 'tmdb' | 'manual';
   media_type?: 'movie' | 'tv';
-  status?: 'history' | 'watchlist';
+  status?: MovieStatus;
   rating?: number;
   review?: string;
   tagline?: string;

@@ -353,7 +353,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       </button>
                     </div>
                   )}
-                  {status === 'history' && (
+                  {status !== 'watchlist' && (
                     <RatingSection
                       rating={formData.rating}
                       hoverRating={hoverRating}
@@ -367,7 +367,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     />
                   )}
 
-                  {status === 'history' && (
+                  {status !== 'watchlist' && (
                     <div className="space-y-2">
                       <label
                         htmlFor="add-movie-review"
@@ -394,7 +394,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     </div>
                   )}
 
-                  {status === 'history' && (
+                  {status !== 'watchlist' && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label
@@ -437,7 +437,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     </div>
                   )}
 
-                  {status === 'history' && isTVSeries && (
+                  {status !== 'watchlist' && isTVSeries && (
                     <TVProgressSection
                       loading={tvProgressLoading}
                       error={tvProgressError}
