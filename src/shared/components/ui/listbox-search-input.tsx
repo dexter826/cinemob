@@ -21,7 +21,7 @@ function ListboxSearchInput({ value, onChange, onKeyDown, inputRef }: ListboxSea
         aria-label="Tìm kiếm tùy chọn"
         autoComplete="off"
         spellCheck={false}
-        className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-sm focus-visible:ring-1 focus-visible:ring-primary/50 text-text-primary placeholder:text-text-muted"
+        className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-body focus-ring text-text-primary placeholder:text-text-muted"
       />
     </div>
   );

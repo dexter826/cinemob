@@ -60,10 +60,10 @@ function SearchField({
         autoComplete="off"
         spellCheck={false}
         className={classNames(
-          'w-full bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary transition-colors',
+          'w-full bg-transparent text-body font-medium text-text-primary placeholder:text-text-secondary transition-colors',
           isUnderline
             ? 'h-12 rounded-none border-0 border-b border-border focus-visible:outline-none'
-            : 'h-11 rounded-control border border-border focus-visible:border-primary',
+            : 'h-11 rounded-control border border-border focus-visible:border-primary focus-ring',
           isUnderline ? 'pl-8' : 'pl-10',
           endSlot ? undefined : 'pr-9',
           inputClassName,
@@ -98,11 +98,7 @@ function SearchField({
                 isUnderline ? 'p-2.5' : 'p-2',
               )}
             >
-              <X
-                size={isUnderline ? 14 : 15}
-                strokeWidth={isUnderline ? 1.5 : undefined}
-                aria-hidden="true"
-              />
+              <X size={isUnderline ? 14 : 15} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
           {endSlot}

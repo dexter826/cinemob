@@ -95,22 +95,15 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
           />
 
           <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
-            <h3
-              className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
-              title={album.name}
-            >
+            <h3 className="text-body-sm font-bold text-white line-clamp-2" title={album.name}>
               {album.name}
             </h3>
-            <p className="mt-0.5 text-[9px] font-semibold tracking-[0.08em] text-white/55 uppercase tabular-nums">
-              {count} phim
-            </p>
+            <p className="mt-0.5 text-micro-caps text-white/55 tabular-nums">{count} phim</p>
           </div>
         </div>
       ) : (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 rounded-poster border border-dashed border-border bg-surface">
-          <span className="text-[10px] font-semibold tracking-[0.1em] text-text-secondary opacity-60 uppercase">
-            Trống
-          </span>
+          <span className="text-label-caps text-text-secondary opacity-60">Trống</span>
         </div>
       )}
 

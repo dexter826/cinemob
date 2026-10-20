@@ -124,14 +124,16 @@ function PosterCard({
         {statusLabel && (
           <Chip
             tone={status === 'history' ? 'success' : 'gold'}
-            icon={<Bookmark size={9} className="fill-current" aria-hidden="true" />}
+            icon={
+              <Bookmark size={9} strokeWidth={1.5} className="fill-current" aria-hidden="true" />
+            }
           >
             {statusLabel}
           </Chip>
         )}
         {showRating && (
-          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[10px] font-bold text-primary tabular-nums">
-            <Star size={9} className="fill-primary" aria-hidden="true" />
+          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-micro-caps text-primary tabular-nums">
+            <Star size={9} strokeWidth={1.5} className="fill-primary" aria-hidden="true" />
             {rating!.toFixed(1)}
           </span>
         )}
@@ -139,7 +141,7 @@ function PosterCard({
 
       {review && (
         <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
-          <Chip icon={<Eye size={9} aria-hidden="true" />}>Review</Chip>
+          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>
         </span>
       )}
 
@@ -167,19 +169,12 @@ function PosterCard({
       )}
 
       <div className="absolute inset-x-0 bottom-0 p-2.5 pointer-events-none">
-        <h3
-          className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
-          title={title}
-        >
+        <h3 className="text-body-sm font-bold text-white line-clamp-2" title={title}>
           {title}
         </h3>
-        {meta && (
-          <p className="mt-0.5 text-[9px] font-semibold tracking-[0.08em] text-white/55 truncate">
-            {meta}
-          </p>
-        )}
+        {meta && <p className="mt-0.5 text-micro-caps text-white/55 truncate">{meta}</p>}
         {credit && (
-          <p className="mt-1 pt-1 border-t border-white/15 text-[9px] font-semibold tracking-[0.08em] text-primary truncate">
+          <p className="mt-1 pt-1 border-t border-white/15 text-micro-caps text-primary truncate">
             {credit}
           </p>
         )}

@@ -30,10 +30,7 @@ function TextField({
   return (
     <div className={classNames('w-full', className)}>
       {label && (
-        <label
-          htmlFor={id}
-          className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-text-secondary mb-1.5"
-        >
+        <label htmlFor={id} className="block text-label-caps text-text-secondary mb-1.5">
           {label}
         </label>
       )}
@@ -48,10 +45,10 @@ function TextField({
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           className={classNames(
-            'w-full h-11 bg-transparent text-sm font-medium text-text-primary placeholder:text-text-secondary transition-colors',
+            'w-full h-11 bg-transparent text-body font-medium text-text-primary placeholder:text-text-secondary transition-colors',
             variant === 'underline'
               ? 'rounded-none border-0 border-b border-border hover:border-b-primary/40 focus-visible:border-b-primary focus-visible:outline-none'
-              : 'rounded-control border focus-visible:border-primary',
+              : 'rounded-control border focus-visible:border-primary focus-ring',
             leadingIcon ? 'pl-10 pr-4' : variant === 'underline' ? 'px-1' : 'px-4',
             error ? 'border-danger' : 'border-border',
           )}
@@ -59,7 +56,7 @@ function TextField({
         />
       </div>
       {error && (
-        <p id={`${id}-error`} role="alert" className="mt-1.5 text-xs text-danger">
+        <p id={`${id}-error`} role="alert" className="mt-1.5 text-body-sm text-danger">
           {error}
         </p>
       )}

@@ -172,16 +172,16 @@ function TimePicker({
     >
       {isMobile && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-          <span id={dialogTitleId} className="text-sm font-bold text-text-primary">
+          <span id={dialogTitleId} className="text-title-md text-text-primary">
             Chọn giờ
           </span>
           <button
             type="button"
             aria-label="Đóng bảng chọn giờ"
             onClick={closePicker}
-            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
+            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-control cursor-pointer"
           >
-            <X size={20} className="text-text-secondary" aria-hidden="true" />
+            <X size={20} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -190,7 +190,7 @@ function TimePicker({
       <div className="flex gap-2 max-h-40">
         {/* Danh sách giờ */}
         <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
+          <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
             Giờ
           </div>
           {HOUR_OPTIONS.map((h) => (
@@ -200,7 +200,7 @@ function TimePicker({
               data-selected={h === hours}
               onClick={() => handleHourChange(h)}
               className={`
-                                w-full py-2.5 text-sm rounded-lg transition-colors
+                                w-full py-2.5 text-body-sm rounded-control transition-colors
                                 ${
                                   h === hours
                                     ? 'bg-primary text-on-primary font-bold'
@@ -215,7 +215,7 @@ function TimePicker({
 
         {/* Danh sách phút */}
         <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-xs text-text-secondary text-center mb-1 sticky top-0 bg-surface font-bold">
+          <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
             Phút
           </div>
           {minuteOptions.map((m) => (
@@ -225,7 +225,7 @@ function TimePicker({
               data-selected={m === minutes}
               onClick={() => handleMinuteChange(m)}
               className={`
-                                w-full py-2.5 text-sm rounded-lg transition-colors
+                                w-full py-2.5 text-body-sm rounded-control transition-colors
                                 ${
                                   m === minutes
                                     ? 'bg-primary text-on-primary font-bold'
@@ -244,7 +244,7 @@ function TimePicker({
         <button
           type="button"
           onClick={setCurrentTime}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
+          className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
         >
           Bây giờ
         </button>
@@ -264,7 +264,7 @@ function TimePicker({
         disabled={disabled}
         className={`
           w-full h-11 border border-border-default rounded-card px-4 text-left
-          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          focus-ring
           hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -278,9 +278,9 @@ function TimePicker({
         aria-invalid={ariaInvalid}
       >
         <div className="flex items-center gap-2">
-          <Clock size={16} className="text-text-secondary" aria-hidden="true" />
+          <Clock size={16} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
           <span
-            className={`text-sm font-medium ${value ? 'text-text-primary' : 'text-text-secondary'}`}
+            className={`text-body font-medium ${value ? 'text-text-primary' : 'text-text-secondary'}`}
           >
             {value || placeholder}
           </span>

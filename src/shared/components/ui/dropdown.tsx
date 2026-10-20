@@ -159,7 +159,7 @@ function Dropdown({
         disabled={disabled}
         className={`
           w-full h-11 border border-border-default rounded-card px-4 text-left
-          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          focus-ring
           hover:border-primary/30 transition-colors
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -174,12 +174,13 @@ function Dropdown({
         aria-invalid={ariaInvalid}
       >
         <span
-          className={`text-sm font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-muted'}`}
+          className={`text-body font-medium whitespace-nowrap truncate mr-2 ${selectedOption ? 'text-text-primary' : 'text-text-muted'}`}
         >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <ChevronDown
           size={16}
+          strokeWidth={1.5}
           aria-hidden="true"
           className={`text-text-secondary transition-transform ${isOpen ? 'rotate-180 text-primary' : ''}`}
         />
@@ -210,7 +211,7 @@ function Dropdown({
               style={{ maxHeight }}
             >
               {filteredOptions.length === 0 ? (
-                <div className="px-4 py-4 text-sm text-text-secondary text-center italic opacity-60">
+                <div className="px-4 py-4 text-body text-text-secondary text-center italic opacity-60">
                   {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
                 </div>
               ) : (
@@ -223,7 +224,7 @@ function Dropdown({
                     type="button"
                     onClick={() => handleSelect(option)}
                     onKeyDown={handleNavigationKey}
-                    className={`w-full px-4 py-2.5 text-left text-sm rounded-control transition-colors flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
+                    className={`w-full px-4 py-2.5 text-left text-body rounded-control transition-colors flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
                     role="option"
                     aria-selected={option.value === value}
                   >

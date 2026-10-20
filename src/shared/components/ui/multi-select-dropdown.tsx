@@ -164,7 +164,7 @@ function MultiSelectDropdown({
           onClick={() => (isOpen ? closeAndRestoreFocus() : openAt(-1))}
           onKeyDown={handleNavigationKey}
           disabled={disabled}
-          className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-card focus-visible:ring-1 focus-visible:ring-primary/20 disabled:cursor-not-allowed"
+          className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 text-left rounded-card focus-ring disabled:cursor-not-allowed"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls={listboxId}
@@ -174,19 +174,19 @@ function MultiSelectDropdown({
           aria-invalid={ariaInvalid}
         >
           {displayOptions.length === 0 ? (
-            <span className="text-text-secondary text-sm">{placeholder}</span>
+            <span className="text-text-secondary text-body">{placeholder}</span>
           ) : (
             <span className="flex flex-wrap gap-1 flex-1 min-w-0">
               {displayOptions.map((option) => (
                 <span
                   key={option.value}
-                  className="inline-flex items-center px-2 py-0.5 bg-primary text-on-primary rounded-md text-xs font-medium truncate max-w-28"
+                  className="inline-flex items-center px-2 py-0.5 bg-primary text-on-primary rounded-poster text-body-sm truncate max-w-28"
                 >
                   {option.label}
                 </span>
               ))}
               {remainingCount > 0 && (
-                <span className="inline-flex items-center px-2 py-0.5 bg-black/10 dark:bg-white/10 text-text-secondary rounded-md text-xs font-medium">
+                <span className="inline-flex items-center px-2 py-0.5 bg-black/10 dark:bg-white/10 text-text-secondary rounded-poster text-body-sm">
                   +{remainingCount}
                 </span>
               )}
@@ -194,6 +194,7 @@ function MultiSelectDropdown({
           )}
           <ChevronDown
             size={16}
+            strokeWidth={1.5}
             aria-hidden="true"
             className={`text-text-secondary shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           />
@@ -205,9 +206,9 @@ function MultiSelectDropdown({
             onClick={() => onChange([])}
             disabled={disabled}
             aria-label="Xóa tất cả lựa chọn"
-            className="self-center mr-2 p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-visible:ring-1 focus-visible:ring-primary/40"
+            className="self-center mr-2 p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors focus-ring"
           >
-            <X size={14} className="text-text-secondary" aria-hidden="true" />
+            <X size={14} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
           </button>
         )}
       </div>
@@ -232,11 +233,13 @@ function MultiSelectDropdown({
 
             {values.length > 0 && (
               <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
-                <span className="text-xs text-text-secondary">Đã chọn {values.length} mục</span>
+                <span className="text-body-sm text-text-secondary">
+                  Đã chọn {values.length} mục
+                </span>
                 <button
                   type="button"
                   onClick={() => onChange([])}
-                  className="text-xs text-primary hover:text-primary/80 transition-colors"
+                  className="text-body-sm text-primary hover:text-primary/80 transition-colors"
                 >
                   Xóa tất cả
                 </button>
@@ -251,7 +254,7 @@ function MultiSelectDropdown({
               style={{ maxHeight }}
             >
               {filteredOptions.length === 0 ? (
-                <div className="px-4 py-3 text-sm text-text-secondary text-center">
+                <div className="px-4 py-3 text-body text-text-secondary text-center">
                   {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
                 </div>
               ) : (
@@ -266,15 +269,20 @@ function MultiSelectDropdown({
                       type="button"
                       onClick={() => toggleOption(option)}
                       onKeyDown={handleNavigationKey}
-                      className={`w-full px-4 py-2.5 text-left text-sm hover:bg-primary/10 rounded-control transition-colors flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
+                      className={`w-full px-4 py-2.5 text-left text-body hover:bg-primary/10 rounded-control transition-colors flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
                       role="option"
                       aria-selected={isSelected}
                     >
                       <span
-                        className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
+                        className={`w-4 h-4 rounded-poster border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
                       >
                         {isSelected && (
-                          <Check size={12} className="text-white" aria-hidden="true" />
+                          <Check
+                            size={12}
+                            strokeWidth={1.5}
+                            className="text-on-primary"
+                            aria-hidden="true"
+                          />
                         )}
                       </span>
                       <span

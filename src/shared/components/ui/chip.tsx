@@ -25,7 +25,7 @@ function Chip({ tone = 'neutral', icon, children, className }: ChipProps) {
   return (
     <span
       className={classNames(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-[9px] font-bold uppercase tracking-[0.06em] whitespace-nowrap',
+        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-micro-caps whitespace-nowrap',
         toneClasses[tone],
         className ?? '',
       )}

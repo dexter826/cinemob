@@ -239,16 +239,16 @@ function DatePicker({
     >
       {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-          <span id={dialogTitleId} className="text-sm font-bold text-text-primary">
+          <span id={dialogTitleId} className="text-title-md text-text-primary">
             Chọn ngày
           </span>
           <button
             type="button"
             aria-label="Đóng bảng chọn ngày"
             onClick={closePicker}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg cursor-pointer"
+            className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-control cursor-pointer"
           >
-            <X size={20} className="text-text-secondary" aria-hidden="true" />
+            <X size={20} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -258,21 +258,41 @@ function DatePicker({
         <button
           type="button"
           onClick={handlePrevYear}
-          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-control transition-colors flex items-center"
           aria-label="Năm trước"
         >
-          <ChevronLeft size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
-          <ChevronLeft size={14} className="text-text-secondary" aria-hidden="true" />
+          <ChevronLeft
+            size={14}
+            strokeWidth={1.5}
+            className="text-text-secondary -mr-1.5"
+            aria-hidden="true"
+          />
+          <ChevronLeft
+            size={14}
+            strokeWidth={1.5}
+            className="text-text-secondary"
+            aria-hidden="true"
+          />
         </button>
-        <span className="text-sm font-semibold text-text-primary">{viewDate.getFullYear()}</span>
+        <span className="text-body font-semibold text-text-primary">{viewDate.getFullYear()}</span>
         <button
           type="button"
           onClick={handleNextYear}
-          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors flex items-center"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-control transition-colors flex items-center"
           aria-label="Năm sau"
         >
-          <ChevronRight size={14} className="text-text-secondary -mr-1.5" aria-hidden="true" />
-          <ChevronRight size={14} className="text-text-secondary" aria-hidden="true" />
+          <ChevronRight
+            size={14}
+            strokeWidth={1.5}
+            className="text-text-secondary -mr-1.5"
+            aria-hidden="true"
+          />
+          <ChevronRight
+            size={14}
+            strokeWidth={1.5}
+            className="text-text-secondary"
+            aria-hidden="true"
+          />
         </button>
       </div>
 
@@ -281,28 +301,38 @@ function DatePicker({
         <button
           type="button"
           onClick={handlePrevMonth}
-          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-control transition-colors"
           aria-label="Tháng trước"
         >
-          <ChevronLeft size={16} className="text-text-secondary" aria-hidden="true" />
+          <ChevronLeft
+            size={16}
+            strokeWidth={1.5}
+            className="text-text-secondary"
+            aria-hidden="true"
+          />
         </button>
-        <span className="text-sm font-medium text-text-primary">
+        <span className="text-body font-medium text-text-primary">
           {monthLabel(viewDate.getMonth())}
         </span>
         <button
           type="button"
           onClick={handleNextMonth}
-          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+          className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-control transition-colors"
           aria-label="Tháng sau"
         >
-          <ChevronRight size={16} className="text-text-secondary" aria-hidden="true" />
+          <ChevronRight
+            size={16}
+            strokeWidth={1.5}
+            className="text-text-secondary"
+            aria-hidden="true"
+          />
         </button>
       </div>
 
       {/* Nhãn thứ */}
       <div className="grid grid-cols-7 gap-1 mb-1">
         {DAYS_VI.map((day) => (
-          <div key={day} className="text-center text-xs font-bold text-text-muted py-1 uppercase">
+          <div key={day} className="text-center text-label-caps text-text-muted py-1">
             {day}
           </div>
         ))}
@@ -324,7 +354,7 @@ function DatePicker({
               aria-current={isTodayDate ? 'date' : undefined}
               aria-pressed={isSelectedDate}
               className={`
-                                aspect-square w-full text-xs sm:text-sm rounded-lg transition-colors duration-150
+                                aspect-square w-full text-body-sm rounded-control transition-colors duration-150
                                 flex items-center justify-center cursor-pointer
                                 ${!item.isCurrentMonth ? 'text-text-secondary/20 cursor-default' : ''}
                                 ${item.isCurrentMonth && !isDisabled && !isSelectedDate ? 'hover:bg-primary/10 hover:text-primary text-text-primary font-medium' : ''}
@@ -349,7 +379,7 @@ function DatePicker({
             onChange(formatDateToString(today));
             closePicker();
           }}
-          className="w-full py-2.5 text-xs font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
+          className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
         >
           Hôm nay
         </button>
@@ -369,7 +399,7 @@ function DatePicker({
         disabled={disabled}
         className={`
           w-full h-11 border border-border-default rounded-card px-4 text-left
-          focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20
+          focus-ring
           hover:border-primary/30 transition-colors duration-200
           flex items-center justify-between
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -384,9 +414,14 @@ function DatePicker({
         aria-invalid={ariaInvalid}
       >
         <div className="flex items-center gap-2 min-w-0">
-          <Calendar size={16} className="text-text-secondary shrink-0" aria-hidden="true" />
+          <Calendar
+            size={16}
+            strokeWidth={1.5}
+            className="text-text-secondary shrink-0"
+            aria-hidden="true"
+          />
           <span
-            className={`text-sm font-medium truncate ${value ? 'text-text-primary' : 'text-text-secondary'}`}
+            className={`text-body font-medium truncate ${value ? 'text-text-primary' : 'text-text-secondary'}`}
           >
             {value ? formatDateDMY(value) : placeholder}
           </span>

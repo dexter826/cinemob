@@ -10,12 +10,35 @@ const toastTransition = { duration: MOTION_DURATION.medium, ease: MOTION_EASING.
 function ToastIcon({ type }: { type: string }) {
   const iconClass = 'mr-3 shrink-0';
   if (type === 'success')
-    return <CheckCircle size={18} className={`${iconClass} text-success`} aria-hidden="true" />;
+    return (
+      <CheckCircle
+        size={18}
+        strokeWidth={1.5}
+        className={`${iconClass} text-success`}
+        aria-hidden="true"
+      />
+    );
   if (type === 'error')
-    return <AlertCircle size={18} className={`${iconClass} text-danger`} aria-hidden="true" />;
+    return (
+      <AlertCircle
+        size={18}
+        strokeWidth={1.5}
+        className={`${iconClass} text-danger`}
+        aria-hidden="true"
+      />
+    );
   if (type === 'warning')
-    return <AlertTriangle size={18} className={`${iconClass} text-warning`} aria-hidden="true" />;
-  return <Info size={18} className={`${iconClass} text-info`} aria-hidden="true" />;
+    return (
+      <AlertTriangle
+        size={18}
+        strokeWidth={1.5}
+        className={`${iconClass} text-warning`}
+        aria-hidden="true"
+      />
+    );
+  return (
+    <Info size={18} strokeWidth={1.5} className={`${iconClass} text-info`} aria-hidden="true" />
+  );
 }
 
 const PROGRESS_BAR_COLORS: Record<string, string> = {
@@ -60,7 +83,7 @@ function ToastList({
             className="relative overflow-hidden flex items-center p-3.5 sm:p-4 rounded-card border border-border bg-surface-elevated text-text-primary pointer-events-auto w-full"
           >
             <ToastIcon type={toast.type} />
-            <span className="text-xs sm:text-sm font-semibold flex-1 tracking-tight mr-4 leading-tight">
+            <span className="text-body-sm sm:text-body font-semibold flex-1 mr-4">
               {toast.message}
             </span>
             {toast.action && (
@@ -70,13 +93,13 @@ function ToastList({
                   toast.action?.onAction();
                   removeToast(toast.id);
                 }}
-                className="text-xs font-bold text-primary hover:underline mr-2 shrink-0 cursor-pointer"
+                className="text-body-sm font-bold text-primary hover:underline mr-2 shrink-0 cursor-pointer"
               >
                 {toast.action.label}
               </button>
             )}
             <IconButton label="Đóng thông báo" size="sm" onClick={() => removeToast(toast.id)}>
-              <X size={14} aria-hidden="true" />
+              <X size={14} strokeWidth={1.5} aria-hidden="true" />
             </IconButton>
             {reducedMotion ? (
               <div

@@ -66,7 +66,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         aria-label="Trang trước"
         className="p-2.5 rounded-control bg-surface border border-border text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"
       >
-        <ChevronLeft size={18} aria-hidden="true" />
+        <ChevronLeft size={18} strokeWidth={1.5} aria-hidden="true" />
       </button>
 
       <div className="hidden md:flex items-center gap-2">
@@ -99,7 +99,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
               onClick={() => handlePageChange(page)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={`Trang ${page}`}
-              className={`min-w-10 h-10 px-3 rounded-control text-sm font-bold tabular-nums transition-colors cursor-pointer ${
+              className={`min-w-10 h-10 px-3 rounded-control text-body-sm font-bold tabular-nums transition-colors cursor-pointer ${
                 isActive
                   ? 'bg-primary text-on-primary'
                   : 'bg-surface border border-border text-text-primary hover:bg-primary/5 hover:border-primary/30'
@@ -112,7 +112,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       </div>
 
       <div className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-surface border border-border rounded-control">
-        <span className="text-xs font-medium text-text-secondary">Trang</span>
+        <span className="text-body-sm font-medium text-text-secondary">Trang</span>
         <form onSubmit={handleInputSubmit} className="flex items-center gap-1.5">
           <input
             ref={inputRef}
@@ -125,9 +125,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
             onBlur={handleInputBlur}
             aria-label="Số trang muốn chuyển đến"
             autoComplete="off"
-            className="w-11 h-9 text-center border-none rounded-lg text-xs font-bold text-text-primary focus-visible:ring-1 focus-visible:ring-primary/50"
+            className="w-11 h-9 text-center border-none rounded-control text-body-sm font-bold text-text-primary focus-ring"
           />
-          <span className="text-xs font-bold text-text-secondary opacity-50 tabular-nums">
+          <span className="text-body-sm font-bold text-text-secondary opacity-50 tabular-nums">
             / {totalPages}
           </span>
         </form>
@@ -141,7 +141,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         aria-label="Trang sau"
         className="p-2.5 rounded-control bg-surface border border-border text-text-primary disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary/5 hover:border-primary/30 transition-colors cursor-pointer"
       >
-        <ChevronRight size={18} aria-hidden="true" />
+        <ChevronRight size={18} strokeWidth={1.5} aria-hidden="true" />
       </button>
     </nav>
   );

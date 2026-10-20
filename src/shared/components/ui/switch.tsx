@@ -25,7 +25,7 @@ function Switch({ checked, onToggle, label, disabled = false }: SwitchProps) {
       <span
         aria-hidden="true"
         className={classNames(
-          'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform',
+          'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform',
           checked && 'translate-x-4',
         )}
       />

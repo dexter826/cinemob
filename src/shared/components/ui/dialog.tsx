@@ -174,11 +174,11 @@ export function DialogHeader({
     <div className="shrink-0 border-b border-border px-4 py-3 sm:px-6 sm:py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 id={titleId} className="text-base sm:text-lg font-bold tracking-wide truncate">
+          <h2 id={titleId} className="text-title-md truncate">
             {title}
           </h2>
           {description && (
-            <p id={descriptionId} className="text-xs sm:text-sm text-text-secondary mt-0.5">
+            <p id={descriptionId} className="text-body-sm text-text-secondary mt-0.5">
               {description}
             </p>
           )}
@@ -190,7 +190,7 @@ export function DialogHeader({
             aria-label="Đóng hộp thoại"
             className="inline-flex w-10 h-10 items-center justify-center rounded-control text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer shrink-0"
           >
-            <X size={18} strokeWidth={1.8} aria-hidden="true" />
+            <X size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>
         )}
       </div>
