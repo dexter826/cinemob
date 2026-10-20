@@ -3,7 +3,7 @@ import { Users } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog';
 import SearchField from '@/shared/components/ui/search-field';
-import EmptyState from '@/shared/components/ui/empty-state';
+import { ErrorState } from '@/shared/components/ui/error-state';
 import Loading from '@/shared/components/ui/loading';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { useUserSearch } from '../../hooks/use-user-search';
@@ -66,11 +66,12 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
             <Loading fullScreen={false} />
           </div>
         ) : error ? (
-          <EmptyState
+          <ErrorState
             compact
             className="flex-1"
             title="Không tải được danh sách"
             description="Không tải được danh sách thành viên. Thử lại."
+            retry={{ label: 'Thử lại', onClick: () => void submit() }}
           />
         ) : !settled ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">

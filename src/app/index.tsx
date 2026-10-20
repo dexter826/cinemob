@@ -80,7 +80,7 @@ function MainApp() {
   return (
     <Layout key={user.uid}>
       <ErrorBoundary>
-        <Suspense fallback={<Loading fullScreen={false} contain />}>
+        <Suspense fallback={<Loading text="Đang tải trang…" />}>
           {collectionUid === user.uid ? <AnimatedRoutes /> : <Loading text="Đang tải thư viện…" />}
         </Suspense>
       </ErrorBoundary>

@@ -191,8 +191,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           />
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
-            <Loading size={40} fullScreen={false} />
-            <p className="text-body-sm font-semibold text-text-secondary">Đang tải album…</p>
+            <Loading size={40} text="Đang tải album…" fullScreen={false} />
           </div>
         ) : availableAlbums.length === 0 ? (
           <EmptyState

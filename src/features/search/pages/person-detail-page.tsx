@@ -79,7 +79,7 @@ function PersonDetailPage() {
         ) : loading ? (
           <div className="space-y-6">
             <Skeleton className=" border border-border-default rounded-dialog p-5 sm:p-6 h-96 " />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
               {Array.from({ length: 10 }).map((_, i) => (
                 <SkeletonCard key={i} />
               ))}

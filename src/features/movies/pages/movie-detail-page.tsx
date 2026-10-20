@@ -271,7 +271,9 @@ function MovieDetailPage() {
           )}
 
           {extrasLoading ? (
-            <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
+            <div role="status" aria-busy="true">
+              <SectionHeader className="mt-7">Đang tải diễn viên…</SectionHeader>
+            </div>
           ) : (
             credits && (
               <div className="mt-7 border-t border-border">

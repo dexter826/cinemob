@@ -3,6 +3,7 @@ import { Dice5, RotateCcw } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import Spinner from '@/shared/components/ui/spinner';
 import MoviePosterGrid from './movie-poster-grid';
 
 interface RandomSuggestionsSectionProps {
@@ -47,15 +48,27 @@ function RandomSuggestionsSection({
           title="Làm mới gợi ý"
           className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-body-sm sm:text-body bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
         >
-          <RotateCcw
-            size={16}
-            strokeWidth={1.5}
-            aria-hidden="true"
-            className={isLoading ? 'animate-spin' : undefined}
-          />
+          {isLoading ? (
+            <Spinner size={16} className="text-current" />
+          ) : (
+            <RotateCcw size={16} strokeWidth={1.5} aria-hidden="true" />
+          )}
           <span className="hidden sm:inline">{isLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
         </button>
       </div>
+
+      {error && movies.length > 0 && (
+        <div role="status" className="mb-3 flex items-center gap-2 text-body-sm text-danger">
+          <span>Không cập nhật được gợi ý mới.</span>
+          <button
+            type="button"
+            onClick={onRefresh}
+            className="font-bold text-primary hover:underline cursor-pointer"
+          >
+            Thử lại
+          </button>
+        </div>
+      )}
 
       {isInitialLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
