@@ -203,6 +203,8 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 
 - Anton chỉ cho display, số liệu lớn và wordmark; không dùng cho body.
 - Caps label chỉ có hai style: `label-caps` 11px và `micro-caps` 9px. Không dùng 10px, 11.5px hay 15px.
+- Chữ display có tên đầy đủ: `text-display-xl` (30→36→48), `text-display-lg` (24→30→36), `text-display-md` (20px), `text-display-stat` (48→60), `text-display-404` (72→96), `text-brand` (36→48).
+- `text-brand` là wordmark thương hiệu ở splash: 36→48px. Wordmark login dùng `text-display-lg` (24→36px), navbar/footer dùng `text-display-md` (20px). `text-display-md` cũng dùng cho display title 20px (tên phim/người dùng hiển thị lớn).
 - Ngoại lệ data-viz: chart axis dùng 10px/700/50%; không dùng cho text UI.
 - 404 dùng utility `text-display-404` 72 → 96px; splash wordmark dùng Anton 36 → 48px, không tính vào type scale.
 - `micro-caps` mặc định uppercase; metadata số/ngày được phép `normal-case`.
@@ -390,7 +392,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 - **Token:** thêm/sửa token phải cập nhật đồng thời YAML, bảng Colors và `src/index.css`.
 - **Font:** load trong `index.html`; không import font trong component.
 - **UI kit:** `src/shared/components/ui` (barrel `index.ts`); feedback ở `src/shared/components/feedback`; layout ở `src/shared/components/layout`.
-- **Type utility:** `text-display-xl`, `text-display-lg`, `text-title-lg`, `text-title-md`, `text-body`, `text-body-sm`, `text-label-caps`, `text-micro-caps`; modifier `text-display-stat` (48 → 60) và `text-display-404` (72 → 96). Code không dùng `text-[…px]` hoặc `text-xs/sm/base/lg/xl/2xl/3xl/4xl/5xl/6xl/7xl/9xl` cho size; ngoại lệ chart axis 10px.
+- **Type utility:** `text-display-xl`, `text-display-lg`, `text-display-md`, `text-brand`, `text-title-lg`, `text-title-md`, `text-body`, `text-body-sm`, `text-label-caps`, `text-micro-caps`; modifier `text-display-stat` (48 → 60) và `text-display-404` (72 → 96). Code không dùng `text-[…px]` hoặc `text-xs/sm/base/lg/xl/2xl/3xl/4xl/5xl/6xl/7xl/9xl` cho size; ngoại lệ chart axis 10px.
 - **Card chuẩn:** `src/features/movies/components/poster-card.tsx`; mọi card phim dùng pattern này.
 - **Theme:** `src/app/providers/theme-provider.tsx`, default `dark`, lưu `vite-ui-theme`; toggle chỉ dark/light.
 - **Chart:** `src/features/stats/pages/stats-page.tsx`, palette derive từ token; không hardcode màu series.

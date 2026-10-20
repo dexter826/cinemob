@@ -209,3 +209,108 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 6 N
 Trạng thái git sau Task 6: 15 file `src/` + plan Phase 2 + file log; không có file ngoài phạm vi. Chưa commit (plan cấm commit; chờ người dùng).
 
 Phase 2 xong. Tiếp theo: Phase 3 — plan sweep static toàn app (navbar/footer/mobile nav, stats, movie detail, album, profile, add-movie, filters, search/person, calendar) thay raw size bằng utility, icon 1.5, `focus-ring`, `on-primary`, thêm `width`/`height` cho ảnh. Cần người dùng xác nhận commit Phase 2 trước khi mở Phase 3.
+
+## Phase 3A — App shell, shared UI, auth (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-3a.md` — 6 task.
+- Người dùng chốt 2 điểm trước khi viết plan: (1) chữ Anton ở size chưa có trong scale dùng 2 utility có tên mới `text-display-md` (20px) + `text-brand` (36→48px) thay vì giữ raw size; (2) Phase 3 tách 3A/3B/3C thay vì gộp 44 file.
+- Phạm vi 3A: `src/index.css` + `DESIGN.md` + spec + shared UI + feedback + shell + auth. Không đụng movies/albums/profile/search/calendar/stats/dashboard (3B-3C).
+- Inventory nền (từ subagent điều tra 54 file): 252 raw size, 80 icon thiếu strokeWidth, 18 radius thô, 13 focus ring, 11 `<img>` thiếu dimension.
+
+### Task 1 — 2 utility có tên + DESIGN.md + spec
+
+Thay đổi:
+
+- `src/index.css`: thêm `@utility text-display-md` (Anton 20px, lh 1.2, .02em) và `@utility text-brand` (Anton 36px → 48px ở `min-width:40rem`, lh 1, .02em).
+- `DESIGN.md`: Typography liệt kê đủ 6 tên display/brand; Implementation Notes thêm `text-display-md`, `text-brand` vào contract "Type utility".
+- spec §3.1: thêm 2 dòng bảng + ghi chú nguồn gốc quyết định; §2.3: dòng "Splash wordmark" đổi thành "Anton 36→48px qua `text-brand`".
+
+Verify: Prettier pass; typecheck/lint/build exit 0; gate 2 dòng `@utility` + tên xuất hiện ở DESIGN.md và spec; CSS build 86.36 → 86.86 kB (2 utility mới đã được emit).
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 2 NIT:
+
+- NIT: `text-brand` (36→48) và `text-display-xl` (30→36→48) có vùng size gần nhau; giữ cả hai vì splash không muốn 30px ở mobile. Ghi chú để tránh gộp nhầm về sau.
+- NIT: tên `text-display-md` (20px) nằm dưới `text-display-lg` (24px) — thứ tự giảm dần vẫn đúng nhưng "md" dễ bị hiểu là 18px như `title-md`; đã ghi rõ giá trị trong `DESIGN.md`.
+- Đã rà và thấy sạch: 2 utility chỉ phụ thuộc token `--font-display`; không đổi token màu, không đổi layout, không ảnh hưởng component nào cho tới khi Task 2-5 dùng tới; không có nhánh lỗi/dependency/secret; khả năng kiểm chứng qua probe CSS ở Task 6.
+
+### Task 2 — Shared UI primitives còn lại
+
+Thay đổi: `page-header.tsx` (h1 → `text-display-lg`, subtitle → `text-body-sm sm:text-body`); `stat.tsx` (label → `text-label-caps`, số liệu → `text-display-stat`, meta dưới → `text-micro-caps`); `section-header.tsx` (label → `text-label-caps`); `empty-state.tsx` + `error-state.tsx` (h3 → `text-title-md`, mô tả → `text-body`, nút → `text-body-sm`); `loading.tsx` (chữ → `text-body-sm`).
+
+Verify: 4 file verify-only (`loading-status`, `scroll-to-top`, `lazy-dialog`, `spinner`) không có phát hiện → không sửa; Prettier/typecheck/lint/build exit 0; gate raw size → 0.
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 3 NIT:
+
+- NIT: label của `stat.tsx` giờ UPPERCASE (trước 11px có tracking nhưng không uppercase) → đúng chuẩn caps nhưng thay đổi hiển thị.
+- NIT: dòng meta số liệu dưới stat 11px → 9px (`micro-caps`).
+- NIT: `text-title-md` có line-height 1.35 (so với `text-lg` mặc định 28px) → khối tiêu đề empty/error state gọn hơn; nội dung `text-body` line-height 1.5 (so với `text-sm` 20px) → chữ cao hơn ~1px.
+- Đã rà và thấy sạch: `page-header` h1 (24/30/36) và `stat` số liệu (48/60) khớp **đúng** utility nên không có delta kích thước; không đổi props, DOM, logic; không có nhánh lỗi/dependency/secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+### Task 3 — Feedback + trang 404
+
+Thay đổi: `splash-screen.tsx` (wordmark → `text-brand`, status → `text-body`); `alert-container.tsx` (h2 → `text-title-md`, icon `Info`/`AlertTriangle` → stroke 1.5 + `aria-hidden`); `error-boundary.tsx` (h → `text-title-md`, body → `text-body`, 2 nút → `rounded-control text-body-sm`); `not-found-page.tsx` (404 → `text-display-404`, dòng phụ → `text-label-caps`, nút → `text-body-sm`).
+
+Verify: Prettier/typecheck/lint/build exit 0; gate raw size + `rounded-md/lg` → 0; `confetti-burst.tsx` giữ `rounded-[1px]` (hạt trang trí, ngoại lệ có tên).
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 3 NIT:
+
+- NIT: tiêu đề alert 20px → 18px (`title-md`); nút trong error boundary 14px → 12px (`body-sm`).
+- NIT: icon alert thêm `aria-hidden="true"` (trước không có) → icon trang trí không còn bị đọc sai bởi screen reader; đúng `DESIGN.md` §Button & IconButton.
+- NIT: `rounded-lg` → `rounded-control` giữ nguyên 8px nên không đổi hình học; wordmark splash 36→48 và số 404 72→96 khớp **đúng** utility nên không có delta.
+- Đã rà và thấy sạch: không đổi props, copy, state, focus trap, `role`/`aria-live`; không có nhánh lỗi/dependency/secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+### Task 4 — App shell (navbar, mobile nav, footer, layout)
+
+Thay đổi: `navbar.tsx` (brand → `text-display-md`, link nav → `text-label-caps`, chữ avatar → `text-body-sm`, tên + 3 dòng menu → `text-body`, `ChevronDown` → stroke 1.5, ảnh avatar thêm `width/height` 28); `mobile-bottom-nav.tsx` (nhãn tab → `text-micro-caps`, giữ icon active 2); `footer.tsx` (brand → `text-display-md`, copyright → `text-micro-caps`); `layout.tsx` (skip link → `focus:text-body-sm`).
+
+Verify: Prettier/typecheck/lint/build exit 0; gate raw size → 0.
+
+Quyết định trong task: ảnh avatar navbar **không** thêm `loading="lazy"` (plan ghi "nếu chưa có") vì navbar luôn ở trên màn hình đầu — lazy ở above-the-fold là anti-pattern. Chỉ thêm `width`/`height` để chặn layout shift.
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 3 NIT:
+
+- NIT: link navbar 11.5px → 11px và tracking .08em → .1em (chuẩn `label-caps`).
+- NIT: brand footer 18px → 20px (`text-display-md`); copyright footer 10px → 9px (`micro-caps`).
+- NIT: `focus:text-body-sm` trên skip link — biến thể `focus:` với custom utility hoạt động vì Tailwind v4 áp variant cho `@utility`; cần xác nhận bằng trình duyệt.
+- Đã rà và thấy sạch: không đổi props, state, handler, `aria-*`, cấu trúc menu; `duration-200` giữ nguyên cho Phase 4; không có nhánh lỗi/dependency/secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+### Task 5 — Auth (login)
+
+Thay đổi: `login.tsx` (wordmark → `text-display-lg`, h1 → `text-display-xl`, mô tả → `text-body`, nút → `text-body-sm`, footer → `text-micro-caps`, ảnh `PosterTile` thêm `width={500} height={750}`).
+
+Hai chỗ lệch so với plan, đã sửa và ghi lại:
+
+- Plan ghi wordmark login dùng `text-brand`, nhưng `text-brand` đã chốt là 36→48px cho splash. Sửa: wordmark login (24px) dùng `text-display-lg` (24→30→36), và sửa lại dòng giải thích trong `DESIGN.md`.
+- Plan ghi ảnh hero login thêm `fetchpriority="high"`; đọc code thấy đó là dải poster trang trí trong `PosterTile` (`alt="" aria-hidden`), không phải ảnh chính → không thêm `fetchpriority`, chỉ thêm `width`/`height` để chặn layout shift.
+
+Verify: Prettier/typecheck/lint/build exit 0; gate raw size trong `src/features/auth` → 0; `auth-provider.tsx` không có phát hiện → không sửa.
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 3 NIT:
+
+- NIT: wordmark login 24px cố định → 24/30/36 responsive (`display-lg`); h1 hero 30/36 → 30/36/48 (`display-xl`, thêm bậc 48 ở `md`).
+- NIT: nút đăng nhập 12px → 12px (`body-sm`) nhưng line-height theo utility 1.5 thay vì mặc định; footer 10px → 9px (`micro-caps`).
+- NIT: `text-display-lg`/`text-display-xl` có font Anton sẵn nên bỏ được `font-display`; không đổi font thực tế.
+- Đã rà và thấy sạch: không đổi props, state, handler, `aria-*`, copy, logic đăng nhập; `console.error` giữ nguyên; không có nhánh lỗi/dependency/secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+### Task 6 — Verify toàn phase 3A + review toàn phase
+
+Lệnh: Prettier check 18 file → pass; `npm run typecheck` / `npm run lint` / `npm run build` → exit 0; `git diff --check` → sạch.
+
+Gate 15 file Phase 3A: raw size → 0; `rounded-md/lg` → 0; `focus-visible:ring-1|ring-4` → 0; `strokeWidth={1.8|2|2.5|undefined}` → 0; `text-white` → 0.
+
+Probe CSS (offset trong `dist/assets/index-*.css`): `.text-display-lg` 41730, `.text-display-xl` 41963, `.text-brand` 42193, `.text-display-404` 42355, `.text-display-stat` 42525, `.text-body` 42702, `.text-display-md` 42913, `.font-semibold` 45265 → `font-semibold` vẫn emit sau mọi utility typography nên weight 600 của component không bị ghi đè.
+
+Còn lại trong repo sau 3A: 197 dòng raw size trong 32 file; 44 file còn icon Lucide (phần lớn thiếu `strokeWidth`) → thuộc Phase 3B/3C.
+
+Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 4 NIT:
+
+- MINOR (vẫn mở từ Phase 1): focus outline hai nguồn sự thật. Phase 3A không thêm `focus-ring` ở đâu (không có focus-ring hit trong 3A) nên mức rủi ro chưa tăng; 13 chỗ `focus-visible:ring-*` còn lại nằm ở 3B/3C — quyết định gộp token hoặc bỏ global rule sẽ chốt khi sweep xong.
+- NIT: 6 delta kích thước đã liệt kê ở từng task (button/toast/poster/picker/link navbar/brand footer) — cần kiểm chứng bằng trình duyệt.
+- NIT: `text-display-md` (20px) dễ bị nhầm với `text-title-md` (18px) — đã ghi rõ giá trị trong `DESIGN.md`.
+- NIT: `focus:text-body-sm` trên skip link là biến thể `focus:` áp cho custom utility; cần xác nhận trình duyệt.
+- NIT: `text-brand` chỉ dùng 1 chỗ (splash) — utility mới sinh ra từ 1 use case; giữ vì nó khớp ngoại lệ đã có tên trong `DESIGN.md` và splash không dùng được `display-xl` (base 30 thay vì 36).
+- Đã rà và thấy sạch: 18 file đổi đều là thay class trình bày, không đổi props/state/import/logic/copy; không có nhánh lỗi, dependency, secret hay PII nào bị đụng; thêm `aria-hidden` cho icon trang trí và `width`/`height` cho 2 ảnh là cải thiện accessibility/CLS đúng `DESIGN.md`; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + probe CSS.
+
+Trạng thái git sau Task 6: 16 file `src/` + `DESIGN.md` + spec + log; plan 3A untracked. Chưa commit (plan cấm commit; chờ người dùng).
+
+Phase 3A xong. Tiếp theo: Phase 3B (movies + albums: `movie-detail-page`, `add-movie-modal`, `movie-form-fields`, `tv-progress-section`, `album-section`, `rating-section`, `poster-preview`, `random-picker-modal`, `picker-wheel`, `album-detail-page`, `album-selector-modal`) — 10 file, 18 raw size + 6 radius + 5 focus ring + 20 icon + 1 `text-white` + 2 ảnh.

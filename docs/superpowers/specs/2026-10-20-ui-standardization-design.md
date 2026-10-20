@@ -32,18 +32,18 @@ Ngày: 20/10/2026. Trạng thái: thiết kế và spec đã được người d
 
 ### 2.3 Ngoại lệ có tên
 
-| Ngoại lệ                   | Phạm vi                       | Ghi chú                                                      |
-| -------------------------- | ----------------------------- | ------------------------------------------------------------ |
-| 404                        | 72/96px                       | `text-display-404`; không thuộc 8 utility                    |
-| Splash wordmark            | Anton, kích thước brand       | không tính vào type scale                                    |
-| Logo symbol                | `strokeWidth` 3               | `cinemob-symbol.tsx`                                         |
-| Picker chevron             | `strokeWidth` 2.5             | `picker-wheel.tsx`                                           |
-| Micro-spacing              | 2/6/10px cho căn icon/chữ     | không dùng cho layout; layout vẫn theo thang 4/8/…           |
-| Pagination/toolbar compact | 36/40px                       | form control vẫn 44px; icon-button theo 32/40/48             |
-| Poster selected overlay    | check trắng trên `primary/25` | media overlay, không phải nền primary đặc                    |
-| `text-faint`               | decorative/large              | token giữ, không dùng cho nội dung cần đọc                   |
-| `micro-caps` normal-case   | metadata số/ngày              | mặc định utility uppercase; metadata được phép `normal-case` |
-| Chart axis                 | 10px/700/50%                  | nhãn trục Recharts; ngoại lệ data-viz                        |
+| Ngoại lệ                   | Phạm vi                        | Ghi chú                                                      |
+| -------------------------- | ------------------------------ | ------------------------------------------------------------ |
+| 404                        | 72/96px                        | `text-display-404`; không thuộc 8 utility                    |
+| Splash wordmark            | Anton 36→48px qua `text-brand` | wordmark thương hiệu, không tính vào type scale              |
+| Logo symbol                | `strokeWidth` 3                | `cinemob-symbol.tsx`                                         |
+| Picker chevron             | `strokeWidth` 2.5              | `picker-wheel.tsx`                                           |
+| Micro-spacing              | 2/6/10px cho căn icon/chữ      | không dùng cho layout; layout vẫn theo thang 4/8/…           |
+| Pagination/toolbar compact | 36/40px                        | form control vẫn 44px; icon-button theo 32/40/48             |
+| Poster selected overlay    | check trắng trên `primary/25`  | media overlay, không phải nền primary đặc                    |
+| `text-faint`               | decorative/large               | token giữ, không dùng cho nội dung cần đọc                   |
+| `micro-caps` normal-case   | metadata số/ngày               | mặc định utility uppercase; metadata được phép `normal-case` |
+| Chart axis                 | 10px/700/50%                   | nhãn trục Recharts; ngoại lệ data-viz                        |
 
 Mọi ngoại lệ mới phải được thêm vào `DESIGN.md` trước khi áp dụng.
 
@@ -51,12 +51,14 @@ Mọi ngoại lệ mới phải được thêm vào `DESIGN.md` trước khi áp
 
 ### 3.1 Typography utility
 
-Thêm 8 utility trong `src/index.css` (Tailwind v4 `@utility`) theo bảng Typography của `DESIGN.md`:
+Thêm 8 utility trong `src/index.css` (Tailwind v4 `@utility`) theo bảng Typography của `DESIGN.md`; `text-display-md` (Anton 20px) và `text-brand` (Anton 36→48px) là modifier có tên được người dùng duyệt ở Phase 3A vì wordmark và display title 20px chưa có chỗ trong scale:
 
 | Utility           | Font           | Size | Weight | Line-height | Tracking | Uppercase |
 | ----------------- | -------------- | ---- | ------ | ----------- | -------- | --------- |
 | `text-display-xl` | Anton          | 48px | 400    | 1.0         | .025em   | không     |
 | `text-display-lg` | Anton          | 36px | 400    | 1.05        | .025em   | không     |
+| `text-display-md` | Anton          | 20px | 400    | 1.2         | .02em    | không     |
+| `text-brand`      | Anton          | 36px | 400    | 1.0         | .02em    | không     |
 | `text-title-lg`   | Be Vietnam Pro | 20px | 700    | 1.3         | 0        | không     |
 | `text-title-md`   | Be Vietnam Pro | 18px | 700    | 1.35        | 0        | không     |
 | `text-body`       | Be Vietnam Pro | 14px | 500    | 1.5         | 0        | không     |
