@@ -46,7 +46,7 @@
 - Consumes: `text-body-sm`, `text-body`, `text-micro-caps` từ `src/index.css`.
 - Produces: Button size đúng `body-sm` 12/`body` 14; Chip đúng `micro-caps` 9, radius 4.
 
-- [ ] **Step 1: Đổi Button size**
+- [x] **Step 1: Đổi Button size**
 
 Old:
 
@@ -68,7 +68,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 ```
 
-- [ ] **Step 2: Đổi Chip sang `micro-caps`**
+- [x] **Step 2: Đổi Chip sang `micro-caps`**
 
 Old:
 
@@ -82,7 +82,7 @@ New:
 'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-poster text-micro-caps whitespace-nowrap',
 ```
 
-- [ ] **Step 3: Verify primitive không cần sửa**
+- [x] **Step 3: Verify primitive không cần sửa**
 
 ```powershell
 git grep -n -E "rounded-(control|card|poster)|w-8 h-8|w-10 h-10|w-12 h-12" -- src/shared/components/ui/icon-button.tsx src/shared/components/ui/skeleton.tsx src/shared/components/ui/skeleton-card.tsx
@@ -96,7 +96,7 @@ Expected:
 
 Không sửa ba file này nếu output đúng.
 
-- [ ] **Step 4: Format, typecheck, lint, build**
+- [x] **Step 4: Format, typecheck, lint, build**
 
 ```powershell
 npx prettier --write src/shared/components/ui/button.tsx src/shared/components/ui/chip.tsx
@@ -107,7 +107,7 @@ npm run build
 
 Expected: Prettier pass; typecheck/lint exit 0; build hoàn tất.
 
-- [ ] **Step 5: Gate Task 1**
+- [x] **Step 5: Gate Task 1**
 
 ```powershell
 git grep -n -E "text-\[[0-9.]+px\]|text-(xs|sm|base)" -- src/shared/components/ui/button.tsx src/shared/components/ui/chip.tsx
@@ -117,11 +117,11 @@ git status --short
 
 Expected: hai lệnh grep đầu không có output; `M button.tsx`, `M chip.tsx`; không có file ngoài plan.
 
-- [ ] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
+- [x] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
 
 Review diff của Task 1 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Task 1). Sửa BLOCKER/MAJOR ngay trong task này rồi chạy lại gate.
 
-- [ ] **Step 7: Dừng, không commit**
+- [x] **Step 7: Dừng, không commit**
 
 Báo diff, kết quả build và kết quả review. Không chạy `git add`, `git commit` hay `git push`.
 
@@ -143,7 +143,7 @@ Báo diff, kết quả build và kết quả review. Không chạy `git add`, `g
 - Consumes: `text-label-caps`, `text-body`, `text-body-sm`, `text-micro-caps`, `focus-ring`.
 - Produces: field/dropdown/multiselect đúng type, focus, radius; switch không shadow.
 
-- [ ] **Step 1: TextField**
+- [x] **Step 1: TextField**
 
 Đổi label:
 
@@ -171,7 +171,7 @@ Báo diff, kết quả build và kết quả review. Không chạy `git add`, `g
 
 Giữ underline `focus-visible:outline-none` và `border-b`.
 
-- [ ] **Step 2: SearchField và ListboxSearchInput**
+- [x] **Step 2: SearchField và ListboxSearchInput**
 
 SearchField:
 
@@ -197,7 +197,7 @@ ListboxSearchInput:
 + className="w-full bg-surface border border-border-default rounded-control px-3 py-2 text-body focus-ring text-text-primary placeholder:text-text-muted"
 ```
 
-- [ ] **Step 3: Dropdown**
+- [x] **Step 3: Dropdown**
 
 Trigger:
 
@@ -228,7 +228,7 @@ Empty và option:
 
 Giữ `ring-1 ring-primary/20` của trạng thái open; đó không phải focus ring.
 
-- [ ] **Step 4: MultiSelect**
+- [x] **Step 4: MultiSelect**
 
 Trigger:
 
@@ -285,14 +285,14 @@ Checkbox và check:
 + <Check size={12} strokeWidth={1.5} className="text-on-primary" aria-hidden="true" />
 ```
 
-- [ ] **Step 5: Switch**
+- [x] **Step 5: Switch**
 
 ```diff
 - 'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform',
 + 'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform',
 ```
 
-- [ ] **Step 6: Format, typecheck, lint, build**
+- [x] **Step 6: Format, typecheck, lint, build**
 
 ```powershell
 npx prettier --write src/shared/components/ui/text-field.tsx src/shared/components/ui/search-field.tsx src/shared/components/ui/listbox-search-input.tsx src/shared/components/ui/dropdown.tsx src/shared/components/ui/multi-select-dropdown.tsx src/shared/components/ui/switch.tsx
@@ -301,7 +301,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 7: Gate Task 2**
+- [x] **Step 7: Gate Task 2**
 
 ```powershell
 git grep -n -E "text-\[[0-9.]+px\]|text-(xs|sm|base)" -- src/shared/components/ui/text-field.tsx src/shared/components/ui/search-field.tsx src/shared/components/ui/listbox-search-input.tsx src/shared/components/ui/dropdown.tsx src/shared/components/ui/multi-select-dropdown.tsx
@@ -312,11 +312,11 @@ git status --short
 
 Expected: ba lệnh grep đầu không có output; các file nêu trên là `M`; không có file ngoài plan.
 
-- [ ] **Step 8: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
+- [x] **Step 8: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
 
 Review diff của Task 2 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Task 2). Sửa BLOCKER/MAJOR ngay trong task này rồi chạy lại gate.
 
-- [ ] **Step 9: Dừng, không commit**
+- [x] **Step 9: Dừng, không commit**
 
 ---
 
@@ -332,7 +332,7 @@ Review diff của Task 2 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, gh
 - Consumes: `text-title-md`, `text-label-caps`, `text-body`, `text-body-sm`, `focus-ring`.
 - Produces: trigger focus đúng; date/time cell dùng body-sm; icon 1.5; radius token.
 
-- [ ] **Step 1: DatePicker typography và focus**
+- [x] **Step 1: DatePicker typography và focus**
 
 Các thay đổi class:
 
@@ -389,7 +389,7 @@ Icon:
 
 Thêm `strokeWidth={1.5}` cho mọi `ChevronLeft`/`ChevronRight` trong file (bốn nút: năm trước/sau, tháng trước/sau; hai nút năm có hai icon mỗi bên).
 
-- [ ] **Step 2: TimePicker typography và focus**
+- [x] **Step 2: TimePicker typography và focus**
 
 ```diff
 - className="text-sm font-bold text-text-primary"
@@ -426,7 +426,7 @@ Nút đóng:
 + <Clock size={16} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
 ```
 
-- [ ] **Step 3: Format, typecheck, lint, build**
+- [x] **Step 3: Format, typecheck, lint, build**
 
 ```powershell
 npx prettier --write src/shared/components/ui/date-picker.tsx src/shared/components/ui/time-picker.tsx
@@ -435,7 +435,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 4: Gate Task 3**
+- [x] **Step 4: Gate Task 3**
 
 ```powershell
 git grep -n -E "text-\[[0-9.]+px\]|text-(xs|sm|base)" -- src/shared/components/ui/date-picker.tsx src/shared/components/ui/time-picker.tsx
@@ -446,11 +446,11 @@ git status --short
 
 Expected: hai lệnh grep đầu không có output; mọi icon có `strokeWidth` tường minh 1.5; chỉ hai file picker là `M` ngoài plan.
 
-- [ ] **Step 5: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
+- [x] **Step 5: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
 
 Review diff của Task 3 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Task 3). Sửa BLOCKER/MAJOR ngay trong task này rồi chạy lại gate.
 
-- [ ] **Step 6: Dừng, không commit**
+- [x] **Step 6: Dừng, không commit**
 
 ---
 
@@ -467,7 +467,7 @@ Review diff của Task 3 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, gh
 - Consumes: `text-title-md`, `text-body-sm`, `text-body`, `focus-ring`.
 - Produces: dialog title/description đúng type; toast icon 1.5; pagination compact dùng body-sm.
 
-- [ ] **Step 1: Dialog**
+- [x] **Step 1: Dialog**
 
 ```diff
 - <h2 id={titleId} className="text-base sm:text-lg font-bold tracking-wide truncate">
@@ -482,7 +482,7 @@ Review diff của Task 3 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, gh
 
 Không thêm shadow/border; overlay `black/72` và panel hiện có giữ nguyên.
 
-- [ ] **Step 2: Toast**
+- [x] **Step 2: Toast**
 
 Icon:
 
@@ -513,7 +513,7 @@ Message, action, close:
 + <X size={14} strokeWidth={1.5} aria-hidden="true" />
 ```
 
-- [ ] **Step 3: Pagination**
+- [x] **Step 3: Pagination**
 
 ```diff
 - className={`min-w-10 h-10 px-3 rounded-control text-sm font-bold tabular-nums transition-colors cursor-pointer ${
@@ -537,7 +537,7 @@ Message, action, close:
 
 Giữ height 40px (`h-10`) cho nút trang; input compact 36px (`h-9`) theo ngoại lệ pagination.
 
-- [ ] **Step 4: Format, typecheck, lint, build**
+- [x] **Step 4: Format, typecheck, lint, build**
 
 ```powershell
 npx prettier --write src/shared/components/ui/dialog.tsx src/shared/components/feedback/toast-container.tsx src/shared/components/ui/pagination.tsx
@@ -546,7 +546,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 5: Gate Task 4**
+- [x] **Step 5: Gate Task 4**
 
 ```powershell
 git grep -n -E "text-\[[0-9.]+px\]|text-(xs|sm|base)" -- src/shared/components/ui/dialog.tsx src/shared/components/feedback/toast-container.tsx src/shared/components/ui/pagination.tsx
@@ -556,11 +556,11 @@ git status --short
 
 Expected: hai lệnh grep đầu không có output; ba file là `M` ngoài plan.
 
-- [ ] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
+- [x] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
 
 Review diff của Task 4 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Task 4). Sửa BLOCKER/MAJOR ngay trong task này rồi chạy lại gate.
 
-- [ ] **Step 7: Dừng, không commit**
+- [x] **Step 7: Dừng, không commit**
 
 ---
 
@@ -576,7 +576,7 @@ Review diff của Task 4 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, gh
 - Consumes: `text-body-sm`, `text-micro-caps`, `text-label-caps`, `text-on-primary`.
 - Produces: card title 12/700; meta/credit micro-caps; rating micro-caps; icon 1.5; tag/checkbox radius 4.
 
-- [ ] **Step 1: PosterCard icon**
+- [x] **Step 1: PosterCard icon**
 
 Thêm `strokeWidth={1.5}` cho `Bookmark`, `Star`, `Eye`:
 
@@ -593,7 +593,7 @@ Thêm `strokeWidth={1.5}` cho `Bookmark`, `Star`, `Eye`:
 
 `CheckCircle` và `X` đã có 1.5; giữ.
 
-- [ ] **Step 2: PosterCard typography**
+- [x] **Step 2: PosterCard typography**
 
 ```diff
 - <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-[10px] font-bold text-primary tabular-nums">
@@ -611,7 +611,7 @@ Thêm `strokeWidth={1.5}` cho `Bookmark`, `Star`, `Eye`:
 
 Giữ `text-white` cho check overlay và nút trên ảnh; đó là ngoại lệ media.
 
-- [ ] **Step 3: AlbumCard typography**
+- [x] **Step 3: AlbumCard typography**
 
 ```diff
 - className="text-[11px] font-bold tracking-[0.05em] leading-[1.35] text-white line-clamp-2"
@@ -626,7 +626,7 @@ Giữ `text-white` cho check overlay và nút trên ảnh; đó là ngoại lệ
 
 `Trash2` đã có `strokeWidth={1.5}`; giữ. Không đổi `text-white` trên nút xóa/ảnh.
 
-- [ ] **Step 4: Format, typecheck, lint, build**
+- [x] **Step 4: Format, typecheck, lint, build**
 
 ```powershell
 npx prettier --write src/features/movies/components/poster-card.tsx src/features/albums/components/album-card.tsx
@@ -635,7 +635,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 5: Gate Task 5**
+- [x] **Step 5: Gate Task 5**
 
 ```powershell
 git grep -n -E "text-\[[0-9.]+px\]|text-(xs|sm|base)" -- src/features/movies/components/poster-card.tsx src/features/albums/components/album-card.tsx
@@ -650,11 +650,11 @@ Expected:
 - `text-white` chỉ còn ở check overlay/nút ảnh của PosterCard và nút xóa/ảnh AlbumCard (ngoại lệ media).
 - Chỉ hai card là `M` ngoài plan.
 
-- [ ] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
+- [x] **Step 6: Review 7 trục (code-refactor, chế độ A) + cập nhật log**
 
 Review diff của Task 5 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Task 5). Sửa BLOCKER/MAJOR ngay trong task này rồi chạy lại gate.
 
-- [ ] **Step 7: Dừng, không commit**
+- [x] **Step 7: Dừng, không commit**
 
 ---
 
@@ -662,14 +662,14 @@ Review diff của Task 5 theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, gh
 
 **Files:** toàn bộ file đã sửa trong Task 1-5.
 
-- [ ] **Step 1: Prettier toàn bộ file Phase 2**
+- [x] **Step 1: Prettier toàn bộ file Phase 2**
 
 ```powershell
 npx prettier --write src/shared/components/ui/button.tsx src/shared/components/ui/chip.tsx src/shared/components/ui/text-field.tsx src/shared/components/ui/search-field.tsx src/shared/components/ui/listbox-search-input.tsx src/shared/components/ui/dropdown.tsx src/shared/components/ui/multi-select-dropdown.tsx src/shared/components/ui/switch.tsx src/shared/components/ui/date-picker.tsx src/shared/components/ui/time-picker.tsx src/shared/components/ui/dialog.tsx src/shared/components/feedback/toast-container.tsx src/shared/components/ui/pagination.tsx src/features/movies/components/poster-card.tsx src/features/albums/components/album-card.tsx
 npx prettier --check src/shared/components/ui/button.tsx src/shared/components/ui/chip.tsx src/shared/components/ui/text-field.tsx src/shared/components/ui/search-field.tsx src/shared/components/ui/listbox-search-input.tsx src/shared/components/ui/dropdown.tsx src/shared/components/ui/multi-select-dropdown.tsx src/shared/components/ui/switch.tsx src/shared/components/ui/date-picker.tsx src/shared/components/ui/time-picker.tsx src/shared/components/ui/dialog.tsx src/shared/components/feedback/toast-container.tsx src/shared/components/ui/pagination.tsx src/features/movies/components/poster-card.tsx src/features/albums/components/album-card.tsx
 ```
 
-- [ ] **Step 2: Typecheck, lint, build**
+- [x] **Step 2: Typecheck, lint, build**
 
 ```powershell
 npm run typecheck
@@ -677,7 +677,7 @@ npm run lint
 npm run build
 ```
 
-- [ ] **Step 3: Gate toàn phase**
+- [x] **Step 3: Gate toàn phase**
 
 ```powershell
 $files = @(
@@ -714,7 +714,7 @@ Expected:
 - `git diff --check` sạch.
 - Chỉ các file Phase 2 + docs đang mở; không có file ngoài phạm vi.
 
-- [ ] **Step 4: Source review**
+- [x] **Step 4: Source review**
 
 Rà diff cho:
 
@@ -723,10 +723,22 @@ Rà diff cho:
 - `text-on-primary` chỉ trên nền primary đặc; trắng trên overlay ảnh giữ nguyên.
 - Không đổi logic, state, listener, timing motion, loading.
 
-- [ ] **Step 5: Review 7 trục cho toàn phase (code-refactor, chế độ A) + cập nhật log**
+Probe thứ tự emit CSS (weight của Button phụ thuộc thứ tự này):
+
+```powershell
+$css = (Get-ChildItem dist\assets\index-*.css | Select-Object -First 1).FullName
+$c = Get-Content -Raw $css
+$c.IndexOf(".font-semibold{")
+$c.IndexOf(".text-body{")
+$c.IndexOf(".text-body-sm{")
+```
+
+Expected: offset của `.font-semibold` lớn hơn offset của `.text-body{` và `.text-body-sm{` → `font-semibold` thắng, Button giữ weight 600.
+
+- [x] **Step 5: Review 7 trục cho toàn phase (code-refactor, chế độ A) + cập nhật log**
 
 Review diff toàn phase theo 7 trục, phân loại BLOCKER/MAJOR/MINOR/NIT, ghi vào `docs/ui-standardization-progress-2026-10-20.md` (mục Phase 2 — Verify). Sửa BLOCKER/MAJOR rồi chạy lại toàn bộ gate.
 
-- [ ] **Step 6: Dừng, không commit**
+- [x] **Step 6: Dừng, không commit**
 
 Báo diff, gate, kết quả build và kết quả review. Không chạy `git add`, `git commit` hay `git push`. Phase 3 sẽ có plan riêng.
