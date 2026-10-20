@@ -452,3 +452,39 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 2 N
 Trạng thái git: 10 file `src/` + plan 4 untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
 
 Phase 4 xong. Tiếp theo: Phase 5 — loading: đối chiếu L01–L17 trong `docs/loading-audit-2026-10-18.md` với code, sửa phần còn thiếu, không thêm test/mock/browser.
+
+## Phase 5 — Loading (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-5.md`.
+- Đối chiếu L01–L17 (subagent đọc `docs/loading-audit-2026-10-18.md` + `docs/loading-completion-2026-10-18.md` + spec §6 và kiểm tra code hiện tại): **14 DONE, 3 PARTIAL, 0 MISSING**. Phần lớn loading đã được chuẩn hoá từ 2026-10-18, nên phase này là verify + vá lỗ hổng chứ không phải viết lại luồng.
+
+### Task 1 — Vá 8 điểm lệch trên 7 file
+
+| Mục | File                             | Sửa                                                                                                                                   |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| L06 | `member-search-modal.tsx`        | nhánh lỗi từ `EmptyState` → `ErrorState` kèm nút "Thử lại" gọi lại `submit()` (trước đó lỗi mạng đọc như "không tìm thấy thành viên") |
+| L08 | `random-suggestions-section.tsx` | refresh lỗi khi còn card → thêm thông báo "Không cập nhật được gợi ý mới." + nút "Thử lại", giữ nguyên card cũ                        |
+| L08 | `random-suggestions-section.tsx` | `animate-spin` tự dựng → `Spinner` primitive chung                                                                                    |
+| L05 | `person-detail-page.tsx`         | skeleton grid `lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5` → `lg:grid-cols-6 gap-3.5` khớp content grid                                   |
+| L11 | `app/index.tsx`                  | route-chunk fallback bỏ biến thể `contain` (overlay phủ trang) → `Loading` local trong main                                           |
+| L09 | `album-selector-modal.tsx`       | gộp 2 thông báo pending thành 1 (`Loading text="Đang tải album…"`)                                                                    |
+| L09 | `movie-detail-page.tsx`          | vùng extras đang tải thêm `role="status"` + `aria-busy="true"`                                                                        |
+| L12 | `calendar-stats.tsx`             | số liệu lỗi ("—") có chú thích "Số liệu tập chưa tải được." dưới dải số liệu                                                          |
+
+### Task 2 — Verify toàn phase
+
+Prettier/typecheck/lint/build exit 0; `git diff --check` sạch. Gate: `member-search-modal.tsx` không còn dùng `EmptyState`; `app/index.tsx` không còn `contain`; `role="status"`/`aria-busy` đặt đúng chỗ; chỉ 7 file được đổi.
+
+Sau khi vá: **L05, L06, L08 chuyển từ PARTIAL → DONE** → toàn bộ 17 mục đã đạt theo audit (source-level).
+
+Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 3 NIT:
+
+- MINOR: import `EmptyState` bị bỏ ở `member-search-modal.tsx` — đã kiểm không còn dùng chỗ nào; lint pass xác nhận không còn import thừa. (Ghi nhận để theo dõi: file này không còn dùng `EmptyState`, nên import path đã đổi từ barrel-style sang direct path.)
+- NIT: skeleton grid của person đổi từ 5 cột lên 6 cột ở `lg` → số poster hiện ra nhiều hơn một lần so với trước (đây là mục tiêu: khớp content grid), nhưng cần xác nhận bằng trình duyệt.
+- NIT: route-chunk chuyển từ overlay `contain` sang `Loading` local → lúc chờ chunk sẽ hiện dải "Đang tải trang…" trong main thay vì lớp phủ mờ toàn trang; đúng §6.2 nhưng cần xác nhận thị giác.
+- NIT: thông báo lỗi refresh của gợi ý ngẫu nhiên dùng `<button>` trần thay vì `Button` primitive → khác style với nút chuẩn; giữ nguyên vì là link hành động nhỏ trong dòng thông báo, tránh thêm button lớn.
+- Đã rà và thấy sạch: 7 file đều là sửa lớp trình bày/trạng thái hiển thị, không đổi store/hook/service/API/schema, không thêm request/toast/delay/skeleton giả; lỗi vẫn giữ dữ liệu cũ; không có hai live region lồng nhau (`random-suggestions-section` có `aria-busy={isLoading}` trên section nhưng thông báo lỗi chỉ hiện khi `isLoading` = false); không có nhánh lỗi bị nuốt; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + đọc diff + đối chiếu audit.
+
+Trạng thái git: 7 file `src/` + plan 5 untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
+
+Phase 5 xong. Tiếp theo: Phase 6 — final verify: prettier/typecheck/lint/build toàn repo, gate §8.2, rà lại ma trận §4, xử lý MINOR còn mở (focus outline 2 nguồn sự thật), rồi `finishing-a-development-branch`.
