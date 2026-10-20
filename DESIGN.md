@@ -359,7 +359,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 ## Accessibility
 
 - WCAG AA cho text; `text-faint` chỉ cho large/decorative.
-- Focus: outline 2px `focus`, offset 3px, hiện tức thì; không `outline-none` nếu không có thay thế.
+- Focus: outline 2px `focus`, offset 3px, hiện tức thì; không `outline-none` nếu không có thay thế. Kích thước lấy từ `--focus-ring-width` / `--focus-ring-offset` nên đổi một chỗ áp dụng cho cả rule toàn cục và utility `focus-ring`.
 - Chỉ underline field được thay outline bằng border-bottom; ring/border chỉ là lớp phụ.
 - Dùng semantic HTML: `button`, `a`, `label`, `table`; heading đúng cấp; có skip link.
 - Icon-only có `aria-label`; ảnh có alt; icon decorative `aria-hidden`.

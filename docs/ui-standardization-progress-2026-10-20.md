@@ -488,3 +488,61 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 3 N
 Trạng thái git: 7 file `src/` + plan 5 untracked + log. Chưa commit (plan cấm commit; chờ người dùng).
 
 Phase 5 xong. Tiếp theo: Phase 6 — final verify: prettier/typecheck/lint/build toàn repo, gate §8.2, rà lại ma trận §4, xử lý MINOR còn mở (focus outline 2 nguồn sự thật), rồi `finishing-a-development-branch`.
+
+## Phase 6 — Final verify (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-6.md`.
+
+### Task 1 — Đóng MINOR "focus outline hai nguồn sự thật"
+
+- `src/index.css`: thêm `--focus-ring-width: 2px` và `--focus-ring-offset: 3px` vào `:root`; cả rule focus toàn cục (`:where(button, a, input, …)`) và utility `focus-ring` dùng chung hai biến này.
+- `DESIGN.md` §Accessibility: ghi rõ kích thước lấy từ token nên đổi một chỗ áp dụng cho cả hai.
+- Verify: Prettier/typecheck/lint/build exit 0; probe CSS xác nhận `--focus-ring-width:2px` có trong output và `outline:var(--focus-ring-width) solid var(--color-focus)` được sinh.
+
+Review 7 trục (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 1 NIT:
+
+- NIT: `focus-ring` vẫn là class rời nhưng không còn lặp giá trị → MINOR đã đóng, chỉ còn khả năng gộp class vào rule toàn cục trong tương lai (không cần thiết).
+- Đã rà và thấy sạch: không đổi hành vi focus (2px/3px giữ nguyên); không ảnh hưởng layout; token khai báo trong `:root` nên đọc được từ cả base layer và utility layer.
+
+### Task 2 — Gate toàn repo
+
+`npx prettier --check "src/**/*.{ts,tsx,css}" "docs/**/*.md" DESIGN.md` → pass; typecheck/lint/build exit 0; `git diff --check` sạch.
+
+| Gate                                          | Kết quả                                                                                                                 |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| raw size (`text-[Npx]`, `text-xs…9xl`)        | **0**                                                                                                                   |
+| `rounded-md` / `rounded-lg`                   | **0**                                                                                                                   |
+| `focus-visible:ring-N`                        | **0**                                                                                                                   |
+| `strokeWidth={1.8}` / `{undefined}`           | **0** (còn `2.5` của chevron picker và `isActive ? 2` của nav — ngoại lệ có tên §2.3; logo `strokeWidth="3"` trong SVG) |
+| `duration-75/300/500/1000`                    | **0**                                                                                                                   |
+| `#a16207`                                     | **0**                                                                                                                   |
+| icon Lucide thiếu `strokeWidth` (script quét) | **0**                                                                                                                   |
+| `<img>` thiếu `width`/`height` (script quét)  | **0**                                                                                                                   |
+| `text-white`                                  | 9 chỗ trên 4 file, đều là ngoại lệ media (poster-card, album-card, album-detail overlay, chip neutral)                  |
+
+Một lệnh sửa phát sinh trong lúc gate: `dashboard-filters.tsx` chip remove icon còn `strokeWidth={2}` (không nằm trong ngoại lệ) → đổi sang `1.5`.
+
+### Task 3 — Ma trận §4 và báo cáo cuối
+
+| Nhóm       | Trạng thái sau Phase 0-6                                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Colors     | warning light `#9a5d06`; dark `#fbbf24` giữ; chữ trên nền primary đặc dùng `on-primary` ✅                                                                                                      |
+| Typography | 0 raw size toàn repo; 10 utility + 2 modifier có tên (`text-display-xl/lg/md`, `text-brand`, `text-title-lg/md`, `text-body/body-sm`, `text-label-caps/micro-caps`, `text-display-stat/404`) ✅ |
+| Spacing    | không sweep (đúng phạm vi); micro-spacing 2/6/10 giữ nguyên ✅                                                                                                                                  |
+| Radius     | 0 `rounded-md`/`rounded-lg`; dùng token ngữ nghĩa ✅                                                                                                                                            |
+| Elevation  | `switch` đã bỏ `shadow`; token shadow = 0 ✅                                                                                                                                                    |
+| Components | button sm/md → `body-sm`, lg → `body`; tag radius 4; dialog X 1.5; outline focus 2px/3px từ token chung ✅                                                                                      |
+| Icons      | mọi icon Lucide có `strokeWidth` tường minh; ngoại lệ có tên: logo 3, picker 2.5, active nav 2 ✅                                                                                               |
+| Imagery    | mọi `<img>` có `width`/`height`; fallback một lần, không vòng lặp `onError` ✅                                                                                                                  |
+| Focus      | 0 ring cục bộ; outline toàn cục + `focus-ring` dùng chung token ✅                                                                                                                              |
+| Motion     | thang 120/150/200/250 đúng role; 0 giá trị sai ✅                                                                                                                                               |
+| Loading    | L01–L17 đạt (14 DONE + 3 vá xong) ✅                                                                                                                                                            |
+| Docs       | spec mới + 6 plan + log; 4 docs cũ đã xoá; `DESIGN.md` cập nhật ✅                                                                                                                              |
+
+**Giới hạn kiểm chứng (không được bỏ qua khi báo cáo):**
+
+- Không có test tự động, không mock, không mở trình duyệt → **chưa kiểm chứng runtime**: focus bằng bàn phím trên mobile, screen reader (vùng `aria-busy`/`role="status"`), hai theme, layout shift thực tế, `prefers-reduced-motion`, race condition request, hành vi modal lazy chunk.
+- Build/lint/typecheck pass **không** chứng minh các điều trên; **không** tuyên bố đạt WCAG.
+- Các visual delta đã ghi ở từng phase (chiều cao button, line-height poster, uppercase meta, cỡ chữ label form, skeleton grid 5→6 cột, route loading từ overlay sang local, chữ cái avatar chuyển Anton) cần người dùng kiểm tra bằng trình duyệt.
+
+**Tổng kết chuỗi Phase 0-6:** 15 commit trên nhánh `feat/ui-standardization`, 82 file thay đổi (+4392/−1886). Mọi phase có log review 7 trục trong `docs/ui-standardization-progress-2026-10-20.md`.
