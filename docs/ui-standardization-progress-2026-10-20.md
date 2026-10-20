@@ -314,3 +314,50 @@ Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 1 MINOR, 4 N
 Trạng thái git sau Task 6: 16 file `src/` + `DESIGN.md` + spec + log; plan 3A untracked. Chưa commit (plan cấm commit; chờ người dùng).
 
 Phase 3A xong. Tiếp theo: Phase 3B (movies + albums: `movie-detail-page`, `add-movie-modal`, `movie-form-fields`, `tv-progress-section`, `album-section`, `rating-section`, `poster-preview`, `random-picker-modal`, `picker-wheel`, `album-detail-page`, `album-selector-modal`) — 10 file, 18 raw size + 6 radius + 5 focus ring + 20 icon + 1 `text-white` + 2 ảnh.
+
+## Phase 3B — Movies + Albums (đang chạy)
+
+- Plan: `docs/superpowers/plans/2026-10-20-ui-standardization-phase-3b.md` — 6 task, 36/36 step đã đánh dấu.
+- Người dùng chốt scope: đúng 11 file movies+albums (không gồm `status-toggle.tsx` và `create-album-modal.tsx` — 2 file này chuyển sang 3C).
+
+### Lỗi làm việc đã gặp trong phase này (2 lần, đều do dùng shell để sửa file)
+
+1. PowerShell `Get-Content`/`Set-Content` đọc file UTF-8 không BOM theo ANSI → làm hỏng toàn bộ tiếng Việt trong 3 file (`movie-form-fields.tsx`, `album-section.tsx`, `rating-section.tsx`). Đã khôi phục bằng `git checkout --` rồi áp lại bằng công cụ `edit`; đã quét toàn repo bằng mẫu mojibake (`á»`, `Ã¡`) → sạch.
+2. Một lần `edit` với `oldString` nhiều dòng đã nuốt mất các dòng JSX giữa (làm vỡ `movie-form-fields.tsx`). Đã khôi phục và áp lại bằng `oldString` **một dòng** + `replaceAll` cho class lặp.
+
+Bài học đã ghi vào Global Constraints của plan 3B: chỉ dùng công cụ `edit` để sửa file nguồn; nếu dùng PowerShell để ghi thì phải đọc/ghi bằng `[IO.File]::ReadAllText/WriteAllText` với UTF-8, không dùng `Get-Content`/`Set-Content` mặc định.
+
+### Task 1 — Movie detail page
+
+14 chỗ typography + 9 icon stroke 1.5. `h1` (30/36/48) khớp **đúng** `text-display-xl`; số điểm chi tiết 20px khớp `text-display-md`.
+
+### Task 2 — Add movie (modal + form fields + 3 section)
+
+21 raw size ở modal, 10 ở form fields, 4 ở album-section, 2 ở rating-section; 7 focus ring → `focus-ring`; 22 icon → 1.5; ảnh poster preview thêm `width/height` 500×750.
+
+### Task 3 — TV progress section
+
+9 raw size; checkbox `rounded-lg` → `rounded-poster` (4px, theo spec "checkbox nhỏ → 4"); dấu tick trên nền `checked:bg-primary` đổi `text-white` → `text-on-primary`; 4 nút bước 40px `rounded-lg` → `rounded-control` (8px, giữ nguyên hình học).
+
+### Task 4 — Album detail page
+
+18 raw size; h2 (18/20) → `text-title-lg`; đếm phim 11px → `text-label-caps`; nhãn "Đang gỡ…" 9px → `text-micro-caps`; input tên album → `focus-ring`. Giữ `text-white` ở nút xoá overlay (ngoại lệ media).
+
+### Task 5 — Random picker + album selector modal
+
+9 raw size; title Anton 20px → `text-display-md`; `X` stroke 1.8 → 1.5; icon `FolderPlus`/`Film` → 1.5; 3 ảnh picker thêm `width`/`height` theo đúng khung hiển thị (96×144, 144×208); album selector: label → `label-caps`, tên album → `text-title-md`, input → `focus-ring`.
+
+### Task 6 — Verify toàn phase 3B
+
+Prettier/typecheck/lint/build exit 0; `git diff --check` sạch. Gate 11 file: raw size → 0; `rounded-md/lg` → 0; `focus-visible:ring-*` → 0; `strokeWidth={1.8|2|undefined}` → 0 (chỉ còn `2.5` của chevron picker, ngoại lệ); `text-white` → chỉ còn nút xoá overlay album (ngoại lệ media); không còn mojibake.
+
+Review 7 trục toàn phase (chế độ A) — 0 BLOCKER, 0 MAJOR, 0 MINOR, 5 NIT:
+
+- NIT: nhãn form trong add-movie đổi 14px → 11px uppercase (`label-caps`) — thay đổi hiển thị lớn nhất của phase, đúng chuẩn `DESIGN.md` §TextField.
+- NIT: tagline phim 16/18px → 14px (`text-body`); nội dung review 15px → 14px.
+- NIT: số điểm lớn 30px cố định → `text-display-lg` (24 ở mobile, 30 từ `sm`) → nhỏ hơn ở mobile.
+- NIT: modal add-movie h2 20/24px → 20px (`title-lg`); h2 album detail 18/20 → 20px (`title-lg`).
+- NIT: checkbox TV đổi bo góc 8px → 4px (theo spec); `focus-visible:ring-4` của textarea review đồng bộ về `focus-ring` 2px như 3 input cùng nhóm (trước đó lệch nhau).
+- Đã rà và thấy sạch: 11 file đều chỉ thay class trình bày, không đổi props/state/handler/logic/copy/motion timing; `text-on-primary` chỉ áp cho nền primary đặc; ảnh thêm `width`/`height` đúng tỉ lệ; không có nhánh lỗi, dependency, secret; repo không có test infra nên khả năng kiểm chứng chỉ ở mức typecheck/lint/build + gate + đọc diff.
+
+Còn lại cho Phase 3C: `status-toggle.tsx`, `create-album-modal.tsx` (movies) + toàn bộ profile/search/calendar/stats/dashboard.
