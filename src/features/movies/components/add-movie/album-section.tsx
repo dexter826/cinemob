@@ -59,22 +59,22 @@ function AlbumSection({
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-text-secondary flex items-center gap-1.5 ml-1">
-          <FolderPlus size={14} className="text-primary" aria-hidden="true" />{' '}
+        <label className="text-label-caps text-text-secondary flex items-center gap-1.5 ml-1">
+          <FolderPlus size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />{' '}
           {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
         </label>
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-          className={`text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
+          className={`text-body-sm font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-control transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
         >
           {showCreateAlbum ? (
             <>
-              <X size={12} aria-hidden="true" /> Hủy
+              <X size={12} strokeWidth={1.5} aria-hidden="true" /> Hủy
             </>
           ) : (
             <>
-              <Plus size={12} aria-hidden="true" /> Tạo mới
+              <Plus size={12} strokeWidth={1.5} aria-hidden="true" /> Tạo mới
             </>
           )}
         </button>
@@ -97,13 +97,13 @@ function AlbumSection({
                 handleCreateAlbum();
               }
             }}
-            className="flex-1 min-w-0 bg-surface border border-border-default rounded-control px-4 py-2.5 text-sm font-medium focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
+            className="flex-1 min-w-0 bg-surface border border-border-default rounded-control px-4 py-2.5 text-body font-medium focus-visible:border-primary/50 focus-ring transition-colors"
           />
           <button
             type="button"
             onClick={handleCreateAlbum}
             disabled={creatingAlbum || !newAlbumName.trim()}
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-sm font-bold disabled:opacity-40 transition-colors"
+            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-body-sm font-bold disabled:opacity-40 transition-colors"
           >
             {creatingAlbum ? <Spinner size={18} className="text-current" /> : 'Tạo'}
           </button>

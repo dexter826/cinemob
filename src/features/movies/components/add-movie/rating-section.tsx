@@ -41,12 +41,15 @@ function RatingSection({
       <div className="flex items-center justify-between">
         <span
           id="add-movie-rating-label"
-          className="text-sm font-semibold text-text-primary flex items-center gap-1.5 ml-1"
+          className="text-label-caps text-text-primary flex items-center gap-1.5 ml-1"
         >
-          <Star size={14} className="text-primary" aria-hidden="true" />
+          <Star size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Đánh giá phim
         </span>
-        <span aria-live="polite" className="text-xs font-bold text-text-secondary tabular-nums">
+        <span
+          aria-live="polite"
+          className="text-body-sm font-bold text-text-secondary tabular-nums"
+        >
           {displayRating > 0 ? `${displayRating}/10` : 'Chưa đánh giá'}
         </span>
       </div>
@@ -75,10 +78,11 @@ function RatingSection({
               onMouseLeave={() => setHoverRating(0)}
               onFocus={() => setHoverRating(star)}
               onBlur={() => setHoverRating(0)}
-              className="px-0.5 py-2 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-lg"
+              className="px-0.5 py-2 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-control"
             >
               <Star
                 aria-hidden="true"
+                strokeWidth={1.5}
                 className={`w-4 h-4 sm:w-6 sm:h-6 transition-colors ${
                   star <= displayRating ? 'fill-warning text-warning' : 'text-text-muted'
                 }`}

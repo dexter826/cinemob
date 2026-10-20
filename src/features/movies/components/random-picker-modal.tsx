@@ -81,13 +81,13 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                 aria-hidden="true"
                 className="flex items-center justify-center text-primary shrink-0"
               >
-                <Dice5 size={18} aria-hidden="true" />
+                <Dice5 size={18} strokeWidth={1.5} aria-hidden="true" />
               </div>
               <div className="min-w-0">
-                <h2 id="random-picker-title" className="text-lg font-semibold text-text-primary">
+                <h2 id="random-picker-title" className="text-title-md text-text-primary">
                   Không biết xem gì?
                 </h2>
-                <p id="random-picker-description" className="text-xs text-text-secondary">
+                <p id="random-picker-description" className="text-body-sm text-text-secondary">
                   Để CineMOB chọn ngẫu nhiên cho bạn
                 </p>
               </div>
@@ -100,14 +100,14 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                   variant="ghost"
                 >
                   {isMuted ? (
-                    <VolumeX size={18} aria-hidden="true" />
+                    <VolumeX size={18} strokeWidth={1.5} aria-hidden="true" />
                   ) : (
-                    <Volume2 size={18} aria-hidden="true" />
+                    <Volume2 size={18} strokeWidth={1.5} aria-hidden="true" />
                   )}
                 </IconButton>
               )}
               <IconButton label="Đóng chọn phim ngẫu nhiên" onClick={onClose} variant="ghost">
-                <span aria-hidden="true" className="text-lg leading-none">
+                <span aria-hidden="true" className="text-title-md leading-none">
                   ×
                 </span>
               </IconButton>
@@ -155,7 +155,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
               variant="secondary"
               onClick={handleRespin}
               disabled={!hasPool || isLoadingPool || isShuffling}
-              leadingIcon={<Dice5 size={18} aria-hidden="true" />}
+              leadingIcon={<Dice5 size={18} strokeWidth={1.5} aria-hidden="true" />}
               className="flex-1"
             >
               Xoay lại

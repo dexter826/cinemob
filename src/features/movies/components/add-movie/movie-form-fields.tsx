@@ -65,9 +65,9 @@ function MovieFormFields({
           <label
             htmlFor="movie-media-type"
             id="movie-media-type-label"
-            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+            className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
           >
-            <Film size={14} className="text-primary" aria-hidden="true" />
+            <Film size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
             Loại hình
           </label>
           {isManualMode ? (
@@ -86,7 +86,7 @@ function MovieFormFields({
               placeholder="Chọn loại…"
             />
           ) : (
-            <div className="w-full h-11 flex items-center border border-border rounded-card px-4 text-sm font-semibold text-text-secondary">
+            <div className="w-full h-11 flex items-center border border-border rounded-card px-4 text-body font-semibold text-text-secondary">
               {isTVSeries ? 'Series' : 'Phim lẻ'}
             </div>
           )}
@@ -96,9 +96,9 @@ function MovieFormFields({
           <label
             htmlFor="movie-country"
             id="movie-country-label"
-            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+            className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
           >
-            <Globe size={14} className="text-primary" aria-hidden="true" />
+            <Globe size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
             Quốc gia
           </label>
           <div
@@ -122,9 +122,9 @@ function MovieFormFields({
           <label
             htmlFor="movie-release-date"
             id="movie-release-date-label"
-            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+            className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
           >
-            <Calendar size={14} className="text-primary" aria-hidden="true" />
+            <Calendar size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
             Ngày phát hành
           </label>
           <div
@@ -147,12 +147,12 @@ function MovieFormFields({
           <label
             htmlFor="movie-runtime"
             id="movie-runtime-label"
-            className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+            className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
           >
             {isTVSeries ? (
-              <Tv size={14} className="text-primary" aria-hidden="true" />
+              <Tv size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
             ) : (
-              <Clock size={14} className="text-primary" aria-hidden="true" />
+              <Clock size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
             )}
             {isTVSeries ? 'Số mùa' : 'Thời lượng (phút)'}
           </label>
@@ -177,11 +177,11 @@ function MovieFormFields({
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 border border-border rounded-card px-4 text-sm font-semibold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 tabular-nums"
+              className="w-full h-11 border border-border rounded-card px-4 text-body font-semibold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50 tabular-nums"
               placeholder={isTVSeries ? 'Nhập số mùa…' : 'Nhập thời lượng (phút)…'}
             />
             {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
-              <p role="alert" className="text-xs font-medium text-danger ml-1 mt-1">
+              <p role="alert" className="text-body-sm font-medium text-danger ml-1 mt-1">
                 {isTVSeries
                   ? 'Nhập số mùa của series (lớn hơn 0).'
                   : 'Nhập thời lượng phim theo phút.'}
@@ -195,9 +195,9 @@ function MovieFormFields({
         <label
           htmlFor="movie-genres"
           id="movie-genres-label"
-          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
         >
-          <Film size={14} className="text-primary" aria-hidden="true" />
+          <Film size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Thể loại phim
         </label>
         <MultiSelectDropdown
@@ -227,7 +227,7 @@ function MovieFormFields({
         <label
           htmlFor="movie-overview"
           id="movie-overview-label"
-          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+          className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
         >
           <AlignLeft size={14} className="text-primary" aria-hidden="true" />
           Nội dung tóm tắt
@@ -239,7 +239,7 @@ function MovieFormFields({
           autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors resize-none"
+          className="w-full border border-border rounded-card px-4 py-3 text-body font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors resize-none"
           placeholder="Nhập tóm tắt cốt truyện…"
         />
       </div>

@@ -93,7 +93,7 @@ function AlbumDetailPage() {
                 managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'
               }
               className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
+                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer
                 ${
                   managingMovies
                     ? 'bg-primary border-primary text-on-primary'
@@ -111,7 +111,7 @@ function AlbumDetailPage() {
               onClick={() => setEditing((v) => !v)}
               aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
               className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold transition-colors border cursor-pointer
+                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer
                 ${
                   editing
                     ? 'bg-primary border-primary text-on-primary'
@@ -139,7 +139,7 @@ function AlbumDetailPage() {
               <div className="flex-1 space-y-1.5 sm:space-y-2">
                 <label
                   htmlFor="album-name"
-                  className="text-xs font-medium text-text-secondary ml-1"
+                  className="text-body-sm font-medium text-text-secondary ml-1"
                 >
                   Tên album mới
                 </label>
@@ -152,7 +152,7 @@ function AlbumDetailPage() {
                   placeholder="Nhập tên album…"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/20 text-xs sm:text-sm font-medium transition-colors"
+                  className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:border-primary focus-ring text-body-sm sm:text-body font-medium transition-colors"
                 />
               </div>
 
@@ -160,14 +160,14 @@ function AlbumDetailPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-xs sm:text-sm font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-xs sm:text-sm bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-body-sm sm:text-body bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>
@@ -191,9 +191,9 @@ function AlbumDetailPage() {
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
-              <h2 className="text-lg sm:text-xl font-bold tracking-tight">Phim trong album</h2>
+              <h2 className="text-title-lg tracking-tight">Phim trong album</h2>
               {!loading && !moviesLoading && !moviesError && (
-                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+                <span className="text-label-caps text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -250,7 +250,7 @@ function AlbumDetailPage() {
                         className="min-w-10 min-h-10 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
                       >
                         {pendingMovieIds.has(movie.docId!) ? (
-                          <span className="text-[9px]">Đang gỡ…</span>
+                          <span className="text-micro-caps">Đang gỡ…</span>
                         ) : (
                           <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
                         )}
@@ -266,7 +266,7 @@ function AlbumDetailPage() {
         {managingMovies && !moviesLoading && !moviesError && !loading && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 sm:gap-6 border-t border-border-default dark:border-white/5 pt-6 sm:pt-8">
-              <h2 className="text-lg sm:text-xl font-bold tracking-tight">Chọn thêm phim</h2>
+              <h2 className="text-title-lg tracking-tight">Chọn thêm phim</h2>
               <div className="flex items-center gap-3 sm:gap-4">
                 <SearchField
                   variant="underline"
@@ -276,7 +276,7 @@ function AlbumDetailPage() {
                   label="Tìm phim trong lịch sử để thêm vào album"
                   className="flex-1 md:w-80"
                 />
-                <span className="text-[11px] font-semibold tracking-[0.08em] text-text-secondary whitespace-nowrap tabular-nums">
+                <span className="text-label-caps text-text-secondary whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>

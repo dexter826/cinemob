@@ -124,13 +124,13 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
         <div className="min-w-0">
           <h2
             id="add-movie-title"
-            className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight truncate"
+            className="text-title-lg text-text-primary tracking-tight truncate"
           >
             {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
           </h2>
         </div>
         <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="ghost">
-          <X size={18} aria-hidden="true" />
+          <X size={18} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
       </div>
 
@@ -171,11 +171,11 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
             <div className="w-full md:w-56 lg:w-64 shrink-0 flex flex-col items-center md:items-stretch space-y-3">
               <PosterPreview posterPath={formData.poster} title={formData.title} />
               <div className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none text-center">
-                <p className="text-xs font-semibold text-text-primary line-clamp-2">
+                <p className="text-body-sm font-semibold text-text-primary line-clamp-2">
                   {formData.title || 'Chưa nhập tên phim'}
                 </p>
                 {formData.title_vi && (
-                  <p className="text-xs text-text-secondary line-clamp-1 italic mt-0.5">
+                  <p className="text-body-sm text-text-secondary line-clamp-1 italic mt-0.5">
                     {formData.title_vi}
                   </p>
                 )}
@@ -192,18 +192,18 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   type="button"
                   aria-pressed={activeTab === 'info'}
                   onClick={() => setActiveTab('info')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-body-sm sm:text-body font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'info' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
-                  <Film size={15} aria-hidden="true" />
+                  <Film size={15} strokeWidth={1.5} aria-hidden="true" />
                   <span>Thông tin phim</span>
                 </button>
                 <button
                   type="button"
                   aria-pressed={activeTab === 'review'}
                   onClick={() => setActiveTab('review')}
-                  className={`flex-1 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
+                  className={`flex-1 py-2.5 text-body-sm sm:text-body font-bold transition cursor-pointer rounded-control flex items-center justify-center gap-2 ${activeTab === 'review' ? 'bg-surface text-primary' : 'text-text-secondary hover:text-text-primary'}`}
                 >
-                  <Star size={15} aria-hidden="true" />
+                  <Star size={15} strokeWidth={1.5} aria-hidden="true" />
                   <span>Đánh giá</span>
                 </button>
               </div>
@@ -214,9 +214,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     <div className="space-y-2">
                       <label
                         htmlFor="add-movie-title-input"
-                        className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                        className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                       >
-                        <Type size={14} className="text-primary" aria-hidden="true" />
+                        <Type
+                          size={14}
+                          strokeWidth={1.5}
+                          className="text-primary"
+                          aria-hidden="true"
+                        />
                         Tiêu đề gốc
                       </label>
                       <input
@@ -230,14 +235,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                         aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className={`w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+                        className={`w-full h-11 border border-border rounded-card px-4 text-body font-bold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
                         placeholder="Nhập tên gốc của phim…"
                       />
                       {isAnimating && errors.title && (
                         <p
                           id="add-movie-title-error"
                           role="alert"
-                          className="text-xs font-medium text-danger ml-1"
+                          className="text-body-sm font-medium text-danger ml-1"
                         >
                           Nhập tên phim để lưu lại trong thư viện.
                         </p>
@@ -246,9 +251,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     <div className="space-y-2">
                       <label
                         htmlFor="add-movie-title-vi"
-                        className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                        className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                       >
-                        <Type size={14} className="text-primary" aria-hidden="true" />
+                        <Type
+                          size={14}
+                          strokeWidth={1.5}
+                          className="text-primary"
+                          aria-hidden="true"
+                        />
                         Tiêu đề tiếng Việt
                       </label>
                       <input
@@ -258,7 +268,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                         autoComplete="off"
                         value={formData.title_vi}
                         onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                        className="w-full h-11 border border-border rounded-card px-4 text-sm font-bold text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors disabled:opacity-50"
+                        className="w-full h-11 border border-border rounded-card px-4 text-body font-bold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50"
                         placeholder="Nhập tên tiếng Việt…"
                       />
                     </div>
@@ -267,9 +277,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   <div className="space-y-2">
                     <label
                       htmlFor="add-movie-poster"
-                      className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                      className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                     >
-                      <Image size={14} className="text-primary" aria-hidden="true" />
+                      <Image
+                        size={14}
+                        strokeWidth={1.5}
+                        className="text-primary"
+                        aria-hidden="true"
+                      />
                       URL ảnh poster
                     </label>
                     <input
@@ -280,7 +295,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       autoComplete="off"
                       value={formData.poster}
                       onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-                      className="w-full h-11 border border-border rounded-card px-4 text-sm font-medium text-text-primary focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
+                      className="w-full h-11 border border-border rounded-card px-4 text-body font-medium text-text-primary focus-visible:border-primary/50 focus-ring transition-colors"
                       placeholder="https://…"
                     />
                   </div>
@@ -314,11 +329,11 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                           aria-hidden="true"
                           className={`w-10 h-10 flex items-center justify-center rounded-control transition-colors shrink-0 ${formData.is_review ? 'bg-primary text-on-primary' : 'bg-black/10 dark:bg-white/5 text-text-secondary'}`}
                         >
-                          <MessageSquare size={20} />
+                          <MessageSquare size={20} strokeWidth={1.5} aria-hidden="true" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="text-sm font-bold text-text-primary">Xem qua review</h3>
-                          <p className="text-xs text-text-secondary font-medium">
+                          <h3 className="text-body font-bold text-text-primary">Xem qua review</h3>
+                          <p className="text-body-sm text-text-secondary font-medium">
                             Bật nếu bạn đã xem bản tóm tắt phim
                           </p>
                         </div>
@@ -356,9 +371,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     <div className="space-y-2">
                       <label
                         htmlFor="add-movie-review"
-                        className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                        className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                       >
-                        <MessageSquare size={14} className="text-primary" aria-hidden="true" />
+                        <MessageSquare
+                          size={14}
+                          strokeWidth={1.5}
+                          className="text-primary"
+                          aria-hidden="true"
+                        />
                         Review và cảm nhận
                       </label>
                       <textarea
@@ -368,7 +388,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                         autoComplete="off"
                         value={formData.review}
                         onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                        className="w-full border border-border rounded-card px-4 py-3 text-sm font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/5 transition-colors resize-none"
+                        className="w-full border border-border rounded-card px-4 py-3 text-body font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors resize-none"
                         placeholder="Chia sẻ cảm nhận của bạn về phim…"
                       />
                     </div>
@@ -379,9 +399,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       <div className="space-y-2">
                         <label
                           htmlFor="add-movie-date"
-                          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                          className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                         >
-                          <Calendar size={14} className="text-primary" aria-hidden="true" />
+                          <Calendar
+                            size={14}
+                            strokeWidth={1.5}
+                            className="text-primary"
+                            aria-hidden="true"
+                          />
                           Ngày xem
                         </label>
                         <DatePicker
@@ -393,9 +418,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       <div className="space-y-2">
                         <label
                           htmlFor="add-movie-time"
-                          className="text-sm font-semibold text-text-primary flex items-center gap-2 ml-1"
+                          className="text-label-caps text-text-primary flex items-center gap-2 ml-1"
                         >
-                          <Clock size={14} className="text-primary" aria-hidden="true" />
+                          <Clock
+                            size={14}
+                            strokeWidth={1.5}
+                            className="text-primary"
+                            aria-hidden="true"
+                          />
                           Giờ xem
                         </label>
                         <TimePicker
@@ -460,7 +490,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
           onClick={handleSubmit}
           disabled={submitDisabled}
           loading={isSubmitting}
-          leadingIcon={<Save size={16} aria-hidden="true" />}
+          leadingIcon={<Save size={16} strokeWidth={1.5} aria-hidden="true" />}
         >
           {isSubmitting
             ? 'Đang lưu…'

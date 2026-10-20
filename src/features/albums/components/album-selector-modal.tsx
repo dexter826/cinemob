@@ -108,24 +108,24 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             </span>
           )}
           <div className="flex-1 min-w-0">
-            <span className="text-xs font-semibold text-primary mb-1 block">Thêm vào album</span>
+            <span className="text-label-caps text-primary mb-1 block">Thêm vào album</span>
             <h2
               id="album-selector-title"
-              className="text-xl text-text-primary truncate tracking-tight font-display"
+              className="text-display-md text-text-primary truncate tracking-tight"
             >
               {movie ? getDisplayTitle(movie) : 'Chọn album'}
             </h2>
           </div>
         </div>
         <IconButton label="Đóng bảng chọn album" onClick={onClose} variant="ghost">
-          <X size={18} strokeWidth={1.8} aria-hidden="true" />
+          <X size={18} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
       </div>
 
       <DialogBody className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
         {showCreateForm ? (
           <div className="mb-6 p-5 border border-border rounded-card">
-            <h3 className="text-sm font-semibold text-text-primary mb-3">Tạo album mới</h3>
+            <h3 className="text-body font-semibold text-text-primary mb-3">Tạo album mới</h3>
             <div className="space-y-4">
               <label htmlFor="album-selector-new-name" className="sr-only">
                 Tên album mới
@@ -144,7 +144,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                   }
                 }}
                 autoComplete="off"
-                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-text-primary font-bold placeholder:text-text-muted focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/20 transition-colors"
+                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-body font-bold placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors"
                 ref={newAlbumInputRef}
               />
               <div className="flex gap-3">
@@ -174,10 +174,10 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 aria-hidden="true"
                 className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
               >
-                <FolderPlus size={24} className="text-primary" />
+                <FolderPlus size={24} strokeWidth={1.5} className="text-primary" />
               </span>
               <span className="flex-1">
-                <span className="block font-bold text-primary text-lg">Tạo album mới</span>
+                <span className="block text-title-md font-bold text-primary">Tạo album mới</span>
               </span>
             </span>
           </button>
@@ -192,7 +192,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4">
             <Loading size={40} fullScreen={false} />
-            <p className="text-xs font-semibold text-text-secondary">Đang tải album…</p>
+            <p className="text-body-sm font-semibold text-text-secondary">Đang tải album…</p>
           </div>
         ) : availableAlbums.length === 0 ? (
           <EmptyState
@@ -207,7 +207,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           />
         ) : (
           <div className="space-y-3">
-            <h3 className="text-xs font-semibold text-text-secondary ml-1">Chọn album</h3>
+            <h3 className="text-label-caps text-text-secondary ml-1">Chọn album</h3>
             {availableAlbums.map((album) => (
               <button
                 key={album.docId}
@@ -222,17 +222,17 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                     aria-hidden="true"
                     className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
                   >
-                    <Film size={22} className="text-text-secondary" />
+                    <Film size={22} strokeWidth={1.5} className="text-text-secondary" />
                   </span>
                   <span className="flex-1 min-w-0">
-                    <span className="block font-bold text-text-primary text-lg truncate">
+                    <span className="block text-title-md font-bold text-text-primary truncate">
                       {album.name}
                     </span>
-                    <span className="block text-sm text-text-secondary font-medium">
+                    <span className="block text-body text-text-secondary font-medium">
                       {album.movieDocIds.length} phim
                     </span>
                   </span>
-                  <span className="text-primary font-bold text-xs shrink-0">
+                  <span className="text-primary font-bold text-body-sm shrink-0">
                     {addingToAlbum === album.docId ? 'Đang xử lý…' : 'Chọn'}
                   </span>
                 </span>

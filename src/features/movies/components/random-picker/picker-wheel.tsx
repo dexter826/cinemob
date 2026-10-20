@@ -27,14 +27,26 @@ export function PickerWheel({
       <div className="relative w-full max-w-80 h-60 flex items-center justify-center movie-wheel-container">
         <div className="absolute left-4 sm:left-8 top-1/2 transform -translate-y-1/2 rotate-[-15deg] w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
-            <img src={leftSrc} alt="" className="w-full h-full object-cover" />
+            <img
+              src={leftSrc}
+              alt=""
+              width={96}
+              height={144}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/30" />
           </div>
         </div>
 
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-52 z-30">
           <div className="w-full h-full rounded-control overflow-hidden border border-primary">
-            <img src={centerSrc} alt="" className="w-full h-full object-cover" />
+            <img
+              src={centerSrc}
+              alt=""
+              width={144}
+              height={208}
+              className="w-full h-full object-cover"
+            />
 
             <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
           </div>
@@ -42,7 +54,13 @@ export function PickerWheel({
 
         <div className="absolute right-4 sm:right-8 top-1/2 transform -translate-y-1/2 rotate-15 w-24 h-36 z-10 opacity-70 rounded-control overflow-hidden">
           <div className="w-full h-full rounded-control overflow-hidden border border-border-default dark:border-white/10">
-            <img src={rightSrc} alt="" className="w-full h-full object-cover" />
+            <img
+              src={rightSrc}
+              alt=""
+              width={96}
+              height={144}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/30" />
           </div>
         </div>
@@ -55,21 +73,21 @@ export function PickerWheel({
       </div>
 
       <div className="text-center space-y-2" aria-live="polite">
-        <p className="text-xs text-primary font-semibold">{poolLabel}</p>
+        <p className="text-body-sm text-primary font-semibold">{poolLabel}</p>
         {showTitle && (
           <div className="space-y-1">
-            <h3 className="text-xl text-text-primary line-clamp-2 font-display" title={title}>
+            <h3 className="text-display-md text-text-primary line-clamp-2" title={title}>
               {title}
             </h3>
-            <p className="text-sm text-text-secondary">
+            <p className="text-body text-text-secondary">
               {hasResult ? 'Đã chọn được phim' : 'Phim được chọn ngẫu nhiên'}
             </p>
           </div>
         )}
         {isShuffling && (
           <div className="space-y-1">
-            <h3 className="text-xl text-text-primary font-display">Đang chọn ngẫu nhiên…</h3>
-            <p className="text-sm text-text-secondary">Đang xáo trộn các phim phù hợp</p>
+            <h3 className="text-display-md text-text-primary">Đang chọn ngẫu nhiên…</h3>
+            <p className="text-body text-text-secondary">Đang xáo trộn các phim phù hợp</p>
           </div>
         )}
       </div>

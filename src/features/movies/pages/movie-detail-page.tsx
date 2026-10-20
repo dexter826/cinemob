@@ -97,7 +97,7 @@ function MovieDetailPage() {
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
       <div className="flex items-center justify-between pb-4 md:pb-5">
         <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
-          <ArrowLeft size={20} aria-hidden="true" />
+          <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
       </div>
 
@@ -111,22 +111,22 @@ function MovieDetailPage() {
             className="w-full rounded-poster border border-border"
           />
           {movie.status !== 'watchlist' && (
-            <p className="mt-3 text-[10px] font-semibold tracking-[0.08em] text-text-secondary flex items-center gap-1.5 tabular-nums">
-              <Calendar size={12} aria-hidden="true" />
+            <p className="mt-3 text-micro-caps text-text-secondary flex items-center gap-1.5 tabular-nums">
+              <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
               Đã xem: {formatDateAny(movie.watched_at)}
             </p>
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          <h1 className="font-display tracking-wide leading-[1.02] text-3xl sm:text-4xl md:text-5xl text-text-primary">
+          <h1 className="text-display-xl tracking-wide leading-[1.02] text-text-primary">
             {mainTitle}
           </h1>
           {subTitle && subTitle !== mainTitle && (
-            <p className="text-text-secondary text-base sm:text-lg mt-2">{subTitle}</p>
+            <p className="text-text-secondary text-body mt-2">{subTitle}</p>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-label-caps text-text-secondary tabular-nums">
             {movie.release_date && <span>{new Date(movie.release_date).getFullYear()}</span>}
             {movie.media_type === 'tv'
               ? !!movie.seasons && movie.seasons > 0 && <span>{movie.seasons} mùa</span>
@@ -142,10 +142,11 @@ function MovieDetailPage() {
             <p className="mt-4 flex items-baseline gap-2">
               <Star
                 size={18}
+                strokeWidth={1.5}
                 className="fill-primary text-primary self-center"
                 aria-hidden="true"
               />
-              <span className="font-display text-3xl text-primary tabular-nums">
+              <span className="text-display-lg text-primary tabular-nums">
                 {movie.rating.toFixed(1)}
               </span>
             </p>
@@ -155,7 +156,9 @@ function MovieDetailPage() {
             {movie.status === 'watchlist' ? (
               hasValidTrailer ? (
                 <Button
-                  leadingIcon={<Play size={16} fill="currentColor" aria-hidden="true" />}
+                  leadingIcon={
+                    <Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                  }
                   onClick={() =>
                     window.open(
                       `https://www.youtube.com/watch?v=${trailerKey}`,
@@ -167,13 +170,16 @@ function MovieDetailPage() {
                   Xem trailer
                 </Button>
               ) : (
-                <Button disabled leadingIcon={<Play size={16} aria-hidden="true" />}>
+                <Button
+                  disabled
+                  leadingIcon={<Play size={16} strokeWidth={1.5} aria-hidden="true" />}
+                >
                   Không có trailer
                 </Button>
               )
             ) : (
               <Button
-                leadingIcon={<FolderPlus size={16} aria-hidden="true" />}
+                leadingIcon={<FolderPlus size={16} strokeWidth={1.5} aria-hidden="true" />}
                 disabled={!canAddToAlbum}
                 onClick={() => setShowAlbumSelector(true)}
               >
@@ -183,7 +189,7 @@ function MovieDetailPage() {
 
             <Button
               variant="secondary"
-              leadingIcon={<Pencil size={14} aria-hidden="true" />}
+              leadingIcon={<Pencil size={14} strokeWidth={1.5} aria-hidden="true" />}
               onClick={() => openAddModal({ movieToEdit: movie })}
             >
               Chỉnh sửa
@@ -191,7 +197,7 @@ function MovieDetailPage() {
             <Button
               variant="ghost"
               className="text-danger hover:bg-danger/10"
-              leadingIcon={<Trash2 size={14} aria-hidden="true" />}
+              leadingIcon={<Trash2 size={14} strokeWidth={1.5} aria-hidden="true" />}
               onClick={handleDeleteMovie}
             >
               Xóa
@@ -204,12 +210,12 @@ function MovieDetailPage() {
                 <SectionHeader>Tiến độ xem</SectionHeader>
                 {movie.progress.is_completed && <Chip tone="success">Hoàn thành</Chip>}
               </div>
-              <p className="font-display text-xl text-text-primary tabular-nums">
+              <p className="text-display-md text-text-primary tabular-nums">
                 {movie.progress.is_completed
                   ? 'Đã xem hết'
                   : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
                 {!movie.progress.is_completed && movie.total_episodes && (
-                  <span className="font-sans font-medium text-xs text-text-secondary ml-2">
+                  <span className="font-sans text-body-sm font-medium text-text-secondary ml-2">
                     ({movie.progress.watched_episodes}/{movie.total_episodes} tập)
                   </span>
                 )}
@@ -228,7 +234,7 @@ function MovieDetailPage() {
                 />
               </div>
               {getSeasonWatchedDates(movie).length >= 2 && (
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold tracking-[0.08em] text-text-secondary tabular-nums">
+                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-micro-caps text-text-secondary tabular-nums">
                   {getSeasonWatchedDates(movie).map(({ season, date }) => (
                     <span key={season}>
                       Phần {season}:{' '}
@@ -242,7 +248,7 @@ function MovieDetailPage() {
 
           <div className="mt-7">
             <SectionHeader className="">Nội dung</SectionHeader>
-            <p className="mt-2.5 text-sm md:text-[15px] leading-[1.7] text-text-primary/90 max-w-[65ch]">
+            <p className="mt-2.5 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
               {overview}
             </p>
           </div>
@@ -250,10 +256,15 @@ function MovieDetailPage() {
           {movie.review && (
             <div className="mt-6 border-l-2 border-primary pl-4">
               <SectionHeader className="flex items-center gap-1.5">
-                <Star size={12} className="fill-primary text-primary" aria-hidden="true" />
+                <Star
+                  size={12}
+                  strokeWidth={1.5}
+                  className="fill-primary text-primary"
+                  aria-hidden="true"
+                />
                 Đánh giá của bạn
               </SectionHeader>
-              <p className="mt-2 text-sm leading-[1.7] text-text-primary/90 max-w-[65ch]">
+              <p className="mt-2 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
                 {movie.review}
               </p>
             </div>
@@ -266,10 +277,10 @@ function MovieDetailPage() {
               <div className="mt-7 border-t border-border">
                 {credits.crew?.some((c) => c.job === 'Director') && (
                   <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
-                    <span className="w-20 sm:w-24 shrink-0 text-[11px] font-semibold text-text-secondary pt-0.5">
+                    <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
                       Đạo diễn
                     </span>
-                    <p className="text-sm text-text-primary">
+                    <p className="text-body text-text-primary">
                       {credits.crew
                         .filter((c) => c.job === 'Director')
                         .map((d) => d.name)
@@ -279,10 +290,10 @@ function MovieDetailPage() {
                 )}
                 {credits.cast && credits.cast.length > 0 && (
                   <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
-                    <span className="w-20 sm:w-24 shrink-0 text-[11px] font-semibold text-text-secondary pt-0.5">
+                    <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
                       Diễn viên
                     </span>
-                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-body">
                       {credits.cast.slice(0, 8).map((actor) => (
                         <Link
                           key={actor.id}

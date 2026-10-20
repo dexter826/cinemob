@@ -15,15 +15,17 @@ function PosterPreview({ posterPath, title }: PosterPreviewProps) {
             <img
               src={getTMDBImageUrl(posterPath, 'w500')}
               alt={title}
+              width={500}
+              height={750}
               className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
             />
           </>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-text-secondary gap-3 bg-linear-to-br from-black/5 to-black/10 dark:from-white/5 dark:to-white/10">
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-card flex items-center justify-center border border-border">
-              <ImageIcon size={32} className="opacity-30 text-text-secondary" />
+              <ImageIcon size={32} strokeWidth={1.5} className="opacity-30 text-text-secondary" />
             </div>
-            <span className="text-xs font-bold opacity-60 ">Chưa có ảnh</span>
+            <span className="text-body-sm font-bold opacity-60 ">Chưa có ảnh</span>
           </div>
         )}
       </div>
