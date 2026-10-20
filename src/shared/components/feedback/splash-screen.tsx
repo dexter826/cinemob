@@ -10,7 +10,7 @@ export default function SplashScreen() {
         className={`flex flex-col items-center gap-4 ${reducedMotion ? '' : 'animate-splash-brand'}`}
       >
         <CineMobSymbol className="h-16 w-16 sm:h-20 sm:w-20 text-primary" />
-        <span className="text-brand tracking-wide text-text-primary">
+        <span className="text-brand text-text-primary">
           Cine<span className="text-primary">MOB</span>
         </span>
       </div>

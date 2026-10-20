@@ -177,7 +177,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 <FolderPlus size={24} strokeWidth={1.5} className="text-primary" />
               </span>
               <span className="flex-1">
-                <span className="block text-title-md font-bold text-primary">Tạo album mới</span>
+                <span className="block text-title-md text-primary">Tạo album mới</span>
               </span>
             </span>
           </button>
@@ -190,9 +190,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             retry={{ label: 'Thử lại', onClick: retry }}
           />
         ) : loading ? (
-          <div className="flex flex-col items-center justify-center py-12 gap-4">
-            <Loading size={40} text="Đang tải album…" fullScreen={false} />
-          </div>
+          <Loading size={40} text="Đang tải album…" fullScreen={false} />
         ) : availableAlbums.length === 0 ? (
           <EmptyState
             icon={FolderPlus}
@@ -224,10 +222,10 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                     <Film size={22} strokeWidth={1.5} className="text-text-secondary" />
                   </span>
                   <span className="flex-1 min-w-0">
-                    <span className="block text-title-md font-bold text-text-primary truncate">
+                    <span className="block text-title-md text-text-primary truncate">
                       {album.name}
                     </span>
-                    <span className="block text-body text-text-secondary font-medium">
+                    <span className="block text-body text-text-secondary">
                       {album.movieDocIds.length} phim
                     </span>
                   </span>

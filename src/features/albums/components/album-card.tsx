@@ -104,7 +104,9 @@ function AlbumCard({ album, coverPosters, onDelete }: AlbumCardProps) {
             <h3 className="text-body-sm font-bold text-white line-clamp-2" title={album.name}>
               {album.name}
             </h3>
-            <p className="mt-0.5 text-micro-caps text-white/55 tabular-nums">{count} phim</p>
+            <p className="mt-0.5 text-micro-caps normal-case text-white/55 tabular-nums">
+              {count} phim
+            </p>
           </div>
         </div>
       ) : (

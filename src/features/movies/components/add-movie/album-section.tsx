@@ -59,10 +59,10 @@ function AlbumSection({
   return (
     <div className="pt-5 border-t border-border-default space-y-4">
       <div className="flex items-center justify-between">
-        <label className="text-label-caps text-text-secondary flex items-center gap-1.5 ml-1">
+        <span className="text-label-caps text-text-secondary flex items-center gap-1.5 ml-1">
           <FolderPlus size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />{' '}
           {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
-        </label>
+        </span>
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}

@@ -20,11 +20,11 @@ function Stat({ label, value, subValue, icon: Icon, colorClass }: StatProps) {
       />
       <div className="min-w-0">
         <p className="text-label-caps text-text-secondary mb-1.5">{label}</p>
-        <p className="text-display-stat tracking-wide text-text-primary leading-none tabular-nums">
-          {value}
-        </p>
+        <p className="text-display-stat text-text-primary leading-none tabular-nums">{value}</p>
         {subValue && (
-          <p className="text-micro-caps text-text-secondary mt-2 tabular-nums">{subValue}</p>
+          <p className="text-label-caps normal-case text-text-secondary mt-2 tabular-nums">
+            {subValue}
+          </p>
         )}
       </div>
     </div>

@@ -68,6 +68,7 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
         ) : error ? (
           <ErrorState
             compact
+            blocking
             className="flex-1"
             title="Không tải được danh sách"
             description="Không tải được danh sách thành viên. Thử lại."

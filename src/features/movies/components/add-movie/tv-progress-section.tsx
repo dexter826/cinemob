@@ -156,7 +156,9 @@ function TVProgressSection({
       )}
 
       <div className="space-y-2 pt-4 border-t border-border">
-        <span className="text-label-caps text-text-secondary ml-1 block">Ngày xem từng phần</span>
+        <span className="text-label-caps normal-case text-text-secondary ml-1 block">
+          Ngày xem từng phần
+        </span>
         <div className="space-y-2">
           {Array.from({ length: currentSeason }, (_, i) => i + 1).map((season) => (
             <div key={season} className="flex items-center gap-3">

@@ -128,7 +128,7 @@ export function AvatarCropView({
           onChange={(e) => onZoomChange(parseFloat(e.target.value))}
           disabled={isUploading}
           aria-label="Mức phóng to"
-          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-control appearance-none cursor-pointer accent-primary focus-ring"
+          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-control appearance-none cursor-pointer accent-primary"
         />
 
         <button

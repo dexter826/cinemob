@@ -176,9 +176,11 @@ function PosterCard({
         <h3 className="text-body-sm font-bold text-white line-clamp-2" title={title}>
           {title}
         </h3>
-        {meta && <p className="mt-0.5 text-micro-caps text-white/55 truncate">{meta}</p>}
+        {meta && (
+          <p className="mt-0.5 text-micro-caps normal-case text-white/55 truncate">{meta}</p>
+        )}
         {credit && (
-          <p className="mt-1 pt-1 border-t border-white/15 text-micro-caps text-primary truncate">
+          <p className="mt-1 pt-1 border-t border-white/15 text-micro-caps normal-case text-primary truncate">
             {credit}
           </p>
         )}

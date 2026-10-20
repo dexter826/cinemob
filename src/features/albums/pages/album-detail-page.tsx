@@ -137,10 +137,7 @@ function AlbumDetailPage() {
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
               <div className="flex-1 space-y-1.5 sm:space-y-2">
-                <label
-                  htmlFor="album-name"
-                  className="text-body-sm font-medium text-text-secondary ml-1"
-                >
+                <label htmlFor="album-name" className="text-label-caps text-text-secondary ml-1">
                   Tên album mới
                 </label>
                 <input
@@ -193,7 +190,7 @@ function AlbumDetailPage() {
             <div className="flex items-center justify-between border-b border-border-default pb-3 sm:pb-4">
               <h2 className="text-title-lg tracking-tight">Phim trong album</h2>
               {!loading && !moviesLoading && !moviesError && (
-                <span className="text-label-caps text-text-secondary tabular-nums">
+                <span className="text-label-caps normal-case text-text-secondary tabular-nums">
                   {albumMovies.length} phim
                 </span>
               )}
@@ -250,7 +247,7 @@ function AlbumDetailPage() {
                         className="min-w-10 min-h-10 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
                       >
                         {pendingMovieIds.has(movie.docId!) ? (
-                          <span className="text-micro-caps">Đang gỡ…</span>
+                          <span className="text-micro-caps normal-case">Đang gỡ…</span>
                         ) : (
                           <Trash2 size={13} strokeWidth={1.5} aria-hidden="true" />
                         )}
@@ -276,7 +273,7 @@ function AlbumDetailPage() {
                   label="Tìm phim trong lịch sử để thêm vào album"
                   className="flex-1 md:w-80"
                 />
-                <span className="text-label-caps text-text-secondary whitespace-nowrap tabular-nums">
+                <span className="text-label-caps normal-case text-text-secondary whitespace-nowrap tabular-nums">
                   {filteredAvailableMovies.length} phim
                 </span>
               </div>

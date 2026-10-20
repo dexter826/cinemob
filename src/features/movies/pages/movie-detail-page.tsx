@@ -111,7 +111,7 @@ function MovieDetailPage() {
             className="w-full rounded-poster border border-border"
           />
           {movie.status !== 'watchlist' && (
-            <p className="mt-3 text-micro-caps text-text-secondary flex items-center gap-1.5 tabular-nums">
+            <p className="mt-3 text-micro-caps normal-case text-text-secondary flex items-center gap-1.5 tabular-nums">
               <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
               Đã xem: {formatDateAny(movie.watched_at)}
             </p>
@@ -119,14 +119,12 @@ function MovieDetailPage() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h1 className="text-display-xl tracking-wide leading-[1.02] text-text-primary">
-            {mainTitle}
-          </h1>
+          <h1 className="text-display-xl leading-[1.02] text-text-primary">{mainTitle}</h1>
           {subTitle && subTitle !== mainTitle && (
             <p className="text-text-secondary text-body mt-2">{subTitle}</p>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-label-caps text-text-secondary tabular-nums">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-label-caps normal-case text-text-secondary tabular-nums">
             {movie.release_date && <span>{new Date(movie.release_date).getFullYear()}</span>}
             {movie.media_type === 'tv'
               ? !!movie.seasons && movie.seasons > 0 && <span>{movie.seasons} mùa</span>
@@ -215,7 +213,7 @@ function MovieDetailPage() {
                   ? 'Đã xem hết'
                   : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
                 {!movie.progress.is_completed && movie.total_episodes && (
-                  <span className="font-sans text-body-sm font-medium text-text-secondary ml-2">
+                  <span className="text-body-sm text-text-secondary ml-2">
                     ({movie.progress.watched_episodes}/{movie.total_episodes} tập)
                   </span>
                 )}
@@ -234,7 +232,7 @@ function MovieDetailPage() {
                 />
               </div>
               {getSeasonWatchedDates(movie).length >= 2 && (
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-micro-caps text-text-secondary tabular-nums">
+                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-micro-caps normal-case text-text-secondary tabular-nums">
                   {getSeasonWatchedDates(movie).map(({ season, date }) => (
                     <span key={season}>
                       Phần {season}:{' '}
@@ -271,8 +269,8 @@ function MovieDetailPage() {
           )}
 
           {extrasLoading ? (
-            <div role="status" aria-busy="true">
-              <SectionHeader className="mt-7">Đang tải diễn viên…</SectionHeader>
+            <div role="status">
+              <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
             </div>
           ) : (
             credits && (

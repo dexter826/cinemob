@@ -6,7 +6,7 @@ function NotFoundPage() {
       <p className="text-display-404 leading-none text-text-primary tabular-nums">
         4<span className="text-primary">0</span>4
       </p>
-      <p className="mt-4 text-label-caps text-text-secondary">
+      <p className="mt-4 text-label-caps normal-case text-text-secondary">
         Không tìm thấy trang — đường link sai hoặc không còn tồn tại
       </p>
       <div className="mt-8 flex justify-center">

@@ -91,14 +91,12 @@ function Login() {
           <div className="w-full max-w-sm">
             <div className="flex items-center gap-3 mb-7">
               <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
-              <p className="text-display-lg tracking-wide">
+              <p className="text-display-lg">
                 Cine<span className="text-primary">MOB</span>
               </p>
             </div>
 
-            <h1 className="text-display-xl tracking-wide leading-[1.05] mt-9">
-              Theo dõi mọi bộ phim bạn xem.
-            </h1>
+            <h1 className="text-display-xl leading-[1.05] mt-9">Theo dõi mọi bộ phim bạn xem.</h1>
             <p className="mt-3 text-body text-text-secondary leading-relaxed">
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
             </p>
@@ -120,7 +118,7 @@ function Login() {
           </div>
         </div>
 
-        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-micro-caps text-text-secondary shrink-0">
+        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-micro-caps normal-case text-text-secondary shrink-0">
           &copy; {new Date().getFullYear()} CineMOB
         </footer>
       </div>

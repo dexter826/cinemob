@@ -34,11 +34,7 @@ export function formatRatingRange(
 }
 
 function GroupLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="text-micro-caps font-bold uppercase tracking-[0.14em] text-text-secondary">
-      {children}
-    </div>
-  );
+  return <div className="text-label-caps font-bold text-text-secondary">{children}</div>;
 }
 
 /** Nội dung bộ lọc dùng chung cho popover (desktop) và bottom sheet (mobile). */

@@ -107,7 +107,7 @@ function PersonDetailPage() {
                       src={getTMDBImageUrl(person.profile_path, 'h632')}
                       alt={person.name}
                       width={192}
-                      height={288}
+                      height={256}
                       className="w-48 h-64 sm:w-56 sm:h-80 object-cover rounded-card border border-white/10"
                     />
                   </div>

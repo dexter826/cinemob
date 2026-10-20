@@ -12,7 +12,7 @@ function Footer() {
     <footer className="hidden md:block relative bg-background border-t border-border py-6 mt-auto">
       <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex-1 text-center md:text-left">
-          <span className="text-display-md tracking-wide select-none">
+          <span className="text-display-md select-none">
             Cine<span className="text-primary">MOB</span>
           </span>
         </div>
@@ -35,7 +35,7 @@ function Footer() {
           })}
         </div>
 
-        <div className="flex-1 text-micro-caps text-text-secondary flex items-center justify-center md:justify-end">
+        <div className="flex-1 text-micro-caps normal-case text-text-secondary flex items-center justify-center md:justify-end">
           <span>© {new Date().getFullYear()} CineMOB</span>
         </div>
       </div>
