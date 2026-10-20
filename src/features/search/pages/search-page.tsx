@@ -4,6 +4,7 @@ import { useSearch } from '../hooks/use-search';
 import PageHeader from '@/shared/components/ui/page-header';
 import SearchFilters from '../components/search-filters';
 import SearchResults from '../components/search-results';
+import RandomSuggestionsSection from '../components/random-suggestions-section';
 
 function SearchPage() {
   const {
@@ -17,6 +18,11 @@ function SearchPage() {
     isTrendingLoading,
     trendingError,
     refreshTrending,
+    randomSuggestions,
+    isSuggestionsLoading,
+    suggestionsHasLoaded,
+    suggestionsError,
+    refreshSuggestions,
     filteredResults,
     handleSelectMovie,
     getMovieStatus,
@@ -55,10 +61,24 @@ function SearchPage() {
             ? 'Không tải được kết quả.'
             : mode !== 'home'
               ? `Có ${filteredResults.length} kết quả trên trang này.`
-              : isTrendingLoading
-                ? 'Đang tải phim thịnh hành…'
-                : ''}
+              : isSuggestionsLoading
+                ? 'Đang tải đề xuất cho bạn…'
+                : isTrendingLoading
+                  ? 'Đang tải phim thịnh hành…'
+                  : ''}
       </LoadingStatus>
+
+      {mode === 'home' && (
+        <RandomSuggestionsSection
+          movies={randomSuggestions}
+          isLoading={isSuggestionsLoading}
+          hasLoaded={suggestionsHasLoaded}
+          error={suggestionsError}
+          onRefresh={refreshSuggestions}
+          getMovieStatus={getMovieStatus}
+          onSelectMovie={handleSelectMovie}
+        />
+      )}
 
       {mode === 'home' && trendingError && (
         <ErrorState
@@ -88,7 +108,6 @@ function SearchPage() {
           filteredResults={filteredResults}
           getMovieStatus={getMovieStatus}
           handleSelectMovie={handleSelectMovie}
-          refreshTrending={() => void refreshTrending(true)}
           resultsError={resultsError}
           retrySearch={retrySearch}
         />

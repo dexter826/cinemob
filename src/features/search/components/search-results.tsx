@@ -1,12 +1,11 @@
 import type { SearchMode } from '../hooks/use-search-tmdb';
 import { TMDBMovieResult } from '@/types';
-import PosterCard from '@/features/movies/components/poster-card';
-import { getMainTitleForTMDB, getSubTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
-import { Star, RotateCcw, Search } from 'lucide-react';
+import { Search, Star } from 'lucide-react';
+import MoviePosterGrid from './movie-poster-grid';
 
 interface SearchResultsProps {
   mode: SearchMode;
@@ -21,7 +20,6 @@ interface SearchResultsProps {
   filteredResults: TMDBMovieResult[];
   getMovieStatus: (id: number) => 'history' | 'watchlist' | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
-  refreshTrending?: () => void;
   resultsError?: boolean;
   retrySearch?: () => void;
 }
@@ -39,7 +37,6 @@ function SearchResults({
   filteredResults,
   getMovieStatus,
   handleSelectMovie,
-  refreshTrending,
   resultsError = false,
   retrySearch,
 }: SearchResultsProps) {
@@ -67,97 +64,59 @@ function SearchResults({
   const showTrendingSkeleton = isTrendingLoading && trendingMovies.length === 0;
   const showFiltered = mode !== 'home';
 
-  const cardMeta = (movie: TMDBMovieResult) => {
-    const year = (movie.release_date || movie.first_air_date)?.split('-')[0] || '';
-    return [getSubTitleForTMDB(movie), year].filter(Boolean).join(' · ');
-  };
-  const isTVResult = (movie: TMDBMovieResult) =>
-    movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
-
   return (
     <>
       {mode === 'home' && (
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <Star className="text-primary shrink-0" size={18} aria-hidden="true" />
-            <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
-          </div>
-          {refreshTrending && (
-            <button
-              type="button"
-              onClick={refreshTrending}
-              disabled={isTrendingLoading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-control text-xs sm:text-sm bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
-            >
-              <RotateCcw size={16} aria-hidden="true" />
-              <span>{isTrendingLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
-            </button>
-          )}
+        <div className="mb-4 flex items-center gap-2 min-w-0">
+          <Star className="text-primary shrink-0" size={18} aria-hidden="true" />
+          <h2 className="text-lg sm:text-xl text-primary font-bold">Phim thịnh hành</h2>
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-        {showFiltered
-          ? filteredResults.map((movie) => (
-              <PosterCard
-                key={movie.id}
-                title={getMainTitleForTMDB(movie)}
-                posterPath={movie.poster_path}
-                mediaType={isTVResult(movie) ? 'tv' : 'movie'}
-                rating={movie.vote_average}
-                status={getMovieStatus(movie.id)}
-                meta={cardMeta(movie)}
-                onClick={() => handleSelectMovie(movie)}
-              />
-            ))
-          : showTrendingSkeleton
-            ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
-            : trendingMovies.map((movie) => (
-                <PosterCard
-                  key={movie.id}
-                  title={getMainTitleForTMDB(movie)}
-                  posterPath={movie.poster_path}
-                  mediaType={isTVResult(movie) ? 'tv' : 'movie'}
-                  rating={movie.vote_average}
-                  status={getMovieStatus(movie.id)}
-                  meta={cardMeta(movie)}
-                  onClick={() => handleSelectMovie(movie)}
-                />
-              ))}
+      {showFiltered &&
+        (filteredResults.length > 0 ? (
+          <MoviePosterGrid
+            movies={filteredResults}
+            getMovieStatus={getMovieStatus}
+            onSelect={handleSelectMovie}
+          />
+        ) : mode === 'search' ? (
+          <EmptyState
+            icon={Search}
+            title="Không tìm thấy kết quả"
+            description={`Không có phim nào khớp “${query}”. Thử từ khóa khác.`}
+          />
+        ) : (
+          <EmptyState
+            icon={Search}
+            title="Không có phim khớp bộ lọc"
+            description="Thử thay đổi bộ lọc để tìm phim khác."
+            action={{ label: 'Xóa bộ lọc', onClick: onClear }}
+          />
+        ))}
 
-        {mode === 'search' && filteredResults.length === 0 && (
-          <div className="col-span-full">
-            <EmptyState
-              icon={Search}
-              title="Không tìm thấy kết quả"
-              description={`Không có phim nào khớp “${query}”. Thử từ khóa khác.`}
-            />
+      {!showFiltered &&
+        (showTrendingSkeleton ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
-        )}
+        ) : trendingMovies.length > 0 ? (
+          <MoviePosterGrid
+            movies={trendingMovies}
+            getMovieStatus={getMovieStatus}
+            onSelect={handleSelectMovie}
+          />
+        ) : (
+          <EmptyState
+            icon={Search}
+            title="Bắt đầu khám phá"
+            description="Nhập tên phim hoặc series để tìm kiếm."
+          />
+        ))}
 
-        {mode === 'discover' && filteredResults.length === 0 && (
-          <div className="col-span-full">
-            <EmptyState
-              icon={Search}
-              title="Không có phim khớp bộ lọc"
-              description="Thử thay đổi bộ lọc để tìm phim khác."
-              action={{ label: 'Xóa bộ lọc', onClick: onClear }}
-            />
-          </div>
-        )}
-
-        {mode === 'home' && trendingMovies.length === 0 && !isTrendingLoading && (
-          <div className="col-span-full">
-            <EmptyState
-              icon={Search}
-              title="Bắt đầu khám phá"
-              description="Nhập tên phim hoặc series để tìm kiếm."
-            />
-          </div>
-        )}
-      </div>
-
-      {!isLoading && filteredResults.length > 0 && totalPages > 1 && (
+      {filteredResults.length > 0 && totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

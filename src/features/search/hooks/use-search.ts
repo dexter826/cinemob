@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
+import useRandomSuggestionsStore from '@/features/movies/stores/random-suggestions-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
@@ -163,6 +164,20 @@ export const useSearch = () => {
     mode,
   } = useSearchTMDB(submittedQuery, currentPage, filters, retryNonce);
 
+  const {
+    movies: randomSuggestions,
+    isLoading: isSuggestionsLoading,
+    hasLoaded: suggestionsHasLoaded,
+    error: suggestionsError,
+    fetchRandomMovies,
+  } = useRandomSuggestionsStore();
+
+  useEffect(() => {
+    if (mode === 'home' && !suggestionsHasLoaded) {
+      void fetchRandomMovies();
+    }
+  }, [mode, suggestionsHasLoaded, fetchRandomMovies]);
+
   const displayMovies = isSearchMode ? results : discoverMovies;
 
   const filteredResults = useMemo(() => {
@@ -259,6 +274,11 @@ export const useSearch = () => {
     isTrendingLoading,
     trendingError,
     refreshTrending: (force?: boolean) => fetchTrending(force ?? true),
+    randomSuggestions,
+    isSuggestionsLoading,
+    suggestionsHasLoaded,
+    suggestionsError,
+    refreshSuggestions: () => void fetchRandomMovies(true),
     filteredResults,
     handleSelectMovie,
     getMovieStatus,

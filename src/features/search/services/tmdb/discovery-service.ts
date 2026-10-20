@@ -25,6 +25,39 @@ export const getTrendingMovies = async (
   return { results, totalPages: data?.total_pages || 1 };
 };
 
+const RANDOM_DISCOVER_PAGE_MAX = 500;
+const RANDOM_SUGGESTION_COUNT = 10;
+
+export const getRandomSuggestions = async (signal?: AbortSignal): Promise<TMDBMovieResult[]> => {
+  if (!API_KEY) throw new Error('TMDB API key is unavailable');
+
+  const page = Math.floor(Math.random() * RANDOM_DISCOVER_PAGE_MAX) + 1;
+  const params: Record<string, string> = {
+    page: page.toString(),
+    sort_by: 'popularity.desc',
+    include_adult: 'false',
+    language: 'vi-VN',
+    'vote_count.gte': '200',
+    'vote_average.gte': '6',
+  };
+
+  const [movieData, tvData] = await Promise.all([
+    tmdbFetch('discover/movie', params, decodeMovieResultPage, signal),
+    tmdbFetch('discover/tv', params, decodeMovieResultPage, signal),
+  ]);
+  if (!movieData && !tvData) throw new Error('Failed to load random suggestions');
+
+  const combined: TMDBMovieResult[] = [
+    ...(movieData?.results ?? []).map((item) => ({ ...item, media_type: 'movie' as const })),
+    ...(tvData?.results ?? []).map((item) => ({ ...item, media_type: 'tv' as const })),
+  ];
+  for (let i = combined.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [combined[i], combined[j]] = [combined[j], combined[i]];
+  }
+  return combined.slice(0, RANDOM_SUGGESTION_COUNT);
+};
+
 export const getDiscoverMovies = async (
   params: {
     page?: number;
