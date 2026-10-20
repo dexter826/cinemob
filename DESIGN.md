@@ -203,6 +203,9 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 
 - Anton chỉ cho display, số liệu lớn và wordmark; không dùng cho body.
 - Caps label chỉ có hai style: `label-caps` 11px và `micro-caps` 9px. Không dùng 10px, 11.5px hay 15px.
+- Ngoại lệ data-viz: chart axis dùng 10px/700/50%; không dùng cho text UI.
+- 404 dùng utility `text-display-404` 72 → 96px; splash wordmark dùng Anton 36 → 48px, không tính vào type scale.
+- `micro-caps` mặc định uppercase; metadata số/ngày được phép `normal-case`.
 - Weight có thể tăng 600/700 cho emphasis (button, poster title); không đổi size.
 - Số liệu trong stat, bảng, rating dùng `tabular-nums`.
 - Heading dài dùng `text-wrap: balance`; đoạn dài dùng `text-wrap: pretty` nếu cần.
@@ -218,6 +221,8 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 - Navbar cao `56px`; bottom nav cao `56px`; nội dung chừa `56px + safe-area` ở đáy.
 - Breakpoint: `sm` 640, `md` 768, `lg` 1024. Mobile-first; navbar desktop và footer chỉ hiện từ `md`.
 - Arbitrary spacing chỉ cho safe-area, hairline quang học hoặc phần trăm; không dùng để chỉnh layout.
+- Micro-spacing 2/6/10px chỉ để căn icon/chữ; layout vẫn theo thang 4/8/12/16/20/24/32/40/48/64.
+- Pagination/toolbar compact dùng 36/40px; form control giữ 44px; icon-button 32/40/48px.
 - `overscroll-behavior: contain` trong dialog/sheet/dropdown; `touch-action: manipulation` cho control.
 - Không để scroll ngang; container hẹp dùng `min-w-0` và truncate.
 - Filter, tab, pagination và panel mở phải phản ánh vào URL để deep-link và back/forward hoạt động.
@@ -298,6 +303,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 
 - Card duy nhất của app: poster 2:3, radius 4, border, scrim đáy `black/85 → transparent`.
 - Title `body-sm` 12px/700 trắng, meta `micro-caps` 9px trắng/55, progress 2px `primary`.
+- Check selected nằm trên overlay `primary/25`, giữ trắng; ngoại lệ media, không áp dụng cho nền primary đặc.
 - Hover chỉ border + zoom 1.03; không lift, không shadow.
 - Actions: mobile luôn hiện, desktop hiện khi hover/focus; mỗi action có `aria-label`.
 - Ảnh lazy-load, có width/height, placeholder fallback; alt rỗng khi nút bao đã có `aria-label`.
@@ -311,11 +317,12 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 ## Iconography & Imagery
 
 - Lucide; `strokeWidth` chuẩn **1.5** cho mọi icon; active nav dùng 2. Icon hiện không set phải được chuẩn hoá về 1.5.
+- Ngoại lệ: logo symbol `strokeWidth` 3; picker chevron 2.5.
 - Size: 9/12 cho chip, 14/16/18/20 cho control, 24 cho alert, 28 cho empty state.
 - Icon-only button có `aria-label`; icon decorative có `aria-hidden`.
 - Poster 2:3, `object-cover`, radius 4, lazy-load, width/height; ảnh above-fold dùng `fetchpriority="high"`.
 - Avatar `full`; wordmark dùng Anton, chữ "MOB" màu `primary`.
-- Charts dùng palette derive từ token: `primary` + mix `text-secondary`/`surface`; grid 5%, axis 10px/700/50%, bar `primary`, animation 1s có gate reduced-motion.
+- Charts dùng palette derive từ token: `primary` + mix `text-secondary`/`surface`; grid 5%, axis 10px/700/50% (ngoại lệ data-viz), bar `primary`, animation 1s có gate reduced-motion.
 
 ## Motion
 
@@ -383,6 +390,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 - **Token:** thêm/sửa token phải cập nhật đồng thời YAML, bảng Colors và `src/index.css`.
 - **Font:** load trong `index.html`; không import font trong component.
 - **UI kit:** `src/shared/components/ui` (barrel `index.ts`); feedback ở `src/shared/components/feedback`; layout ở `src/shared/components/layout`.
+- **Type utility:** `text-display-xl`, `text-display-lg`, `text-title-lg`, `text-title-md`, `text-body`, `text-body-sm`, `text-label-caps`, `text-micro-caps`; modifier `text-display-stat` (48 → 60) và `text-display-404` (72 → 96). Code không dùng `text-[…px]` hoặc `text-xs/sm/base/lg/xl/2xl/3xl/4xl/5xl/6xl/7xl/9xl` cho size; ngoại lệ chart axis 10px.
 - **Card chuẩn:** `src/features/movies/components/poster-card.tsx`; mọi card phim dùng pattern này.
 - **Theme:** `src/app/providers/theme-provider.tsx`, default `dark`, lưu `vite-ui-theme`; toggle chỉ dark/light.
 - **Chart:** `src/features/stats/pages/stats-page.tsx`, palette derive từ token; không hardcode màu series.
