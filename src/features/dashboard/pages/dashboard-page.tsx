@@ -1,7 +1,7 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Film, Search, Plus } from 'lucide-react';
+import { Film, Plus } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import PosterCard from '@/features/movies/components/poster-card';
@@ -56,21 +56,13 @@ function DashboardPage() {
       <PageHeader
         title="Thư viện"
         actions={
-          <>
-            <Button
-              onClick={() => navigate('/search')}
-              leadingIcon={<Search size={14} aria-hidden="true" />}
-            >
-              Tìm phim
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => openAddModal()}
-              leadingIcon={<Plus size={14} aria-hidden="true" />}
-            >
-              Thêm thủ công
-            </Button>
-          </>
+          <Button
+            variant="secondary"
+            onClick={() => openAddModal()}
+            leadingIcon={<Plus size={14} aria-hidden="true" />}
+          >
+            Thêm thủ công
+          </Button>
         }
       />
 
