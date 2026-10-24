@@ -18,6 +18,7 @@ import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 import { useDashboard } from '../hooks/use-dashboard';
 import DashboardTabs from '../components/dashboard-tabs';
 import DashboardFilters from '../components/dashboard-filters';
+import DashboardActiveFilters from '../components/dashboard-active-filters';
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -91,6 +92,17 @@ function DashboardPage() {
           />
         )}
       </div>
+
+      {movies.length > 0 && (
+        <DashboardActiveFilters
+          filters={filters}
+          updateFilter={updateFilter}
+          activeTab={activeTab}
+          availableGenres={availableGenres}
+          availableCountries={availableCountries}
+          clearFilters={clearFilters}
+        />
+      )}
 
       <section aria-labelledby="library-content-title" className="py-5">
         <h2 id="library-content-title" className="sr-only">
