@@ -8,6 +8,7 @@ interface DashboardTabsProps {
   historyCount: number;
   watchlistCount: number;
   droppedCount: number;
+  loading?: boolean;
 }
 
 const TABS: { key: ActiveTab; label: string }[] = [
@@ -22,6 +23,7 @@ function DashboardTabs({
   historyCount,
   watchlistCount,
   droppedCount,
+  loading = false,
 }: DashboardTabsProps) {
   const reducedMotion = useReducedMotion() ?? false;
   const counts: Record<ActiveTab, number> = {
@@ -29,14 +31,10 @@ function DashboardTabs({
     watchlist: watchlistCount,
     dropped: droppedCount,
   };
-  const visibleTabs = TABS.filter(
-    (tab) => tab.key !== 'dropped' || droppedCount > 0 || activeTab === 'dropped',
-  );
-
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
       <div role="group" aria-label="Bộ lọc trạng thái xem phim" className="flex items-center">
-        {visibleTabs.map((tab) => {
+        {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
             <button
@@ -50,7 +48,14 @@ function DashboardTabs({
             >
               {tab.label}
               <span className={`ml-1.5 tabular-nums ${isActive ? 'text-primary' : 'opacity-60'}`}>
-                {String(counts[tab.key]).padStart(2, '0')}
+                {loading ? (
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-3 w-5 align-middle rounded-control bg-skeleton motion-safe:animate-pulse motion-reduce:animate-none"
+                  />
+                ) : (
+                  String(counts[tab.key]).padStart(2, '0')
+                )}
               </span>
               {isActive && (
                 <motion.span

@@ -9,6 +9,7 @@ import Pagination from '@/shared/components/ui/pagination';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import Skeleton from '@/shared/components/ui/skeleton';
 import Button from '@/shared/components/ui/button';
 import { PageHeader } from '@/shared/components/ui';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
@@ -74,8 +75,27 @@ function DashboardPage() {
           historyCount={statusCounts.history}
           watchlistCount={statusCounts.watchlist}
           droppedCount={statusCounts.dropped}
+          loading={loading}
         />
-        {movies.length > 0 && (
+        {loading ? (
+          <div
+            aria-hidden="true"
+            className="flex flex-wrap items-center justify-end gap-x-3 gap-y-2 py-2"
+          >
+            <Skeleton className="h-10 w-full lg:w-72" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-10" />
+              <Skeleton className="h-4 w-10" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+            <Skeleton className="h-10 w-11" />
+          </div>
+        ) : movies.length > 0 ? (
           <DashboardFilters
             filters={filters}
             updateFilter={updateFilter}
@@ -90,7 +110,7 @@ function DashboardPage() {
             availableGenres={availableGenres}
             clearFilters={clearFilters}
           />
-        )}
+        ) : null}
       </div>
 
       {movies.length > 0 && (
