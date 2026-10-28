@@ -65,23 +65,6 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-## 5. Commenting Rules
-
-**Comment the "why", not the "what". Code shows what; comments explain intent.**
-
-- Explain reasons, design decisions, and tradeoffs - not what the code literally does.
-- Don't comment the obvious (e.g. `i++ // increment i`).
-- Keep comments in sync with code - an outdated comment is worse than none.
-- Use doc comments (JSDoc/docstring) for public APIs, classes, and modules.
-- Never leave dead code as comments - use git history instead.
-- Use TODO/FIXME deliberately, with context - don't overuse.
-- Keep comments short, grammatical, and in Vietnamese (technical terms like hook, store, props, payload, cache stay in English).
-- No internal process references: never cite specs, gates, or task numbers (`spec 2026-10-17`, `gate 7`, `Task 23`) - a comment must stand alone; `@deprecated` tags are the exception.
-- No decorative design prose: don't describe how the UI looks ("warm paper", "gold ink", "editorial card") - keep only technical constraints (contrast ratios, no-shadow rules, layout contracts).
-- Judge by the whole file: self-describing files (types, constant maps) should have no comments at all - a lone comment there is noise; comment density and style must stay consistent within a file and across sibling files.
-- Prefer a line comment above the code at the same indent; trailing comments are rare exceptions. When you touch a file, leave it prettier-clean (`npx prettier --write`).
-- DO NOT ADD ANY COMMENTS unless asked or required by the rules above.
-
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
