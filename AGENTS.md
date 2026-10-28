@@ -1,70 +1,81 @@
 # AGENTS.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Hướng dẫn hành vi để giảm lỗi thường gặp khi LLM viết code. Gộp với quy ước riêng của dự án khi cần.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+**Đánh đổi:** Các hướng dẫn này nghiêng về thận trọng hơn tốc độ. Với việc nhỏ, tự cân nhắc.
 
-## 1. Think Before Coding
+## 1. Suy nghĩ trước khi code
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+**Không đoán. Không giấu chỗ chưa hiểu. Nêu rõ đánh đổi.**
 
-Before implementing:
+Trước khi implement:
 
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- Nêu rõ giả định. Chưa chắc thì hỏi.
+- Có nhiều cách hiểu thì trình bày ra, không tự chọn rồi im lặng.
+- Có cách đơn giản hơn thì nói. Phản biện khi cần.
+- Có chỗ chưa rõ thì dừng lại, chỉ ra chỗ đó, rồi hỏi.
 
-## 2. Simplicity First
+## 2. Đơn giản trước
 
-**Minimum code that solves the problem. Nothing speculative.**
+**Lượng code tối thiểu để giải quyết vấn đề. Không làm dư.**
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+- Không thêm tính năng ngoài yêu cầu.
+- Không trừu tượng hoá cho code chỉ dùng một chỗ.
+- Không thêm "linh hoạt" hay "cấu hình" không ai yêu cầu.
+- Không xử lý lỗi cho tình huống không thể xảy ra.
+- Viết 200 dòng mà gọn được 50 thì viết lại.
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+Tự hỏi: "Kỹ sư lâu năm có nói cái này rối không?" Nếu có, đơn giản lại.
 
-## 3. Surgical Changes
+## 3. Sửa đúng chỗ
 
-**Touch only what you must. Clean up only your own mess.**
+**Chỉ chạm thứ phải chạm. Chỉ dọn phần mình làm bẩn.**
 
-When editing existing code:
+Khi sửa code có sẵn:
 
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
+- Không "cải thiện" code, comment hay format xung quanh.
+- Không refactor thứ không hỏng.
+- Theo style hiện có, kể cả khi bạn sẽ viết khác.
+- Thấy dead code không liên quan thì nêu ra, đừng xoá.
 
-When your changes create orphans:
+Khi thay đổi của bạn tạo ra code mồ côi:
 
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+- Xoá import/biến/hàm mà chính bạn làm cho không còn dùng.
+- Không xoá dead code có từ trước, trừ khi được yêu cầu.
 
-The test: Every changed line should trace directly to the user's request.
+Phép thử: mọi dòng thay đổi phải truy thẳng về yêu cầu của người dùng.
 
-## 4. Goal-Driven Execution
+## 4. Làm theo mục tiêu
 
-**Define success criteria. Loop until verified.**
+**Định nghĩa tiêu chí thành công. Lặp đến khi kiểm chứng xong.**
 
-Transform tasks into verifiable goals:
+Biến việc thành mục tiêu kiểm chứng được:
 
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- "Thêm validation" → "Viết test cho input sai, rồi làm cho nó pass"
+- "Sửa bug" → "Viết test tái hiện bug, rồi làm cho nó pass"
+- "Refactor X" → "Đảm bảo test pass trước và sau"
 
-For multi-step tasks, state a brief plan:
+Việc nhiều bước thì nêu kế hoạch ngắn:
 
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+1. [Bước] → verify: [kiểm tra]
+2. [Bước] → verify: [kiểm tra]
+3. [Bước] → verify: [kiểm tra]
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+Tiêu chí thành công mạnh cho phép bạn tự lặp. Tiêu chí yếu ("làm cho nó chạy") phải hỏi liên tục.
+
+## 5. Tài liệu trong repo
+
+**Đọc spec trước khi sửa UI. Spec là chuẩn; code theo spec.**
+
+- `DESIGN.md` — hợp đồng thị giác: màu, chữ, layout, elevation, shape, component.
+- `COPY.md` — hợp đồng copy: giọng, thuật ngữ, mẫu câu, định dạng.
+- Code lệch spec → sửa code, không sửa spec.
+- Đổi token → cập nhật `DESIGN.md` và `src/index.css` cùng lúc.
+- Đổi chữ hiển thị → đối chiếu glossary và pattern trong `COPY.md` trước.
+- Component spec trong `DESIGN.md` chỉ giữ slot; câu chữ nằm ở `COPY.md`.
 
 ---
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**Các hướng dẫn này hiệu quả khi:** diff ít thay đổi thừa, ít phải viết lại vì làm rối, và câu hỏi làm rõ xuất hiện trước khi implement chứ không phải sau khi sai.
