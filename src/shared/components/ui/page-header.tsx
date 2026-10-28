@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, LucideIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { IconButton } from './icon-button';
 import Skeleton from './skeleton';
 
@@ -11,10 +11,6 @@ interface PageHeaderProps {
   actions?: React.ReactNode;
   leading?: React.ReactNode;
   className?: string;
-  /** @deprecated Use `leading` instead. Rendered as an unboxed icon for migration. Remove in Task 23. */
-  icon?: LucideIcon;
-  /** @deprecated Use `actions` instead. Remove in Task 23. */
-  children?: React.ReactNode;
 }
 
 function PageHeader({
@@ -25,15 +21,7 @@ function PageHeader({
   actions,
   leading,
   className = '',
-  icon: LegacyIcon,
-  children,
 }: PageHeaderProps) {
-  const resolvedActions = actions ?? children;
-  const resolvedLeading =
-    leading ??
-    (LegacyIcon ? (
-      <LegacyIcon className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
-    ) : undefined);
   return (
     <div
       className={`flex items-center justify-between gap-3 sm:gap-6 pb-5 border-b border-border ${className}`}
@@ -44,7 +32,7 @@ function PageHeader({
             <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
           </IconButton>
         )}
-        {resolvedLeading && <span className="shrink-0 mt-0.5 inline-flex">{resolvedLeading}</span>}
+        {leading && <span className="shrink-0 mt-0.5 inline-flex">{leading}</span>}
         <div className="min-w-0">
           {loading ? (
             <>
@@ -64,9 +52,7 @@ function PageHeader({
           )}
         </div>
       </div>
-      {resolvedActions && (
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">{resolvedActions}</div>
-      )}
+      {actions && <div className="flex items-center gap-2 sm:gap-3 shrink-0">{actions}</div>}
     </div>
   );
 }

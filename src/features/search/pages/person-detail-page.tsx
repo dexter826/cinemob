@@ -95,7 +95,7 @@ function PersonDetailPage() {
         <LoadingStatus>{loading ? 'Đang tải thông tin nghệ sĩ…' : ''}</LoadingStatus>
         <PageHeader
           onBack={() => navigate(-1)}
-          icon={User}
+          leading={<User className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
           loading={loading}
           title={person?.name || 'Chi tiết nghệ sĩ'}
           description={
