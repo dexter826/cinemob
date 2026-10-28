@@ -1,4 +1,4 @@
-import Loading from '@/shared/components/ui/loading';
+import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import { Tv } from 'lucide-react';
 import DatePicker from '@/shared/components/ui/date-picker';
@@ -38,7 +38,23 @@ function TVProgressSection({
   onSeasonDateChange,
   defaultDate,
 }: TVProgressSectionProps) {
-  if (loading) return <Loading text="Đang cập nhật tiến độ TV…" />;
+  if (loading)
+    return (
+      <div aria-busy="true" className="border border-border rounded-dialog p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-5 w-40" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Skeleton className="h-16 w-full rounded-card" />
+          <Skeleton className="h-16 w-full rounded-card" />
+        </div>
+        <div className="space-y-2 pt-4 border-t border-border">
+          <Skeleton className="h-3 w-36" />
+          <Skeleton className="h-11 w-full rounded-control" />
+        </div>
+      </div>
+    );
   if (error)
     return (
       <ErrorState

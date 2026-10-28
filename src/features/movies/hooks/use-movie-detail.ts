@@ -13,34 +13,45 @@ export interface MovieDetailExtras {
 /** Fetch enrichment TMDB: credits luôn, videos chỉ cho watchlist (để hiện trailer). */
 export function useMovieDetail(movie: Movie | null): MovieDetailExtras {
   const [loading, setLoading] = useState(false);
-  const [credits, setCredits] = useState<TMDBCredits | null>(null);
-  const [videos, setVideos] = useState<TMDBVideo[]>([]);
+  const [creditsState, setCreditsState] = useState<{
+    key: string;
+    data: TMDBCredits | null;
+  } | null>(null);
+  const [videosState, setVideosState] = useState<{ key: string; data: TMDBVideo[] } | null>(null);
   const { showToast } = useToastStore();
+  const movieId = movie?.id ?? null;
+  const movieSource = movie?.source ?? null;
+  const mediaType = movie?.media_type || 'movie';
+  const movieStatus = movie?.status ?? null;
+  const movieKey = movieId ? `${movieId}:${mediaType}` : null;
 
   useEffect(() => {
     let cancelled = false;
 
     const fetchData = async () => {
-      if (!movie || movie.source !== 'tmdb' || !movie.id) {
-        setCredits(null);
-        setVideos([]);
+      if (!movieId || movieSource !== 'tmdb') {
+        setCreditsState(null);
+        setVideosState(null);
         setLoading(false);
         return;
       }
+      const key = `${movieId}:${mediaType}`;
       setLoading(true);
       try {
-        if (movie.status === 'watchlist') {
-          const movieVideos = await getMovieVideos(Number(movie.id), movie.media_type || 'movie');
-          if (!cancelled) setVideos(movieVideos);
-        } else {
-          setVideos([]);
+        const [movieVideos, movieCredits] = await Promise.all([
+          movieStatus === 'watchlist'
+            ? getMovieVideos(Number(movieId), mediaType)
+            : Promise.resolve<TMDBVideo[]>([]),
+          getMovieCredits(Number(movieId), mediaType),
+        ]);
+        if (!cancelled) {
+          setVideosState({ key, data: movieVideos });
+          setCreditsState({ key, data: movieCredits });
         }
-        const movieCredits = await getMovieCredits(Number(movie.id), movie.media_type || 'movie');
-        if (!cancelled) setCredits(movieCredits);
       } catch {
         if (!cancelled) {
-          setVideos([]);
-          setCredits(null);
+          setVideosState({ key, data: [] });
+          setCreditsState(null);
           showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
         }
       } finally {
@@ -52,7 +63,11 @@ export function useMovieDetail(movie: Movie | null): MovieDetailExtras {
     return () => {
       cancelled = true;
     };
-  }, [movie, showToast]);
+  }, [movieId, movieSource, mediaType, movieStatus, showToast]);
 
-  return { loading, credits, videos };
+  return {
+    loading,
+    credits: creditsState && creditsState.key === movieKey ? creditsState.data : null,
+    videos: videosState && videosState.key === movieKey ? videosState.data : [],
+  };
 }

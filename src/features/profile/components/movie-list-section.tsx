@@ -5,6 +5,7 @@ import { Film, Search as SearchIcon } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import PosterCard from '@/features/movies/components/poster-card';
 import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
@@ -22,7 +23,7 @@ const SORT_OPTIONS = [
   { value: 'year-asc', label: 'Năm phát hành (cũ nhất)' },
 ];
 
-const LOAD_MORE_SIZE = 36;
+export const PROFILE_MOVIES_PAGE_SIZE = 36;
 
 interface MovieListSectionProps {
   movies: ProfileMovie[];
@@ -43,7 +44,7 @@ function MovieListSection({
 }: MovieListSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<ProfileSortOption>('default');
-  const [visibleCount, setVisibleCount] = useState(LOAD_MORE_SIZE);
+  const [visibleCount, setVisibleCount] = useState(PROFILE_MOVIES_PAGE_SIZE);
 
   const filteredMovies = useMemo(
     () => filterAndSortProfileMovies(movies, searchQuery, sortBy),
@@ -56,8 +57,11 @@ function MovieListSection({
   );
 
   useEffect(() => {
-    setVisibleCount(LOAD_MORE_SIZE);
+    setVisibleCount(PROFILE_MOVIES_PAGE_SIZE);
   }, [searchQuery, sortBy]);
+
+  const shouldShowSkeleton = isLoading && movies.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
 
   if (error)
     return (
@@ -68,18 +72,20 @@ function MovieListSection({
       />
     );
 
-  if (isLoading) {
+  if (shouldShowSkeleton) {
     return (
       <>
         <LoadingStatus>Đang tải danh sách phim…</LoadingStatus>
-        <div
-          aria-busy="true"
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
-        >
-          {Array.from({ length: 12 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
+        {showSkeleton && (
+          <div
+            aria-busy="true"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+          >
+            {Array.from({ length: PROFILE_MOVIES_PAGE_SIZE }).map((_, i) => (
+              <SkeletonCard key={i} badges={2} />
+            ))}
+          </div>
+        )}
       </>
     );
   }
@@ -147,7 +153,10 @@ function MovieListSection({
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}
         />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+        <div
+          aria-busy={isLoading}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+        >
           {visibleMovies.map((movie) => (
             <PosterCard
               key={String(movie.id)}
@@ -172,7 +181,7 @@ function MovieListSection({
         <div className="flex justify-center pt-2">
           <button
             type="button"
-            onClick={() => setVisibleCount((current) => current + LOAD_MORE_SIZE)}
+            onClick={() => setVisibleCount((current) => current + PROFILE_MOVIES_PAGE_SIZE)}
             className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
           >
             Xem thêm

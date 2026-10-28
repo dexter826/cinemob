@@ -10,7 +10,7 @@ import {
   type SortOrder,
 } from '../utils/person-selectors';
 
-const ITEMS_PER_PAGE = 36;
+export const PERSON_MOVIES_PER_PAGE = 36;
 
 export function usePersonDetail(personId?: string) {
   const [retryNonce, setRetryNonce] = useState(0);
@@ -153,7 +153,7 @@ export function usePersonDetail(personId?: string) {
     [movies, searchQuery, selectedYears, sortBy, sortOrder],
   );
   const paginatedMovies = useMemo(
-    () => paginatePersonMovies(filteredMovies, currentPage, ITEMS_PER_PAGE),
+    () => paginatePersonMovies(filteredMovies, currentPage, PERSON_MOVIES_PER_PAGE),
     [currentPage, filteredMovies],
   );
 
@@ -178,6 +178,6 @@ export function usePersonDetail(personId?: string) {
     availableYears,
     filteredMovies,
     paginatedMovies,
-    totalPages: Math.ceil(filteredMovies.length / ITEMS_PER_PAGE),
+    totalPages: Math.ceil(filteredMovies.length / PERSON_MOVIES_PER_PAGE),
   };
 }

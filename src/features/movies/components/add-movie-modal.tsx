@@ -1,6 +1,7 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useState, useEffect } from 'react';
 
 import { X, Save, Film, Star, Type, Image, MessageSquare, Calendar, Clock } from 'lucide-react';
@@ -85,6 +86,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
     initialData?.movieToEdit ? 'review' : 'info',
   );
   const { showAlert } = useAlertStore();
+  const showSkeleton = useDelayedSkeleton(isLoadingDetails);
 
   useEffect(() => {
     if (errors.title || errors.country || errors.releaseDate || errors.runtime || errors.seasons) {
@@ -145,24 +147,26 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
             retry={{ label: 'Thử lại', onClick: retryDetails }}
           />
         ) : isLoadingDetails ? (
-          <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
-            <Skeleton className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog  shrink-0 mx-auto md:mx-0" />
-            <div className="flex-1 w-full space-y-6">
-              <Skeleton className="h-11 rounded-card w-full " />
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Skeleton className="h-20 rounded-card " />
-                  <Skeleton className="h-20 rounded-card " />
-                </div>
-                <Skeleton className="h-12 rounded-card w-full " />
-                <Skeleton className="h-12 rounded-card w-full " />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Skeleton className="h-12 rounded-card " />
-                  <Skeleton className="h-12 rounded-card " />
+          showSkeleton ? (
+            <div aria-busy="true" className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
+              <Skeleton className="w-full max-w-[200px] sm:max-w-[220px] md:max-w-none md:w-56 lg:w-64 aspect-2/3 rounded-card sm:rounded-dialog shrink-0 mx-auto md:mx-0" />
+              <div className="flex-1 w-full space-y-6">
+                <Skeleton className="h-11 w-full rounded-card" />
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Skeleton className="h-20 rounded-card" />
+                    <Skeleton className="h-20 rounded-card" />
+                  </div>
+                  <Skeleton className="h-12 w-full rounded-card" />
+                  <Skeleton className="h-12 w-full rounded-card" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Skeleton className="h-12 rounded-card" />
+                    <Skeleton className="h-12 rounded-card" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : null
         ) : (
           <form
             onSubmit={handleSubmit}

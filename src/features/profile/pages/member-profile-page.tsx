@@ -13,9 +13,10 @@ import IconButton from '@/shared/components/ui/icon-button';
 import Loading from '@/shared/components/ui/loading';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { getMemberProfile, buildProfileMovies } from '../services/member-profile-service';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import OwnProfileEditor from '../components/own-profile-editor';
 import MemberProfileCard from '../components/member-profile-card';
-import MovieListSection from '../components/movie-list-section';
+import MovieListSection, { PROFILE_MOVIES_PAGE_SIZE } from '../components/movie-list-section';
 import PosterCard from '@/features/movies/components/poster-card';
 import { formatDateAny } from '@/shared/utils/date-format';
 import { useOwnProfile } from '../hooks/use-own-profile';
@@ -23,6 +24,65 @@ import { getCommonMovies } from '../utils/common-movies';
 import type { MemberProfile } from '@/types';
 
 const COMMON_MOVIES_INITIAL = 12;
+
+const PROFILE_TABS = [
+  { key: 'common', label: 'Phim chung' },
+  { key: 'all', label: 'Tất cả phim' },
+] as const;
+
+interface ProfileTabsProps {
+  activeTab: 'common' | 'all';
+  onChange: (tab: 'common' | 'all') => void;
+}
+
+function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
+  return (
+    <div
+      role="group"
+      aria-label="Phim của thành viên"
+      className="flex items-center border-b border-border"
+    >
+      {PROFILE_TABS.map((tab) => {
+        const isActive = activeTab === tab.key;
+        return (
+          <button
+            key={tab.key}
+            type="button"
+            aria-pressed={isActive}
+            onClick={() => onChange(tab.key)}
+            className={`relative flex items-center h-11 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+              isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            {tab.label}
+            {isActive && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function MemberProfileCardSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="bg-surface border border-border rounded-dialog p-5 sm:p-6 flex flex-col items-center text-center"
+    >
+      <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-full" />
+      <Skeleton className="mt-2 h-7 w-40" />
+      <Skeleton className="mt-2 h-3 w-52" />
+      <Skeleton className="mt-2 h-3 w-32" />
+      <Skeleton className="mt-3 h-3 w-full max-w-prose" />
+      <Skeleton className="mt-2 h-3 w-4/5 max-w-prose" />
+    </div>
+  );
+}
 
 function MemberProfilePage() {
   const { uid } = useParams<{ uid: string }>();
@@ -143,6 +203,12 @@ function MemberProfilePage() {
 
   useEffect(() => setVisibleCommonCount(COMMON_MOVIES_INITIAL), [uid]);
 
+  const shouldShowSkeleton = !isOwn && (loading || loadedUid !== uid);
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
+  const shouldShowCommonSkeleton =
+    !isOwn && activeTab === 'common' && myMoviesLoading && myMovies.length === 0;
+  const showCommonSkeleton = useDelayedSkeleton(shouldShowCommonSkeleton);
+
   if (!user || !uid) return <Loading />;
 
   if (isOwn) {
@@ -200,18 +266,39 @@ function MemberProfilePage() {
         retry={{ label: 'Thử lại', onClick: () => setRetryNonce((n) => n + 1) }}
       />
     );
-  if (loading || loadedUid !== uid)
+  if (shouldShowSkeleton)
     return (
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <LoadingStatus>Đang tải hồ sơ thành viên…</LoadingStatus>
-        <div aria-busy="true">
-          <Skeleton className="h-56 w-full" />
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-            {Array.from({ length: 6 }, (_, i) => (
-              <SkeletonCard key={i} />
+        <PageHeader title="Hồ sơ thành viên" actions={copyLinkButton} />
+        {showSkeleton && <MemberProfileCardSkeleton />}
+        <section aria-label="Phim đã xem" aria-busy="true" className="space-y-4">
+          <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+          {showSkeleton &&
+            (activeTab === 'common' ? (
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-3/4 max-w-md" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                  {Array.from({ length: COMMON_MOVIES_INITIAL }, (_, i) => (
+                    <SkeletonCard key={i} badges={2} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <Skeleton className="h-12 flex-1 rounded-none" />
+                  <Skeleton className="h-11 w-full sm:w-64 rounded-control" />
+                </div>
+                <Skeleton className="h-4 w-48 mx-1" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                  {Array.from({ length: PROFILE_MOVIES_PAGE_SIZE }, (_, i) => (
+                    <SkeletonCard key={i} badges={2} />
+                  ))}
+                </div>
+              </div>
             ))}
-          </div>
-        </div>
+        </section>
       </div>
     );
 
@@ -241,39 +328,7 @@ function MemberProfilePage() {
       ) : (
         <>
           <section aria-label="Phim đã xem" className="space-y-4">
-            <div
-              role="group"
-              aria-label="Phim của thành viên"
-              className="flex items-center border-b border-border"
-            >
-              {(
-                [
-                  { key: 'common', label: 'Phim chung' },
-                  { key: 'all', label: 'Tất cả phim' },
-                ] as const
-              ).map((tab) => {
-                const isActive = activeTab === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`relative flex items-center h-11 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
-                      isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                    }`}
-                  >
-                    {tab.label}
-                    {isActive && (
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
 
             {activeTab === 'common' &&
               (myMoviesError ? (
@@ -282,15 +337,27 @@ function MemberProfilePage() {
                   description="Thử lại để xem phim chung."
                   retry={{ label: 'Thử lại', onClick: retryMovies }}
                 />
-              ) : myMoviesLoading ? (
-                <Loading text="Đang tải phim chung…" />
+              ) : shouldShowCommonSkeleton ? (
+                showCommonSkeleton ? (
+                  <div
+                    aria-busy="true"
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+                  >
+                    {Array.from({ length: COMMON_MOVIES_INITIAL }, (_, i) => (
+                      <SkeletonCard key={i} badges={2} />
+                    ))}
+                  </div>
+                ) : null
               ) : commonMovies && commonMovies.length > 0 ? (
                 <div className="space-y-4">
                   <p className="text-display-md text-text-primary tracking-tight">
                     Bạn và {profile.displayName} đã xem chung{' '}
                     <span className="text-primary">{commonMovies.length}</span> phim
                   </p>
-                  <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                  <div
+                    aria-busy={myMoviesLoading}
+                    className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+                  >
                     {commonMovies.slice(0, visibleCommonCount).map((movie) => (
                       <PosterCard
                         key={String(movie.id)}

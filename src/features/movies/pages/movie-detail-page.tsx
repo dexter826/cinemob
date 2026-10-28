@@ -33,6 +33,55 @@ import Button from '@/shared/components/ui/button';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Skeleton from '@/shared/components/ui/skeleton';
 import LoadingStatus from '@/shared/components/ui/loading-status';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+
+function MovieDetailSkeleton() {
+  return (
+    <div aria-busy="true" className="flex flex-col md:flex-row gap-6 md:gap-10 pb-10">
+      <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
+        <Skeleton className="aspect-2/3 w-full rounded-poster" />
+        <Skeleton className="mt-3 h-3 w-40" />
+      </div>
+      <div className="flex-1 min-w-0 space-y-4">
+        <Skeleton className="h-12 w-3/4" />
+        <Skeleton className="h-5 w-1/2" />
+        <div className="flex flex-wrap items-center gap-3">
+          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+        <Skeleton className="h-8 w-24" />
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Skeleton className="h-10 w-36" />
+          <Skeleton className="h-10 w-28" />
+          <Skeleton className="h-10 w-28" />
+        </div>
+        <div className="mt-7 space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-11/12" />
+          <Skeleton className="h-4 w-4/5" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MovieCreditsSkeleton() {
+  return (
+    <div aria-busy="true" className="mt-7 border-t border-border">
+      {[0, 1].map((index) => (
+        <div key={index} className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
+          <Skeleton className="mt-1 h-3 w-20 sm:w-24 shrink-0" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -50,6 +99,8 @@ function MovieDetailPage() {
 
   const movie = useMemo(() => movies.find((m) => String(m.id) === id), [movies, id]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
+  const showDetailSkeleton = useDelayedSkeleton(!movie && collectionLoading);
+  const showExtrasSkeleton = useDelayedSkeleton(extrasLoading && !credits);
 
   const mainTitle = movie ? getMainTitle(movie) : '';
   const subTitle = movie ? getSubTitle(movie) : '';
@@ -87,26 +138,26 @@ function MovieDetailPage() {
 
   if (!movie) {
     return (
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
+        <div className="flex items-center justify-between pb-4 md:pb-5">
+          <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
+            <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
+          </IconButton>
+        </div>
         {collectionLoading ? (
           <>
             <LoadingStatus>Đang tải thông tin phim…</LoadingStatus>
-            <div aria-busy="true" className="flex flex-col md:flex-row gap-6 md:gap-10">
-              <Skeleton className="w-full max-w-[240px] md:max-w-[280px] aspect-2/3 shrink-0 self-center md:self-start" />
-              <div className="flex-1 space-y-4">
-                <Skeleton className="h-10 w-3/4" />
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="h-28 w-full" />
-              </div>
-            </div>
+            {showDetailSkeleton && <MovieDetailSkeleton />}
           </>
         ) : (
-          <EmptyState
-            icon={ArrowLeft}
-            title="Không tìm thấy phim trong bộ sưu tập"
-            description="Phim này chưa có trong bộ sưu tập của bạn hoặc đã bị xóa."
-            action={{ label: 'Về Thư viện', onClick: () => navigate('/') }}
-          />
+          <div className="py-10">
+            <EmptyState
+              icon={ArrowLeft}
+              title="Không tìm thấy phim trong bộ sưu tập"
+              description="Phim này chưa có trong bộ sưu tập của bạn hoặc đã bị xóa."
+              action={{ label: 'Về Thư viện', onClick: () => navigate('/') }}
+            />
+          </div>
         )}
       </div>
     );
@@ -157,7 +208,10 @@ function MovieDetailPage() {
         </IconButton>
       </div>
 
-      <article className="pb-10 flex flex-col md:flex-row gap-6 md:gap-10">
+      <article
+        aria-busy={collectionLoading}
+        className="pb-10 flex flex-col md:flex-row gap-6 md:gap-10"
+      >
         <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
           <img
             src={posterUrl}
@@ -306,47 +360,46 @@ function MovieDetailPage() {
             </div>
           )}
 
-          {extrasLoading ? (
-            <div role="status">
-              <SectionHeader className="mt-7">Đang tải dàn diễn viên…</SectionHeader>
+          <LoadingStatus>{extrasLoading ? 'Đang tải dàn diễn viên…' : ''}</LoadingStatus>
+          {credits ? (
+            <div aria-busy={extrasLoading} className="mt-7 border-t border-border">
+              {credits.crew?.some((c) => c.job === 'Director') && (
+                <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
+                  <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
+                    Đạo diễn
+                  </span>
+                  <p className="text-body text-text-primary">
+                    {credits.crew
+                      .filter((c) => c.job === 'Director')
+                      .map((d) => d.name)
+                      .join(', ')}
+                  </p>
+                </div>
+              )}
+              {credits.cast && credits.cast.length > 0 && (
+                <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
+                  <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
+                    Diễn viên
+                  </span>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-body">
+                    {credits.cast.slice(0, 8).map((actor) => (
+                      <Link
+                        key={actor.id}
+                        to={`/person/${actor.id}`}
+                        className="text-text-secondary hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
+                      >
+                        {actor.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          ) : (
-            credits && (
-              <div className="mt-7 border-t border-border">
-                {credits.crew?.some((c) => c.job === 'Director') && (
-                  <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
-                    <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
-                      Đạo diễn
-                    </span>
-                    <p className="text-body text-text-primary">
-                      {credits.crew
-                        .filter((c) => c.job === 'Director')
-                        .map((d) => d.name)
-                        .join(', ')}
-                    </p>
-                  </div>
-                )}
-                {credits.cast && credits.cast.length > 0 && (
-                  <div className="flex gap-4 sm:gap-8 py-3 border-b border-border-default">
-                    <span className="w-20 sm:w-24 shrink-0 text-label-caps text-text-secondary pt-0.5">
-                      Diễn viên
-                    </span>
-                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-body">
-                      {credits.cast.slice(0, 8).map((actor) => (
-                        <Link
-                          key={actor.id}
-                          to={`/person/${actor.id}`}
-                          className="text-text-secondary hover:text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
-                        >
-                          {actor.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          )}
+          ) : extrasLoading ? (
+            showExtrasSkeleton ? (
+              <MovieCreditsSkeleton />
+            ) : null
+          ) : null}
         </div>
       </article>
 

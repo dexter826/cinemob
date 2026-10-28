@@ -9,8 +9,39 @@ import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { PersonMovieSection } from '../components/person/person-movie-section';
-import { usePersonDetail } from '../hooks/use-person-detail';
+import { usePersonDetail, PERSON_MOVIES_PER_PAGE } from '../hooks/use-person-detail';
+
+function PersonProfileSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="bg-surface border border-border-default rounded-dialog p-5 sm:p-6"
+    >
+      <div className="flex flex-col md:flex-row gap-6 sm:gap-8">
+        <Skeleton className="mx-auto md:mx-0 h-64 w-48 sm:h-80 sm:w-56 shrink-0 rounded-card" />
+        <div className="flex-1 space-y-6">
+          <Skeleton className="h-5 w-48" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <Skeleton className="h-16 w-full rounded-card" />
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-16 w-full rounded-card" />
+            </div>
+          </div>
+          <div className="pt-4 border-t border-border-default space-y-2">
+            <Skeleton className="h-3 w-32" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-11/12" />
+            <Skeleton className="h-3 w-4/5" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function PersonDetailPage() {
   const { personId } = useParams<{ personId: string }>();
@@ -55,6 +86,9 @@ function PersonDetailPage() {
     };
   }, [showFilters, setShowFilters]);
 
+  const shouldShowSkeleton = loading;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
+
   return (
     <div className="text-text-primary transition-colors">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -62,7 +96,8 @@ function PersonDetailPage() {
         <PageHeader
           onBack={() => navigate(-1)}
           icon={User}
-          title={loading ? 'Đang tải…' : person?.name || 'Chi tiết nghệ sĩ'}
+          loading={loading}
+          title={person?.name || 'Chi tiết nghệ sĩ'}
           description={
             person?.place_of_birth
               ? `Nơi sinh: ${person.place_of_birth}`
@@ -76,15 +111,26 @@ function PersonDetailPage() {
             description="Vui lòng thử lại."
             retry={{ label: 'Thử lại', onClick: retry }}
           />
-        ) : loading ? (
-          <div className="space-y-6">
-            <Skeleton className=" border border-border-default rounded-dialog p-5 sm:p-6 h-96 " />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
+        ) : shouldShowSkeleton ? (
+          showSkeleton ? (
+            <div aria-busy="true" className="space-y-6">
+              <PersonProfileSkeleton />
+              <div
+                aria-hidden="true"
+                className="flex flex-col md:flex-row md:items-center gap-6 pt-4"
+              >
+                <div className="flex items-center gap-3 md:flex-1">
+                  <Skeleton className="h-12 flex-1 rounded-none" />
+                  <Skeleton className="h-11 w-11 shrink-0 rounded-control" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                {Array.from({ length: PERSON_MOVIES_PER_PAGE }).map((_, i) => (
+                  <SkeletonCard key={i} badges={1} />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null
         ) : !person ? (
           <div className="max-w-6xl mx-auto py-20">
             <EmptyState

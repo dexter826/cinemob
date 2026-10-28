@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useEffectEvent, useMemo, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useReleaseCalendarStore from '../stores/release-calendar-store';
+import { createCalendarFingerprint } from '../services/calendar-service';
 import useAlertStore from '@/shared/stores/alert-store';
 import useToastStore from '@/shared/stores/toast-store';
 import {
@@ -64,6 +65,7 @@ export const useReleaseCalendar = () => {
     return date && formatDateParam(date).startsWith(monthKey) ? date : null;
   }, [dateParam, monthKey]);
   const matchesScope = loadedMonthKey === monthKey && loadedUserId === userId;
+  const seriesFingerprint = useMemo(() => createCalendarFingerprint(movies), [movies]);
   const monthEpisodes = useMemo(
     () => (matchesScope ? storedEpisodes : []),
     [matchesScope, storedEpisodes],
@@ -71,26 +73,29 @@ export const useReleaseCalendar = () => {
   const loadingEpisodes = fetchingEpisodes || (!loading && !!userId && !matchesScope);
   const episodesError = matchesScope ? storedError : null;
 
+  const loadMonthEpisodes = useEffectEvent((uid: string, month: string, fingerprint: string) => {
+    void fetchMonthEpisodes(uid, movies, month, fingerprint);
+  });
+
   useEffect(() => {
     initializeForUser(userId ?? '');
     if (!userId || loading || collectionError) return;
     const movieState = useMovieStore.getState();
     if (movieState.activeUid !== userId || movieState.loading) return;
-    void fetchMonthEpisodes(userId, movies, monthKey);
+    loadMonthEpisodes(userId, monthKey, seriesFingerprint);
     return cancelMonthRequest;
   }, [
     userId,
     collectionError,
     loading,
-    movies,
     monthKey,
-    fetchMonthEpisodes,
+    seriesFingerprint,
     cancelMonthRequest,
     initializeForUser,
   ]);
 
   const retryEpisodes = () => {
-    if (userId) void fetchMonthEpisodes(userId, movies, monthKey);
+    if (userId) void fetchMonthEpisodes(userId, movies, monthKey, seriesFingerprint);
   };
 
   const [pushSupported, setPushSupported] = useState(false);
@@ -241,6 +246,7 @@ export const useReleaseCalendar = () => {
     monthEpisodes,
     loading,
     loadingEpisodes,
+    monthLoaded: matchesScope,
     episodesError,
     retryEpisodes,
     tvSeries,

@@ -43,7 +43,7 @@ const INITIAL_FILTER_STATE: FilterState = {
   sourceType: 'all',
 };
 
-const MOVIES_PER_PAGE = 24;
+export const MOVIES_PER_PAGE = 24;
 
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);

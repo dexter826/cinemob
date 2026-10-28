@@ -4,7 +4,8 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import { Dialog, DialogBody, DialogHeader } from '@/shared/components/ui/dialog';
 import SearchField from '@/shared/components/ui/search-field';
 import { ErrorState } from '@/shared/components/ui/error-state';
-import Loading from '@/shared/components/ui/loading';
+import Skeleton from '@/shared/components/ui/skeleton';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { useUserSearch } from '../../hooks/use-user-search';
 import UserCard from './user-card';
@@ -22,6 +23,7 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
   const { searchText, setSearchText, submit, results, loading, error, submittedQuery } =
     useUserSearch(user?.uid);
   const settled = submittedQuery.length > 0 && searchText.trim().toLowerCase() === submittedQuery;
+  const showSkeleton = useDelayedSkeleton(loading && results.length === 0);
 
   // Điều hướng sang hồ sơ do Link trong UserCard đảm nhiệm.
   const openProfile = () => {
@@ -61,10 +63,23 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
           />
         </form>
 
-        {loading ? (
-          <div className="flex flex-1 items-center justify-center">
-            <Loading fullScreen={false} />
-          </div>
+        {loading && results.length === 0 ? (
+          showSkeleton ? (
+            <div aria-busy="true" className="space-y-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-4 rounded-dialog border border-border"
+                >
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-3 w-2/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null
         ) : error ? (
           <ErrorState
             compact
@@ -84,7 +99,12 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
             Không có thành viên nào với email “{searchText.trim()}”.
           </p>
         ) : (
-          <div aria-live="polite" aria-label="Kết quả tìm kiếm thành viên" className="space-y-3">
+          <div
+            aria-live="polite"
+            aria-busy={loading}
+            aria-label="Kết quả tìm kiếm thành viên"
+            className="space-y-3"
+          >
             {results.map((profile) => (
               <UserCard key={profile.uid} profile={profile} onClick={openProfile} />
             ))}

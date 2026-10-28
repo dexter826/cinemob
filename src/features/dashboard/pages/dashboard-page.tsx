@@ -12,11 +12,13 @@ import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import Skeleton from '@/shared/components/ui/skeleton';
 import Button from '@/shared/components/ui/button';
 import { PageHeader } from '@/shared/components/ui';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
 import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
+import { MOVIES_PER_PAGE } from '../hooks/use-dashboard-filters';
 import DashboardTabs from '../components/dashboard-tabs';
 import DashboardFilters from '../components/dashboard-filters';
 import DashboardActiveFilters from '../components/dashboard-active-filters';
@@ -52,6 +54,9 @@ function DashboardPage() {
     availableGenres,
   } = useDashboard();
 
+  const shouldShowSkeleton = loading && movies.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
+
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
       {/* Số liệu nằm ở tabs + thống kê riêng, không đưa lên header */}
@@ -75,9 +80,9 @@ function DashboardPage() {
           historyCount={statusCounts.history}
           watchlistCount={statusCounts.watchlist}
           droppedCount={statusCounts.dropped}
-          loading={loading}
+          loading={shouldShowSkeleton}
         />
-        {loading ? (
+        {shouldShowSkeleton ? (
           <div
             aria-hidden="true"
             className="flex flex-wrap items-center justify-end gap-x-3 gap-y-2 py-2"
@@ -129,12 +134,17 @@ function DashboardPage() {
           Nội dung thư viện
         </h2>
         <LoadingStatus>{loading ? 'Đang tải thư viện…' : ''}</LoadingStatus>
-        {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
+        {shouldShowSkeleton ? (
+          showSkeleton ? (
+            <div
+              aria-busy="true"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+            >
+              {Array.from({ length: MOVIES_PER_PAGE }).map((_, i) => (
+                <SkeletonCard key={i} badges={2} />
+              ))}
+            </div>
+          ) : null
         ) : libraryError ? (
           <ErrorState
             title="Không tải được thư viện"
@@ -184,6 +194,7 @@ function DashboardPage() {
               variants={staggerContainer}
               initial={reducedMotion ? false : 'hidden'}
               animate="show"
+              aria-busy={loading}
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
             >
               {processedMovies.map((movie) => (

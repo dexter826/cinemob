@@ -1,4 +1,5 @@
 import Skeleton from '@/shared/components/ui/skeleton';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { monthLabel } from '@/shared/utils/date-format';
 import { UpcomingEpisode } from '@/types';
@@ -24,6 +25,7 @@ function CalendarGrid({
   setSelectedDate,
   selectedDate,
 }: CalendarGridProps) {
+  const showSkeleton = useDelayedSkeleton(loadingEpisodes);
   const getDaysInMonth = (date: Date) =>
     new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const getFirstDayOfMonth = (date: Date) =>
@@ -190,17 +192,21 @@ function CalendarGrid({
       </div>
 
       {loadingEpisodes ? (
-        <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {Array.from({
-            length:
-              Math.ceil((getDaysInMonth(currentDate) + getFirstDayOfMonth(currentDate)) / 7) * 7,
-          }).map((_, idx) => (
-            <Skeleton
-              key={idx}
-              className="h-14 sm:h-20 md:h-28 p-1 border border-border-default/50 rounded-control sm:rounded-card "
-            />
-          ))}
-        </div>
+        showSkeleton ? (
+          <div aria-busy="true" className="grid grid-cols-7 gap-1 sm:gap-2">
+            {Array.from({
+              length:
+                Math.ceil((getDaysInMonth(currentDate) + getFirstDayOfMonth(currentDate)) / 7) * 7,
+            }).map((_, idx) => (
+              <div
+                key={idx}
+                className="h-14 sm:h-20 md:h-28 overflow-hidden border border-border-default/50 rounded-control sm:rounded-card"
+              >
+                <Skeleton className="h-full w-full rounded-none" />
+              </div>
+            ))}
+          </div>
+        ) : null
       ) : (
         <div className="grid grid-cols-7 gap-1 sm:gap-2">{renderCalendarDays()}</div>
       )}

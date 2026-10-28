@@ -1,4 +1,4 @@
-import Loading from '@/shared/components/ui/loading';
+import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import Spinner from '@/shared/components/ui/spinner';
 import { useEffect, useRef } from 'react';
@@ -46,7 +46,16 @@ function AlbumSection({
     }
   }, [showCreateAlbum]);
 
-  if (loading) return <Loading text="Đang tải album…" />;
+  if (loading)
+    return (
+      <div aria-busy="true" className="pt-5 border-t border-border-default space-y-4">
+        <div className="flex items-center justify-between">
+          <Skeleton className="ml-1 h-3 w-32" />
+          <Skeleton className="h-8 w-20 rounded-control" />
+        </div>
+        <Skeleton className="h-11 w-full rounded-control" />
+      </div>
+    );
   if (error)
     return (
       <ErrorState

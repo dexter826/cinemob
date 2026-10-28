@@ -29,11 +29,11 @@ export const fetchEpisodesForMonth = async (
   userId: string,
   movies: Movie[],
   monthKey: string,
+  fingerprint: string,
 ): Promise<UpcomingEpisode[]> => {
   const tvSeries = movies.filter((movie) => movie.media_type === 'tv' && movie.source === 'tmdb');
   if (tvSeries.length === 0) return [];
 
-  const fingerprint = createCalendarFingerprint(tvSeries);
   const cacheKey = `calendar_month_v1_${userId}_${monthKey}`;
   try {
     const cached = JSON.parse(localStorage.getItem(cacheKey) ?? 'null') as {

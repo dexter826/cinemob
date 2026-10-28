@@ -23,6 +23,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import PageHeader from '@/shared/components/ui/page-header';
 import { useStats } from '../hooks/use-stats';
 import Dropdown from '@/shared/components/ui/dropdown';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { useReducedMotion } from 'framer-motion';
 import { buildGenreChartData, topEntries } from '../utils/stats-selectors';
@@ -56,6 +57,77 @@ const StatsTooltip = ({ active, payload, label }: ChartTooltipProps) => {
   }
   return null;
 };
+
+function StatsLoadingSkeleton() {
+  return (
+    <>
+      <section>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[0, 1].map((index) => (
+            <div
+              key={index}
+              className={
+                index === 1
+                  ? 'flex flex-col items-center md:border-l md:border-border md:pl-6'
+                  : 'flex flex-col items-center'
+              }
+            >
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="mt-1.5 h-12 w-32" />
+              <Skeleton className="mt-2 h-3 w-40" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-surface border border-border p-4 sm:p-6 rounded-dialog">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+          <Skeleton className="h-5 w-52" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-9 w-28" />
+          </div>
+        </div>
+        <Skeleton className="h-72 sm:h-80 w-full" />
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section className="bg-surface border border-border p-6 rounded-dialog">
+          <Skeleton className="h-5 w-40" />
+          <div className="mt-8 space-y-4">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-0.5 flex-1" />
+                <Skeleton className="h-7 w-10" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-surface border border-border p-6 rounded-dialog">
+          <Skeleton className="h-5 w-32" />
+          <div className="mt-8 space-y-3">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-6 w-8" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+                <Skeleton className="h-3 w-14" />
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <section className="bg-surface border border-border p-6 rounded-dialog">
+        <Skeleton className="h-5 w-36" />
+        <Skeleton className="mt-8 h-96 w-full" />
+      </section>
+    </>
+  );
+}
 
 function StatsPage() {
   const { movies, loading, error, retry } = useMovieStore();
@@ -111,6 +183,9 @@ function StatsPage() {
     return buildGenreChartData(moviesByGenre);
   }, [moviesByGenre]);
 
+  const shouldShowSkeleton = loading && movies.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
+
   if (error)
     return (
       <ErrorState
@@ -120,21 +195,27 @@ function StatsPage() {
       />
     );
 
-  if (loading) {
+  if (shouldShowSkeleton) {
     return (
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <LoadingStatus>Đang tải thống kê…</LoadingStatus>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Skeleton className="h-32  rounded-dialog " />
-          <Skeleton className="h-32  rounded-dialog " />
+        <div aria-busy="true" className="space-y-5 md:space-y-6">
+          <PageHeader title="Thống kê điện ảnh" />
+          {showSkeleton && (
+            <div aria-hidden="true" className="space-y-5 md:space-y-6">
+              <StatsLoadingSkeleton />
+            </div>
+          )}
         </div>
-        <Skeleton className="h-96  rounded-dialog " />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
+    <div
+      aria-busy={loading}
+      className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6"
+    >
       <PageHeader title="Thống kê điện ảnh" />
 
       {totalMovies === 0 ? (

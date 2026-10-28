@@ -13,6 +13,7 @@ import Switch from '@/shared/components/ui/switch';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlertStore from '@/shared/stores/alert-store';
 import { classNames } from '@/shared/utils/class-names';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { ACCEPTED_IMAGE_TYPES, CROP_SIZE } from '../constants/avatar-editor';
 import { useAvatarCrop } from '../hooks/use-avatar-crop';
 import { formatJoinDate, GENDER_LABELS } from '../utils/profile-format';
@@ -78,6 +79,7 @@ function OwnProfileEditor({
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
   const reducedMotion = useReducedMotion() ?? false;
   const panelMotion = getPanelMotion(reducedMotion);
+  const showSkeleton = useDelayedSkeleton(loading);
 
   useEffect(() => {
     if (!isAvatarMenuOpen) return;
@@ -413,11 +415,13 @@ function OwnProfileEditor({
                       </Button>
                     </div>
                   ) : loading ? (
-                    <div aria-hidden="true" className="space-y-2 max-w-prose">
-                      <Skeleton className="h-3 w-32 rounded-poster  " />
-                      <Skeleton className="h-3 w-3/4 rounded-poster  " />
-                      <Skeleton className="h-3 w-1/2 rounded-poster  " />
-                    </div>
+                    showSkeleton ? (
+                      <div aria-hidden="true" className="space-y-2 max-w-prose">
+                        <Skeleton className="h-3 w-32" />
+                        <Skeleton className="h-3 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                      </div>
+                    ) : null
                   ) : (
                     <>
                       <ProfileMeta gender={profile?.gender} dob={profile?.dob} />

@@ -7,7 +7,8 @@ import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '../stores/album-store';
 import { updateAlbum, addAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
-import Loading from '@/shared/components/ui/loading';
+import Skeleton from '@/shared/components/ui/skeleton';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MESSAGES } from '@/constants/messages';
@@ -91,6 +92,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
   const availableAlbums = albums.filter(
     (album) => album.movieDocIds && !album.movieDocIds.includes(movie?.docId || ''),
   );
+  const showSkeleton = useDelayedSkeleton(loading && albums.length === 0);
 
   return (
     <Dialog open={isOpen} onClose={onClose} titleId="album-selector-title" presentation="sheet">
@@ -189,8 +191,25 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             description="Vui lòng thử tải lại album."
             retry={{ label: 'Thử lại', onClick: retry }}
           />
-        ) : loading ? (
-          <Loading size={40} text="Đang tải album…" fullScreen={false} />
+        ) : loading && albums.length === 0 ? (
+          showSkeleton ? (
+            <div aria-busy="true" className="space-y-3">
+              <Skeleton className="ml-1 h-3 w-24" />
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-4 p-4 rounded-dialog border border-border"
+                >
+                  <Skeleton className="h-12 w-12 rounded-control shrink-0" />
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  <Skeleton className="h-3 w-10 shrink-0" />
+                </div>
+              ))}
+            </div>
+          ) : null
         ) : availableAlbums.length === 0 ? (
           <EmptyState
             icon={FolderPlus}
@@ -203,7 +222,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             compact
           />
         ) : (
-          <div className="space-y-3">
+          <div aria-busy={loading} className="space-y-3">
             <h3 className="text-label-caps text-text-secondary ml-1">Chọn album</h3>
             {availableAlbums.map((album) => (
               <button

@@ -296,7 +296,14 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 ### Skeleton & Loading
 
 - Skeleton dùng token `skeleton`, radius 8, `motion-safe:animate-pulse`; không dùng phần trăm giả.
-- Skeleton phải khớp aspect, grid, gap và breakpoint của nội dung thật; `SkeletonCard` khớp PosterCard.
+- Skeleton phải khớp aspect, grid, gap và breakpoint của nội dung thật; `SkeletonCard` khớp PosterCard qua `badges` 0–3.
+- Số skeleton bằng page size, hoặc số item render lần đầu nếu màn không phân trang.
+- Chỉ hiện skeleton sau 150ms và giữ tối thiểu 300ms một khi đã hiện; không crossfade.
+- Ngoại lệ timing: placeholder nhỏ nằm trong chrome đã render (số trên tab, value trong `Stat`, section trong modal) hiện ngay, vì chờ 150ms sẽ để lộ khoảng trống.
+- Skeleton chỉ mô phỏng phần luôn có; box/section phụ thuộc data không dựng sẵn — chấp nhận dịch chuyển nhỏ khi data về.
+- Chrome luôn render: title tĩnh, back, actions; field phụ thuộc data hiện skeleton tại chỗ, không thay title bằng "Đang tải…".
+- Skeleton chỉ dùng khi vùng chưa có data cho context hiện tại; revalidate cùng context giữ nội dung cũ + `aria-busy`; đổi uid/query/month/id hiện skeleton cho context mới.
+- Spinner chỉ ở nút/hành động, autocomplete, route chunk, lazy dialog, splash; vùng list/card có shape dùng skeleton.
 - Spinner đặt tại nút/vùng thao tác; label trạng thái bên cạnh; `aria-busy`.
 - Loading status nằm ngoài vùng `aria-busy`; `role="status"`, `aria-live="polite"`.
 - Lỗi đọc khác dữ liệu rỗng; lỗi có retry; pending kết thúc khi lỗi hoặc huỷ.
@@ -382,6 +389,7 @@ Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam
 - **Do** dùng radius 8/4/full; **don't** dùng 6px hoặc trộn radius trong cùng view.
 - **Do** dùng thang motion 120/150/200/250; **don't** dùng duration tùy ý.
 - **Do** dùng skeleton khớp layout; **don't** dùng phần trăm giả hoặc spinner toàn trang.
+- **Do** giữ chrome thật và skeleton khớp page size; **don't** thay title bằng "Đang tải…" hoặc spinner cho vùng list/card.
 - **Do** dùng undo-toast 7s cho hành động đảo ngược; **don't** mở confirm dialog cho mọi thứ.
 - **Do** viết copy cụ thể, tiếng Việt, xưng "bạn"; **don't** dùng emoji hoặc câu lỗi chung chung.
 - **Do** dùng token cho mọi màu; **don't** viết hex/rgba trong `.tsx` (trừ logo Google và fallback SVG).

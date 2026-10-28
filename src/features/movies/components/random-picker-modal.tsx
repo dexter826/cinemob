@@ -4,7 +4,8 @@ import type { Movie, TMDBMovieResult } from '@/types';
 import { PLACEHOLDER_IMAGE } from '@/constants';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { useRandomPicker, type PoolMovie, type PoolType } from '../hooks/use-random-picker';
-import Loading from '@/shared/components/ui/loading';
+import Skeleton from '@/shared/components/ui/skeleton';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
@@ -62,6 +63,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
       : (currentItem as TMDBMovieResult).title || (currentItem as TMDBMovieResult).name || ''
     : '';
   const showConfetti = hasResult && !reducedMotion;
+  const showSkeleton = useDelayedSkeleton(isLoadingPool && !hasPool);
 
   return (
     <Dialog
@@ -115,28 +117,32 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
           </div>
 
           <div className="relative z-10">
-            {isLoadingPool && (
-              <div className="py-10">
-                <Loading fullScreen={false} text="Đang chuẩn bị danh sách đề xuất…" />
-              </div>
-            )}
-            {!isLoadingPool && poolError && !hasPool && (
+            {isLoadingPool && !hasPool ? (
+              showSkeleton ? (
+                <div aria-busy="true" className="py-10">
+                  <div className="flex items-center justify-center gap-3">
+                    <Skeleton className="h-40 w-28 rounded-poster" />
+                    <Skeleton className="h-56 w-40 rounded-poster" />
+                    <Skeleton className="h-40 w-28 rounded-poster" />
+                  </div>
+                  <Skeleton className="mx-auto mt-6 h-5 w-48" />
+                </div>
+              ) : null
+            ) : poolError && !hasPool ? (
               <ErrorState
                 title={poolError}
                 description="Vui lòng thử tải lại."
                 retry={{ label: 'Thử lại', onClick: retryPool }}
                 compact
               />
-            )}
-            {!isLoadingPool && !poolError && !hasPool && (
+            ) : !hasPool ? (
               <EmptyState
                 icon={Dice5}
                 title="Không tìm thấy phim"
                 description="Không có phim sẽ xem và không tải được danh sách thịnh hành."
                 compact
               />
-            )}
-            {!isLoadingPool && hasPool && (
+            ) : (
               <PickerWheel
                 leftSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, -1), poolType)}
                 centerSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 0), poolType)}

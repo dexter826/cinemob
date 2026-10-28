@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { LucideIcon } from 'lucide-react';
 import { classNames } from '@/shared/utils/class-names';
 
 interface StatProps {
   label: string;
-  value: string | number;
+  value: ReactNode;
   subValue?: string;
   icon: LucideIcon;
   colorClass: string;

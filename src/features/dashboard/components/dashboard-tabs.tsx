@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import Skeleton from '@/shared/components/ui/skeleton';
 import { ActiveTab } from '../hooks/use-dashboard-filters';
 import { MOVIE_STATUS_TAB_LABEL } from '@/constants/movie-status';
 
@@ -49,10 +50,7 @@ function DashboardTabs({
               {tab.label}
               <span className={`ml-1.5 tabular-nums ${isActive ? 'text-primary' : 'opacity-60'}`}>
                 {loading ? (
-                  <span
-                    aria-hidden="true"
-                    className="inline-block h-3 w-5 align-middle rounded-control bg-skeleton motion-safe:animate-pulse motion-reduce:animate-none"
-                  />
+                  <Skeleton as="span" className="inline-block h-3 w-5 align-middle" />
                 ) : (
                   String(counts[tab.key]).padStart(2, '0')
                 )}

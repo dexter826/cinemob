@@ -5,6 +5,7 @@ import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import { Search, Star } from 'lucide-react';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import MoviePosterGrid from './movie-poster-grid';
 
 interface SearchResultsProps {
@@ -40,14 +41,21 @@ function SearchResults({
   resultsError = false,
   retrySearch,
 }: SearchResultsProps) {
+  const showTrendingSkeleton = isTrendingLoading && trendingMovies.length === 0;
+  const showSkeleton = useDelayedSkeleton(isLoading);
+  const showTrendingVisible = useDelayedSkeleton(showTrendingSkeleton);
+
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 py-6 sm:py-8">
+    return showSkeleton ? (
+      <div
+        aria-busy="true"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
+      >
         {Array.from({ length: 20 }).map((_, i) => (
-          <SkeletonCard key={i} />
+          <SkeletonCard key={i} badges={2} />
         ))}
       </div>
-    );
+    ) : null;
   }
 
   if (resultsError) {
@@ -61,7 +69,6 @@ function SearchResults({
     );
   }
 
-  const showTrendingSkeleton = isTrendingLoading && trendingMovies.length === 0;
   const showFiltered = mode !== 'home';
 
   return (
@@ -97,11 +104,16 @@ function SearchResults({
 
       {!showFiltered &&
         (showTrendingSkeleton ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
+          showTrendingVisible ? (
+            <div
+              aria-busy="true"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
+            >
+              {Array.from({ length: 20 }).map((_, i) => (
+                <SkeletonCard key={i} badges={2} />
+              ))}
+            </div>
+          ) : null
         ) : trendingMovies.length > 0 ? (
           <MoviePosterGrid
             movies={trendingMovies}

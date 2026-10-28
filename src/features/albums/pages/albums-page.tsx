@@ -13,16 +13,39 @@ import useAlbumStore from '../stores/album-store';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Pagination from '@/shared/components/ui/pagination';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import CreateAlbumModal from '../components/create-album-modal';
 import AlbumCard from '../components/album-card';
 
 const ALBUMS_PER_PAGE = 12;
+
+function AlbumCardSkeleton() {
+  return (
+    <div aria-hidden="true" className="relative aspect-2/3">
+      <div className="absolute inset-0 -translate-x-[2%] -rotate-[1.5deg] overflow-hidden rounded-poster border border-border bg-surface">
+        <Skeleton className="absolute inset-0 rounded-none" />
+      </div>
+      <div className="absolute inset-0 translate-x-[2%] rotate-[1.5deg] overflow-hidden rounded-poster border border-border bg-surface">
+        <Skeleton className="absolute inset-0 rounded-none" />
+      </div>
+      <div className="absolute inset-0 overflow-hidden rounded-poster border border-border bg-surface">
+        <Skeleton className="absolute inset-0 rounded-none" />
+        <div className="absolute inset-x-0 bottom-0 space-y-2 p-2.5">
+          <Skeleton className="h-3 w-3/4" />
+          <Skeleton className="h-2 w-1/2" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
   const { showAlert } = useAlertStore();
   const { albums, loading, error, retry, albumCoverMovies } = useAlbumStore();
+  const shouldShowSkeleton = loading && albums.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,12 +119,17 @@ function AlbumsPage() {
           description="Vui lòng thử tải lại album."
           retry={{ label: 'Thử lại', onClick: retry }}
         />
-      ) : loading ? (
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-2/3 rounded-poster  " />
-          ))}
-        </div>
+      ) : shouldShowSkeleton ? (
+        showSkeleton ? (
+          <div
+            aria-busy="true"
+            className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8"
+          >
+            {Array.from({ length: ALBUMS_PER_PAGE }).map((_, i) => (
+              <AlbumCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : null
       ) : albums.length === 0 ? (
         <div className="mt-6">
           <EmptyState
@@ -112,7 +140,10 @@ function AlbumsPage() {
           />
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+        <div
+          aria-busy={loading}
+          className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 md:gap-6 lg:gap-8"
+        >
           {paginatedAlbums.map((album) => {
             const coverPosters: (string | null)[] =
               (album.docId ? albumCoverMovies[album.docId] : undefined)?.map(

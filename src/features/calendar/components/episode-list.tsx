@@ -1,4 +1,5 @@
 import Skeleton from '@/shared/components/ui/skeleton';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { Info, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
 import { formatDateDMY, todayISO } from '@/shared/utils/date-format';
@@ -29,6 +30,7 @@ function EpisodeList({
   handleSeriesClick,
 }: EpisodeListProps) {
   const today = todayISO();
+  const showSkeleton = useDelayedSkeleton(loadingEpisodes);
   const monthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
   const monthTitle = `Tháng ${String(currentDate.getMonth() + 1).padStart(2, '0')}/${currentDate.getFullYear()}`;
   const formatDate = (dateStr: string) => {
@@ -62,17 +64,19 @@ function EpisodeList({
         </div>
 
         {loadingEpisodes ? (
-          <div className="space-y-4 flex-1">
-            {Array.from({ length: 4 }).map((_, idx) => (
-              <div key={idx} className="flex gap-4 py-3 border-b border-border-default">
-                <Skeleton className="w-12 h-16 sm:w-14 sm:h-20  rounded-control" />
-                <div className="flex-1 space-y-3 py-1">
-                  <Skeleton className="h-4  rounded w-3/4" />
-                  <Skeleton className="h-3  rounded w-1/4" />
+          showSkeleton ? (
+            <div aria-busy="true" className="space-y-4 flex-1">
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx} className="flex gap-4 py-3 border-b border-border-default">
+                  <Skeleton className="w-12 h-16 sm:w-14 sm:h-20 rounded-poster" />
+                  <div className="flex-1 space-y-3 py-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : null
         ) : episodesError ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 py-12 text-center">
             <p role="alert" className="text-text-secondary text-body">

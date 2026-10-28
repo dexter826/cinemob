@@ -14,7 +14,12 @@ interface ReleaseCalendarState {
   setLoading: (loading: boolean) => void;
   initializeForUser: (userId: string) => void;
   cancelMonthRequest: () => void;
-  fetchMonthEpisodes: (userId: string, movies: Movie[], monthKey: string) => Promise<void>;
+  fetchMonthEpisodes: (
+    userId: string,
+    movies: Movie[],
+    monthKey: string,
+    fingerprint: string,
+  ) => Promise<void>;
 }
 
 let calendarRequestId = 0;
@@ -42,7 +47,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   cancelMonthRequest: () => {
     calendarRequestId++;
   },
-  fetchMonthEpisodes: async (userId, movies, monthKey) => {
+  fetchMonthEpisodes: async (userId, movies, monthKey, fingerprint) => {
     const requestId = ++calendarRequestId;
     set({
       userId,
@@ -54,7 +59,9 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
     });
     try {
       const episodes =
-        movies.length === 0 ? [] : await fetchEpisodesForMonth(userId, movies, monthKey);
+        movies.length === 0
+          ? []
+          : await fetchEpisodesForMonth(userId, movies, monthKey, fingerprint);
       if (requestId === calendarRequestId) set({ monthEpisodes: episodes });
     } catch {
       if (requestId === calendarRequestId) {

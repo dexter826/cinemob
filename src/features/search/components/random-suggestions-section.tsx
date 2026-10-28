@@ -3,6 +3,7 @@ import { Dice5, RotateCcw } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import Spinner from '@/shared/components/ui/spinner';
 import MoviePosterGrid from './movie-poster-grid';
 
@@ -26,6 +27,7 @@ function RandomSuggestionsSection({
   onSelectMovie,
 }: RandomSuggestionsSectionProps) {
   const isInitialLoading = !hasLoaded && movies.length === 0;
+  const showSkeleton = useDelayedSkeleton(isInitialLoading);
 
   return (
     <section
@@ -72,11 +74,13 @@ function RandomSuggestionsSection({
       )}
 
       {isInitialLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
+        showSkeleton ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <SkeletonCard key={i} badges={2} />
+            ))}
+          </div>
+        ) : null
       ) : error && movies.length === 0 ? (
         <ErrorState
           compact

@@ -6,6 +6,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import { Tv, Bell, BellOff, BellRing } from 'lucide-react';
 import { todayISO } from '@/shared/utils/date-format';
 
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useReleaseCalendar } from '../hooks/use-release-calendar';
 import CalendarStats from '../components/calendar-stats';
 import CalendarGrid from '../components/calendar-grid';
@@ -38,6 +39,8 @@ function ReleaseCalendarPage() {
     collectionError,
     retryCollection,
     loadingEpisodes,
+    monthLoaded,
+    movies,
     tvSeries,
     monthEpisodes,
     currentDate,
@@ -59,6 +62,15 @@ function ReleaseCalendarPage() {
 
   const pushStatus = getPushStatus(pushLoading, pushSubscribed, notificationPermission);
   const today = todayISO();
+  const shouldShowSkeleton = loading && movies.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
+  const showEpisodesSkeleton = loadingEpisodes && !monthLoaded;
+  const calendarCellCount =
+    Math.ceil(
+      (new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate() +
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()) /
+        7,
+    ) * 7;
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
@@ -107,18 +119,64 @@ function ReleaseCalendarPage() {
           description="Vui lòng thử lại."
           retry={{ label: 'Thử lại', onClick: retryCollection }}
         />
-      ) : loading ? (
-        <div className="space-y-6">
-          <Skeleton className="h-28  rounded-dialog  border border-border" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Skeleton className="lg:col-span-2 h-80  rounded-dialog  border border-border" />
-            <Skeleton className="h-80  rounded-dialog  border border-border" />
+      ) : shouldShowSkeleton ? (
+        showSkeleton ? (
+          <div aria-busy="true" className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 sm:gap-4 md:border-l md:border-border md:pl-6 md:first:border-l-0 md:first:pl-0"
+                >
+                  <Skeleton className="mt-1 h-5 w-5 shrink-0" />
+                  <div className="min-w-0">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="mt-2 h-10 w-16" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 bg-surface border border-border p-4 sm:p-6 rounded-dialog flex flex-col">
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
+                  <Skeleton className="h-10 w-10" />
+                  <Skeleton className="h-6 w-36" />
+                  <Skeleton className="h-10 w-10" />
+                </div>
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-3">
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <Skeleton key={index} className="mx-auto h-4 w-6" />
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                  {Array.from({ length: calendarCellCount }).map((_, index) => (
+                    <Skeleton key={index} className="h-14 sm:h-20 md:h-28" />
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 lg:border-l lg:border-border lg:pl-6">
+                <Skeleton className="h-6 w-40" />
+                <div className="mt-5 space-y-4">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className="flex gap-4 py-3 border-b border-border-default">
+                      <Skeleton className="w-12 h-16 sm:w-14 sm:h-20 rounded-poster" />
+                      <div className="flex-1 space-y-3 py-1">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/4" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : null
       ) : (
-        <>
+        <div aria-busy={loadingEpisodes}>
           <CalendarStats
-            episodesLoading={loadingEpisodes}
+            episodesLoading={showEpisodesSkeleton}
             episodesError={episodesError}
             tvSeriesCount={tvSeries.length}
             monthEpisodesCount={monthEpisodes.length}
@@ -141,7 +199,7 @@ function ReleaseCalendarPage() {
                 currentDate={currentDate}
                 navigateMonth={navigateMonth}
                 goToToday={goToToday}
-                loadingEpisodes={loadingEpisodes}
+                loadingEpisodes={showEpisodesSkeleton}
                 getEpisodesForDate={getEpisodesForDate}
                 setSelectedDate={setSelectedDate}
                 selectedDate={selectedDate}
@@ -153,14 +211,14 @@ function ReleaseCalendarPage() {
                 retryEpisodes={retryEpisodes}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
-                loadingEpisodes={loadingEpisodes}
+                loadingEpisodes={showEpisodesSkeleton}
                 displayedEpisodes={displayedEpisodes}
                 episodesByDate={episodesByDate}
                 handleSeriesClick={handleSeriesClick}
               />
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

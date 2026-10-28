@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
+import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import Pagination from '@/shared/components/ui/pagination';
 import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
@@ -55,6 +56,8 @@ function AlbumDetailPage() {
   } = useAlbumDetail(albumId);
 
   const retryMovies = useMovieStore((state) => state.retry);
+  const shouldShowSkeleton = (loading || moviesLoading) && albumMovies.length === 0;
+  const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
   if (error)
     return (
       <ErrorState
@@ -76,11 +79,12 @@ function AlbumDetailPage() {
         <PageHeader
           onBack={() => navigate('/albums')}
           icon={Film}
-          title={loading ? 'Đang tải…' : album?.name || 'Chi tiết album'}
+          loading={loading}
+          title={album?.name || 'Chi tiết album'}
           description={
-            !loading && album
+            album
               ? `${album.movieDocIds.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
-              : ''
+              : undefined
           }
           className="flex-col sm:flex-row"
         >
@@ -202,12 +206,17 @@ function AlbumDetailPage() {
                 description="Vui lòng thử lại."
                 retry={{ label: 'Thử lại', onClick: retryMovies }}
               />
-            ) : loading || moviesLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <SkeletonCard key={i} />
-                ))}
-              </div>
+            ) : shouldShowSkeleton ? (
+              showSkeleton ? (
+                <div
+                  aria-busy="true"
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+                >
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <SkeletonCard key={i} badges={2} />
+                  ))}
+                </div>
+              ) : null
             ) : albumMovies.length === 0 ? (
               <EmptyState
                 icon={Film}
@@ -223,7 +232,10 @@ function AlbumDetailPage() {
                 }
               />
             ) : (
-              <div className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+              <div
+                aria-busy={loading || moviesLoading}
+                className="grid cv-auto grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
+              >
                 {albumMovies.map((movie) => (
                   <PosterCard
                     key={movie.docId}

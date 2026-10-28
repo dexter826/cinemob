@@ -1,4 +1,5 @@
 import { Tv, Bell, Calendar, Clock } from 'lucide-react';
+import Skeleton from '@/shared/components/ui/skeleton';
 import { Stat } from '@/shared/components/ui';
 
 interface CalendarStatsProps {
@@ -19,9 +20,19 @@ function CalendarStats({
   monthEpisodesCount,
   airedEpisodesCount,
 }: CalendarStatsProps) {
-  const episodeValue = (count: number) => (episodesLoading ? '…' : episodesError ? '—' : count);
+  const episodeValue = (count: number) =>
+    episodesLoading ? (
+      <Skeleton as="span" className="inline-block h-10 w-20 align-middle" />
+    ) : episodesError ? (
+      '—'
+    ) : (
+      count
+    );
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 sm:mb-8">
+    <div
+      aria-busy={episodesLoading}
+      className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 sm:mb-8"
+    >
       <Stat label="Series" value={tvSeriesCount} icon={Tv} colorClass="text-primary" />
       <Stat
         label="Tập trong tháng"
