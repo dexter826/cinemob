@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
-import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
 import {
+  clearMemberProfileCache,
   getMemberProfile,
   saveProfileDetails,
   setMovieListHidden,
@@ -11,6 +11,7 @@ import {
   validateDob,
   validateGender,
 } from '../services/member-profile-service';
+import { updateDisplayName, validateDisplayName } from '../services/profile-service';
 import type { MemberGender, MemberProfile } from '@/types';
 
 export interface OwnProfileDetails {
@@ -19,8 +20,14 @@ export interface OwnProfileDetails {
   dob: string;
 }
 
+export interface OwnProfileInput extends OwnProfileDetails {
+  displayName: string;
+}
+
+export type SaveProfileResult = { ok: true } | { ok: false; nameError?: string };
+
 export const useOwnProfile = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const {
     movies,
     loading: moviesLoading,
@@ -75,28 +82,36 @@ export const useOwnProfile = () => {
     };
   }, [uid, retryNonce]);
 
-  const saveDetails = useCallback(
-    async (details: OwnProfileDetails): Promise<boolean> => {
-      if (!ready || activeUid.current !== uid || saving) return false;
+  const saveProfile = useCallback(
+    async (input: OwnProfileInput): Promise<SaveProfileResult> => {
+      if (!ready || activeUid.current !== uid || saving) return { ok: false };
+      const checked = validateDisplayName(input.displayName);
+      if (!checked.ok) return { ok: false, nameError: checked.error };
       setSaving(true);
       try {
+        if (user && checked.value !== (user.displayName || '')) {
+          await updateDisplayName(user, checked.value);
+          await refreshUser();
+        }
         await saveProfileDetails(uid, {
-          bio: validateBio(details.bio) || undefined,
-          gender: validateGender(details.gender) || undefined,
-          dob: validateDob(details.dob) || undefined,
+          displayName: checked.value,
+          bio: validateBio(input.bio) || undefined,
+          gender: validateGender(input.gender) || undefined,
+          dob: validateDob(input.dob) || undefined,
         });
-        clearPublicProfileCache();
+        clearMemberProfileCache(uid);
         await refresh();
         showToast('Đã cập nhật hồ sơ', 'success');
-        return true;
-      } catch {
-        showToast('Lưu hồ sơ thất bại', 'error');
-        return false;
+        return { ok: true };
+      } catch (error) {
+        console.error('Lưu hồ sơ thất bại', error);
+        showToast('Không lưu được hồ sơ. Thử lại.', 'error');
+        return { ok: false };
       } finally {
         setSaving(false);
       }
     },
-    [ready, refresh, saving, showToast, uid],
+    [ready, refresh, refreshUser, saving, showToast, uid, user],
   );
 
   const canToggle = ready && !moviesLoading && !moviesError && moviesUid === uid;
@@ -106,7 +121,7 @@ export const useOwnProfile = () => {
     setToggling(true);
     try {
       await setMovieListHidden(uid, next, movies);
-      clearPublicProfileCache();
+      clearMemberProfileCache(uid);
       await refresh();
       showToast(next ? 'Đã ẩn danh sách phim' : 'Danh sách phim đã hiện lại', 'success');
       return true;
@@ -127,7 +142,7 @@ export const useOwnProfile = () => {
     saving,
     toggling,
     canToggle,
-    saveDetails,
+    saveProfile,
     toggleMovieListHidden,
   };
 };

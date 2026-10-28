@@ -32,11 +32,8 @@ function UserCard({ profile, onClick }: UserCardProps) {
         <span className="block text-body font-bold text-text-primary group-hover:text-primary transition-colors truncate">
           {profile.displayName}
         </span>
-        {profile.email && profile.email !== profile.displayName && (
-          <span className="block text-body-sm text-text-secondary truncate">{profile.email}</span>
-        )}
         <span className="block text-body-sm text-text-secondary mt-0.5">
-          {profile.totalCount} phim đã xem
+          {profile.isMovieListHidden ? 'Đã ẩn danh sách phim' : `${profile.totalCount} phim đã xem`}
         </span>
       </span>
       <ChevronRight

@@ -50,7 +50,7 @@ function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
             type="button"
             aria-pressed={isActive}
             onClick={() => onChange(tab.key)}
-            className={`relative flex items-center h-11 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
+            className={`relative flex items-center h-11 px-3.5 text-label-caps transition-colors cursor-pointer ${
               isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
@@ -128,12 +128,9 @@ function MemberProfilePage() {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTabState] = useState<'common' | 'all'>(() =>
-    searchParams.get('tab') === 'all' ? 'all' : 'common',
-  );
+  const activeTab: 'common' | 'all' = searchParams.get('tab') === 'all' ? 'all' : 'common';
 
   const setActiveTab = (tab: 'common' | 'all') => {
-    setActiveTabState(tab);
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       if (tab === 'all') params.set('tab', tab);
@@ -151,9 +148,7 @@ function MemberProfilePage() {
       setLoading(false);
       return;
     }
-    // Đổi thành viên thì về tab mặc định, không đụng deep-link lần đầu vào trang.
     if (lastUidRef.current !== undefined && lastUidRef.current !== uid) {
-      setActiveTabState('common');
       setSearchParams(
         (prev) => {
           const params = new URLSearchParams(prev);
@@ -209,7 +204,7 @@ function MemberProfilePage() {
     !isOwn && activeTab === 'common' && myMoviesLoading && myMovies.length === 0;
   const showCommonSkeleton = useDelayedSkeleton(shouldShowCommonSkeleton);
 
-  if (!user || !uid) return <Loading />;
+  if (!user || !uid) return <Loading contain />;
 
   if (isOwn) {
     return (
@@ -239,7 +234,7 @@ function MemberProfilePage() {
           saving={own.saving}
           toggling={own.toggling}
           canToggle={own.canToggle}
-          onSaveDetails={own.saveDetails}
+          onSaveProfile={own.saveProfile}
           onToggleHidden={own.toggleMovieListHidden}
         />
 

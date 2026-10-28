@@ -67,7 +67,6 @@ export type MemberGender = 'male' | 'female' | 'other';
 export interface MemberProfile {
   displayName: string;
   photoURL?: string;
-  email?: string;
   bio?: string;
   gender?: MemberGender;
   dob?: string;

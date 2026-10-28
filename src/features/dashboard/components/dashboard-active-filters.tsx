@@ -51,16 +51,14 @@ export function buildActiveFilterChips(
   if (activeTab === 'history' && filters.watchStatus !== 'all') {
     chipItems.push({
       key: 'watchStatus',
-      label: `Trạng thái: ${
-        filters.watchStatus === 'watching' ? 'Đang theo dõi' : 'Đã hoàn thành'
-      }`,
+      label: `Trạng thái: ${filters.watchStatus === 'watching' ? 'Đang theo dõi' : 'Đã xem'}`,
       clear: () => updateFilter('watchStatus', 'all'),
     });
   }
   if (filters.sourceType !== 'all') {
     chipItems.push({
       key: 'sourceType',
-      label: `Nguồn: ${filters.sourceType === 'normal' ? 'Xem trực tiếp' : 'Xem qua review'}`,
+      label: `Nguồn: ${filters.sourceType === 'normal' ? 'Xem trực tiếp' : 'Xem qua đánh giá'}`,
       clear: () => updateFilter('sourceType', 'all'),
     });
   }

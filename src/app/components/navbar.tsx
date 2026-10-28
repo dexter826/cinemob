@@ -230,11 +230,11 @@ function Navbar() {
                         tabIndex={-1}
                         onClick={() => {
                           showAlert({
-                            title: 'Xác nhận đăng xuất',
-                            message: 'Bạn có chắc chắn muốn đăng xuất?',
+                            title: 'Đăng xuất?',
+                            message: 'Bạn sẽ cần đăng nhập lại trên thiết bị này.',
                             type: 'danger',
                             confirmText: 'Đăng xuất',
-                            cancelText: 'Hủy',
+                            cancelText: 'Ở lại',
                             onConfirm: logout,
                           });
                           closeDropdown();

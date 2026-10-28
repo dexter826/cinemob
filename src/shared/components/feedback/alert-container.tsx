@@ -63,14 +63,17 @@ function AlertContainer() {
           </DialogBody>
           <DialogFooter>
             <div className="flex justify-end gap-2">
-              <Button ref={safestActionRef} variant="ghost" onClick={handleCancel}>
-                {alert.cancelText || 'Hủy'}
-              </Button>
+              {alert.type !== 'info' && (
+                <Button ref={safestActionRef} variant="ghost" onClick={handleCancel}>
+                  {alert.cancelText || 'Hủy'}
+                </Button>
+              )}
               <Button
+                ref={alert.type === 'info' ? safestActionRef : undefined}
                 variant={alert.type === 'danger' ? 'danger' : 'primary'}
                 onClick={handleConfirm}
               >
-                {alert.confirmText || 'Đồng ý'}
+                {alert.confirmText}
               </Button>
             </div>
           </DialogFooter>

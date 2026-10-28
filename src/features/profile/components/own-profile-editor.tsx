@@ -6,25 +6,18 @@ import { CalendarDays, Eye, EyeOff, Mail, Pencil, RotateCcw, Upload, X } from 'l
 import { AvatarCropView } from '@/features/profile/components/avatar/avatar-crop-view';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { Button } from '@/shared/components/ui/button';
-import DatePicker from '@/shared/components/ui/date-picker';
-import Dropdown from '@/shared/components/ui/dropdown';
 import IconButton from '@/shared/components/ui/icon-button';
 import Switch from '@/shared/components/ui/switch';
-import useToastStore from '@/shared/stores/toast-store';
 import useAlertStore from '@/shared/stores/alert-store';
 import { classNames } from '@/shared/utils/class-names';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { ACCEPTED_IMAGE_TYPES, CROP_SIZE } from '../constants/avatar-editor';
 import { useAvatarCrop } from '../hooks/use-avatar-crop';
-import { formatJoinDate, GENDER_LABELS } from '../utils/profile-format';
-import { BIO_MAX_LENGTH, GENDER_OPTIONS } from '../services/member-profile-service';
-import {
-  FALLBACK_DISPLAY_NAME,
-  updateDisplayName,
-  validateDisplayName,
-} from '../services/profile-service';
+import { formatJoinDate } from '../utils/profile-format';
+import { FALLBACK_DISPLAY_NAME } from '../services/profile-service';
 import ProfileMeta from './profile-meta';
-import type { OwnProfileDetails } from '../hooks/use-own-profile';
+import ProfileEditForm from './profile-edit-form';
+import type { OwnProfileInput, SaveProfileResult } from '../hooks/use-own-profile';
 import type { MemberProfile } from '@/types';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { getPanelMotion } from '@/constants/animations';
@@ -38,14 +31,9 @@ interface OwnProfileEditorProps {
   saving: boolean;
   toggling: boolean;
   canToggle: boolean;
-  onSaveDetails: (details: OwnProfileDetails) => Promise<boolean>;
+  onSaveProfile: (input: OwnProfileInput) => Promise<SaveProfileResult>;
   onToggleHidden: () => Promise<boolean>;
 }
-
-const GENDER_DROPDOWN_OPTIONS = [
-  ...GENDER_OPTIONS.map((value) => ({ value, label: GENDER_LABELS[value] })),
-  { value: '', label: 'Không cập nhật' },
-];
 
 function OwnProfileEditor({
   profile,
@@ -56,13 +44,12 @@ function OwnProfileEditor({
   saving,
   toggling,
   canToggle,
-  onSaveDetails,
+  onSaveProfile,
   onToggleHidden,
 }: OwnProfileEditorProps) {
-  const { user, refreshUser } = useAuth();
-  const { showToast } = useToastStore();
+  const { user } = useAuth();
   const { showAlert } = useAlertStore();
-  const crop = useAvatarCrop({ isOpen: true });
+  const crop = useAvatarCrop();
 
   const [isEditing, setIsEditing] = useState(false);
   const [draftName, setDraftName] = useState('');
@@ -170,38 +157,27 @@ function OwnProfileEditor({
 
   const submitEditing = async () => {
     if (!ready || isSubmitting || saving) return;
-    const checked = validateDisplayName(draftName);
-    if (!checked.ok) {
-      setNameError(checked.error);
-      nameInputRef.current?.focus();
-      return;
-    }
     setIsSubmitting(true);
     setNameError(null);
-    try {
-      if (checked.value !== displayName) {
-        await updateDisplayName(user, checked.value);
-        await refreshUser();
-      }
-      const detailsSaved = await onSaveDetails({
-        bio: draftBio,
-        gender: draftGender as OwnProfileDetails['gender'],
-        dob: draftDob,
-      });
-      if (detailsSaved) setIsEditing(false);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Không thể cập nhật hồ sơ';
-      setNameError(message);
-      showToast(message, 'error');
-    } finally {
-      setIsSubmitting(false);
+    const result = await onSaveProfile({
+      displayName: draftName,
+      bio: draftBio,
+      gender: draftGender as OwnProfileInput['gender'],
+      dob: draftDob,
+    });
+    if (result.ok) {
+      setIsEditing(false);
+    } else if (result.nameError) {
+      setNameError(result.nameError);
+      nameInputRef.current?.focus();
     }
+    setIsSubmitting(false);
   };
 
   const isBusy = isSubmitting || saving || crop.isBusy;
 
   return (
-    <div className="bg-surface border border-border rounded-dialog p-5 sm:p-6">
+    <div className="bg-surface border border-border rounded-card p-5 sm:p-6">
       <input
         ref={crop.fileInputRef}
         type="file"
@@ -354,7 +330,7 @@ function OwnProfileEditor({
                           role="menuitem"
                           onClick={() => {
                             setIsAvatarMenuOpen(false);
-                            crop.handleDelete();
+                            crop.resetToProviderAvatar();
                           }}
                           className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
                         >
@@ -442,74 +418,23 @@ function OwnProfileEditor({
           </div>
 
           {isEditing && (
-            <div className="mt-5 space-y-4">
-              <label className="block">
-                <span className="block text-label-caps text-text-secondary mb-1">Tên hiển thị</span>
-                <input
-                  ref={nameInputRef}
-                  name="display-name"
-                  autoComplete="nickname"
-                  value={draftName}
-                  onChange={(e) => setDraftName(e.target.value)}
-                  placeholder="Nhập tên hiển thị…"
-                  maxLength={50}
-                  aria-invalid={nameError ? true : undefined}
-                  className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring"
-                />
-                {nameError && (
-                  <p role="alert" className="mt-1.5 text-body-sm text-danger">
-                    {nameError}
-                  </p>
-                )}
-              </label>
-
-              <label className="block">
-                <span className="block text-label-caps text-text-secondary mb-1">Giới thiệu</span>
-                <textarea
-                  name="bio"
-                  value={draftBio}
-                  onChange={(e) => setDraftBio(e.target.value.slice(0, BIO_MAX_LENGTH))}
-                  rows={3}
-                  maxLength={BIO_MAX_LENGTH}
-                  placeholder="Thêm vài dòng giới thiệu về bạn…"
-                  className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring resize-none"
-                />
-                <span className="block text-right text-body-sm text-text-secondary">
-                  {draftBio.length}/{BIO_MAX_LENGTH}
-                </span>
-              </label>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label>
-                  <span className="block text-label-caps text-text-secondary mb-1">Giới tính</span>
-                  <Dropdown
-                    options={GENDER_DROPDOWN_OPTIONS}
-                    value={draftGender}
-                    onChange={(val) => setDraftGender(String(val))}
-                    placeholder="Chọn giới tính…"
-                  />
-                </label>
-                <label>
-                  <span className="block text-label-caps text-text-secondary mb-1">Ngày sinh</span>
-                  <DatePicker value={draftDob} onChange={setDraftDob} className="min-w-0" />
-                </label>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-1">
-                <Button variant="secondary" size="md" onClick={cancelEditing} disabled={isBusy}>
-                  Hủy
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => void submitEditing()}
-                  disabled={isBusy || !ready}
-                  loading={isSubmitting || saving}
-                >
-                  Lưu thay đổi
-                </Button>
-              </div>
-            </div>
+            <ProfileEditForm
+              name={draftName}
+              bio={draftBio}
+              gender={draftGender}
+              dob={draftDob}
+              nameError={nameError}
+              nameInputRef={nameInputRef}
+              ready={ready}
+              isBusy={isBusy}
+              saving={isSubmitting || saving}
+              onChangeName={setDraftName}
+              onChangeBio={setDraftBio}
+              onChangeGender={setDraftGender}
+              onChangeDob={setDraftDob}
+              onSubmit={() => void submitEditing()}
+              onCancel={cancelEditing}
+            />
           )}
 
           <div className="mt-5 pt-4 border-t border-border-default">

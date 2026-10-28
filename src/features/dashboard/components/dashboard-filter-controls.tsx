@@ -98,7 +98,7 @@ export function FilterControls({
             options={[
               { value: 'all', label: 'Tất cả trạng thái' },
               { value: 'watching', label: 'Đang theo dõi' },
-              { value: 'completed', label: 'Đã hoàn thành' },
+              { value: 'completed', label: 'Đã xem' },
             ]}
             value={filters.watchStatus}
             onChange={(value) =>
@@ -113,7 +113,7 @@ export function FilterControls({
           options={[
             { value: 'all', label: 'Tất cả nguồn' },
             { value: 'normal', label: 'Xem trực tiếp' },
-            { value: 'review', label: 'Xem qua review' },
+            { value: 'review', label: 'Xem qua đánh giá' },
           ]}
           value={filters.sourceType}
           onChange={(value) => updateFilter('sourceType', value as SourceType)}

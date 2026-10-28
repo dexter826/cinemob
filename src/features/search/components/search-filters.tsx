@@ -21,6 +21,7 @@ interface SearchFiltersProps {
   showSuggestions: boolean;
   setShowSuggestions: (show: boolean) => void;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
+  isSearchMode: boolean;
 }
 
 function SearchFilters({
@@ -33,12 +34,13 @@ function SearchFilters({
   showSuggestions,
   setShowSuggestions,
   handleSelectMovie,
+  isSearchMode,
 }: SearchFiltersProps) {
+  // TMDB search chỉ nhận từ khoá/năm/loại — quốc gia và sắp xếp chỉ có tác dụng khi duyệt.
   const hasActiveFilters =
     filters.type !== 'all' ||
     filters.year !== '' ||
-    filters.country !== '' ||
-    filters.sortBy !== 'popularity.desc';
+    (!isSearchMode && (filters.country !== '' || filters.sortBy !== 'popularity.desc'));
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const reducedMotion = useReducedMotion() ?? false;
@@ -223,29 +225,33 @@ function SearchFilters({
           searchable={true}
         />
 
-        <Dropdown
-          options={TMDB_COUNTRY_OPTIONS}
-          value={filters.country}
-          onChange={(value) => updateFilter('country', value as string)}
-          placeholder="Chọn quốc gia…"
-          className="w-full"
-          searchable={true}
-        />
+        {!isSearchMode && (
+          <Dropdown
+            options={TMDB_COUNTRY_OPTIONS}
+            value={filters.country}
+            onChange={(value) => updateFilter('country', value as string)}
+            placeholder="Chọn quốc gia…"
+            className="w-full"
+            searchable={true}
+          />
+        )}
 
-        <Dropdown
-          options={[
-            { value: 'popularity.desc', label: 'Phổ biến' },
-            { value: 'vote_average.desc', label: 'Đánh giá cao' },
-            { value: 'primary_release_date.desc', label: 'Mới nhất' },
-            { value: 'primary_release_date.asc', label: 'Cũ nhất' },
-            { value: 'title.asc', label: 'Tên A-Z' },
-            { value: 'title.desc', label: 'Tên Z-A' },
-          ]}
-          value={filters.sortBy}
-          onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
-          placeholder="Sắp xếp theo…"
-          className="w-full"
-        />
+        {!isSearchMode && (
+          <Dropdown
+            options={[
+              { value: 'popularity.desc', label: 'Phổ biến' },
+              { value: 'vote_average.desc', label: 'Đánh giá cao' },
+              { value: 'primary_release_date.desc', label: 'Mới nhất' },
+              { value: 'primary_release_date.asc', label: 'Cũ nhất' },
+              { value: 'title.asc', label: 'Tên A-Z' },
+              { value: 'title.desc', label: 'Tên Z-A' },
+            ]}
+            value={filters.sortBy}
+            onChange={(value) => updateFilter('sortBy', value as SearchSortBy)}
+            placeholder="Sắp xếp theo…"
+            className="w-full"
+          />
+        )}
       </div>
 
       {hasActiveFilters && (

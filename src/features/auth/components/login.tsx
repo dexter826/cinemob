@@ -96,7 +96,7 @@ function Login() {
               </p>
             </div>
 
-            <h1 className="text-display-xl leading-[1.05] mt-9">Theo dõi mọi bộ phim bạn xem.</h1>
+            <h1 className="text-display-xl mt-9">Theo dõi mọi bộ phim bạn xem.</h1>
             <p className="mt-3 text-body text-text-secondary leading-relaxed">
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập của riêng bạn.
             </p>
@@ -104,7 +104,7 @@ function Login() {
             <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold tracking-[0.08em] text-body-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold text-body-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               aria-label="Đăng nhập bằng tài khoản Google"
               aria-busy={isLoading}
             >

@@ -52,6 +52,7 @@ function SearchPage() {
         showSuggestions={showSuggestions}
         setShowSuggestions={setShowSuggestions}
         handleSelectMovie={handleSelectMovie}
+        isSearchMode={mode === 'search'}
       />
 
       <LoadingStatus>

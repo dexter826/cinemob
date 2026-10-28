@@ -1,12 +1,9 @@
 import { updateProfile } from 'firebase/auth';
 import type { User } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '@/shared/lib/firebase';
-import { MEMBER_PROFILE_COLLECTION } from './member-profile-service';
 
 export const DISPLAY_NAME_MIN = 2;
 export const DISPLAY_NAME_MAX = 50;
-export const FALLBACK_DISPLAY_NAME = 'CineMOB User';
+export const FALLBACK_DISPLAY_NAME = 'Thành viên CineMOB';
 
 export type ValidateResult = { ok: true; value: string } | { ok: false; error: string };
 
@@ -21,26 +18,17 @@ export function validateDisplayName(raw: string): ValidateResult {
   return { ok: true, value };
 }
 
+// Chỉ cập nhật Firebase Auth; tên trong hồ sơ thành viên do saveProfileDetails ghi cùng lượt.
 export const updateDisplayName = async (user: User, rawName: string): Promise<string> => {
   const checked = validateDisplayName(rawName);
   if (!checked.ok) {
     throw new Error(checked.error);
   }
-  const displayName = checked.value;
   try {
-    await updateProfile(user, { displayName });
+    await updateProfile(user, { displayName: checked.value });
   } catch (error) {
     console.error('Không thể cập nhật tên hiển thị:', error);
-    throw new Error('Không thể cập nhật tên hiển thị, vui lòng thử lại');
+    throw new Error('Không cập nhật được tên hiển thị. Thử lại.');
   }
-  try {
-    const profileRef = doc(db, MEMBER_PROFILE_COLLECTION, user.uid);
-    const profileSnap = await getDoc(profileRef);
-    if (profileSnap.exists()) {
-      await updateDoc(profileRef, { displayName });
-    }
-  } catch (error) {
-    console.error('Không thể cập nhật tên trong hồ sơ thành viên:', error);
-  }
-  return displayName;
+  return checked.value;
 };

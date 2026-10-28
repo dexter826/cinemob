@@ -64,7 +64,9 @@ function AnimatedRoutes() {
 
 function MainApp() {
   const { user, loading: authLoading, error: authError, retryAuth } = useAuth();
-  const { isOpen: isAddMovieOpen, ownerUid: modalOwnerUid, closeAddModal } = useAddMovieStore();
+  const isAddMovieOpen = useAddMovieStore((state) => state.isOpen);
+  const modalOwnerUid = useAddMovieStore((state) => state.ownerUid);
+  const closeAddModal = useAddMovieStore((state) => state.closeAddModal);
   const collectionUid = useMovieStore((state) => state.activeUid);
   useAppInit();
   if (authLoading) return <SplashScreen />;
@@ -80,8 +82,12 @@ function MainApp() {
   return (
     <Layout key={user.uid}>
       <ErrorBoundary>
-        <Suspense fallback={<Loading text="Đang tải trang…" />}>
-          {collectionUid === user.uid ? <AnimatedRoutes /> : <Loading text="Đang tải thư viện…" />}
+        <Suspense fallback={<Loading contain text="Đang tải trang…" />}>
+          {collectionUid === user.uid ? (
+            <AnimatedRoutes />
+          ) : (
+            <Loading contain text="Đang tải thư viện…" />
+          )}
         </Suspense>
       </ErrorBoundary>
       <LazyDialog

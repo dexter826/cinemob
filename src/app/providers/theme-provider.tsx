@@ -28,14 +28,16 @@ export function ThemeProvider({
   storageKey = 'vite-ui-theme',
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem(storageKey);
-    return VALID_THEMES.find((candidate) => candidate === stored) ?? defaultTheme;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      return VALID_THEMES.find((candidate) => candidate === stored) ?? defaultTheme;
+    } catch {
+      return defaultTheme;
+    }
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
-
-    // Áp class theme lên root và đồng bộ màu theme-color theo token
     const applyResolvedTheme = (resolved: 'dark' | 'light') => {
       root.classList.remove('light', 'dark');
       root.classList.add(resolved);

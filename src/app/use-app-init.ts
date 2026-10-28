@@ -4,33 +4,32 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '@/features/albums/stores/album-store';
 import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
-import { syncMemberProfile } from '@/features/profile/services/member-profile-service';
-import { clearPublicProfileCache } from '@/features/profile/hooks/use-user-search';
+import {
+  clearMemberProfileCache,
+  syncMemberProfile,
+} from '@/features/profile/services/member-profile-service';
+import { FALLBACK_DISPLAY_NAME } from '@/features/profile/services/profile-service';
 import { Movie } from '@/types';
 
 export const useAppInit = () => {
   const { user } = useAuth();
   const userId = user?.uid;
 
-  const {
-    initialize: initMovies,
-    cleanup: cleanupMovies,
-    initialized: moviesInitialized,
-    movies: allMovies,
-    loading: moviesLoading,
-  } = useMovieStore();
-  const { showToast } = useToastStore();
+  const initMovies = useMovieStore((state) => state.initialize);
+  const cleanupMovies = useMovieStore((state) => state.cleanup);
+  const moviesInitialized = useMovieStore((state) => state.initialized);
+  const allMovies = useMovieStore((state) => state.movies);
+  const moviesLoading = useMovieStore((state) => state.loading);
+  const showToast = useToastStore((state) => state.showToast);
 
-  const {
-    albums,
-    loading: albumsLoading,
-    initialize: initAlbums,
-    cleanup: cleanupAlbums,
-    setAlbumCoverMovies,
-  } = useAlbumStore();
+  const albums = useAlbumStore((state) => state.albums);
+  const albumsLoading = useAlbumStore((state) => state.loading);
+  const initAlbums = useAlbumStore((state) => state.initialize);
+  const cleanupAlbums = useAlbumStore((state) => state.cleanup);
+  const setAlbumCoverMovies = useAlbumStore((state) => state.setAlbumCoverMovies);
 
-  const { setMovies: setCalendarMovies, setLoading: setCalendarLoading } =
-    useReleaseCalendarStore();
+  const setCalendarMovies = useReleaseCalendarStore((state) => state.setMovies);
+  const setCalendarLoading = useReleaseCalendarStore((state) => state.setLoading);
 
   useEffect(() => {
     if (userId) {
@@ -86,19 +85,19 @@ export const useAppInit = () => {
       void syncMemberProfile(
         user.uid,
         {
-          displayName: user.displayName || 'CineMOB User',
+          displayName: user.displayName || FALLBACK_DISPLAY_NAME,
           photoURL: user.photoURL || '',
           email: user.email || '',
         },
         allMovies,
       )
         .then((changed) => {
-          if (changed) clearPublicProfileCache();
+          if (changed) clearMemberProfileCache(user.uid);
         })
         .catch((error) => {
           if (cancelled) return;
           console.error('Member profile sync error:', error);
-          showToast('Không thể tự cập nhật hồ sơ thành viên', 'error');
+          showToast('Không cập nhật được hồ sơ thành viên. Thử lại.', 'error');
         });
     }, 500);
 

@@ -176,7 +176,9 @@ function DashboardPage() {
               filters.year ||
               filters.country ||
               filters.genre ||
-              filters.contentType !== 'all'
+              filters.contentType !== 'all' ||
+              filters.watchStatus !== 'all' ||
+              filters.sourceType !== 'all'
                 ? {
                     label: 'Xóa tất cả bộ lọc',
                     onClick: clearFilters,

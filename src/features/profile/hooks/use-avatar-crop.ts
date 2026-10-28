@@ -49,7 +49,7 @@ export interface UseAvatarCropResult {
   pickAnother: () => void;
   cancelCrop: () => void;
   handleSave: () => Promise<void>;
-  handleDelete: () => void;
+  resetToProviderAvatar: () => void;
   handlePointerDown: (event: ReactPointerEvent) => void;
   handlePointerMove: (event: ReactPointerEvent) => void;
   handlePointerUp: (event: ReactPointerEvent) => void;
@@ -64,13 +64,14 @@ function getBaseScale(imageMeta: ImageMeta | null): number {
   return Math.max(CROP_SIZE / imageMeta.width, CROP_SIZE / imageMeta.height);
 }
 
-export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropResult {
+export function useAvatarCrop(): UseAvatarCropResult {
   const { user, refreshUser } = useAuth();
   const { showToast } = useToastStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const objectUrlRef = useRef<string | null>(null);
+  const probeGenerationRef = useRef(0);
   const panDragOriginRef = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
 
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -86,6 +87,8 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
   const isBusy = isUploading || isDeleting;
 
   const releaseImage = useCallback(() => {
+    // Tăng thế hệ để onload của ảnh cũ không ghi đè ảnh mới.
+    probeGenerationRef.current += 1;
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
@@ -103,10 +106,6 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
     setErrorMessage(null);
     setIsUploading(false);
   }, [releaseImage]);
-
-  useEffect(() => {
-    if (!isOpen) reset();
-  }, [isOpen, reset]);
 
   useEffect(() => releaseImage, [releaseImage]);
 
@@ -141,10 +140,13 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       }
 
       releaseImage();
+      const generation = probeGenerationRef.current;
       const objectUrl = URL.createObjectURL(file);
+      // Gán ngay để cleanup/ảnh kế tiếp revoke được cả khi ảnh chưa decode xong.
+      objectUrlRef.current = objectUrl;
       const probe = new Image();
       probe.onload = () => {
-        objectUrlRef.current = objectUrl;
+        if (generation !== probeGenerationRef.current) return;
         setImageMeta({ width: probe.naturalWidth, height: probe.naturalHeight });
         setImageSrc(objectUrl);
         setZoom(MIN_ZOOM);
@@ -152,7 +154,10 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
       };
       probe.onerror = () => {
         URL.revokeObjectURL(objectUrl);
-        setErrorMessage('Không đọc được tệp ảnh. Hãy thử chọn ảnh khác.');
+        if (objectUrlRef.current === objectUrl) objectUrlRef.current = null;
+        if (generation === probeGenerationRef.current) {
+          setErrorMessage('Không đọc được tệp ảnh. Hãy thử chọn ảnh khác.');
+        }
       };
       probe.src = objectUrl;
     },
@@ -279,7 +284,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
 
       await updateUserAvatar(user, croppedBlob);
       await refreshUser();
-      showToast('Đổi ảnh đại diện thành công!', 'success');
+      showToast('Đã đổi ảnh đại diện', 'success');
       reset();
     } catch (error: unknown) {
       const message =
@@ -292,7 +297,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
   }, [user, refreshUser, showToast, pan, zoom, reset]);
 
   // Khôi phục ảnh gốc tài khoản Google, kèm undo-toast.
-  const handleDelete = useCallback(async () => {
+  const resetToProviderAvatar = useCallback(async () => {
     if (!user || isBusy) return;
     const previousPhotoURL = user.photoURL;
 
@@ -311,12 +316,14 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
               refreshUser();
               showToast('Đã hoàn tác ảnh đại diện', 'success');
             })
-            .catch(() => showToast('Không thể hoàn tác, vui lòng thử lại', 'error'));
+            .catch(() => showToast('Không hoàn tác được. Thử lại.', 'error'));
         },
       });
     } catch (error: unknown) {
       const message =
-        error instanceof Error && error.message ? error.message : 'Không thể xóa ảnh đại diện';
+        error instanceof Error && error.message
+          ? error.message
+          : 'Không khôi phục được ảnh đại diện. Thử lại.';
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {
@@ -354,7 +361,7 @@ export function useAvatarCrop({ isOpen }: { isOpen: boolean }): UseAvatarCropRes
     pickAnother,
     cancelCrop,
     handleSave,
-    handleDelete,
+    resetToProviderAvatar,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,

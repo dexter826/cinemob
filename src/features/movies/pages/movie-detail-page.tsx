@@ -1,6 +1,6 @@
 import ErrorState from '@/shared/components/ui/error-state';
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Calendar,
@@ -85,6 +85,7 @@ function MovieCreditsSkeleton() {
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
     movies,
@@ -97,7 +98,13 @@ function MovieDetailPage() {
   const { dropMovie, resumeMovie, isPending } = useDropMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
 
-  const movie = useMemo(() => movies.find((m) => String(m.id) === id), [movies, id]);
+  const typeParam = searchParams.get('type');
+  const movie = useMemo(() => {
+    const wantedType = typeParam === 'tv' ? 'tv' : typeParam === 'movie' ? 'movie' : null;
+    return movies.find(
+      (m) => String(m.id) === id && (!wantedType || (m.media_type ?? 'movie') === wantedType),
+    );
+  }, [movies, id, typeParam]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
   const showDetailSkeleton = useDelayedSkeleton(!movie && collectionLoading);
   const showExtrasSkeleton = useDelayedSkeleton(extrasLoading && !credits);
@@ -196,7 +203,7 @@ function MovieDetailPage() {
         disabled={!canAddToAlbum}
         onClick={() => setShowAlbumSelector(true)}
       >
-        Thêm vào Album
+        Thêm vào album
       </Button>
     );
 
@@ -298,7 +305,7 @@ function MovieDetailPage() {
             <div className="mt-7 border border-border rounded-card p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2.5">
                 <SectionHeader>Tiến độ xem</SectionHeader>
-                {movie.progress.is_completed && <Chip tone="success">Hoàn thành</Chip>}
+                {movie.progress.is_completed && <Chip tone="success">Đã xem</Chip>}
               </div>
               <p className="text-display-md text-text-primary tabular-nums">
                 {movie.progress.is_completed

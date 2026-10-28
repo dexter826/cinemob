@@ -155,7 +155,7 @@ function TimePicker({
       id={isMobile ? undefined : `${controlId}-dialog`}
       tabIndex={isMobile ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card p-4
+                bg-surface-elevated border border-border rounded-card p-4
                 ${
                   isMobile
                     ? 'relative w-full max-w-[280px] mx-auto'

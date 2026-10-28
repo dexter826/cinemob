@@ -4,7 +4,7 @@ import Dropdown from '@/shared/components/ui/dropdown';
 import DatePicker from '@/shared/components/ui/date-picker';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import type { MovieFormData } from '../../hooks/use-add-movie-form';
+import type { MovieFormData } from '../../utils/movie-form-utils';
 
 interface GenreOption {
   id: number;

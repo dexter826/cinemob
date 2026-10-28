@@ -211,7 +211,7 @@ function Dropdown({
               style={{ maxHeight }}
             >
               {filteredOptions.length === 0 ? (
-                <div className="px-4 py-4 text-body text-text-secondary text-center italic opacity-60">
+                <div className="px-4 py-4 text-body text-text-secondary text-center">
                   {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
                 </div>
               ) : (

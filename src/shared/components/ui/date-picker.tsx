@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Calendar, X } from 'lucide-react';
 import { Dialog } from './dialog';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import { formatDateDMY, monthLabel } from '@/shared/utils/date-format';
+import { buildMonthGrid, formatDateToString, isDateOutOfRange } from './date-picker-utils';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { getPanelMotion } from '@/constants/animations';
 
@@ -23,13 +24,6 @@ interface DatePickerProps {
 }
 
 const DAYS_VI = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-
-const formatDateToString = (date: Date): string => {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-};
 
 function DatePicker({
   value,
@@ -145,20 +139,59 @@ function DatePicker({
     closePicker();
   };
 
+  const handleDayKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const step =
+      event.key === 'ArrowLeft'
+        ? -1
+        : event.key === 'ArrowRight'
+          ? 1
+          : event.key === 'ArrowUp'
+            ? -7
+            : event.key === 'ArrowDown'
+              ? 7
+              : 0;
+    let nextIndex: number | null = step ? index + step : null;
+    if (event.key === 'Home') nextIndex = index - (index % 7);
+    if (event.key === 'End') nextIndex = index - (index % 7) + 6;
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const target = event.currentTarget.parentElement?.children[nextIndex] as
+      HTMLButtonElement | undefined;
+    if (target && !target.disabled) target.focus();
+  };
+
+  // Popover desktop là dialog: giữ Tab trong khung thay vì rơi ra trang phía sau.
+  const handlePopoverKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Tab' || !popoverRef.current) return;
+    const focusables = Array.from(
+      popoverRef.current.querySelectorAll<HTMLElement>('button:not([disabled])'),
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || active === popoverRef.current)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   const isDateDisabled = (day: number): boolean => {
     const date = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
-    if (minDate) {
-      const [my, mm, md] = minDate.split('-').map(Number);
-      const min = new Date(my, mm - 1, md);
-      if (date < min) return true;
-    }
-    if (maxDate) {
-      const [xy, xm, xd] = maxDate.split('-').map(Number);
-      const max = new Date(xy, xm - 1, xd);
-      if (date > max) return true;
-    }
-    return false;
+    return isDateOutOfRange(date, minDate, maxDate);
   };
+
+  const todayDisabled = useMemo(() => {
+    const now = new Date();
+    return isDateOutOfRange(
+      new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+      minDate,
+      maxDate,
+    );
+  }, [minDate, maxDate]);
 
   const isToday = (day: number): boolean => {
     const today = new Date();
@@ -178,30 +211,7 @@ function DatePicker({
     );
   };
 
-  const daysInMonth = useMemo(() => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysCount = new Date(year, month + 1, 0).getDate();
-    const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-    const days: { day: number; isCurrentMonth: boolean }[] = [];
-
-    for (let i = firstDay - 1; i >= 0; i--) {
-      days.push({ day: daysInPrevMonth - i, isCurrentMonth: false });
-    }
-
-    for (let i = 1; i <= daysCount; i++) {
-      days.push({ day: i, isCurrentMonth: true });
-    }
-
-    const remaining = 42 - days.length;
-    for (let i = 1; i <= remaining; i++) {
-      days.push({ day: i, isCurrentMonth: false });
-    }
-
-    return days;
-  }, [viewDate]);
+  const daysInMonth = useMemo(() => buildMonthGrid(viewDate), [viewDate]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -222,7 +232,7 @@ function DatePicker({
       id={useDialogPresentation ? undefined : `${controlId}-dialog`}
       tabIndex={useDialogPresentation ? undefined : -1}
       className={`
-                bg-surface border border-border-default rounded-card p-4
+                bg-surface-elevated border border-border rounded-card p-4
                 ${
                   useDialogPresentation
                     ? 'relative w-full max-w-[320px] mx-auto'
@@ -231,6 +241,7 @@ function DatePicker({
             `}
       role={useDialogPresentation ? undefined : 'dialog'}
       aria-label={useDialogPresentation ? undefined : 'Chọn ngày'}
+      onKeyDown={useDialogPresentation ? undefined : handlePopoverKeyDown}
       onClick={(e) => useDialogPresentation && e.stopPropagation()}
       initial={useDialogPresentation ? undefined : popoverMotion.initial}
       animate={useDialogPresentation ? undefined : popoverMotion.animate}
@@ -340,7 +351,7 @@ function DatePicker({
 
       {/* Lưới ngày */}
       <div className="grid grid-cols-7 gap-1">
-        {daysInMonth.map((item) => {
+        {daysInMonth.map((item, index) => {
           const isDisabled = item.isCurrentMonth && isDateDisabled(item.day);
           const isTodayDate = item.isCurrentMonth && isToday(item.day);
           const isSelectedDate = item.isCurrentMonth && isSelected(item.day);
@@ -350,9 +361,11 @@ function DatePicker({
               key={`${item.isCurrentMonth ? 'cur' : 'out'}-${item.day}`}
               type="button"
               onClick={() => item.isCurrentMonth && !isDisabled && handleSelectDate(item.day)}
+              onKeyDown={(event) => handleDayKeyDown(event, index)}
               disabled={!item.isCurrentMonth || isDisabled}
               aria-current={isTodayDate ? 'date' : undefined}
               aria-pressed={isSelectedDate}
+              aria-label={`${item.day}/${viewDate.getMonth() + 1}/${viewDate.getFullYear()}`}
               className={`
                                 aspect-square w-full text-body-sm rounded-control transition-colors duration-150
                                 flex items-center justify-center cursor-pointer
@@ -373,13 +386,14 @@ function DatePicker({
       <div className="mt-4 pt-3 border-t border-border-default">
         <button
           type="button"
+          disabled={todayDisabled}
           onClick={() => {
             const today = new Date();
             setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
             onChange(formatDateToString(today));
             closePicker();
           }}
-          className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
+          className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Hôm nay
         </button>

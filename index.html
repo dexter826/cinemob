@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      (function () {
+        var theme = 'dark';
+        try {
+          var stored = localStorage.getItem('vite-ui-theme');
+          if (stored === 'light' || stored === 'dark') theme = stored;
+        } catch (error) {
+          theme = 'dark';
+        }
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ed" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
     <title>CineMOB</title>

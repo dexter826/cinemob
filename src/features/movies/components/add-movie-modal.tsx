@@ -19,6 +19,7 @@ import MovieFormFields from './add-movie/movie-form-fields';
 import PosterPreview from './add-movie/poster-preview';
 import DatePicker from '@/shared/components/ui/date-picker';
 import TimePicker from '@/shared/components/ui/time-picker';
+import Switch from '@/shared/components/ui/switch';
 
 import { useAddMovieForm } from '../hooks/use-add-movie-form';
 import { COUNTRY_OPTIONS } from '@/constants';
@@ -336,25 +337,21 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                           <MessageSquare size={20} strokeWidth={1.5} aria-hidden="true" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="text-body font-bold text-text-primary">Xem qua review</h3>
+                          <h3 className="text-body font-bold text-text-primary">
+                            Xem qua đánh giá
+                          </h3>
                           <p className="text-body-sm text-text-secondary font-medium">
                             Bật nếu bạn đã xem bản tóm tắt phim
                           </p>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={!!formData.is_review}
-                        aria-label="Xem qua review"
-                        onClick={() => setFormData({ ...formData, is_review: !formData.is_review })}
-                        className={`relative w-12 h-6 rounded-full transition-colors shrink-0 cursor-pointer ${formData.is_review ? 'bg-primary' : 'bg-black/20 dark:bg-white/10'}`}
-                      >
-                        <span
-                          aria-hidden="true"
-                          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${formData.is_review ? 'translate-x-6' : 'translate-x-0'}`}
-                        />
-                      </button>
+                      <Switch
+                        checked={!!formData.is_review}
+                        onToggle={() =>
+                          setFormData({ ...formData, is_review: !formData.is_review })
+                        }
+                        label="Xem qua đánh giá"
+                      />
                     </div>
                   )}
                   {status !== 'watchlist' && (
@@ -414,6 +411,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                           Ngày xem
                         </label>
                         <DatePicker
+                          id="add-movie-date"
                           value={formData.date}
                           onChange={(val) => setFormData({ ...formData, date: val })}
                           placeholder="Chọn ngày…"
@@ -433,6 +431,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                           Giờ xem
                         </label>
                         <TimePicker
+                          id="add-movie-time"
                           value={formData.time}
                           onChange={(val) => setFormData({ ...formData, time: val })}
                           placeholder="Chọn giờ…"

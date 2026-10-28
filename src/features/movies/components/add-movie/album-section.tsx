@@ -70,7 +70,7 @@ function AlbumSection({
       <div className="flex items-center justify-between">
         <span className="text-label-caps text-text-secondary flex items-center gap-1.5 ml-1">
           <FolderPlus size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />{' '}
-          {isEditMode ? 'Quản lý Album' : 'Thêm vào Album'}
+          {isEditMode ? 'Quản lý album' : 'Thêm vào album'}
         </span>
         <button
           type="button"

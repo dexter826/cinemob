@@ -7,6 +7,7 @@ export const searchMovies = async (
   page: number = 1,
   year?: string,
   signal?: AbortSignal,
+  type: 'all' | 'movie' | 'tv' = 'all',
 ): Promise<{ results: TMDBMovieResult[]; totalPages: number }> => {
   if (!query) return { results: [], totalPages: 0 };
   if (!API_KEY) throw new Error('TMDB API key is unavailable');
@@ -20,14 +21,19 @@ export const searchMovies = async (
     };
     if (year) params.primary_release_year = year;
 
+    const emptyPage = { results: [], total_pages: 0 };
     const [movieData, tvData] = await Promise.all([
-      tmdbFetch(`search/movie`, params, decodeMovieResultPage, signal),
-      tmdbFetch(
-        `search/tv`,
-        { ...params, first_air_date_year: year || '' },
-        decodeMovieResultPage,
-        signal,
-      ),
+      type === 'tv'
+        ? Promise.resolve(emptyPage)
+        : tmdbFetch(`search/movie`, params, decodeMovieResultPage, signal),
+      type === 'movie'
+        ? Promise.resolve(emptyPage)
+        : tmdbFetch(
+            `search/tv`,
+            { ...params, first_air_date_year: year || '' },
+            decodeMovieResultPage,
+            signal,
+          ),
     ]);
 
     if (!movieData || !tvData) throw new Error('Incomplete TMDB search response');

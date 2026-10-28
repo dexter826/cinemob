@@ -52,7 +52,7 @@ export const useSearchTMDB = (
       try {
         const response =
           mode === 'search'
-            ? await searchMovies(submittedQuery, searchPage, year, controller.signal)
+            ? await searchMovies(submittedQuery, searchPage, year, controller.signal, type)
             : await getDiscoverMovies(
                 { page: searchPage, year, country, rating, sortBy, type },
                 controller.signal,

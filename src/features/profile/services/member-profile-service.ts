@@ -1,24 +1,17 @@
-import {
-  collection,
-  deleteField,
-  doc,
-  getDoc,
-  getDocs,
-  serverTimestamp,
-  setDoc,
-} from 'firebase/firestore';
+import { deleteField, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '@/shared/lib/firebase';
 import { normalizeDate } from '@/shared/utils/date-format';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
 
 export const MEMBER_PROFILE_COLLECTION = 'member_profiles';
+export const MEMBER_LOOKUP_COLLECTION = 'member_lookup';
 
 export interface PublicProfileSummary {
   uid: string;
   displayName: string;
   photoURL?: string;
-  email?: string;
   totalCount: number;
+  isMovieListHidden: boolean;
 }
 
 export const BIO_MAX_LENGTH = 300;
@@ -35,39 +28,56 @@ export const validateDob = (raw: string): string | undefined => {
   return raw;
 };
 
-// Cache hồ sơ theo uid 5 phút để mở lại trang cá nhân hiện ngay.
 const PROFILE_CACHE_TTL = 5 * 60 * 1000;
 const profileDocCache = new Map<string, { data: MemberProfile | null; at: number }>();
 
-const PUBLIC_PROFILE_CACHE_TTL = 5 * 60 * 1000;
-let publicProfileCache: { profiles: PublicProfileSummary[]; fetchedAt: number } | null = null;
+const lookupDocId = (email: string): string => email.trim().toLowerCase();
 
-export const fetchPublicProfiles = async (): Promise<PublicProfileSummary[]> => {
-  if (publicProfileCache && Date.now() - publicProfileCache.fetchedAt < PUBLIC_PROFILE_CACHE_TTL) {
-    return publicProfileCache.profiles;
+const ensureMemberLookup = async (
+  uid: string,
+  identity: { displayName: string; photoURL: string; email: string },
+): Promise<void> => {
+  const emailKey = lookupDocId(identity.email);
+  if (!emailKey) return;
+  try {
+    const ref = doc(db, MEMBER_LOOKUP_COLLECTION, emailKey);
+    const snap = await getDoc(ref);
+    const current = snap.data() as { displayName?: unknown; photoURL?: unknown } | undefined;
+    if (
+      snap.exists() &&
+      current?.displayName === identity.displayName &&
+      current?.photoURL === identity.photoURL
+    ) {
+      return;
+    }
+    await setDoc(ref, {
+      uid,
+      displayName: identity.displayName,
+      photoURL: identity.photoURL,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.warn('[member-lookup] không đồng bộ được doc tra cứu', error);
   }
-  const snap = await getDocs(collection(db, MEMBER_PROFILE_COLLECTION));
-  const profiles = snap.docs
-    .map((d) => {
-      const data = d.data() as Partial<MemberProfile>;
-      return {
-        uid: d.id,
-        displayName: typeof data.displayName === 'string' ? data.displayName : '',
-        photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
-        email: typeof data.email === 'string' ? data.email : undefined,
-        totalCount: typeof data.totalCount === 'number' ? data.totalCount : 0,
-      };
-    })
-    .filter((profile) => profile.displayName.length > 0);
-  publicProfileCache = { profiles, fetchedAt: Date.now() };
-  return profiles;
 };
 
-export const clearPublicProfileCache = (): void => {
-  publicProfileCache = null;
+export const lookupMemberByEmail = async (email: string): Promise<PublicProfileSummary | null> => {
+  const emailKey = lookupDocId(email);
+  if (!emailKey) return null;
+  const snap = await getDoc(doc(db, MEMBER_LOOKUP_COLLECTION, emailKey));
+  if (!snap.exists()) return null;
+  const data = snap.data() as { uid?: unknown; displayName?: unknown; photoURL?: unknown };
+  const uid = typeof data.uid === 'string' ? data.uid : '';
+  if (!uid) return null;
+  const profile = await getMemberProfile(uid).catch(() => null);
+  return {
+    uid,
+    displayName: typeof data.displayName === 'string' ? data.displayName : '',
+    photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
+    totalCount: profile?.totalCount ?? 0,
+    isMovieListHidden: profile?.isMovieListHidden ?? false,
+  };
 };
-
-// Ghi xong phải gọi để lần đọc sau luôn lấy dữ liệu mới.
 export const clearMemberProfileCache = (uid?: string): void => {
   if (uid) profileDocCache.delete(uid);
   else profileDocCache.clear();
@@ -93,7 +103,6 @@ const readMemberProfile = async (uid: string): Promise<MemberProfile | null> => 
   return {
     displayName: typeof data.displayName === 'string' ? data.displayName : '',
     photoURL: typeof data.photoURL === 'string' ? data.photoURL : undefined,
-    email: typeof data.email === 'string' ? data.email : undefined,
     bio: typeof data.bio === 'string' && data.bio.length > 0 ? data.bio : undefined,
     gender: validateGender(data.gender ?? ''),
     dob: validateDob(data.dob ?? ''),
@@ -112,8 +121,6 @@ export const getMemberProfile = async (uid: string): Promise<MemberProfile | nul
   return data;
 };
 
-// Sync định danh (tên/avatar/email từ Auth) và danh sách phim; giữ nguyên bio/gender/dob
-// đang có trên doc vì các trường đó chỉ do chính chủ sửa qua trang cá nhân.
 export const syncMemberProfile = async (
   uid: string,
   identity: { displayName: string; photoURL: string; email: string },
@@ -121,20 +128,21 @@ export const syncMemberProfile = async (
 ): Promise<boolean> => {
   const current = await readMemberProfile(uid);
 
+  await ensureMemberLookup(uid, identity);
+
   const profileMovies = buildProfileMovies(movies);
   const moviesChanged =
     current?.totalCount !== profileMovies.length ||
     !sameProfileMovies(current?.movies, profileMovies);
   const identityChanged =
     current?.displayName !== identity.displayName ||
-    (current?.photoURL || '') !== identity.photoURL ||
-    (current?.email || '') !== identity.email;
+    (current?.photoURL || '') !== identity.photoURL;
   if (!moviesChanged && !identityChanged && current) return false;
 
   const payload: Record<string, unknown> = {
     displayName: identity.displayName,
     photoURL: identity.photoURL,
-    email: identity.email,
+    email: deleteField(),
     isMovieListHidden: current?.isMovieListHidden ?? false,
     totalCount: profileMovies.length,
     updatedAt: serverTimestamp(),
@@ -150,7 +158,6 @@ export const syncMemberProfile = async (
   return true;
 };
 
-// Ẩn tận dữ liệu: bật ẩn là gỡ mảng movies khỏi doc; tắt ẩn dựng lại từ collection movies.
 export const setMovieListHidden = async (
   uid: string,
   hidden: boolean,
@@ -170,12 +177,12 @@ export const setMovieListHidden = async (
   clearMemberProfileCache(uid);
 };
 
-// Lưu bio/gender/dob từ trang cá nhân; bỏ trống là gỡ field, không lưu chuỗi rỗng.
 export const saveProfileDetails = async (
   uid: string,
-  details: { bio?: string; gender?: MemberGender; dob?: string },
+  details: { displayName?: string; bio?: string; gender?: MemberGender; dob?: string },
 ): Promise<void> => {
   const payload: Record<string, unknown> = { updatedAt: serverTimestamp() };
+  if (details.displayName) payload.displayName = details.displayName;
   payload.bio = details.bio ? details.bio : deleteField();
   payload.gender = details.gender ? details.gender : deleteField();
   payload.dob = details.dob ? details.dob : deleteField();
@@ -200,14 +207,12 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
     }));
 };
 
-// So ngày xem bất kể Timestamp hay Date, một bên thiếu là khác.
 const sameWatchedAt = (a?: ProfileMovie['watched_at'], b?: ProfileMovie['watched_at']): boolean => {
   if (!a !== !b) return false;
   if (!a) return true;
   return (normalizeDate(a)?.getTime() ?? null) === (normalizeDate(b)?.getTime() ?? null);
 };
 
-// Hai danh sách phim hồ sơ giống nhau từng trường; tránh stringify mỗi lần sync.
 const sameProfileMovies = (a: ProfileMovie[] | undefined, b: ProfileMovie[]): boolean =>
   !!a &&
   a.length === b.length &&

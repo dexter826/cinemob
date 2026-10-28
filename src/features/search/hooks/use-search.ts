@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
@@ -7,6 +7,7 @@ import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
+import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
 
 export type SearchSortBy =
   | 'popularity.desc'
@@ -67,37 +68,63 @@ export const useSearch = () => {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(() => {
-    const page = Number(searchParams.get('page'));
-    return Number.isInteger(page) && page > 1 ? page : 1;
-  });
-  // Tăng nonce để nạp lại kết quả TMDB khi bấm Thử lại.
+  const [currentPage, setCurrentPage] = useState(() => readPageParam(searchParams));
   const [retryNonce, setRetryNonce] = useState(0);
+
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    const sortParam = searchParams.get('sortBy') as SearchSortBy | null;
+    const nextFilters: SearchFormFilters = {
+      query: searchParams.get('q') ?? '',
+      type: typeParam === 'movie' || typeParam === 'tv' ? typeParam : 'all',
+      year: searchParams.get('year') ?? '',
+      country: searchParams.get('country') ?? '',
+      sortBy: sortParam && SEARCH_SORT_VALUES.includes(sortParam) ? sortParam : 'popularity.desc',
+    };
+    setFilters((prev) =>
+      prev.query === nextFilters.query &&
+      prev.type === nextFilters.type &&
+      prev.year === nextFilters.year &&
+      prev.country === nextFilters.country &&
+      prev.sortBy === nextFilters.sortBy
+        ? prev
+        : nextFilters,
+    );
+    setSubmittedQuery((prev) => {
+      const next = nextFilters.query.trim();
+      return prev === next ? prev : next;
+    });
+    const page = readPageParam(searchParams);
+    setCurrentPage((prev) => (prev === page ? prev : page));
+  }, [searchParams]);
 
   const syncParams = useCallback(
     (next: SearchFormFilters, page: number, options?: { replace?: boolean }) => {
+      const effective: SearchFormFilters =
+        next.query.trim().length > 2 ? { ...next, country: '', sortBy: 'popularity.desc' } : next;
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
-        const setOrDelete = (key: string, value: string) => {
-          if (value) params.set(key, value);
-          else params.delete(key);
-        };
-        setOrDelete('q', next.query.trim());
-        setOrDelete('type', next.type !== 'all' ? next.type : '');
-        setOrDelete('year', next.year);
-        setOrDelete('country', next.country);
-        setOrDelete('sortBy', next.sortBy !== 'popularity.desc' ? next.sortBy : '');
-        setOrDelete('page', page > 1 ? String(page) : '');
+        setOrDeleteParam(params, 'q', effective.query.trim());
+        setOrDeleteParam(params, 'type', effective.type !== 'all' ? effective.type : '');
+        setOrDeleteParam(params, 'year', effective.year);
+        setOrDeleteParam(params, 'country', effective.country);
+        setOrDeleteParam(
+          params,
+          'sortBy',
+          effective.sortBy !== 'popularity.desc' ? effective.sortBy : '',
+        );
+        writePageParam(params, page);
         return params;
       }, options);
+      return effective;
     },
     [setSearchParams],
   );
 
   const updateFilter = <K extends keyof SearchFormFilters>(key: K, value: SearchFormFilters[K]) => {
     const next = { ...filters, [key]: value };
-    setFilters(next);
     if (key === 'query' && (value as string).trim() === '') {
+      setFilters(next);
       setSubmittedQuery('');
       setSuggestions([]);
       syncParams(next, 1, { replace: true });
@@ -105,16 +132,18 @@ export const useSearch = () => {
     }
     if (key !== 'query') {
       setCurrentPage(1);
-      // Giữ nguyên q đã submit trong URL, không ghi draft đang gõ dở.
-      syncParams({ ...next, query: submittedQuery }, 1);
+      setFilters(syncParams({ ...next, query: submittedQuery }, 1));
+      return;
     }
+    setFilters(next);
   };
 
   const handleSearch = useCallback(() => {
+    const effective = syncParams(filters, 1);
+    setFilters(effective);
     setSubmittedQuery(filters.query);
     setShowSuggestions(false);
     setCurrentPage(1);
-    syncParams(filters, 1);
   }, [filters, syncParams]);
 
   useEffect(() => {
@@ -179,62 +208,11 @@ export const useSearch = () => {
   }, [mode, suggestionsHasLoaded, fetchRandomMovies]);
 
   const displayMovies = isSearchMode ? results : discoverMovies;
-
-  const filteredResults = useMemo(() => {
-    let result = displayMovies.filter((movie) => {
-      if (filters.type !== 'all' && movie.media_type !== filters.type) return false;
-
-      if (isSearchMode && filters.country) {
-        if (!movie.origin_country || !movie.origin_country.includes(filters.country)) return false;
-      }
-
-      return true;
-    });
-
-    if (isSearchMode) {
-      result = [...result].sort((a, b) => {
-        switch (filters.sortBy) {
-          case 'popularity.desc':
-            return (b.popularity || 0) - (a.popularity || 0);
-          case 'vote_average.desc':
-            return (b.vote_average || 0) - (a.vote_average || 0);
-          case 'primary_release_date.desc': {
-            const dateA = new Date(a.release_date || a.first_air_date || 0).getTime();
-            const dateB = new Date(b.release_date || b.first_air_date || 0).getTime();
-            return dateB - dateA;
-          }
-          case 'primary_release_date.asc': {
-            const dateA = new Date(a.release_date || a.first_air_date || 0).getTime();
-            const dateB = new Date(b.release_date || b.first_air_date || 0).getTime();
-            return dateA - dateB;
-          }
-          case 'title.asc': {
-            const titleA = a.title || a.name || '';
-            const titleB = b.title || b.name || '';
-            return titleA.localeCompare(titleB, 'vi');
-          }
-          case 'title.desc': {
-            const titleA = a.title || a.name || '';
-            const titleB = b.title || b.name || '';
-            return titleB.localeCompare(titleA, 'vi');
-          }
-          default: {
-            // Exhaustiveness: thêm SearchSortBy mới mà chưa xử lý sẽ lỗi biên dịch ở đây.
-            const unreachable: never = filters.sortBy;
-            console.warn('Unknown sort option:', unreachable);
-            return 0;
-          }
-        }
-      });
-    }
-
-    return result;
-  }, [displayMovies, filters.type, filters.country, isSearchMode, filters.sortBy]);
+  const filteredResults = displayMovies;
 
   const navigate = useNavigate();
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
-    // Phim đã trong bộ sưu tập → trang chi tiết; chưa có → mở form thêm nhanh.
     if (getMovieStatus(movie.id)) {
       const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
       navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
@@ -259,7 +237,7 @@ export const useSearch = () => {
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
-    syncParams(filters, page);
+    syncParams({ ...filters, query: submittedQuery }, page);
   };
 
   return {

@@ -229,8 +229,11 @@ function PersonDetailPage() {
                               </div>
                               <div className="font-bold text-body">
                                 {(() => {
-                                  const birth = new Date(person.birthday);
-                                  if (Number.isNaN(birth.getTime())) return '—';
+                                  const [by, bm, bd] = (person.birthday || '')
+                                    .split('-')
+                                    .map(Number);
+                                  if (!by || !bm || !bd) return '—';
+                                  const birth = new Date(by, bm - 1, bd);
                                   const today = new Date();
                                   let age = today.getFullYear() - birth.getFullYear();
                                   const m = today.getMonth() - birth.getMonth();

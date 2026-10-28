@@ -5,7 +5,7 @@ import { Movie, Album } from '@/types';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '../stores/album-store';
-import { updateAlbum, addAlbum } from '../services/album-service';
+import { addMovieToAlbum, addAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
 import Skeleton from '@/shared/components/ui/skeleton';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
@@ -56,8 +56,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
 
     try {
       setAddingToAlbum(album.docId);
-      const newIds = Array.from(new Set([...(album.movieDocIds || []), movie.docId]));
-      await updateAlbum(album.docId, { movieDocIds: newIds });
+      await addMovieToAlbum(album.docId, movie.docId);
       showToast(MESSAGES.ALBUM.ADD_MOVIE_SUCCESS, 'success');
     } catch (error) {
       showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');

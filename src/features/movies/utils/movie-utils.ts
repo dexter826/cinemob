@@ -78,3 +78,12 @@ export const getLatestWatchedDate = (movie: Movie): Date | null => {
   }
   return latest;
 };
+
+// Mọi mốc xem của một phim: lần xem gần nhất cộng từng mốc mùa của series.
+export const getWatchedDates = (movie: Movie): Date[] => {
+  const dates: Date[] = [];
+  const watched = normalizeDate(movie.watched_at);
+  if (watched) dates.push(watched);
+  getSeasonWatchedDates(movie).forEach(({ date }) => dates.push(date));
+  return dates;
+};

@@ -121,10 +121,10 @@ export const useReleaseCalendar = () => {
   const handlePushToggle = async () => {
     if (!pushSupported) {
       showAlert({
-        title: 'Thông báo',
-        message:
-          'Tính năng thông báo đẩy chỉ khả dụng trên mobile khi ứng dụng được cài đặt dưới dạng PWA (Thêm vào Màn hình chính)',
+        title: 'Chưa bật được thông báo',
+        message: 'Thêm CineMOB vào Màn hình chính rồi thử lại.',
         type: 'info',
+        confirmText: 'Đóng',
         onConfirm: () => {},
       });
       return;
@@ -140,20 +140,18 @@ export const useReleaseCalendar = () => {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          showToast(
-            'Đã bật thông báo! Bạn sẽ nhận được thông báo mỗi sáng 8:00 khi có tập phim mới.',
-            'success',
-          );
+          showToast('Đã bật thông báo', 'success');
         }
       }
       setNotificationPermission(getNotificationPermission());
     } catch (error) {
       console.error('Push notification error:', error);
-      let errorMessage = 'Có lỗi xảy ra khi thiết lập thông báo';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      showToast(errorMessage, 'error');
+      showToast(
+        pushSubscribed
+          ? 'Không tắt được thông báo. Thử lại.'
+          : 'Không bật được thông báo. Thử lại.',
+        'error',
+      );
     } finally {
       setPushLoading(false);
     }

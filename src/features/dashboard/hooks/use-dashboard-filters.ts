@@ -3,12 +3,13 @@ import { useSearchParams } from 'react-router-dom';
 import { Movie, MovieStatus } from '@/types';
 import {
   getTranslatedCountries,
-  getSeasonWatchedDates,
+  getWatchedDates,
   getLatestWatchedDate,
+  getMainTitle,
 } from '@/features/movies/utils/movie-utils';
-import { normalizeDate } from '@/shared/utils/date-format';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
+import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
@@ -45,46 +46,56 @@ const INITIAL_FILTER_STATE: FilterState = {
 
 export const MOVIES_PER_PAGE = 24;
 
+const parseFiltersFromParams = (params: URLSearchParams): FilterState => {
+  const sortBy = params.get('sort');
+  const order = params.get('order');
+  const contentType = params.get('type');
+  const watchStatus = params.get('status');
+  const sourceType = params.get('source');
+  const rating = params.get('rating')?.split('-').map(Number) ?? [];
+  const ratingRange =
+    rating.length === 2 && rating.every((value) => Number.isFinite(value))
+      ? ([rating[0], rating[1]] as [number, number])
+      : null;
+  return {
+    sortBy: sortBy === 'title' ? 'title' : 'date',
+    sortOrder: order === 'asc' ? 'asc' : 'desc',
+    searchQuery: params.get('q') ?? '',
+    ratingRange,
+    year: Number(params.get('year')) || null,
+    country: params.get('country') ?? '',
+    genre: params.get('genre') ?? '',
+    contentType: contentType === 'movie' || contentType === 'tv' ? contentType : 'all',
+    watchStatus: watchStatus === 'watching' || watchStatus === 'completed' ? watchStatus : 'all',
+    sourceType: sourceType === 'normal' || sourceType === 'review' ? sourceType : 'all',
+  };
+};
+
+const isSameFilters = (a: FilterState, b: FilterState): boolean =>
+  a.sortBy === b.sortBy &&
+  a.sortOrder === b.sortOrder &&
+  a.searchQuery === b.searchQuery &&
+  a.ratingRange?.[0] === b.ratingRange?.[0] &&
+  a.ratingRange?.[1] === b.ratingRange?.[1] &&
+  a.year === b.year &&
+  a.country === b.country &&
+  a.genre === b.genre &&
+  a.contentType === b.contentType &&
+  a.watchStatus === b.watchStatus &&
+  a.sourceType === b.sourceType;
+
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
   const [showFilters, setShowFilters] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Khởi tạo bộ lọc và trang từ URL để deep-link được trạng thái thư viện.
-  const [filters, setFilters] = useState<FilterState>(() => {
-    const sortBy = searchParams.get('sort');
-    const order = searchParams.get('order');
-    const contentType = searchParams.get('type');
-    const watchStatus = searchParams.get('status');
-    const sourceType = searchParams.get('source');
-    const rating = searchParams.get('rating')?.split('-').map(Number) ?? [];
-    const ratingRange =
-      rating.length === 2 && rating.every((value) => Number.isFinite(value))
-        ? ([rating[0], rating[1]] as [number, number])
-        : null;
-    return {
-      sortBy: sortBy === 'title' ? 'title' : 'date',
-      sortOrder: order === 'asc' ? 'asc' : 'desc',
-      searchQuery: searchParams.get('q') ?? '',
-      ratingRange,
-      year: Number(searchParams.get('year')) || null,
-      country: searchParams.get('country') ?? '',
-      genre: searchParams.get('genre') ?? '',
-      contentType: contentType === 'movie' || contentType === 'tv' ? contentType : 'all',
-      watchStatus: watchStatus === 'watching' || watchStatus === 'completed' ? watchStatus : 'all',
-      sourceType: sourceType === 'normal' || sourceType === 'review' ? sourceType : 'all',
-    };
-  });
-  const [currentPage, setCurrentPage] = useState(() => {
-    const page = Number(searchParams.get('page'));
-    return Number.isInteger(page) && page > 1 ? page : 1;
-  });
-
-  // Đồng bộ currentPage khi URL thay đổi (Back/Forward trình duyệt).
+  const [filters, setFilters] = useState<FilterState>(() => parseFiltersFromParams(searchParams));
+  const [currentPage, setCurrentPage] = useState(() => readPageParam(searchParams));
   useEffect(() => {
-    const pageParam = Number(searchParams.get('page'));
-    const targetPage = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
+    const next = parseFiltersFromParams(searchParams);
+    setFilters((prev) => (isSameFilters(prev, next) ? prev : next));
+    const targetPage = readPageParam(searchParams);
     setCurrentPage((prev) => (prev !== targetPage ? targetPage : prev));
   }, [searchParams]);
 
@@ -92,24 +103,21 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     (next: FilterState, page: number, options?: { replace?: boolean }) => {
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
-        const setOrDelete = (key: string, value: string) => {
-          if (value) params.set(key, value);
-          else params.delete(key);
-        };
-        setOrDelete('q', next.searchQuery.trim());
-        setOrDelete('sort', next.sortBy !== 'date' ? next.sortBy : '');
-        setOrDelete('order', next.sortOrder !== 'desc' ? next.sortOrder : '');
-        setOrDelete(
+        setOrDeleteParam(params, 'q', next.searchQuery.trim());
+        setOrDeleteParam(params, 'sort', next.sortBy !== 'date' ? next.sortBy : '');
+        setOrDeleteParam(params, 'order', next.sortOrder !== 'desc' ? next.sortOrder : '');
+        setOrDeleteParam(
+          params,
           'rating',
           next.ratingRange ? `${next.ratingRange[0]}-${next.ratingRange[1]}` : '',
         );
-        setOrDelete('year', next.year !== null ? String(next.year) : '');
-        setOrDelete('country', next.country);
-        setOrDelete('genre', next.genre);
-        setOrDelete('type', next.contentType !== 'all' ? next.contentType : '');
-        setOrDelete('status', next.watchStatus !== 'all' ? next.watchStatus : '');
-        setOrDelete('source', next.sourceType !== 'all' ? next.sourceType : '');
-        setOrDelete('page', page > 1 ? String(page) : '');
+        setOrDeleteParam(params, 'year', next.year !== null ? String(next.year) : '');
+        setOrDeleteParam(params, 'country', next.country);
+        setOrDeleteParam(params, 'genre', next.genre);
+        setOrDeleteParam(params, 'type', next.contentType !== 'all' ? next.contentType : '');
+        setOrDeleteParam(params, 'status', next.watchStatus !== 'all' ? next.watchStatus : '');
+        setOrDeleteParam(params, 'source', next.sourceType !== 'all' ? next.sourceType : '');
+        writePageParam(params, page);
         return params;
       }, options);
     },
@@ -179,10 +187,9 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     }
 
     if (filters.year !== null) {
-      result = result.filter((m) => {
-        if (normalizeDate(m.watched_at)?.getFullYear() === filters.year) return true;
-        return getSeasonWatchedDates(m).some(({ date }) => date.getFullYear() === filters.year);
-      });
+      result = result.filter((m) =>
+        getWatchedDates(m).some((date) => date.getFullYear() === filters.year),
+      );
     }
 
     if (filters.country) {
@@ -228,7 +235,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
     result.sort((a, b) => {
       let comp = 0;
-      if (filters.sortBy === 'title') comp = a.title.localeCompare(b.title, 'vi');
+      if (filters.sortBy === 'title') comp = getMainTitle(a).localeCompare(getMainTitle(b), 'vi');
       else {
         const da = getLatestWatchedDate(a)?.getTime() || 0;
         const db = getLatestWatchedDate(b)?.getTime() || 0;
@@ -256,14 +263,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
   const availableYears = useMemo(() => {
     return Array.from(
-      new Set(
-        movies.flatMap((m) => {
-          const d = normalizeDate(m.watched_at);
-          const years = d ? [d.getFullYear()] : [];
-          getSeasonWatchedDates(m).forEach(({ date }) => years.push(date.getFullYear()));
-          return years;
-        }),
-      ),
+      new Set(movies.flatMap((m) => getWatchedDates(m).map((date) => date.getFullYear()))),
     )
       .sort((a, b) => b - a)
       .map((year) => ({

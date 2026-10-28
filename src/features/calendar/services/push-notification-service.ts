@@ -121,7 +121,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
       }
     }
 
-    throw new Error('Không thể bật thông báo, vui lòng thử lại');
+    throw new Error('Không bật được thông báo. Thử lại.');
   }
 }
 
@@ -138,7 +138,7 @@ export async function unsubscribeFromPushNotifications(): Promise<void> {
     }
   } catch (error) {
     console.error('Failed to unsubscribe from push notifications:', error);
-    throw new Error('Không thể tắt thông báo, vui lòng thử lại');
+    throw new Error('Không tắt được thông báo. Thử lại.');
   }
 }
 

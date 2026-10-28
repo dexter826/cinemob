@@ -39,7 +39,6 @@ function ReleaseCalendarPage() {
     collectionError,
     retryCollection,
     loadingEpisodes,
-    monthLoaded,
     movies,
     tvSeries,
     monthEpisodes,
@@ -64,7 +63,7 @@ function ReleaseCalendarPage() {
   const today = todayISO();
   const shouldShowSkeleton = loading && movies.length === 0;
   const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
-  const showEpisodesSkeleton = loadingEpisodes && !monthLoaded;
+  const showEpisodesSkeleton = loadingEpisodes && monthEpisodes.length === 0;
   const calendarCellCount =
     Math.ceil(
       (new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate() +

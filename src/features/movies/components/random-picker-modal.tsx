@@ -147,7 +147,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                 leftSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, -1), poolType)}
                 centerSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 0), poolType)}
                 rightSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 1), poolType)}
-                poolLabel={poolType === 'watchlist' ? 'Từ Watchlist của bạn' : 'Phim thịnh hành'}
+                poolLabel={poolType === 'watchlist' ? 'Từ watchlist của bạn' : 'Phim thịnh hành'}
                 title={title}
                 isShuffling={isShuffling}
                 showTitle={!isShuffling && currentIndex !== null}

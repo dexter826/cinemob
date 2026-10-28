@@ -3,13 +3,17 @@ import type { PersonMovie } from '@/types';
 export type PersonSortBy = 'title' | 'year';
 export type SortOrder = 'asc' | 'desc';
 
+// Ngày TMDB là `YYYY-MM-DD`; cắt chuỗi để không lệch năm theo múi giờ.
+const getReleaseDate = (movie: PersonMovie): string =>
+  movie.release_date || movie.first_air_date || '';
+
 export function getPersonAvailableYears(movies: PersonMovie[]): string[] {
   const years = new Set<string>();
   movies.forEach((movie) => {
-    const date = movie.release_date || movie.first_air_date;
-    if (date) years.add(new Date(date).getFullYear().toString());
+    const year = getReleaseDate(movie).slice(0, 4);
+    if (/^\d{4}$/.test(year)) years.add(year);
   });
-  return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
+  return Array.from(years).sort((a, b) => Number(b) - Number(a));
 }
 
 export function filterAndSortPersonMovies(
@@ -22,7 +26,7 @@ export function filterAndSortPersonMovies(
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const result = movies.filter((movie) => {
     const title = (movie.title || movie.name || '').toLocaleLowerCase();
-    const date = movie.release_date || movie.first_air_date || '';
+    const date = getReleaseDate(movie);
     return (
       (!normalizedQuery || title.includes(normalizedQuery)) &&
       (selectedYears.length === 0 || selectedYears.some((year) => date.startsWith(year)))
@@ -33,8 +37,7 @@ export function filterAndSortPersonMovies(
     const comparison =
       sortBy === 'title'
         ? (a.title || a.name || '').localeCompare(b.title || b.name || '')
-        : new Date(a.release_date || a.first_air_date || '1900-01-01').getFullYear() -
-          new Date(b.release_date || b.first_air_date || '1900-01-01').getFullYear();
+        : (getReleaseDate(a) || '1900-01-01').localeCompare(getReleaseDate(b) || '1900-01-01');
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 }

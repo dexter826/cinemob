@@ -66,11 +66,20 @@ service cloud.firestore {
       allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidAlbum();
     }
 
-    // Member profiles - mọi thành viên đọc được hồ sơ của nhau, chỉ chủ hồ sơ ghi
+    // Member profiles - đọc từng hồ sơ theo uid; chặn liệt kê cả collection
     match /member_profiles/{userId} {
-      allow read: if isSignedIn();
+      allow get: if isSignedIn();
+      allow list: if false;
       allow create, update: if isSignedIn() && isOwner(userId) && isValidProfile();
       allow delete: if isSignedIn() && isOwner(userId);
+    }
+
+    // Lookup theo email - chỉ đọc đúng 1 doc khi biết email, không liệt kê được
+    match /member_lookup/{emailKey} {
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create, update: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.uid == request.auth.uid;
     }
 
     // Users - stores preferences like previously recommended titles

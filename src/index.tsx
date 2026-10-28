@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './app';
 import { ThemeProvider } from '@/app/providers/theme-provider';
+import { ErrorBoundary } from '@/shared/components/feedback/error-boundary';
 import { registerSW } from 'virtual:pwa-register';
 
 if ('serviceWorker' in navigator) {
@@ -19,8 +20,10 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <App />
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="dark">
+        <App />
+      </ThemeProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 );

@@ -9,8 +9,20 @@ import {
   type PersonSortBy,
   type SortOrder,
 } from '../utils/person-selectors';
+import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
 
 export const PERSON_MOVIES_PER_PAGE = 36;
+
+const parsePersonParams = (params: URLSearchParams) => {
+  const page = Number(params.get('page'));
+  return {
+    searchQuery: params.get('q') ?? '',
+    selectedYears: (params.get('years') ?? '').split(',').filter(Boolean),
+    sortBy: (params.get('sort') === 'title' ? 'title' : 'year') as PersonSortBy,
+    sortOrder: (params.get('order') === 'asc' ? 'asc' : 'desc') as SortOrder,
+    page: Number.isInteger(page) && page > 1 ? page : 1,
+  };
+};
 
 export function usePersonDetail(personId?: string) {
   const [retryNonce, setRetryNonce] = useState(0);
@@ -32,12 +44,20 @@ export function usePersonDetail(personId?: string) {
   const [sortOrder, setSortOrderState] = useState<SortOrder>(() =>
     searchParams.get('order') === 'asc' ? 'asc' : 'desc',
   );
-  const [currentPage, setCurrentPage] = useState(() => {
-    const page = Number(searchParams.get('page'));
-    return Number.isInteger(page) && page > 1 ? page : 1;
-  });
+  const [currentPage, setCurrentPage] = useState(() => readPageParam(searchParams));
   const [showFilters, setShowFilters] = useState(false);
   const requestSequence = useRef(0);
+
+  useEffect(() => {
+    const next = parsePersonParams(searchParams);
+    setSearchQueryState((prev) => (prev === next.searchQuery ? prev : next.searchQuery));
+    setSelectedYearsState((prev) =>
+      prev.join(',') === next.selectedYears.join(',') ? prev : next.selectedYears,
+    );
+    setSortByState((prev) => (prev === next.sortBy ? prev : next.sortBy));
+    setSortOrderState((prev) => (prev === next.sortOrder ? prev : next.sortOrder));
+    setCurrentPage((prev) => (prev === next.page ? prev : next.page));
+  }, [searchParams]);
 
   const syncParams = useCallback(
     (
@@ -52,15 +72,11 @@ export function usePersonDetail(personId?: string) {
     ) => {
       setSearchParams((prev) => {
         const params = new URLSearchParams(prev);
-        const setOrDelete = (key: string, value: string) => {
-          if (value) params.set(key, value);
-          else params.delete(key);
-        };
-        setOrDelete('q', next.searchQuery.trim());
-        setOrDelete('years', next.selectedYears.join(','));
-        setOrDelete('sort', next.sortBy !== 'year' ? next.sortBy : '');
-        setOrDelete('order', next.sortOrder !== 'desc' ? next.sortOrder : '');
-        setOrDelete('page', page > 1 ? String(page) : '');
+        setOrDeleteParam(params, 'q', next.searchQuery.trim());
+        setOrDeleteParam(params, 'years', next.selectedYears.join(','));
+        setOrDeleteParam(params, 'sort', next.sortBy !== 'year' ? next.sortBy : '');
+        setOrDeleteParam(params, 'order', next.sortOrder !== 'desc' ? next.sortOrder : '');
+        writePageParam(params, page);
         return params;
       }, options);
     },

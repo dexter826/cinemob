@@ -3,7 +3,7 @@ import { create } from 'zustand';
 interface AlertOptions {
   title: string;
   message: string;
-  confirmText?: string;
+  confirmText: string;
   cancelText?: string;
   type?: 'info' | 'warning' | 'danger';
   onConfirm: () => void;
