@@ -97,6 +97,15 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
     if (isOpen) setIsEditingInfo(false);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (
+      !isManualMode &&
+      (errors.title || errors.country || errors.releaseDate || errors.runtime || errors.seasons)
+    ) {
+      setIsEditingInfo(true);
+    }
+  }, [errors, isManualMode]);
+
   const isEditMode = !!initialData?.movieToEdit;
   const submitDisabled =
     !canSubmit || isSubmitting || (movieExists && !isEditMode) || (isEditMode && !isDirty);

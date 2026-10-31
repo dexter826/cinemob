@@ -67,37 +67,50 @@ export const useMovieValidation = () => {
   }, []);
 
   useEffect(() => {
-    if (errorTrigger > 0) {
-      const errorKey =
-        (Object.keys(errors) as Array<keyof FormErrors>).find((k) => errors[k]) ||
-        (ratingError ? 'rating' : null);
-      const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
-      if (targetRef?.current) {
-        const el = targetRef.current;
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        el.scrollIntoView({
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          block: 'center',
+    if (errorTrigger <= 0) return;
+    const errorKey =
+      (Object.keys(errors) as Array<keyof FormErrors>).find((k) => errors[k]) ||
+      (ratingError ? 'rating' : null);
+    const targetRef = errorKey ? (refs[errorKey] as React.RefObject<HTMLElement | null>) : null;
+    if (!targetRef) return;
+
+    const focusError = (el: HTMLElement): (() => void) => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'center',
+      });
+      // Đưa focus vào đúng trường lỗi: input trực tiếp, còn control tùy biến thì vào nút bên trong.
+      if (el instanceof HTMLInputElement) {
+        el.focus({ preventScroll: true });
+      } else {
+        el.querySelector<HTMLElement>(
+          'button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+        )?.focus({
+          preventScroll: true,
         });
-        // Đưa focus vào đúng trường lỗi: input trực tiếp, còn control tùy biến thì vào nút bên trong.
-        if (el instanceof HTMLInputElement) {
-          el.focus({ preventScroll: true });
-        } else {
-          el.querySelector<HTMLElement>(
-            'button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
-          )?.focus({
-            preventScroll: true,
-          });
-        }
-        setIsAnimating(false);
-        const t1 = setTimeout(() => setIsAnimating(true), 10);
-        const t2 = setTimeout(() => setIsAnimating(false), 1010);
-        return () => {
-          clearTimeout(t1);
-          clearTimeout(t2);
-        };
       }
+      setIsAnimating(false);
+      const t1 = setTimeout(() => setIsAnimating(true), 10);
+      const t2 = setTimeout(() => setIsAnimating(false), 1010);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    };
+
+    if (targetRef.current) {
+      const cleanup = focusError(targetRef.current);
+      return () => cleanup();
     }
+    let cleanup: (() => void) | null = null;
+    const t = setTimeout(() => {
+      if (targetRef.current) cleanup = focusError(targetRef.current);
+    }, 50);
+    return () => {
+      clearTimeout(t);
+      cleanup?.();
+    };
   }, [errorTrigger, errors, ratingError, refs]);
 
   const validate = (
@@ -106,22 +119,29 @@ export const useMovieValidation = () => {
     status: MovieStatus,
     formData: FormValidationData,
   ): boolean => {
+    const newErrors = {
+      title: !formData.title.trim(),
+      country: false,
+      releaseDate: false,
+      seasons: false,
+      runtime: false,
+    };
     if (isManualMode) {
-      const newErrors = {
-        title: !formData.title.trim(),
-        country: !formData.country.trim(),
-        releaseDate: !formData.releaseDate,
-        seasons: isTVSeries && (!formData.seasons || parseInt(String(formData.seasons)) <= 0),
-        runtime: !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0),
-      };
-
-      if (Object.values(newErrors).some((v) => v)) {
-        setErrors(newErrors);
-        setErrorTrigger((p) => p + 1);
-        showToast(MESSAGES.COMMON.REQUIRED_FIELDS, 'error');
-        return false;
-      }
+      newErrors.country = !formData.country.trim();
+      newErrors.releaseDate = !formData.releaseDate;
+      newErrors.seasons =
+        isTVSeries && (!formData.seasons || parseInt(String(formData.seasons)) <= 0);
+      newErrors.runtime =
+        !isTVSeries && (!formData.runtime || parseInt(String(formData.runtime)) <= 0);
     }
+
+    if (Object.values(newErrors).some((v) => v)) {
+      setErrors(newErrors);
+      setErrorTrigger((p) => p + 1);
+      showToast(MESSAGES.COMMON.REQUIRED_FIELDS, 'error');
+      return false;
+    }
+    setErrors(newErrors);
 
     if (status === 'history' && formData.rating === 0) {
       setRatingError(true);
