@@ -60,7 +60,8 @@ function MovieFormFields({
 }: MovieFormFieldsProps) {
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Form nằm trong panel hẹp bên trái modal nên xếp 1 cột. */}
+      <div className="space-y-4">
         <div className="space-y-2">
           <label
             htmlFor="movie-media-type"

@@ -1,6 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Movie } from '@/types';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useDeleteMovie } from '@/features/movies/hooks/use-delete-movie';
@@ -45,21 +44,6 @@ export const useDashboard = () => {
     [movies],
   );
 
-  const handleEdit = (movie: Movie) => {
-    openAddModal({ movieToEdit: movie });
-  };
-
-  const handleMarkAsWatched = (movie: Movie) => {
-    const now = new Date();
-    openAddModal({
-      movieToEdit: {
-        ...movie,
-        status: 'history',
-        watched_at: now,
-      },
-    });
-  };
-
   return {
     movies,
     loading,
@@ -69,8 +53,6 @@ export const useDashboard = () => {
     activeTab,
     setActiveTab,
     handleDelete,
-    handleEdit,
-    handleMarkAsWatched,
     openAddModal,
     ...filters,
   };

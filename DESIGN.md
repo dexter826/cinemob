@@ -472,6 +472,13 @@ Mỗi entry trong `components` là hợp đồng; mọi giá trị màu, chữ v
 - Focus trap, `aria-modal`, Escape đóng, focus trả về trigger; `overscroll-behavior: contain`.
 - Alert chỉ cho hành động phá huỷ thật; focus mặc định vào hành động an toàn; confirm danger dùng `{colors.danger}`.
 
+### Add/Edit Movie Modal
+
+- Một dialog `size 4xl` + `fullscreen-mobile` dùng chung cho thêm/sửa phim; body 2 cột: trái **thông tin phim**, phải **luồng đánh giá**, ngăn cách bằng hairline `{colors.border-default}`; dồn dọc dưới `md` kèm hairline ngang.
+- Cột trái: mặc định là tóm tắt read-only (poster 2:3, tiêu đề, meta dạng hàng nhãn–giá trị, thể loại bằng `Chip muted`, nội dung `line-clamp-4`); một nút ghost swap sang form thông tin và swap lại. Thêm thủ công hiển thị form trực tiếp (field xếp 1 cột), không có tóm tắt.
+- Cột phải: trạng thái → đánh giá → cảm nhận → ngày/giờ xem → tiến độ series → album; watchlist ẩn khối đánh giá. Mọi luồng mở vào tóm tắt, không đổi theo entry point.
+- Skeleton khi tải TMDB dựng theo hình 2 cột trên; không render form trước khi có dữ liệu. Câu chữ của modal nằm ở `COPY.md`.
+
 ### Toast
 
 - Base: `{component.toast}`.
