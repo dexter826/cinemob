@@ -123,7 +123,7 @@ export const useAddMovieForm = () => {
       const m = initialData.movieToEdit;
       setStatus(m.status || 'history');
       setManualMediaType(m.media_type === 'tv' ? 'tv' : 'movie');
-      const d = normalizeDate(m.watched_at) || new Date();
+      const d = m.status === 'watchlist' ? new Date() : normalizeDate(m.watched_at) || new Date();
       setFormData(buildMovieFormFrom(m, d));
       if (m.genres) {
         const names = m.genres.split(',').map((g) => g.trim().toLowerCase());
