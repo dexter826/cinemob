@@ -107,10 +107,10 @@ function DashboardFilters({
 
   const filtersOpen = isDesktop ? showFilters : sheetOpen;
   const toggleLabel = filtersOpen
-    ? 'Đóng bộ lọc nâng cao'
+    ? 'Đóng bảng lọc phim'
     : chipItems.length > 0
-      ? `Mở bộ lọc nâng cao (${chipItems.length} điều kiện đang bật)`
-      : 'Mở bộ lọc nâng cao';
+      ? `Mở bảng lọc phim (${chipItems.length} điều kiện đang bật)`
+      : 'Mở bảng lọc phim';
 
   const handleToggle = () => {
     if (isDesktop) setShowFilters(!showFilters);
@@ -128,7 +128,7 @@ function DashboardFilters({
           name="library-search"
           value={filters.searchQuery}
           onChange={(next) => updateFilter('searchQuery', next)}
-          placeholder="Tìm kiếm phim…"
+          placeholder="Tìm trong thư viện của bạn…"
           label="Lọc phim trong thư viện"
           className="flex-1 lg:flex-none lg:w-72 min-w-0"
         />
@@ -245,7 +245,7 @@ function DashboardFilters({
                 onClick={clearFilters}
                 className="text-body-sm font-semibold text-primary hover:underline cursor-pointer"
               >
-                Xóa tất cả
+                Xóa bộ lọc
               </button>
             )}
           </div>

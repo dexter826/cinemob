@@ -129,7 +129,7 @@ function DashboardActiveFilters({
         onClick={clearFilters}
         className="px-2 py-1.5 text-micro-caps font-bold text-primary hover:underline cursor-pointer whitespace-nowrap"
       >
-        Xóa tất cả
+        Xóa bộ lọc
       </button>
     </div>
   );

@@ -34,14 +34,15 @@ function DashboardTabs({
   };
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-      <div role="group" aria-label="Bộ lọc trạng thái xem phim" className="flex items-center">
+      <div role="tablist" aria-label="Trạng thái xem phim" className="flex items-center">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
             <button
               key={tab.key}
               type="button"
-              aria-pressed={isActive}
+              role="tab"
+              aria-selected={isActive}
               onClick={() => onTabChange(tab.key)}
               className={`relative flex items-center h-12 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
                 isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'

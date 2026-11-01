@@ -56,11 +56,11 @@ function DashboardFilterSheet({
         <div className="flex items-center gap-3">
           {hasHiddenFilters && (
             <Button variant="ghost" onClick={clearFilters}>
-              Xóa tất cả
+              Xóa bộ lọc
             </Button>
           )}
           <Button variant="primary" onClick={onClose} className="flex-1">
-            Xong
+            Áp dụng
           </Button>
         </div>
       </DialogFooter>

@@ -57,6 +57,53 @@ function DashboardPage() {
   const shouldShowSkeleton = loading && movies.length === 0;
   const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
 
+  const hasActiveFilters = Boolean(
+    filters.searchQuery ||
+      filters.ratingRange ||
+      filters.year ||
+      filters.country ||
+      filters.genre ||
+      filters.contentType !== 'all' ||
+      filters.watchStatus !== 'all' ||
+      filters.sourceType !== 'all',
+  );
+
+  const emptyStateConfig = hasActiveFilters
+    ? {
+        title: 'Không có phim phù hợp với bộ lọc',
+        description: 'Hãy thử thay đổi từ khóa tìm kiếm hoặc bỏ bớt các tiêu chí lọc.',
+        action: {
+          label: 'Xóa bộ lọc',
+          onClick: clearFilters,
+        },
+      }
+    : activeTab === 'watchlist'
+      ? {
+          title: 'Danh sách “Sẽ xem” đang trống',
+          description: 'Lưu những tác phẩm bạn muốn xem vào đây để thưởng thức khi có thời gian.',
+          action: {
+            label: 'Tìm phim để xem',
+            onClick: () => navigate('/search'),
+          },
+        }
+      : activeTab === 'dropped'
+        ? {
+            title: 'Không có phim nào bị bỏ dở',
+            description: 'Những tác phẩm bạn tạm dừng theo dõi giữa chừng sẽ xuất hiện tại đây.',
+            action: {
+              label: 'Về tab Đã xem',
+              onClick: () => setActiveTab('history'),
+            },
+          }
+        : {
+            title: 'Chưa có phim nào đã xem',
+            description: 'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
+            action: {
+              label: 'Khám phá phim',
+              onClick: () => navigate('/search'),
+            },
+          };
+
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
       {/* Số liệu nằm ở tabs + thống kê riêng, không đưa lên header */}
@@ -164,30 +211,9 @@ function DashboardPage() {
         ) : processedMovies.length === 0 ? (
           <EmptyState
             icon={Film}
-            title={filters.searchQuery ? 'Không tìm thấy nội dung phù hợp' : 'Chưa có nội dung'}
-            description={
-              filters.searchQuery
-                ? 'Hãy thử điều chỉnh truy vấn tìm kiếm hoặc xóa các bộ lọc hiện tại.'
-                : 'Thêm phim từ trang Tìm phim.'
-            }
-            action={
-              filters.searchQuery ||
-              filters.ratingRange ||
-              filters.year ||
-              filters.country ||
-              filters.genre ||
-              filters.contentType !== 'all' ||
-              filters.watchStatus !== 'all' ||
-              filters.sourceType !== 'all'
-                ? {
-                    label: 'Xóa tất cả bộ lọc',
-                    onClick: clearFilters,
-                  }
-                : {
-                    label: 'Khám phá ngay',
-                    onClick: () => navigate('/search'),
-                  }
-            }
+            title={emptyStateConfig.title}
+            description={emptyStateConfig.description}
+            action={emptyStateConfig.action}
           />
         ) : (
           <>
