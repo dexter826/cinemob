@@ -128,8 +128,8 @@ function Navbar() {
             </IconButton>
 
             <IconButton
-              label="Chọn ngẫu nhiên phim"
-              title="Chọn ngẫu nhiên phim"
+              label="Chọn phim ngẫu nhiên"
+              title="Chọn phim ngẫu nhiên"
               onClick={() => setIsRandomOpen(true)}
             >
               <Dice5 size={20} strokeWidth={1.5} aria-hidden="true" />

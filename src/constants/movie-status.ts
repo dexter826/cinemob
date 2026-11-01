@@ -4,7 +4,7 @@ import { MovieStatus } from '@/types';
 export const MOVIE_STATUS_LABEL: Record<MovieStatus, string> = {
   history: 'Đã xem',
   watchlist: 'Sẽ xem',
-  dropped: 'Đã bỏ dở',
+  dropped: 'Bỏ dở',
 };
 
 /** Nhãn tab ở Thư viện — ngắn hơn chip để vừa số đếm bên cạnh. */

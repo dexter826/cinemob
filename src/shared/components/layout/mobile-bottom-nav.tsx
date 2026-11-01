@@ -15,7 +15,7 @@ function MobileBottomNav() {
 
   return (
     <nav
-      aria-label="Điều hướng dưới"
+      aria-label="Điều hướng chính trên di động"
       className="md:hidden fixed inset-x-0 bottom-0 z-40 bg-background border-t border-border"
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >

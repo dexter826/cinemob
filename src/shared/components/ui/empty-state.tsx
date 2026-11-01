@@ -49,7 +49,7 @@ function EmptyState({
         (action.to ? (
           <Link
             to={action.to}
-            className="inline-flex items-center justify-center font-semibold cursor-pointer transition bg-primary text-on-primary hover:bg-primary-hover border border-transparent px-4 py-2.5 text-body-sm gap-2 rounded-control"
+            className="inline-flex items-center justify-center font-semibold cursor-pointer transition bg-primary text-on-primary hover:bg-primary-hover border border-transparent px-4 py-2.5 text-body-sm gap-2 rounded-control focus-ring focus-visible:outline-none"
           >
             {action.label}
           </Link>

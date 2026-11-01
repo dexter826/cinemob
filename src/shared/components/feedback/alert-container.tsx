@@ -65,7 +65,7 @@ function AlertContainer() {
             <div className="flex justify-end gap-2">
               {alert.type !== 'info' && (
                 <Button ref={safestActionRef} variant="ghost" onClick={handleCancel}>
-                  {alert.cancelText || 'Hủy'}
+                  {alert.cancelText || 'Giữ lại'}
                 </Button>
               )}
               <Button

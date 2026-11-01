@@ -15,8 +15,8 @@ interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
 }
 
 /**
- * Input văn bản chuẩn của app: h-11, nền trong suốt + hairline,
- * focus viền vàng. Mọi input đơn giản đi qua đây, cấm inline custom.
+ * Input văn bản chuẩn của app: h-11, nền trong suốt kết hợp hairline,
+ * viền focus màu primary. Mọi input văn bản đơn giản sử dụng thành phần này để bảo đảm tính đồng bộ.
  */
 function TextField({
   label,
