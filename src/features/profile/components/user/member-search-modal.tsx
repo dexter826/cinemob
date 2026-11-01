@@ -85,14 +85,14 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
             compact
             blocking
             className="flex-1"
-            title="Không tải được danh sách"
-            description="Không tải được danh sách thành viên. Thử lại."
+            title="Không tìm được thành viên"
+            description="Đã xảy ra sự cố khi tìm kiếm thành viên. Vui lòng thử lại sau."
             retry={{ label: 'Thử lại', onClick: () => void submit() }}
           />
         ) : !settled ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <Users size={22} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
-            <p className="text-body text-text-secondary">Kết quả sẽ hiển thị ở đây.</p>
+            <p className="text-body text-text-secondary">Nhập địa chỉ email để tìm kiếm thành viên.</p>
           </div>
         ) : results.length === 0 ? (
           <p aria-live="polite" className="py-8 text-center text-body text-text-secondary">

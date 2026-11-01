@@ -32,6 +32,11 @@ interface MovieListSectionProps {
   onRetry?: () => void;
   emptyTitle: string;
   emptyDescription: string;
+  emptyAction?: {
+    label: string;
+    to?: string;
+    onClick?: () => void;
+  };
 }
 
 function MovieListSection({
@@ -41,6 +46,7 @@ function MovieListSection({
   onRetry,
   emptyTitle,
   emptyDescription,
+  emptyAction,
 }: MovieListSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<ProfileSortOption>('default');
@@ -67,7 +73,7 @@ function MovieListSection({
     return (
       <ErrorState
         title={error}
-        description="Vui lòng thử lại."
+        description="Không thể tải danh sách phim trong hồ sơ. Vui lòng thử lại sau."
         retry={onRetry ? { label: 'Thử lại', onClick: onRetry } : undefined}
       />
     );
@@ -91,7 +97,14 @@ function MovieListSection({
   }
 
   if (movies.length === 0) {
-    return <EmptyState icon={Film} title={emptyTitle} description={emptyDescription} />;
+    return (
+      <EmptyState
+        icon={Film}
+        title={emptyTitle}
+        description={emptyDescription}
+        action={emptyAction}
+      />
+    );
   }
 
   return (
@@ -138,9 +151,9 @@ function MovieListSection({
         {searchQuery.trim() && (
           <button
             onClick={() => setSearchQuery('')}
-            className="text-primary hover:underline font-semibold cursor-pointer shrink-0"
+            className="text-primary hover:underline font-semibold cursor-pointer shrink-0 focus-ring focus-visible:outline-none rounded-control px-1"
           >
-            Xóa bộ lọc
+            Xóa tìm kiếm
           </button>
         )}
       </div>
@@ -149,7 +162,7 @@ function MovieListSection({
         <EmptyState
           icon={SearchIcon}
           title="Không tìm thấy phim phù hợp"
-          description={`Không có bộ phim nào khớp với từ khóa “${searchQuery}”`}
+          description={`Không có bộ phim nào khớp với từ khóa “${searchQuery}”.`}
           action={{ label: 'Xem tất cả phim', onClick: () => setSearchQuery('') }}
         />
       ) : (
@@ -182,7 +195,7 @@ function MovieListSection({
           <button
             type="button"
             onClick={() => setVisibleCount((current) => current + PROFILE_MOVIES_PAGE_SIZE)}
-            className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+            className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
           >
             Xem thêm
           </button>

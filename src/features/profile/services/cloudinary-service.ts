@@ -17,7 +17,7 @@ export const getCroppedImgBlob = (img: HTMLImageElement, params: CropParams): Pr
 
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      reject(new Error('Không thể khởi tạo canvas'));
+      reject(new Error('Không thể xử lý hình ảnh. Vui lòng thử lại sau.'));
       return;
     }
 
@@ -63,7 +63,7 @@ export const getCroppedImgBlob = (img: HTMLImageElement, params: CropParams): Pr
     canvas.toBlob(
       (blob) => {
         if (blob) resolve(blob);
-        else reject(new Error('Lỗi xuất ảnh đã cắt'));
+        else reject(new Error('Không thể lưu ảnh đã căn chỉnh. Vui lòng thử lại sau.'));
       },
       'image/webp',
       quality,
@@ -95,7 +95,7 @@ export const uploadToCloudinary = async (
     });
   } catch (error) {
     console.error('Không thể kết nối Cloudinary:', error);
-    throw new Error('Không thể tải ảnh lên, vui lòng thử lại');
+    throw new Error('Không thể tải ảnh lên máy chủ. Vui lòng thử lại sau.');
   }
 
   if (!response.ok) {
@@ -103,9 +103,9 @@ export const uploadToCloudinary = async (
     console.error('Cloudinary từ chối ảnh tải lên:', errorData);
     const rawMessage = errorData?.error?.message;
     if (typeof rawMessage === 'string' && rawMessage.toLowerCase().includes('size')) {
-      throw new Error('Ảnh vượt dung lượng cho phép, vui lòng chọn ảnh nhỏ hơn');
+      throw new Error('Ảnh vượt quá dung lượng cho phép. Vui lòng chọn tệp nhỏ hơn.');
     }
-    throw new Error('Không thể tải ảnh lên, vui lòng thử lại');
+    throw new Error('Không thể tải ảnh lên máy chủ. Vui lòng thử lại sau.');
   }
 
   const data: unknown = await response.json();

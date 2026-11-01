@@ -83,7 +83,7 @@ export function AvatarCropView({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={handleViewportKeyDown}
-        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-ring ${
+        className={`relative rounded-full overflow-hidden ring-1 ring-primary/40 touch-none bg-black/80 focus-ring focus-visible:outline-none ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
       >
@@ -114,7 +114,7 @@ export function AvatarCropView({
           onClick={() => onZoomChange(zoom - ZOOM_STEP)}
           disabled={zoom <= MIN_ZOOM || isUploading}
           aria-label="Thu nhỏ"
-          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30"
+          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30 focus-ring focus-visible:outline-none"
         >
           <ZoomOut size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
@@ -128,7 +128,7 @@ export function AvatarCropView({
           onChange={(e) => onZoomChange(parseFloat(e.target.value))}
           disabled={isUploading}
           aria-label="Mức phóng to"
-          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-control appearance-none cursor-pointer accent-primary"
+          className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-control appearance-none cursor-pointer accent-primary focus-ring focus-visible:outline-none"
         />
 
         <button
@@ -136,7 +136,7 @@ export function AvatarCropView({
           onClick={() => onZoomChange(zoom + ZOOM_STEP)}
           disabled={zoom >= MAX_ZOOM || isUploading}
           aria-label="Phóng to"
-          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30"
+          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30 focus-ring focus-visible:outline-none"
         >
           <ZoomIn size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
@@ -147,7 +147,7 @@ export function AvatarCropView({
       </div>
 
       <p id="avatar-crop-hint" className="text-body-sm text-text-secondary/70 mt-2 text-center">
-        Kéo ảnh hoặc dùng phím mũi tên để căn góc, thanh trượt để phóng to
+        Kéo ảnh hoặc dùng phím mũi tên để căn góc, dùng thanh trượt để phóng to.
       </p>
     </div>
   );

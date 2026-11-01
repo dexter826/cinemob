@@ -130,12 +130,12 @@ export function useAvatarCrop(): UseAvatarCropResult {
       setErrorMessage(null);
 
       if (!file.type.startsWith('image/')) {
-        setErrorMessage('Chỉ chấp nhận tệp hình ảnh (JPG, PNG, WEBP)');
+        setErrorMessage('Chỉ chấp nhận tệp hình ảnh định dạng JPG, PNG hoặc WEBP.');
         return;
       }
 
       if (file.size > MAX_FILE_BYTES) {
-        setErrorMessage('Kích thước ảnh tối đa 10\u00A0MB');
+        setErrorMessage('Kích thước tệp ảnh tối đa là 10\u00A0MB. Vui lòng chọn tệp nhỏ hơn.');
         return;
       }
 
@@ -156,7 +156,7 @@ export function useAvatarCrop(): UseAvatarCropResult {
         URL.revokeObjectURL(objectUrl);
         if (objectUrlRef.current === objectUrl) objectUrlRef.current = null;
         if (generation === probeGenerationRef.current) {
-          setErrorMessage('Không đọc được tệp ảnh. Hãy thử chọn ảnh khác.');
+          setErrorMessage('Không thể đọc tệp ảnh. Vui lòng chọn ảnh khác.');
         }
       };
       probe.src = objectUrl;
@@ -284,11 +284,13 @@ export function useAvatarCrop(): UseAvatarCropResult {
 
       await updateUserAvatar(user, croppedBlob);
       await refreshUser();
-      showToast('Đã đổi ảnh đại diện', 'success');
+      showToast('Đã cập nhật ảnh đại diện', 'success');
       reset();
     } catch (error: unknown) {
       const message =
-        error instanceof Error && error.message ? error.message : 'Không thể cập nhật ảnh đại diện';
+        error instanceof Error && error.message
+          ? error.message
+          : 'Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau.';
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {
@@ -316,14 +318,16 @@ export function useAvatarCrop(): UseAvatarCropResult {
               refreshUser();
               showToast('Đã hoàn tác ảnh đại diện', 'success');
             })
-            .catch(() => showToast('Không hoàn tác được. Thử lại.', 'error'));
+            .catch(() =>
+              showToast('Không thể hoàn tác ảnh đại diện. Vui lòng thử lại sau.', 'error'),
+            );
         },
       });
     } catch (error: unknown) {
       const message =
         error instanceof Error && error.message
           ? error.message
-          : 'Không khôi phục được ảnh đại diện. Thử lại.';
+          : 'Không thể khôi phục ảnh đại diện. Vui lòng thử lại sau.';
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {

@@ -72,7 +72,7 @@ export const useOwnProfile = () => {
         }
       })
       .catch(() => {
-        if (!cancelled) setError('Không tải được hồ sơ. Thử lại.');
+        if (!cancelled) setError('Không thể tải thông tin hồ sơ. Vui lòng thử lại sau.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -105,7 +105,7 @@ export const useOwnProfile = () => {
         return { ok: true };
       } catch (error) {
         console.error('Lưu hồ sơ thất bại', error);
-        showToast('Không lưu được hồ sơ. Thử lại.', 'error');
+        showToast('Không thể lưu thay đổi hồ sơ. Vui lòng thử lại sau.', 'error');
         return { ok: false };
       } finally {
         setSaving(false);
@@ -123,10 +123,10 @@ export const useOwnProfile = () => {
       await setMovieListHidden(uid, next, movies);
       clearMemberProfileCache(uid);
       await refresh();
-      showToast(next ? 'Đã ẩn danh sách phim' : 'Danh sách phim đã hiện lại', 'success');
+      showToast(next ? 'Đã ẩn danh sách phim đã xem' : 'Đã hiển thị lại danh sách phim', 'success');
       return true;
     } catch {
-      showToast('Đổi trạng thái danh sách phim thất bại', 'error');
+      showToast('Không thể thay đổi trạng thái danh sách phim. Vui lòng thử lại sau.', 'error');
       return false;
     } finally {
       setToggling(false);

@@ -190,7 +190,7 @@ function StatsPage() {
     return (
       <ErrorState
         title="Không tải được dữ liệu thống kê"
-        description="Vui lòng thử lại."
+        description="Đã xảy ra lỗi khi tải dữ liệu thống kê. Vui lòng thử lại sau."
         retry={{ label: 'Thử lại', onClick: retry }}
       />
     );
@@ -221,8 +221,9 @@ function StatsPage() {
       {totalMovies === 0 ? (
         <EmptyState
           icon={Film}
-          title="Chưa có dữ liệu"
-          description="Thêm phim vào lịch sử để xem thống kê."
+          title="Chưa có dữ liệu thống kê"
+          description="Thêm phim vào thư viện để xem biểu đồ và phân tích chi tiết."
+          action={{ label: 'Tìm phim để thêm', to: '/search' }}
         />
       ) : (
         <>
@@ -243,7 +244,7 @@ function StatsPage() {
                 align="center"
                 label="Đánh giá trung bình"
                 value={avgRating}
-                subValue={`Trên ${ratedCount} phim`}
+                subValue={`Từ ${ratedCount} phim đã chấm điểm`}
                 icon={Star}
                 colorClass="text-warning"
               />
@@ -402,7 +403,7 @@ function StatsPage() {
                   <EmptyState
                     icon={Globe}
                     title="Chưa có dữ liệu"
-                    description="Thêm phim để xem quốc gia."
+                    description="Thêm phim có thông tin quốc gia để xem bảng xếp hạng."
                     compact
                   />
                 )}

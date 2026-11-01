@@ -13,7 +13,8 @@ function UserCard({ profile, onClick }: UserCardProps) {
     <Link
       to={`/profile/${profile.uid}`}
       onClick={onClick}
-      className="w-full flex items-center gap-3 p-3.5 bg-surface border border-border rounded-card text-left hover:border-primary/50 transition-colors cursor-pointer group"
+      aria-label={`Xem hồ sơ của ${profile.displayName}`}
+      className="w-full flex items-center gap-3 p-3.5 bg-surface border border-border rounded-card text-left hover:border-primary/50 transition-colors cursor-pointer group focus-ring focus-visible:outline-none"
     >
       {profile.photoURL ? (
         <img

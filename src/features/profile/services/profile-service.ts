@@ -10,10 +10,10 @@ export type ValidateResult = { ok: true; value: string } | { ok: false; error: s
 export function validateDisplayName(raw: string): ValidateResult {
   const value = raw.trim();
   if (value.length < DISPLAY_NAME_MIN) {
-    return { ok: false, error: 'Tên hiển thị tối thiểu 2 ký tự' };
+    return { ok: false, error: 'Tên hiển thị cần có tối thiểu 2 ký tự.' };
   }
   if (value.length > DISPLAY_NAME_MAX) {
-    return { ok: false, error: 'Tên hiển thị tối đa 50 ký tự' };
+    return { ok: false, error: 'Tên hiển thị chỉ được tối đa 50 ký tự.' };
   }
   return { ok: true, value };
 }
@@ -28,7 +28,7 @@ export const updateDisplayName = async (user: User, rawName: string): Promise<st
     await updateProfile(user, { displayName: checked.value });
   } catch (error) {
     console.error('Không thể cập nhật tên hiển thị:', error);
-    throw new Error('Không cập nhật được tên hiển thị. Thử lại.');
+    throw new Error('Không thể cập nhật tên hiển thị. Vui lòng thử lại sau.');
   }
   return checked.value;
 };

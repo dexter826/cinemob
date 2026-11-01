@@ -43,7 +43,7 @@ function MemberProfileCard({ profile }: MemberProfileCardProps) {
           {profile.bio}
         </p>
       ) : (
-        <p className="mt-3 text-body text-text-secondary italic">Chưa có giới thiệu.</p>
+        <p className="mt-3 text-body text-text-secondary italic">Chưa có thông tin giới thiệu.</p>
       )}
     </div>
   );

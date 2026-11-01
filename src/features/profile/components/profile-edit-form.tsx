@@ -68,7 +68,7 @@ function ProfileEditForm({
           maxLength={50}
           aria-invalid={nameError ? true : undefined}
           aria-describedby={nameError ? nameErrorId : undefined}
-          className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring"
+          className="w-full px-3 h-10 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring focus-visible:outline-none"
         />
         {nameError && (
           <p id={nameErrorId} role="alert" className="mt-1.5 text-body-sm text-danger">
@@ -86,7 +86,7 @@ function ProfileEditForm({
           rows={3}
           maxLength={BIO_MAX_LENGTH}
           placeholder="Thêm vài dòng giới thiệu về bạn…"
-          className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring resize-none"
+          className="w-full px-3 py-2 rounded-control border border-border bg-surface-elevated text-body text-text-primary focus-visible:border-primary focus-ring focus-visible:outline-none resize-none"
         />
         <span className="block text-right text-body-sm text-text-secondary">
           {bio.length}/{BIO_MAX_LENGTH}

@@ -25,7 +25,7 @@ export const updateUserAvatar = async (user: User, fileOrBlob: File | Blob): Pro
     await updateProfile(user, { photoURL: secureUrl });
   } catch (error) {
     console.error('Không thể cập nhật ảnh đại diện:', error);
-    throw new Error('Không thể cập nhật ảnh đại diện, vui lòng thử lại');
+    throw new Error('Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau.');
   }
   await syncProfilePhotoURL(user.uid, secureUrl);
 
@@ -44,7 +44,7 @@ export const revertToGoogleAvatar = async (user: User): Promise<string | null> =
     await updateProfile(user, { photoURL: originalPhotoURL });
   } catch (error) {
     console.error('Không thể khôi phục ảnh đại diện:', error);
-    throw new Error('Không thể khôi phục ảnh đại diện, vui lòng thử lại');
+    throw new Error('Không thể khôi phục ảnh đại diện. Vui lòng thử lại sau.');
   }
   await syncProfilePhotoURL(user.uid, originalPhotoURL || '');
 

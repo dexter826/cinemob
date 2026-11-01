@@ -148,6 +148,7 @@ function OwnProfileEditor({
       message: 'Các thay đổi chưa lưu sẽ mất nếu bạn thoát khỏi chế độ chỉnh sửa.',
       type: 'warning',
       confirmText: 'Bỏ thay đổi',
+      cancelText: 'Tiếp tục chỉnh sửa',
       onConfirm: () => {
         crop.cancelCrop();
         setIsEditing(false);
@@ -287,10 +288,10 @@ function OwnProfileEditor({
                   type="button"
                   onClick={() => setIsAvatarMenuOpen((prev) => !prev)}
                   disabled={crop.isBusy}
-                  aria-label="Tuỳ chọn ảnh đại diện"
+                  aria-label="Tùy chọn ảnh đại diện"
                   aria-haspopup="menu"
                   aria-expanded={isAvatarMenuOpen}
-                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-ring focus-visible:outline-none"
                 >
                   <Pencil size={15} strokeWidth={1.5} aria-hidden="true" />
                 </button>
@@ -313,7 +314,7 @@ function OwnProfileEditor({
                           setIsAvatarMenuOpen(false);
                           crop.openFilePicker();
                         }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-text-primary hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-left cursor-pointer focus-ring focus-visible:outline-none"
                       >
                         <Upload
                           size={14}
@@ -332,7 +333,7 @@ function OwnProfileEditor({
                             setIsAvatarMenuOpen(false);
                             crop.resetToProviderAvatar();
                           }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50"
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-body-sm font-medium text-danger hover:bg-danger/10 transition-colors text-left cursor-pointer border-t border-border/50 focus-ring focus-visible:outline-none"
                         >
                           <RotateCcw
                             size={14}
@@ -407,7 +408,7 @@ function OwnProfileEditor({
                         </p>
                       ) : (
                         <p className="mt-3 text-body text-text-secondary italic">
-                          Chưa có giới thiệu.
+                          Chưa có thông tin giới thiệu.
                         </p>
                       )}
                     </>

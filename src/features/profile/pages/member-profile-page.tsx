@@ -38,7 +38,7 @@ interface ProfileTabsProps {
 function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
   return (
     <div
-      role="group"
+      role="tablist"
       aria-label="Phim của thành viên"
       className="flex items-center border-b border-border"
     >
@@ -47,10 +47,11 @@ function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
         return (
           <button
             key={tab.key}
+            role="tab"
             type="button"
-            aria-pressed={isActive}
+            aria-selected={isActive}
             onClick={() => onChange(tab.key)}
-            className={`relative flex items-center h-11 px-3.5 text-label-caps transition-colors cursor-pointer ${
+            className={`relative flex items-center h-11 px-3.5 text-label-caps transition-colors cursor-pointer focus-ring focus-visible:outline-none ${
               isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
@@ -106,7 +107,7 @@ function MemberProfilePage() {
       await navigator.clipboard.writeText(window.location.href);
       showToast('Đã sao chép liên kết trang cá nhân', 'success');
     } catch {
-      showToast('Không thể sao chép liên kết', 'error');
+      showToast('Không thể sao chép liên kết. Vui lòng thử lại sau.', 'error');
     }
   };
 
@@ -247,6 +248,7 @@ function MemberProfilePage() {
             onRetry={retryMovies}
             emptyTitle="Chưa có phim nào"
             emptyDescription="Thêm phim vào lịch sử xem."
+            emptyAction={{ label: 'Tìm phim để thêm', to: '/search' }}
           />
         </section>
       </div>
@@ -257,7 +259,7 @@ function MemberProfilePage() {
     return (
       <ErrorState
         title={profileError}
-        description="Vui lòng thử lại."
+        description="Không thể tải thông tin hồ sơ thành viên. Vui lòng thử lại sau."
         retry={{ label: 'Thử lại', onClick: () => setRetryNonce((n) => n + 1) }}
       />
     );
@@ -302,8 +304,9 @@ function MemberProfilePage() {
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <EmptyState
           icon={EyeOff}
-          title="Không tìm thấy hồ sơ"
-          description="Không tìm thấy hồ sơ này."
+          title="Không tìm thấy hồ sơ thành viên"
+          description="Hồ sơ không tồn tại hoặc liên kết đã thay đổi. Vui lòng kiểm tra lại liên kết."
+          action={{ label: 'Quay lại trang chủ', to: '/' }}
         />
       </div>
     );
@@ -329,7 +332,7 @@ function MemberProfilePage() {
               (myMoviesError ? (
                 <ErrorState
                   title="Không tải được bộ sưu tập của bạn"
-                  description="Thử lại để xem phim chung."
+                  description="Không thể tải danh sách phim của bạn. Vui lòng thử lại sau để xem phim chung."
                   retry={{ label: 'Thử lại', onClick: retryMovies }}
                 />
               ) : shouldShowCommonSkeleton ? (
@@ -378,7 +381,7 @@ function MemberProfilePage() {
                         onClick={() =>
                           setVisibleCommonCount((current) => current + COMMON_MOVIES_INITIAL)
                         }
-                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                       >
                         Xem thêm
                       </button>
@@ -389,7 +392,8 @@ function MemberProfilePage() {
                 <EmptyState
                   icon={Users}
                   title="Chưa xem chung phim nào"
-                  description={`Danh sách phim của ${profile.displayName} đang ở tab Tất cả phim.`}
+                  description={`Danh sách phim của ${profile.displayName} đang ở tab “Tất cả phim”.`}
+                  action={{ label: 'Xem tất cả phim', onClick: () => setActiveTab('all') }}
                 />
               ))}
 
@@ -397,7 +401,7 @@ function MemberProfilePage() {
               <MovieListSection
                 movies={otherMovies}
                 emptyTitle="Chưa có phim nào"
-                emptyDescription="Hồ sơ này chưa có phim đã xem nào."
+                emptyDescription={`“${profile.displayName}” chưa thêm phim nào vào danh sách đã xem.`}
               />
             )}
           </section>
