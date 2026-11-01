@@ -1,6 +1,6 @@
 <div align="center">
   <img src="docs/images/cinemob-logo.png" alt="CineMOB Logo" width="320" />
-  <p>PWA theo dõi và quản lý danh mục phim ảnh, TV show cá nhân.</p>
+  <p>Ứng dụng web quản lý danh mục phim ảnh và TV series cá nhân.</p>
 
   <p>
     <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React 19" />
@@ -13,61 +13,58 @@
 
 ---
 
-## Tổng quan
+## Mục lục
 
-**CineMOB** là ứng dụng web client-side (CSR) dạng PWA xây dựng bằng React 19 và TypeScript, hỗ trợ theo dõi danh mục phim ảnh, quản lý lịch chiếu và phân tích lịch sử xem phim, với giao diện thích ứng cho thiết bị di động.
+- [Giới thiệu](#giới-thiệu)
+  - [Tính năng chính](#tính-năng-chính)
+  - [Công nghệ sử dụng](#công-nghệ-sử-dụng)
+- [Cài đặt](#cài-đặt)
+  - [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
+  - [Các bước thiết lập](#các-bước-thiết-lập)
+- [Sử dụng](#sử-dụng)
+  - [Khởi chạy phát triển](#khởi-chạy-phát-triển)
+  - [Danh sách lệnh](#danh-sách-lệnh)
+  - [Quy trình kiểm tra chất lượng](#quy-trình-kiểm-tra-chất-lượng)
+- [Cấu trúc dự án](#cấu-trúc-dự-án)
+- [Nguồn dữ liệu & Giấy phép](#nguồn-dữ-liệu--giấy-phép)
+
+---
+
+## Giới thiệu
+
+**CineMOB** là ứng dụng web quản lý danh mục phim ảnh và TV series, được xây dựng bằng React 19 và TypeScript. Ứng dụng cung cấp các công cụ theo dõi tiến độ xem phim, tra cứu lịch phát sóng, thống kê số liệu cá nhân và hỗ trợ cài đặt trên thiết bị qua chuẩn PWA.
 
 <div align="center">
   <img src="docs/images/mockup.png" alt="CineMOB Interface Mockup" width="800" />
 </div>
 
-### Tính năng nổi bật
+### Tính năng chính
 
-- **Khám phá & Tra cứu:** Tìm kiếm phim, TV show, diễn viên, xem trailer và đánh giá chi tiết từ TMDB.
-- **Quản lý danh sách xem:** Phân loại theo trạng thái (Đang xem, Đã xem, Muốn xem) và tạo album theo chủ đề riêng.
-- **Lịch phát sóng:** Theo dõi lịch chiếu tập mới theo tuần/tháng để không bỏ lỡ các series yêu thích.
-- **Gợi ý phim:** Đề xuất phim phù hợp với ngữ cảnh và sở thích người dùng.
-- **Thống kê:** Trực quan hóa lịch sử xem phim qua biểu đồ (Recharts).
-- **Hỗ trợ PWA:** Có thể cài đặt như ứng dụng trên thiết bị di động và máy tính.
+- **Tra cứu thông tin:** Tìm kiếm dữ liệu phim lẻ, TV series, diễn viên, đạo diễn và trailer từ TMDB.
+- **Quản lý danh sách xem:** Phân loại phim theo trạng thái (Đang xem, Đã xem, Muốn xem, Bỏ dở), cập nhật tiến độ xem từng mùa/tập và tổ chức phim theo các album.
+- **Lịch phát sóng & Thông báo:** Theo dõi lịch chiếu tập mới theo mốc thời gian và hỗ trợ nhận thông báo đẩy qua Web Push.
+- **Gợi ý phim:** Đề xuất phim dựa trên thể loại quan tâm và hỗ trợ công cụ chọn phim ngẫu nhiên.
+- **Thống kê:** Trực quan hóa dữ liệu lịch sử xem (thời lượng, quốc gia, thể loại) bằng biểu đồ Recharts.
+- **Hỗ trợ PWA:** Cho phép cài đặt ứng dụng trên thiết bị (iOS, Android, máy tính) và lưu trữ bộ nhớ đệm ngoại tuyến.
 
-### Dịch vụ sử dụng
+### Công nghệ sử dụng
 
-- **TMDB:** Cung cấp dữ liệu phim, TV show, diễn viên và lịch chiếu. Xem [TMDB API](https://www.themoviedb.org/documentation/api).
-- **Firebase:** Hỗ trợ đăng nhập và lưu trữ dữ liệu cá nhân.
-- **Dịch vụ gợi ý phim:** Đề xuất phim dựa trên lịch sử xem và sở thích người dùng.
-- **Thông báo:** Nhận thông báo khi có tập mới.
-- **Recharts:** Hiển thị thống kê dưới dạng biểu đồ. Xem [Recharts](https://recharts.org/).
-
-### Kiến trúc ứng dụng
-
-```mermaid
-graph TD
-    Client["Trình duyệt / PWA Client<br/>(React 19, TypeScript, Zustand)"]
-
-    subgraph External_Services["Dịch vụ bên ngoài"]
-        TMDB["TMDB API<br/>(Thông tin phim, TV Show, Diễn viên)"]
-    end
-
-    subgraph Firebase_Services["Firebase BaaS"]
-        Auth["Firebase Auth<br/>(Google Authentication)"]
-        Firestore["Cloud Firestore<br/>(Lưu trữ dữ liệu người dùng)"]
-    end
-
-    Client <-->|Truy vấn dữ liệu phim| TMDB
-    Client <-->|Xác thực phiên đăng nhập| Auth
-    Client <-->|Đồng bộ dữ liệu thời gian thực| Firestore
-```
+- **Giao diện:** React 19, TypeScript, Tailwind CSS v4, Framer Motion, Zustand.
+- **Nguồn dữ liệu:** [TMDB API](https://www.themoviedb.org/documentation/api).
+- **Hạ tầng & Xác thực:** Firebase Authentication (Google OAuth) và Cloud Firestore (đồng bộ dữ liệu thời gian thực).
+- **Lưu trữ ảnh:** Cloudinary (upload ảnh hồ sơ).
+- **Biểu đồ:** [Recharts](https://recharts.org/).
 
 ---
 
-## Yêu cầu môi trường
+## Cài đặt
+
+### Yêu cầu hệ thống
 
 - **Node.js**: Phiên bản `18.x` trở lên (khuyến nghị bản LTS `20.x`).
-- **Trình quản lý gói**: `npm` (đã có sẵn `package-lock.json`).
+- **Trình quản lý gói**: `npm` (đi kèm sẵn `package-lock.json`).
 
----
-
-## Khởi chạy cục bộ
+### Các bước thiết lập
 
 1. **Clone repository:**
 
@@ -83,46 +80,48 @@ graph TD
    ```
 
 3. **Cấu hình biến môi trường:**
-   Tạo file `.env` tại thư mục gốc từ mẫu `.env.example`:
+   Tạo tệp `.env` tại thư mục gốc từ mẫu `.env.example`:
 
    ```bash
    cp .env.example .env
    ```
 
-   Cập nhật các giá trị tương ứng trong file `.env`:
-   - `VITE_TMDB_API_KEY`: API Key lấy từ The Movie Database.
+   Cập nhật các giá trị tương ứng trong `.env`:
+   - `VITE_TMDB_API_KEY`: API Key từ The Movie Database.
    - `VITE_FIREBASE_*`: Thông số cấu hình từ Firebase Console.
-   - `VITE_VAPID_PUBLIC_KEY`: Public key tùy chọn cho Web Push; ứng dụng dùng fallback nếu để trống.
-   - `VITE_CLOUDINARY_CLOUD_NAME` / `VITE_CLOUDINARY_UPLOAD_PRESET`: Cấu hình Cloudinary dùng cho upload ảnh hồ sơ.
+   - `VITE_CLOUDINARY_*`: Cấu hình Cloudinary dùng cho upload ảnh đại diện.
+   - `VITE_VAPID_PUBLIC_KEY`: Khóa công khai Web Push (tùy chọn).
 
    > [!NOTE]
-   > Các biến có tiền tố `VITE_` hoặc `REACT_APP_` sẽ được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt. Không đưa các khóa bí mật mang quyền quản trị vào các biến này.
-
-4. **Chạy server phát triển:**
-   ```bash
-   npm run dev
-   ```
-   Ứng dụng khởi chạy tại địa chỉ: `http://localhost:3000` (cấu hình trong [vite.config.ts](vite.config.ts)).
+   > Các biến có tiền tố `VITE_` được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt khi đóng gói. Không đưa các khóa bí mật mang quyền quản trị vào tệp này.
 
 ---
 
-## Các lệnh chính
+## Sử dụng
 
-| Lệnh                   | Mô tả                                                             |
-| :--------------------- | :---------------------------------------------------------------- |
-| `npm run dev`          | Khởi chạy Vite development server tại cổng `3000`.                |
-| `npm run build`        | Đóng gói mã nguồn cho môi trường production vào thư mục `dist/`.  |
-| `npm run preview`      | Chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
-| `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất file.                 |
-| `npm run lint`         | Chạy ESLint kiểm tra mã nguồn trong `src/`.                       |
-| `npm test`             | Chạy test cho script gửi thông báo.                               |
-| `npm run format:check` | Kiểm tra format bằng Prettier.                                    |
+### Khởi chạy phát triển
 
----
+```bash
+npm run dev
+```
 
-## Kiểm tra chất lượng mã nguồn
+Ứng dụng khởi chạy tại địa chỉ: `http://localhost:3000` (cấu hình trong [vite.config.ts](vite.config.ts)).
 
-Dự án dùng ESLint để kiểm tra chuẩn mã nguồn. Trước khi mở Pull Request hoặc bàn giao thay đổi, hãy chạy bộ lệnh:
+### Danh sách lệnh
+
+| Lệnh                   | Mô tả                                                                  |
+| :--------------------- | :--------------------------------------------------------------------- |
+| `npm run dev`          | Khởi chạy Vite dev server tại cổng `3000`.                             |
+| `npm run build`        | Đóng gói mã nguồn production vào thư mục `dist/`.                      |
+| `npm run preview`      | Khởi chạy máy chủ nội bộ để kiểm tra bản build production tại `dist/`. |
+| `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất tệp.                       |
+| `npm run lint`         | Chạy ESLint kiểm tra mã nguồn trong `src/`.                            |
+| `npm test`             | Chạy bộ kiểm thử cho script gửi thông báo.                             |
+| `npm run format:check` | Kiểm tra định dạng mã nguồn bằng Prettier.                             |
+
+### Quy trình kiểm tra chất lượng
+
+Trước khi mở Pull Request hoặc bàn giao thay đổi, mã nguồn cần vượt qua toàn bộ 5 bước kiểm tra:
 
 ```bash
 npm run typecheck
@@ -132,43 +131,36 @@ npm run format:check
 npm run build
 ```
 
-Dùng `npm run preview` để kiểm tra bản build production trước khi tạo Pull Request.
-
 ---
 
-## Cấu trúc repository
-
-Cấu trúc các thư mục và tập tin chính trong dự án:
+## Cấu trúc dự án
 
 ```text
-├── .github/              # Workflow GitHub Actions (thông báo tập phim qua cron)
-├── docs/                 # Tài liệu dự án và hình ảnh minh họa (logo, mockup)
-├── public/               # Tài nguyên tĩnh phục vụ trực tiếp (manifest, icons, lottie data)
+├── .github/              # Workflow GitHub Actions (thông báo tập mới định kỳ)
+├── docs/                 # Tài liệu dự án và hình ảnh minh họa
+├── public/               # Tài nguyên tĩnh phục vụ trực tiếp (manifest, icon, lottie)
 ├── src/                  # Toàn bộ mã nguồn ứng dụng
 │   ├── app/              # Providers dùng chung (Auth, Theme)
-│   ├── assets/           # Tài nguyên hình ảnh, âm thanh nội bộ
-│   ├── constants/        # Hằng số hệ thống và danh sách routes
-│   ├── features/         # Các module tính năng (auth, movies, albums, calendar, ...)
-│   ├── lib/              # Khởi tạo và cấu hình thư viện ngoài (Firebase, ...)
-│   ├── shared/           # Components, hooks, pages, stores và utilities dùng chung
-│   └── types/            # Khai báo interfaces và types TypeScript
+│   ├── assets/           # Tài nguyên nội bộ
+│   ├── constants/        # Hằng số hệ thống, thể loại và danh sách route
+│   ├── features/         # Các module tính năng (auth, movies, albums, calendar, profile...)
+│   ├── lib/              # Khởi tạo SDK bên ngoài (Firebase...)
+│   ├── shared/           # UI kit, hooks, stores và utilities dùng chung
+│   └── types/            # Khai báo kiểu TypeScript toàn dự án
 ├── .env.example          # Danh sách biến môi trường mẫu
-├── DESIGN.md             # Đặc tả hệ thống thiết kế (Design System)
-├── firebase.json         # Cấu hình triển khai Firebase Hosting & Firestore
+├── AGENTS.md             # Quy ước hành vi và chất lượng kỹ thuật
+├── COPY.md               # Quy chuẩn văn bản, thuật ngữ và microcopy tiếng Việt
+├── DESIGN.md             # Quy chuẩn hệ thống thiết kế giao diện
+├── firebase.json         # Cấu hình Firebase Hosting & Firestore
 ├── firestore.rules       # Quy tắc phân quyền và bảo mật Firestore
-├── package.json          # Khai báo dependencies và scripts
+├── package.json          # Khai báo dependencies và script
 ├── tsconfig.json         # Cấu hình biên dịch TypeScript
-└── vite.config.ts        # Cấu hình máy chủ Vite, React, Tailwind và PWA
+└── vite.config.ts        # Cấu hình Vite, React, Tailwind CSS v4 và PWA
 ```
 
 ---
 
-## Nguồn dữ liệu
+## Nguồn dữ liệu & Giấy phép
 
-Dự án sử dụng dữ liệu từ [The Movie Database (TMDB)](https://www.themoviedb.org/).
-
----
-
-## Giấy phép
-
-Dự án được phân phối theo giấy phép [MIT](LICENSE).
+- Dữ liệu phim và hình ảnh được cung cấp bởi [The Movie Database (TMDB)](https://www.themoviedb.org/).
+- Dự án được phân phối theo giấy phép [MIT](LICENSE).
