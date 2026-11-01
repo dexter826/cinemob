@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!cancelled) {
           setUser(null);
           setLoading(false);
-          setError('Không xác thực được phiên đăng nhập.');
+          setError('Không xác thực được phiên đăng nhập. Vui lòng tải lại trang.');
         }
       },
     );
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const code = (error as { code?: string })?.code ?? '';
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
       console.error('Error signing in', error);
-      showToast('Đăng nhập thất bại. Thử lại.', 'error');
+      showToast('Đăng nhập chưa thành công. Vui lòng thử lại sau.', 'error');
     }
   }, [showToast]);
 
