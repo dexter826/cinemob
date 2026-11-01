@@ -83,7 +83,7 @@ function CalendarGrid({
           aria-pressed={selected}
           className={`
             h-14 sm:h-20 md:h-28 p-1.5 sm:p-3 border cursor-pointer transition-colors
-            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group
+            hover:bg-primary/10 relative rounded-control sm:rounded-card flex flex-col justify-between group focus-ring focus-visible:outline-none
             ${today ? 'border-primary' : 'border-border-default dark:border-white/5'}
             ${selected ? 'bg-primary/20 border-primary ring-1 ring-primary' : ''}
             ${hasEp ? 'cursor-pointer hover:bg-primary/5' : ''}
@@ -153,7 +153,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('prev')}
           aria-label="Tháng trước"
-          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
         >
           <ChevronLeft size={20} strokeWidth={1.5} />
         </button>
@@ -165,7 +165,7 @@ function CalendarGrid({
             type="button"
             onClick={goToToday}
             aria-label="Về hôm nay"
-            className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer"
+            className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer rounded-control focus-ring focus-visible:outline-none"
           >
             Hôm nay
           </button>
@@ -174,7 +174,7 @@ function CalendarGrid({
           type="button"
           onClick={() => navigateMonth('next')}
           aria-label="Tháng sau"
-          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          className="w-10 h-10 flex items-center justify-center border border-border rounded-control hover:bg-primary/10 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
         >
           <ChevronRight size={20} strokeWidth={1.5} />
         </button>

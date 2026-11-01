@@ -122,7 +122,8 @@ export const useReleaseCalendar = () => {
     if (!pushSupported) {
       showAlert({
         title: 'Chưa bật được thông báo',
-        message: 'Thêm CineMOB vào Màn hình chính rồi thử lại.',
+        message:
+          'Vui lòng cài đặt hoặc thêm CineMOB vào Màn hình chính để nhận thông báo phát sóng.',
         type: 'info',
         confirmText: 'Đóng',
         onConfirm: () => {},
@@ -135,12 +136,12 @@ export const useReleaseCalendar = () => {
       if (pushSubscribed) {
         await unsubscribeFromPushNotifications();
         setPushSubscribed(false);
-        showToast('Đã tắt thông báo', 'success');
+        showToast('Đã tắt thông báo tập phim mới', 'success');
       } else {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          showToast('Đã bật thông báo', 'success');
+          showToast('Đã bật thông báo tập phim mới', 'success');
         }
       }
       setNotificationPermission(getNotificationPermission());
@@ -148,8 +149,8 @@ export const useReleaseCalendar = () => {
       console.error('Push notification error:', error);
       showToast(
         pushSubscribed
-          ? 'Không tắt được thông báo. Thử lại.'
-          : 'Không bật được thông báo. Thử lại.',
+          ? 'Không tắt được thông báo. Vui lòng thử lại sau.'
+          : 'Không bật được thông báo. Vui lòng thử lại sau.',
         'error',
       );
     } finally {

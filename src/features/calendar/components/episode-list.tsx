@@ -56,7 +56,7 @@ function EpisodeList({
               onClick={() => setSelectedDate(null)}
               type="button"
               aria-label="Xem cả tháng"
-              className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="text-body-sm font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer whitespace-nowrap shrink-0 rounded-control focus-ring focus-visible:outline-none"
             >
               Xem cả tháng
             </button>
@@ -85,7 +85,7 @@ function EpisodeList({
             <button
               type="button"
               onClick={retryEpisodes}
-              className="px-4 py-2 rounded-control border border-border text-text-primary text-body-sm font-bold hover:border-primary hover:text-primary transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-control border border-border text-text-primary text-body-sm font-bold hover:border-primary hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
             >
               Thử lại
             </button>
@@ -121,8 +121,8 @@ function EpisodeList({
                       key={`${ep.seriesId}-${ep.episode.id}`}
                       type="button"
                       onClick={() => handleSeriesClick(ep)}
-                      aria-label={`Xem thông tin phim ${ep.seriesNameVi || ep.seriesName} tập ${ep.episode.episode_number}`}
-                      className="w-full flex gap-3 sm:gap-4 py-3 hover:bg-primary/5 transition-colors duration-150 cursor-pointer text-left items-start overflow-hidden"
+                      aria-label={`Xem chi tiết “${ep.seriesNameVi || ep.seriesName}”, tập ${ep.episode.episode_number}`}
+                      className="w-full flex gap-3 sm:gap-4 py-3 hover:bg-primary/5 transition-colors duration-150 cursor-pointer text-left items-start overflow-hidden rounded-control focus-ring focus-visible:outline-none"
                     >
                       <div className="w-12 h-16 sm:w-14 sm:h-20 shrink-0 rounded-poster overflow-hidden border border-border">
                         <img

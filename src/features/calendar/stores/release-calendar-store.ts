@@ -65,7 +65,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       if (requestId === calendarRequestId) set({ monthEpisodes: episodes });
     } catch {
       if (requestId === calendarRequestId) {
-        set({ episodesError: 'Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại.' });
+        set({ episodesError: 'Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại sau.' });
       }
     } finally {
       if (requestId === calendarRequestId) set({ loadingEpisodes: false });

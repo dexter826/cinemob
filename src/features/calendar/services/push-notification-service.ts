@@ -113,15 +113,15 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     if (error instanceof Error) {
       if (error.message.includes('not active')) {
-        throw new Error('Service worker chưa sẵn sàng. Refresh trang rồi thử lại.');
+        throw new Error('Service worker chưa sẵn sàng. Tải lại trang rồi thử lại.');
       } else if (error.message.includes('timeout')) {
-        throw new Error('Service worker mất quá nhiều thời gian. Refresh trang rồi thử lại.');
+        throw new Error('Service worker mất quá nhiều thời gian. Tải lại trang rồi thử lại.');
       } else if (error.name === 'AbortError') {
         throw new Error('Push notification không được hỗ trợ trên thiết bị này hoặc cần HTTPS.');
       }
     }
 
-    throw new Error('Không bật được thông báo. Thử lại.');
+    throw new Error('Không bật được thông báo. Vui lòng thử lại sau.');
   }
 }
 
@@ -138,7 +138,7 @@ export async function unsubscribeFromPushNotifications(): Promise<void> {
     }
   } catch (error) {
     console.error('Failed to unsubscribe from push notifications:', error);
-    throw new Error('Không tắt được thông báo. Thử lại.');
+    throw new Error('Không tắt được thông báo. Vui lòng thử lại sau.');
   }
 }
 

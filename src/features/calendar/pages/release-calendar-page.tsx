@@ -30,7 +30,7 @@ const PUSH_LABEL: Record<PushStatus, string> = {
   loading: 'Đang xử lý…',
   on: 'Đã bật',
   blocked: 'Bị chặn',
-  off: 'Thông báo',
+  off: 'Bật thông báo',
 };
 
 function ReleaseCalendarPage() {
@@ -85,7 +85,7 @@ function ReleaseCalendarPage() {
               aria-label={
                 pushSubscribed ? 'Tắt thông báo tập phim mới' : 'Bật thông báo tập phim mới'
               }
-              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card border transition-colors flex items-center justify-center gap-2 font-semibold text-body-sm cursor-pointer ${
+              className={`flex-1 sm:flex-none px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-card border transition-colors flex items-center justify-center gap-2 font-semibold text-body-sm cursor-pointer focus-ring focus-visible:outline-none ${
                 pushStatus === 'on'
                   ? 'bg-success text-on-success border-transparent'
                   : pushStatus === 'blocked'
@@ -115,7 +115,7 @@ function ReleaseCalendarPage() {
       {collectionError ? (
         <ErrorState
           title="Không tải được danh sách series"
-          description="Vui lòng thử lại."
+          description="Vui lòng thử lại để tải danh sách series."
           retry={{ label: 'Thử lại', onClick: retryCollection }}
         />
       ) : shouldShowSkeleton ? (
