@@ -65,16 +65,14 @@ Việc nhiều bước thì nêu kế hoạch ngắn:
 
 Tiêu chí thành công mạnh cho phép bạn tự lặp. Tiêu chí yếu ("làm cho nó chạy") phải hỏi liên tục.
 
-## 5. Tài liệu trong repo
+## 5. Tuân thủ tài liệu đặc tả
 
-**Đọc spec trước khi sửa UI. Spec là chuẩn; code theo spec.**
+**Tôn trọng hợp đồng có sẵn. Không tự tạo phong cách riêng.**
 
-- `DESIGN.md` — hợp đồng thị giác: màu, chữ, layout, elevation, shape, component.
-- `COPY.md` — hợp đồng copy: giọng, thuật ngữ, mẫu câu, định dạng.
-- Code lệch spec → sửa code, không sửa spec.
-- Đổi token → cập nhật `DESIGN.md` và `src/index.css` cùng lúc.
-- Đổi chữ hiển thị → đối chiếu glossary và pattern trong `COPY.md` trước.
-- Component spec trong `DESIGN.md` chỉ giữ slot; câu chữ nằm ở `COPY.md`.
+Khi thao tác với giao diện hoặc văn bản:
+
+- **Giao diện:** Đối chiếu `DESIGN.md` làm chuẩn đích cho kiểu dáng, thông số và thành phần.
+- **Văn bản:** Đối chiếu `COPY.md` làm chuẩn đích cho câu chữ, ngữ cảnh và giọng điệu.
 
 ---
 

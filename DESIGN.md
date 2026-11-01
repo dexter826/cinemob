@@ -295,297 +295,191 @@ components:
     borderTop: '{colors.border}'
 ---
 
-## Overview
+## 1. Overview
 
-CineMOB là PWA tiếng Việt theo dõi phim, TV show, lịch phát sóng và thống kê cá nhân. Giao diện đọc như trang báo in: chữ display đậm, hairline thay bóng, một accent vàng duy nhất.
+CineMOB là ứng dụng web tiến bộ (PWA) phục vụ theo dõi phim, series truyền hình, lịch phát sóng và số liệu thống kê điện ảnh cá nhân. Ngôn ngữ thiết kế lấy cảm hứng từ ấn phẩm báo in điện ảnh (Editorial Print): kiểu chữ hiển thị đậm nét, phân tầng thị giác bằng các đường hairline thay vì bóng đổ mềm, kết hợp cùng một màu nhấn vàng duy nhất trên nền tối mặc định.
 
-**Key Characteristics:**
+### Đặc tính cốt lõi
+- **Chế độ hiển thị:** Nền tối là mặc định; nền sáng sử dụng sắc thái giấy ấm.
+- **Kiểu chữ:** Phông chữ Anton dùng cho tiêu đề lớn, chỉ số thống kê và nhãn thương hiệu; phông chữ Be Vietnam Pro dùng cho toàn bộ nội dung đọc, nhãn giao diện và văn bản điều hướng.
+- **Cấu trúc hình học:** Trực diện, góc cạnh có kiểm soát; không sử dụng bóng đổ mềm (soft shadow), không dùng dải màu trang trí (decorative gradient) và không dùng bán kính bo góc lớn.
+- **Nền tảng:** Tối ưu hóa trước cho thiết bị di động (mobile-first), hỗ trợ đầy đủ tính năng PWA và bản địa hóa tiếng Việt.
+- **Thẻ phim:** Định dạng chuẩn tỷ lệ 2:3 với lớp phủ tương phản (scrim) bảo đảm khả năng đọc văn bản trên hình ảnh.
 
-- **Dark là mặc định**; light là giấy ấm, không phải trắng.
-- **Anton** cho display, số liệu lớn và wordmark; **Be Vietnam Pro** cho mọi nội dung còn lại.
-- **Không bóng mềm, không gradient trang trí, không bo tròn lớn.**
-- Mobile-first, PWA, tiếng Việt.
-- Một card phim duy nhất: poster 2:3, chữ phủ trên scrim.
+---
 
-`DESIGN.md` là chuẩn đích. Mọi token, luật và pattern dưới đây là hợp đồng cho màn hình mới; code lệch thì sửa code.
+## 2. Colors
 
-## Colors
+Hệ thống màu sắc tuân thủ độ tương phản tiếp cận WCAG AA trên cả hai chủ đề tối và sáng. Mọi thành phần giao diện bắt buộc tham chiếu qua token ngữ nghĩa, không định nghĩa mã màu trực tiếp trong mã nguồn giao diện.
 
-| Token              | Dark                     | Light                 | Vai trò                            |
-| ------------------ | ------------------------ | --------------------- | ---------------------------------- |
-| `background`       | `#0a0a0a`                | `#f7f4ed`             | nền trang                          |
-| `surface`          | `#141414`                | `#fdfbf6`             | panel, card                        |
-| `surface-elevated` | `#1a1a1a`                | `#fffefa`             | dialog, dropdown, toast            |
-| `primary`          | `#ca8a04`                | `#8f6400`             | accent duy nhất: CTA, link, active |
-| `primary-hover`    | `#dfa60b`                | `#7a5600`             | hover của primary                  |
-| `on-primary`       | `#0a0a0a`                | `#fffefa`             | chữ/icon trên nền primary đặc      |
-| `text-primary`     | `#f5f5f2`                | `#0a0a0a`             | mực chính                          |
-| `text-secondary`   | `#8a8a85`                | `#6b6b66`             | chữ phụ, đạt AA                    |
-| `text-muted`       | `#9c9c97`                | `#5f5b53`             | placeholder, hint, đạt AA          |
-| `text-faint`       | `#6e6e69`                | `#8a857c`             | chữ lớn hoặc trang trí, đạt 3:1    |
-| `border`           | `rgb(255 255 255 / .14)` | `rgb(20 20 20 / .16)` | viền control                       |
-| `border-default`   | `rgb(255 255 255 / .07)` | `rgb(20 20 20 / .07)` | hairline phân cách                 |
-| `focus`            | `#ca8a04`                | `#8f6400`             | outline focus                      |
-| `success`          | `#4ade80`                | `#15803d`             | trạng thái thành công              |
-| `on-success`       | `#09090b`                | `#fffefa`             | chữ trên nền success               |
-| `warning`          | `#fbbf24`                | `#9a5d06`             | cảnh báo, icon trạng thái          |
-| `danger`           | `#f87171`                | `#b91c1c`             | lỗi, hành động phá huỷ             |
-| `on-danger`        | `#09090b`                | `#fffefa`             | chữ trên nền danger                |
-| `info`             | `#38bdf8`                | `#0369a1`             | thông tin                          |
-| `skeleton`         | computed                 | computed              | nền skeleton                       |
+| Token | Dark | Light | Vai trò ngữ nghĩa |
+| :--- | :--- | :--- | :--- |
+| `background` | `#0a0a0a` | `#f7f4ed` | Nền canvas chính của ứng dụng |
+| `surface` | `#141414` | `#fdfbf6` | Bề mặt phân cấp cấp 1 (panel, card, section) |
+| `surface-elevated` | `#1a1a1a` | `#fffefa` | Bề mặt nổi (dialog, dropdown, toast, modal) |
+| `primary` | `#ca8a04` | `#8f6400` | Màu nhấn duy nhất: nút chính, liên kết, trạng thái kích hoạt |
+| `primary-hover` | `#dfa60b` | `#7a5600` | Trạng thái hover của màu nhấn |
+| `on-primary` | `#0a0a0a` | `#fffefa` | Văn bản và biểu tượng hiển thị trên nền primary đặc |
+| `text-primary` | `#f5f5f2` | `#0a0a0a` | Màu mực chính cho tiêu đề và nội dung đọc |
+| `text-secondary` | `#8a8a85` | `#6b6b66` | Màu mực phụ cho mô tả và nhãn phụ (đạt chuẩn AA) |
+| `text-muted` | `#9c9c97` | `#5f5b53` | Màu văn bản gợi ý (placeholder, hint) |
+| `text-faint` | `#6e6e69` | `#8a857c` | Ký tự kích thước lớn hoặc thành phần trang trí (đạt tỷ lệ 3:1) |
+| `border` | `rgb(255 255 255 / 0.14)` | `rgb(20 20 20 / 0.16)` | Đường viền cho các thành phần điều khiển (control, input) |
+| `border-default` | `rgb(255 255 255 / 0.07)` | `rgb(20 20 20 / 0.07)` | Đường hairline phân cách danh mục và cấu trúc |
+| `focus` | `#ca8a04` | `#8f6400` | Đường viền chỉ thị trạng thái focus bàn phím |
+| `success` | `#4ade80` | `#15803d` | Chỉ thị trạng thái thành công |
+| `on-success` | `#09090b` | `#fffefa` | Văn bản trên nền trạng thái thành công |
+| `warning` | `#fbbf24` | `#9a5d06` | Chỉ thị cảnh báo hoặc lưu ý trạng thái |
+| `danger` | `#f87171` | `#b91c1c` | Chỉ thị lỗi hoặc hành động phá hủy dữ liệu |
+| `on-danger` | `#09090b` | `#fffefa` | Văn bản trên nền trạng thái phá hủy/lỗi |
+| `info` | `#38bdf8` | `#0369a1` | Chỉ thị thông tin hướng dẫn |
+| `skeleton` | computed | computed | Màu nền hiển thị trạng thái khung chờ nội dung |
 
-**Luật màu:**
+### Nguyên tắc sử dụng màu
+1. **Màu nhấn duy nhất:** Token `primary` là điểm nhấn duy nhất của giao diện; không bổ sung màu nhấn phụ.
+2. **Ngữ cảnh màu trạng thái:** Các token `success`, `warning`, `danger` và `info` chỉ áp dụng để truyền tải trạng thái nghiệp vụ, không sử dụng cho mục đích trang trí thuần túy.
+3. **Độ tương phản chữ trên nền:** Chữ hoặc biểu tượng trên nền `primary` đặc luôn dùng `on-primary` để bảo đảm độ tương phản; không dùng chữ trắng trên nền vàng ở giao diện tối.
+4. **Độ trong suốt văn bản:** Không sử dụng alpha từ 40% đến 60% trên chữ đặt trực tiếp trên nền ứng dụng. Văn bản đặt trên ảnh nền sử dụng giá trị `white/55` cho siêu dữ liệu.
+5. **Ngoại lệ mã màu:** Mã màu trực tiếp chỉ cho phép đối với tài nguyên thương hiệu bên thứ ba (biểu tượng Google) và giá trị fallback trong SVG symbol.
 
-- `{colors.primary}` là accent duy nhất. Không thêm màu nhấn thứ hai.
-- Status color chỉ cho trạng thái, không dùng trang trí.
-- Dùng `{colors.on-primary}` cho chữ/icon trên nền primary đặc; trắng trên vàng chỉ đạt 2.94:1.
-- `{colors.text-faint}` chỉ cho chữ lớn hoặc trang trí; không dùng cho nội dung cần đọc.
-- Không dùng alpha `/40`–`/60` trên chữ đặt trên nền app. Chữ trên ảnh dùng white alpha: `white/55` cho meta.
-- Không dùng trắng/đen thuần làm nền. Dark dùng `{colors.background}`; light dùng giấy ấm.
-- Black/white thô chỉ cho scrim ảnh, overlay dialog, ghost hover và núm switch. Ngoài các ngữ cảnh đó, mọi màu đi qua token.
-- Không viết hex/rgba trong `.tsx`. Ngoại lệ duy nhất: logo Google ở nút đăng nhập và fallback trong SVG symbol.
-- `color-scheme` và `<meta name="theme-color">` khớp nền của theme đang bật.
+---
 
-## Typography
+## 3. Typography
 
-Font load từ Google Fonts trong `index.html`: **Anton** (400) và **Be Vietnam Pro** (400/500/600/700/800), `display=swap`.
+Hệ thống kiểu chữ gồm hai phông chữ chuyên biệt: **Anton** (Display Serif/Grotesque impact) tạo dấu ấn biên tập điện ảnh và **Be Vietnam Pro** (Modern Sans-serif) bảo đảm khả năng đọc tiếng Việt ở mọi cấp độ hiển thị.
 
-| Style           | Font           | Mobile | ≥640 | ≥768 | Weight | Line-height | Tracking | Dùng cho                                |
-| --------------- | -------------- | ------ | ---- | ---- | ------ | ----------- | -------- | --------------------------------------- |
-| `display-brand` | Anton          | 36px   | 48px | —    | 400    | 1.0         | .02em    | wordmark splash                         |
-| `display-xl`    | Anton          | 30px   | 36px | 48px | 400    | 1.0         | .025em   | detail title, stat lớn                  |
-| `display-lg`    | Anton          | 24px   | 30px | 36px | 400    | 1.05        | .025em   | page header, login, splash              |
-| `display-md`    | Anton          | 20px   | —    | —    | 400    | 1.2         | .02em    | navbar, footer, display title           |
-| `display-stat`  | Anton          | 48px   | 60px | —    | 400    | 1.0         | .025em   | số liệu trong Stat                      |
-| `display-404`   | Anton          | 72px   | —    | 96px | 400    | 1.0         | 0        | trang 404                               |
-| `title-lg`      | Be Vietnam Pro | 20px   | —    | —    | 700    | 1.3         | 0        | alert/modal, feature heading            |
-| `title-md`      | Be Vietnam Pro | 18px   | —    | —    | 700    | 1.35        | 0        | section/card, empty/error               |
-| `body`          | Be Vietnam Pro | 14px   | —    | —    | 500    | 1.5         | 0        | body, input, button lg                  |
-| `body-sm`       | Be Vietnam Pro | 12px   | —    | —    | 500    | 1.5         | 0        | metadata, toast, button sm/md           |
-| `label-caps`    | Be Vietnam Pro | 11px   | —    | —    | 600    | 1.2         | .1em     | field label, section label, nav desktop |
-| `micro-caps`    | Be Vietnam Pro | 9px    | —    | —    | 700    | 1.2         | .06em    | chip, poster meta, nav mobile           |
+| Cấp bậc | Phông chữ | Cỡ chữ | Trọng số (Weight) | Độ cao dòng | Khoảng cách chữ |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `display-brand` | Anton | 36px | 400 | 1.0 | 0.02em |
+| `display-xl` | Anton | 30px | 400 | 1.0 | 0.025em |
+| `display-lg` | Anton | 24px | 400 | 1.05 | 0.025em |
+| `display-md` | Anton | 20px | 400 | 1.2 | 0.02em |
+| `display-stat` | Anton | 48px | 400 | 1.0 | 0.025em |
+| `display-404` | Anton | 72px | 400 | 1.0 | 0 |
+| `title-lg` | Be Vietnam Pro | 20px | 700 | 1.3 | 0 |
+| `title-md` | Be Vietnam Pro | 18px | 700 | 1.35 | 0 |
+| `body` | Be Vietnam Pro | 14px | 500 | 1.5 | 0 |
+| `body-sm` | Be Vietnam Pro | 12px | 500 | 1.5 | 0 |
+| `label-caps` | Be Vietnam Pro | 11px | 600 | 1.2 | 0.1em (Uppercase) |
+| `micro-caps` | Be Vietnam Pro | 9px | 700 | 1.2 | 0.06em (Uppercase) |
 
-**Luật chữ:**
+### Nguyên tắc định dạng chữ
+1. **Phân cấp chức năng:** Anton chỉ dùng cho các điểm neo thị giác (tiêu đề trang cấp cao, số đếm thống kê và wordmark). Toàn bộ nội dung văn bản dài, biểu mẫu và danh sách dùng Be Vietnam Pro.
+2. **Kích thước cố định:** Kích thước chữ chỉ tham chiếu từ bảng phân cấp; không áp dụng thang cỡ chữ mặc định của Tailwind ngoài các token đã định nghĩa.
+3. **Hiển thị số:** Các chỉ số đo lường, thời lượng, số tập và ngày tháng luôn kích hoạt thuộc tính `tabular-nums` để bảo đảm độ thẳng hàng khi hiển thị danh sách.
 
-- Anton chỉ cho display, số liệu lớn và wordmark; không dùng cho body.
-- Caps label chỉ có hai style: `{typography.label-caps}` 11px và `{typography.micro-caps}` 9px. Không dùng 10px, 11.5px hay 15px.
-- `label-caps` và `micro-caps` mang `text-transform: uppercase`: chỉ dùng cho nhãn ngắn. Metadata số/ngày, tên phim, tên người và câu thông báo phải giữ nguyên case.
-- Uppercase vẫn giữ đầy đủ dấu tiếng Việt.
-- Weight có thể tăng 600/700 cho emphasis; không đổi size.
-- Số liệu trong stat, bảng, rating dùng `tabular-nums`.
-- Heading dài dùng `text-wrap: balance`; đoạn dài dùng `text-wrap: pretty`.
-- Nội dung dài phải có `truncate`, `line-clamp-*` hoặc `break-words`; flex child chứa text cần `min-w-0`.
-- Placeholder và trạng thái tải kết thúc bằng `…`, không dùng `...`.
-- Ngoại lệ data-viz: chart axis dùng 10px/700/50%; không dùng cho text UI.
-- Size chữ chỉ đến từ bảng trên. Không dùng thang mặc định của Tailwind cho chữ.
+---
 
-## Layout
+## 4. Layout
 
-- **Base unit 4px.** Thang: `{spacing.xxs}` 4 · `{spacing.xs}` 8 · `{spacing.sm}` 12 · `{spacing.md}` 16 · `{spacing.lg}` 20 · `{spacing.xl}` 24 · `{spacing.xxl}` 32 · `{spacing.xxxl}` 40 · `{spacing.huge}` 48 · `{spacing.section}` 64.
-- Micro-spacing 2/6/10px chỉ để căn icon và chữ; layout luôn theo thang 4px.
-- Container `1152px`; gutter `{spacing.md}` mobile, `{spacing.xl}` từ `md`.
-- Page padding `{spacing.md}` mobile, `{spacing.xl}` từ `md`; section cách nhau `{spacing.lg}` mobile, `{spacing.xl}` từ `md`.
-- Navbar desktop cao `56px`; bottom nav cao `56px`; nội dung chừa `56px + safe-area` ở đáy.
-- Breakpoint: `sm` 640, `md` 768, `lg` 1024. Mobile-first.
-- Control height: 32/36/40 tuỳ mật độ; form control 44px; icon-button 32/40/48.
-- Không dùng arbitrary spacing cho layout. Ngoại lệ: safe-area, hairline quang học, phần trăm.
-- Không để scroll ngang; container hẹp dùng `min-w-0` và truncate.
-- Filter, tab, pagination và panel mở phản ánh vào URL để deep-link và back/forward hoạt động.
-- `overscroll-behavior: contain` trong dialog, sheet, dropdown; `touch-action: manipulation` cho control.
+Hệ thống bố cục được xây dựng theo tỷ lệ chuẩn 4px/8px kết hợp micro-spacing phục vụ căn chỉnh chi tiết. Bố cục thích ứng theo chiều ngang từ màn hình hẹp đến chiều rộng tối đa của khung chứa.
 
-## Elevation & Depth
+### Thang khoảng cách (Spacing Scale)
+- **Micro Spacing:** `micro-1` (2px), `micro-2` (6px), `micro-3` (10px) – dùng cho khoảng cách giữa biểu tượng và văn bản.
+- **Layout Spacing:** `xxs` (4px), `xs` (8px), `sm` (12px), `md` (16px), `lg` (20px), `xl` (24px), `xxl` (32px), `xxxl` (40px), `huge` (48px), `section` (64px).
 
-| Level | Treatment                                       | Dùng cho                |
-| ----- | ----------------------------------------------- | ----------------------- |
-| 0     | `{colors.background}`                           | nền trang               |
-| 1     | `1px {colors.border}`                           | card, control, input    |
-| 2     | `1px {colors.border-default}`                   | vạch chia trong panel   |
-| 3     | `{colors.surface-elevated}` + `{colors.border}` | dialog, dropdown, toast |
-| 4     | `{component.dialog-overlay}` scrim 0.72         | nền sau dialog          |
+### Lưới hiển thị và Điểm ngắt (Responsive Breakpoints)
 
-- Không bóng mềm. Mọi elevation dùng hairline hoặc `{colors.surface-elevated}`.
-- `--shadow-*` giữ giá trị none để utility không vỡ.
-- Núm switch dùng border, không dùng shadow.
-- Panel dialog không shadow, không border ngoài.
-- Scrim ảnh là gradient chức năng để chữ đọc được; không dùng gradient trang trí.
+| Breakpoint | Chiều rộng | Bố cục và Hành vi hiển thị |
+| :--- | :--- | :--- |
+| **Mobile** | < 640px | Lề trang 16px; thanh điều hướng đáy (Bottom Navigation) hiển thị; thông báo nổi canh giữa phía dưới; hộp thoại mở rộng toàn màn hình (`fullscreen-mobile`); phân trang dạng ô nhập số. |
+| **sm** | ≥ 640px | `display-xl` mở rộng 36px, `display-stat` mở rộng 60px; hộp thoại trở về khung trung tâm màn hình. |
+| **md** | ≥ 768px | Lề trang 24px; thanh điều hướng đáy ẩn, chuyển sang thanh điều hướng đỉnh và chân trang máy tính; phân trang hiển thị dạng danh sách số; thông báo nổi chuyển về góc dưới bên phải. |
+| **lg** | ≥ 1024px | Khung chứa nội dung giới hạn tối đa tại 1152px; `display-xl` mở rộng 48px. |
 
-## Shapes
+---
 
-| Token               | Value  | Dùng cho                   |
-| ------------------- | ------ | -------------------------- |
-| `{rounded.control}` | 8px    | button, input, control nhỏ |
-| `{rounded.card}`    | 8px    | card, panel, dropdown      |
-| `{rounded.dialog}`  | 8px    | dialog, sheet              |
-| `{rounded.poster}`  | 4px    | poster, chip               |
-| `{rounded.full}`    | 9999px | avatar, switch, pill       |
+## 5. Elevation & Depth
 
-- Không dùng 6px.
-- Không trộn radius vuông và bo trong cùng một view.
+Thiết kế loại bỏ hoàn toàn các bóng đổ mềm (soft blur shadows) thường thấy trên giao diện số, thay thế bằng độ tương phản bề mặt và các đường chỉ hairline mảnh.
 
-## Components
+### Cấu trúc phân lớp
+1. **Lớp nền (Base Plane):** Token `background` là bề mặt sâu nhất.
+2. **Lớp thành phần (Component Plane):** Token `surface` dùng cho các khối thẻ và phân vùng nội dung.
+3. **Lớp nổi (Floating Plane):** Token `surface-elevated` dùng cho hộp thoại, menu thả xuống và thông báo nổi.
+4. **Đường phân cách (Hairline Separation):**
+   - `border-default` (độ mờ 7%): Dùng cho các đường hairline ngang/dọc phân chia danh mục, bảng biểu và cột nội dung.
+   - `border` (độ mờ 14–16%): Định hình đường bao quanh các thành phần điều khiển có tương tác.
+5. **Lớp phủ hình ảnh (Poster Scrim):** Lớp gradient chức năng chuyển dần từ đen đậm (85%) sang trong suốt tại chân poster để bảo đảm tương phản văn bản mà không làm mờ hình ảnh gốc.
 
-Mỗi entry trong `components` là hợp đồng; mọi giá trị màu, chữ và bo góc tham chiếu token, không viết lại số. Câu hiển thị theo pattern trong `COPY.md`; component spec chỉ ghi slot (title/body/action).
+---
+
+## 6. Shapes
+
+Hệ thống hình học duy trì sự đồng nhất về bán kính bo góc (border radius) nhằm giữ vững tính chất sắc sảo của phong cách in ấn.
+
+| Token | Giá trị | Phạm vi áp dụng |
+| :--- | :--- | :--- |
+| `rounded.control` | 8px | Nút bấm, ô nhập liệu, hộp tìm kiếm, khung chuyển đổi trạng thái |
+| `rounded.card` | 8px | Khung thẻ thông tin, ô menu dropdown, hộp thông báo nổi |
+| `rounded.dialog` | 8px | Khung hộp thoại trung tâm và bảng trượt (sheet) |
+| `rounded.poster` | 4px | Thẻ ảnh bìa phim (PosterCard) và thẻ nhãn (Chip) |
+| `rounded.full` | 9999px | Ảnh đại diện (avatar), thanh ray và nút công tắc (switch) |
+
+### Quy tắc định hình
+- Không sử dụng bán kính bo góc 6px hoặc các giá trị nằm ngoài bảng định nghĩa.
+- Không kết hợp góc vuông hoàn toàn và góc bo tròn trong cùng một giao diện hiển thị.
+
+---
+
+## 7. Components
+
+Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dung chữ hiển thị trong các thành phần bắt buộc tuân theo tài liệu `COPY.md`.
 
 ### Button & IconButton
-
-- Variant: `{component.button-primary}`, `{component.button-secondary}`, `{component.button-ghost}`, `{component.button-danger}`.
-- Size: `{component.button-size-sm}`, `{component.button-size-md}`, `{component.button-size-lg}`; font-weight 600.
-- Ghost chỉ hover overlay; danger chỉ cho hành động phá huỷ.
-- Loading: spinner 16px tại chỗ, `aria-busy`, khoá hành động phụ thuộc; không đổi kích thước nút.
-- IconButton: `{component.icon-button-sm}`, `{component.icon-button-md}`, `{component.icon-button-lg}`; mọi icon-only phải có `aria-label`.
-- Icon decorative dùng `aria-hidden="true"`; icon dẫn đầu/trailing nằm trong span aria-hidden.
-- Hover/active/focus phải rõ hơn trạng thái nghỉ; focus dùng outline toàn cục.
-- `<button>` cho hành động, `<a>`/`<Link>` cho điều hướng; không dùng `div` có `onClick`.
+- **Phân loại biến thể:**
+  - `button-primary`: Dành cho hành động chính trên màn hình.
+  - `button-secondary`: Nền trong suốt, viền `border`, dành cho hành động phụ.
+  - `button-ghost`: Không viền, chỉ có hiệu ứng hover bề mặt.
+  - `button-danger`: Nền `danger`, chỉ dành cho hành động phá hủy hoặc xóa vĩnh viễn dữ liệu.
+- **Quy chuẩn tương tác:**
+  - Nút ở trạng thái đang xử lý hiển thị con quay (spinner 16px) tại chỗ, giữ nguyên kích thước nút, kèm thuộc tính `aria-busy="true"`.
+  - Mọi IconButton không chứa chữ hiển thị bắt buộc phải có thuộc tính `aria-label` mô tả hành động.
+  - Sử dụng thẻ `<button>` cho hành động tại chỗ và thẻ `<a>`/`<Link>` cho điều hướng trang.
 
 ### TextField & SearchField
-
-- TextField: `{component.text-field}`; mặc định underline trên nền trang, `boxed` trong modal/elevated.
-- SearchField underline: `{component.search-field-underline}`; boxed: `{component.search-field-boxed}`.
-- Label dùng `{typography.label-caps}`; lỗi hiện inline dưới field bằng `{colors.danger}`.
-- Input có `id`, label `htmlFor`, `name`, `autocomplete`, `type`/`inputmode` đúng.
-- Lỗi: `aria-invalid`, `aria-describedby`; submit focus field lỗi đầu tiên.
-- Không chặn paste; không dùng placeholder thay label.
-- Underline field miễn outline toàn cục, thay bằng border-bottom + `{colors.focus}`; boxed field giữ outline.
-- Nút xóa search có `aria-label`.
+- **Kiểu hiển thị:**
+  - `text-field`: Kiểu gạch chân (underline) trên nền trang thông thường; kiểu đóng khung (`boxed`) trong hộp thoại hoặc bề mặt nổi.
+  - `search-field-underline` và `search-field-boxed`: Chiều cao tương ứng 48px và 44px.
+- **Tiếp cận và Báo lỗi:** Nhãn hiển thị sử dụng `label-caps`. Thông báo lỗi xuất hiện ngay dưới ô nhập liệu với màu `danger`, liên kết qua thuộc tính `aria-invalid` và `aria-describedby`.
 
 ### Chip
-
-- Base: `{component.chip}`.
-- Tone: `{component.chip-gold}`, `{component.chip-success}`, `{component.chip-neutral}`, `{component.chip-muted}`.
-- `neutral` chỉ đứng trên ảnh; `gold`/`success`/`muted` đứng trên nền app.
-- Chip không phải nút. Nếu bấm được, dùng button với hit area đủ lớn.
+- **Biến thể màu:** `chip-gold` (nhấn mạnh/chọn), `chip-success` (hoàn thành), `chip-neutral` (nằm trên ảnh), `chip-muted` (phụ trợ trên nền ứng dụng).
+- **Quy chuẩn:** Chip là thành phần hiển thị trạng thái hoặc phân loại, không đóng vai trò thay thế nút bấm có tương tác lớn.
 
 ### Dropdown & MultiSelect
-
-- Trigger: `{component.dropdown-trigger}`; panel: `{component.dropdown-panel}`.
-- Panel enter/exit 120ms; đóng khi Escape, click ngoài; focus trả về trigger.
-- Keyboard: Arrow, Home/End, Enter/Space, Escape.
-- Multi-select tag dùng `{rounded.poster}` và `{typography.body-sm}`.
-- Option là hit target đầy đủ; không để dead zone giữa label và checkbox.
+- Bảng chọn (`dropdown-panel`) có thời gian xuất hiện/biến mất 120ms, tự động đóng khi nhấn phím Escape hoặc click ra ngoài vùng chọn, hoàn trả tiêu điểm về nút kích hoạt.
+- Hỗ trợ đầy đủ điều hướng bàn phím (mũi tên lên/xuống, Enter, Space, Escape).
 
 ### Dialog, Sheet & Alert
-
-- Overlay: `{component.dialog-overlay}`; panel: `{component.dialog-panel}`.
-- Presentation: `dialog`, `sheet`, `fullscreen-mobile`; size `sm` → `5xl`.
-- Header `{component.dialog-header}`, footer `{component.dialog-footer}`; title `{typography.title-lg}` hoặc `{typography.title-md}`; body `{typography.body}`.
-- Dialog enter 200ms / exit 150ms; sheet 250/200.
-- Focus trap, `aria-modal`, Escape đóng, focus trả về trigger; `overscroll-behavior: contain`.
-- Alert chỉ cho hành động phá huỷ thật; focus mặc định vào hành động an toàn; confirm danger dùng `{colors.danger}`.
-
-### Add/Edit Movie Modal
-
-- Một dialog `size 4xl` + `fullscreen-mobile` dùng chung cho thêm/sửa phim; body 2 cột: trái **thông tin phim**, phải **luồng đánh giá**, ngăn cách bằng hairline `{colors.border-default}`; dồn dọc dưới `md` kèm hairline ngang.
-- Cột trái: mặc định là tóm tắt read-only (poster 2:3, tiêu đề, meta dạng hàng nhãn–giá trị, thể loại bằng `Chip muted`, nội dung `line-clamp-4`); một nút ghost swap sang form thông tin và swap lại. Thêm thủ công hiển thị form trực tiếp (field xếp 1 cột), không có tóm tắt.
-- Cột phải: trạng thái → đánh giá → cảm nhận → ngày/giờ xem → tiến độ series → album; watchlist ẩn khối đánh giá. Mọi luồng mở vào tóm tắt, không đổi theo entry point.
-- Skeleton khi tải TMDB dựng theo hình 2 cột trên; không render form trước khi có dữ liệu. Câu chữ của modal nằm ở `COPY.md`.
-
-### Toast
-
-- Base: `{component.toast}`.
-- Mobile: bottom center trên bottom nav; desktop: bottom right; max-width `md`.
-- Mặc định 3s; undo 7s; progress bar 2px theo status color.
-- `role="status"` + `aria-live="polite"` cho success/info; `role="alert"` + assertive cho warning/error.
-
-### Skeleton & Loading
-
-- Skeleton: `{component.skeleton}`, `motion-safe:animate-pulse`; không dùng phần trăm giả.
-- Skeleton khớp aspect, grid, gap và breakpoint của nội dung thật; `SkeletonCard` khớp PosterCard qua `badges` 0–3.
-- Số skeleton bằng page size, hoặc số item render lần đầu nếu màn không phân trang.
-- Chỉ hiện skeleton sau 150ms và giữ tối thiểu 300ms một khi đã hiện; không crossfade.
-- Placeholder nhỏ nằm trong chrome đã render (số trên tab, value trong `Stat`, section trong modal) hiện ngay.
-- Skeleton chỉ mô phỏng phần luôn có; box/section phụ thuộc data không dựng sẵn.
-- Chrome luôn render: title tĩnh, back, actions; field phụ thuộc data hiện skeleton tại chỗ, không thay title bằng "Đang tải…".
-- Skeleton chỉ dùng khi vùng chưa có data cho context đang xem; revalidate cùng context giữ nội dung cũ + `aria-busy`; đổi uid/query/month/id hiện skeleton cho context mới.
-- Spinner chỉ ở nút/hành động, autocomplete, route chunk, lazy dialog, splash; vùng list/card có shape dùng skeleton.
-- Spinner đặt tại nút/vùng thao tác; label trạng thái bên cạnh; `aria-busy`.
-- Loading status nằm ngoài vùng `aria-busy`; `role="status"`, `aria-live="polite"`.
-- Lỗi đọc khác dữ liệu rỗng; lỗi có retry; pending kết thúc khi lỗi hoặc huỷ.
-- Refresh giữ nội dung hợp lệ và báo cập nhật cục bộ; không hiện kết quả cũ như kết quả mới.
+- Lớp phủ mờ `dialog-overlay` sử dụng màu nền tối 72%.
+- Hỗ trợ cơ chế khóa tiêu điểm bên trong hộp thoại (focus trap), đóng bằng phím Escape và hoàn trả tiêu điểm về phần tử kích hoạt ban đầu.
+- Hộp thoại cảnh báo phá hủy (Alert) luôn đặt tiêu điểm mặc định vào hành động an toàn; nút xác nhận hành động nguy hiểm dùng màu `danger`.
 
 ### PosterCard
+- Tỷ lệ khung hình cố định 2:3 với lớp phủ scrim chức năng tại chân thẻ.
+- Tiêu đề dùng kiểu chữ `body-sm` in đậm màu trắng; siêu dữ liệu dùng `micro-caps` với độ mờ `white/55`.
+- Thẻ hỗ trợ tải ảnh lười (lazy loading), cố định kích thước để chống giật layout (layout shift).
 
-- Card phim duy nhất của app: `{component.poster-card}`, scrim `{component.poster-scrim}`.
-- Title `{typography.body-sm}` weight 700 trắng; meta `{typography.micro-caps}` `white/55`; progress 2px `{colors.primary}`.
-- Selected: overlay `{colors.primary}`/25, giữ check trắng; ngoại lệ media, không áp dụng cho nền primary đặc.
-- Hover chỉ border + zoom 1.03; không lift, không shadow.
-- Actions: mobile luôn hiện, desktop hiện khi hover/focus; mỗi action có `aria-label`.
-- Ảnh lazy-load, có width/height, placeholder fallback; alt rỗng khi nút bao đã có `aria-label`.
+### Skeleton & Loading
+- Trạng thái chờ chỉ hiển thị sau ngưỡng 150ms để tránh hiện tượng nhấp nháy giao diện khi mạng nhanh, và giữ tối thiểu 300ms khi đã hiển thị.
+- Cấu trúc khung xương (skeleton) phải mô phỏng chính xác lưới, tỷ lệ và số lượng phần tử của nội dung thực tế. Không sử dụng con quay (spinner) thay thế cho toàn bộ danh sách nội dung.
 
-### PageHeader & SectionHeader
+---
 
-- PageHeader: `{component.page-header}`; back qua IconButton `secondary` size md; title truncate.
-- SectionHeader: `{component.section-header}`; một cấp duy nhất, không xếp tầng.
+## 8. Do’s and Don’ts
 
-### Pagination
+Bảng đối chiếu các nguyên tắc thiết kế đúng và sai trong toàn bộ hệ thống:
 
-- Button: `{component.pagination-button}`; `aria-current="page"` cho trang đang mở.
-- Mobile: input số trang + tổng; desktop: dãy số có rút gọn `•••`.
-- `totalPages ≤ 1` thì không render.
-
-### Stat & Switch
-
-- Stat: `{component.stat}`; label `{typography.label-caps}` `{colors.text-secondary}`; số `tabular-nums`.
-- Switch: track `{component.switch-track}`, thumb `{component.switch-thumb}`; `role="switch"`, `aria-checked`; hit area mở rộng 8px.
-
-### Bottom Navigation
-
-- `{component.bottom-nav}`; hiện dưới `md`; active dùng `{colors.primary}` + icon `strokeWidth` 2 + vạch 2px trên đỉnh.
-- Mỗi item cao tối thiểu `56px`, nhãn `{typography.micro-caps}`.
-
-### Empty & Error
-
-- Icon tile 56px, border, `{rounded.card}`; title `{typography.title-md}`; body `{typography.body}`; action primary.
-- Empty và error là hai trạng thái riêng; lỗi có retry, empty có CTA.
-
-### Icon & Wordmark
-
-- Lucide; `strokeWidth` **1.5** cho mọi icon; active nav dùng 2.
-- Ngoại lệ: logo symbol `strokeWidth` 3; picker chevron 2.5.
-- Size: 9/12 cho chip, 14/16/18/20 cho control, 24 cho alert, 28 cho empty state.
-- Avatar `{rounded.full}`; wordmark dùng Anton, chữ "MOB" màu `{colors.primary}`.
-
-## Do's and Don'ts
-
-- **Do** dùng hairline và `{colors.surface-elevated}` để tạo tầng; **don't** dùng bóng mềm.
-- **Do** giữ `{colors.primary}` là accent duy nhất; **don't** thêm màu nhấn thứ hai.
-- **Do** dùng `{colors.on-primary}` trên nền primary đặc; **don't** dùng trắng trên vàng ở dark.
-- **Do** dùng `{colors.text-secondary}`/`{colors.text-muted}` theo vai trò; **don't** dùng alpha `/40`–`/60` trên chữ.
-- **Do** giữ outline focus 2px offset 3px; **don't** `outline-none` ngoại trừ underline field.
-- **Do** dùng `{rounded.control}`/`{rounded.poster}`/`{rounded.full}`; **don't** dùng 6px hoặc trộn radius trong cùng view.
-- **Do** dùng skeleton khớp layout; **don't** dùng phần trăm giả hoặc spinner toàn trang.
-- **Do** giữ chrome thật và skeleton khớp page size; **don't** thay title bằng "Đang tải…" hoặc spinner cho vùng list/card.
-- **Do** dùng undo-toast 7s cho hành động đảo ngược; **don't** mở confirm dialog cho mọi thứ.
-- **Do** dùng token cho mọi màu; **don't** viết hex/rgba trong `.tsx` (trừ logo Google và fallback SVG).
-- **Do** giữ URL phản ánh filter/tab/pagination; **don't** giấu state chỉ trong component.
-
-## Responsive Behavior
-
-| Breakpoint | Width    | Thay đổi                                                                                                                                                   |
-| ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mobile     | < 640px  | `display-xl` 30px, `display-lg` 24px; gutter 16; bottom nav hiện; toast bottom-center; dialog `fullscreen-mobile` chiếm toàn màn; pagination dạng input số |
-| sm         | ≥ 640px  | `display-xl` 36px, `display-lg` 30px, `display-brand` 48px, `display-stat` 60px; dialog trở về hộp giữa màn                                                |
-| md         | ≥ 768px  | gutter 24; bottom nav ẩn, nav desktop + footer hiện; toast bottom-right; pagination dãy số; `display-404` 96px                                             |
-| lg         | ≥ 1024px | container chạm trần 1152px; `display-xl` 48px                                                                                                              |
-
-- Touch target tối thiểu 24px; hành động chính trên mobile hướng tới 44px.
-- Icon-button nhỏ giữ hit area ≥ 32px; chip không phải touch target.
-- Nav collapse theo chiều dọc: desktop nav → bottom nav, không dùng hamburger.
-- Ảnh: giữ tỉ lệ 2:3 ở mọi breakpoint, không crop khác tỉ lệ; width/height cố định để chống nhảy layout.
-
-## Iteration Guide
-
-1. Làm một component một lần; không sửa nhiều surface trong cùng một lượt.
-2. Token trước, ngoại lệ sau. Không có token phù hợp thì dùng token gần nhất, không tạo token mới.
-3. Không thêm màu. Cần nhấn thì dùng `{colors.primary}` hoặc weight/scale.
-4. Không thêm size chữ, spacing hay radius ngoài thang.
-5. Elevation chỉ bằng hairline hoặc `{colors.surface-elevated}`.
-6. Mobile-first: dựng ở 320px trước, mở rộng theo bảng Responsive.
-7. Mọi màu đi qua `{colors.*}`; mọi bo góc qua `{rounded.*}`.
-8. Luật chưa có thì chọn phương án ít token mới nhất và ghi vào Known Gaps.
-
-## Known Gaps
-
-- **Data-viz**: chỉ spec palette và axis; legend, tooltip, empty chart chưa có luật.
-- **Scrim**: hai giá trị `0.72` (overlay) và `0.85` (poster); chưa có token màu riêng, đang nằm trong component token.
-- **Icon**: luật `strokeWidth` 1.5 chưa đồng nhất trong toàn bộ code.
-- **Light theme trên ảnh**: scrim giữ nguyên giá trị dark, chưa có biến thể.
+| Do | Don't |
+| :--- | :--- |
+| Sử dụng đường hairline và `surface-elevated` để phân tầng thị giác. | Không sử dụng bóng đổ mềm (soft blur shadow) để nâng nổi phần tử. |
+| Duy trì `primary` là màu nhấn duy nhất trên toàn bộ giao diện. | Không bổ sung màu nhấn thứ hai gây phân tán thị giác. |
+| Sử dụng `on-primary` cho chữ trên nền màu nhấn đặc. | Không sử dụng chữ trắng trên nền vàng ở giao diện tối. |
+| Sử dụng `text-secondary` và `text-muted` cho các cấp bậc chữ phụ. | Không giảm độ mờ chữ bằng alpha từ 40% đến 60% trên nền ứng dụng. |
+| Duy trì đường viền focus rõ ràng (2px, offset 3px) cho tiếp cận bàn phím. | Không tắt outline focus (`outline-none`) ngoại trừ trường hợp ô gạch chân có xử lý riêng. |
+| Tuân thủ thang bo góc chuẩn (`control`: 8px, `poster`: 4px, `full`: 9999px). | Không dùng bán kính 6px hoặc trộn lẫn góc vuông và góc bo trong cùng giao diện. |
+| Thiết kế khung xương mô phỏng chính xác bố cục và số lượng thẻ nội dung. | Không hiển thị phần trăm giả lập hoặc dùng con quay tải trang toàn màn hình. |
+| Cung cấp cơ chế hoàn tác (Undo toast 7s) cho các hành động có thể đảo ngược. | Không mở hộp thoại xác nhận (Confirm modal) cho mọi thao tác nhỏ gây gián đoạn luồng. |
+| Tham chiếu mọi giá trị màu sắc và khoảng cách qua Design Token. | Không viết mã màu trực tiếp (hex/rgba) hoặc số đo tùy tiện trong mã nguồn component. |
+| Đồng bộ trạng thái bộ lọc, phân trang và tab hiển thị lên URL tham số. | Không ẩn giấu trạng thái xem trong bộ nhớ cục bộ của component riêng lẻ. |
