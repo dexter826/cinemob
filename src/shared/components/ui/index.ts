@@ -6,6 +6,7 @@ export { default as Button } from './button';
 export { default as IconButton } from './icon-button';
 export { default as SearchField } from './search-field';
 export { default as TextField } from './text-field';
+export { default as TextArea } from './text-area';
 export { default as Chip } from './chip';
 export type { ChipTone } from './chip';
 export { default as Stat } from './stat';

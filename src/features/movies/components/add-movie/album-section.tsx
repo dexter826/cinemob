@@ -1,6 +1,6 @@
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
-import Spinner from '@/shared/components/ui/spinner';
+import { Button, TextField } from '@/shared/components/ui';
 import { useEffect, useRef } from 'react';
 import { FolderPlus, Plus, X } from 'lucide-react';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
@@ -93,8 +93,9 @@ function AlbumSection({
 
       {showCreateAlbum && (
         <div className="flex gap-3 p-4 rounded-card border border-border">
-          <input
+          <TextField
             ref={newAlbumInputRef}
+            id="new-album-name"
             name="new-album-name"
             type="text"
             autoComplete="off"
@@ -108,17 +109,20 @@ function AlbumSection({
                 handleCreateAlbum();
               }
             }}
-            className="flex-1 min-w-0 bg-surface border border-border-default rounded-control px-4 py-2.5 text-body font-medium focus-visible:border-primary/50 focus-ring transition-colors"
+            variant="boxed"
+            inputClassName="bg-surface font-medium"
+            className="flex-1 min-w-0"
           />
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="md"
             onClick={handleCreateAlbum}
-            disabled={creatingAlbum || !newAlbumName.trim()}
+            disabled={!newAlbumName.trim()}
+            loading={creatingAlbum}
             aria-label="Tạo album mới"
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-body-sm font-bold disabled:opacity-40 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
           >
-            {creatingAlbum ? <Spinner size={18} className="text-current" /> : 'Tạo'}
-          </button>
+            Tạo
+          </Button>
         </div>
       )}
 
