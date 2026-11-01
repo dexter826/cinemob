@@ -150,11 +150,7 @@ function MovieListSection({
           )}
         </span>
         {searchQuery.trim() && (
-          <Button
-            variant="link"
-            onClick={() => setSearchQuery('')}
-            className="shrink-0"
-          >
+          <Button variant="link" onClick={() => setSearchQuery('')} className="shrink-0">
             Xóa tìm kiếm
           </Button>
         )}

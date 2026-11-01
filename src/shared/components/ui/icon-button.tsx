@@ -23,8 +23,7 @@ const variantClasses: Record<NonNullable<IconButtonProps['variant']>, string> = 
   secondary:
     'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
   danger: 'bg-transparent text-danger border border-transparent hover:bg-danger/10',
-  primary:
-    'bg-primary text-on-primary border border-transparent hover:bg-primary-hover',
+  primary: 'bg-primary text-on-primary border border-transparent hover:bg-primary-hover',
 };
 
 export function IconButton({

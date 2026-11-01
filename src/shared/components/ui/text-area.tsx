@@ -1,7 +1,10 @@
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
-interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'className'> {
+interface TextAreaProps extends Omit<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  'className'
+> {
   label?: string;
   error?: string;
   id: string;
