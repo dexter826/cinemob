@@ -33,7 +33,36 @@ function Chip({
   const textLabel = typeof children === 'string' ? children : '';
   const removeLabel = removeAriaLabel || (textLabel ? `Gỡ ${textLabel}` : 'Gỡ');
 
-  if (onRemove && !onClick) {
+  if (onClick && onRemove) {
+    return (
+      <span
+        className={classNames(
+          'inline-flex items-stretch rounded-poster text-micro-caps font-bold transition-colors select-none whitespace-nowrap border',
+          toneClasses[tone],
+          className ?? '',
+        )}
+      >
+        <button
+          type="button"
+          onClick={onClick}
+          className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5 cursor-pointer focus-ring focus-visible:outline-none"
+        >
+          {icon}
+          <span>{children}</span>
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={removeLabel}
+          className="px-1 py-0.5 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none text-text-muted hover:text-text-primary"
+        >
+          <X size={10} strokeWidth={1.5} aria-hidden="true" />
+        </button>
+      </span>
+    );
+  }
+
+  if (onRemove) {
     return (
       <button
         type="button"
@@ -72,27 +101,6 @@ function Chip({
       >
         {icon}
         <span>{children}</span>
-        {onRemove && (
-          <span
-            role="button"
-            tabIndex={0}
-            aria-label={removeLabel}
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                onRemove();
-              }
-            }}
-            className="hover:text-primary transition-colors cursor-pointer"
-          >
-            <X size={10} strokeWidth={1.5} aria-hidden="true" />
-          </span>
-        )}
       </button>
     );
   }

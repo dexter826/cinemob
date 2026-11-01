@@ -91,13 +91,7 @@ function SearchFilters({
           }}
           inputClassName="pr-24 sm:pr-28"
           endSlot={
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleSearch}
-              aria-label="Tìm kiếm phim"
-              className="text-body font-bold"
-            >
+            <Button variant="primary" size="sm" onClick={handleSearch} aria-label="Tìm kiếm phim">
               Tìm
             </Button>
           }

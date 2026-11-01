@@ -59,20 +59,22 @@ export function TextArea({
           {...rest}
         />
       </div>
-      <div className="flex items-center justify-between gap-2 mt-1">
-        {error ? (
-          <p id={`${id}-error`} role="alert" className="text-body-sm text-danger">
-            {error}
-          </p>
-        ) : (
-          <span />
-        )}
-        {showCount && maxLength !== undefined && (
-          <span className="text-body-sm text-text-secondary tabular-nums ml-auto">
-            {currentLength}/{maxLength}
-          </span>
-        )}
-      </div>
+      {(error || (showCount && maxLength !== undefined)) && (
+        <div className="flex items-center justify-between gap-2 mt-1">
+          {error ? (
+            <p id={`${id}-error`} role="alert" className="text-body-sm text-danger">
+              {error}
+            </p>
+          ) : (
+            <span />
+          )}
+          {showCount && maxLength !== undefined && (
+            <span className="text-body-sm text-text-secondary tabular-nums ml-auto">
+              {currentLength}/{maxLength}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

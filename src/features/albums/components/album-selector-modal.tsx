@@ -133,6 +133,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 ref={newAlbumInputRef}
                 id="album-selector-new-name"
                 name="album-name"
+                aria-label="Tên album mới"
                 placeholder="Nhập tên album…"
                 value={newAlbumName}
                 onChange={(e) => setNewAlbumName(e.target.value)}

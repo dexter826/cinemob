@@ -110,7 +110,7 @@ function Login() {
               className="mt-10 w-full"
               aria-label="Đăng nhập bằng tài khoản Google"
             >
-              Tiếp tục với Google
+              {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
             </Button>
           </div>
         </div>
