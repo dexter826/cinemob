@@ -1,4 +1,4 @@
-import Spinner from '@/shared/components/ui/spinner';
+import Button from '@/shared/components/ui/button';
 import CineMobSymbol from '@/shared/components/ui/cinemob-symbol';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
@@ -101,20 +101,17 @@ function Login() {
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập điện ảnh của riêng bạn.
             </p>
 
-            <button
+            <Button
+              variant="primary"
+              size="lg"
               onClick={handleLogin}
-              disabled={isLoading}
-              className="mt-10 w-full flex items-center justify-center gap-3 h-11 px-6 rounded-control bg-primary text-on-primary border border-transparent hover:bg-primary-hover font-bold text-body-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed focus-ring focus-visible:outline-none"
+              loading={isLoading}
+              leadingIcon={<GoogleIcon className="w-5 h-5 shrink-0" />}
+              className="mt-10 w-full"
               aria-label="Đăng nhập bằng tài khoản Google"
-              aria-busy={isLoading}
             >
-              {isLoading ? (
-                <Spinner size={18} className="text-current" />
-              ) : (
-                <GoogleIcon className="w-5 h-5 shrink-0" />
-              )}
-              <span>{isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</span>
-            </button>
+              Tiếp tục với Google
+            </Button>
           </div>
         </div>
 

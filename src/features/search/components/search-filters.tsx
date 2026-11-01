@@ -1,6 +1,7 @@
 import Spinner from '@/shared/components/ui/spinner';
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import SearchField from '@/shared/components/ui/search-field';
+import Button from '@/shared/components/ui/button';
 import { useRef, useEffect } from 'react';
 import { Search, FilterX, Star, Calendar, Film, Tv } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
@@ -90,14 +91,15 @@ function SearchFilters({
           }}
           inputClassName="pr-24 sm:pr-28"
           endSlot={
-            <button
-              type="button"
+            <Button
+              variant="primary"
+              size="sm"
               onClick={handleSearch}
               aria-label="Tìm kiếm phim"
-              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-body font-bold cursor-pointer focus-ring focus-visible:outline-none"
+              className="text-body font-bold"
             >
               Tìm
-            </button>
+            </Button>
           }
         />
 
@@ -256,14 +258,15 @@ function SearchFilters({
 
       {hasActiveFilters && (
         <div className="flex justify-end">
-          <button
+          <Button
+            variant="secondary"
+            size="md"
             onClick={handleClear}
             aria-label="Xóa bộ lọc"
-            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-body-sm font-bold text-text-secondary cursor-pointer border border-border focus-ring focus-visible:outline-none"
+            leadingIcon={<FilterX size={14} strokeWidth={1.5} aria-hidden="true" />}
           >
-            <FilterX size={14} strokeWidth={1.5} aria-hidden="true" />
             <span className="hidden sm:inline">Xóa bộ lọc</span>
-          </button>
+          </Button>
         </div>
       )}
     </div>

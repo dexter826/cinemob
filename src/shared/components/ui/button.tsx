@@ -2,7 +2,7 @@ import Spinner from './spinner';
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -21,6 +21,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     'bg-transparent text-text-primary border border-transparent hover:bg-black/5 dark:hover:bg-white/5',
   danger: 'bg-danger text-on-danger hover:brightness-95 border border-transparent',
+  link: 'bg-transparent text-primary hover:underline border border-transparent p-0 h-auto font-semibold',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -52,9 +53,10 @@ export function Button({
       className={classNames(
         'inline-flex items-center justify-center font-semibold cursor-pointer',
         'transition',
+        'focus-ring focus-visible:outline-none',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
-        sizeClasses[size],
+        variant === 'link' ? 'p-0 text-body-sm' : sizeClasses[size],
         className ?? '',
       )}
       {...rest}

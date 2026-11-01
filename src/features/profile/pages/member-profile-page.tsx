@@ -10,6 +10,7 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import PageHeader from '@/shared/components/ui/page-header';
 import IconButton from '@/shared/components/ui/icon-button';
+import Button from '@/shared/components/ui/button';
 import Loading from '@/shared/components/ui/loading';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { getMemberProfile, buildProfileMovies } from '../services/member-profile-service';
@@ -376,15 +377,15 @@ function MemberProfilePage() {
                   </div>
                   {visibleCommonCount < commonMovies.length && (
                     <div className="flex justify-center pt-2">
-                      <button
-                        type="button"
+                      <Button
+                        variant="secondary"
+                        size="md"
                         onClick={() =>
                           setVisibleCommonCount((current) => current + COMMON_MOVIES_INITIAL)
                         }
-                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                       >
                         Xem thêm
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

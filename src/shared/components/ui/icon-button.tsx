@@ -7,7 +7,8 @@ interface IconButtonProps extends Omit<
 > {
   label: string;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'ghost' | 'secondary' | 'danger';
+  variant?: 'ghost' | 'secondary' | 'danger' | 'primary';
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
 const sizeClasses: Record<NonNullable<IconButtonProps['size']>, string> = {
@@ -22,6 +23,8 @@ const variantClasses: Record<NonNullable<IconButtonProps['variant']>, string> = 
   secondary:
     'bg-surface text-text-primary border border-border hover:border-primary/50 hover:text-primary',
   danger: 'bg-transparent text-danger border border-transparent hover:bg-danger/10',
+  primary:
+    'bg-primary text-on-primary border border-transparent hover:bg-primary-hover',
 };
 
 export function IconButton({
@@ -31,16 +34,19 @@ export function IconButton({
   type = 'button',
   title,
   className,
+  ref,
   ...rest
 }: IconButtonProps) {
   return (
     <button
+      ref={ref}
       type={type}
       aria-label={label}
       title={title ?? label}
       className={classNames(
         'inline-flex items-center justify-center cursor-pointer',
         'transition-colors',
+        'focus-ring focus-visible:outline-none',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         sizeClasses[size],
         variantClasses[variant],

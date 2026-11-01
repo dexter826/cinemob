@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Film, Search as SearchIcon } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Dropdown from '@/shared/components/ui/dropdown';
+import Button from '@/shared/components/ui/button';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import PosterCard from '@/features/movies/components/poster-card';
@@ -149,12 +150,13 @@ function MovieListSection({
           )}
         </span>
         {searchQuery.trim() && (
-          <button
+          <Button
+            variant="link"
             onClick={() => setSearchQuery('')}
-            className="text-primary hover:underline font-semibold cursor-pointer shrink-0 focus-ring focus-visible:outline-none rounded-control px-1"
+            className="shrink-0"
           >
             Xóa tìm kiếm
-          </button>
+          </Button>
         )}
       </div>
 
@@ -192,13 +194,13 @@ function MovieListSection({
 
       {visibleMovies.length < filteredMovies.length && (
         <div className="flex justify-center pt-2">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="md"
             onClick={() => setVisibleCount((current) => current + PROFILE_MOVIES_PAGE_SIZE)}
-            className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
           >
             Xem thêm
-          </button>
+          </Button>
         </div>
       )}
     </>
