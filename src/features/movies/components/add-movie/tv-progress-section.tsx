@@ -76,7 +76,7 @@ function TVProgressSection({
               type="checkbox"
               checked={isCompleted}
               onChange={(e) => setIsCompleted(e.target.checked)}
-              className="peer appearance-none w-5 h-5 rounded-poster border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors cursor-pointer"
+              className="peer appearance-none w-5 h-5 rounded-poster border-2 border-primary/30 checked:bg-primary checked:border-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
             />
             <div className="absolute inset-0 flex items-center justify-center text-on-primary scale-0 peer-checked:scale-100 transition-transform pointer-events-none">
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
@@ -85,7 +85,7 @@ function TVProgressSection({
             </div>
           </div>
           <span className="text-body-sm font-bold text-text-primary group-hover:text-primary transition-colors">
-            Hoàn thành bộ phim
+            Đã xem hết
           </span>
         </label>
       </div>
@@ -94,7 +94,7 @@ function TVProgressSection({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <span id="tv-season-label" className="text-label-caps text-text-secondary ml-1">
-              Mùa (Season)
+              Mùa
             </span>
             <div
               role="group"
@@ -105,7 +105,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Giảm mùa"
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
               >
                 -
               </button>
@@ -119,7 +119,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Tăng mùa"
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
               >
                 +
               </button>
@@ -138,7 +138,7 @@ function TVProgressSection({
                 type="button"
                 aria-label="Giảm tập"
                 onClick={() => setCurrentEpisode(Math.max(0, currentEpisode - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
               >
                 -
               </button>
@@ -155,7 +155,7 @@ function TVProgressSection({
                   const maxEpisodes = episodesPerSeason[currentSeason] || 999;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
               >
                 +
               </button>

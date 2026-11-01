@@ -8,7 +8,7 @@ interface StatusToggleProps {
 }
 
 const radioClass = (isActive: boolean) =>
-  `flex-1 py-2.5 text-body-sm font-bold transition-colors rounded-control cursor-pointer ${
+  `flex-1 py-2.5 text-body-sm font-bold transition-colors rounded-control cursor-pointer focus-ring focus-visible:outline-none ${
     isActive ? 'bg-primary text-on-primary' : 'text-text-secondary hover:text-text-primary'
   }`;
 

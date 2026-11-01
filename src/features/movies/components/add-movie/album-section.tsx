@@ -75,7 +75,9 @@ function AlbumSection({
         <button
           type="button"
           onClick={() => setShowCreateAlbum(!showCreateAlbum)}
-          className={`text-body-sm font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-control transition-colors border cursor-pointer ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
+          aria-expanded={showCreateAlbum}
+          aria-label={showCreateAlbum ? 'Hủy tạo album' : 'Tạo album mới'}
+          className={`text-body-sm font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-control transition-colors border cursor-pointer focus-ring focus-visible:outline-none ${showCreateAlbum ? 'text-danger bg-danger/10 border-danger/20' : 'bg-primary text-on-primary border-transparent'}`}
         >
           {showCreateAlbum ? (
             <>
@@ -112,7 +114,8 @@ function AlbumSection({
             type="button"
             onClick={handleCreateAlbum}
             disabled={creatingAlbum || !newAlbumName.trim()}
-            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-body-sm font-bold disabled:opacity-40 transition-colors"
+            aria-label="Tạo album mới"
+            className="px-5 py-2.5 bg-primary text-on-primary rounded-control text-body-sm font-bold disabled:opacity-40 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
           >
             {creatingAlbum ? <Spinner size={18} className="text-current" /> : 'Tạo'}
           </button>

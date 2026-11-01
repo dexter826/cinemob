@@ -114,10 +114,11 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
   const requestClose = () => {
     if (isDirty && !isSubmitting) {
       showAlert({
-        title: 'Bỏ thay đổi?',
-        message: 'Thay đổi chưa lưu sẽ mất nếu bạn đóng hộp thoại này.',
+        title: 'Bỏ các thay đổi chưa lưu?',
+        message: 'Những thông tin bạn vừa chỉnh sửa sẽ bị mất nếu đóng cửa sổ này.',
         type: 'warning',
         confirmText: 'Bỏ thay đổi',
+        cancelText: 'Tiếp tục chỉnh sửa',
         onConfirm: closeAddModal,
       });
       return;
@@ -166,7 +167,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
             role="alert"
             className="text-body-sm font-medium text-danger ml-1"
           >
-            Nhập tên phim để lưu lại trong thư viện.
+            Vui lòng nhập tên phim để lưu vào thư viện.
           </p>
         )}
       </div>
@@ -265,10 +266,14 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
             id="add-movie-title"
             className="text-title-lg text-text-primary tracking-tight truncate"
           >
-            {isEditMode ? 'Chỉnh sửa phim' : 'Thêm phim mới'}
+            {isEditMode ? 'Chỉnh sửa thông tin phim' : 'Thêm phim vào thư viện'}
           </h2>
         </div>
-        <IconButton label="Đóng hộp thoại thêm phim" onClick={requestClose} variant="ghost">
+        <IconButton
+          label={isEditMode ? 'Đóng hộp thoại chỉnh sửa phim' : 'Đóng hộp thoại thêm phim'}
+          onClick={requestClose}
+          variant="ghost"
+        >
           <X size={18} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
       </div>

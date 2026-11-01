@@ -174,6 +174,11 @@ function MovieFormFields({
                   ? true
                   : undefined
               }
+              aria-describedby={
+                isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime))
+                  ? 'movie-runtime-error'
+                  : undefined
+              }
               value={isTVSeries ? formData.seasons : formData.runtime}
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
@@ -182,10 +187,14 @@ function MovieFormFields({
               placeholder={isTVSeries ? 'Nhập số mùa…' : 'Nhập thời lượng (phút)…'}
             />
             {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
-              <p role="alert" className="text-body-sm font-medium text-danger ml-1 mt-1">
+              <p
+                id="movie-runtime-error"
+                role="alert"
+                className="text-body-sm font-medium text-danger ml-1 mt-1"
+              >
                 {isTVSeries
-                  ? 'Nhập số mùa của series (lớn hơn 0).'
-                  : 'Nhập thời lượng phim theo phút.'}
+                  ? 'Vui lòng nhập số mùa của series (lớn hơn 0).'
+                  : 'Vui lòng nhập thời lượng phim theo phút (lớn hơn 0).'}
               </p>
             )}
           </div>

@@ -71,14 +71,14 @@ function RatingSection({
               type="button"
               role="radio"
               aria-checked={rating === star}
-              aria-label={`Đánh giá ${star} trên 10`}
+              aria-label={`Đánh giá ${star} trên 10 sao`}
               tabIndex={rating === star || (rating === 0 && star === 1) ? 0 : -1}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
               onFocus={() => setHoverRating(star)}
               onBlur={() => setHoverRating(0)}
-              className="px-0.5 py-2 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-control"
+              className="px-0.5 py-2 sm:p-1.5 transition-colors flex-1 flex justify-center cursor-pointer rounded-control focus-ring focus-visible:outline-none"
             >
               <Star
                 aria-hidden="true"

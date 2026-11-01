@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
+import useAlertStore from '@/shared/stores/alert-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
 import { useMovieDetail } from '../hooks/use-movie-detail';
 import { useDeleteMovie } from '../hooks/use-delete-movie';
@@ -94,6 +95,7 @@ function MovieDetailPage() {
     retry: retryCollection,
   } = useMovieStore();
   const { openAddModal } = useAddMovieStore();
+  const { showAlert } = useAlertStore();
   const handleDelete = useDeleteMovie();
   const { dropMovie, resumeMovie, isPending } = useDropMovie();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
@@ -129,9 +131,19 @@ function MovieDetailPage() {
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
   const handleDeleteMovie = () => {
-    if (!movie?.docId) return;
-    handleDelete(movie.docId);
-    navigate('/');
+    const docId = movie?.docId;
+    if (!docId) return;
+    showAlert({
+      title: `Xóa “${mainTitle}” khỏi Thư viện?`,
+      message: 'Toàn bộ đánh giá, ghi chú và tiến độ xem của phim này sẽ bị gỡ bỏ.',
+      type: 'danger',
+      confirmText: 'Xóa khỏi thư viện',
+      cancelText: 'Giữ lại phim',
+      onConfirm: () => {
+        handleDelete(docId);
+        navigate('/');
+      },
+    });
   };
 
   if (collectionError)
@@ -160,8 +172,8 @@ function MovieDetailPage() {
           <div className="py-10">
             <EmptyState
               icon={ArrowLeft}
-              title="Không tìm thấy phim trong bộ sưu tập"
-              description="Phim này chưa có trong bộ sưu tập của bạn hoặc đã bị xóa."
+              title="Không tìm thấy phim trong Thư viện"
+              description="Phim này chưa có trong thư viện của bạn hoặc đã bị xóa."
               action={{ label: 'Về Thư viện', onClick: () => navigate('/') }}
             />
           </div>
@@ -175,6 +187,7 @@ function MovieDetailPage() {
       hasValidTrailer ? (
         <Button
           leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+          aria-label={`Xem trailer “${mainTitle}” trên YouTube (mở tab mới)`}
           onClick={() =>
             window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank', 'noopener')
           }
@@ -184,6 +197,7 @@ function MovieDetailPage() {
       ) : (
         <Button
           disabled
+          aria-label="Phim chưa có trailer"
           leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
         >
           Không có trailer
@@ -195,7 +209,7 @@ function MovieDetailPage() {
         loading={isPending}
         onClick={() => void resumeMovie(movie)}
       >
-        Xem tiếp
+        Tiếp tục xem
       </Button>
     ) : (
       <Button

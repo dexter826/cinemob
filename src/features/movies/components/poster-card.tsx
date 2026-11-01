@@ -103,7 +103,12 @@ function PosterCard({
         <button
           type="button"
           onClick={onClick}
-          aria-label={ariaLabel ?? `Xem chi tiết ${kindLabel.toLowerCase()} ${title}`}
+          aria-label={
+            ariaLabel ??
+            (mediaType === 'tv'
+              ? `Xem chi tiết phim bộ “${title}”`
+              : `Xem chi tiết phim “${title}”`)
+          }
           className="absolute inset-0 w-full h-full cursor-pointer p-0 text-left"
         >
           <img
@@ -182,7 +187,7 @@ function PosterCard({
             <button
               type="button"
               onClick={onRemove}
-              aria-label={`Bỏ gợi ý ${title}`}
+              aria-label={`Bỏ gợi ý “${title}”`}
               title="Không quan tâm"
               className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
             >

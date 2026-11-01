@@ -29,7 +29,7 @@ export function useDeleteMovie() {
       }
     }, UNDO_DELETE_MS);
 
-    showToast(`Đã xóa ${getMainTitle(movie)}`, 'info', UNDO_DELETE_MS, {
+    showToast(`Đã xóa “${getMainTitle(movie)}”`, 'info', UNDO_DELETE_MS, {
       label: 'Hoàn tác',
       onAction: () => {
         clearTimeout(timer);
