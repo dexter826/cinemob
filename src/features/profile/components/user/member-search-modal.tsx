@@ -92,7 +92,9 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
         ) : !settled ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <Users size={22} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
-            <p className="text-body text-text-secondary">Nhập địa chỉ email để tìm kiếm thành viên.</p>
+            <p className="text-body text-text-secondary">
+              Nhập địa chỉ email để tìm kiếm thành viên.
+            </p>
           </div>
         ) : results.length === 0 ? (
           <p aria-live="polite" className="py-8 text-center text-body text-text-secondary">

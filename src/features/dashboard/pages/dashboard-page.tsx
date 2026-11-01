@@ -59,13 +59,13 @@ function DashboardPage() {
 
   const hasActiveFilters = Boolean(
     filters.searchQuery ||
-      filters.ratingRange ||
-      filters.year ||
-      filters.country ||
-      filters.genre ||
-      filters.contentType !== 'all' ||
-      filters.watchStatus !== 'all' ||
-      filters.sourceType !== 'all',
+    filters.ratingRange ||
+    filters.year ||
+    filters.country ||
+    filters.genre ||
+    filters.contentType !== 'all' ||
+    filters.watchStatus !== 'all' ||
+    filters.sourceType !== 'all',
   );
 
   const emptyStateConfig = hasActiveFilters
@@ -97,7 +97,8 @@ function DashboardPage() {
           }
         : {
             title: 'Chưa có phim nào đã xem',
-            description: 'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
+            description:
+              'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
             action: {
               label: 'Khám phá phim',
               onClick: () => navigate('/search'),

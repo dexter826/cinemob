@@ -108,7 +108,11 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                   )}
                 </IconButton>
               )}
-              <IconButton label="Đóng hộp thoại chọn phim ngẫu nhiên" onClick={onClose} variant="ghost">
+              <IconButton
+                label="Đóng hộp thoại chọn phim ngẫu nhiên"
+                onClick={onClose}
+                variant="ghost"
+              >
                 <span aria-hidden="true" className="text-title-md leading-none">
                   ×
                 </span>
