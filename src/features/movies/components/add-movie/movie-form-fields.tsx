@@ -3,6 +3,7 @@ import { Film, Globe, Calendar, Tv, Clock, AlignLeft } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import DatePicker from '@/shared/components/ui/date-picker';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
+import { TextArea } from '@/shared/components/ui';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import type { MovieFormData } from '../../utils/movie-form-utils';
 
@@ -242,15 +243,16 @@ function MovieFormFields({
           <AlignLeft size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Nội dung tóm tắt
         </label>
-        <textarea
+        <TextArea
           id="movie-overview"
           name="movie-overview"
           rows={5}
           autoComplete="off"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          className="w-full border border-border rounded-card px-4 py-3 text-body font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors resize-none"
           placeholder="Nhập tóm tắt cốt truyện…"
+          variant="boxed"
+          textareaClassName="rounded-card px-4 py-3 font-medium placeholder:text-text-muted"
         />
       </div>
     </div>

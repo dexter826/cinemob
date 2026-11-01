@@ -21,6 +21,7 @@ import { formatDateAny } from '@/shared/utils/date-format';
 import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
+import { Button, TextField } from '@/shared/components/ui';
 import { useAlbumDetail } from '../hooks/use-album-detail';
 
 function AlbumDetailPage() {
@@ -89,50 +90,34 @@ function AlbumDetailPage() {
           className="flex-col sm:flex-row"
           actions={
             <div className="flex items-center justify-end gap-2 sm:gap-3 w-full md:w-auto">
-              <button
-                type="button"
+              <Button
+                variant={managingMovies ? 'primary' : 'secondary'}
                 disabled={loading || !album}
                 onClick={() => setManagingMovies((v) => !v)}
                 aria-expanded={managingMovies}
                 aria-label={
                   managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'
                 }
-                className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none
-                ${
-                  managingMovies
-                    ? 'bg-primary border-primary text-on-primary'
-                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
-                }
-                ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
-              `}
+                leadingIcon={<PlusCircle size={18} strokeWidth={1.5} />}
               >
-                <PlusCircle size={18} strokeWidth={1.5} />
                 <span className="hidden sm:inline">{managingMovies ? 'Đóng' : 'Thêm phim'}</span>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant={editing ? 'primary' : 'secondary'}
                 disabled={loading || !album}
                 onClick={() => setEditing((v) => !v)}
                 aria-expanded={editing}
                 aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
-                className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none
-                ${
-                  editing
-                    ? 'bg-primary border-primary text-on-primary'
-                    : 'border-border text-text-secondary hover:border-primary/50 hover:text-text-primary'
+                leadingIcon={
+                  editing ? (
+                    <XIcon size={18} strokeWidth={1.5} />
+                  ) : (
+                    <Edit2 size={18} strokeWidth={1.5} />
+                  )
                 }
-                ${loading || !album ? 'opacity-50 cursor-not-allowed' : ''}
-              `}
               >
-                {editing ? (
-                  <XIcon size={18} strokeWidth={1.5} />
-                ) : (
-                  <Edit2 size={18} strokeWidth={1.5} />
-                )}
                 <span className="hidden sm:inline">{editing ? 'Hủy' : 'Sửa tên'}</span>
-              </button>
+              </Button>
             </div>
           }
         />
@@ -143,38 +128,32 @@ function AlbumDetailPage() {
             className="bg-surface border border-border rounded-dialog p-4 sm:p-5"
           >
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
-              <div className="flex-1 space-y-1.5 sm:space-y-2">
-                <label htmlFor="album-name" className="text-label-caps text-text-secondary ml-1">
-                  Tên album mới
-                </label>
-                <input
+              <div className="flex-1">
+                <TextField
                   id="album-name"
                   name="album-name"
-                  type="text"
-                  autoComplete="off"
+                  label="Tên album mới"
+                  variant="boxed"
                   required
+                  autoComplete="off"
                   placeholder="Nhập tên album…"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-border rounded-control sm:rounded-card px-4 sm:px-5 py-2.5 sm:py-3.5 focus-visible:border-primary focus-ring text-body-sm sm:text-body font-medium transition-colors"
                 />
               </div>
 
               <div className="flex items-center justify-end gap-2 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-                >
+                <Button type="button" variant="secondary" onClick={() => setEditing(false)}>
                   Hủy
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-body-sm sm:text-body bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer focus-ring focus-visible:outline-none"
+                  variant="primary"
+                  loading={saving}
+                  disabled={saving || !name.trim()}
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
-                </button>
+                </Button>
               </div>
             </div>
           </form>

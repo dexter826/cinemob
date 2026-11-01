@@ -1,16 +1,15 @@
-/**
- * Barrel xuất UI kit — import từ đây thay vì đường dẫn sâu:
- * `import { Button, SearchField, Chip } from '@/shared/components/ui'`
- */
 export { default as Button } from './button';
 export { default as IconButton } from './icon-button';
 export { default as SearchField } from './search-field';
 export { default as TextField } from './text-field';
+export { default as TextArea } from './text-area';
 export { default as Chip } from './chip';
 export type { ChipTone } from './chip';
 export { default as Stat } from './stat';
 export { default as SectionHeader } from './section-header';
 export { default as PageHeader } from './page-header';
+export { default as Tabs } from './tabs';
+export type { TabItem, TabsProps } from './tabs';
 export { default as Dialog } from './dialog';
 export { DialogHeader, DialogBody, DialogFooter } from './dialog';
 export { default as Dropdown } from './dropdown';

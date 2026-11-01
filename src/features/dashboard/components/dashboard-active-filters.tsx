@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { Chip, Button } from '@/shared/components/ui';
 import {
   type ActiveTab,
   type FilterState,
@@ -12,7 +12,6 @@ export interface ActiveFilterChip {
   clear: () => void;
 }
 
-/** Danh sách chip mô tả điều kiện lọc đang bật, dùng chung cho bar dưới header và badge trên nút lọc. */
 export function buildActiveFilterChips(
   filters: FilterState,
   activeTab: ActiveTab,
@@ -108,29 +107,23 @@ function DashboardActiveFilters({
       className="flex flex-wrap items-center gap-1.5 py-2"
     >
       {chipItems.map((chip) => (
-        <button
+        <Chip
           key={chip.key}
-          type="button"
-          onClick={chip.clear}
-          aria-label={`Gỡ lọc ${chip.label}`}
-          className="group inline-flex items-center gap-1 px-2 py-1.5 rounded-poster border border-border-default text-micro-caps font-bold text-text-secondary hover:text-text-primary hover:border-primary/40 transition-colors cursor-pointer whitespace-nowrap"
+          tone="muted"
+          onRemove={chip.clear}
+          removeAriaLabel={`Gỡ lọc ${chip.label}`}
         >
           {chip.label}
-          <X
-            size={10}
-            strokeWidth={1.5}
-            aria-hidden="true"
-            className="text-text-muted group-hover:text-primary"
-          />
-        </button>
+        </Chip>
       ))}
-      <button
-        type="button"
+      <Button
+        variant="link"
+        size="sm"
         onClick={clearFilters}
-        className="px-2 py-1.5 text-micro-caps font-bold text-primary hover:underline cursor-pointer whitespace-nowrap"
+        className="px-2 py-1 text-micro-caps font-bold whitespace-nowrap"
       >
         Xóa bộ lọc
-      </button>
+      </Button>
     </div>
   );
 }

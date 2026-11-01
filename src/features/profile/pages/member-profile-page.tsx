@@ -10,6 +10,8 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
 import PageHeader from '@/shared/components/ui/page-header';
 import IconButton from '@/shared/components/ui/icon-button';
+import Button from '@/shared/components/ui/button';
+import { Tabs } from '@/shared/components/ui';
 import Loading from '@/shared/components/ui/loading';
 import EmptyState from '@/shared/components/ui/empty-state';
 import { getMemberProfile, buildProfileMovies } from '../services/member-profile-service';
@@ -29,45 +31,6 @@ const PROFILE_TABS = [
   { key: 'common', label: 'Phim chung' },
   { key: 'all', label: 'Tất cả phim' },
 ] as const;
-
-interface ProfileTabsProps {
-  activeTab: 'common' | 'all';
-  onChange: (tab: 'common' | 'all') => void;
-}
-
-function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
-  return (
-    <div
-      role="tablist"
-      aria-label="Phim của thành viên"
-      className="flex items-center border-b border-border"
-    >
-      {PROFILE_TABS.map((tab) => {
-        const isActive = activeTab === tab.key;
-        return (
-          <button
-            key={tab.key}
-            role="tab"
-            type="button"
-            aria-selected={isActive}
-            onClick={() => onChange(tab.key)}
-            className={`relative flex items-center h-11 px-3.5 text-label-caps transition-colors cursor-pointer focus-ring focus-visible:outline-none ${
-              isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            {tab.label}
-            {isActive && (
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
-              />
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 function MemberProfileCardSkeleton() {
   return (
@@ -270,7 +233,14 @@ function MemberProfilePage() {
         <PageHeader title="Hồ sơ thành viên" actions={copyLinkButton} />
         {showSkeleton && <MemberProfileCardSkeleton />}
         <section aria-label="Phim đã xem" aria-busy="true" className="space-y-4">
-          <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+          <Tabs
+            items={PROFILE_TABS}
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            label="Phim của thành viên"
+            borderBottom
+            tabClassName="h-11 text-label-caps"
+          />
           {showSkeleton &&
             (activeTab === 'common' ? (
               <div className="space-y-4">
@@ -326,7 +296,14 @@ function MemberProfilePage() {
       ) : (
         <>
           <section aria-label="Phim đã xem" className="space-y-4">
-            <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+            <Tabs
+              items={PROFILE_TABS}
+              activeKey={activeTab}
+              onChange={setActiveTab}
+              label="Phim của thành viên"
+              borderBottom
+              tabClassName="h-11 text-label-caps"
+            />
 
             {activeTab === 'common' &&
               (myMoviesError ? (
@@ -376,15 +353,15 @@ function MemberProfilePage() {
                   </div>
                   {visibleCommonCount < commonMovies.length && (
                     <div className="flex justify-center pt-2">
-                      <button
-                        type="button"
+                      <Button
+                        variant="secondary"
+                        size="md"
                         onClick={() =>
                           setVisibleCommonCount((current) => current + COMMON_MOVIES_INITIAL)
                         }
-                        className="px-5 py-2.5 rounded-control border border-border bg-surface text-body font-semibold text-text-primary hover:border-primary/50 hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                       >
                         Xem thêm
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

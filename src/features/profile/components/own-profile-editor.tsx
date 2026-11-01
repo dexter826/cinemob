@@ -283,18 +283,19 @@ function OwnProfileEditor({
               </div>
 
               {isEditing && (
-                <button
+                <IconButton
                   ref={avatarMenuButtonRef}
-                  type="button"
-                  onClick={() => setIsAvatarMenuOpen((prev) => !prev)}
+                  variant="primary"
+                  size="sm"
+                  label="Tùy chọn ảnh đại diện"
                   disabled={crop.isBusy}
-                  aria-label="Tùy chọn ảnh đại diện"
                   aria-haspopup="menu"
                   aria-expanded={isAvatarMenuOpen}
-                  className="absolute bottom-0 right-0 z-10 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-ring focus-visible:outline-none"
+                  onClick={() => setIsAvatarMenuOpen((prev) => !prev)}
+                  className="absolute bottom-0 right-0 z-10 w-9 h-9 !rounded-full"
                 >
                   <Pencil size={15} strokeWidth={1.5} aria-hidden="true" />
-                </button>
+                </IconButton>
               )}
               {isEditing && (
                 <AnimatePresence>

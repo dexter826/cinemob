@@ -2,6 +2,7 @@ import LoadingStatus from '@/shared/components/ui/loading-status';
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import Chip from '@/shared/components/ui/chip';
+import { TextArea } from '@/shared/components/ui';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useEffect, useRef, useState } from 'react';
 
@@ -469,15 +470,16 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     />
                     Cảm nhận
                   </label>
-                  <textarea
+                  <TextArea
                     id="add-movie-review"
                     name="movie-review"
                     rows={4}
                     autoComplete="off"
                     value={formData.review}
                     onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                    className="w-full border border-border rounded-card px-4 py-3 text-body font-medium text-text-primary placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors resize-none"
                     placeholder="Chia sẻ cảm nhận của bạn về phim…"
+                    variant="boxed"
+                    textareaClassName="rounded-card px-4 py-3 font-medium placeholder:text-text-muted"
                   />
                 </div>
               )}

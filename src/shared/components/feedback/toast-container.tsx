@@ -3,7 +3,7 @@ import { CheckCircle, AlertCircle, Info, X, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MOTION_DURATION, MOTION_EASING } from '@/constants/animations';
 import useToastStore from '../../stores/toast-store';
-import { IconButton } from '../ui/icon-button';
+import { Button, IconButton } from '@/shared/components/ui';
 
 const toastTransition = { duration: MOTION_DURATION.medium, ease: MOTION_EASING.enter };
 
@@ -87,16 +87,17 @@ function ToastList({
               {toast.message}
             </span>
             {toast.action && (
-              <button
-                type="button"
+              <Button
+                variant="link"
+                size="sm"
                 onClick={() => {
                   toast.action?.onAction();
                   removeToast(toast.id);
                 }}
-                className="text-body-sm font-bold text-primary hover:underline mr-2 shrink-0 cursor-pointer"
+                className="mr-2 shrink-0 font-bold"
               >
                 {toast.action.label}
-              </button>
+              </Button>
             )}
             <IconButton label="Đóng thông báo" size="sm" onClick={() => removeToast(toast.id)}>
               <X size={14} strokeWidth={1.5} aria-hidden="true" />

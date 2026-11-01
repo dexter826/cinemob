@@ -1,7 +1,6 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import Skeleton from '@/shared/components/ui/skeleton';
 import { ActiveTab } from '../hooks/use-dashboard-filters';
 import { MOVIE_STATUS_TAB_LABEL } from '@/constants/movie-status';
+import { Tabs, type TabItem } from '@/shared/components/ui';
 
 interface DashboardTabsProps {
   activeTab: ActiveTab;
@@ -12,12 +11,6 @@ interface DashboardTabsProps {
   loading?: boolean;
 }
 
-const TABS: { key: ActiveTab; label: string }[] = [
-  { key: 'history', label: MOVIE_STATUS_TAB_LABEL.history },
-  { key: 'watchlist', label: MOVIE_STATUS_TAB_LABEL.watchlist },
-  { key: 'dropped', label: MOVIE_STATUS_TAB_LABEL.dropped },
-];
-
 function DashboardTabs({
   activeTab,
   onTabChange,
@@ -26,47 +19,43 @@ function DashboardTabs({
   droppedCount,
   loading = false,
 }: DashboardTabsProps) {
-  const reducedMotion = useReducedMotion() ?? false;
   const counts: Record<ActiveTab, number> = {
     history: historyCount,
     watchlist: watchlistCount,
     dropped: droppedCount,
   };
+
+  const items: TabItem<ActiveTab>[] = [
+    {
+      key: 'history',
+      label: MOVIE_STATUS_TAB_LABEL.history,
+      count: loading ? undefined : String(counts.history).padStart(2, '0'),
+      loadingCount: loading,
+    },
+    {
+      key: 'watchlist',
+      label: MOVIE_STATUS_TAB_LABEL.watchlist,
+      count: loading ? undefined : String(counts.watchlist).padStart(2, '0'),
+      loadingCount: loading,
+    },
+    {
+      key: 'dropped',
+      label: MOVIE_STATUS_TAB_LABEL.dropped,
+      count: loading ? undefined : String(counts.dropped).padStart(2, '0'),
+      loadingCount: loading,
+    },
+  ];
+
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-      <div role="tablist" aria-label="Trạng thái xem phim" className="flex items-center">
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => onTabChange(tab.key)}
-              className={`relative flex items-center h-12 px-3.5 text-body-sm font-bold uppercase tracking-[0.08em] transition-colors cursor-pointer ${
-                isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {tab.label}
-              <span className={`ml-1.5 tabular-nums ${isActive ? 'text-primary' : 'opacity-60'}`}>
-                {loading ? (
-                  <Skeleton as="span" className="inline-block h-3 w-5 align-middle" />
-                ) : (
-                  String(counts[tab.key]).padStart(2, '0')
-                )}
-              </span>
-              {isActive && (
-                <motion.span
-                  layoutId={reducedMotion ? undefined : 'dashboard-tab-underline'}
-                  className="absolute inset-x-3 bottom-[-1px] h-0.5 bg-primary"
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      <Tabs
+        items={items}
+        activeKey={activeTab}
+        onChange={onTabChange}
+        label="Trạng thái xem phim"
+        layoutId="dashboard-tab-underline"
+        tabClassName="h-12 text-body-sm font-bold uppercase tracking-[0.08em]"
+      />
     </div>
   );
 }

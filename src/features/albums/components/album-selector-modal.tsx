@@ -15,6 +15,7 @@ import { MESSAGES } from '@/constants/messages';
 import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
+import { TextField } from '@/shared/components/ui';
 
 interface AlbumSelectorModalProps {
   isOpen: boolean;
@@ -128,13 +129,11 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           <div className="mb-6 p-5 border border-border rounded-card">
             <h3 className="text-body font-semibold text-text-primary mb-3">Tạo album mới</h3>
             <div className="space-y-4">
-              <label htmlFor="album-selector-new-name" className="sr-only">
-                Tên album mới
-              </label>
-              <input
+              <TextField
+                ref={newAlbumInputRef}
                 id="album-selector-new-name"
                 name="album-name"
-                type="text"
+                aria-label="Tên album mới"
                 placeholder="Nhập tên album…"
                 value={newAlbumName}
                 onChange={(e) => setNewAlbumName(e.target.value)}
@@ -145,8 +144,8 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                   }
                 }}
                 autoComplete="off"
-                className="w-full h-11 px-5 rounded-card border border-border bg-surface text-body font-bold placeholder:text-text-muted focus-visible:border-primary/50 focus-ring transition-colors"
-                ref={newAlbumInputRef}
+                variant="boxed"
+                inputClassName="bg-surface font-bold placeholder:text-text-muted"
               />
               <div className="flex gap-3">
                 <Button
