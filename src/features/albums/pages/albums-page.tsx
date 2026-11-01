@@ -82,11 +82,12 @@ function AlbumsPage() {
   const handleDelete = (album: Album) => {
     if (!album.docId) return;
     showAlert({
-      title: 'Xóa album',
+      title: `Xóa album “${album.name}”?`,
       message:
-        'Bạn có chắc chắn muốn xóa album này? Hành động này không xóa phim đã xem, chỉ xóa album.',
+        'Album này sẽ bị xóa khỏi thư viện của bạn. Các phim trong album vẫn được lưu giữ trong danh sách Đã xem.',
       type: 'danger',
-      confirmText: 'Xóa',
+      confirmText: 'Xóa album',
+      cancelText: 'Giữ lại',
       onConfirm: async () => {
         try {
           await deleteAlbum(album.docId!);
@@ -135,7 +136,7 @@ function AlbumsPage() {
           <EmptyState
             icon={Folder}
             title="Chưa có album nào"
-            description="Tạo album đầu tiên rồi thêm phim đã xem vào."
+            description="Tạo album để nhóm các bộ phim yêu thích theo chủ đề riêng."
             action={{ label: 'Tạo album', onClick: () => setIsCreateOpen(true) }}
           />
         </div>

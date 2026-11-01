@@ -40,7 +40,7 @@ const useAlbumStore = create<AlbumState>((set, get) => ({
       },
       () => {
         if (generation === request)
-          set({ loading: false, error: 'Không tải được danh sách album.' });
+          set({ loading: false, error: 'Không tải được danh sách album. Vui lòng thử lại sau.' });
       },
     );
   },

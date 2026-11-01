@@ -168,7 +168,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
           <button
             type="button"
             onClick={() => setShowCreateForm(true)}
-            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-border hover:border-primary/60 transition-colors text-left cursor-pointer"
+            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-border hover:border-primary/60 transition-colors text-left cursor-pointer focus-ring focus-visible:outline-none"
           >
             <span className="flex items-center gap-4">
               <span
@@ -229,8 +229,8 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                 type="button"
                 onClick={() => handleAddToAlbum(album)}
                 disabled={addingToAlbum === album.docId}
-                aria-label={`Thêm phim vào album ${album.name}`}
-                className="w-full p-4 rounded-dialog border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left cursor-pointer"
+                aria-label={`Thêm phim vào album “${album.name}”`}
+                className="w-full p-4 rounded-dialog border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left cursor-pointer focus-ring focus-visible:outline-none"
               >
                 <span className="flex items-center gap-4">
                   <span

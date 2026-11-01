@@ -93,11 +93,12 @@ function AlbumDetailPage() {
                 type="button"
                 disabled={loading || !album}
                 onClick={() => setManagingMovies((v) => !v)}
+                aria-expanded={managingMovies}
                 aria-label={
                   managingMovies ? 'Đóng chế độ thêm phim' : 'Mở chế độ thêm phim vào album'
                 }
                 className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer
+                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none
                 ${
                   managingMovies
                     ? 'bg-primary border-primary text-on-primary'
@@ -113,9 +114,10 @@ function AlbumDetailPage() {
                 type="button"
                 disabled={loading || !album}
                 onClick={() => setEditing((v) => !v)}
+                aria-expanded={editing}
                 aria-label={editing ? 'Hủy chỉnh sửa tên' : 'Chỉnh sửa tên album'}
                 className={`
-                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer
+                inline-flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none
                 ${
                   editing
                     ? 'bg-primary border-primary text-on-primary'
@@ -162,14 +164,14 @@ function AlbumDetailPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-control sm:rounded-card text-body-sm sm:text-body font-bold text-text-secondary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-body-sm sm:text-body bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer"
+                  className="flex-1 sm:flex-none px-6 py-3 rounded-control sm:rounded-card text-body-sm sm:text-body bg-primary text-on-primary font-bold disabled:opacity-40 transition-colors whitespace-nowrap cursor-pointer focus-ring focus-visible:outline-none"
                 >
                   {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
                 </button>
@@ -204,7 +206,7 @@ function AlbumDetailPage() {
             {moviesError ? (
               <ErrorState
                 title="Không tải được danh sách phim"
-                description="Vui lòng thử lại."
+                description="Vui lòng thử lại để tải danh sách phim trong album."
                 retry={{ label: 'Thử lại', onClick: retryMovies }}
               />
             ) : shouldShowSkeleton ? (
@@ -255,9 +257,9 @@ function AlbumDetailPage() {
                         onClick={() => handleRemoveMovie(movie)}
                         disabled={pendingMovieIds.has(movie.docId!)}
                         aria-busy={pendingMovieIds.has(movie.docId!)}
-                        aria-label={`Bỏ ${getMainTitle(movie)} khỏi album`}
-                        title="Bỏ khỏi album"
-                        className="min-w-10 min-h-10 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer"
+                        aria-label={`Gỡ “${getMainTitle(movie)}” khỏi album`}
+                        title="Gỡ khỏi album"
+                        className="min-w-10 min-h-10 flex items-center justify-center bg-black/60 hover:bg-danger text-white hover:text-on-danger rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                       >
                         {pendingMovieIds.has(movie.docId!) ? (
                           <span className="text-micro-caps normal-case">Đang gỡ…</span>
@@ -282,8 +284,8 @@ function AlbumDetailPage() {
                   variant="underline"
                   value={searchQuery}
                   onChange={setSearchQuery}
-                  placeholder="Tìm phim trong lịch sử…"
-                  label="Tìm phim trong lịch sử để thêm vào album"
+                  placeholder="Tìm phim đã xem…"
+                  label="Tìm phim đã xem để thêm vào album"
                   className="flex-1 md:w-80"
                 />
                 <span className="text-label-caps normal-case text-text-secondary whitespace-nowrap tabular-nums">
@@ -302,7 +304,8 @@ function AlbumDetailPage() {
               <EmptyState
                 icon={SearchIcon}
                 title="Không tìm thấy phim"
-                description={`Không tìm thấy phim phù hợp với từ khóa “${searchQuery}”`}
+                description={`Không tìm thấy phim nào khớp với từ khóa “${searchQuery}”.`}
+                action={{ label: 'Xóa tìm kiếm', onClick: () => setSearchQuery('') }}
                 className="py-10"
               />
             ) : (
@@ -317,7 +320,7 @@ function AlbumDetailPage() {
                       mediaType={movie.media_type}
                       rating={movie.rating}
                       selectable
-                      ariaLabel={`Thêm ${getMainTitle(movie)} vào album`}
+                      ariaLabel={`Thêm “${getMainTitle(movie)}” vào album`}
                       onClick={
                         pendingMovieIds.has(movie.docId!) ? undefined : () => handleAddMovie(movie)
                       }

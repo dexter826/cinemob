@@ -80,7 +80,7 @@ export function useAlbumDetail(albumId?: string) {
       () => {
         if (cancelled) return;
         setLoadedScope(scope);
-        setError('Không tải được album.');
+        setError('Không tải được album. Vui lòng thử lại sau.');
         setLoading(false);
         pending.current.clear();
         setPendingMovieIds(new Set());
@@ -164,12 +164,12 @@ export function useAlbumDetail(albumId?: string) {
       operation.written = true;
       reconcile();
       if (remove)
-        showToast(`Đã bỏ "${getMainTitle(movie)}" khỏi album`, 'info', UNDO_REMOVE_MS, {
+        showToast(`Đã gỡ “${getMainTitle(movie)}” khỏi album`, 'info', UNDO_REMOVE_MS, {
           label: 'Hoàn tác',
           onAction: () => {
             if (currentScope.current !== scope) return;
             addMovieToAlbum(albumDocId, id).catch(() =>
-              showToast('Không thể hoàn tác, vui lòng thử lại', 'error'),
+              showToast('Không thể hoàn tác. Vui lòng thử lại sau.', 'error'),
             );
           },
         });
