@@ -29,7 +29,7 @@ export const useTrendingStore = create<TrendingState>((set, get) => ({
     } catch (e) {
       console.error('Failed to fetch trending movies:', e);
       if (requestId === trendingRequestId) {
-        set({ trendingError: 'Không cập nhật được phim thịnh hành.' });
+        set({ trendingError: 'Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.' });
       }
     } finally {
       if (requestId === trendingRequestId) {

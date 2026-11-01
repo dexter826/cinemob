@@ -108,7 +108,7 @@ function PersonDetailPage() {
         {error ? (
           <ErrorState
             title={error}
-            description="Vui lòng thử lại."
+            description="Vui lòng thử lại để tải thông tin nghệ sĩ."
             retry={{ label: 'Thử lại', onClick: retry }}
           />
         ) : shouldShowSkeleton ? (
@@ -285,7 +285,8 @@ function PersonDetailPage() {
                         {person.biography.length > 200 && (
                           <button
                             onClick={() => setShowFullBio(!showFullBio)}
-                            className="mt-3 text-primary hover:text-primary-hover font-bold text-body-sm flex items-center gap-1 transition-colors cursor-pointer"
+                            aria-expanded={showFullBio}
+                            className="mt-3 text-primary hover:text-primary-hover font-bold text-body-sm flex items-center gap-1 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
                           >
                             {showFullBio ? (
                               <>

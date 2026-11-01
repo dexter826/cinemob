@@ -31,7 +31,7 @@ const useRandomSuggestionsStore = create<RandomSuggestionsState>((set, get) => (
     } catch (error) {
       console.error('Failed to fetch random suggestions:', error);
       if (requestId === randomMoviesRequestId) {
-        set({ error: 'Không tải được đề xuất.', hasLoaded: true });
+        set({ error: 'Không tải được danh sách đề xuất. Vui lòng thử lại sau.', hasLoaded: true });
       }
     } finally {
       if (requestId === randomMoviesRequestId) {

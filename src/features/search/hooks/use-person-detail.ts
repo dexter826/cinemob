@@ -150,7 +150,7 @@ export function usePersonDetail(personId?: string) {
       .catch((error) => {
         if (controller.signal.aborted || sequence !== requestSequence.current) return;
         console.error('Failed to fetch person data:', error);
-        setError('Không thể tải thông tin người này');
+        setError('Không thể tải thông tin nghệ sĩ. Vui lòng thử lại sau.');
         setPerson(null);
       })
       .finally(() => {

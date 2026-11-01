@@ -108,7 +108,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                   )}
                 </IconButton>
               )}
-              <IconButton label="Đóng chọn phim ngẫu nhiên" onClick={onClose} variant="ghost">
+              <IconButton label="Đóng hộp thoại chọn phim ngẫu nhiên" onClick={onClose} variant="ghost">
                 <span aria-hidden="true" className="text-title-md leading-none">
                   ×
                 </span>
@@ -139,7 +139,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
               <EmptyState
                 icon={Dice5}
                 title="Không tìm thấy phim"
-                description="Không có phim sẽ xem và không tải được danh sách thịnh hành."
+                description="Danh sách Sẽ xem đang trống và không thể tải phim thịnh hành."
                 compact
               />
             ) : (
@@ -147,7 +147,9 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                 leftSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, -1), poolType)}
                 centerSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 0), poolType)}
                 rightSrc={getPoolPoster(getWheelMovie(activePool, currentIndex, 1), poolType)}
-                poolLabel={poolType === 'watchlist' ? 'Từ watchlist của bạn' : 'Phim thịnh hành'}
+                poolLabel={
+                  poolType === 'watchlist' ? 'Từ danh sách Sẽ xem của bạn' : 'Phim thịnh hành'
+                }
                 title={title}
                 isShuffling={isShuffling}
                 showTitle={!isShuffling && currentIndex !== null}
@@ -164,7 +166,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
               leadingIcon={<Dice5 size={18} strokeWidth={1.5} aria-hidden="true" />}
               className="flex-1"
             >
-              Xoay lại
+              Chọn lại
             </Button>
             <Button
               variant="primary"

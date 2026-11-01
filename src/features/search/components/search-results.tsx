@@ -61,8 +61,8 @@ function SearchResults({
   if (resultsError) {
     return (
       <ErrorState
-        title="Không tải được nội dung từ TMDB"
-        description="Kiểm tra kết nối mạng rồi thử tải lại."
+        title="Không tải được kết quả tìm kiếm"
+        description="Không thể kết nối đến máy chủ phim. Vui lòng kiểm tra mạng và thử lại."
         retry={retrySearch ? { label: 'Thử lại', onClick: retrySearch } : undefined}
         className="py-12"
       />
@@ -91,13 +91,14 @@ function SearchResults({
           <EmptyState
             icon={Search}
             title="Không tìm thấy kết quả"
-            description={`Không có phim nào khớp “${query}”. Thử từ khóa khác.`}
+            description={`Không tìm thấy phim hoặc series nào khớp với “${query}”. Vui lòng thử từ khóa khác.`}
+            action={{ label: 'Xóa tìm kiếm', onClick: onClear }}
           />
         ) : (
           <EmptyState
             icon={Search}
-            title="Không có phim khớp bộ lọc"
-            description="Thử thay đổi bộ lọc để tìm phim khác."
+            title="Không tìm thấy phim phù hợp"
+            description="Thử điều chỉnh hoặc xóa bớt tiêu chí lọc để xem thêm kết quả."
             action={{ label: 'Xóa bộ lọc', onClick: onClear }}
           />
         ))}

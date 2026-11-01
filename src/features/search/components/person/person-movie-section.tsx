@@ -81,8 +81,9 @@ export function PersonMovieSection({
               e.stopPropagation();
               onShowFiltersChange(!showFilters);
             }}
+            aria-expanded={showFilters}
             aria-label={showFilters ? 'Đóng bộ lọc nâng cao' : 'Mở bộ lọc nâng cao'}
-            className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-primary'}`}
+            className={`w-11 h-11 shrink-0 flex items-center justify-center rounded-control border transition-colors cursor-pointer focus-ring focus-visible:outline-none ${showFilters ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-border text-text-secondary hover:border-primary/50 hover:text-primary'}`}
           >
             <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
           </button>
@@ -99,19 +100,19 @@ export function PersonMovieSection({
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Calendar size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Năm</span>
                   </button>
                   <button
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
                   >
                     <Type size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Tên</span>
                   </button>
                   <button
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto focus-ring focus-visible:outline-none"
                   >
                     {sortOrder === 'asc' ? (
                       <ArrowUp size={14} strokeWidth={1.5} aria-hidden="true" />
@@ -190,8 +191,13 @@ export function PersonMovieSection({
           title="Không tìm thấy phim"
           description={
             searchQuery
-              ? `Không tìm thấy phim nào của nghệ sĩ này phù hợp với “${searchQuery}”`
-              : 'Nghệ sĩ này chưa có thông tin về các bộ phim tham gia.'
+              ? `Không tìm thấy phim nào của nghệ sĩ này khớp với “${searchQuery}”.`
+              : 'Nghệ sĩ này chưa có thông tin về phim tham gia.'
+          }
+          action={
+            searchQuery
+              ? { label: 'Xóa tìm kiếm', onClick: () => onSearchQueryChange('') }
+              : undefined
           }
         />
       )}

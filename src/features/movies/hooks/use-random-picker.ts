@@ -89,7 +89,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
           if (!controller.signal.aborted) setTrending(results);
         })
         .catch(() => {
-          if (!controller.signal.aborted) setPoolError('Không tải được phim thịnh hành.');
+          if (!controller.signal.aborted)
+            setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
         })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoadingPool(false);

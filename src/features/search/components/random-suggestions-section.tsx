@@ -49,7 +49,7 @@ function RandomSuggestionsSection({
           aria-label={isLoading ? 'Đang cập nhật gợi ý…' : 'Làm mới gợi ý'}
           aria-busy={isLoading}
           title={isLoading ? 'Đang cập nhật gợi ý…' : 'Làm mới gợi ý'}
-          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-body-sm sm:text-body bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0"
+          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-body-sm sm:text-body bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0 focus-ring focus-visible:outline-none"
         >
           {isLoading ? (
             <Spinner size={16} className="text-current" />
@@ -85,7 +85,7 @@ function RandomSuggestionsSection({
         <ErrorState
           compact
           title={error}
-          description="Vui lòng thử lại."
+          description="Vui lòng thử lại để tải danh sách đề xuất."
           retry={{ label: 'Thử lại', onClick: onRefresh }}
         />
       ) : movies.length === 0 ? (
@@ -93,7 +93,7 @@ function RandomSuggestionsSection({
           compact
           icon={Dice5}
           title="Chưa có đề xuất"
-          description="Bấm Làm mới để bốc danh sách khác."
+          description="Nhấn Làm mới để nhận gợi ý phim ngẫu nhiên."
         />
       ) : (
         <MoviePosterGrid movies={movies} getMovieStatus={getMovieStatus} onSelect={onSelectMovie} />

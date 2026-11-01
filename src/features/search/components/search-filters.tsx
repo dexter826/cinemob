@@ -94,7 +94,7 @@ function SearchFilters({
               type="button"
               onClick={handleSearch}
               aria-label="Tìm kiếm phim"
-              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-body font-bold cursor-pointer"
+              className="bg-primary text-on-primary px-4 py-2 sm:px-5 sm:py-2 rounded-control hover:bg-primary/90 transition-colors text-body font-bold cursor-pointer focus-ring focus-visible:outline-none"
             >
               Tìm
             </button>
@@ -126,7 +126,7 @@ function SearchFilters({
                       role="option"
                       aria-selected={false}
                       onClick={() => handleSelectMovie(movie)}
-                      aria-label={`Chọn phim ${title}`}
+                      aria-label={`Chọn phim “${title}”`}
                       className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left group/item cursor-pointer"
                     >
                       <div className="w-10 h-14 rounded-poster overflow-hidden bg-black/5 shrink-0 border border-border-default dark:border-white/5">
@@ -186,7 +186,7 @@ function SearchFilters({
                 })}
                 <button
                   onClick={handleSearch}
-                  className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-body-sm font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-4 mt-1 border-t border-border text-primary text-body-sm font-bold hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 cursor-pointer focus-ring focus-visible:outline-none"
                 >
                   <Search size={14} strokeWidth={1.5} aria-hidden="true" />
                   Xem tất cả kết quả cho “{filters.query}”
@@ -258,11 +258,11 @@ function SearchFilters({
         <div className="flex justify-end">
           <button
             onClick={handleClear}
-            aria-label="Đặt lại toàn bộ bộ lọc"
-            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-body-sm font-bold text-text-secondary cursor-pointer border border-border"
+            aria-label="Xóa bộ lọc"
+            className="flex items-center justify-center gap-2 px-3 sm:px-4 h-11 rounded-control hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-body-sm font-bold text-text-secondary cursor-pointer border border-border focus-ring focus-visible:outline-none"
           >
             <FilterX size={14} strokeWidth={1.5} aria-hidden="true" />
-            <span className="hidden sm:inline">Đặt lại</span>
+            <span className="hidden sm:inline">Xóa bộ lọc</span>
           </button>
         </div>
       )}

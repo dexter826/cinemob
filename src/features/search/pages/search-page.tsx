@@ -85,7 +85,7 @@ function SearchPage() {
         <ErrorState
           compact
           title={trendingError}
-          description="Vui lòng thử lại."
+          description="Vui lòng thử lại để cập nhật danh sách phim thịnh hành."
           retry={{
             label: 'Thử lại',
             onClick: () => {
