@@ -136,3 +136,5 @@ Giọng điệu tổng thể duy trì tính chuyên nghiệp, điềm đạm và
 | Viết hoa tiêu đề theo chuẩn Sentence Case (chỉ viết hoa chữ cái đầu câu). | Không viết hoa chữ cái đầu của mọi từ (Title Case) trên tiêu đề tiếng Việt.             |
 | Cung cấp cơ chế hoàn tác (Undo) cho các thao tác có thể khôi phục được.   | Không lạm dụng hộp thoại xác nhận (modal dialog) làm đứt gãy mạch thao tác thường nhật. |
 | Đồng nhất một thuật ngữ duy nhất cho một khái niệm trên toàn ứng dụng.    | Không thay đổi từ đồng nghĩa tùy tiện giữa các màn hình gây hiểu nhầm cho người dùng.   |
+| Thiết kế nội dung thuần túy dưới góc nhìn người dùng cuối (end-user), tập trung vào mục tiêu và giá trị sử dụng của màn hình. | Không để lọt ghi chú nội bộ, hành trình cập nhật/thay đổi, hoặc ngữ cảnh trao đổi cá nhân từ cuộc trò chuyện vào câu chữ giao diện. |
+
