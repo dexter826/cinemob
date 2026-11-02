@@ -32,7 +32,7 @@
 
 ## Giới thiệu
 
-**CineMOB** là ứng dụng web quản lý danh mục phim ảnh và TV series, được xây dựng bằng React 19 và TypeScript. Ứng dụng cung cấp các công cụ theo dõi tiến độ xem phim, tra cứu lịch phát sóng, thống kê số liệu cá nhân và hỗ trợ cài đặt trên thiết bị qua chuẩn PWA.
+**CineMOB** là ứng dụng web quản lý danh mục phim ảnh và TV series, xây dựng trên nền tảng React 19 và TypeScript. Ứng dụng cung cấp các công cụ theo dõi tiến độ xem phim, tra cứu lịch phát sóng, thống kê số liệu cá nhân và hỗ trợ cài đặt trên thiết bị qua chuẩn PWA.
 
 <div align="center">
   <img src="docs/images/mockup.png" alt="CineMOB Interface Mockup" width="800" />
@@ -41,11 +41,11 @@
 ### Tính năng chính
 
 - **Tra cứu thông tin:** Tìm kiếm dữ liệu phim lẻ, TV series, diễn viên, đạo diễn và trailer từ TMDB.
-- **Quản lý danh sách xem:** Phân loại phim theo trạng thái (Đang xem, Đã xem, Muốn xem, Bỏ dở), cập nhật tiến độ xem từng mùa/tập và tổ chức phim theo các album.
+- **Quản lý danh sách xem:** Phân loại phim theo trạng thái (Đang xem, Đã xem, Muốn xem, Bỏ dở), cập nhật tiến độ xem theo từng mùa và tập, tổ chức phim theo các album.
 - **Lịch phát sóng & Thông báo:** Theo dõi lịch chiếu tập mới theo mốc thời gian và hỗ trợ nhận thông báo đẩy qua Web Push.
 - **Gợi ý phim:** Đề xuất phim dựa trên thể loại quan tâm và hỗ trợ công cụ chọn phim ngẫu nhiên.
 - **Thống kê:** Trực quan hóa dữ liệu lịch sử xem (thời lượng, quốc gia, thể loại) bằng biểu đồ Recharts.
-- **Hỗ trợ PWA:** Cho phép cài đặt ứng dụng trên thiết bị (iOS, Android, máy tính) và lưu trữ bộ nhớ đệm ngoại tuyến.
+- **Hỗ trợ PWA:** Cài đặt trực tiếp trên thiết bị (iOS, Android, máy tính) và lưu bộ nhớ đệm để sử dụng ngoại tuyến.
 
 ### Công nghệ sử dụng
 
@@ -92,9 +92,6 @@
    - `VITE_CLOUDINARY_*`: Cấu hình Cloudinary dùng cho upload ảnh đại diện.
    - `VITE_VAPID_PUBLIC_KEY`: Khóa công khai Web Push (tùy chọn).
 
-   > [!NOTE]
-   > Các biến có tiền tố `VITE_` được nhúng trực tiếp vào mã nguồn client-side trên trình duyệt khi đóng gói. Không đưa các khóa bí mật mang quyền quản trị vào tệp này.
-
 ---
 
 ## Sử dụng
@@ -105,7 +102,7 @@
 npm run dev
 ```
 
-Ứng dụng khởi chạy tại địa chỉ: `http://localhost:3000` (cấu hình trong [vite.config.ts](vite.config.ts)).
+Ứng dụng chạy tại: `http://localhost:3000`.
 
 ### Danh sách lệnh
 
@@ -117,6 +114,7 @@ npm run dev
 | `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất tệp.                       |
 | `npm run lint`         | Chạy ESLint kiểm tra mã nguồn trong `src/`.                            |
 | `npm test`             | Chạy bộ kiểm thử cho script gửi thông báo.                             |
+| `npm run format`       | Tự động định dạng lại toàn bộ mã nguồn bằng Prettier.                  |
 | `npm run format:check` | Kiểm tra định dạng mã nguồn bằng Prettier.                             |
 
 ### Quy trình kiểm tra chất lượng
@@ -136,7 +134,7 @@ npm run build
 ## Cấu trúc dự án
 
 ```text
-├── .github/              # Workflow GitHub Actions (thông báo tập mới định kỳ)
+├── .github/              # Quy trình GitHub Actions (CI, deploy và thông báo tập mới)
 ├── docs/                 # Tài liệu dự án và hình ảnh minh họa
 ├── public/               # Tài nguyên tĩnh phục vụ trực tiếp (manifest, icon, lottie)
 ├── src/                  # Toàn bộ mã nguồn ứng dụng
@@ -162,5 +160,5 @@ npm run build
 
 ## Nguồn dữ liệu & Giấy phép
 
-- Dữ liệu phim và hình ảnh được cung cấp bởi [The Movie Database (TMDB)](https://www.themoviedb.org/).
-- Dự án được phân phối theo giấy phép [MIT](LICENSE).
+- Dữ liệu phim và hình ảnh do [The Movie Database (TMDB)](https://www.themoviedb.org/) cung cấp.
+- Mã nguồn phát hành theo [Giấy phép MIT](LICENSE).
