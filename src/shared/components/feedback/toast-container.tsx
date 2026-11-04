@@ -67,14 +67,14 @@ function ToastList({
           <motion.div
             key={toast.id}
             layout={!reducedMotion}
-            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
             animate={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={
               reducedMotion
                 ? { opacity: 0 }
                 : {
                     opacity: 0,
-                    y: 8,
+                    y: -8,
                     transition: { duration: MOTION_DURATION.base, ease: MOTION_EASING.exit },
                   }
             }
@@ -128,7 +128,7 @@ function ToastContainer() {
   return (
     <div
       ref={containerRef}
-      className="fixed z-100 left-1/2 -translate-x-1/2 bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] w-full max-w-[90vw] md:left-auto md:right-6 md:bottom-6 md:translate-x-0 md:max-w-md flex flex-col gap-3 items-center pointer-events-none"
+      className="fixed z-100 left-1/2 -translate-x-1/2 top-[calc(3.5rem+0.75rem)] w-full max-w-[90vw] md:left-auto md:right-6 md:top-[calc(3.5rem+1rem)] md:translate-x-0 md:max-w-md flex flex-col gap-3 items-center pointer-events-none"
     >
       <ToastList types={['success', 'info']} role="status" ariaLive="polite" />
       <ToastList types={['warning', 'error']} role="alert" ariaLive="assertive" />
