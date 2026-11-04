@@ -384,12 +384,12 @@ Hệ thống bố cục được xây dựng theo tỷ lệ chuẩn 4px/8px kế
 
 ### Lưới hiển thị và Điểm ngắt (Responsive Breakpoints)
 
-| Breakpoint | Chiều rộng | Bố cục và Hành vi hiển thị                                                                                                                                                             |
-| :--------- | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Breakpoint | Chiều rộng | Bố cục và Hành vi hiển thị                                                                                                                                                                                             |
+| :--------- | :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Mobile** | < 640px    | Lề trang 16px; thanh điều hướng đáy (Bottom Navigation) hiển thị; thông báo nổi canh giữa phía trên, nằm dưới thanh điều hướng đỉnh; hộp thoại mở rộng toàn màn hình (`fullscreen-mobile`); phân trang dạng ô nhập số. |
-| **sm**     | ≥ 640px    | `display-xl` mở rộng 36px, `display-stat` mở rộng 60px; hộp thoại trở về khung trung tâm màn hình.                                                                                     |
+| **sm**     | ≥ 640px    | `display-xl` mở rộng 36px, `display-stat` mở rộng 60px; hộp thoại trở về khung trung tâm màn hình.                                                                                                                     |
 | **md**     | ≥ 768px    | Lề trang 24px; thanh điều hướng đáy ẩn, chuyển sang thanh điều hướng đỉnh và chân trang máy tính; phân trang hiển thị dạng danh sách số; thông báo nổi chuyển về góc trên bên phải, nằm dưới thanh điều hướng đỉnh.    |
-| **lg**     | ≥ 1024px   | Khung chứa nội dung giới hạn tối đa tại 1152px; `display-xl` mở rộng 48px.                                                                                                             |
+| **lg**     | ≥ 1024px   | Khung chứa nội dung giới hạn tối đa tại 1152px; `display-xl` mở rộng 48px.                                                                                                                                             |
 
 ---
 
