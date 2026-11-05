@@ -49,5 +49,3 @@ Thumbs.db
 .worktrees/
 .superpowers/
 
-# Agent local (không share, trước đây nằm rải rác ở .git/info/exclude)
-/.agents/
