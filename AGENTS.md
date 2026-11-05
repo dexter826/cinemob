@@ -77,3 +77,17 @@ Khi thao tác với giao diện hoặc văn bản:
 ---
 
 **Các hướng dẫn này hiệu quả khi:** diff ít thay đổi thừa, ít phải viết lại vì làm rối, và câu hỏi làm rõ xuất hiện trước khi implement chứ không phải sau khi sai.
+
+## Agent skills
+
+### Issue tracker (Theo dõi công việc)
+
+Theo dõi các issue và spec dưới dạng tệp markdown cục bộ trong `.scratch/`. Chi tiết xem tại `docs/agents/issue-tracker.md`.
+
+### Triage labels (Nhãn phân loại)
+
+Các vai trò phân loại chuẩn (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Chi tiết xem tại `docs/agents/triage-labels.md`.
+
+### Domain docs (Tài liệu nghiệp vụ)
+
+Cấu trúc ngữ cảnh đơn / single-context (`GLOSSARY.md` và `docs/adr/` tại thư mục gốc). Chi tiết xem tại `docs/agents/domain.md`.
