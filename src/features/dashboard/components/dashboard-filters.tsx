@@ -237,9 +237,8 @@ function DashboardFilters({
           aria-label="Bộ lọc"
           className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border flex flex-col gap-5 w-80 max-w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto overscroll-contain"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-label-caps font-semibold text-text-secondary">Bộ lọc</span>
-            {chipItems.length > 0 && (
+          {chipItems.length > 0 && (
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={clearFilters}
@@ -247,8 +246,8 @@ function DashboardFilters({
               >
                 Xóa bộ lọc
               </button>
-            )}
-          </div>
+            </div>
+          )}
           <FilterControls
             filters={filters}
             updateFilter={updateFilter}
