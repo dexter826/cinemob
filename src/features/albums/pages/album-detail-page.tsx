@@ -1,11 +1,12 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import ErrorState from '@/shared/components/ui/error-state';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   Film,
+  Images,
   PlusCircle,
   Edit2,
   Trash2,
@@ -15,6 +16,8 @@ import {
 import PosterCard from '@/features/movies/components/poster-card';
 import { getMainTitle } from '@/features/movies/utils/movie-utils';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+import { useDeleteAlbum } from '../hooks/use-delete-album';
+import AlbumCoverPickerDialog from '../components/album-cover-picker-dialog';
 import Pagination from '@/shared/components/ui/pagination';
 import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
@@ -55,6 +58,8 @@ function AlbumDetailPage() {
     handleAddMovie,
     handleRemoveMovie,
   } = useAlbumDetail(albumId);
+  const { handleDelete: handleDeleteAlbum } = useDeleteAlbum();
+  const [coverPickerOpen, setCoverPickerOpen] = useState(false);
 
   const retryMovies = useMovieStore((state) => state.retry);
   const shouldShowSkeleton = (loading || moviesLoading) && albumMovies.length === 0;
@@ -84,12 +89,21 @@ function AlbumDetailPage() {
           title={album?.name || 'Chi tiết album'}
           description={
             album
-              ? `${album.movieDocIds.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
+              ? `${moviesLoading ? album.movieDocIds.length : albumMovies.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
               : undefined
           }
           className="flex-col sm:flex-row"
           actions={
             <div className="flex items-center justify-end gap-2 sm:gap-3 w-full md:w-auto">
+              <Button
+                variant="secondary"
+                disabled={loading || !album || albumMovies.length === 0}
+                onClick={() => setCoverPickerOpen(true)}
+                aria-label="Chọn ảnh bìa album"
+                leadingIcon={<Images size={18} strokeWidth={1.5} />}
+              >
+                <span className="hidden sm:inline">Sửa bìa</span>
+              </Button>
               <Button
                 variant={managingMovies ? 'primary' : 'secondary'}
                 disabled={loading || !album}
@@ -117,6 +131,20 @@ function AlbumDetailPage() {
                 }
               >
                 <span className="hidden sm:inline">{editing ? 'Hủy' : 'Sửa tên'}</span>
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-danger hover:bg-danger/10"
+                disabled={loading || !album}
+                onClick={() => {
+                  if (!album) return;
+                  handleDeleteAlbum(album);
+                  navigate('/albums');
+                }}
+                aria-label={`Xoá album “${album?.name ?? ''}”`}
+                leadingIcon={<Trash2 size={18} strokeWidth={1.5} />}
+              >
+                <span className="hidden sm:inline">Xoá album</span>
               </Button>
             </div>
           }
@@ -320,6 +348,12 @@ function AlbumDetailPage() {
           </div>
         )}
       </div>
+      <AlbumCoverPickerDialog
+        isOpen={coverPickerOpen}
+        onClose={() => setCoverPickerOpen(false)}
+        album={album}
+        movies={albumMovies}
+      />
     </div>
   );
 }

@@ -27,6 +27,9 @@ const mapDocToAlbum = (docId: string, data: Record<string, unknown>): Album => {
     movieDocIds: Array.isArray(d.movieDocIds)
       ? d.movieDocIds.filter((id): id is string => typeof id === 'string')
       : [],
+    coverMovieDocIds: Array.isArray(d.coverMovieDocIds)
+      ? d.coverMovieDocIds.filter((id): id is string => typeof id === 'string')
+      : [],
     createdAt: (d.createdAt as Album['createdAt']) ?? new Date(),
     updatedAt: d.updatedAt as Album['updatedAt'],
   };

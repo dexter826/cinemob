@@ -4,8 +4,7 @@ import ErrorState from '@/shared/components/ui/error-state';
 import React, { useRef, useState } from 'react';
 import { Plus, Folder } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
-import { Album } from '@/types';
-import { addAlbum, deleteAlbum } from '../services/album-service';
+import { addAlbum } from '../services/album-service';
 import useToastStore from '@/shared/stores/toast-store';
 import { Button, PageHeader } from '@/shared/components/ui';
 import useAlbumStore from '../stores/album-store';
@@ -13,11 +12,11 @@ import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/empty-state';
 import Pagination from '@/shared/components/ui/pagination';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+import { useDeleteAlbum } from '../hooks/use-delete-album';
 import CreateAlbumModal from '../components/create-album-modal';
 import AlbumCard from '../components/album-card';
 
 const ALBUMS_PER_PAGE = 12;
-const UNDO_DELETE_MS = 7000;
 
 function AlbumCardSkeleton() {
   return (
@@ -50,8 +49,7 @@ function AlbumsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const creatingRef = useRef(false);
 
-  const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<string>>(new Set());
-  const deleteTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const { pendingDeleteIds, handleDelete } = useDeleteAlbum();
 
   const visibleAlbums = albums.filter(
     (album) => !album.docId || !pendingDeleteIds.has(album.docId),
@@ -81,43 +79,6 @@ function AlbumsPage() {
     } finally {
       creatingRef.current = false;
     }
-  };
-
-  const handleDelete = (album: Album) => {
-    const docId = album.docId;
-    if (!docId || deleteTimersRef.current.has(docId)) return;
-
-    setPendingDeleteIds((prev) => new Set(prev).add(docId));
-    const timer = setTimeout(async () => {
-      deleteTimersRef.current.delete(docId);
-      try {
-        await deleteAlbum(docId);
-      } catch {
-        setPendingDeleteIds((prev) => {
-          const next = new Set(prev);
-          next.delete(docId);
-          return next;
-        });
-        showToast(MESSAGES.ALBUM.DELETE_ERROR, 'error');
-      }
-    }, UNDO_DELETE_MS);
-    deleteTimersRef.current.set(docId, timer);
-
-    showToast(MESSAGES.ALBUM.DELETE_SUCCESS, 'info', UNDO_DELETE_MS, {
-      label: MESSAGES.MOVIE.UNDO,
-      onAction: () => {
-        const pendingTimer = deleteTimersRef.current.get(docId);
-        if (pendingTimer) {
-          clearTimeout(pendingTimer);
-          deleteTimersRef.current.delete(docId);
-        }
-        setPendingDeleteIds((prev) => {
-          const next = new Set(prev);
-          next.delete(docId);
-          return next;
-        });
-      },
-    });
   };
 
   return (

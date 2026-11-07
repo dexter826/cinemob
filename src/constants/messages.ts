@@ -30,6 +30,7 @@ export const MESSAGES = {
     CREATE_SUCCESS: (name: string) => `Đã tạo album “${name}”`,
     CREATE_ERROR: 'Không tạo được album. Thử lại.',
     UPDATE_SUCCESS: 'Đã cập nhật album',
+    COVER_SAVED: 'Đã cập nhật ảnh bìa album',
     UPDATE_ERROR: 'Không cập nhật được album. Thử lại.',
     DELETE_SUCCESS: 'Đã xóa album',
     DELETE_ERROR: 'Không xóa được album. Thử lại.',

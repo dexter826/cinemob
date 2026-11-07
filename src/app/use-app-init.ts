@@ -57,11 +57,15 @@ export const useAppInit = () => {
       if (!albumId) return;
 
       // Bìa album = tối đa 3 phim đầu tiên theo thứ tự trong album.
-      const covers = (album.movieDocIds || [])
+      const historyMovies = (album.movieDocIds || [])
         .map((docId) => allMovies.find((m) => m.docId === docId))
         .filter((movie): movie is Movie => movie !== undefined)
-        .filter((movie) => (movie.status || 'history') === 'history')
-        .slice(0, 3);
+        .filter((movie) => (movie.status || 'history') === 'history');
+      const byDocId = new Map(historyMovies.map((movie) => [movie.docId, movie]));
+      const manual = (album.coverMovieDocIds || [])
+        .map((docId) => byDocId.get(docId))
+        .filter((movie): movie is Movie => movie !== undefined);
+      const covers = [...manual, ...historyMovies.filter((m) => !manual.includes(m))].slice(0, 3);
 
       updates[albumId] = covers;
       hasUpdates = true;
