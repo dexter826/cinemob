@@ -23,6 +23,7 @@ import PosterCard from '@/features/movies/components/poster-card';
 import { formatDateAny } from '@/shared/utils/date-format';
 import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
+import { MESSAGES } from '@/constants/messages';
 import type { MemberProfile } from '@/types';
 
 const COMMON_MOVIES_INITIAL = 12;
@@ -68,15 +69,15 @@ function MemberProfilePage() {
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      showToast('Đã sao chép liên kết trang cá nhân', 'success');
+      showToast(MESSAGES.COMMON.COPY_LINK_SUCCESS, 'success');
     } catch {
-      showToast('Không thể sao chép liên kết. Vui lòng thử lại sau.', 'error');
+      showToast(MESSAGES.COMMON.COPY_LINK_ERROR, 'error');
     }
   };
 
   const copyLinkButton = (
     <IconButton
-      label="Sao chép liên kết trang cá nhân"
+      label="Sao chép liên kết hồ sơ thành viên"
       variant="secondary"
       size="md"
       onClick={() => void handleCopyLink()}
@@ -174,7 +175,7 @@ function MemberProfilePage() {
     return (
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
-          title="Trang cá nhân"
+          title="Hồ sơ thành viên"
           actions={
             <>
               <IconButton
@@ -212,6 +213,9 @@ function MemberProfilePage() {
             emptyTitle="Chưa có phim nào"
             emptyDescription="Thêm phim vào lịch sử xem."
             emptyAction={{ label: 'Tìm phim để thêm', to: '/search' }}
+            onMovieClick={(movie) =>
+              navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
+            }
           />
         </section>
       </div>

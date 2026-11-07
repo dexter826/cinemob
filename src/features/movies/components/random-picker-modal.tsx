@@ -52,6 +52,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
     reducedMotion,
     isMuted,
     toggleMuted,
+    switchPool,
     handleRespin,
     handleWatchNow,
   } = useRandomPicker({ isOpen, onClose });
@@ -121,6 +122,31 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
           </div>
 
           <div className="relative z-10">
+            {!isLoadingPool && (
+              <div className="mb-4 flex items-center justify-center gap-2" role="group" aria-label="Chọn nguồn quay ngẫu nhiên">
+                {(
+                  [
+                    { key: 'watchlist', label: 'Sẽ xem' },
+                    { key: 'trending', label: 'Thịnh hành' },
+                  ] as const
+                ).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    disabled={isShuffling}
+                    onClick={() => void switchPool(key)}
+                    aria-pressed={poolType === key}
+                    className={`px-4 py-1.5 rounded-full text-body-sm font-bold border transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-ring focus-visible:outline-none ${
+                      poolType === key
+                        ? 'bg-primary text-on-primary border-primary'
+                        : 'bg-surface text-text-secondary border-border hover:border-primary/50 hover:text-primary'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
             {isLoadingPool && !hasPool ? (
               showSkeleton ? (
                 <div aria-busy="true" className="py-10">
@@ -144,6 +170,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
                 icon={Dice5}
                 title="Không tìm thấy phim"
                 description="Danh sách Sẽ xem đang trống và không thể tải phim thịnh hành."
+                action={{ label: 'Thử lại', onClick: retryPool }}
                 compact
               />
             ) : (

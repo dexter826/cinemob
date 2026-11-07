@@ -8,7 +8,6 @@ import { Album } from '@/types';
 import { addAlbum, deleteAlbum } from '../services/album-service';
 import useToastStore from '@/shared/stores/toast-store';
 import { Button, PageHeader } from '@/shared/components/ui';
-import useAlertStore from '@/shared/stores/alert-store';
 import useAlbumStore from '../stores/album-store';
 import { MESSAGES } from '@/constants/messages';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -18,6 +17,7 @@ import CreateAlbumModal from '../components/create-album-modal';
 import AlbumCard from '../components/album-card';
 
 const ALBUMS_PER_PAGE = 12;
+const UNDO_DELETE_MS = 7000;
 
 function AlbumCardSkeleton() {
   return (
@@ -42,7 +42,6 @@ function AlbumCardSkeleton() {
 function AlbumsPage() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
-  const { showAlert } = useAlertStore();
   const { albums, loading, error, retry, albumCoverMovies } = useAlbumStore();
   const shouldShowSkeleton = loading && albums.length === 0;
   const showSkeleton = useDelayedSkeleton(shouldShowSkeleton);
@@ -51,17 +50,20 @@ function AlbumsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const creatingRef = useRef(false);
 
-  const totalPages = Math.ceil(albums.length / ALBUMS_PER_PAGE);
-  // Xóa hết album ở trang cuối → kẹp về trang lớn nhất còn tồn tại.
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<string>>(new Set());
+  const deleteTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  const visibleAlbums = albums.filter((album) => !album.docId || !pendingDeleteIds.has(album.docId));
+
+  const totalPages = Math.ceil(visibleAlbums.length / ALBUMS_PER_PAGE);
   const safePage = Math.min(currentPage, totalPages || 1);
-  const paginatedAlbums = albums.slice(
+  const paginatedAlbums = visibleAlbums.slice(
     (safePage - 1) * ALBUMS_PER_PAGE,
     safePage * ALBUMS_PER_PAGE,
   );
 
   const handleCreate = async (name: string) => {
     if (!user) return;
-    // Ref-guard chống double-submit trong cùng một tick render.
     if (creatingRef.current || !name.trim()) return;
     creatingRef.current = true;
     try {
@@ -80,21 +82,38 @@ function AlbumsPage() {
   };
 
   const handleDelete = (album: Album) => {
-    if (!album.docId) return;
-    showAlert({
-      title: `Xóa album “${album.name}”?`,
-      message:
-        'Album này sẽ bị xóa khỏi thư viện của bạn. Các phim trong album vẫn được lưu giữ trong danh sách Đã xem.',
-      type: 'danger',
-      confirmText: 'Xóa album',
-      cancelText: 'Giữ lại',
-      onConfirm: async () => {
-        try {
-          await deleteAlbum(album.docId!);
-          showToast(MESSAGES.ALBUM.DELETE_SUCCESS, 'success');
-        } catch {
-          showToast(MESSAGES.ALBUM.DELETE_ERROR, 'error');
+    const docId = album.docId;
+    if (!docId || deleteTimersRef.current.has(docId)) return;
+
+    setPendingDeleteIds((prev) => new Set(prev).add(docId));
+    const timer = setTimeout(async () => {
+      deleteTimersRef.current.delete(docId);
+      try {
+        await deleteAlbum(docId);
+      } catch {
+        setPendingDeleteIds((prev) => {
+          const next = new Set(prev);
+          next.delete(docId);
+          return next;
+        });
+        showToast(MESSAGES.ALBUM.DELETE_ERROR, 'error');
+      }
+    }, UNDO_DELETE_MS);
+    deleteTimersRef.current.set(docId, timer);
+
+    showToast(MESSAGES.ALBUM.DELETE_SUCCESS, 'info', UNDO_DELETE_MS, {
+      label: MESSAGES.MOVIE.UNDO,
+      onAction: () => {
+        const pendingTimer = deleteTimersRef.current.get(docId);
+        if (pendingTimer) {
+          clearTimeout(pendingTimer);
+          deleteTimersRef.current.delete(docId);
         }
+        setPendingDeleteIds((prev) => {
+          const next = new Set(prev);
+          next.delete(docId);
+          return next;
+        });
       },
     });
   };

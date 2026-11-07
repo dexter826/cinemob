@@ -106,8 +106,8 @@ function PosterCard({
           aria-label={
             ariaLabel ??
             (mediaType === 'tv'
-              ? `Xem chi tiết phim bộ “${title}”`
-              : `Xem chi tiết phim “${title}”`)
+              ? `Xem chi tiết series “${title}”`
+              : `Xem chi tiết movie “${title}”`)
           }
           className="absolute inset-0 w-full h-full cursor-pointer p-0 text-left"
         >
@@ -177,7 +177,7 @@ function PosterCard({
 
       {review && (
         <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
-          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>
+          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Cảm nhận</Chip>
         </span>
       )}
 

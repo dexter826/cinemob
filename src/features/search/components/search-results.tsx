@@ -19,7 +19,7 @@ interface SearchResultsProps {
   isTrendingLoading: boolean;
   trendingMovies: TMDBMovieResult[];
   filteredResults: TMDBMovieResult[];
-  getMovieStatus: (id: number) => MovieStatus | null;
+  getMovieStatus: (id: number, mediaType?: 'movie' | 'tv') => MovieStatus | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
   resultsError?: boolean;
   retrySearch?: () => void;

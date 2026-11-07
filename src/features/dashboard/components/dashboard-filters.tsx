@@ -147,7 +147,7 @@ function DashboardFilters({
               active={filters.contentType === 'movie'}
               onClick={() => updateFilter('contentType', 'movie')}
             >
-              Phim lẻ
+              Movie
             </CapsButton>
             <CapsButton
               active={filters.contentType === 'tv'}

@@ -3,7 +3,7 @@ import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Film, Star, Globe } from 'lucide-react';
+import { Film, Star, Globe, BarChart3 } from 'lucide-react';
 import { Stat } from '@/shared/components/ui';
 import {
   PieChart,
@@ -236,7 +236,7 @@ function StatsPage() {
                 align="center"
                 label="Tổng nội dung"
                 value={totalMovies}
-                subValue={`${movieCount} phim lẻ, ${tvCount} series`}
+                subValue={`${movieCount} movie, ${tvCount} series`}
                 icon={Film}
                 colorClass="text-primary"
               />
@@ -279,47 +279,56 @@ function StatsPage() {
               </div>
             </div>
 
-            <div
-              role="img"
-              aria-label={`Biểu đồ cột số phim xem theo tháng trong năm ${selectedYear}`}
-              className="h-72 sm:h-80 text-text-secondary"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="currentColor"
-                    opacity={0.05}
-                  />
-                  <XAxis
-                    dataKey="month"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 700, opacity: 0.5 }}
-                    dy={10}
-                    tickFormatter={(value) => value.replace('Tháng ', 'T')}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 700, opacity: 0.5 }}
-                  />
-                  <Tooltip
-                    content={<StatsTooltip />}
-                    cursor={{ fill: 'currentColor', opacity: 0.05 }}
-                  />
-                  <Bar
-                    dataKey="count"
-                    fill="var(--color-primary)"
-                    radius={[2, 2, 0, 0]}
-                    barSize={isSmallScreen ? 12 : 24}
-                    animationDuration={1000}
-                    isAnimationActive={!prefersReducedMotion}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {totalInYear === 0 ? (
+              <EmptyState
+                icon={BarChart3}
+                title={`Chưa có phim nào đã xem trong năm ${selectedYear}`}
+                description="Chọn năm khác ở меню bên trên, hoặc thêm phim mới để thấy hoạt động theo tháng."
+                compact
+              />
+            ) : (
+              <div
+                role="img"
+                aria-label={`Biểu đồ cột số phim xem theo tháng trong năm ${selectedYear}`}
+                className="h-72 sm:h-80 text-text-secondary"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="currentColor"
+                      opacity={0.05}
+                    />
+                    <XAxis
+                      dataKey="month"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 700, opacity: 0.5 }}
+                      dy={10}
+                      tickFormatter={(value) => value.replace('Tháng ', 'T')}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 700, opacity: 0.5 }}
+                    />
+                    <Tooltip
+                      content={<StatsTooltip />}
+                      cursor={{ fill: 'currentColor', opacity: 0.05 }}
+                    />
+                    <Bar
+                      dataKey="count"
+                      fill="var(--color-primary)"
+                      radius={[2, 2, 0, 0]}
+                      barSize={isSmallScreen ? 12 : 24}
+                      animationDuration={1000}
+                      isAnimationActive={!prefersReducedMotion}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </section>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -423,38 +432,47 @@ function StatsPage() {
                 Phân bổ thể loại
               </h3>
             </div>
-            <div className="h-96 text-text-secondary">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={genreData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={isSmallScreen ? 70 : 100}
-                    outerRadius={isSmallScreen ? 90 : 130}
-                    paddingAngle={5}
-                    dataKey="value"
-                    stroke="none"
-                    animationDuration={1000}
-                    isAnimationActive={!prefersReducedMotion}
-                  >
-                    {genreData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Legend
-                    verticalAlign="bottom"
-                    align="center"
-                    layout="horizontal"
-                    wrapperStyle={{ fontSize: 12, fontWeight: 700, paddingTop: 30, opacity: 0.8 }}
-                    formatter={(value: string, entry?: { payload?: { value?: number | string } }) =>
-                      `${value}: ${entry?.payload?.value ?? ''}`
-                    }
-                  />
-                  <Tooltip content={<StatsTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            {genreData.length === 0 ? (
+              <EmptyState
+                icon={Star}
+                title="Chưa có dữ liệu"
+                description="Thêm phim có thông tin thể loại để xem biểu đồ phân bổ."
+                compact
+              />
+            ) : (
+              <div className="h-96 text-text-secondary">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={genreData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={isSmallScreen ? 70 : 100}
+                      outerRadius={isSmallScreen ? 90 : 130}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                      animationDuration={1000}
+                      isAnimationActive={!prefersReducedMotion}
+                    >
+                      {genreData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Legend
+                      verticalAlign="bottom"
+                      align="center"
+                      layout="horizontal"
+                      wrapperStyle={{ fontSize: 12, fontWeight: 700, paddingTop: 30, opacity: 0.8 }}
+                      formatter={(value: string, entry?: { payload?: { value?: number | string } }) =>
+                        `${value}: ${entry?.payload?.value ?? ''}`
+                      }
+                    />
+                    <Tooltip content={<StatsTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </section>
         </>
       )}

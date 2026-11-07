@@ -66,14 +66,18 @@ export const deleteMovie = async (uid: string, docId: string) => {
   }
 };
 
-// Ném lỗi để caller phân biệt lỗi mạng/quyền với "chưa tồn tại".
-export const checkMovieExists = async (uid: string, movieId: string | number): Promise<boolean> => {
+export const checkMovieExists = async (
+  uid: string,
+  movieId: string | number,
+  mediaType?: 'movie' | 'tv',
+): Promise<boolean> => {
   try {
-    const q = query(
-      collection(db, COLLECTION_NAME),
+    const constraints = [
       where('uid', '==', uid),
       where('id', '==', movieId),
-    );
+      ...(mediaType ? [where('media_type', '==', mediaType)] : []),
+    ];
+    const q = query(collection(db, COLLECTION_NAME), ...constraints);
     const snapshot = await getDocs(q);
     return !snapshot.empty;
   } catch (error) {
@@ -110,7 +114,6 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
   };
 };
 
-// onError tách riêng để UI phân biệt "kho trống" với "lỗi mạng/quyền" (tránh hiển thị EmptyState khi lỗi).
 export const subscribeToMovies = (
   uid: string,
   callback: (movies: Movie[]) => void,

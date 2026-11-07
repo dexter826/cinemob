@@ -77,7 +77,7 @@ function MovieFormFields({
               id="movie-media-type"
               aria-labelledby="movie-media-type-label"
               options={[
-                { value: 'movie', label: 'Phim lẻ' },
+                { value: 'movie', label: 'Movie' },
                 { value: 'tv', label: 'Series' },
               ]}
               value={manualMediaType}
@@ -89,7 +89,7 @@ function MovieFormFields({
             />
           ) : (
             <div className="w-full h-11 flex items-center border border-border rounded-card px-4 text-body font-semibold text-text-secondary">
-              {isTVSeries ? 'Series' : 'Phim lẻ'}
+              {isTVSeries ? 'Series' : 'Movie'}
             </div>
           )}
         </div>

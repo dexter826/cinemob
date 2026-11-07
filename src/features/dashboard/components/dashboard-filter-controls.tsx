@@ -20,7 +20,6 @@ export interface FilterControlsProps {
 
 const RATING_STARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-/** Nhãn khoảng đánh giá dùng chung: đầy đủ cho panel, rút gọn cho chip. */
 export function formatRatingRange(
   ratingRange: [number, number] | null,
   variant: 'full' | 'compact' = 'full',
@@ -97,7 +96,7 @@ export function FilterControls({
             aria-label="Trạng thái"
             options={[
               { value: 'all', label: 'Tất cả trạng thái' },
-              { value: 'watching', label: 'Đang theo dõi' },
+              { value: 'watching', label: 'Đang xem' },
               { value: 'completed', label: 'Đã xem' },
             ]}
             value={filters.watchStatus}
@@ -113,7 +112,7 @@ export function FilterControls({
           options={[
             { value: 'all', label: 'Tất cả nguồn' },
             { value: 'normal', label: 'Xem trực tiếp' },
-            { value: 'review', label: 'Xem qua đánh giá' },
+            { value: 'review', label: 'Xem tóm tắt' },
           ]}
           value={filters.sourceType}
           onChange={(value) => updateFilter('sourceType', value as SourceType)}

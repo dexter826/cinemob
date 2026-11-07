@@ -55,7 +55,9 @@ export const useTMDBLookup = () => {
       setError(null);
       try {
         const [exists, details] = await Promise.all([
-          user && id ? checkMovieExists(user.uid, id) : Promise.resolve(false),
+          user && id
+            ? checkMovieExists(user.uid, id, type)
+            : Promise.resolve(false),
           getMovieDetails(Number(id), type, controller.signal),
         ]);
         if (!isCurrent()) return null;

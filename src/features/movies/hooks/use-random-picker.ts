@@ -109,8 +109,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   ]);
 
   const startShuffle = useCallback(
-    (source: Exclude<PoolType, null>) => {
-      const pool = source === 'watchlist' ? watchlistMovies : trending;
+    (source: Exclude<PoolType, null>, poolOverride?: PoolMovie[]) => {
+      const pool = poolOverride ?? (source === 'watchlist' ? watchlistMovies : trending);
       if (pool.length === 0) {
         setCurrentIndex(null);
         setIsShuffling(false);
@@ -138,14 +138,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       const tick = () => {
         const elapsed = Date.now() - start;
         const progress = Math.min(elapsed / pickerDurationMs, 1);
-        const effectivePool = source === 'watchlist' ? watchlistMovies : trending;
-        if (effectivePool.length === 0) {
-          setIsShuffling(false);
-          setHasResult(false);
-          return;
-        }
         if (elapsed >= pickerDurationMs) {
-          setCurrentIndex(Math.floor(Math.random() * effectivePool.length));
+          setCurrentIndex(Math.floor(Math.random() * pool.length));
           setIsShuffling(false);
           setHasResult(true);
           audioStopTimeoutRef.current = setTimeout(
@@ -154,13 +148,47 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
           );
           return;
         }
-        setCurrentIndex((index) => (index === null ? 0 : (index + 1) % effectivePool.length));
+        setCurrentIndex((index) => (index === null ? 0 : (index + 1) % pool.length));
         const nextDelay = progress < 0.5 ? 70 : progress < 0.75 ? 130 : progress < 0.9 ? 220 : 380;
         shuffleTimeoutRef.current = setTimeout(tick, nextDelay);
       };
       shuffleTimeoutRef.current = setTimeout(tick, 70);
     },
     [clearShuffleTimers, isMuted, randomAudio, reducedMotion, trending, watchlistMovies],
+  );
+
+  /** Đổi nguồn quay theo lựa chọn của người dùng. */
+  const switchPool = useCallback(
+    async (source: Exclude<PoolType, null>) => {
+      if (isShuffling) return;
+      if (source === 'watchlist') {
+        setPoolType('watchlist');
+        startShuffle('watchlist');
+        return;
+      }
+      if (trending.length > 0) {
+        setPoolType('trending');
+        startShuffle('trending');
+        return;
+      }
+      setIsLoadingPool(true);
+      setPoolError(null);
+      try {
+        const { results } = await getTrendingMovies(1);
+        setTrending(results);
+        if (results.length > 0) {
+          setPoolType('trending');
+          startShuffle('trending', results);
+        } else {
+          setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
+        }
+      } catch {
+        setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
+      } finally {
+        setIsLoadingPool(false);
+      }
+    },
+    [isShuffling, startShuffle, trending.length],
   );
 
   useEffect(() => {
@@ -198,6 +226,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     isMuted,
     toggleMuted: () => setIsMuted((muted) => !muted),
     startShuffle,
+    switchPool,
     handleRespin: () => poolType && startShuffle(poolType),
     handleWatchNow,
   };

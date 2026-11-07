@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
+import { MESSAGES } from '@/constants/messages';
 import useAlbumStore from '@/features/albums/stores/album-store';
 import useReleaseCalendarStore from '@/features/calendar/stores/release-calendar-store';
 import {
@@ -97,7 +98,10 @@ export const useAppInit = () => {
         .catch((error) => {
           if (cancelled) return;
           console.error('Member profile sync error:', error);
-          showToast('Không cập nhật được hồ sơ thành viên. Thử lại.', 'error');
+          showToast(
+            navigator.onLine ? MESSAGES.PROFILE.SYNC_ERROR : MESSAGES.COMMON.OFFLINE_STATUS,
+            'error',
+          );
         });
     }, 500);
 

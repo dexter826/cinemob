@@ -164,12 +164,12 @@ export function useAlbumDetail(albumId?: string) {
       operation.written = true;
       reconcile();
       if (remove)
-        showToast(`Đã gỡ “${getMainTitle(movie)}” khỏi album`, 'info', UNDO_REMOVE_MS, {
-          label: 'Hoàn tác',
+        showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getMainTitle(movie)), 'info', UNDO_REMOVE_MS, {
+          label: MESSAGES.MOVIE.UNDO,
           onAction: () => {
             if (currentScope.current !== scope) return;
             addMovieToAlbum(albumDocId, id).catch(() =>
-              showToast('Không thể hoàn tác. Vui lòng thử lại sau.', 'error'),
+              showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error'),
             );
           },
         });

@@ -38,6 +38,7 @@ interface MovieListSectionProps {
     to?: string;
     onClick?: () => void;
   };
+  onMovieClick?: (movie: ProfileMovie) => void;
 }
 
 function MovieListSection({
@@ -48,6 +49,7 @@ function MovieListSection({
   emptyTitle,
   emptyDescription,
   emptyAction,
+  onMovieClick,
 }: MovieListSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<ProfileSortOption>('default');
@@ -182,6 +184,12 @@ function MovieListSection({
                   : movie.release_date
                     ? movie.release_date.slice(0, 4)
                     : undefined
+              }
+              onClick={onMovieClick ? () => onMovieClick(movie) : undefined}
+              ariaLabel={
+                onMovieClick
+                  ? `Xem chi tiết phim “${movie.title_vi || movie.title}”`
+                  : undefined
               }
             />
           ))}

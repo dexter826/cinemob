@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
+import { MESSAGES } from '@/constants/messages';
 import {
   clearMemberProfileCache,
   getMemberProfile,
@@ -101,11 +102,11 @@ export const useOwnProfile = () => {
         });
         clearMemberProfileCache(uid);
         await refresh();
-        showToast('Đã cập nhật hồ sơ', 'success');
+        showToast(MESSAGES.PROFILE.UPDATE_SUCCESS, 'success');
         return { ok: true };
       } catch (error) {
         console.error('Lưu hồ sơ thất bại', error);
-        showToast('Không thể lưu thay đổi hồ sơ. Vui lòng thử lại sau.', 'error');
+        showToast(MESSAGES.PROFILE.UPDATE_ERROR, 'error');
         return { ok: false };
       } finally {
         setSaving(false);
@@ -123,10 +124,13 @@ export const useOwnProfile = () => {
       await setMovieListHidden(uid, next, movies);
       clearMemberProfileCache(uid);
       await refresh();
-      showToast(next ? 'Đã ẩn danh sách phim đã xem' : 'Đã hiển thị lại danh sách phim', 'success');
+      showToast(
+        next ? MESSAGES.PROFILE.PRIVACY_HIDDEN : MESSAGES.PROFILE.PRIVACY_VISIBLE,
+        'success',
+      );
       return true;
     } catch {
-      showToast('Không thể thay đổi trạng thái danh sách phim. Vui lòng thử lại sau.', 'error');
+      showToast(MESSAGES.PROFILE.PRIVACY_TOGGLE_ERROR, 'error');
       return false;
     } finally {
       setToggling(false);

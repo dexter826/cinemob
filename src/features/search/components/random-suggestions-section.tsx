@@ -13,7 +13,7 @@ interface RandomSuggestionsSectionProps {
   hasLoaded: boolean;
   error: string | null;
   onRefresh: () => void;
-  getMovieStatus: (id: number) => MovieStatus | null;
+  getMovieStatus: (id: number, mediaType?: 'movie' | 'tv') => MovieStatus | null;
   onSelectMovie: (movie: TMDBMovieResult) => void;
 }
 

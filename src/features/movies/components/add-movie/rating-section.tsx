@@ -71,7 +71,7 @@ function RatingSection({
               type="button"
               role="radio"
               aria-checked={rating === star}
-              aria-label={`Đánh giá ${star} trên 10 sao`}
+              aria-label={`Điểm đánh giá ${star} trên 10`}
               tabIndex={rating === star || (rating === 0 && star === 1) ? 0 : -1}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoverRating(star)}

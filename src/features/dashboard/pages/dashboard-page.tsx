@@ -1,10 +1,13 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Film, Plus } from 'lucide-react';
+import { Bookmark, Check, Film, Play, Plus } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
+import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
 import PosterCard from '@/features/movies/components/poster-card';
+import { useQuickStatus } from '@/features/movies/hooks/use-quick-status';
+import { useDropMovie } from '@/features/movies/hooks/use-drop-movie';
 import Pagination from '@/shared/components/ui/pagination';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
@@ -29,6 +32,9 @@ function DashboardPage() {
   useScrollRestore('dashboard');
   const { user } = useAuth();
   const { error: libraryError, initialize: initMovies, cleanup: cleanupMovies } = useMovieStore();
+  const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
+  const { markWatchlist, isPending: quickPending } = useQuickStatus();
+  const { resumeMovie } = useDropMovie();
 
   const {
     loading,
@@ -77,33 +83,33 @@ function DashboardPage() {
           onClick: clearFilters,
         },
       }
-    : activeTab === 'watchlist'
-      ? {
-          title: 'Danh sách “Sẽ xem” đang trống',
-          description: 'Lưu những tác phẩm bạn muốn xem vào đây để thưởng thức khi có thời gian.',
-          action: {
-            label: 'Tìm phim để xem',
-            onClick: () => navigate('/search'),
-          },
-        }
-      : activeTab === 'dropped'
+      : activeTab === 'watchlist'
         ? {
-            title: 'Không có phim nào bị bỏ dở',
-            description: 'Những tác phẩm bạn tạm dừng theo dõi giữa chừng sẽ xuất hiện tại đây.',
+            title: 'Danh sách “Sẽ xem” đang trống',
+            description: 'Lưu những tác phẩm bạn sẽ xem vào đây để thưởng thức khi có thời gian.',
             action: {
-              label: 'Về tab Đã xem',
-              onClick: () => setActiveTab('history'),
-            },
-          }
-        : {
-            title: 'Chưa có phim nào đã xem',
-            description:
-              'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
-            action: {
-              label: 'Khám phá phim',
+              label: 'Tìm phim để xem',
               onClick: () => navigate('/search'),
             },
-          };
+          }
+        : activeTab === 'dropped'
+          ? {
+              title: 'Không có phim nào bị bỏ dở',
+              description: 'Những tác phẩm bạn bỏ dở giữa chừng sẽ xuất hiện tại đây.',
+              action: {
+                label: 'Về tab Đã xem',
+                onClick: () => setActiveTab('history'),
+              },
+            }
+          : {
+              title: 'Chưa có phim nào đã xem',
+              description:
+                'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
+              action: {
+                label: 'Khám phá phim',
+                onClick: () => navigate('/search'),
+              },
+            };
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
@@ -196,7 +202,7 @@ function DashboardPage() {
         ) : libraryError ? (
           <ErrorState
             title="Không tải được thư viện"
-            description="Lỗi kết nối tới dữ liệu phim. Bộ sưu tập của bạn vẫn an toàn."
+            description="Lỗi kết nối tới dữ liệu phim. Album của bạn vẫn an toàn."
             retry={
               user
                 ? {
@@ -226,35 +232,74 @@ function DashboardPage() {
               aria-busy={loading}
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5"
             >
-              {processedMovies.map((movie) => (
-                <motion.div
-                  key={movie.docId}
-                  variants={staggerItem}
-                  initial={reducedMotion ? false : 'hidden'}
-                  animate="show"
-                >
-                  <PosterCard
-                    title={getMainTitle(movie)}
-                    posterPath={movie.poster_path}
-                    mediaType={movie.media_type}
-                    source={movie.source}
-                    rating={movie.rating}
-                    review={movie.is_review}
-                    meta={getSubTitle(movie)}
-                    progress={
-                      movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed
-                        ? {
-                            current: movie.progress.watched_episodes ?? 0,
-                            total: movie.total_episodes ?? 0,
-                          }
-                        : null
-                    }
-                    onClick={() =>
-                      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
-                    }
-                  />
-                </motion.div>
-              ))}
+              {processedMovies.map((movie) => {
+                const status = movie.status || 'history';
+                const quickAction =
+                  status === 'watchlist' ? (
+                    <button
+                      type="button"
+                      disabled={quickPending}
+                      onClick={() => openMarkWatched({ kind: 'library', movie })}
+                      aria-label={`Đánh dấu “${getMainTitle(movie)}” đã xem`}
+                      title="Đã xem"
+                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
+                    >
+                      <Check size={13} strokeWidth={2} aria-hidden="true" />
+                    </button>
+                  ) : status === 'dropped' ? (
+                    <button
+                      type="button"
+                      disabled={quickPending}
+                      onClick={() => void resumeMovie(movie)}
+                      aria-label={`Tiếp tục xem “${getMainTitle(movie)}”`}
+                      title="Tiếp tục xem"
+                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
+                    >
+                      <Play size={13} strokeWidth={1.5} aria-hidden="true" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={quickPending}
+                      onClick={() => void markWatchlist(movie)}
+                      aria-label={`Chuyển “${getMainTitle(movie)}” sang Sẽ xem`}
+                      title="Sẽ xem"
+                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
+                    >
+                      <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />
+                    </button>
+                  );
+                return (
+                  <motion.div
+                    key={movie.docId}
+                    variants={staggerItem}
+                    initial={reducedMotion ? false : 'hidden'}
+                    animate="show"
+                  >
+                    <PosterCard
+                      title={getMainTitle(movie)}
+                      posterPath={movie.poster_path}
+                      mediaType={movie.media_type}
+                      source={movie.source}
+                      rating={movie.rating}
+                      review={movie.is_review}
+                      meta={getSubTitle(movie)}
+                      progress={
+                        movie.media_type === 'tv' && movie.progress && !movie.progress.is_completed
+                          ? {
+                              current: movie.progress.watched_episodes ?? 0,
+                              total: movie.total_episodes ?? 0,
+                            }
+                          : null
+                      }
+                      actions={quickAction}
+                      onClick={() =>
+                        navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
+                      }
+                    />
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <Pagination

@@ -213,8 +213,8 @@ export const useSearch = () => {
   const navigate = useNavigate();
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
-    if (getMovieStatus(movie.id)) {
-      const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+    const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+    if (getMovieStatus(movie.id, isTV ? 'tv' : 'movie')) {
       navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
       return;
     }
@@ -230,8 +230,13 @@ export const useSearch = () => {
     setShowSuggestions(false);
   };
 
-  const getMovieStatus = (movieId: number) => {
-    const movie = savedMovies.find((m) => m.id === movieId);
+  // So khớp cả media type: movie và series trên TMDB dùng chung dãy số id.
+  const getMovieStatus = (movieId: number, mediaType?: 'movie' | 'tv') => {
+    const movie = savedMovies.find(
+      (m) =>
+        String(m.id) === String(movieId) &&
+        (!mediaType || (m.media_type ?? 'movie') === mediaType),
+    );
     return movie ? movie.status || 'history' : null;
   };
 

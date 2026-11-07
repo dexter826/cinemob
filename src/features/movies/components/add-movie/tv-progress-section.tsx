@@ -173,18 +173,18 @@ function TVProgressSection({
 
       <div className="space-y-2 pt-4 border-t border-border">
         <span className="text-label-caps normal-case text-text-secondary ml-1 block">
-          Ngày xem từng phần
+          Ngày xem từng mùa
         </span>
         <div className="space-y-2">
           {Array.from({ length: currentSeason }, (_, i) => i + 1).map((season) => (
             <div key={season} className="flex items-center gap-3">
               <span className="text-body-sm font-bold text-text-primary w-16 shrink-0">
-                Phần&nbsp;{season}
+                Mùa&nbsp;{season}
               </span>
               <DatePicker
                 value={seasonDates[season] || defaultDate}
                 onChange={(value) => onSeasonDateChange(season, value)}
-                aria-label={`Ngày xem phần ${season}`}
+                aria-label={`Ngày xem mùa ${season}`}
                 className="flex-1"
                 popupMode="dialog"
               />
