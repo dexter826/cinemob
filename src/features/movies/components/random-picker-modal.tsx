@@ -209,7 +209,7 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
               disabled={!hasPool || isLoadingPool || currentIndex === null || isShuffling}
               className="flex-1"
             >
-              {poolType === 'trending' ? 'Thêm vào thư viện' : 'Xem ngay'}
+              {poolType === 'trending' ? 'Thêm vào Thư viện' : 'Xem ngay'}
             </Button>
           </div>
         </div>

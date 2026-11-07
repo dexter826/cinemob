@@ -468,7 +468,7 @@ function OwnProfileEditor({
                     ? 'Danh sách phim đang ẩn, chỉ bạn nhìn thấy.'
                     : canToggle
                       ? 'Danh sách phim đã xem hiển thị với mọi thành viên.'
-                      : 'Đang tải dữ liệu phim và hồ sơ — có thể đổi sau khi tải xong.'}
+                      : 'Đang tải dữ liệu phim và hồ sơ, có thể đổi sau khi tải xong.'}
                 </p>
               </div>
               <Switch

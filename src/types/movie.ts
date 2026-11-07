@@ -63,7 +63,6 @@ export interface ProfileMovie {
   rating?: number;
   watched_at?: Timestamp | Date;
   is_review?: boolean;
-  notifications_muted?: boolean;
 }
 
 export type MemberGender = 'male' | 'female' | 'other';

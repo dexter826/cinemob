@@ -16,17 +16,10 @@ interface AlbumCoverPickerDialogProps {
   onClose: () => void;
   album: Album | null;
   movies: Movie[];
-  saving?: boolean;
 }
 
 /** Chọn tối đa 3 phim trong album làm ảnh bìa; bỏ chọn hết để trả về bìa tự động. */
-function AlbumCoverPickerDialog({
-  isOpen,
-  onClose,
-  album,
-  movies,
-  saving = false,
-}: AlbumCoverPickerDialogProps) {
+function AlbumCoverPickerDialog({ isOpen, onClose, album, movies }: AlbumCoverPickerDialogProps) {
   const { showToast } = useToastStore();
   const [pickedIds, setPickedIds] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -85,7 +78,7 @@ function AlbumCoverPickerDialog({
       </div>
 
       <DialogBody>
-        <div aria-busy={saving} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+        <div aria-busy={isSaving} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
           {movies.map((movie) => (
             <PosterCard
               key={movie.docId}
@@ -105,7 +98,7 @@ function AlbumCoverPickerDialog({
         <Button variant="ghost" onClick={onClose} disabled={isSaving}>
           Hủy
         </Button>
-        <Button variant="primary" loading={isSaving || saving} onClick={() => void handleSave()}>
+        <Button variant="primary" loading={isSaving} onClick={() => void handleSave()}>
           Lưu thay đổi
         </Button>
       </DialogFooter>

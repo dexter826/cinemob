@@ -21,6 +21,8 @@ import { resolveMovieStatus } from '../utils/movie-utils';
 import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
 import { useMovieValidation } from './use-movie-validation';
 
+const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
 export const useAddMovieForm = () => {
   const { user } = useAuth();
   const uid = user?.uid;
@@ -59,8 +61,10 @@ export const useAddMovieForm = () => {
       ? `cinemob:draft:add-movie:${initialData.tmdbId || initialData.movie?.id || 'manual'}`
       : null;
 
+  const draftAppliedRef = useRef(false);
   const applySavedDraft = useCallback(() => {
-    if (!draftStorageKey) return;
+    if (draftAppliedRef.current || !draftStorageKey) return;
+    draftAppliedRef.current = true;
     try {
       const raw = sessionStorage.getItem(draftStorageKey);
       if (!raw) return;
@@ -69,7 +73,7 @@ export const useAddMovieForm = () => {
         status: MovieStatus;
         savedAt: number;
       };
-      if (Date.now() - draft.savedAt > 7 * 24 * 60 * 60 * 1000) {
+      if (Date.now() - draft.savedAt > DRAFT_TTL_MS) {
         sessionStorage.removeItem(draftStorageKey);
         return;
       }
@@ -138,6 +142,7 @@ export const useAddMovieForm = () => {
 
   useEffect(() => {
     if (isOpen) {
+      draftAppliedRef.current = false;
       clearErrors();
       setHoverRating(0);
       setIsTouched(false);

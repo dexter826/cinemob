@@ -89,7 +89,7 @@ function AlbumDetailPage() {
           title={album?.name || 'Chi tiết album'}
           description={
             album
-              ? `${moviesLoading ? album.movieDocIds.length : albumMovies.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
+              ? `${albumMovies.length} phim · Tạo ngày ${formatDateAny(album.createdAt)}`
               : undefined
           }
           className="flex-col sm:flex-row"

@@ -1,4 +1,5 @@
 import ErrorState from '@/shared/components/ui/error-state';
+import Spinner from '@/shared/components/ui/spinner';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -329,7 +330,7 @@ function MovieDetailPage() {
   if (collectionError)
     return (
       <ErrorState
-        title="Không tải được bộ sưu tập"
+        title="Không tải được Thư viện"
         description={loadErrorCopy('Vui lòng thử lại để xem thông tin phim.')}
         retry={{ label: 'Thử lại', onClick: retryCollection }}
       />
@@ -568,7 +569,9 @@ function MovieDetailPage() {
                         : 'Tắt thông báo tập mới cho series này'
                     }
                   >
-                    {movie.notifications_muted ? (
+                    {mutePending ? (
+                      <Spinner size={14} className="text-current" />
+                    ) : movie.notifications_muted ? (
                       <BellOff size={15} strokeWidth={1.5} aria-hidden="true" />
                     ) : (
                       <Bell size={15} strokeWidth={1.5} aria-hidden="true" />
