@@ -11,6 +11,7 @@ export const MESSAGES = {
     SAVE_ERROR: 'Không lưu được phim. Vui lòng kiểm tra lại.',
     ALBUM_SYNC_ERROR: 'Chưa cập nhật được album. Phim đã lưu, thử lại sau.',
     REQUIRED_RATING: 'Chấm điểm phim trước khi lưu',
+    DRAFT_RESTORED: 'Đã khôi phục bản nháp chưa lưu của phim này',
     ALREADY_EXISTS: 'Phim này đã có trong Thư viện của bạn',
     DROP_SUCCESS: (title: string) => `Đã chuyển “${title}” sang danh sách Bỏ dở`,
     DROP_ERROR: 'Không thể chuyển trạng thái bỏ dở. Thử lại sau.',

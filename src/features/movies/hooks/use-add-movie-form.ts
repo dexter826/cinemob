@@ -1,5 +1,5 @@
 import { auth } from '@/shared/lib/firebase';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -53,6 +53,34 @@ export const useAddMovieForm = () => {
   } = useTMDBLookup();
   const { ratingError, setRatingError, errors, isAnimating, refs, clearErrors, validate } =
     useMovieValidation();
+
+  const draftStorageKey =
+    initialData && !initialData.movieToEdit
+      ? `cinemob:draft:add-movie:${initialData.tmdbId || initialData.movie?.id || 'manual'}`
+      : null;
+
+  const applySavedDraft = useCallback(() => {
+    if (!draftStorageKey) return;
+    try {
+      const raw = sessionStorage.getItem(draftStorageKey);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as {
+        formData: MovieFormData;
+        status: MovieStatus;
+        savedAt: number;
+      };
+      if (Date.now() - draft.savedAt > 7 * 24 * 60 * 60 * 1000) {
+        sessionStorage.removeItem(draftStorageKey);
+        return;
+      }
+      setFormData((prev) => ({ ...prev, ...draft.formData }));
+      setStatus(draft.status);
+      setIsTouched(true);
+      showToast(MESSAGES.MOVIE.DRAFT_RESTORED, 'info');
+    } catch {
+      sessionStorage.removeItem(draftStorageKey);
+    }
+  }, [draftStorageKey, showToast]);
 
   const isManualMode =
     !initialData?.tmdbId &&
@@ -140,6 +168,7 @@ export const useAddMovieForm = () => {
       setMovieExists(false);
       setStatus('history');
       setSelectedGenreIds([]);
+      applySavedDraft();
 
       if (initialData?.tmdbId || initialData?.movie) {
         const id = initialData.tmdbId || initialData.movie?.id;
@@ -163,6 +192,7 @@ export const useAddMovieForm = () => {
             ...details,
           }));
           setSelectedGenreIds(details.genreIds);
+          applySavedDraft();
         };
         initTMDB();
       }
@@ -178,7 +208,20 @@ export const useAddMovieForm = () => {
     setTvTotalEpisodes,
     setTvEpisodesPerSeason,
     setTvIsCompleted,
+    applySavedDraft,
   ]);
+
+  useEffect(() => {
+    if (!isOpen || !draftStorageKey || !isTouched) return;
+    try {
+      sessionStorage.setItem(
+        draftStorageKey,
+        JSON.stringify({ formData, status, savedAt: Date.now() }),
+      );
+    } catch {
+      sessionStorage.removeItem(draftStorageKey);
+    }
+  }, [formData, status, isOpen, isTouched, draftStorageKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,6 +329,7 @@ export const useAddMovieForm = () => {
       );
       if (initialData?.onMovieAdded)
         initialData.onMovieAdded(initialData?.tmdbId || initialData?.movie?.id || Date.now());
+      if (draftStorageKey) sessionStorage.removeItem(draftStorageKey);
       if (isCurrent()) closeAddModal();
     } catch (error) {
       if (isCurrent()) showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
