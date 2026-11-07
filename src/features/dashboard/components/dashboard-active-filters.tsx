@@ -1,8 +1,5 @@
 import { Chip, Button } from '@/shared/components/ui';
-import {
-  type FilterState,
-  type FilterUpdateFn,
-} from '../hooks/use-dashboard-filters';
+import { type FilterState, type FilterUpdateFn } from '../hooks/use-dashboard-filters';
 import { formatRatingRange } from './dashboard-filter-controls';
 
 export interface ActiveFilterChip {

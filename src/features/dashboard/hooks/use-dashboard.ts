@@ -38,9 +38,8 @@ export const useDashboard = () => {
 
   const statusCounts = useMemo(
     () => ({
-      history: movies.filter(
-        (m) => (m.status || 'history') === 'history' && !isSeriesInProgress(m),
-      ).length,
+      history: movies.filter((m) => (m.status || 'history') === 'history' && !isSeriesInProgress(m))
+        .length,
       watching: movies.filter((m) => (m.status || 'history') === 'history' && isSeriesInProgress(m))
         .length,
       watchlist: movies.filter((m) => m.status === 'watchlist').length,

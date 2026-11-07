@@ -43,19 +43,24 @@ export function useQuickStatus() {
       } finally {
         setIsPending(false);
       }
-      showToast(MESSAGES.MOVIE.START_WATCHING_SUCCESS(getMainTitle(movie)), 'success', UNDO_QUICK_MS, {
-        label: MESSAGES.MOVIE.UNDO,
-        onAction: () => {
-          void updateMovie(docId, {
-            status: 'watchlist',
-            watched_at: previousWatchedAt,
-            // Trường hợp không có tiến độ ban đầu thì xoá sạch tiến độ vừa tạo.
-            progress: (movie.progress ?? deleteField()) as Movie['progress'],
-          }).catch(() => {
-            showToast(MESSAGES.MOVIE.QUICK_STATUS_ERROR, 'error');
-          });
+      showToast(
+        MESSAGES.MOVIE.START_WATCHING_SUCCESS(getMainTitle(movie)),
+        'success',
+        UNDO_QUICK_MS,
+        {
+          label: MESSAGES.MOVIE.UNDO,
+          onAction: () => {
+            void updateMovie(docId, {
+              status: 'watchlist',
+              watched_at: previousWatchedAt,
+              // Trường hợp không có tiến độ ban đầu thì xoá sạch tiến độ vừa tạo.
+              progress: (movie.progress ?? deleteField()) as Movie['progress'],
+            }).catch(() => {
+              showToast(MESSAGES.MOVIE.QUICK_STATUS_ERROR, 'error');
+            });
+          },
         },
-      });
+      );
     },
     [showToast, isPending],
   );

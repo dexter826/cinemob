@@ -82,43 +82,43 @@ function DashboardPage() {
           onClick: clearFilters,
         },
       }
-      : activeTab === 'watching'
+    : activeTab === 'watching'
+      ? {
+          title: 'Chưa có series nào đang xem',
+          description:
+            'Bấm “Bắt đầu xem” trên một series Sẽ xem hoặc ghi +1 tập để tiến độ xuất hiện tại đây.',
+          action: {
+            label: 'Về Sẽ xem',
+            onClick: () => setActiveTab('watchlist'),
+          },
+        }
+      : activeTab === 'watchlist'
         ? {
-            title: 'Chưa có series nào đang xem',
-            description:
-              'Bấm “Bắt đầu xem” trên một series Sẽ xem hoặc ghi +1 tập để tiến độ xuất hiện tại đây.',
+            title: 'Danh sách “Sẽ xem” đang trống',
+            description: 'Lưu những tác phẩm bạn sẽ xem vào đây để thưởng thức khi có thời gian.',
             action: {
-              label: 'Về Sẽ xem',
-              onClick: () => setActiveTab('watchlist'),
+              label: 'Tìm phim để xem',
+              onClick: () => navigate('/search'),
             },
           }
-        : activeTab === 'watchlist'
+        : activeTab === 'dropped'
           ? {
-              title: 'Danh sách “Sẽ xem” đang trống',
-              description: 'Lưu những tác phẩm bạn sẽ xem vào đây để thưởng thức khi có thời gian.',
+              title: 'Không có phim nào bị bỏ dở',
+              description: 'Những tác phẩm bạn bỏ dở giữa chừng sẽ xuất hiện tại đây.',
               action: {
-                label: 'Tìm phim để xem',
-                onClick: () => navigate('/search'),
+                label: 'Về tab Đã xem',
+                onClick: () => setActiveTab('history'),
               },
             }
-          : activeTab === 'dropped'
-            ? {
-                title: 'Không có phim nào bị bỏ dở',
-                description: 'Những tác phẩm bạn bỏ dở giữa chừng sẽ xuất hiện tại đây.',
-                action: {
-                  label: 'Về tab Đã xem',
-                  onClick: () => setActiveTab('history'),
-                },
-              }
-            : {
-                title: 'Chưa có phim nào đã xem',
-                description:
-                  'Ghi lại những bộ phim và series bạn đã xem trọn vẹn kèm điểm số và cảm nhận.',
-                action: {
-                  label: 'Khám phá phim',
-                  onClick: () => navigate('/search'),
-                },
-              };
+          : {
+              title: 'Chưa có phim nào đã xem',
+              description:
+                'Ghi lại những bộ phim và series bạn đã xem trọn vẹn kèm điểm số và cảm nhận.',
+              action: {
+                label: 'Khám phá phim',
+                onClick: () => navigate('/search'),
+              },
+            };
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">

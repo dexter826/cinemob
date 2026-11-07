@@ -147,7 +147,8 @@ function MovieDetailPage() {
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
   // Số tập mỗi mùa (TMDB) để biết lúc nào hết mùa khi tăng tập.
-  const tvIdForEpisodes = movie?.source === 'tmdb' && movie.media_type === 'tv' ? Number(movie.id) : null;
+  const tvIdForEpisodes =
+    movie?.source === 'tmdb' && movie.media_type === 'tv' ? Number(movie.id) : null;
   const canQuickLog =
     !!tvIdForEpisodes &&
     !!movie?.progress &&
@@ -313,7 +314,9 @@ function MovieDetailPage() {
             {isWatchlist && movie.media_type === 'tv' && (
               <Button
                 variant="secondary"
-                leadingIcon={<Play size={14} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+                leadingIcon={
+                  <Play size={14} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                }
                 loading={quickPending}
                 onClick={() => void startWatching(movie)}
               >
@@ -330,7 +333,11 @@ function MovieDetailPage() {
                   }
                   aria-label={`Xem trailer “${mainTitle}” trên YouTube (mở tab mới)`}
                   onClick={() =>
-                    window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank', 'noopener')
+                    window.open(
+                      `https://www.youtube.com/watch?v=${trailerKey}`,
+                      '_blank',
+                      'noopener',
+                    )
                   }
                 >
                   Xem trailer

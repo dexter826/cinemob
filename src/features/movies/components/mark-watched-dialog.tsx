@@ -130,7 +130,12 @@ function MarkWatchedDialog() {
   };
 
   return (
-    <Dialog open={isOpen} onClose={closeMarkWatched} titleId="mark-watched-title" presentation="sheet">
+    <Dialog
+      open={isOpen}
+      onClose={closeMarkWatched}
+      titleId="mark-watched-title"
+      presentation="sheet"
+    >
       <div className="flex items-start justify-between gap-3 p-5 sm:p-6 border-b border-border shrink-0">
         <div className="flex items-center gap-4 min-w-0">
           <span className="w-12 h-[72px] rounded-control overflow-hidden border border-border shrink-0 block">
@@ -203,7 +208,11 @@ function MarkWatchedDialog() {
               aria-describedby={dateError ? 'mark-watched-date-error' : undefined}
             />
             {dateError && (
-              <p id="mark-watched-date-error" role="alert" className="text-body-sm text-danger ml-1">
+              <p
+                id="mark-watched-date-error"
+                role="alert"
+                className="text-body-sm text-danger ml-1"
+              >
                 {dateError}
               </p>
             )}

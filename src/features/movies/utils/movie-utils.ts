@@ -19,8 +19,7 @@ export const findLibraryEntry = (
   mediaType?: 'movie' | 'tv',
 ): Movie | undefined =>
   movies.find(
-    (m) =>
-      String(m.id) === String(id) && (!mediaType || (m.media_type ?? 'movie') === mediaType),
+    (m) => String(m.id) === String(id) && (!mediaType || (m.media_type ?? 'movie') === mediaType),
   );
 
 /**

@@ -164,15 +164,20 @@ export function useAlbumDetail(albumId?: string) {
       operation.written = true;
       reconcile();
       if (remove)
-        showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getMainTitle(movie)), 'info', UNDO_REMOVE_MS, {
-          label: MESSAGES.MOVIE.UNDO,
-          onAction: () => {
-            if (currentScope.current !== scope) return;
-            addMovieToAlbum(albumDocId, id).catch(() =>
-              showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error'),
-            );
+        showToast(
+          MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getMainTitle(movie)),
+          'info',
+          UNDO_REMOVE_MS,
+          {
+            label: MESSAGES.MOVIE.UNDO,
+            onAction: () => {
+              if (currentScope.current !== scope) return;
+              addMovieToAlbum(albumDocId, id).catch(() =>
+                showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error'),
+              );
+            },
           },
-        });
+        );
       else showToast(MESSAGES.ALBUM.ADD_MOVIE_SUCCESS, 'success');
     } catch {
       if (currentScope.current !== scope || pending.current.get(id) !== operation) return;

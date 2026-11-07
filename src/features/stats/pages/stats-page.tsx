@@ -293,7 +293,10 @@ function StatsPage() {
                 className="h-72 sm:h-80 text-text-secondary"
               >
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <BarChart
+                    data={monthlyData}
+                    margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                  >
                     <CartesianGrid
                       strokeDasharray="3 3"
                       vertical={false}
@@ -464,9 +467,10 @@ function StatsPage() {
                       align="center"
                       layout="horizontal"
                       wrapperStyle={{ fontSize: 12, fontWeight: 700, paddingTop: 30, opacity: 0.8 }}
-                      formatter={(value: string, entry?: { payload?: { value?: number | string } }) =>
-                        `${value}: ${entry?.payload?.value ?? ''}`
-                      }
+                      formatter={(
+                        value: string,
+                        entry?: { payload?: { value?: number | string } },
+                      ) => `${value}: ${entry?.payload?.value ?? ''}`}
                     />
                     <Tooltip content={<StatsTooltip />} />
                   </PieChart>

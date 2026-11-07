@@ -90,8 +90,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
           if (!controller.signal.aborted) setTrending(results);
         })
         .catch(() => {
-          if (!controller.signal.aborted)
-            setPoolError(MESSAGES.MOVIE.TRENDING_LOAD_ERROR);
+          if (!controller.signal.aborted) setPoolError(MESSAGES.MOVIE.TRENDING_LOAD_ERROR);
         })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoadingPool(false);

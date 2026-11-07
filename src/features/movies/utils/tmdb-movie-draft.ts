@@ -42,9 +42,7 @@ export const buildTMDBMovieDraft = ({
   tagline: details.tagline || '',
   genres: details.genres?.map((g) => g.name).join(', ') || '',
   release_date: details.release_date || details.first_air_date || fallbackReleaseDate || '',
-  country: translateCountries(
-    details.production_countries?.map((c) => c.name).join(', ') || '',
-  ),
+  country: translateCountries(details.production_countries?.map((c) => c.name).join(', ') || ''),
   content: details.overview || '',
   source: 'tmdb',
   media_type: mediaType,

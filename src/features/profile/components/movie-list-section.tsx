@@ -187,9 +187,7 @@ function MovieListSection({
               }
               onClick={onMovieClick ? () => onMovieClick(movie) : undefined}
               ariaLabel={
-                onMovieClick
-                  ? `Xem chi tiết phim “${movie.title_vi || movie.title}”`
-                  : undefined
+                onMovieClick ? `Xem chi tiết phim “${movie.title_vi || movie.title}”` : undefined
               }
             />
           ))}

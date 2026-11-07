@@ -53,7 +53,9 @@ function AlbumsPage() {
   const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<string>>(new Set());
   const deleteTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
-  const visibleAlbums = albums.filter((album) => !album.docId || !pendingDeleteIds.has(album.docId));
+  const visibleAlbums = albums.filter(
+    (album) => !album.docId || !pendingDeleteIds.has(album.docId),
+  );
 
   const totalPages = Math.ceil(visibleAlbums.length / ALBUMS_PER_PAGE);
   const safePage = Math.min(currentPage, totalPages || 1);

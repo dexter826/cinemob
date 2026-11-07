@@ -4,10 +4,7 @@ import LazyDialog from '@/shared/components/ui/lazy-dialog';
 import SearchField from '@/shared/components/ui/search-field';
 import { classNames } from '@/shared/utils/class-names';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
-import {
-  type FilterState,
-  type FilterUpdateFn,
-} from '../hooks/use-dashboard-filters';
+import { type FilterState, type FilterUpdateFn } from '../hooks/use-dashboard-filters';
 import { FilterControls } from './dashboard-filter-controls';
 import { buildActiveFilterChips } from './dashboard-active-filters';
 import type { DashboardFilterSheetProps } from './dashboard-filter-sheet';

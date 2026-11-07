@@ -123,7 +123,11 @@ function RandomPickerModal({ isOpen, onClose, onExited }: RandomPickerModalProps
 
           <div className="relative z-10">
             {!isLoadingPool && (
-              <div className="mb-4 flex items-center justify-center gap-2" role="group" aria-label="Chọn nguồn quay ngẫu nhiên">
+              <div
+                className="mb-4 flex items-center justify-center gap-2"
+                role="group"
+                aria-label="Chọn nguồn quay ngẫu nhiên"
+              >
                 {(
                   [
                     { key: 'watchlist', label: 'Sẽ xem' },

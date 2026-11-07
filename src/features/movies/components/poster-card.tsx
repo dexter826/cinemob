@@ -173,9 +173,7 @@ function PosterCard({
             {rating!.toFixed(1)}
           </span>
         )}
-        {review && (
-          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>
-        )}
+        {review && <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>}
       </div>
 
       {(onRemove || actions) && (

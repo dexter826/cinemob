@@ -5,11 +5,7 @@ import { Movie, Album } from '@/types';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '../stores/album-store';
-import {
-  addMovieToAlbum,
-  addAlbum,
-  removeMovieFromAlbum,
-} from '../services/album-service';
+import { addMovieToAlbum, addAlbum, removeMovieFromAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
 import Skeleton from '@/shared/components/ui/skeleton';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
@@ -100,14 +96,19 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
     setRemovingFromAlbum(album.docId);
     try {
       await removeMovieFromAlbum(album.docId, movie.docId);
-      showToast(MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getDisplayTitle(movie)), 'info', UNDO_REMOVE_MS, {
-        label: MESSAGES.MOVIE.UNDO,
-        onAction: () => {
-          void addMovieToAlbum(album.docId!, movie.docId!).catch(() => {
-            showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
-          });
+      showToast(
+        MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getDisplayTitle(movie)),
+        'info',
+        UNDO_REMOVE_MS,
+        {
+          label: MESSAGES.MOVIE.UNDO,
+          onAction: () => {
+            void addMovieToAlbum(album.docId!, movie.docId!).catch(() => {
+              showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
+            });
+          },
         },
-      });
+      );
     } catch (error) {
       showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
     } finally {

@@ -319,9 +319,7 @@ export function useAvatarCrop(): UseAvatarCropResult {
               refreshUser();
               showToast(MESSAGES.PROFILE.AVATAR_UNDO_SUCCESS, 'success');
             })
-            .catch(() =>
-              showToast(MESSAGES.PROFILE.AVATAR_UNDO_ERROR, 'error'),
-            );
+            .catch(() => showToast(MESSAGES.PROFILE.AVATAR_UNDO_ERROR, 'error'));
         },
       });
     } catch (error: unknown) {
