@@ -8,6 +8,10 @@ const isVietnameseOrigin = (country: string): boolean =>
 
 export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
 
+/** Series thuộc Đã xem nhưng chưa xem hết (đang dở tập) — cơ sở cho tab Đang xem. */
+export const isSeriesInProgress = (movie: Movie): boolean =>
+  movie.media_type === 'tv' && !!movie.progress && !movie.progress.is_completed;
+
 /** Tìm phim trong thư viện theo id TMDB; truyền mediaType để phân biệt movie/series trùng số id. */
 export const findLibraryEntry = (
   movies: Movie[],

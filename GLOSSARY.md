@@ -43,7 +43,7 @@ _Avoid_: Teaser, Clip xem trước, Video giới thiệu, Preview
 ## Trạng thái theo dõi
 
 **Đã xem**:
-Trạng thái của tác phẩm mà người dùng đã xem trọn vẹn, hoặc đã bắt đầu xem và đang ghi nhận tiến độ.
+Trạng thái của tác phẩm mà người dùng đã xem trọn vẹn.
 _Avoid_: Lịch sử xem, Đã hoàn thành (cho cả series)
 
 **Sẽ xem**:
@@ -55,8 +55,8 @@ Trạng thái của tác phẩm người dùng chủ động ngừng theo dõi g
 _Avoid_: Tạm dừng, Ngừng xem, Đã hủy, Dropped
 
 **Đang xem**:
-Trạng thái suy diễn (derived state) của một Series thuộc nhóm Đã xem nhưng chưa hoàn thành tất cả các tập.
-_Avoid_: Trạng thái Đang xem độc lập
+Tab Thư viện tập hợp các series thuộc nhóm Đã xem chưa xem hết tất cả các tập. Dữ liệu chỉ lưu ba trạng thái Đã xem / Sẽ xem / Bỏ dở; Đang xem là view suy diễn từ tiến độ theo dõi.
+_Avoid_: Đang theo dõi, Watching
 
 ## Tiến độ theo dõi
 

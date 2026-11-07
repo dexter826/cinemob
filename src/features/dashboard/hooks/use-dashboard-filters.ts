@@ -10,10 +10,12 @@ import {
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
+import { isSeriesInProgress } from '@/features/movies/utils/movie-utils';
 
 export type SortOption = 'date' | 'title';
 export type SortOrder = 'asc' | 'desc';
-export type ActiveTab = MovieStatus;
+/** 'watching' là view suy diễn (series Đã xem chưa hoàn thành), không phải trạng thái lưu dữ liệu. */
+export type ActiveTab = MovieStatus | 'watching';
 export type SourceType = 'all' | 'normal' | 'review';
 
 export interface FilterState {
@@ -25,7 +27,6 @@ export interface FilterState {
   country: string;
   genre: string;
   contentType: 'all' | 'movie' | 'tv';
-  watchStatus: 'all' | 'watching' | 'completed';
   sourceType: SourceType;
 }
 
@@ -40,7 +41,6 @@ const INITIAL_FILTER_STATE: FilterState = {
   country: '',
   genre: '',
   contentType: 'all',
-  watchStatus: 'all',
   sourceType: 'all',
 };
 
@@ -50,7 +50,6 @@ const parseFiltersFromParams = (params: URLSearchParams): FilterState => {
   const sortBy = params.get('sort');
   const order = params.get('order');
   const contentType = params.get('type');
-  const watchStatus = params.get('status');
   const sourceType = params.get('source');
   const rating = params.get('rating')?.split('-').map(Number) ?? [];
   const ratingRange =
@@ -66,7 +65,6 @@ const parseFiltersFromParams = (params: URLSearchParams): FilterState => {
     country: params.get('country') ?? '',
     genre: params.get('genre') ?? '',
     contentType: contentType === 'movie' || contentType === 'tv' ? contentType : 'all',
-    watchStatus: watchStatus === 'watching' || watchStatus === 'completed' ? watchStatus : 'all',
     sourceType: sourceType === 'normal' || sourceType === 'review' ? sourceType : 'all',
   };
 };
@@ -81,7 +79,6 @@ const isSameFilters = (a: FilterState, b: FilterState): boolean =>
   a.country === b.country &&
   a.genre === b.genre &&
   a.contentType === b.contentType &&
-  a.watchStatus === b.watchStatus &&
   a.sourceType === b.sourceType;
 
 export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
@@ -115,7 +112,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
         setOrDeleteParam(params, 'country', next.country);
         setOrDeleteParam(params, 'genre', next.genre);
         setOrDeleteParam(params, 'type', next.contentType !== 'all' ? next.contentType : '');
-        setOrDeleteParam(params, 'status', next.watchStatus !== 'all' ? next.watchStatus : '');
         setOrDeleteParam(params, 'source', next.sourceType !== 'all' ? next.sourceType : '');
         writePageParam(params, page);
         return params;
@@ -165,10 +161,13 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     setCurrentPage(1);
   }, [activeTab]);
 
-  const currentTabMovies = useMemo(
-    () => movies.filter((m) => (m.status || 'history') === activeTab),
-    [movies, activeTab],
-  );
+  const currentTabMovies = useMemo(() => {
+    if (activeTab === 'watching')
+      return movies.filter((m) => (m.status || 'history') === 'history' && isSeriesInProgress(m));
+    const result = movies.filter((m) => (m.status || 'history') === activeTab);
+    // Tab Đã xem chỉ nhận phim xem trọn vẹn; series đang dở thuộc tab Đang xem.
+    return activeTab === 'history' ? result.filter((m) => !isSeriesInProgress(m)) : result;
+  }, [movies, activeTab]);
 
   const processedMovies = useMemo(() => {
     let result = [...currentTabMovies];
@@ -214,18 +213,6 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       result = result.filter((m) => (m.media_type || 'movie') === filters.contentType);
     }
 
-    if (activeTab === 'history' && filters.watchStatus !== 'all') {
-      result = result.filter((m) => {
-        if (filters.watchStatus === 'watching')
-          return m.media_type === 'tv' && m.progress && !m.progress.is_completed;
-        if (filters.watchStatus === 'completed')
-          return (
-            m.media_type === 'movie' || !m.media_type || (m.progress && m.progress.is_completed)
-          );
-        return true;
-      });
-    }
-
     if (filters.sourceType !== 'all') {
       result = result.filter((m) => {
         if (filters.sourceType === 'review') return m.is_review === true;
@@ -245,7 +232,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     });
 
     return result;
-  }, [currentTabMovies, filters, activeTab]);
+  }, [currentTabMovies, filters]);
 
   const totalPages = Math.ceil(processedMovies.length / MOVIES_PER_PAGE);
 

@@ -256,6 +256,14 @@
   contain-intrinsic-size: auto 300px;
 }
 
+/* Dải cuộn ngang (tab, chip): ẩn scrollbar, vẫn cuộn được bằng wheel/kéo. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility text-display-xl {
   font-family: var(--font-display);
   font-size: 30px;

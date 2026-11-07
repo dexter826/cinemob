@@ -23,7 +23,7 @@ import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 import { useDashboard } from '../hooks/use-dashboard';
 import { MOVIES_PER_PAGE } from '../hooks/use-dashboard-filters';
 import DashboardTabs from '../components/dashboard-tabs';
-import DashboardFilters from '../components/dashboard-filters';
+import { DashboardSearch, DashboardRefinements } from '../components/dashboard-filters';
 import DashboardActiveFilters from '../components/dashboard-active-filters';
 
 function DashboardPage() {
@@ -70,7 +70,6 @@ function DashboardPage() {
     filters.country ||
     filters.genre ||
     filters.contentType !== 'all' ||
-    filters.watchStatus !== 'all' ||
     filters.sourceType !== 'all',
   );
 
@@ -83,33 +82,43 @@ function DashboardPage() {
           onClick: clearFilters,
         },
       }
-      : activeTab === 'watchlist'
+      : activeTab === 'watching'
         ? {
-            title: 'Danh sách “Sẽ xem” đang trống',
-            description: 'Lưu những tác phẩm bạn sẽ xem vào đây để thưởng thức khi có thời gian.',
+            title: 'Chưa có series nào đang xem',
+            description:
+              'Bấm “Bắt đầu xem” trên một series Sẽ xem hoặc ghi +1 tập để tiến độ xuất hiện tại đây.',
             action: {
-              label: 'Tìm phim để xem',
-              onClick: () => navigate('/search'),
+              label: 'Về Sẽ xem',
+              onClick: () => setActiveTab('watchlist'),
             },
           }
-        : activeTab === 'dropped'
+        : activeTab === 'watchlist'
           ? {
-              title: 'Không có phim nào bị bỏ dở',
-              description: 'Những tác phẩm bạn bỏ dở giữa chừng sẽ xuất hiện tại đây.',
+              title: 'Danh sách “Sẽ xem” đang trống',
+              description: 'Lưu những tác phẩm bạn sẽ xem vào đây để thưởng thức khi có thời gian.',
               action: {
-                label: 'Về tab Đã xem',
-                onClick: () => setActiveTab('history'),
-              },
-            }
-          : {
-              title: 'Chưa có phim nào đã xem',
-              description:
-                'Ghi lại những bộ phim và series bạn đã thưởng thức kèm điểm số và cảm nhận.',
-              action: {
-                label: 'Khám phá phim',
+                label: 'Tìm phim để xem',
                 onClick: () => navigate('/search'),
               },
-            };
+            }
+          : activeTab === 'dropped'
+            ? {
+                title: 'Không có phim nào bị bỏ dở',
+                description: 'Những tác phẩm bạn bỏ dở giữa chừng sẽ xuất hiện tại đây.',
+                action: {
+                  label: 'Về tab Đã xem',
+                  onClick: () => setActiveTab('history'),
+                },
+              }
+            : {
+                title: 'Chưa có phim nào đã xem',
+                description:
+                  'Ghi lại những bộ phim và series bạn đã xem trọn vẹn kèm điểm số và cảm nhận.',
+                action: {
+                  label: 'Khám phá phim',
+                  onClick: () => navigate('/search'),
+                },
+              };
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
@@ -127,56 +136,65 @@ function DashboardPage() {
         }
       />
 
-      <div className="mt-5 border-b border-border flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-4">
+      <div className="mt-5 border-b border-border flex flex-col">
         <DashboardTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
           historyCount={statusCounts.history}
+          watchingCount={statusCounts.watching}
           watchlistCount={statusCounts.watchlist}
           droppedCount={statusCounts.dropped}
           loading={shouldShowSkeleton}
         />
-        {shouldShowSkeleton ? (
-          <div
-            aria-hidden="true"
-            className="flex flex-wrap items-center justify-end gap-x-3 gap-y-2 py-2"
-          >
-            <Skeleton className="h-10 w-full lg:w-72" />
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-4 w-12" />
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-1 md:gap-6">
+          {shouldShowSkeleton ? (
+            <div aria-hidden="true" className="flex items-center py-2">
+              <Skeleton className="h-10 w-full md:w-72" />
             </div>
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-10" />
-              <Skeleton className="h-4 w-10" />
-              <Skeleton className="h-8 w-8" />
+          ) : movies.length > 0 ? (
+            <DashboardSearch filters={filters} updateFilter={updateFilter} />
+          ) : (
+            <span aria-hidden="true" />
+          )}
+          {shouldShowSkeleton ? (
+            <div
+              aria-hidden="true"
+              className="flex flex-wrap items-center justify-between md:justify-end gap-x-3 gap-y-2 py-2"
+            >
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-4 w-12" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-4 w-10" />
+                <Skeleton className="h-4 w-10" />
+                <Skeleton className="h-8 w-8" />
+              </div>
+              <Skeleton className="h-10 w-11" />
             </div>
-            <Skeleton className="h-10 w-11" />
-          </div>
-        ) : movies.length > 0 ? (
-          <DashboardFilters
-            filters={filters}
-            updateFilter={updateFilter}
-            showFilters={showFilters}
-            setShowFilters={setShowFilters}
-            filterRef={filterRef}
-            toggleRef={toggleRef}
-            toggleSortOrder={toggleSortOrder}
-            activeTab={activeTab}
-            availableYears={availableYears}
-            availableCountries={availableCountries}
-            availableGenres={availableGenres}
-            clearFilters={clearFilters}
-          />
-        ) : null}
+          ) : movies.length > 0 ? (
+            <DashboardRefinements
+              filters={filters}
+              updateFilter={updateFilter}
+              showFilters={showFilters}
+              setShowFilters={setShowFilters}
+              filterRef={filterRef}
+              toggleRef={toggleRef}
+              toggleSortOrder={toggleSortOrder}
+              availableYears={availableYears}
+              availableCountries={availableCountries}
+              availableGenres={availableGenres}
+              clearFilters={clearFilters}
+            />
+          ) : null}
+        </div>
       </div>
 
       {movies.length > 0 && (
         <DashboardActiveFilters
           filters={filters}
           updateFilter={updateFilter}
-          activeTab={activeTab}
           availableGenres={availableGenres}
           availableCountries={availableCountries}
           clearFilters={clearFilters}

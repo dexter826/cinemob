@@ -5,6 +5,7 @@ import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import { useDeleteMovie } from '@/features/movies/hooks/use-delete-movie';
 import { useDashboardFilters, ActiveTab } from './use-dashboard-filters';
 import { useDashboardStats } from './use-dashboard-stats';
+import { isSeriesInProgress } from '@/features/movies/utils/movie-utils';
 
 export const useDashboard = () => {
   const { openAddModal } = useAddMovieStore();
@@ -14,7 +15,7 @@ export const useDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTabState] = useState<ActiveTab>(() => {
     const tab = searchParams.get('tab');
-    return tab === 'watchlist' || tab === 'dropped' ? tab : 'history';
+    return tab === 'watchlist' || tab === 'dropped' || tab === 'watching' ? tab : 'history';
   });
 
   const setActiveTab = useCallback(
@@ -37,7 +38,11 @@ export const useDashboard = () => {
 
   const statusCounts = useMemo(
     () => ({
-      history: movies.filter((m) => (m.status || 'history') === 'history').length,
+      history: movies.filter(
+        (m) => (m.status || 'history') === 'history' && !isSeriesInProgress(m),
+      ).length,
+      watching: movies.filter((m) => (m.status || 'history') === 'history' && isSeriesInProgress(m))
+        .length,
       watchlist: movies.filter((m) => m.status === 'watchlist').length,
       dropped: movies.filter((m) => m.status === 'dropped').length,
     }),
