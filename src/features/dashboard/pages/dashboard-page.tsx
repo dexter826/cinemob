@@ -17,6 +17,7 @@ import Button from '@/shared/components/ui/button';
 import { PageHeader } from '@/shared/components/ui';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
+import { loadErrorCopy } from '@/shared/utils/load-error-copy';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
 import { getMainTitle, getSubTitle } from '@/features/movies/utils/movie-utils';
 
@@ -220,7 +221,7 @@ function DashboardPage() {
         ) : libraryError ? (
           <ErrorState
             title="Không tải được thư viện"
-            description="Lỗi kết nối tới dữ liệu phim. Album của bạn vẫn an toàn."
+            description={loadErrorCopy('Lỗi kết nối tới dữ liệu phim. Album của bạn vẫn an toàn.')}
             retry={
               user
                 ? {

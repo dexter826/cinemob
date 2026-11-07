@@ -40,6 +40,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import Skeleton from '@/shared/components/ui/skeleton';
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+import { loadErrorCopy } from '@/shared/utils/load-error-copy';
 
 function MovieDetailSkeleton() {
   return (
@@ -188,7 +189,7 @@ function MovieDetailPage() {
     return (
       <ErrorState
         title="Không tải được bộ sưu tập"
-        description="Vui lòng thử lại để xem thông tin phim."
+        description={loadErrorCopy('Vui lòng thử lại để xem thông tin phim.')}
         retry={{ label: 'Thử lại', onClick: retryCollection }}
       />
     );

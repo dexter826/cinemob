@@ -172,6 +172,12 @@ export function DashboardRefinements({
         >
           Tên
         </CapsButton>
+        <CapsButton
+          active={filters.sortBy === 'rating'}
+          onClick={() => updateFilter('sortBy', 'rating')}
+        >
+          Điểm
+        </CapsButton>
         <button
           type="button"
           onClick={toggleSortOrder}

@@ -453,6 +453,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   }}
                   setHoverRating={setHoverRating}
                   ratingRef={refs.rating}
+                  onClearRating={() => setFormData({ ...formData, rating: 0 })}
                 />
               )}
 

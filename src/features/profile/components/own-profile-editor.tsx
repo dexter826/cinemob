@@ -441,7 +441,10 @@ function OwnProfileEditor({
 
           <div className="mt-5 pt-4 border-t border-border-default">
             <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
+              <div
+                className="min-w-0"
+                title={!canToggle ? 'Cần tải xong dữ liệu phim và hồ sơ trước khi đổi.' : undefined}
+              >
                 <p className="text-body-sm font-semibold text-text-primary flex items-center gap-1.5">
                   {isHidden ? (
                     <EyeOff
@@ -463,7 +466,9 @@ function OwnProfileEditor({
                 <p className="text-body-sm text-text-secondary mt-0.5">
                   {isHidden
                     ? 'Danh sách phim đang ẩn, chỉ bạn nhìn thấy.'
-                    : 'Danh sách phim đã xem hiển thị với mọi thành viên.'}
+                    : canToggle
+                      ? 'Danh sách phim đã xem hiển thị với mọi thành viên.'
+                      : 'Đang tải dữ liệu phim và hồ sơ — có thể đổi sau khi tải xong.'}
                 </p>
               </div>
               <Switch

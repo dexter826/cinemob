@@ -3,6 +3,7 @@ import LoadingStatus from '@/shared/components/ui/loading-status';
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import EmptyState from '@/shared/components/ui/empty-state';
+import { loadErrorCopy } from '@/shared/utils/load-error-copy';
 import { Tv, Bell, BellOff, BellRing } from 'lucide-react';
 import { todayISO } from '@/shared/utils/date-format';
 
@@ -115,7 +116,7 @@ function ReleaseCalendarPage() {
       {collectionError ? (
         <ErrorState
           title="Không tải được danh sách series"
-          description="Vui lòng thử lại để tải danh sách series."
+          description={loadErrorCopy('Vui lòng thử lại để tải danh sách series.')}
           retry={{ label: 'Thử lại', onClick: retryCollection }}
         />
       ) : shouldShowSkeleton ? (
