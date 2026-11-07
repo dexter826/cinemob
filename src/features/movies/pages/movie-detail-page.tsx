@@ -34,7 +34,12 @@ import {
   getTranslatedGenres,
   getSeasonWatchedDates,
 } from '../utils/movie-utils';
-import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
+import {
+  getMovieDetails,
+  getTVShowEpisodeInfo,
+  getTVShowSeasonCount,
+} from '@/features/search/services/tmdb';
+import type { TMDBMovieDetail } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -92,6 +97,84 @@ function MovieCreditsSkeleton() {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function TmdbNotInLibraryPreview({
+  details,
+  mediaType,
+}: {
+  details: TMDBMovieDetail;
+  mediaType: 'movie' | 'tv';
+}) {
+  const openAddModal = useAddMovieStore((state) => state.openAddModal);
+  const goBackOrHome = useGoBackOrHome();
+  const title = details.title || details.name || 'Không rõ tiêu đề';
+  const genres = details.genres?.map((g) => g.name).join(', ') || '';
+
+  return (
+    <div className="py-10 flex flex-col md:flex-row gap-6 md:gap-10">
+      <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
+        <img
+          src={getTMDBImageUrl(details.poster_path, 'w780')}
+          alt={title}
+          width={280}
+          height={420}
+          className="w-full rounded-poster border border-border"
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h1 className="text-display-xl leading-[1.02] text-text-primary">{title}</h1>
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-label-caps normal-case text-text-secondary tabular-nums">
+          {(details.release_date || details.first_air_date) && (
+            <span>
+              {new Date(details.release_date || details.first_air_date || '').getFullYear()}
+            </span>
+          )}
+          {mediaType === 'tv' && !!details.number_of_seasons && details.number_of_seasons > 0 && (
+            <span>{details.number_of_seasons} mùa</span>
+          )}
+          {mediaType === 'movie' && !!details.runtime && details.runtime > 0 && (
+            <span>{details.runtime} phút</span>
+          )}
+          {genres && (
+            <span className="border-l border-border pl-3 normal-case tracking-normal font-medium">
+              {getTranslatedGenres(genres)}
+            </span>
+          )}
+        </div>
+        {details.overview && (
+          <div className="mt-7">
+            <SectionHeader>Nội dung</SectionHeader>
+            <p className="mt-2.5 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
+              {details.overview}
+            </p>
+          </div>
+        )}
+        <div className="mt-8 flex flex-wrap items-center gap-2.5">
+          <Button
+            leadingIcon={<Plus size={16} strokeWidth={1.5} aria-hidden="true" />}
+            onClick={() =>
+              openAddModal({
+                movie: {
+                  id: details.id,
+                  title,
+                  poster_path: details.poster_path,
+                  release_date: details.release_date || details.first_air_date || '',
+                  media_type: mediaType,
+                },
+                mediaType,
+              })
+            }
+          >
+            Thêm vào Thư viện
+          </Button>
+          <Button variant="secondary" onClick={goBackOrHome}>
+            Về Thư viện
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -181,6 +264,12 @@ function MovieDetailPage() {
     !movie.progress.is_completed &&
     movie.status !== 'watchlist';
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
+  const [tmdbRetryNonce, setTmdbRetryNonce] = useState(0);
+  const [tmdbPreview, setTmdbPreview] = useState<{
+    loading: boolean;
+    data: TMDBMovieDetail | null;
+    error: boolean;
+  } | null>(null);
   useEffect(() => {
     if (!tvIdForEpisodes || !canQuickLog) return;
     let cancelled = false;
@@ -202,6 +291,33 @@ function MovieDetailPage() {
       controller.abort();
     };
   }, [tvIdForEpisodes, canQuickLog]);
+
+  useEffect(() => {
+    if (movie || collectionLoading || collectionError) {
+      setTmdbPreview(null);
+      return;
+    }
+    const tmdbId = Number(id);
+    if (!Number.isFinite(tmdbId)) {
+      setTmdbPreview(null);
+      return;
+    }
+    const previewType: 'movie' | 'tv' = typeParam === 'tv' ? 'tv' : 'movie';
+    let cancelled = false;
+    const controller = new AbortController();
+    setTmdbPreview({ loading: true, data: null, error: false });
+    getMovieDetails(tmdbId, previewType, controller.signal)
+      .then((details) => {
+        if (!cancelled) setTmdbPreview({ loading: false, data: details, error: !details });
+      })
+      .catch(() => {
+        if (!cancelled) setTmdbPreview({ loading: false, data: null, error: true });
+      });
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [movie, collectionLoading, collectionError, id, typeParam, tmdbRetryNonce]);
 
   const handleDeleteMovie = () => {
     const docId = movie?.docId;
@@ -232,6 +348,31 @@ function MovieDetailPage() {
             <LoadingStatus>Đang tải thông tin phim…</LoadingStatus>
             {showDetailSkeleton && <MovieDetailSkeleton />}
           </>
+        ) : tmdbPreview?.loading ? (
+          <>
+            <LoadingStatus>Đang tải thông tin phim từ TMDB…</LoadingStatus>
+            {showDetailSkeleton && <MovieDetailSkeleton />}
+          </>
+        ) : tmdbPreview?.error ? (
+          <div className="py-10 space-y-4">
+            <ErrorState
+              title="Không tải được thông tin phim"
+              description={loadErrorCopy(
+                'Không tìm thấy phim trong Thư viện và TMDB cũng không phản hồi.',
+              )}
+              retry={{ label: 'Thử lại', onClick: () => setTmdbRetryNonce((n) => n + 1) }}
+            />
+            <div className="flex justify-center">
+              <Button variant="secondary" onClick={() => navigate('/')}>
+                Về Thư viện
+              </Button>
+            </div>
+          </div>
+        ) : tmdbPreview?.data ? (
+          <TmdbNotInLibraryPreview
+            details={tmdbPreview.data}
+            mediaType={typeParam === 'tv' ? 'tv' : 'movie'}
+          />
         ) : (
           <div className="py-10">
             <EmptyState
