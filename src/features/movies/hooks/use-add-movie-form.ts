@@ -76,6 +76,7 @@ export const useAddMovieForm = () => {
   const detailsReady = readyDetails?.data === initialData && readyDetails?.uid === uid;
   const initialDetailsLoading =
     requiresDetails && (!detailsReady || isTMDBLoading) && !detailsError;
+  const keepExistingProgress = tvProgress.error && !!initialData?.movieToEdit?.progress;
   const canSubmit =
     isOpen &&
     ownerUid === uid &&
@@ -83,7 +84,7 @@ export const useAddMovieForm = () => {
     !isTMDBLoading &&
     !isSubmitting &&
     !tvProgress.isLoading &&
-    (!tvProgress.error || tvProgress.hasUsableSnapshot);
+    (!tvProgress.error || tvProgress.hasUsableSnapshot || keepExistingProgress);
 
   const {
     setTotalEpisodes: setTvTotalEpisodes,
@@ -228,7 +229,7 @@ export const useAddMovieForm = () => {
         media_type: resolvedMediaType,
       };
 
-      if (isTVSeries) {
+      if (isTVSeries && !keepExistingProgress) {
         movieData.total_episodes = tvProgress.totalEpisodes;
         const seasonDates: Record<string, string> = {};
         for (let s = 1; s <= tvProgress.currentSeason; s++) {
