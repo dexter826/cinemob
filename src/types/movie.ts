@@ -31,6 +31,7 @@ export interface Movie {
     season_dates?: Record<string, string>;
   };
   is_review?: boolean;
+  notifications_muted?: boolean;
 }
 
 export interface Album {
@@ -38,6 +39,8 @@ export interface Album {
   uid: string;
   name: string;
   movieDocIds: string[];
+  /** Tối đa 3 docId người dùng chọn làm bìa; rỗng/quá khứ thì rơi về bìa tự động. */
+  coverMovieDocIds?: string[];
   createdAt: Timestamp | Date;
   updatedAt?: Timestamp | Date;
 }

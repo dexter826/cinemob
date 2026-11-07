@@ -8,6 +8,8 @@ interface RatingSectionProps {
   setRating: (rating: number) => void;
   setHoverRating: (rating: number) => void;
   ratingRef: React.RefObject<HTMLDivElement | null>;
+  onClearRating?: () => void;
+  describedbyId?: string;
 }
 
 function RatingSection({
@@ -17,6 +19,8 @@ function RatingSection({
   setRating,
   setHoverRating,
   ratingRef,
+  onClearRating,
+  describedbyId,
 }: RatingSectionProps) {
   const displayRating = hoverRating || rating;
   const groupRef = React.useRef<HTMLDivElement>(null);
@@ -46,11 +50,26 @@ function RatingSection({
           <Star size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Đánh giá phim
         </span>
-        <span
-          aria-live="polite"
-          className="text-body-sm font-bold text-text-secondary tabular-nums"
-        >
-          {displayRating > 0 ? `${displayRating}/10` : 'Chưa đánh giá'}
+        <span className="flex items-center gap-2">
+          {onClearRating && rating > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setRating(0);
+                setHoverRating(0);
+                onClearRating();
+              }}
+              className="text-body-sm font-semibold text-text-secondary hover:text-danger hover:underline cursor-pointer focus-ring focus-visible:outline-none rounded-control"
+            >
+              Xoá điểm
+            </button>
+          )}
+          <span
+            aria-live="polite"
+            className="text-body-sm font-bold text-text-secondary tabular-nums"
+          >
+            {displayRating > 0 ? `${displayRating}/10` : 'Chưa đánh giá'}
+          </span>
         </span>
       </div>
       <div
@@ -62,6 +81,7 @@ function RatingSection({
           ref={groupRef}
           role="radiogroup"
           aria-labelledby="add-movie-rating-label"
+          aria-describedby={describedbyId}
           onKeyDown={handleGroupKeyDown}
           className="flex justify-between items-center max-w-full overflow-hidden"
         >

@@ -12,7 +12,7 @@ import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
 import { isSeriesInProgress } from '@/features/movies/utils/movie-utils';
 
-export type SortOption = 'date' | 'title';
+export type SortOption = 'date' | 'title' | 'rating';
 export type SortOrder = 'asc' | 'desc';
 /** 'watching' là view suy diễn (series Đã xem chưa hoàn thành), không phải trạng thái lưu dữ liệu. */
 export type ActiveTab = MovieStatus | 'watching';
@@ -57,7 +57,7 @@ const parseFiltersFromParams = (params: URLSearchParams): FilterState => {
       ? ([rating[0], rating[1]] as [number, number])
       : null;
   return {
-    sortBy: sortBy === 'title' ? 'title' : 'date',
+    sortBy: sortBy === 'title' ? 'title' : sortBy === 'rating' ? 'rating' : 'date',
     sortOrder: order === 'asc' ? 'asc' : 'desc',
     searchQuery: params.get('q') ?? '',
     ratingRange,
@@ -129,7 +129,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
-    syncParams(filters, page);
+    syncParams(filters, page, { replace: true });
   };
 
   const clearFilters = () => {
@@ -223,6 +223,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     result.sort((a, b) => {
       let comp = 0;
       if (filters.sortBy === 'title') comp = getMainTitle(a).localeCompare(getMainTitle(b), 'vi');
+      else if (filters.sortBy === 'rating') comp = (a.rating || 0) - (b.rating || 0);
       else {
         const da = getLatestWatchedDate(a)?.getTime() || 0;
         const db = getLatestWatchedDate(b)?.getTime() || 0;

@@ -1,5 +1,5 @@
 import { auth } from '@/shared/lib/firebase';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -20,6 +20,8 @@ import { GENRE_OPTIONS } from '@/constants/genres';
 import { resolveMovieStatus } from '../utils/movie-utils';
 import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
 import { useMovieValidation } from './use-movie-validation';
+
+const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export const useAddMovieForm = () => {
   const { user } = useAuth();
@@ -54,6 +56,36 @@ export const useAddMovieForm = () => {
   const { ratingError, setRatingError, errors, isAnimating, refs, clearErrors, validate } =
     useMovieValidation();
 
+  const draftStorageKey =
+    initialData && !initialData.movieToEdit
+      ? `cinemob:draft:add-movie:${initialData.tmdbId || initialData.movie?.id || 'manual'}`
+      : null;
+
+  const draftAppliedRef = useRef(false);
+  const applySavedDraft = useCallback(() => {
+    if (draftAppliedRef.current || !draftStorageKey) return;
+    draftAppliedRef.current = true;
+    try {
+      const raw = sessionStorage.getItem(draftStorageKey);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as {
+        formData: MovieFormData;
+        status: MovieStatus;
+        savedAt: number;
+      };
+      if (Date.now() - draft.savedAt > DRAFT_TTL_MS) {
+        sessionStorage.removeItem(draftStorageKey);
+        return;
+      }
+      setFormData((prev) => ({ ...prev, ...draft.formData }));
+      setStatus(draft.status);
+      setIsTouched(true);
+      showToast(MESSAGES.MOVIE.DRAFT_RESTORED, 'info');
+    } catch {
+      sessionStorage.removeItem(draftStorageKey);
+    }
+  }, [draftStorageKey, showToast]);
+
   const isManualMode =
     !initialData?.tmdbId &&
     !initialData?.movie &&
@@ -76,6 +108,7 @@ export const useAddMovieForm = () => {
   const detailsReady = readyDetails?.data === initialData && readyDetails?.uid === uid;
   const initialDetailsLoading =
     requiresDetails && (!detailsReady || isTMDBLoading) && !detailsError;
+  const keepExistingProgress = tvProgress.error && !!initialData?.movieToEdit?.progress;
   const canSubmit =
     isOpen &&
     ownerUid === uid &&
@@ -83,7 +116,7 @@ export const useAddMovieForm = () => {
     !isTMDBLoading &&
     !isSubmitting &&
     !tvProgress.isLoading &&
-    (!tvProgress.error || tvProgress.hasUsableSnapshot);
+    (!tvProgress.error || tvProgress.hasUsableSnapshot || keepExistingProgress);
 
   const {
     setTotalEpisodes: setTvTotalEpisodes,
@@ -109,6 +142,7 @@ export const useAddMovieForm = () => {
 
   useEffect(() => {
     if (isOpen) {
+      draftAppliedRef.current = false;
       clearErrors();
       setHoverRating(0);
       setIsTouched(false);
@@ -139,6 +173,7 @@ export const useAddMovieForm = () => {
       setMovieExists(false);
       setStatus('history');
       setSelectedGenreIds([]);
+      applySavedDraft();
 
       if (initialData?.tmdbId || initialData?.movie) {
         const id = initialData.tmdbId || initialData.movie?.id;
@@ -162,6 +197,7 @@ export const useAddMovieForm = () => {
             ...details,
           }));
           setSelectedGenreIds(details.genreIds);
+          applySavedDraft();
         };
         initTMDB();
       }
@@ -177,7 +213,20 @@ export const useAddMovieForm = () => {
     setTvTotalEpisodes,
     setTvEpisodesPerSeason,
     setTvIsCompleted,
+    applySavedDraft,
   ]);
+
+  useEffect(() => {
+    if (!isOpen || !draftStorageKey || !isTouched) return;
+    try {
+      sessionStorage.setItem(
+        draftStorageKey,
+        JSON.stringify({ formData, status, savedAt: Date.now() }),
+      );
+    } catch {
+      sessionStorage.removeItem(draftStorageKey);
+    }
+  }, [formData, status, isOpen, isTouched, draftStorageKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,7 +277,7 @@ export const useAddMovieForm = () => {
         media_type: resolvedMediaType,
       };
 
-      if (isTVSeries) {
+      if (isTVSeries && !keepExistingProgress) {
         movieData.total_episodes = tvProgress.totalEpisodes;
         const seasonDates: Record<string, string> = {};
         for (let s = 1; s <= tvProgress.currentSeason; s++) {
@@ -285,6 +334,7 @@ export const useAddMovieForm = () => {
       );
       if (initialData?.onMovieAdded)
         initialData.onMovieAdded(initialData?.tmdbId || initialData?.movie?.id || Date.now());
+      if (draftStorageKey) sessionStorage.removeItem(draftStorageKey);
       if (isCurrent()) closeAddModal();
     } catch (error) {
       if (isCurrent()) showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');

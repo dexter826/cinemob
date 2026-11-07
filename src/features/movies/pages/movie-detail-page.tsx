@@ -1,8 +1,11 @@
 import ErrorState from '@/shared/components/ui/error-state';
+import Spinner from '@/shared/components/ui/spinner';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
+  Bell,
+  BellOff,
   Calendar,
   Check,
   CircleSlash,
@@ -15,6 +18,10 @@ import {
 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import { updateMovie } from '../services/movie-service';
+import { Movie } from '@/types';
+import { MESSAGES } from '@/constants/messages';
 import useMarkWatchedStore from '../stores/mark-watched-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
 import { useGoBackOrHome } from '@/shared/hooks/use-go-back';
@@ -28,7 +35,12 @@ import {
   getTranslatedGenres,
   getSeasonWatchedDates,
 } from '../utils/movie-utils';
-import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
+import {
+  getMovieDetails,
+  getTVShowEpisodeInfo,
+  getTVShowSeasonCount,
+} from '@/features/search/services/tmdb';
+import type { TMDBMovieDetail } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -40,6 +52,7 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import Skeleton from '@/shared/components/ui/skeleton';
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+import { loadErrorCopy } from '@/shared/utils/load-error-copy';
 
 function MovieDetailSkeleton() {
   return (
@@ -89,6 +102,84 @@ function MovieCreditsSkeleton() {
   );
 }
 
+function TmdbNotInLibraryPreview({
+  details,
+  mediaType,
+}: {
+  details: TMDBMovieDetail;
+  mediaType: 'movie' | 'tv';
+}) {
+  const openAddModal = useAddMovieStore((state) => state.openAddModal);
+  const goBackOrHome = useGoBackOrHome();
+  const title = details.title || details.name || 'Không rõ tiêu đề';
+  const genres = details.genres?.map((g) => g.name).join(', ') || '';
+
+  return (
+    <div className="py-10 flex flex-col md:flex-row gap-6 md:gap-10">
+      <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
+        <img
+          src={getTMDBImageUrl(details.poster_path, 'w780')}
+          alt={title}
+          width={280}
+          height={420}
+          className="w-full rounded-poster border border-border"
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h1 className="text-display-xl leading-[1.02] text-text-primary">{title}</h1>
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-label-caps normal-case text-text-secondary tabular-nums">
+          {(details.release_date || details.first_air_date) && (
+            <span>
+              {new Date(details.release_date || details.first_air_date || '').getFullYear()}
+            </span>
+          )}
+          {mediaType === 'tv' && !!details.number_of_seasons && details.number_of_seasons > 0 && (
+            <span>{details.number_of_seasons} mùa</span>
+          )}
+          {mediaType === 'movie' && !!details.runtime && details.runtime > 0 && (
+            <span>{details.runtime} phút</span>
+          )}
+          {genres && (
+            <span className="border-l border-border pl-3 normal-case tracking-normal font-medium">
+              {getTranslatedGenres(genres)}
+            </span>
+          )}
+        </div>
+        {details.overview && (
+          <div className="mt-7">
+            <SectionHeader>Nội dung</SectionHeader>
+            <p className="mt-2.5 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
+              {details.overview}
+            </p>
+          </div>
+        )}
+        <div className="mt-8 flex flex-wrap items-center gap-2.5">
+          <Button
+            leadingIcon={<Plus size={16} strokeWidth={1.5} aria-hidden="true" />}
+            onClick={() =>
+              openAddModal({
+                movie: {
+                  id: details.id,
+                  title,
+                  poster_path: details.poster_path,
+                  release_date: details.release_date || details.first_air_date || '',
+                  media_type: mediaType,
+                },
+                mediaType,
+              })
+            }
+          >
+            Thêm vào Thư viện
+          </Button>
+          <Button variant="secondary" onClick={goBackOrHome}>
+            Về Thư viện
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -105,7 +196,26 @@ function MovieDetailPage() {
   const { dropMovie, resumeMovie, isPending } = useDropMovie();
   const { startWatching, logEpisode, isPending: quickPending } = useQuickStatus();
   const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
+  const { showToast } = useToastStore();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
+  const [mutePending, setMutePending] = useState(false);
+
+  const handleToggleMute = async (target: Movie) => {
+    const docId = target.docId;
+    if (!docId || mutePending) return;
+    setMutePending(true);
+    try {
+      await updateMovie(docId, { notifications_muted: !target.notifications_muted });
+      showToast(
+        target.notifications_muted ? MESSAGES.CALENDAR.MUTE_OFF : MESSAGES.CALENDAR.MUTE_ON,
+        'success',
+      );
+    } catch {
+      showToast(MESSAGES.CALENDAR.MUTE_ERROR, 'error');
+    } finally {
+      setMutePending(false);
+    }
+  };
 
   const typeParam = searchParams.get('type');
   const movie = useMemo(() => {
@@ -155,6 +265,12 @@ function MovieDetailPage() {
     !movie.progress.is_completed &&
     movie.status !== 'watchlist';
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
+  const [tmdbRetryNonce, setTmdbRetryNonce] = useState(0);
+  const [tmdbPreview, setTmdbPreview] = useState<{
+    loading: boolean;
+    data: TMDBMovieDetail | null;
+    error: boolean;
+  } | null>(null);
   useEffect(() => {
     if (!tvIdForEpisodes || !canQuickLog) return;
     let cancelled = false;
@@ -177,6 +293,33 @@ function MovieDetailPage() {
     };
   }, [tvIdForEpisodes, canQuickLog]);
 
+  useEffect(() => {
+    if (movie || collectionLoading || collectionError) {
+      setTmdbPreview(null);
+      return;
+    }
+    const tmdbId = Number(id);
+    if (!Number.isFinite(tmdbId)) {
+      setTmdbPreview(null);
+      return;
+    }
+    const previewType: 'movie' | 'tv' = typeParam === 'tv' ? 'tv' : 'movie';
+    let cancelled = false;
+    const controller = new AbortController();
+    setTmdbPreview({ loading: true, data: null, error: false });
+    getMovieDetails(tmdbId, previewType, controller.signal)
+      .then((details) => {
+        if (!cancelled) setTmdbPreview({ loading: false, data: details, error: !details });
+      })
+      .catch(() => {
+        if (!cancelled) setTmdbPreview({ loading: false, data: null, error: true });
+      });
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [movie, collectionLoading, collectionError, id, typeParam, tmdbRetryNonce]);
+
   const handleDeleteMovie = () => {
     const docId = movie?.docId;
     if (!docId) return;
@@ -187,8 +330,8 @@ function MovieDetailPage() {
   if (collectionError)
     return (
       <ErrorState
-        title="Không tải được bộ sưu tập"
-        description="Vui lòng thử lại để xem thông tin phim."
+        title="Không tải được Thư viện"
+        description={loadErrorCopy('Vui lòng thử lại để xem thông tin phim.')}
         retry={{ label: 'Thử lại', onClick: retryCollection }}
       />
     );
@@ -206,6 +349,31 @@ function MovieDetailPage() {
             <LoadingStatus>Đang tải thông tin phim…</LoadingStatus>
             {showDetailSkeleton && <MovieDetailSkeleton />}
           </>
+        ) : tmdbPreview?.loading ? (
+          <>
+            <LoadingStatus>Đang tải thông tin phim từ TMDB…</LoadingStatus>
+            {showDetailSkeleton && <MovieDetailSkeleton />}
+          </>
+        ) : tmdbPreview?.error ? (
+          <div className="py-10 space-y-4">
+            <ErrorState
+              title="Không tải được thông tin phim"
+              description={loadErrorCopy(
+                'Không tìm thấy phim trong Thư viện và TMDB cũng không phản hồi.',
+              )}
+              retry={{ label: 'Thử lại', onClick: () => setTmdbRetryNonce((n) => n + 1) }}
+            />
+            <div className="flex justify-center">
+              <Button variant="secondary" onClick={() => navigate('/')}>
+                Về Thư viện
+              </Button>
+            </div>
+          </div>
+        ) : tmdbPreview?.data ? (
+          <TmdbNotInLibraryPreview
+            details={tmdbPreview.data}
+            mediaType={typeParam === 'tv' ? 'tv' : 'movie'}
+          />
         ) : (
           <div className="py-10">
             <EmptyState
@@ -388,6 +556,27 @@ function MovieDetailPage() {
               <div className="flex items-center justify-between mb-2.5 gap-3">
                 <SectionHeader>Tiến độ xem</SectionHeader>
                 <div className="flex items-center gap-2">
+                  <IconButton
+                    size="sm"
+                    variant="ghost"
+                    disabled={mutePending}
+                    onClick={() => void handleToggleMute(movie)}
+                    aria-busy={mutePending || undefined}
+                    aria-pressed={!!movie.notifications_muted}
+                    label={
+                      movie.notifications_muted
+                        ? 'Bật lại thông báo tập mới cho series này'
+                        : 'Tắt thông báo tập mới cho series này'
+                    }
+                  >
+                    {mutePending ? (
+                      <Spinner size={14} className="text-current" />
+                    ) : movie.notifications_muted ? (
+                      <BellOff size={15} strokeWidth={1.5} aria-hidden="true" />
+                    ) : (
+                      <Bell size={15} strokeWidth={1.5} aria-hidden="true" />
+                    )}
+                  </IconButton>
                   {!movie.progress.is_completed && (
                     <Button
                       variant="secondary"

@@ -179,9 +179,15 @@ function MarkWatchedDialog() {
             }}
             setHoverRating={setHoverRating}
             ratingRef={ratingRef}
+            onClearRating={() => setRatingError(null)}
+            describedbyId={ratingError ? 'mark-watched-rating-error' : undefined}
           />
           {ratingError && (
-            <p role="alert" className="text-body-sm text-danger ml-1">
+            <p
+              id="mark-watched-rating-error"
+              role="alert"
+              className="text-body-sm text-danger ml-1"
+            >
               {ratingError}
             </p>
           )}

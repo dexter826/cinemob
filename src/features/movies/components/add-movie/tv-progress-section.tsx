@@ -152,7 +152,15 @@ function TVProgressSection({
                 type="button"
                 aria-label="Tăng tập"
                 onClick={() => {
-                  const maxEpisodes = episodesPerSeason[currentSeason] || 999;
+                  const watchedBefore = Array.from(
+                    { length: currentSeason - 1 },
+                    (_, i) => episodesPerSeason[i + 1] || 0,
+                  ).reduce((sum, count) => sum + count, 0);
+                  const fallbackCap =
+                    totalEpisodes > 0
+                      ? Math.max(totalEpisodes - watchedBefore, currentEpisode)
+                      : 999;
+                  const maxEpisodes = episodesPerSeason[currentSeason] || fallbackCap;
                   setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
                 }}
                 className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"

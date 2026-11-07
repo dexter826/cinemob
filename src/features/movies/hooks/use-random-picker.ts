@@ -9,6 +9,7 @@ import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/add-movie-store';
 import useMovieStore from '../stores/movie-store';
+import { findLibraryEntry } from '../utils/movie-utils';
 
 export type PoolMovie = Movie | TMDBMovieResult;
 export type PoolType = 'watchlist' | 'trending' | null;
@@ -33,6 +34,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   const [randomAudio, setRandomAudio] = useState<Howl | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const shuffleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentIndexRef = useRef<number | null>(null);
   const audioStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
 
@@ -57,6 +59,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     () => movies.filter((movie) => (movie.status || 'history') === 'watchlist'),
     [movies],
   );
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
   const activePool = useMemo(() => {
     if (poolType === 'watchlist') return watchlistMovies;
     if (poolType === 'trending') return trending;
@@ -67,22 +73,21 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     const controller = new AbortController();
     if (!isOpen) {
       clearShuffleTimers();
-      setPoolType(null);
-      setCurrentIndex(null);
-      setIsShuffling(false);
-      setHasResult(false);
       randomAudio?.stop();
       return () => controller.abort();
     }
 
-    if (watchlistMovies.length > 0) {
-      setPoolType('watchlist');
-      setIsLoadingPool(false);
-      return () => controller.abort();
+    if (poolType === null) {
+      if (watchlistMovies.length > 0) {
+        setPoolType('watchlist');
+        setIsLoadingPool(false);
+        return () => controller.abort();
+      }
+
+      setPoolType('trending');
     }
 
-    setPoolType('trending');
-    if (trending.length === 0) {
+    if (poolType === 'trending' && trending.length === 0) {
       setIsLoadingPool(true);
       setPoolError(null);
       getTrendingMovies(1, controller.signal)
@@ -102,6 +107,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   }, [
     clearShuffleTimers,
     isOpen,
+    poolType,
     randomAudio,
     trending.length,
     watchlistMovies.length,
@@ -192,7 +198,8 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
   );
 
   useEffect(() => {
-    if (isOpen && poolType && activePool.length > 0) startShuffle(poolType);
+    if (isOpen && poolType && currentIndexRef.current === null && activePool.length > 0)
+      startShuffle(poolType);
   }, [activePool.length, isOpen, poolType, startShuffle]);
 
   const handleWatchNow = () => {
@@ -204,11 +211,14 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     }
     if (poolType === 'trending') {
       const movie = currentItem as TMDBMovieResult;
-      openAddModal({
-        movie,
-        mediaType:
-          movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie',
-      });
+      const mediaType: 'movie' | 'tv' =
+        movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie';
+      const saved = findLibraryEntry(movies, movie.id, mediaType);
+      if (saved?.docId) {
+        navigate(`/movie/${saved.id}${mediaType === 'tv' ? '?type=tv' : ''}`);
+      } else {
+        openAddModal({ movie, mediaType });
+      }
     }
     onClose();
   };
