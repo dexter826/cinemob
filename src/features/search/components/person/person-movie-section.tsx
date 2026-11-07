@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import useMovieStore from '@/features/movies/stores/movie-store';
+import { findLibraryEntry } from '@/features/movies/utils/movie-utils';
 import SearchField from '@/shared/components/ui/search-field';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
@@ -54,13 +55,8 @@ export function PersonMovieSection({
   const navigate = useNavigate();
   const { movies: savedMovies } = useMovieStore();
 
-  // So khớp cả media type: movie và series trên TMDB dùng chung dãy số id.
   const findSaved = (movie: PersonMovie) =>
-    savedMovies.find(
-      (m) =>
-        String(m.id) === String(movie.id) &&
-        (m.media_type ?? 'movie') === (movie.media_type === 'tv' ? 'tv' : 'movie'),
-    );
+    findLibraryEntry(savedMovies, movie.id, movie.media_type === 'tv' ? 'tv' : 'movie');
 
   const handleMovieClick = (movie: PersonMovie) => {
     const saved = findSaved(movie);

@@ -411,7 +411,7 @@ function StatsPage() {
                 {Object.keys(moviesByCountry).length === 0 && (
                   <EmptyState
                     icon={Globe}
-                    title="Chưa có dữ liệu"
+                    title="Chưa có dữ liệu quốc gia"
                     description="Thêm phim có thông tin quốc gia để xem bảng xếp hạng."
                     compact
                   />
@@ -435,7 +435,7 @@ function StatsPage() {
             {genreData.length === 0 ? (
               <EmptyState
                 icon={Star}
-                title="Chưa có dữ liệu"
+                title="Chưa có dữ liệu thể loại"
                 description="Thêm phim có thông tin thể loại để xem biểu đồ phân bổ."
                 compact
               />

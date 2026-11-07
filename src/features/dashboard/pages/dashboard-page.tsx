@@ -234,41 +234,28 @@ function DashboardPage() {
             >
               {processedMovies.map((movie) => {
                 const status = movie.status || 'history';
-                const quickAction =
-                  status === 'watchlist' ? (
-                    <button
-                      type="button"
-                      disabled={quickPending}
-                      onClick={() => openMarkWatched({ kind: 'library', movie })}
-                      aria-label={`Đánh dấu “${getMainTitle(movie)}” đã xem`}
-                      title="Đã xem"
-                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-                    >
-                      <Check size={13} strokeWidth={2} aria-hidden="true" />
-                    </button>
-                  ) : status === 'dropped' ? (
-                    <button
-                      type="button"
-                      disabled={quickPending}
-                      onClick={() => void resumeMovie(movie)}
-                      aria-label={`Tiếp tục xem “${getMainTitle(movie)}”`}
-                      title="Tiếp tục xem"
-                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-                    >
-                      <Play size={13} strokeWidth={1.5} aria-hidden="true" />
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={quickPending}
-                      onClick={() => void markWatchlist(movie)}
-                      aria-label={`Chuyển “${getMainTitle(movie)}” sang Sẽ xem`}
-                      title="Sẽ xem"
-                      className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-                    >
-                      <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />
-                    </button>
-                  );
+                const title = getMainTitle(movie);
+                const quickActionConfig =
+                  status === 'watchlist'
+                    ? {
+                        icon: <Check size={13} strokeWidth={2} aria-hidden="true" />,
+                        label: `Đánh dấu “${title}” đã xem`,
+                        tooltip: 'Đã xem',
+                        onClick: () => openMarkWatched({ kind: 'library', movie }),
+                      }
+                    : status === 'dropped'
+                      ? {
+                          icon: <Play size={13} strokeWidth={1.5} aria-hidden="true" />,
+                          label: `Tiếp tục xem “${title}”`,
+                          tooltip: 'Tiếp tục xem',
+                          onClick: () => void resumeMovie(movie),
+                        }
+                      : {
+                          icon: <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />,
+                          label: `Chuyển “${title}” sang Sẽ xem`,
+                          tooltip: 'Sẽ xem',
+                          onClick: () => void markWatchlist(movie),
+                        };
                 return (
                   <motion.div
                     key={movie.docId}
@@ -277,7 +264,7 @@ function DashboardPage() {
                     animate="show"
                   >
                     <PosterCard
-                      title={getMainTitle(movie)}
+                      title={title}
                       posterPath={movie.poster_path}
                       mediaType={movie.media_type}
                       source={movie.source}
@@ -292,7 +279,18 @@ function DashboardPage() {
                             }
                           : null
                       }
-                      actions={quickAction}
+                      actions={
+                        <button
+                          type="button"
+                          disabled={quickPending}
+                          onClick={quickActionConfig.onClick}
+                          aria-label={quickActionConfig.label}
+                          title={quickActionConfig.tooltip}
+                          className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
+                        >
+                          {quickActionConfig.icon}
+                        </button>
+                      }
                       onClick={() =>
                         navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
                       }

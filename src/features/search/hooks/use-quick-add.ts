@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
 import { getMovieDetails } from '../services/tmdb';
 import { addMovie } from '@/features/movies/services/movie-service';
-import { translateCountries } from '@/constants/countries';
+import { buildTMDBMovieDraft } from '@/features/movies/utils/tmdb-movie-draft';
 import { MESSAGES } from '@/constants/messages';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import { TMDBMovieResult } from '@/types';
@@ -29,28 +29,19 @@ export function useQuickAddTMDB() {
       try {
         const details = await getMovieDetails(Number(movie.id), mediaType);
         if (!details) throw new Error('TMDB details unavailable');
-        await addMovie({
-          uid: user.uid,
-          id: Number(movie.id),
-          title: details.title || details.name || getMainTitleForTMDB(movie),
-          title_vi: '',
-          poster_path: details.poster_path || movie.poster_path || '',
-          runtime: details.runtime || details.episode_run_time?.[0] || 0,
-          seasons: details.number_of_seasons || 0,
-          watched_at: new Date(),
-          status: 'watchlist',
-          rating: 0,
-          review: '',
-          tagline: details.tagline || '',
-          genres: details.genres?.map((g) => g.name).join(', ') || '',
-          release_date: details.release_date || details.first_air_date || '',
-          country: translateCountries(
-            details.production_countries?.map((c) => c.name).join(', ') || '',
-          ),
-          content: details.overview || '',
-          source: 'tmdb',
-          media_type: mediaType,
-        });
+        await addMovie(
+          buildTMDBMovieDraft({
+            uid: user.uid,
+            id: movie.id,
+            mediaType,
+            details,
+            fallbackTitle: getMainTitleForTMDB(movie),
+            fallbackPoster: movie.poster_path || '',
+            status: 'watchlist',
+            rating: 0,
+            watchedAt: new Date(),
+          }),
+        );
         showToast(MESSAGES.MOVIE.ADD_SUCCESS, 'success');
       } catch {
         showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');

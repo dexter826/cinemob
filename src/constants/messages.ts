@@ -21,10 +21,11 @@ export const MESSAGES = {
     MARK_WATCHLIST_SUCCESS: (title: string) => `Đã chuyển “${title}” sang Sẽ xem`,
     START_WATCHING_SUCCESS: (title: string) => `Đã bắt đầu xem “${title}” từ Mùa 1 Tập 1`,
     LOG_EPISODE_SUCCESS: (title: string, season: number, episode: number) =>
-      `Đã ghi nhận “${title}” — Mùa ${season} Tập ${episode}`,
+      `Đã ghi nhận “${title}” (Mùa ${season} Tập ${episode})`,
     LOG_EPISODE_COMPLETED: (title: string) => `Đã ghi nhận hết “${title}”`,
     QUICK_STATUS_ERROR: 'Không đổi được trạng thái. Thử lại sau.',
     LOG_EPISODE_ERROR: 'Không lưu được tiến độ. Thử lại sau.',
+    TRENDING_LOAD_ERROR: 'Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.',
   },
   ALBUM: {
     CREATE_SUCCESS: (name: string) => `Đã tạo album “${name}”`,
@@ -70,5 +71,4 @@ export const MESSAGES = {
     AVATAR_UNDO_SUCCESS: 'Đã hoàn tác ảnh đại diện',
     AVATAR_UNDO_ERROR: 'Không thể hoàn tác ảnh đại diện. Vui lòng thử lại sau.',
   },
-  LOGOUT_ERROR: 'Đăng xuất chưa thành công. Vui lòng thử lại sau.',
 } as const;

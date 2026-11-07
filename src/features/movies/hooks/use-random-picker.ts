@@ -4,6 +4,7 @@ import { useReducedMotion } from 'framer-motion';
 import { Howl } from 'howler';
 import randomAudioFile from '@/assets/audio/random.mp3';
 import { MOTION_DURATION } from '@/constants/animations';
+import { MESSAGES } from '@/constants/messages';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/add-movie-store';
@@ -90,7 +91,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
         })
         .catch(() => {
           if (!controller.signal.aborted)
-            setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
+            setPoolError(MESSAGES.MOVIE.TRENDING_LOAD_ERROR);
         })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoadingPool(false);
@@ -180,10 +181,10 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
           setPoolType('trending');
           startShuffle('trending', results);
         } else {
-          setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
+          setPoolError(MESSAGES.MOVIE.TRENDING_LOAD_ERROR);
         }
       } catch {
-        setPoolError('Không tải được danh sách phim thịnh hành. Vui lòng thử lại sau.');
+        setPoolError(MESSAGES.MOVIE.TRENDING_LOAD_ERROR);
       } finally {
         setIsLoadingPool(false);
       }

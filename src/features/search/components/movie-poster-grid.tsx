@@ -2,6 +2,7 @@ import { Bookmark, Check } from 'lucide-react';
 import { MovieStatus, TMDBMovieResult } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
+import Spinner from '@/shared/components/ui/spinner';
 import { useQuickAddTMDB } from '../hooks/use-quick-add';
 import { getMainTitleForTMDB, getSubTitleForTMDB } from '@/shared/utils/tmdb';
 
@@ -54,10 +55,15 @@ function MoviePosterGrid({ movies, getMovieStatus, onSelect }: MoviePosterGridPr
                     title="Sẽ xem"
                     className={quickActionButtonClass}
                   >
-                    <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />
+                    {pendingKey === quickKey ? (
+                      <Spinner size={13} className="text-current" />
+                    ) : (
+                      <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />
+                    )}
                   </button>
                   <button
                     type="button"
+                    disabled={pendingKey !== null}
                     onClick={() =>
                       openMarkWatched({
                         kind: 'tmdb',

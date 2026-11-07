@@ -5,10 +5,10 @@ import useMarkWatchedStore from '../stores/mark-watched-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';
 import { getMovieDetails } from '@/features/search/services/tmdb';
-import { translateCountries } from '@/constants/countries';
 import { MESSAGES } from '@/constants/messages';
 import { getMainTitle, getSubTitle } from '../utils/movie-utils';
 import { formatDateInput, formatTimeInput } from '../utils/movie-form-utils';
+import { buildTMDBMovieDraft } from '../utils/tmdb-movie-draft';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
@@ -27,6 +27,7 @@ function MarkWatchedDialog() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [date, setDate] = useState(() => formatDateInput(new Date()));
   const [time, setTime] = useState(() => formatTimeInput(new Date()));
+  const [dateError, setDateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitLock = useRef(false);
   const ratingRef = useRef<HTMLDivElement>(null);
@@ -58,6 +59,7 @@ function MarkWatchedDialog() {
       setRatingError(null);
       setDate(formatDateInput(new Date()));
       setTime(formatTimeInput(new Date()));
+      setDateError(null);
       setIsSubmitting(false);
     }
   }, [isOpen, target]);
@@ -70,6 +72,10 @@ function MarkWatchedDialog() {
       setRatingError(MESSAGES.MOVIE.REQUIRED_RATING);
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 600);
+      return;
+    }
+    if (!date) {
+      setDateError('Chọn ngày xem trước khi lưu.');
       return;
     }
     submitLock.current = true;
@@ -96,28 +102,20 @@ function MarkWatchedDialog() {
       } else if (target.kind === 'tmdb') {
         const details = await getMovieDetails(Number(target.id), mediaType);
         if (!details) throw new Error('TMDB details unavailable');
-        await addMovie({
-          uid: user!.uid,
-          id: Number(target.id),
-          title: details.title || details.name || target.title,
-          title_vi: '',
-          poster_path: details.poster_path || target.poster_path,
-          runtime: details.runtime || details.episode_run_time?.[0] || 0,
-          seasons: details.number_of_seasons || 0,
-          watched_at: watchedAt,
-          status: 'history',
-          rating,
-          review: '',
-          tagline: details.tagline || '',
-          genres: details.genres?.map((g) => g.name).join(', ') || '',
-          release_date: details.release_date || details.first_air_date || target.release_date || '',
-          country: translateCountries(
-            details.production_countries?.map((c) => c.name).join(', ') || '',
-          ),
-          content: details.overview || '',
-          source: 'tmdb',
-          media_type: mediaType,
-        });
+        await addMovie(
+          buildTMDBMovieDraft({
+            uid: user!.uid,
+            id: target.id,
+            mediaType,
+            details,
+            fallbackTitle: target.title,
+            fallbackPoster: target.poster_path,
+            fallbackReleaseDate: target.release_date,
+            status: 'history',
+            rating,
+            watchedAt,
+          }),
+        );
       } else {
         return;
       }
@@ -195,10 +193,20 @@ function MarkWatchedDialog() {
             <DatePicker
               id="mark-watched-date"
               value={date}
-              onChange={setDate}
+              onChange={(value) => {
+                setDate(value);
+                setDateError(null);
+              }}
               placeholder="Chọn ngày…"
               popupMode="dialog"
+              aria-invalid={dateError ? true : undefined}
+              aria-describedby={dateError ? 'mark-watched-date-error' : undefined}
             />
+            {dateError && (
+              <p id="mark-watched-date-error" role="alert" className="text-body-sm text-danger ml-1">
+                {dateError}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <label

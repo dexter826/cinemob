@@ -4,6 +4,7 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
 import useRandomSuggestionsStore from '@/features/movies/stores/random-suggestions-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import { findLibraryEntry } from '@/features/movies/utils/movie-utils';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
@@ -230,13 +231,8 @@ export const useSearch = () => {
     setShowSuggestions(false);
   };
 
-  // So khớp cả media type: movie và series trên TMDB dùng chung dãy số id.
   const getMovieStatus = (movieId: number, mediaType?: 'movie' | 'tv') => {
-    const movie = savedMovies.find(
-      (m) =>
-        String(m.id) === String(movieId) &&
-        (!mediaType || (m.media_type ?? 'movie') === mediaType),
-    );
+    const movie = findLibraryEntry(savedMovies, movieId, mediaType);
     return movie ? movie.status || 'history' : null;
   };
 

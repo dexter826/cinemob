@@ -148,9 +148,14 @@ function MovieDetailPage() {
 
   // Số tập mỗi mùa (TMDB) để biết lúc nào hết mùa khi tăng tập.
   const tvIdForEpisodes = movie?.source === 'tmdb' && movie.media_type === 'tv' ? Number(movie.id) : null;
+  const canQuickLog =
+    !!tvIdForEpisodes &&
+    !!movie?.progress &&
+    !movie.progress.is_completed &&
+    movie.status !== 'watchlist';
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   useEffect(() => {
-    if (!tvIdForEpisodes || !isWatching) return;
+    if (!tvIdForEpisodes || !canQuickLog) return;
     let cancelled = false;
     const controller = new AbortController();
     void (async () => {
@@ -169,7 +174,7 @@ function MovieDetailPage() {
       cancelled = true;
       controller.abort();
     };
-  }, [tvIdForEpisodes, isWatching]);
+  }, [tvIdForEpisodes, canQuickLog]);
 
   const handleDeleteMovie = () => {
     const docId = movie?.docId;
