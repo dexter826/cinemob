@@ -468,7 +468,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       className="text-primary"
                       aria-hidden="true"
                     />
-                    Cảm nhận
+                    Review
                   </label>
                   <TextArea
                     id="add-movie-review"
@@ -477,7 +477,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     autoComplete="off"
                     value={formData.review}
                     onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                    placeholder="Chia sẻ cảm nhận của bạn về phim…"
+                    placeholder="Chia sẻ review của bạn về phim…"
                     variant="boxed"
                     textareaClassName="rounded-card px-4 py-3 font-medium placeholder:text-text-muted"
                   />

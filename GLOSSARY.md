@@ -112,9 +112,9 @@ _Avoid_: Chế độ ẩn, Khóa thư viện, Private list, Ẩn phim
 Chỉ số chấm điểm từ 1 đến 10 biểu thị mức độ yêu thích hoặc chất lượng tác phẩm theo nhận định của người dùng.
 _Avoid_: Rating, Số sao, Điểm phim
 
-**Cảm nhận**:
+**Review**:
 Đoạn văn bản ghi lại góc nhìn, ấn tượng hoặc nhận xét mang tính cá nhân của người dùng sau khi xem tác phẩm.
-_Avoid_: Đánh giá (dạng chữ), Bình luận, Comment, Review bài viết
+_Avoid_: Cảm nhận, Đánh giá (dạng chữ), Bình luận, Comment
 
 **Xem tóm tắt**:
 Hình thức theo dõi nội dung tác phẩm thông qua các video hoặc bài tóm tắt cô đọng (recap) thay vì thưởng thức bản phim gốc trọn vẹn.

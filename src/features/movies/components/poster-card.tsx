@@ -177,7 +177,7 @@ function PosterCard({
 
       {review && (
         <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
-          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Cảm nhận</Chip>
+          <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>
         </span>
       )}
 
