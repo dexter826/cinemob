@@ -13,6 +13,8 @@ interface TimePickerProps {
   disabled?: boolean;
   minuteStep?: number;
   id?: string;
+  /** 'dialog' luôn mở bảng chọn dạng hộp thoại (kể cả desktop) — dùng khi nằm trong dialog khác. */
+  popupMode?: 'popover' | 'dialog';
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean | 'true' | 'false';
@@ -28,6 +30,7 @@ function TimePicker({
   disabled = false,
   minuteStep = 1,
   id,
+  popupMode = 'popover',
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
@@ -37,6 +40,7 @@ function TimePicker({
   const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
+  const useDialogPresentation = isMobile || popupMode === 'dialog';
   const reducedMotion = useReducedMotion() ?? false;
   const popoverMotion = getPanelMotion(reducedMotion);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,15 +58,15 @@ function TimePicker({
       }
     };
 
-    if (isOpen && !isMobile) {
+    if (isOpen && !useDialogPresentation) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, isMobile]);
+  }, [isOpen, useDialogPresentation]);
 
   useEffect(() => {
-    if (!isOpen || isMobile) return undefined;
+    if (!isOpen || useDialogPresentation) return undefined;
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -71,12 +75,12 @@ function TimePicker({
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, isMobile]);
+  }, [isOpen, useDialogPresentation]);
 
   // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
   useEffect(() => {
-    if (isOpen && !isMobile) popoverRef.current?.focus();
-  }, [isOpen, isMobile]);
+    if (isOpen && !useDialogPresentation) popoverRef.current?.focus();
+  }, [isOpen, useDialogPresentation]);
 
   // Cuộn đến giờ phút đã chọn khi mở picker
   useEffect(() => {
@@ -152,25 +156,25 @@ function TimePicker({
   const renderPicker = () => (
     <motion.div
       ref={popoverRef}
-      id={isMobile ? undefined : `${controlId}-dialog`}
-      tabIndex={isMobile ? undefined : -1}
+      id={useDialogPresentation ? undefined : `${controlId}-dialog`}
+      tabIndex={useDialogPresentation ? undefined : -1}
       className={`
                 bg-surface-elevated border border-border rounded-card p-4
                 ${
-                  isMobile
+                  useDialogPresentation
                     ? 'relative w-full max-w-[280px] mx-auto'
                     : 'absolute top-full right-0 mt-1 z-50 w-56'
                 }
             `}
-      role={isMobile ? undefined : 'dialog'}
-      aria-label={isMobile ? undefined : 'Chọn giờ'}
-      onClick={(e) => isMobile && e.stopPropagation()}
-      initial={isMobile ? undefined : popoverMotion.initial}
-      animate={isMobile ? undefined : popoverMotion.animate}
-      exit={isMobile ? undefined : popoverMotion.exit}
+      role={useDialogPresentation ? undefined : 'dialog'}
+      aria-label={useDialogPresentation ? undefined : 'Chọn giờ'}
+      onClick={(e) => useDialogPresentation && e.stopPropagation()}
+      initial={useDialogPresentation ? undefined : popoverMotion.initial}
+      animate={useDialogPresentation ? undefined : popoverMotion.animate}
+      exit={useDialogPresentation ? undefined : popoverMotion.exit}
       transition={popoverMotion.transition}
     >
-      {isMobile && (
+      {useDialogPresentation && (
         <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
           <span id={dialogTitleId} className="text-title-md text-text-primary">
             Chọn giờ
@@ -288,7 +292,7 @@ function TimePicker({
       </button>
 
       {/* Khung chọn giờ */}
-      {isMobile ? (
+      {useDialogPresentation ? (
         <Dialog
           open={isOpen}
           onClose={closePicker}

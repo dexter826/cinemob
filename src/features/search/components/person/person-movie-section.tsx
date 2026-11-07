@@ -1,7 +1,10 @@
 import type { RefObject } from 'react';
 import { ArrowDown, ArrowUp, Calendar, Film, Filter, Type } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import { findLibraryEntry } from '@/features/movies/utils/movie-utils';
 import SearchField from '@/shared/components/ui/search-field';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
@@ -49,8 +52,18 @@ export function PersonMovieSection({
   onPageChange,
 }: PersonMovieSectionProps) {
   const { openAddModal } = useAddMovieStore();
+  const navigate = useNavigate();
+  const { movies: savedMovies } = useMovieStore();
+
+  const findSaved = (movie: PersonMovie) =>
+    findLibraryEntry(savedMovies, movie.id, movie.media_type === 'tv' ? 'tv' : 'movie');
 
   const handleMovieClick = (movie: PersonMovie) => {
+    const saved = findSaved(movie);
+    if (saved) {
+      navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`);
+      return;
+    }
     openAddModal({
       movie: {
         id: movie.id,
@@ -162,17 +175,21 @@ export function PersonMovieSection({
       {paginatedMovies.length > 0 ? (
         <div className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-            {paginatedMovies.map((movie) => (
-              <PosterCard
-                key={`${movie.id}-${movie.media_type}`}
-                title={getMainTitleForTMDB(movie)}
-                posterPath={movie.poster_path}
-                mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
-                meta={(movie.release_date || movie.first_air_date || '').split('-')[0]}
-                credit={movie.character || movie.job}
-                onClick={() => handleMovieClick(movie)}
-              />
-            ))}
+            {paginatedMovies.map((movie) => {
+              const saved = findSaved(movie);
+              return (
+                <PosterCard
+                  key={`${movie.id}-${movie.media_type}`}
+                  title={getMainTitleForTMDB(movie)}
+                  posterPath={movie.poster_path}
+                  mediaType={movie.media_type === 'tv' ? 'tv' : 'movie'}
+                  meta={(movie.release_date || movie.first_air_date || '').split('-')[0]}
+                  credit={movie.character || movie.job}
+                  status={saved ? saved.status || 'history' : null}
+                  onClick={() => handleMovieClick(movie)}
+                />
+              );
+            })}
           </div>
 
           {totalPages > 1 && (

@@ -14,6 +14,7 @@ import {
   isSubscribedToPush,
 } from '../services/push-notification-service';
 import { UpcomingEpisode } from '@/types';
+import { MESSAGES } from '@/constants/messages';
 
 const formatDateParam = (date: Date): string =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
@@ -136,21 +137,19 @@ export const useReleaseCalendar = () => {
       if (pushSubscribed) {
         await unsubscribeFromPushNotifications();
         setPushSubscribed(false);
-        showToast('Đã tắt thông báo tập phim mới', 'success');
+        showToast(MESSAGES.CALENDAR.PUSH_OFF_SUCCESS, 'success');
       } else {
         const subscription = await subscribeToPushNotifications();
         if (subscription) {
           setPushSubscribed(true);
-          showToast('Đã bật thông báo tập phim mới', 'success');
+          showToast(MESSAGES.CALENDAR.PUSH_ON_SUCCESS, 'success');
         }
       }
       setNotificationPermission(getNotificationPermission());
     } catch (error) {
       console.error('Push notification error:', error);
       showToast(
-        pushSubscribed
-          ? 'Không tắt được thông báo. Vui lòng thử lại sau.'
-          : 'Không bật được thông báo. Vui lòng thử lại sau.',
+        pushSubscribed ? MESSAGES.CALENDAR.PUSH_OFF_ERROR : MESSAGES.CALENDAR.PUSH_ON_ERROR,
         'error',
       );
     } finally {
@@ -235,6 +234,8 @@ export const useReleaseCalendar = () => {
     const movie = movies.find((m) => Number(m.id) === episode.seriesId);
     if (movie) {
       navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`);
+    } else {
+      showToast(MESSAGES.CALENDAR.SERIES_REMOVED, 'info');
     }
   };
 

@@ -4,6 +4,7 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
 import useRandomSuggestionsStore from '@/features/movies/stores/random-suggestions-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import { findLibraryEntry } from '@/features/movies/utils/movie-utils';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
@@ -213,8 +214,8 @@ export const useSearch = () => {
   const navigate = useNavigate();
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
-    if (getMovieStatus(movie.id)) {
-      const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+    const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
+    if (getMovieStatus(movie.id, isTV ? 'tv' : 'movie')) {
       navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
       return;
     }
@@ -230,8 +231,8 @@ export const useSearch = () => {
     setShowSuggestions(false);
   };
 
-  const getMovieStatus = (movieId: number) => {
-    const movie = savedMovies.find((m) => m.id === movieId);
+  const getMovieStatus = (movieId: number, mediaType?: 'movie' | 'tv') => {
+    const movie = findLibraryEntry(savedMovies, movieId, mediaType);
     return movie ? movie.status || 'history' : null;
   };
 

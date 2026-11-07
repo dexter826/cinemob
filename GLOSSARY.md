@@ -14,13 +14,13 @@ _Avoid_: Dashboard, Bảng điều khiển, Trang chủ, Bộ sưu tập chính
 Một thực thể nội dung điện ảnh hoặc truyền hình mà người dùng lưu trữ và theo dõi trong hệ thống.
 _Avoid_: Nội dung, Media, Item, Tiết mục, Show
 
-**Phim lẻ**:
+**Movie**:
 Tác phẩm điện ảnh hoàn chỉnh được phát hành dưới dạng một tập duy nhất với thời lượng cố định.
-_Avoid_: Phim đơn, Movie đơn lẻ, Điện ảnh độc lập
+_Avoid_: Phim lẻ, Phim đơn, Điện ảnh độc lập
 
-**Phim bộ**:
+**Series**:
 Tác phẩm truyền hình nhiều tập được chia theo các mùa phát sóng và có tiến độ theo dõi từng tập.
-_Avoid_: TV Show, TV Series, Phim truyền hình nhiều tập, Show
+_Avoid_: Phim bộ, TV Show, Phim truyền hình nhiều tập, Show
 
 ## Nhân vật & Đội ngũ
 
@@ -43,8 +43,8 @@ _Avoid_: Teaser, Clip xem trước, Video giới thiệu, Preview
 ## Trạng thái theo dõi
 
 **Đã xem**:
-Trạng thái của tác phẩm mà người dùng đã xem trọn vẹn, hoặc đã bắt đầu xem và đang ghi nhận tiến độ.
-_Avoid_: Lịch sử xem, Đã hoàn thành (cho cả phim bộ)
+Trạng thái của tác phẩm mà người dùng đã xem trọn vẹn.
+_Avoid_: Lịch sử xem, Đã hoàn thành (cho cả series)
 
 **Sẽ xem**:
 Trạng thái của tác phẩm được lưu vào danh sách chờ để thưởng thức trong tương lai.
@@ -55,17 +55,17 @@ Trạng thái của tác phẩm người dùng chủ động ngừng theo dõi g
 _Avoid_: Tạm dừng, Ngừng xem, Đã hủy, Dropped
 
 **Đang xem**:
-Trạng thái suy diễn (derived state) của một Phim bộ thuộc nhóm Đã xem nhưng chưa hoàn thành tất cả các tập.
-_Avoid_: Trạng thái Đang xem độc lập
+Tab Thư viện tập hợp các series thuộc nhóm Đã xem chưa xem hết tất cả các tập. Dữ liệu chỉ lưu ba trạng thái Đã xem / Sẽ xem / Bỏ dở; Đang xem là view suy diễn từ tiến độ theo dõi.
+_Avoid_: Đang theo dõi, Watching
 
 ## Tiến độ theo dõi
 
 **Mùa**:
-Phần phát sóng định kỳ của một phim bộ, bao gồm một tập hợp các tập phim liên kết theo cốt truyện.
+Phần phát sóng định kỳ của một series, bao gồm một tập hợp các tập phim liên kết theo cốt truyện.
 _Avoid_: Season, Phần, Đợt chiếu
 
 **Tập**:
-Đơn vị nội dung phát sóng nhỏ nhất có thời lượng riêng biệt trong một mùa của phim bộ.
+Đơn vị nội dung phát sóng nhỏ nhất có thời lượng riêng biệt trong một mùa của series.
 _Avoid_: Episode, Chập, Phần nhỏ
 
 **Tiến độ xem**:
@@ -73,7 +73,7 @@ Chỉ số phản ánh vị trí mùa và tập người dùng đã xem đến, 
 _Avoid_: Điểm dừng, Vị trí phát, Dấu trang
 
 **Hoàn thành**:
-Trạng thái ghi nhận người dùng đã xem toàn bộ các tập của tất cả các mùa hiện có trong phim bộ.
+Trạng thái ghi nhận người dùng đã xem toàn bộ các tập của tất cả các mùa hiện có trong series.
 _Avoid_: Đã xong, Hết phim, Kết thúc
 
 ## Tổ chức & Bộ sưu tập
@@ -112,9 +112,9 @@ _Avoid_: Chế độ ẩn, Khóa thư viện, Private list, Ẩn phim
 Chỉ số chấm điểm từ 1 đến 10 biểu thị mức độ yêu thích hoặc chất lượng tác phẩm theo nhận định của người dùng.
 _Avoid_: Rating, Số sao, Điểm phim
 
-**Cảm nhận**:
+**Review**:
 Đoạn văn bản ghi lại góc nhìn, ấn tượng hoặc nhận xét mang tính cá nhân của người dùng sau khi xem tác phẩm.
-_Avoid_: Đánh giá (dạng chữ), Bình luận, Comment, Review bài viết
+_Avoid_: Cảm nhận, Đánh giá (dạng chữ), Bình luận, Comment
 
 **Xem tóm tắt**:
 Hình thức theo dõi nội dung tác phẩm thông qua các video hoặc bài tóm tắt cô đọng (recap) thay vì thưởng thức bản phim gốc trọn vẹn.
@@ -123,7 +123,7 @@ _Avoid_: Xem qua đánh giá, Xem review, Xem recap
 ## Lịch & Thông báo
 
 **Lịch phát sóng**:
-Lịch hiển thị mốc thời gian công chiếu các tập phim mới thuộc những Phim bộ trong danh mục theo dõi của người dùng (Đã xem hoặc Sẽ xem).
+Lịch hiển thị mốc thời gian công chiếu các tập phim mới thuộc những Series trong danh mục theo dõi của người dùng (Đã xem hoặc Sẽ xem).
 _Avoid_: Lịch chiếu phim, Lịch công chiếu rạp, Lịch phát hành, Calendar
 
 **Tập mới**:

@@ -5,7 +5,7 @@ import { Movie, Album } from '@/types';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
 import useAlbumStore from '../stores/album-store';
-import { addMovieToAlbum, addAlbum } from '../services/album-service';
+import { addMovieToAlbum, addAlbum, removeMovieFromAlbum } from '../services/album-service';
 import { getDisplayTitle } from '@/features/movies/utils/movie-utils';
 import Skeleton from '@/shared/components/ui/skeleton';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
@@ -16,6 +16,8 @@ import { Dialog, DialogBody } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { IconButton } from '@/shared/components/ui/icon-button';
 import { TextField } from '@/shared/components/ui';
+
+const UNDO_REMOVE_MS = 7000;
 
 interface AlbumSelectorModalProps {
   isOpen: boolean;
@@ -28,13 +30,13 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
   const { showToast } = useToastStore();
   const { albums, loading, error, retry } = useAlbumStore();
   const [addingToAlbum, setAddingToAlbum] = useState<string | null>(null);
+  const [removingFromAlbum, setRemovingFromAlbum] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creatingAlbum, setCreatingAlbum] = useState(false);
   const newAlbumInputRef = useRef<HTMLInputElement>(null);
   const creatingRef = useRef(false);
 
-  // Chỉ tự focus input trên thiết bị trỏ chuột; mobile tránh bật keyboard đột ngột.
   useEffect(() => {
     if (isOpen && showCreateForm && window.matchMedia('(hover: hover)').matches) {
       newAlbumInputRef.current?.focus();
@@ -76,7 +78,7 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
       await addAlbum({
         uid: user.uid,
         name: newAlbumName.trim(),
-        movieDocIds: [],
+        movieDocIds: movie?.docId ? [movie.docId] : [],
       });
       showToast(MESSAGES.ALBUM.CREATE_SUCCESS(newAlbumName), 'success');
       setNewAlbumName('');
@@ -89,9 +91,31 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
     }
   };
 
-  const availableAlbums = albums.filter(
-    (album) => album.movieDocIds && !album.movieDocIds.includes(movie?.docId || ''),
-  );
+  const handleRemoveFromAlbum = async (album: Album) => {
+    if (!album.docId || !movie?.docId || removingFromAlbum) return;
+    setRemovingFromAlbum(album.docId);
+    try {
+      await removeMovieFromAlbum(album.docId, movie.docId);
+      showToast(
+        MESSAGES.ALBUM.REMOVE_MOVIE_SUCCESS(getDisplayTitle(movie)),
+        'info',
+        UNDO_REMOVE_MS,
+        {
+          label: MESSAGES.MOVIE.UNDO,
+          onAction: () => {
+            void addMovieToAlbum(album.docId!, movie.docId!).catch(() => {
+              showToast(MESSAGES.ALBUM.ADD_MOVIE_ERROR, 'error');
+            });
+          },
+        },
+      );
+    } catch (error) {
+      showToast(MESSAGES.ALBUM.REMOVE_MOVIE_ERROR, 'error');
+    } finally {
+      setRemovingFromAlbum(null);
+    }
+  };
+
   const showSkeleton = useDelayedSkeleton(loading && albums.length === 0);
 
   return (
@@ -208,30 +232,25 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
               ))}
             </div>
           ) : null
-        ) : availableAlbums.length === 0 ? (
+        ) : albums.length === 0 ? (
           <EmptyState
             icon={FolderPlus}
             title="Không có album để thêm"
-            description={
-              albums.length === 0
-                ? 'Bạn chưa có album nào.'
-                : 'Phim này đã có trong tất cả album của bạn.'
-            }
+            description="Bạn chưa có album nào."
             compact
           />
         ) : (
           <div aria-busy={loading} className="space-y-3">
             <h3 className="text-label-caps text-text-secondary ml-1">Chọn album</h3>
-            {availableAlbums.map((album) => (
-              <button
-                key={album.docId}
-                type="button"
-                onClick={() => handleAddToAlbum(album)}
-                disabled={addingToAlbum === album.docId}
-                aria-label={`Thêm phim vào album “${album.name}”`}
-                className="w-full p-4 rounded-dialog border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left cursor-pointer focus-ring focus-visible:outline-none"
-              >
-                <span className="flex items-center gap-4">
+            {albums.map((album) => {
+              const inAlbum = !!movie?.docId && album.movieDocIds?.includes(movie.docId);
+              const pendingAction =
+                addingToAlbum === album.docId || removingFromAlbum === album.docId;
+              return (
+                <div
+                  key={album.docId}
+                  className="w-full p-4 rounded-dialog border border-border flex items-center gap-4"
+                >
                   <span
                     aria-hidden="true"
                     className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
@@ -246,12 +265,33 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
                       {album.movieDocIds.length} phim
                     </span>
                   </span>
-                  <span className="text-primary font-bold text-body-sm shrink-0">
-                    {addingToAlbum === album.docId ? 'Đang xử lý…' : 'Chọn'}
-                  </span>
-                </span>
-              </button>
-            ))}
+                  {inAlbum ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-danger hover:bg-danger/10"
+                      loading={removingFromAlbum === album.docId}
+                      disabled={pendingAction}
+                      onClick={() => void handleRemoveFromAlbum(album)}
+                      aria-label={`Gỡ phim khỏi album “${album.name}”`}
+                    >
+                      Gỡ
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      loading={addingToAlbum === album.docId}
+                      disabled={pendingAction}
+                      onClick={() => void handleAddToAlbum(album)}
+                      aria-label={`Thêm phim vào album “${album.name}”`}
+                    >
+                      Chọn
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </DialogBody>

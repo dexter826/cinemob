@@ -454,7 +454,7 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
 ### Chip
 
 - **Biến thể màu:** `chip-gold` (nhấn mạnh/chọn), `chip-success` (hoàn thành), `chip-neutral` (nằm trên ảnh), `chip-muted` (phụ trợ trên nền ứng dụng).
-- **Quy chuẩn:** Chip là thành phần hiển thị trạng thái hoặc phân loại, không đóng vai trò thay thế nút bấm có tương tác lớn.
+- **Quy chuẩn:** Chip là thành phần hiển thị trạng thái hoặc phân loại, không đóng vai trò thay thế nút bấm có tương tác lớn. Ngoại lệ được phép: chip bộ lọc đang bật có thể kèm nút gỡ nhỏ (`onRemove`) — nút gỡ là hành vi phụ trợ, chip vẫn không phải nút hành động chính.
 
 ### Dropdown & MultiSelect
 

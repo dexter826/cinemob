@@ -8,8 +8,9 @@ export const MOVIE_STATUS_LABEL: Record<MovieStatus, string> = {
 };
 
 /** Nhãn tab ở Thư viện — ngắn hơn chip để vừa số đếm bên cạnh. */
-export const MOVIE_STATUS_TAB_LABEL: Record<MovieStatus, string> = {
+export const MOVIE_STATUS_TAB_LABEL: Record<MovieStatus | 'watching', string> = {
   history: 'Đã xem',
+  watching: 'Đang xem',
   watchlist: 'Sẽ xem',
   dropped: 'Bỏ dở',
 };

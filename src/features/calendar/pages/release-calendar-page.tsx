@@ -190,6 +190,7 @@ function ReleaseCalendarPage() {
               icon={Tv}
               title="Chưa có series nào"
               description="Thêm series vào danh sách “Đã xem” hoặc “Sẽ xem” để theo dõi lịch phát sóng."
+              action={{ label: 'Tìm series', to: '/search' }}
               className="bg-surface border border-border rounded-dialog py-6 sm:py-8"
             />
           ) : (

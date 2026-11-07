@@ -1,9 +1,5 @@
 import { Chip, Button } from '@/shared/components/ui';
-import {
-  type ActiveTab,
-  type FilterState,
-  type FilterUpdateFn,
-} from '../hooks/use-dashboard-filters';
+import { type FilterState, type FilterUpdateFn } from '../hooks/use-dashboard-filters';
 import { formatRatingRange } from './dashboard-filter-controls';
 
 export interface ActiveFilterChip {
@@ -14,7 +10,6 @@ export interface ActiveFilterChip {
 
 export function buildActiveFilterChips(
   filters: FilterState,
-  activeTab: ActiveTab,
   updateFilter: FilterUpdateFn,
   availableGenres: { value: string; label: string }[],
   availableCountries: { value: string; label: string }[],
@@ -47,17 +42,10 @@ export function buildActiveFilterChips(
       clear: () => updateFilter('country', ''),
     });
   }
-  if (activeTab === 'history' && filters.watchStatus !== 'all') {
-    chipItems.push({
-      key: 'watchStatus',
-      label: `Trạng thái: ${filters.watchStatus === 'watching' ? 'Đang theo dõi' : 'Đã xem'}`,
-      clear: () => updateFilter('watchStatus', 'all'),
-    });
-  }
   if (filters.sourceType !== 'all') {
     chipItems.push({
       key: 'sourceType',
-      label: `Nguồn: ${filters.sourceType === 'normal' ? 'Xem trực tiếp' : 'Xem qua đánh giá'}`,
+      label: `Nguồn: ${filters.sourceType === 'normal' ? 'Xem trực tiếp' : 'Xem tóm tắt'}`,
       clear: () => updateFilter('sourceType', 'all'),
     });
   }
@@ -76,7 +64,6 @@ export function buildActiveFilterChips(
 interface DashboardActiveFiltersProps {
   filters: FilterState;
   updateFilter: FilterUpdateFn;
-  activeTab: ActiveTab;
   availableGenres: { value: string; label: string }[];
   availableCountries: { value: string; label: string }[];
   clearFilters: () => void;
@@ -85,14 +72,12 @@ interface DashboardActiveFiltersProps {
 function DashboardActiveFilters({
   filters,
   updateFilter,
-  activeTab,
   availableGenres,
   availableCountries,
   clearFilters,
 }: DashboardActiveFiltersProps) {
   const chipItems = buildActiveFilterChips(
     filters,
-    activeTab,
     updateFilter,
     availableGenres,
     availableCountries,

@@ -156,7 +156,7 @@ function SearchFilters({
                                 aria-hidden="true"
                               />
                             )}
-                            <span>{isTV ? 'Series' : 'Phim lẻ'}</span>
+                            <span>{isTV ? 'Series' : 'Movie'}</span>
                           </div>
                           {year && (
                             <div className="flex items-center gap-1 text-body-sm text-text-secondary">
@@ -197,7 +197,7 @@ function SearchFilters({
         <Dropdown
           options={[
             { value: 'all', label: 'Tất cả loại' },
-            { value: 'movie', label: 'Phim lẻ' },
+            { value: 'movie', label: 'Movie' },
             { value: 'tv', label: 'Series' },
           ]}
           value={filters.type}

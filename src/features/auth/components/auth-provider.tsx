@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo, useCall
 import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/shared/lib/firebase';
 import useToastStore from '@/shared/stores/toast-store';
+import { MESSAGES } from '@/constants/messages';
 
 export interface AuthContextType {
   user: User | null;
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const code = (error as { code?: string })?.code ?? '';
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
       console.error('Error signing in', error);
-      showToast('Đăng nhập chưa thành công. Vui lòng thử lại sau.', 'error');
+      showToast(MESSAGES.AUTH.LOGIN_ERROR, 'error');
     }
   }, [showToast]);
 
@@ -79,8 +80,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signOut(auth);
     } catch (error) {
       console.error('Error signing out', error);
+      showToast(MESSAGES.AUTH.LOGOUT_ERROR, 'error');
     }
-  }, []);
+  }, [showToast]);
 
   const refreshUser = useCallback(async () => {
     if (!auth.currentUser) return;

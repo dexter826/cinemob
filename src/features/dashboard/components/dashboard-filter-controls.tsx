@@ -3,7 +3,6 @@ import { Star } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import { classNames } from '@/shared/utils/class-names';
 import {
-  type ActiveTab,
   type FilterState,
   type FilterUpdateFn,
   type SourceType,
@@ -12,7 +11,6 @@ import {
 export interface FilterControlsProps {
   filters: FilterState;
   updateFilter: FilterUpdateFn;
-  activeTab: ActiveTab;
   availableYears: { value: string | number; label: string }[];
   availableCountries: { value: string; label: string }[];
   availableGenres: { value: string; label: string }[];
@@ -20,7 +18,6 @@ export interface FilterControlsProps {
 
 const RATING_STARS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-/** Nhãn khoảng đánh giá dùng chung: đầy đủ cho panel, rút gọn cho chip. */
 export function formatRatingRange(
   ratingRange: [number, number] | null,
   variant: 'full' | 'compact' = 'full',
@@ -41,7 +38,6 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 export function FilterControls({
   filters,
   updateFilter,
-  activeTab,
   availableYears,
   availableCountries,
   availableGenres,
@@ -90,30 +86,14 @@ export function FilterControls({
       <div className="h-px bg-border-default" />
 
       <div className="space-y-3">
-        <GroupLabel>Lần xem</GroupLabel>
-        {activeTab === 'history' && (
-          <Dropdown
-            id="df-watch-status"
-            aria-label="Trạng thái"
-            options={[
-              { value: 'all', label: 'Tất cả trạng thái' },
-              { value: 'watching', label: 'Đang theo dõi' },
-              { value: 'completed', label: 'Đã xem' },
-            ]}
-            value={filters.watchStatus}
-            onChange={(value) =>
-              updateFilter('watchStatus', value as 'all' | 'watching' | 'completed')
-            }
-            placeholder="Chọn trạng thái…"
-          />
-        )}
+        <GroupLabel>Nguồn</GroupLabel>
         <Dropdown
           id="df-source-type"
           aria-label="Nguồn nội dung"
           options={[
             { value: 'all', label: 'Tất cả nguồn' },
             { value: 'normal', label: 'Xem trực tiếp' },
-            { value: 'review', label: 'Xem qua đánh giá' },
+            { value: 'review', label: 'Xem tóm tắt' },
           ]}
           value={filters.sourceType}
           onChange={(value) => updateFilter('sourceType', value as SourceType)}

@@ -1,29 +1,34 @@
 import ErrorState from '@/shared/components/ui/error-state';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Calendar,
+  Check,
   CircleSlash,
   FolderPlus,
   Pencil,
   Play,
+  Plus,
   Star,
   Trash2,
 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
-import useAlertStore from '@/shared/stores/alert-store';
+import useMarkWatchedStore from '../stores/mark-watched-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
+import { useGoBackOrHome } from '@/shared/hooks/use-go-back';
 import { useMovieDetail } from '../hooks/use-movie-detail';
 import { useDeleteMovie } from '../hooks/use-delete-movie';
 import { useDropMovie } from '../hooks/use-drop-movie';
+import { useQuickStatus } from '../hooks/use-quick-status';
 import {
   getMainTitle,
   getSubTitle,
   getTranslatedGenres,
   getSeasonWatchedDates,
 } from '../utils/movie-utils';
+import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
 import { PLACEHOLDER_IMAGE } from '@/constants';
@@ -86,7 +91,7 @@ function MovieCreditsSkeleton() {
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
     movies,
@@ -95,18 +100,28 @@ function MovieDetailPage() {
     retry: retryCollection,
   } = useMovieStore();
   const { openAddModal } = useAddMovieStore();
-  const { showAlert } = useAlertStore();
   const handleDelete = useDeleteMovie();
+  const goBackOrHome = useGoBackOrHome();
   const { dropMovie, resumeMovie, isPending } = useDropMovie();
+  const { startWatching, logEpisode, isPending: quickPending } = useQuickStatus();
+  const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
 
   const typeParam = searchParams.get('type');
   const movie = useMemo(() => {
-    const wantedType = typeParam === 'tv' ? 'tv' : typeParam === 'movie' ? 'movie' : null;
-    return movies.find(
-      (m) => String(m.id) === id && (!wantedType || (m.media_type ?? 'movie') === wantedType),
-    );
+    const matches = movies.filter((m) => String(m.id) === id);
+    if (typeParam === 'tv' || typeParam === 'movie') {
+      return matches.find((m) => (m.media_type ?? 'movie') === typeParam);
+    }
+    // Không có ?type: ưu tiên movie và bổ sung type lên URL để link chia sẻ đúng entry.
+    return matches.find((m) => (m.media_type ?? 'movie') === 'movie') ?? matches[0];
   }, [movies, id, typeParam]);
+
+  useEffect(() => {
+    if (!typeParam && movie && (movie.media_type ?? 'movie') === 'tv') {
+      setSearchParams({ type: 'tv' }, { replace: true });
+    }
+  }, [typeParam, movie, setSearchParams]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
   const showDetailSkeleton = useDelayedSkeleton(!movie && collectionLoading);
   const showExtrasSkeleton = useDelayedSkeleton(extrasLoading && !credits);
@@ -120,6 +135,7 @@ function MovieDetailPage() {
       : movie?.poster_path || PLACEHOLDER_IMAGE;
   const canAddToAlbum = !!movie && (movie.status || 'history') === 'history' && !!movie.docId;
   const isDropped = movie?.status === 'dropped';
+  const isWatchlist = movie?.status === 'watchlist';
   const isWatching =
     !!movie &&
     (movie.status || 'history') === 'history' &&
@@ -130,20 +146,42 @@ function MovieDetailPage() {
   // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
+  // Số tập mỗi mùa (TMDB) để biết lúc nào hết mùa khi tăng tập.
+  const tvIdForEpisodes =
+    movie?.source === 'tmdb' && movie.media_type === 'tv' ? Number(movie.id) : null;
+  const canQuickLog =
+    !!tvIdForEpisodes &&
+    !!movie?.progress &&
+    !movie.progress.is_completed &&
+    movie.status !== 'watchlist';
+  const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
+  useEffect(() => {
+    if (!tvIdForEpisodes || !canQuickLog) return;
+    let cancelled = false;
+    const controller = new AbortController();
+    void (async () => {
+      try {
+        const seasons = await getTVShowSeasonCount(tvIdForEpisodes, controller.signal);
+        if (!seasons) return;
+        const info = await getTVShowEpisodeInfo(tvIdForEpisodes, seasons, controller.signal);
+        if (!cancelled && Object.keys(info.episodes_per_season).length > 0) {
+          setEpisodesPerSeason(info.episodes_per_season);
+        }
+      } catch {
+        // Thiếu dữ liệu TMDB: vẫn tăng tập theo tổng số đã lưu.
+      }
+    })();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [tvIdForEpisodes, canQuickLog]);
+
   const handleDeleteMovie = () => {
     const docId = movie?.docId;
     if (!docId) return;
-    showAlert({
-      title: `Xóa “${mainTitle}” khỏi Thư viện?`,
-      message: 'Toàn bộ đánh giá, ghi chú và tiến độ xem của phim này sẽ bị gỡ bỏ.',
-      type: 'danger',
-      confirmText: 'Xóa khỏi thư viện',
-      cancelText: 'Giữ lại phim',
-      onConfirm: () => {
-        handleDelete(docId);
-        navigate('/');
-      },
-    });
+    handleDelete(docId);
+    goBackOrHome();
   };
 
   if (collectionError)
@@ -159,7 +197,7 @@ function MovieDetailPage() {
     return (
       <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
         <div className="flex items-center justify-between pb-4 md:pb-5">
-          <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
+          <IconButton label="Quay lại trang trước" onClick={goBackOrHome} variant="secondary">
             <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
           </IconButton>
         </div>
@@ -182,49 +220,35 @@ function MovieDetailPage() {
     );
   }
 
-  const primaryAction =
-    movie.status === 'watchlist' ? (
-      hasValidTrailer ? (
-        <Button
-          leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
-          aria-label={`Xem trailer “${mainTitle}” trên YouTube (mở tab mới)`}
-          onClick={() =>
-            window.open(`https://www.youtube.com/watch?v=${trailerKey}`, '_blank', 'noopener')
-          }
-        >
-          Xem trailer
-        </Button>
-      ) : (
-        <Button
-          disabled
-          aria-label="Phim chưa có trailer"
-          leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
-        >
-          Không có trailer
-        </Button>
-      )
-    ) : isDropped ? (
-      <Button
-        leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
-        loading={isPending}
-        onClick={() => void resumeMovie(movie)}
-      >
-        Tiếp tục xem
-      </Button>
-    ) : (
-      <Button
-        leadingIcon={<FolderPlus size={16} strokeWidth={1.5} aria-hidden="true" />}
-        disabled={!canAddToAlbum}
-        onClick={() => setShowAlbumSelector(true)}
-      >
-        Thêm vào album
-      </Button>
-    );
+  const primaryAction = isWatchlist ? (
+    <Button
+      leadingIcon={<Check size={16} strokeWidth={2} aria-hidden="true" />}
+      onClick={() => movie && openMarkWatched({ kind: 'library', movie })}
+    >
+      Đã xem
+    </Button>
+  ) : isDropped ? (
+    <Button
+      leadingIcon={<Play size={16} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />}
+      loading={isPending}
+      onClick={() => void resumeMovie(movie)}
+    >
+      Tiếp tục xem
+    </Button>
+  ) : (
+    <Button
+      leadingIcon={<FolderPlus size={16} strokeWidth={1.5} aria-hidden="true" />}
+      disabled={!canAddToAlbum}
+      onClick={() => setShowAlbumSelector(true)}
+    >
+      Thêm vào album
+    </Button>
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
       <div className="flex items-center justify-between pb-4 md:pb-5">
-        <IconButton label="Quay lại trang trước" onClick={() => navigate(-1)} variant="secondary">
+        <IconButton label="Quay lại trang trước" onClick={goBackOrHome} variant="secondary">
           <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
       </div>
@@ -244,7 +268,7 @@ function MovieDetailPage() {
           {movie.status !== 'watchlist' && (
             <p className="mt-3 text-micro-caps normal-case text-text-secondary flex items-center gap-1.5 tabular-nums">
               <Calendar size={12} strokeWidth={1.5} aria-hidden="true" />
-              Đã xem: {formatDateAny(movie.watched_at)}
+              {movie.status === 'dropped' ? 'Bỏ dở' : 'Đã xem'}: {formatDateAny(movie.watched_at)}
             </p>
           )}
         </div>
@@ -287,6 +311,50 @@ function MovieDetailPage() {
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
             {primaryAction}
 
+            {isWatchlist && movie.media_type === 'tv' && (
+              <Button
+                variant="secondary"
+                leadingIcon={
+                  <Play size={14} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                }
+                loading={quickPending}
+                onClick={() => void startWatching(movie)}
+              >
+                Bắt đầu xem
+              </Button>
+            )}
+
+            {isWatchlist &&
+              (hasValidTrailer ? (
+                <Button
+                  variant="secondary"
+                  leadingIcon={
+                    <Play size={14} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                  }
+                  aria-label={`Xem trailer “${mainTitle}” trên YouTube (mở tab mới)`}
+                  onClick={() =>
+                    window.open(
+                      `https://www.youtube.com/watch?v=${trailerKey}`,
+                      '_blank',
+                      'noopener',
+                    )
+                  }
+                >
+                  Xem trailer
+                </Button>
+              ) : (
+                <Button
+                  variant="secondary"
+                  disabled
+                  aria-label="Phim chưa có trailer"
+                  leadingIcon={
+                    <Play size={14} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+                  }
+                >
+                  Không có trailer
+                </Button>
+              ))}
+
             {isWatching && (
               <Button
                 variant="secondary"
@@ -317,9 +385,22 @@ function MovieDetailPage() {
 
           {movie.media_type === 'tv' && movie.progress && movie.status !== 'watchlist' && (
             <div className="mt-7 border border-border rounded-card p-4 sm:p-5">
-              <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center justify-between mb-2.5 gap-3">
                 <SectionHeader>Tiến độ xem</SectionHeader>
-                {movie.progress.is_completed && <Chip tone="success">Đã xem</Chip>}
+                <div className="flex items-center gap-2">
+                  {!movie.progress.is_completed && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      leadingIcon={<Plus size={14} strokeWidth={2} aria-hidden="true" />}
+                      loading={quickPending}
+                      onClick={() => void logEpisode(movie, episodesPerSeason)}
+                    >
+                      +1 tập
+                    </Button>
+                  )}
+                  {movie.progress.is_completed && <Chip tone="success">Đã xem</Chip>}
+                </div>
               </div>
               <p className="text-display-md text-text-primary tabular-nums">
                 {movie.progress.is_completed
@@ -348,7 +429,7 @@ function MovieDetailPage() {
                 <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-micro-caps normal-case text-text-secondary tabular-nums">
                   {getSeasonWatchedDates(movie).map(({ season, date }) => (
                     <span key={season}>
-                      Phần {season}:{' '}
+                      Mùa {season}:{' '}
                       {date.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' })}
                     </span>
                   ))}
@@ -373,7 +454,7 @@ function MovieDetailPage() {
                   className="fill-primary text-primary"
                   aria-hidden="true"
                 />
-                Đánh giá của bạn
+                Cảm nhận của bạn
               </SectionHeader>
               <p className="mt-2 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
                 {movie.review}

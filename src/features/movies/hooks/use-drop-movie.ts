@@ -40,16 +40,28 @@ export function useDropMovie() {
   const resumeMovie = useCallback(
     async (movie: Movie) => {
       const docId = movie.docId;
+      const previousWatchedAt = movie.watched_at;
       if (!docId || isPending) return;
       setIsPending(true);
       try {
-        await updateMovie(docId, { status: 'history' });
-        showToast(MESSAGES.MOVIE.RESUME_SUCCESS(getMainTitle(movie)), 'success');
+        // Xem lại tính từ bây giờ để "Đã xem" phản ánh lần xem gần nhất.
+        await updateMovie(docId, { status: 'history', watched_at: new Date() });
       } catch {
         showToast(MESSAGES.MOVIE.RESUME_ERROR, 'error');
+        return;
       } finally {
         setIsPending(false);
       }
+      showToast(MESSAGES.MOVIE.RESUME_SUCCESS(getMainTitle(movie)), 'success', UNDO_DROP_MS, {
+        label: MESSAGES.MOVIE.UNDO,
+        onAction: () => {
+          void updateMovie(docId, { status: 'dropped', watched_at: previousWatchedAt }).catch(
+            () => {
+              showToast(MESSAGES.MOVIE.DROP_ERROR, 'error');
+            },
+          );
+        },
+      });
     },
     [showToast, isPending],
   );

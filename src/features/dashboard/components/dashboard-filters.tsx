@@ -4,16 +4,32 @@ import LazyDialog from '@/shared/components/ui/lazy-dialog';
 import SearchField from '@/shared/components/ui/search-field';
 import { classNames } from '@/shared/utils/class-names';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
-import {
-  type ActiveTab,
-  type FilterState,
-  type FilterUpdateFn,
-} from '../hooks/use-dashboard-filters';
+import { type FilterState, type FilterUpdateFn } from '../hooks/use-dashboard-filters';
 import { FilterControls } from './dashboard-filter-controls';
 import { buildActiveFilterChips } from './dashboard-active-filters';
 import type { DashboardFilterSheetProps } from './dashboard-filter-sheet';
 
-interface DashboardFiltersProps {
+interface DashboardSearchProps {
+  filters: FilterState;
+  updateFilter: FilterUpdateFn;
+}
+
+/** Hàng 1 (phải): tìm trong thư viện. */
+export function DashboardSearch({ filters, updateFilter }: DashboardSearchProps) {
+  return (
+    <SearchField
+      variant="underline"
+      name="library-search"
+      value={filters.searchQuery}
+      onChange={(next) => updateFilter('searchQuery', next)}
+      placeholder="Tìm trong thư viện của bạn…"
+      label="Lọc phim trong thư viện"
+      className="w-full md:flex-none md:w-72 min-w-0"
+    />
+  );
+}
+
+interface DashboardRefinementsProps {
   filters: FilterState;
   updateFilter: FilterUpdateFn;
   showFilters: boolean;
@@ -21,7 +37,6 @@ interface DashboardFiltersProps {
   filterRef: React.RefObject<HTMLDivElement | null>;
   toggleRef: React.RefObject<HTMLButtonElement | null>;
   toggleSortOrder: () => void;
-  activeTab: ActiveTab;
   availableYears: { value: string | number; label: string }[];
   availableCountries: { value: string; label: string }[];
   availableGenres: { value: string; label: string }[];
@@ -64,7 +79,8 @@ function CapsButton({
   );
 }
 
-function DashboardFilters({
+/** Hàng 2: loại nội dung, sắp xếp, nút bộ lọc và bề mặt bộ lọc (popover/sheet). */
+export function DashboardRefinements({
   filters,
   updateFilter,
   showFilters,
@@ -72,12 +88,11 @@ function DashboardFilters({
   filterRef,
   toggleRef,
   toggleSortOrder,
-  activeTab,
   availableYears,
   availableCountries,
   availableGenres,
   clearFilters,
-}: DashboardFiltersProps) {
+}: DashboardRefinementsProps) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -99,7 +114,6 @@ function DashboardFilters({
 
   const chipItems = buildActiveFilterChips(
     filters,
-    activeTab,
     updateFilter,
     availableGenres,
     availableCountries,
@@ -120,116 +134,100 @@ function DashboardFilters({
   return (
     <div
       ref={filterRef}
-      className="relative flex flex-col items-stretch lg:items-end gap-2.5 w-full lg:w-auto"
+      className="relative flex items-center justify-between lg:justify-end gap-x-1 sm:gap-x-2 lg:gap-x-3 w-full lg:w-auto"
     >
-      <div className="flex flex-wrap items-center gap-x-0 lg:gap-x-3 gap-y-1 w-full lg:w-auto lg:flex-nowrap justify-end">
-        <SearchField
-          variant="underline"
-          name="library-search"
-          value={filters.searchQuery}
-          onChange={(next) => updateFilter('searchQuery', next)}
-          placeholder="Tìm trong thư viện của bạn…"
-          label="Lọc phim trong thư viện"
-          className="flex-1 lg:flex-none lg:w-72 min-w-0"
-        />
-
-        <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
-
-        <div className="flex items-center justify-between lg:justify-end gap-x-1 sm:gap-x-2 lg:gap-x-3 w-full lg:w-auto max-lg:order-last">
-          <div role="group" aria-label="Loại nội dung" className="flex items-center shrink-0">
-            <CapsButton
-              active={filters.contentType === 'all'}
-              onClick={() => updateFilter('contentType', 'all')}
-            >
-              Tất cả
-            </CapsButton>
-            <CapsButton
-              active={filters.contentType === 'movie'}
-              onClick={() => updateFilter('contentType', 'movie')}
-            >
-              Phim lẻ
-            </CapsButton>
-            <CapsButton
-              active={filters.contentType === 'tv'}
-              onClick={() => updateFilter('contentType', 'tv')}
-            >
-              Series
-            </CapsButton>
-          </div>
-
-          <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
-
-          <div role="group" aria-label="Sắp xếp" className="flex items-center shrink-0">
-            <CapsButton
-              active={filters.sortBy === 'date'}
-              onClick={() => updateFilter('sortBy', 'date')}
-            >
-              Ngày
-            </CapsButton>
-            <CapsButton
-              active={filters.sortBy === 'title'}
-              onClick={() => updateFilter('sortBy', 'title')}
-            >
-              Tên
-            </CapsButton>
-            <button
-              type="button"
-              onClick={toggleSortOrder}
-              title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
-              aria-label={
-                filters.sortOrder === 'asc'
-                  ? 'Đang sắp xếp tăng dần, bấm để đổi chiều'
-                  : 'Đang sắp xếp giảm dần, bấm để đổi chiều'
-              }
-              className="ml-0.5 inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-control text-text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-            >
-              {filters.sortOrder === 'asc' ? (
-                <ArrowUp size={15} strokeWidth={1.5} aria-hidden="true" />
-              ) : (
-                <ArrowDown size={15} strokeWidth={1.5} aria-hidden="true" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        <button
-          ref={toggleRef}
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggle();
-          }}
-          aria-expanded={filtersOpen}
-          aria-label={toggleLabel}
-          className={classNames(
-            'group relative w-11 h-12 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer border-b border-border lg:border-b-0',
-            filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
-          )}
+      <div role="group" aria-label="Loại nội dung" className="flex items-center shrink-0">
+        <CapsButton
+          active={filters.contentType === 'all'}
+          onClick={() => updateFilter('contentType', 'all')}
         >
-          {filtersOpen ? (
-            <X size={18} strokeWidth={1.5} aria-hidden="true" />
+          Tất cả
+        </CapsButton>
+        <CapsButton
+          active={filters.contentType === 'movie'}
+          onClick={() => updateFilter('contentType', 'movie')}
+        >
+          Movie
+        </CapsButton>
+        <CapsButton
+          active={filters.contentType === 'tv'}
+          onClick={() => updateFilter('contentType', 'tv')}
+        >
+          Series
+        </CapsButton>
+      </div>
+
+      <span aria-hidden="true" className="hidden lg:block w-px h-5 bg-border-default" />
+
+      <div role="group" aria-label="Sắp xếp" className="flex items-center shrink-0">
+        <CapsButton
+          active={filters.sortBy === 'date'}
+          onClick={() => updateFilter('sortBy', 'date')}
+        >
+          Ngày
+        </CapsButton>
+        <CapsButton
+          active={filters.sortBy === 'title'}
+          onClick={() => updateFilter('sortBy', 'title')}
+        >
+          Tên
+        </CapsButton>
+        <button
+          type="button"
+          onClick={toggleSortOrder}
+          title={filters.sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'}
+          aria-label={
+            filters.sortOrder === 'asc'
+              ? 'Đang sắp xếp tăng dần, bấm để đổi chiều'
+              : 'Đang sắp xếp giảm dần, bấm để đổi chiều'
+          }
+          className="ml-0.5 inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-control text-text-secondary hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+        >
+          {filters.sortOrder === 'asc' ? (
+            <ArrowUp size={15} strokeWidth={1.5} aria-hidden="true" />
           ) : (
-            <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
+            <ArrowDown size={15} strokeWidth={1.5} aria-hidden="true" />
           )}
-          {!filtersOpen && chipItems.length > 0 && (
-            <span
-              aria-hidden="true"
-              className="absolute top-1 right-0.5 min-w-[15px] h-[15px] px-0.5 inline-flex items-center justify-center rounded-poster bg-primary text-on-primary text-micro-caps font-bold leading-none tabular-nums"
-            >
-              {chipItems.length}
-            </span>
-          )}
-          <span
-            aria-hidden="true"
-            className={classNames(
-              'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-150',
-              filtersOpen
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
-            )}
-          />
         </button>
       </div>
+
+      <button
+        ref={toggleRef}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleToggle();
+        }}
+        aria-expanded={filtersOpen}
+        aria-label={toggleLabel}
+        className={classNames(
+          'group relative w-11 h-10 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer border-b border-border lg:border-b-0',
+          filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
+        )}
+      >
+        {filtersOpen ? (
+          <X size={18} strokeWidth={1.5} aria-hidden="true" />
+        ) : (
+          <Filter size={18} strokeWidth={1.5} aria-hidden="true" />
+        )}
+        {!filtersOpen && chipItems.length > 0 && (
+          <span
+            aria-hidden="true"
+            className="absolute top-0.5 right-0.5 min-w-[15px] h-[15px] px-0.5 inline-flex items-center justify-center rounded-poster bg-primary text-on-primary text-micro-caps font-bold leading-none tabular-nums"
+          >
+            {chipItems.length}
+          </span>
+        )}
+        <span
+          aria-hidden="true"
+          className={classNames(
+            'pointer-events-none absolute inset-x-0 bottom-[-1px] h-0.5 bg-primary transition-opacity duration-150',
+            filtersOpen
+              ? 'opacity-100'
+              : 'opacity-0 group-hover:opacity-40 group-focus-visible:opacity-100',
+          )}
+        />
+      </button>
 
       {showFilters && isDesktop && (
         <div
@@ -237,9 +235,8 @@ function DashboardFilters({
           aria-label="Bộ lọc"
           className="absolute top-full right-0 mt-2 z-50 bg-surface-elevated p-5 rounded-dialog border border-border flex flex-col gap-5 w-80 max-w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto overscroll-contain"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-label-caps font-semibold text-text-secondary">Bộ lọc</span>
-            {chipItems.length > 0 && (
+          {chipItems.length > 0 && (
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={clearFilters}
@@ -247,12 +244,11 @@ function DashboardFilters({
               >
                 Xóa bộ lọc
               </button>
-            )}
-          </div>
+            </div>
+          )}
           <FilterControls
             filters={filters}
             updateFilter={updateFilter}
-            activeTab={activeTab}
             availableYears={availableYears}
             availableCountries={availableCountries}
             availableGenres={availableGenres}
@@ -270,7 +266,6 @@ function DashboardFilters({
           isOpen: !isDesktop && sheetOpen,
           filters,
           updateFilter,
-          activeTab,
           availableYears,
           availableCountries,
           availableGenres,
@@ -282,5 +277,3 @@ function DashboardFilters({
     </div>
   );
 }
-
-export default DashboardFilters;

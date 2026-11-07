@@ -1,12 +1,14 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import ErrorState from '@/shared/components/ui/error-state';
 import { useSearch } from '../hooks/use-search';
+import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import PageHeader from '@/shared/components/ui/page-header';
 import SearchFilters from '../components/search-filters';
 import SearchResults from '../components/search-results';
 import RandomSuggestionsSection from '../components/random-suggestions-section';
 
 function SearchPage() {
+  useScrollRestore('search');
   const {
     filters,
     updateFilter,

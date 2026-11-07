@@ -10,6 +10,8 @@ import EmptyState from '@/shared/components/ui/empty-state';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import PageHeader from '@/shared/components/ui/page-header';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
+import { useGoBackOrHome } from '@/shared/hooks/use-go-back';
+import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { PersonMovieSection } from '../components/person/person-movie-section';
 import { usePersonDetail, PERSON_MOVIES_PER_PAGE } from '../hooks/use-person-detail';
 
@@ -46,6 +48,8 @@ function PersonProfileSkeleton() {
 function PersonDetailPage() {
   const { personId } = useParams<{ personId: string }>();
   const navigate = useNavigate();
+  useScrollRestore(`person:${personId ?? ''}`);
+  const goBackOrHome = useGoBackOrHome();
   const {
     loading,
     retry,
@@ -94,7 +98,7 @@ function PersonDetailPage() {
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <LoadingStatus>{loading ? 'Đang tải thông tin nghệ sĩ…' : ''}</LoadingStatus>
         <PageHeader
-          onBack={() => navigate(-1)}
+          onBack={goBackOrHome}
           leading={<User className="text-primary w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />}
           loading={loading}
           title={person?.name || 'Chi tiết nghệ sĩ'}

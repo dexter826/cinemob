@@ -368,7 +368,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                         Loại hình
                       </span>
                       <span className="text-body-sm font-semibold text-text-primary text-right truncate tabular-nums">
-                        {isTVSeries ? 'Series' : 'Phim lẻ'}
+                        {isTVSeries ? 'Series' : 'Movie'}
                       </span>
                     </div>
                     {summaryMeta.map((row) => (
@@ -429,7 +429,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       <MessageSquare size={20} strokeWidth={1.5} aria-hidden="true" />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-body font-bold text-text-primary">Xem qua đánh giá</h3>
+                      <h3 className="text-body font-bold text-text-primary">Xem tóm tắt</h3>
                       <p className="text-body-sm text-text-secondary font-medium">
                         Bật nếu bạn đã xem bản tóm tắt phim
                       </p>
@@ -438,7 +438,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   <Switch
                     checked={!!formData.is_review}
                     onToggle={() => setFormData({ ...formData, is_review: !formData.is_review })}
-                    label="Xem qua đánh giá"
+                    label="Xem tóm tắt"
                   />
                 </div>
               )}
@@ -468,7 +468,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                       className="text-primary"
                       aria-hidden="true"
                     />
-                    Cảm nhận
+                    Review
                   </label>
                   <TextArea
                     id="add-movie-review"
@@ -477,7 +477,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                     autoComplete="off"
                     value={formData.review}
                     onChange={(e) => setFormData({ ...formData, review: e.target.value })}
-                    placeholder="Chia sẻ cảm nhận của bạn về phim…"
+                    placeholder="Chia sẻ review của bạn về phim…"
                     variant="boxed"
                     textareaClassName="rounded-card px-4 py-3 font-medium placeholder:text-text-muted"
                   />
@@ -587,7 +587,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
             : movieExists && !isEditMode
               ? 'Đã có trong thư viện'
               : isEditMode
-                ? 'Cập nhật'
+                ? 'Lưu thay đổi'
                 : 'Lưu phim'}
         </Button>
       </div>

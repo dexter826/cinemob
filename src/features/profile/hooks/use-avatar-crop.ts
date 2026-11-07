@@ -9,6 +9,7 @@ import {
   updateUserAvatar,
 } from '@/features/profile/services/avatar-service';
 import useToastStore from '@/shared/stores/toast-store';
+import { MESSAGES } from '@/constants/messages';
 import {
   CROP_SIZE,
   MAX_FILE_BYTES,
@@ -284,13 +285,13 @@ export function useAvatarCrop(): UseAvatarCropResult {
 
       await updateUserAvatar(user, croppedBlob);
       await refreshUser();
-      showToast('Đã cập nhật ảnh đại diện', 'success');
+      showToast(MESSAGES.PROFILE.AVATAR_UPDATE_SUCCESS, 'success');
       reset();
     } catch (error: unknown) {
       const message =
         error instanceof Error && error.message
           ? error.message
-          : 'Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau.';
+          : MESSAGES.PROFILE.AVATAR_UPDATE_ERROR;
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {
@@ -309,25 +310,23 @@ export function useAvatarCrop(): UseAvatarCropResult {
     try {
       await revertToGoogleAvatar(user);
       await refreshUser();
-      showToast('Đã khôi phục ảnh đại diện Google', 'info', UNDO_AVATAR_MS, {
-        label: 'Hoàn tác',
+      showToast(MESSAGES.PROFILE.AVATAR_REVERT_SUCCESS, 'info', UNDO_AVATAR_MS, {
+        label: MESSAGES.MOVIE.UNDO,
         onAction: () => {
           if (!previousPhotoURL) return;
           setUserAvatarUrl(user, previousPhotoURL)
             .then(() => {
               refreshUser();
-              showToast('Đã hoàn tác ảnh đại diện', 'success');
+              showToast(MESSAGES.PROFILE.AVATAR_UNDO_SUCCESS, 'success');
             })
-            .catch(() =>
-              showToast('Không thể hoàn tác ảnh đại diện. Vui lòng thử lại sau.', 'error'),
-            );
+            .catch(() => showToast(MESSAGES.PROFILE.AVATAR_UNDO_ERROR, 'error'));
         },
       });
     } catch (error: unknown) {
       const message =
         error instanceof Error && error.message
           ? error.message
-          : 'Không thể khôi phục ảnh đại diện. Vui lòng thử lại sau.';
+          : MESSAGES.PROFILE.AVATAR_REVERT_ERROR;
       setErrorMessage(message);
       showToast(message, 'error');
     } finally {

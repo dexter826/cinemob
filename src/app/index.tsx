@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
 import Login from '@/features/auth/components/login';
 const Dashboard = lazy(() => import('@/features/dashboard/pages/dashboard-page'));
 const SearchPage = lazy(() => import('@/features/search/pages/search-page'));
@@ -20,6 +21,7 @@ const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/release
 const MemberProfilePage = lazy(() => import('@/features/profile/pages/member-profile-page'));
 const NotFoundPage = lazy(() => import('@/shared/pages/not-found-page'));
 const loadAddMovieModal = () => import('@/features/movies/components/add-movie-modal');
+const loadMarkWatchedDialog = () => import('@/features/movies/components/mark-watched-dialog');
 import Layout from '@/app/components/layout';
 import SplashScreen from '@/shared/components/feedback/splash-screen';
 import Loading from '@/shared/components/ui/loading';
@@ -67,6 +69,9 @@ function MainApp() {
   const isAddMovieOpen = useAddMovieStore((state) => state.isOpen);
   const modalOwnerUid = useAddMovieStore((state) => state.ownerUid);
   const closeAddModal = useAddMovieStore((state) => state.closeAddModal);
+  const isMarkWatchedOpen = useMarkWatchedStore((state) => state.isOpen);
+  const markWatchedOwnerUid = useMarkWatchedStore((state) => state.ownerUid);
+  const closeMarkWatched = useMarkWatchedStore((state) => state.closeMarkWatched);
   const collectionUid = useMovieStore((state) => state.activeUid);
   useAppInit();
   if (authLoading) return <SplashScreen />;
@@ -98,6 +103,15 @@ function MainApp() {
         componentProps={{}}
         size="4xl"
         presentation="fullscreen-mobile"
+      />
+      <LazyDialog
+        open={isMarkWatchedOpen && markWatchedOwnerUid === user.uid}
+        onClose={closeMarkWatched}
+        title="Đánh dấu đã xem"
+        loader={loadMarkWatchedDialog}
+        componentProps={{}}
+        size="md"
+        presentation="sheet"
       />
     </Layout>
   );
