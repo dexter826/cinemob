@@ -173,13 +173,10 @@ function PosterCard({
             {rating!.toFixed(1)}
           </span>
         )}
-      </div>
-
-      {review && (
-        <span className="absolute bottom-12 left-2.5 z-10 pointer-events-none">
+        {review && (
           <Chip icon={<Eye size={9} strokeWidth={1.5} aria-hidden="true" />}>Review</Chip>
-        </span>
-      )}
+        )}
+      </div>
 
       {(onRemove || actions) && (
         <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-150">
