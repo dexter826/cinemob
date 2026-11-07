@@ -158,7 +158,13 @@ export const useReleaseCalendar = () => {
   };
 
   const tvSeries = useMemo(() => {
-    return movies.filter((m) => m.media_type === 'tv' && m.source === 'tmdb');
+    return movies.filter(
+      (m) =>
+        m.media_type === 'tv' &&
+        m.source === 'tmdb' &&
+        m.status !== 'dropped' &&
+        !m.notifications_muted,
+    );
   }, [movies]);
 
   const mutateParams = useCallback(

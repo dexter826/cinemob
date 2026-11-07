@@ -31,6 +31,7 @@ export interface Movie {
     season_dates?: Record<string, string>;
   };
   is_review?: boolean;
+  notifications_muted?: boolean;
 }
 
 export interface Album {
@@ -60,6 +61,7 @@ export interface ProfileMovie {
   rating?: number;
   watched_at?: Timestamp | Date;
   is_review?: boolean;
+  notifications_muted?: boolean;
 }
 
 export type MemberGender = 'male' | 'female' | 'other';

@@ -51,6 +51,9 @@ export const MESSAGES = {
   },
   CALENDAR: {
     SERIES_REMOVED: 'Series này không còn trong Thư viện của bạn',
+    MUTE_ON: 'Đã tắt thông báo tập mới cho series này',
+    MUTE_OFF: 'Đã bật lại thông báo tập mới cho series này',
+    MUTE_ERROR: 'Không đổi được thông báo. Thử lại sau.',
     PUSH_ON_SUCCESS: 'Đã bật thông báo tập phim mới',
     PUSH_OFF_SUCCESS: 'Đã tắt thông báo tập phim mới',
     PUSH_ON_ERROR: 'Không bật được thông báo. Vui lòng thử lại sau.',

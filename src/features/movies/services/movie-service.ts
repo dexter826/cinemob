@@ -111,6 +111,7 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     content: typeof d.content === 'string' ? d.content : '',
     progress: d.progress as Movie['progress'],
     is_review: d.is_review === true,
+    notifications_muted: d.notifications_muted === true,
   };
 };
 

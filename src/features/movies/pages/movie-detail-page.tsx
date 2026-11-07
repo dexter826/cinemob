@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
+  Bell,
+  BellOff,
   Calendar,
   Check,
   CircleSlash,
@@ -15,6 +17,10 @@ import {
 } from 'lucide-react';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
+import useToastStore from '@/shared/stores/toast-store';
+import { updateMovie } from '../services/movie-service';
+import { Movie } from '@/types';
+import { MESSAGES } from '@/constants/messages';
 import useMarkWatchedStore from '../stores/mark-watched-store';
 import AlbumSelectorModal from '@/features/albums/components/album-selector-modal';
 import { useGoBackOrHome } from '@/shared/hooks/use-go-back';
@@ -106,7 +112,26 @@ function MovieDetailPage() {
   const { dropMovie, resumeMovie, isPending } = useDropMovie();
   const { startWatching, logEpisode, isPending: quickPending } = useQuickStatus();
   const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
+  const { showToast } = useToastStore();
   const [showAlbumSelector, setShowAlbumSelector] = useState(false);
+  const [mutePending, setMutePending] = useState(false);
+
+  const handleToggleMute = async (target: Movie) => {
+    const docId = target.docId;
+    if (!docId || mutePending) return;
+    setMutePending(true);
+    try {
+      await updateMovie(docId, { notifications_muted: !target.notifications_muted });
+      showToast(
+        target.notifications_muted ? MESSAGES.CALENDAR.MUTE_OFF : MESSAGES.CALENDAR.MUTE_ON,
+        'success',
+      );
+    } catch {
+      showToast(MESSAGES.CALENDAR.MUTE_ERROR, 'error');
+    } finally {
+      setMutePending(false);
+    }
+  };
 
   const typeParam = searchParams.get('type');
   const movie = useMemo(() => {
@@ -389,6 +414,25 @@ function MovieDetailPage() {
               <div className="flex items-center justify-between mb-2.5 gap-3">
                 <SectionHeader>Tiến độ xem</SectionHeader>
                 <div className="flex items-center gap-2">
+                  <IconButton
+                    size="sm"
+                    variant="ghost"
+                    disabled={mutePending}
+                    onClick={() => void handleToggleMute(movie)}
+                    aria-busy={mutePending || undefined}
+                    aria-pressed={!!movie.notifications_muted}
+                    label={
+                      movie.notifications_muted
+                        ? 'Bật lại thông báo tập mới cho series này'
+                        : 'Tắt thông báo tập mới cho series này'
+                    }
+                  >
+                    {movie.notifications_muted ? (
+                      <BellOff size={15} strokeWidth={1.5} aria-hidden="true" />
+                    ) : (
+                      <Bell size={15} strokeWidth={1.5} aria-hidden="true" />
+                    )}
+                  </IconButton>
                   {!movie.progress.is_completed && (
                     <Button
                       variant="secondary"
