@@ -18,7 +18,6 @@ export const MESSAGES = {
     RESUME_ERROR: 'Không thể cập nhật trạng thái phim. Vui lòng thử lại.',
     UNDO: 'Hoàn tác',
     MARK_WATCHED_SUCCESS: (title: string) => `Đã đánh dấu “${title}” đã xem`,
-    MARK_WATCHLIST_SUCCESS: (title: string) => `Đã chuyển “${title}” sang Sẽ xem`,
     START_WATCHING_SUCCESS: (title: string) => `Đã bắt đầu xem “${title}” từ Mùa 1 Tập 1`,
     LOG_EPISODE_SUCCESS: (title: string, season: number, episode: number) =>
       `Đã ghi nhận “${title}” (Mùa ${season} Tập ${episode})`,

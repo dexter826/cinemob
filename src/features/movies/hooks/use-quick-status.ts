@@ -4,45 +4,18 @@ import { updateMovie } from '../services/movie-service';
 import useToastStore from '@/shared/stores/toast-store';
 import { getMainTitle } from '../utils/movie-utils';
 import { MESSAGES } from '@/constants/messages';
-import { Movie, MovieStatus } from '@/types';
+import { Movie } from '@/types';
 import { formatDateInput } from '../utils/movie-form-utils';
 
 const UNDO_QUICK_MS = 7000;
 
 /**
  * Đổi trạng thái nhanh 1 chạm từ card/nút chính, không cần mở form:
- * đưa về Sẽ xem, bắt đầu xem series, +1 tập — đều kèm toast hoàn tác 7s.
+ * bắt đầu xem series, +1 tập — đều kèm toast hoàn tác 7s.
  */
 export function useQuickStatus() {
   const { showToast } = useToastStore();
   const [isPending, setIsPending] = useState(false);
-
-  /** Đưa phim về "Sẽ xem"; hoàn tác trả về đúng trạng thái cũ. */
-  const markWatchlist = useCallback(
-    async (movie: Movie) => {
-      const docId = movie.docId;
-      const previousStatus: MovieStatus = movie.status || 'history';
-      if (!docId || isPending) return;
-      setIsPending(true);
-      try {
-        await updateMovie(docId, { status: 'watchlist' });
-      } catch {
-        showToast(MESSAGES.MOVIE.QUICK_STATUS_ERROR, 'error');
-        return;
-      } finally {
-        setIsPending(false);
-      }
-      showToast(MESSAGES.MOVIE.MARK_WATCHLIST_SUCCESS(getMainTitle(movie)), 'info', UNDO_QUICK_MS, {
-        label: MESSAGES.MOVIE.UNDO,
-        onAction: () => {
-          void updateMovie(docId, { status: previousStatus }).catch(() => {
-            showToast(MESSAGES.MOVIE.QUICK_STATUS_ERROR, 'error');
-          });
-        },
-      });
-    },
-    [showToast, isPending],
-  );
 
   /** Bắt đầu theo dõi series đang "Sẽ xem": về Đã xem với tiến độ Mùa 1 Tập 1. */
   const startWatching = useCallback(
@@ -151,5 +124,5 @@ export function useQuickStatus() {
     [showToast, isPending],
   );
 
-  return { markWatchlist, startWatching, logEpisode, isPending };
+  return { startWatching, logEpisode, isPending };
 }

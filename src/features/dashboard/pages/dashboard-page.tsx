@@ -1,7 +1,7 @@
 import LoadingStatus from '@/shared/components/ui/loading-status';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Bookmark, Check, Film, Play, Plus } from 'lucide-react';
+import { Check, Film, Play, Plus } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
@@ -33,7 +33,7 @@ function DashboardPage() {
   const { user } = useAuth();
   const { error: libraryError, initialize: initMovies, cleanup: cleanupMovies } = useMovieStore();
   const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
-  const { markWatchlist, isPending: quickPending } = useQuickStatus();
+  const { isPending: quickPending } = useQuickStatus();
   const { resumeMovie } = useDropMovie();
 
   const {
@@ -250,12 +250,7 @@ function DashboardPage() {
                           tooltip: 'Tiếp tục xem',
                           onClick: () => void resumeMovie(movie),
                         }
-                      : {
-                          icon: <Bookmark size={13} strokeWidth={1.5} aria-hidden="true" />,
-                          label: `Chuyển “${title}” sang Sẽ xem`,
-                          tooltip: 'Sẽ xem',
-                          onClick: () => void markWatchlist(movie),
-                        };
+                      : null;
                 return (
                   <motion.div
                     key={movie.docId}
@@ -280,16 +275,18 @@ function DashboardPage() {
                           : null
                       }
                       actions={
-                        <button
-                          type="button"
-                          disabled={quickPending}
-                          onClick={quickActionConfig.onClick}
-                          aria-label={quickActionConfig.label}
-                          title={quickActionConfig.tooltip}
-                          className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-                        >
-                          {quickActionConfig.icon}
-                        </button>
+                        quickActionConfig && (
+                          <button
+                            type="button"
+                            disabled={quickPending}
+                            onClick={quickActionConfig.onClick}
+                            aria-label={quickActionConfig.label}
+                            title={quickActionConfig.tooltip}
+                            className="min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none"
+                          >
+                            {quickActionConfig.icon}
+                          </button>
+                        )
                       }
                       onClick={() =>
                         navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
