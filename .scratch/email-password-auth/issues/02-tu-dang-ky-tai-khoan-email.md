@@ -6,12 +6,17 @@
 
 **Status:** ready-for-agent
 
-- [ ] Form đăng ký có tên hiển thị (2–50 ký tự), email, mật khẩu, nhập lại mật khẩu.
-- [ ] Mật khẩu tối thiểu 8 ký tự, có ít nhất 1 chữ và 1 số; nhập lại phải khớp; có hiện/ẩn.
-- [ ] Tạo tài khoản thành công → cập nhật tên hiển thị, gửi email xác minh, chuyển đến gate.
-- [ ] Email đã tồn tại → thông điệp hướng dẫn đăng nhập/đặt lại mật khẩu.
-- [ ] Sau khi xác minh, hồ sơ thành viên dùng đúng tên hiển thị.
-- [ ] Chuyển qua lại giữa Đăng nhập và Tạo tài khoản không mất email đã nhập.
+**Progress:** implemented-awaiting-review
+**Commit:** `6aa60bf`
+**Verification:** static checks pass; chưa QA tay.
+**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+
+- [x] Form đăng ký có tên hiển thị (2–50 ký tự), email, mật khẩu, nhập lại mật khẩu.
+- [x] Mật khẩu tối thiểu 8 ký tự, có ít nhất 1 chữ và 1 số; nhập lại phải khớp; có hiện/ẩn.
+- [x] Tạo tài khoản thành công → cập nhật tên hiển thị, gửi email xác minh, chuyển đến gate.
+- [x] Email đã tồn tại → thông điệp hướng dẫn đăng nhập/đặt lại mật khẩu.
+- [x] Sau khi xác minh, hồ sơ thành viên dùng đúng tên hiển thị.
+- [x] Chuyển qua lại giữa Đăng nhập và Tạo tài khoản không mất email đã nhập.
 - [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.
 
 ## Comments

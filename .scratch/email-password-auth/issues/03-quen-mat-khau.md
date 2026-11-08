@@ -6,11 +6,16 @@
 
 **Status:** ready-for-agent
 
-- [ ] Có chế độ "Quên mật khẩu" trên màn hình auth.
-- [ ] Gửi link đặt lại cho email hợp lệ; luôn hiển thị thông điệp chung "Nếu email tồn tại...".
-- [ ] Email không tồn tại cũng hiển thị cùng thông điệp.
-- [ ] Người dùng quay lại đăng nhập được sau khi đặt mật khẩu mới.
-- [ ] Lỗi mạng/quá nhiều yêu cầu có thông điệp tiếng Việt.
+**Progress:** implemented-awaiting-review
+**Commit:** `9c7fa8c`
+**Verification:** static checks pass; chưa QA tay.
+**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+
+- [x] Có chế độ "Quên mật khẩu" trên màn hình auth.
+- [x] Gửi link đặt lại cho email hợp lệ; luôn hiển thị thông điệp chung "Nếu email tồn tại...".
+- [x] Email không tồn tại cũng hiển thị cùng thông điệp.
+- [x] Người dùng quay lại đăng nhập được sau khi đặt mật khẩu mới.
+- [x] Lỗi mạng/quá nhiều yêu cầu có thông điệp tiếng Việt.
 - [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.
 
 ## Comments

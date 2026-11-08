@@ -2,6 +2,24 @@
 
 **Status:** ready-for-agent
 
+**Progress:** implementing — chưa hoàn thành tính năng.
+
+## Tiến độ triển khai
+
+`Status` là nhãn triage, không phải trạng thái hoàn thành. Checkbox trong ticket ghi nhận phần đã triển khai/kiểm tra tĩnh; không khẳng định đã QA hành vi trên Firebase. Review toàn nhánh sẽ chạy một lần sau khi triển khai hết, theo yêu cầu người dùng.
+
+| Ticket | Triển khai | Kiểm tra tĩnh | Review | QA tay | Commit |
+| --- | --- | --- | --- | --- | --- |
+| 01 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `fa11552` |
+| 02 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `6aa60bf` |
+| 03 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `9c7fa8c` |
+| 04 | Đang triển khai | Chưa chạy | Chưa review | Chưa chạy | Chưa commit |
+| 05 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
+| 06 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
+| 07 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
+
+README được giữ nguyên theo lựa chọn mới của người dùng, thay thế yêu cầu cập nhật README bên dưới và trong ticket 07.
+
 ## Problem Statement
 
 CineMOB hiện chỉ cho phép đăng nhập bằng Google. Người dùng không có tài khoản Google, hoặc không muốn phụ thuộc vào Google, không thể tạo tài khoản hay sử dụng ứng dụng. Rào cản này nằm ngay ở bước đầu tiên và thu hẹp tệp người dùng tiềm năng.
