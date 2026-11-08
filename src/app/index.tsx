@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider'
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
 import Login from '@/features/auth/components/login';
+import VerifyEmailGate from '@/features/auth/components/verify-email-gate';
 const Dashboard = lazy(() => import('@/features/dashboard/pages/dashboard-page'));
 const SearchPage = lazy(() => import('@/features/search/pages/search-page'));
 const StatsPage = lazy(() => import('@/features/stats/pages/stats-page'));
@@ -84,6 +85,7 @@ function MainApp() {
       />
     );
   if (!user) return <Login />;
+  if (!user.emailVerified) return <VerifyEmailGate />;
   return (
     <Layout key={user.uid}>
       <ErrorBoundary>

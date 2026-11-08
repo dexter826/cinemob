@@ -14,7 +14,7 @@ import { Movie } from '@/types';
 
 export const useAppInit = () => {
   const { user } = useAuth();
-  const userId = user?.uid;
+  const userId = user?.emailVerified ? user.uid : undefined;
 
   const initMovies = useMovieStore((state) => state.initialize);
   const cleanupMovies = useMovieStore((state) => state.cleanup);
@@ -83,7 +83,7 @@ export const useAppInit = () => {
   }, [allMovies, moviesLoading, setCalendarMovies, setCalendarLoading]);
 
   useEffect(() => {
-    if (!user || moviesLoading || !moviesInitialized) return;
+    if (!user?.emailVerified || moviesLoading || !moviesInitialized) return;
 
     let cancelled = false;
     const timer = window.setTimeout(() => {

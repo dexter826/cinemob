@@ -4,6 +4,7 @@ import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/aut
 import { auth, googleProvider } from '@/shared/lib/firebase';
 import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
+import { sendVerificationEmail, signInWithEmail } from '@/features/auth/services/auth-service';
 
 export interface AuthContextType {
   user: User | null;
@@ -11,8 +12,10 @@ export interface AuthContextType {
   error: string | null;
   retryAuth: () => void;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  refreshUser: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (cancelled) return;
         const modal = useAddMovieStore.getState();
         if (modal.ownerUid && modal.ownerUid !== currentUser?.uid) modal.closeAddModal();
-        setUser(currentUser);
+        setUser(currentUser ? cloneFirebaseUser(currentUser) : null);
         setLoading(false);
         setError(null);
       },
@@ -75,6 +78,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [showToast]);
 
+  const loginWithEmail = useCallback(async (email: string, password: string) => {
+    await signInWithEmail(email, password);
+  }, []);
+
+  const resendVerificationEmail = useCallback(async () => {
+    if (!auth.currentUser) throw new Error('No signed-in user');
+    await sendVerificationEmail(auth.currentUser);
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
@@ -85,14 +97,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [showToast]);
 
   const refreshUser = useCallback(async () => {
-    if (!auth.currentUser) return;
-    await auth.currentUser.reload();
-    setUser(cloneFirebaseUser(auth.currentUser));
+    const currentUser = auth.currentUser;
+    if (!currentUser) return false;
+    await currentUser.reload();
+    if (currentUser.emailVerified) await currentUser.getIdToken(true);
+    if (auth.currentUser !== currentUser) return false;
+    setUser(cloneFirebaseUser(currentUser));
+    return currentUser.emailVerified;
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, error, retryAuth, signInWithGoogle, logout, refreshUser }),
-    [user, loading, error, retryAuth, signInWithGoogle, logout, refreshUser],
+    () => ({
+      user,
+      loading,
+      error,
+      retryAuth,
+      signInWithGoogle,
+      signInWithEmail: loginWithEmail,
+      resendVerificationEmail,
+      logout,
+      refreshUser,
+    }),
+    [
+      user,
+      loading,
+      error,
+      retryAuth,
+      signInWithGoogle,
+      loginWithEmail,
+      resendVerificationEmail,
+      logout,
+      refreshUser,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

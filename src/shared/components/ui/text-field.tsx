@@ -4,6 +4,7 @@ import { classNames } from '@/shared/utils/class-names';
 interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className'> {
   label?: string;
   leadingIcon?: React.ReactNode;
+  trailingAction?: React.ReactNode;
   error?: string;
   id: string;
   variant?: 'underline' | 'boxed';
@@ -15,6 +16,7 @@ interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
 function TextField({
   label,
   leadingIcon,
+  trailingAction,
   error,
   id,
   variant = 'underline',
@@ -46,12 +48,18 @@ function TextField({
             variant === 'underline'
               ? 'rounded-none border-0 border-b border-border hover:border-b-primary/40 focus-visible:border-b-primary focus-visible:outline-none'
               : 'rounded-control border focus-visible:border-primary focus-ring focus-visible:outline-none',
-            leadingIcon ? 'pl-10 pr-4' : variant === 'underline' ? 'px-1' : 'px-4',
+            leadingIcon ? 'pl-10' : variant === 'underline' ? 'pl-1' : 'pl-4',
+            trailingAction ? 'pr-11' : variant === 'underline' ? 'pr-1' : 'pr-4',
             error ? 'border-danger' : 'border-border',
             inputClassName ?? '',
           )}
           {...rest}
         />
+        {trailingAction && (
+          <span className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex">
+            {trailingAction}
+          </span>
+        )}
       </div>
       {error && (
         <p id={`${id}-error`} role="alert" className="mt-1.5 text-body-sm text-danger">

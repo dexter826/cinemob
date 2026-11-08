@@ -1,7 +1,10 @@
 import Button from '@/shared/components/ui/button';
 import CineMobSymbol from '@/shared/components/ui/cinemob-symbol';
+import TextField from '@/shared/components/ui/text-field';
 import React, { useEffect, useState, useCallback } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
+import { getAuthErrorMessage } from '@/features/auth/utils/auth-errors';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import type { TMDBMovieResult } from '@/types';
@@ -67,18 +70,54 @@ function PosterTile({ poster }: { poster: TMDBMovieResult }) {
 }
 
 function Login() {
-  const { signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { signInWithGoogle, signInWithEmail } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const posters = useWallPosters();
 
-  const handleLogin = useCallback(async () => {
-    setIsLoading(true);
+  const handleEmailLogin = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const trimmedEmail = email.trim();
+      let hasError = false;
+
+      if (!trimmedEmail) {
+        setEmailError('Nhập email để đăng nhập.');
+        hasError = true;
+      }
+      if (!password) {
+        setPasswordError('Nhập mật khẩu để đăng nhập.');
+        hasError = true;
+      }
+      if (hasError) return;
+
+      setFormError(null);
+      setIsEmailLoading(true);
+      try {
+        await signInWithEmail(trimmedEmail, password);
+      } catch (error) {
+        setFormError(getAuthErrorMessage(error));
+      } finally {
+        setIsEmailLoading(false);
+      }
+    },
+    [email, password, signInWithEmail],
+  );
+
+  const handleGoogleLogin = useCallback(async () => {
+    setIsGoogleLoading(true);
     try {
       await signInWithGoogle();
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
     }
   }, [signInWithGoogle]);
 
@@ -101,16 +140,89 @@ function Login() {
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập điện ảnh của riêng bạn.
             </p>
 
+            <form className="mt-10 space-y-4" onSubmit={handleEmailLogin} noValidate>
+              <TextField
+                id="login-email"
+                name="email"
+                type="email"
+                label="Email"
+                autoComplete="email"
+                inputMode="email"
+                placeholder="ban@example.com"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setEmailError(null);
+                  setFormError(null);
+                }}
+                error={emailError ?? undefined}
+              />
+              <TextField
+                id="login-password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                label="Mật khẩu"
+                autoComplete="current-password"
+                placeholder="Nhập mật khẩu…"
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  setPasswordError(null);
+                  setFormError(null);
+                }}
+                error={passwordError ?? undefined}
+                trailingAction={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((value) => !value)}
+                    aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    className="flex h-9 w-9 items-center justify-center rounded-control text-text-secondary transition-colors hover:text-text-primary focus-ring focus-visible:outline-none cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} strokeWidth={1.5} aria-hidden="true" />
+                    ) : (
+                      <Eye size={18} strokeWidth={1.5} aria-hidden="true" />
+                    )}
+                  </button>
+                }
+              />
+
+              {formError && (
+                <p role="alert" className="text-body-sm text-danger leading-relaxed">
+                  {formError}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="w-full"
+                loading={isEmailLoading}
+                disabled={isGoogleLoading}
+              >
+                Đăng nhập
+              </Button>
+            </form>
+
+            <div className="my-6 flex items-center gap-3" aria-hidden="true">
+              <span className="h-px flex-1 bg-border-default" />
+              <span className="text-micro-caps normal-case text-text-secondary">hoặc</span>
+              <span className="h-px flex-1 bg-border-default" />
+            </div>
+
             <Button
-              variant="primary"
+              variant="secondary"
               size="lg"
-              onClick={handleLogin}
-              loading={isLoading}
+              onClick={handleGoogleLogin}
+              loading={isGoogleLoading}
+              disabled={isEmailLoading}
               leadingIcon={<GoogleIcon className="w-5 h-5 shrink-0" />}
-              className="mt-10 w-full"
+              className="w-full"
               aria-label="Đăng nhập bằng tài khoản Google"
             >
-              {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
+              {isGoogleLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
             </Button>
           </div>
         </div>

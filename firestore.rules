@@ -7,6 +7,10 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
@@ -54,45 +58,48 @@ service cloud.firestore {
 
     // Movies
     match /movies/{movieId} {
-      allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
-      allow create: if isSignedIn() && isValidMovie();
-      allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidMovie();
+      allow read: if isSignedIn() && isOwner(resource.data.uid);
+      allow delete: if isSignedIn() && isVerified() && isOwner(resource.data.uid);
+      allow create: if isSignedIn() && isVerified() && isValidMovie();
+      allow update: if isSignedIn() && isVerified() && isOwner(resource.data.uid) && isValidMovie();
     }
 
     // Albums
     match /albums/{albumId} {
-      allow read, delete: if isSignedIn() && isOwner(resource.data.uid);
-      allow create: if isSignedIn() && isValidAlbum();
-      allow update: if isSignedIn() && isOwner(resource.data.uid) && isValidAlbum();
+      allow read: if isSignedIn() && isOwner(resource.data.uid);
+      allow delete: if isSignedIn() && isVerified() && isOwner(resource.data.uid);
+      allow create: if isSignedIn() && isVerified() && isValidAlbum();
+      allow update: if isSignedIn() && isVerified() && isOwner(resource.data.uid) && isValidAlbum();
     }
 
     // Member profiles - đọc từng hồ sơ theo uid; chặn liệt kê cả collection
     match /member_profiles/{userId} {
       allow get: if isSignedIn();
       allow list: if false;
-      allow create, update: if isSignedIn() && isOwner(userId) && isValidProfile();
-      allow delete: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isVerified() && isOwner(userId) && isValidProfile();
+      allow delete: if isSignedIn() && isVerified() && isOwner(userId);
     }
 
     // Lookup theo email - chỉ đọc đúng 1 doc khi biết email, không liệt kê được
     match /member_lookup/{emailKey} {
       allow get: if isSignedIn();
       allow list: if false;
-      allow create, update: if isSignedIn() && request.resource.data.uid == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow create, update: if isSignedIn() && isVerified() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isSignedIn() && isVerified() && resource.data.uid == request.auth.uid;
     }
 
     // Users - stores preferences like previously recommended titles
     match /users/{userId} {
       allow read: if isSignedIn() && isOwner(userId);
-      allow create, update: if isSignedIn() && isOwner(userId) && isValidUser();
-      allow delete: if isSignedIn() && isOwner(userId);
+      allow create, update: if isSignedIn() && isVerified() && isOwner(userId) && isValidUser();
+      allow delete: if isSignedIn() && isVerified() && isOwner(userId);
     }
 
     // Push Subscriptions
     match /push_subscriptions/{userId} {
-      allow read, delete: if isSignedIn() && isOwner(userId);
-      allow create, update: if isSignedIn() && isOwner(userId) && isValidPushSubscription(userId);
+      allow read: if isSignedIn() && isOwner(userId);
+      allow delete: if isSignedIn() && isVerified() && isOwner(userId);
+      allow create, update: if isSignedIn() && isVerified() && isOwner(userId) && isValidPushSubscription(userId);
     }
   }
 }
