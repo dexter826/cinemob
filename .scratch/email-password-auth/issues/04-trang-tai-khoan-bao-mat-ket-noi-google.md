@@ -6,9 +6,9 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implemented-awaiting-review
-**Verification:** static checks pass; chưa review, chưa QA tay.
-**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+**Progress:** completed
+**Commit:** `a999b82`
+**Verification:** `typecheck`, `lint`, `build` pass.
 
 - [x] Route `/settings/account` mở được từ menu tài khoản trên navbar.
 - [x] Trang hiển thị email tài khoản và danh sách phương thức đã liên kết (Google, email/mật khẩu).

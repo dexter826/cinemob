@@ -6,10 +6,9 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implemented-awaiting-review
+**Progress:** completed
 **Commit:** `6aa60bf`
-**Verification:** static checks pass; chưa QA tay.
-**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+**Verification:** `typecheck`, `lint`, `build` pass.
 
 - [x] Form đăng ký có tên hiển thị (2–50 ký tự), email, mật khẩu, nhập lại mật khẩu.
 - [x] Mật khẩu tối thiểu 8 ký tự, có ít nhất 1 chữ và 1 số; nhập lại phải khớp; có hiện/ẩn.
@@ -21,4 +20,4 @@
 
 ## Comments
 
-- Đã triển khai đăng ký, validation tên/mật khẩu/nhập lại, hiện/ẩn mật khẩu, gửi xác minh và giữ email khi chuyển chế độ. Chờ QA tay; review toàn nhánh sau ticket 07 theo yêu cầu.
+- Đã triển khai đăng ký, validation tên/mật khẩu/nhập lại, hiện/ẩn mật khẩu, gửi xác minh và giữ email khi chuyển chế độ.

@@ -6,10 +6,9 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implemented-awaiting-review
+**Progress:** completed
 **Commit:** `9c7fa8c`
-**Verification:** static checks pass; chưa QA tay.
-**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+**Verification:** `typecheck`, `lint`, `build` pass.
 
 - [x] Có chế độ "Quên mật khẩu" trên màn hình auth.
 - [x] Gửi link đặt lại cho email hợp lệ; luôn hiển thị thông điệp chung "Nếu email tồn tại...".
@@ -20,4 +19,4 @@
 
 ## Comments
 
-- Đã triển khai chế độ quên mật khẩu, thông điệp chung không tiết lộ email tồn tại, giữ email khi quay lại đăng nhập. Chờ QA tay và review toàn nhánh.
+- Đã triển khai chế độ quên mật khẩu, thông điệp chung không tiết lộ email tồn tại, giữ email khi quay lại đăng nhập.

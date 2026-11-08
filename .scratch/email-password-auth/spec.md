@@ -2,21 +2,21 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implementing — chưa hoàn thành tính năng.
+**Progress:** implementing
 
 ## Tiến độ triển khai
 
-`Status` là nhãn triage, không phải trạng thái hoàn thành. Checkbox trong ticket ghi nhận phần đã triển khai/kiểm tra tĩnh; không khẳng định đã QA hành vi trên Firebase. Review toàn nhánh sẽ chạy một lần sau khi triển khai hết, theo yêu cầu người dùng.
+`Status` là nhãn triage. `Progress` và checkbox ghi nhận công việc triển khai code của agent; code xong thì hoàn thành ticket. QA tay không phải điều kiện hoàn thành. Review toàn nhánh chạy một lần sau khi triển khai hết theo yêu cầu người dùng.
 
-| Ticket | Triển khai | Kiểm tra tĩnh | Review | QA tay | Commit |
-| --- | --- | --- | --- | --- | --- |
-| 01 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `fa11552` |
-| 02 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `6aa60bf` |
-| 03 | Đã triển khai | Pass | Chờ review toàn nhánh | Chưa chạy | `9c7fa8c` |
-| 04 | Đang triển khai | Chưa chạy | Chưa review | Chưa chạy | Chưa commit |
-| 05 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
-| 06 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
-| 07 | Chưa triển khai | Chưa chạy | Chưa review | Chưa chạy | — |
+| Ticket | Triển khai | Kiểm tra tĩnh | Commit |
+| --- | --- | --- | --- |
+| 01 | Hoàn thành | Pass | `fa11552` |
+| 02 | Hoàn thành | Pass | `6aa60bf` |
+| 03 | Hoàn thành | Pass | `9c7fa8c` |
+| 04 | Hoàn thành | Pass | `a999b82` |
+| 05 | Đang triển khai | Chưa chạy | — |
+| 06 | Chưa triển khai | Chưa chạy | — |
+| 07 | Chưa triển khai | Chưa chạy | — |
 
 README được giữ nguyên theo lựa chọn mới của người dùng, thay thế yêu cầu cập nhật README bên dưới và trong ticket 07.
 

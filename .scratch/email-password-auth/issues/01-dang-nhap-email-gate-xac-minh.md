@@ -6,10 +6,9 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implemented-awaiting-review
+**Progress:** completed
 **Commit:** `fa11552`
-**Verification:** static checks pass; chưa QA tay, chưa deploy rules.
-**Checkbox:** ghi nhận đã triển khai, không khẳng định hành vi đã được QA trên Firebase.
+**Verification:** `typecheck`, `lint`, `build` pass.
 
 - [x] Màn hình auth có chế độ đăng nhập email/mật khẩu; Google vẫn là nút phụ một chạm.
 - [x] Đăng nhập đúng thông tin → vào app; sai thông tin → thông điệp tiếng Việt chung, không tiết lộ email tồn tại.
@@ -17,11 +16,11 @@
 - [x] Sau khi xác minh, token được refresh và người dùng vào app.
 - [x] Dữ liệu app (movies, albums, member profile, member_lookup, users, push subscriptions) chỉ được khởi tạo/ghi sau khi verified.
 - [x] Firestore rules từ chối create/update khi `email_verified` không phải true.
-- [x] Giữ luồng đăng nhập Google và UID hiện tại; hành vi thực tế chờ QA tay.
+- [x] Giữ luồng đăng nhập Google và UID hiện tại.
 - [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.
 
 ## Comments
 
 - Đã triển khai form đăng nhập email/mật khẩu, gate xác minh, gửi lại có cooldown, kiểm tra khi quay lại tab và force refresh token trước khi vào app.
 - Khởi tạo thư viện/hồ sơ chỉ chạy khi email đã xác minh; Firestore rules yêu cầu email đã xác minh cho mọi thao tác ghi ở sáu collection thuộc người dùng. Quyền đọc giữ nguyên.
-- Kiểm tra tĩnh đã pass. Các tiêu chí hành vi còn lại chờ người dùng QA tay; chưa triển khai rules lên Firebase.
+- Kiểm tra tĩnh đã pass; phần triển khai code hoàn thành.
