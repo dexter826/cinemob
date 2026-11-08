@@ -1,6 +1,7 @@
 import Button from '@/shared/components/ui/button';
 import CineMobSymbol from '@/shared/components/ui/cinemob-symbol';
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import EmailAuthForm from './email-auth-form';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { getTrendingMovies } from '@/features/search/services/tmdb';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
@@ -68,75 +69,80 @@ function PosterTile({ poster }: { poster: TMDBMovieResult }) {
 
 function Login() {
   const { signInWithGoogle } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const posters = useWallPosters();
 
-  const handleLogin = useCallback(async () => {
-    setIsLoading(true);
+  const handleGoogleLogin = useCallback(async () => {
+    setIsGoogleLoading(true);
     try {
       await signInWithGoogle();
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
     }
   }, [signInWithGoogle]);
 
   const hasWall = posters.length >= WALL_COUNT;
 
   return (
-    <main className="min-h-dvh lg:h-dvh lg:overflow-hidden grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr] lg:grid-rows-1">
-      <div className="order-1 lg:order-2 flex flex-col border-b border-border lg:border-b-0 lg:border-l min-h-0">
-        <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20 overflow-y-auto">
-          <div className="w-full max-w-sm">
-            <div className="flex items-center gap-3 mb-7">
+    <main className="min-h-dvh flex flex-col lg:grid bg-background text-text-primary selection:bg-primary/20 selection:text-primary lg:grid-cols-[11fr_9fr] lg:grid-rows-1">
+      <div className="order-1 lg:order-2 flex-1 flex flex-col border-b border-border lg:border-b-0 lg:border-l min-h-0">
+        <div className="flex-1 flex flex-col px-4 py-6 sm:px-10 lg:px-12 xl:px-16">
+          <div className="w-full max-w-sm mx-auto my-auto shrink-0">
+            <div className="flex items-center gap-3">
               <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
               <p className="text-display-lg">
                 Cine<span className="text-primary">MOB</span>
               </p>
             </div>
 
-            <h1 className="text-display-xl mt-9">Theo dõi mọi bộ phim bạn xem.</h1>
-            <p className="mt-3 text-body text-text-secondary leading-relaxed">
-              Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập điện ảnh của riêng bạn.
-            </p>
+            <EmailAuthForm disabled={isGoogleLoading} onBusyChange={setIsEmailLoading} />
+
+            <div className="my-4 flex items-center gap-3" aria-hidden="true">
+              <span className="h-px flex-1 bg-border-default" />
+              <span className="text-micro-caps normal-case text-text-secondary">hoặc</span>
+              <span className="h-px flex-1 bg-border-default" />
+            </div>
 
             <Button
-              variant="primary"
+              variant="secondary"
               size="lg"
-              onClick={handleLogin}
-              loading={isLoading}
+              onClick={handleGoogleLogin}
+              loading={isGoogleLoading}
+              disabled={isEmailLoading}
               leadingIcon={<GoogleIcon className="w-5 h-5 shrink-0" />}
-              className="mt-10 w-full"
+              className="w-full"
               aria-label="Đăng nhập bằng tài khoản Google"
             >
-              {isLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
+              {isGoogleLoading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}
             </Button>
           </div>
         </div>
 
-        <footer className="px-6 sm:px-10 lg:px-14 xl:px-20 pb-6 text-micro-caps normal-case text-text-secondary shrink-0">
-          &copy; {new Date().getFullYear()} CineMOB
+        <footer className="px-4 sm:px-10 lg:px-12 xl:px-16 pb-6 text-micro-caps normal-case text-text-secondary shrink-0">
+          <div className="w-full max-w-sm mx-auto">&copy; {new Date().getFullYear()} CineMOB</div>
         </footer>
       </div>
 
-      {hasWall && (
-        <div className="order-2 lg:order-1 overflow-hidden min-h-0 h-full">
-          <div aria-hidden="true" className="grid grid-cols-6 gap-0.5 h-24 sm:h-28 lg:hidden">
-            {posters.map((poster) => (
-              <PosterTile key={poster.id} poster={poster} />
-            ))}
+      <div className="hidden lg:flex lg:flex-col order-1 min-w-0">
+        {hasWall && (
+          <div className="relative flex-1 min-h-64 overflow-hidden" aria-hidden="true">
+            <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-0.5">
+              {posters.map((poster) => (
+                <PosterTile key={poster.id} poster={poster} />
+              ))}
+            </div>
           </div>
-          <div
-            aria-hidden="true"
-            className="hidden lg:grid grid-cols-3 grid-rows-2 gap-0.5 h-full w-full"
-          >
-            {posters.map((poster) => (
-              <PosterTile key={poster.id} poster={poster} />
-            ))}
-          </div>
+        )}
+        <div className="p-8 xl:p-12 border-t border-border mt-auto">
+          <h1 className="text-display-xl">Theo dõi mọi bộ phim bạn xem.</h1>
+          <p className="mt-3 max-w-md text-body text-text-secondary leading-relaxed">
+            Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập điện ảnh của riêng bạn.
+          </p>
         </div>
-      )}
+      </div>
     </main>
   );
 }

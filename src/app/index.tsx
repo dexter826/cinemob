@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from '@/features/auth/components/auth-provider'
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
 import Login from '@/features/auth/components/login';
+import VerifyEmailGate from '@/features/auth/components/verify-email-gate';
 const Dashboard = lazy(() => import('@/features/dashboard/pages/dashboard-page'));
 const SearchPage = lazy(() => import('@/features/search/pages/search-page'));
 const StatsPage = lazy(() => import('@/features/stats/pages/stats-page'));
@@ -19,6 +20,7 @@ const MovieDetailPage = lazy(() => import('@/features/movies/pages/movie-detail-
 const PersonDetailPage = lazy(() => import('@/features/search/pages/person-detail-page'));
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/release-calendar-page'));
 const MemberProfilePage = lazy(() => import('@/features/profile/pages/member-profile-page'));
+const AccountSecurityPage = lazy(() => import('@/features/auth/pages/account-security-page'));
 const NotFoundPage = lazy(() => import('@/shared/pages/not-found-page'));
 const loadAddMovieModal = () => import('@/features/movies/components/add-movie-modal');
 const loadMarkWatchedDialog = () => import('@/features/movies/components/mark-watched-dialog');
@@ -58,6 +60,7 @@ function AnimatedRoutes() {
         <Route path="/person/:personId" element={<PersonDetailPage />} />
         <Route path="/calendar" element={<ReleaseCalendarPage />} />
         <Route path="/profile/:uid" element={<MemberProfilePage />} />
+        <Route path="/settings/account" element={<AccountSecurityPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
@@ -65,7 +68,13 @@ function AnimatedRoutes() {
 }
 
 function MainApp() {
-  const { user, loading: authLoading, error: authError, retryAuth } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    error: authError,
+    retryAuth,
+    registrationProfilePending,
+  } = useAuth();
   const isAddMovieOpen = useAddMovieStore((state) => state.isOpen);
   const modalOwnerUid = useAddMovieStore((state) => state.ownerUid);
   const closeAddModal = useAddMovieStore((state) => state.closeAddModal);
@@ -84,6 +93,7 @@ function MainApp() {
       />
     );
   if (!user) return <Login />;
+  if (!user.emailVerified || registrationProfilePending) return <VerifyEmailGate />;
   return (
     <Layout key={user.uid}>
       <ErrorBoundary>

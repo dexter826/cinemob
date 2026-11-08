@@ -1,6 +1,6 @@
 import LazyDialog from '@/shared/components/ui/lazy-dialog';
 import React, { useEffect, useRef, useState } from 'react';
-import { LogOut, Sun, Moon, Dice5, ChevronDown, User, Users } from 'lucide-react';
+import { LogOut, Sun, Moon, Dice5, ChevronDown, User, Users, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import { useTheme } from '@/app/providers/theme-provider';
 import { Link, useLocation } from 'react-router-dom';
@@ -213,6 +213,16 @@ function Navbar() {
                       >
                         <User size={18} strokeWidth={1.5} aria-hidden="true" />
                         <span>Hồ sơ</span>
+                      </Link>
+                      <Link
+                        to="/settings/account"
+                        role="menuitem"
+                        tabIndex={-1}
+                        onClick={closeDropdown}
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-body hover:bg-primary/10 hover:text-primary transition-colors duration-150 cursor-pointer rounded-control"
+                      >
+                        <ShieldCheck size={18} strokeWidth={1.5} aria-hidden="true" />
+                        <span>Tài khoản & bảo mật</span>
                       </Link>
                       <button
                         type="button"

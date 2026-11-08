@@ -2,6 +2,11 @@ export const MESSAGES = {
   AUTH: {
     LOGIN_ERROR: 'Đăng nhập chưa thành công. Vui lòng thử lại sau.',
     LOGOUT_ERROR: 'Đăng xuất chưa thành công. Vui lòng thử lại sau.',
+    VERIFICATION_RESENT: 'Đã gửi lại email xác minh. Kiểm tra hộp thư của bạn.',
+    VERIFICATION_RESEND_ERROR: 'Không gửi lại được email xác minh. Thử lại sau.',
+    VERIFICATION_NOT_FOUND: 'Chưa thấy xác minh. Mở liên kết trong email rồi thử lại.',
+    VERIFICATION_CHECK_ERROR:
+      'Không kiểm tra được trạng thái xác minh. Kiểm tra kết nối mạng rồi thử lại.',
   },
   MOVIE: {
     ADD_SUCCESS: 'Đã thêm phim vào Thư viện',
