@@ -1,7 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import Button from '@/shared/components/ui/button';
 import PasswordField from './password-field';
-import { PASSWORD_HINT, validatePassword } from '../utils/auth-validation';
+import {
+  PASSWORD_HINT,
+  validatePassword,
+  validatePasswordConfirmation,
+} from '../utils/auth-validation';
 
 interface AccountPasswordFormProps {
   hasPassword: boolean;
@@ -36,7 +40,7 @@ export default function AccountPasswordForm({
     const nextErrors = {
       current: hasPassword && !current ? 'Nhập mật khẩu hiện tại để xác thực lại.' : undefined,
       password: validatePassword(password),
-      confirmation: password === confirmation ? undefined : 'Mật khẩu nhập lại chưa khớp.',
+      confirmation: validatePasswordConfirmation(password, confirmation),
     };
     setErrors(nextErrors);
     if (Object.values(nextErrors).some(Boolean)) return;
@@ -86,7 +90,7 @@ export default function AccountPasswordForm({
       </fieldset>
       <div className="flex flex-wrap gap-2">
         <Button type="submit" loading={busy}>
-          Lưu mật khẩu
+          {busy ? 'Đang lưu mật khẩu…' : 'Lưu mật khẩu'}
         </Button>
         <Button variant="secondary" disabled={busy} onClick={clear}>
           Hủy thay đổi

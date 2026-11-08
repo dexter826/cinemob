@@ -1,6 +1,8 @@
 import { MESSAGES } from '@/constants/messages';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/registration-profile-pending':
+    'Tài khoản đã tạo nhưng chưa lưu được tên hiển thị. Chọn “Tôi đã xác minh” để thử lưu lại trước khi vào ứng dụng.',
   'auth/account-exists-with-different-credential':
     'Chưa kết nối được Google. Đăng nhập bằng phương thức bạn đã dùng trước đây, rồi kết nối Google trong Tài khoản & bảo mật.',
   'auth/unverified-email':

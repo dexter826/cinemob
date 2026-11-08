@@ -68,7 +68,13 @@ function AnimatedRoutes() {
 }
 
 function MainApp() {
-  const { user, loading: authLoading, error: authError, retryAuth } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    error: authError,
+    retryAuth,
+    registrationProfilePending,
+  } = useAuth();
   const isAddMovieOpen = useAddMovieStore((state) => state.isOpen);
   const modalOwnerUid = useAddMovieStore((state) => state.ownerUid);
   const closeAddModal = useAddMovieStore((state) => state.closeAddModal);
@@ -87,7 +93,7 @@ function MainApp() {
       />
     );
   if (!user) return <Login />;
-  if (!user.emailVerified) return <VerifyEmailGate />;
+  if (!user.emailVerified || registrationProfilePending) return <VerifyEmailGate />;
   return (
     <Layout key={user.uid}>
       <ErrorBoundary>

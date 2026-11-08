@@ -10,7 +10,8 @@ import useToastStore from '@/shared/stores/toast-store';
 const RESEND_COOLDOWN_SECONDS = 60;
 
 function VerifyEmailGate() {
-  const { user, logout, refreshUser, resendVerificationEmail } = useAuth();
+  const { user, logout, refreshUser, resendVerificationEmail, registrationProfilePending } =
+    useAuth();
   const { showToast } = useToastStore();
   const [isChecking, setIsChecking] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -79,7 +80,7 @@ function VerifyEmailGate() {
 
   return (
     <main className="min-h-dvh flex flex-col bg-background text-text-primary">
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
+      <div className="flex-1 flex items-center justify-center px-4 md:px-6 py-12">
         <div className="w-full max-w-md">
           <div className="flex items-center gap-3 mb-8">
             <CineMobSymbol className="h-8 w-8 text-primary shrink-0" />
@@ -98,10 +99,16 @@ function VerifyEmailGate() {
 
             <h1 className="text-display-xl mt-5">Xác minh email để tiếp tục</h1>
             <p className="mt-3 text-body text-text-secondary leading-relaxed">
-              Chúng tôi đã gửi liên kết xác minh đến{' '}
-              <span className="font-semibold text-text-primary break-all">{user?.email}</span>. Mở
-              liên kết trong email rồi quay lại đây.
+              Mở liên kết xác minh trong hộp thư{' '}
+              <span className="font-semibold text-text-primary break-all">{user?.email}</span> rồi
+              quay lại đây. Nếu chưa nhận được email, chọn gửi lại bên dưới.
             </p>
+
+            {registrationProfilePending && (
+              <p role="status" className="mt-4 text-body-sm text-warning">
+                Tên hiển thị chưa được lưu. Chọn “Tôi đã xác minh” để thử lưu lại và kiểm tra email.
+              </p>
+            )}
 
             {notice && (
               <p role="status" className="mt-4 text-body-sm text-warning leading-relaxed">
@@ -117,7 +124,7 @@ function VerifyEmailGate() {
                 loading={isChecking}
                 onClick={() => void checkVerification(false)}
               >
-                Tôi đã xác minh
+                {isChecking ? 'Đang kiểm tra…' : 'Tôi đã xác minh'}
               </Button>
               <Button
                 variant="secondary"
@@ -127,7 +134,11 @@ function VerifyEmailGate() {
                 disabled={cooldown > 0}
                 onClick={() => void handleResend()}
               >
-                {cooldown > 0 ? `Gửi lại sau ${cooldown}s` : 'Gửi lại email xác minh'}
+                {isResending
+                  ? 'Đang gửi email…'
+                  : cooldown > 0
+                    ? `Gửi lại sau ${cooldown}s`
+                    : 'Gửi lại email xác minh'}
               </Button>
             </div>
 

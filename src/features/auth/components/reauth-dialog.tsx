@@ -53,7 +53,7 @@ function ReauthForm({
             required
           />
           <Button type="submit" className="w-full" loading={busy} disabled={!password}>
-            Xác thực bằng mật khẩu
+            {busy ? 'Đang xác thực…' : 'Xác thực bằng mật khẩu'}
           </Button>
         </form>
       )}
@@ -64,7 +64,7 @@ function ReauthForm({
           loading={busy}
           onClick={() => void onConfirm()}
         >
-          Xác thực bằng Google
+          {busy ? 'Đang xác thực…' : 'Xác thực bằng Google'}
         </Button>
       )}
       {error && (

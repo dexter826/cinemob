@@ -7,6 +7,39 @@ import {
   type User,
 } from 'firebase/auth';
 import { auth } from '@/shared/lib/firebase';
+import { FirebaseError } from 'firebase/app';
+
+// Chỉ giữ tên cần lưu lại sau lỗi mạng; không lưu mật khẩu hay credential.
+const pendingProfileNames = new Map<string, string>();
+const profileDraftKey = (user: User) => `cinemob:registration-name:${user.uid}`;
+
+const pendingProfileName = (user: User): string | null => {
+  const name = pendingProfileNames.get(user.uid);
+  if (name) return name;
+  try {
+    return sessionStorage.getItem(profileDraftKey(user));
+  } catch {
+    return null;
+  }
+};
+
+export const hasPendingRegistrationProfile = (user: User): boolean => !!pendingProfileName(user);
+
+export const completeRegistrationProfile = async (user: User): Promise<void> => {
+  const displayName = pendingProfileName(user);
+  if (!displayName) return;
+  try {
+    await updateProfile(user, { displayName });
+  } catch {
+    throw new FirebaseError('auth/registration-profile-pending', 'Registration profile not saved');
+  }
+  pendingProfileNames.delete(user.uid);
+  try {
+    sessionStorage.removeItem(profileDraftKey(user));
+  } catch {
+    // Bản nháp trong bộ nhớ vẫn được dọn khi trình duyệt chặn storage.
+  }
+};
 
 export const signInWithEmail = async (email: string, password: string): Promise<User> => {
   const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
@@ -32,6 +65,11 @@ export const registerWithEmail = async (
   password: string,
 ): Promise<User> => {
   const { user } = await createUserWithEmailAndPassword(auth, email.trim(), password);
-  await updateProfile(user, { displayName: displayName.trim() });
+  pendingProfileNames.set(user.uid, displayName.trim());
+  try {
+    sessionStorage.setItem(profileDraftKey(user), displayName.trim());
+  } catch {
+    // Vẫn có thể thử lại bằng bản nháp trong bộ nhớ.
+  }
   return user;
 };

@@ -4,7 +4,12 @@ import TextField from '@/shared/components/ui/text-field';
 import PasswordField from './password-field';
 import { useAuth } from './auth-provider';
 import { validateDisplayName } from '@/features/profile/services/profile-service';
-import { PASSWORD_HINT, validateEmail, validatePassword } from '../utils/auth-validation';
+import {
+  PASSWORD_HINT,
+  validateEmail,
+  validatePassword,
+  validatePasswordConfirmation,
+} from '../utils/auth-validation';
 import { getAuthErrorMessage } from '../utils/auth-errors';
 import { requestPasswordReset } from '../services/auth-service';
 
@@ -39,8 +44,7 @@ export default function EmailAuthForm({
       const checkedName = validateDisplayName(name);
       nextErrors.name = checkedName.ok ? undefined : checkedName.error;
       nextErrors.password = validatePassword(password);
-      nextErrors.confirmation =
-        password === confirmation ? undefined : 'Mật khẩu nhập lại chưa khớp.';
+      nextErrors.confirmation = validatePasswordConfirmation(password, confirmation);
     }
     setErrors(nextErrors);
     setFormError('');
@@ -70,7 +74,7 @@ export default function EmailAuthForm({
         <div className="mb-4 space-y-2">
           <p role="status" className="text-body-sm text-text-secondary break-words">
             Để kết nối Google cho {pendingGoogleEmail}, đăng nhập bằng phương thức đã dùng trước
-            đây. Không có tài khoản nào được tự động gộp.
+            đây.
           </p>
           <Button variant="link" disabled={busy || disabled} onClick={cancelGoogleLink}>
             Hủy liên kết Google
@@ -163,7 +167,17 @@ export default function EmailAuthForm({
           </p>
         )}
         <Button type="submit" size="lg" className="w-full" loading={busy} disabled={disabled}>
-          {isReset ? 'Gửi email đặt lại mật khẩu' : isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}
+          {busy
+            ? isReset
+              ? 'Đang gửi email…'
+              : isRegister
+                ? 'Đang tạo tài khoản…'
+                : 'Đang đăng nhập…'
+            : isReset
+              ? 'Gửi email đặt lại mật khẩu'
+              : isRegister
+                ? 'Tạo tài khoản'
+                : 'Đăng nhập'}
         </Button>
       </form>
       {!isRegister && (

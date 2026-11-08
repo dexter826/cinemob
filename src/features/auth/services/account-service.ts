@@ -1,6 +1,7 @@
 import { FirebaseError, getApps, initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  browserPopupRedirectResolver,
   getAuth,
   inMemoryPersistence,
   initializeAuth,
@@ -15,6 +16,7 @@ import {
   type User,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/shared/lib/firebase';
+import { sameAccountEmail } from '../utils/auth-validation';
 
 export const requireAccount = (uid: string): User => {
   const user = auth.currentUser;
@@ -34,6 +36,7 @@ export const connectGoogle = async (uid: string): Promise<void> => {
     ? getAuth(existingApp)
     : initializeAuth(initializeApp(auth.app.options, appName), {
         persistence: inMemoryPersistence,
+        popupRedirectResolver: browserPopupRedirectResolver,
       });
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
@@ -42,11 +45,14 @@ export const connectGoogle = async (uid: string): Promise<void> => {
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (!credential)
       throw new FirebaseError('auth/invalid-credential', 'Missing Google credential');
-    if (!user.email || result.user.email?.toLowerCase() !== user.email.toLowerCase()) {
+    if (!sameAccountEmail(result.user.email, user.email)) {
       throw new FirebaseError('auth/google-email-mismatch', 'Google email does not match');
     }
     requireAccount(uid);
-    await linkWithCredential(user, credential);
+    // Google có thể đã được Firebase tự liên kết với email do Google quản lý.
+    await user.reload();
+    requireAccount(uid);
+    if (!hasProvider(user, 'google.com')) await linkWithCredential(user, credential);
   } finally {
     await signOut(temporaryAuth);
   }

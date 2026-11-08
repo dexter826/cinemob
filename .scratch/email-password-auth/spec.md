@@ -8,7 +8,7 @@ CineMOB hiện chỉ cho phép đăng nhập bằng Google. Người dùng khôn
 
 ## Solution
 
-Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng ký, đăng nhập, quên mật khẩu, xác minh email, liên kết/gỡ liên kết với Google, thêm/đổi mật khẩu. Email/mật khẩu là form chính trên màn hình đăng nhập; Google vẫn là lựa chọn phụ một chạm. Tài khoản email/mật khẩu phải xác minh email trước khi được dùng app. Việc liên kết tài khoản chỉ diễn ra sau khi người dùng xác thực bằng phương thức đã tồn tại; không tự động gộp tài khoản chỉ vì trùng email.
+Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng ký, đăng nhập, quên mật khẩu, xác minh email, liên kết/gỡ liên kết với Google, thêm/đổi mật khẩu. Email/mật khẩu là form chính trên màn hình đăng nhập; Google vẫn là lựa chọn phụ một chạm. Tài khoản email/mật khẩu phải xác minh email trước khi được dùng app. App không tự gộp dữ liệu tài khoản. Khi Firebase trả lỗi xung đột, chỉ liên kết sau khi xác thực bằng phương thức đã tồn tại. Giữ ngoại lệ chuẩn Firebase cho email do Google quản lý theo quyết định người dùng sau review.
 
 ## User Stories
 
@@ -52,7 +52,7 @@ Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng 
 - **Đăng nhập**: email/mật khẩu; lỗi sai thông tin dùng thông điệp chung, kèm gợi ý dùng Google nếu phù hợp; tài khoản chưa xác minh vào gate.
 - **Quên mật khẩu**: gửi link đặt lại qua email; luôn hiển thị thông điệp chung "Nếu email tồn tại..."; quay lại đăng nhập.
 - **Xác minh email**: gửi email xác minh; Firestore rules yêu cầu `request.auth.token.email_verified == true` cho create/update trên các collection thuộc người dùng (`movies`, `albums`, `member_profiles`, `member_lookup`, `users`, `push_subscriptions`). Đọc giữ nguyên. Force refresh token sau khi xác minh để token có claim mới.
-- **Liên kết tài khoản**: không auto-link. Khi gặp `auth/account-exists-with-different-credential`, giữ pending credential, yêu cầu đăng nhập bằng phương thức đã tồn tại, rồi `linkWithCredential`. Nếu tài khoản hiện có chưa xác minh, yêu cầu xác minh trước rồi liên kết trong trang bảo mật.
+- **Liên kết tài khoản**: app không tự gộp dữ liệu tài khoản. Khi gặp `auth/account-exists-with-different-credential`, giữ pending credential, yêu cầu đăng nhập bằng phương thức đã tồn tại, rồi `linkWithCredential`. Nếu tài khoản hiện có chưa xác minh, yêu cầu xác minh trước rồi liên kết trong trang bảo mật. Giữ hành vi chuẩn Firebase: Google có thể tự liên kết email do Google quản lý mà không trả lỗi xung đột; người dùng đã chấp nhận ngoại lệ này sau review.
 - **Email enumeration protection**: giữ bật; không dùng `fetchSignInMethodsForEmail`; UI hỏi người dùng chọn phương thức khi cần.
 - **Trang Tài khoản & bảo mật**: route riêng, link từ menu tài khoản. Hiển thị email tài khoản và các phương thức đã liên kết. Hành động: kết nối Google, thêm mật khẩu, đổi mật khẩu, gỡ liên kết. Khi kết nối Google, nếu email Google khác email tài khoản thì hủy liên kết và báo lỗi. Khi gỡ liên kết, yêu cầu còn ít nhất một phương thức, xác nhận, và reauth nếu cần. Không cho gỡ phương thức đăng nhập cuối cùng.
 - **Reauth**: xử lý `auth/requires-recent-login` bằng reauth mật khẩu hoặc Google tùy phương thức đang có; sau đó tiếp tục hành động.
@@ -76,7 +76,7 @@ Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng 
 - Đổi email.
 - Xóa tài khoản.
 - MFA.
-- Auto-link tài khoản trùng email.
+- Tự viết cơ chế gộp dữ liệu tài khoản hoặc thay đổi hành vi liên kết Google chuẩn của Firebase.
 - Dọn tài khoản chưa xác minh tự động.
 - Đăng xuất khỏi mọi thiết bị.
 - Provider khác ngoài Google.
@@ -91,3 +91,4 @@ Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng 
 - **`member_lookup`**: key theo email; gate xác minh + Firestore rule ngăn tài khoản chưa xác minh chiếm email.
 - **Người dùng Google hiện tại**: không cần migrate dữ liệu; UID giữ nguyên; luồng đăng nhập một chạm không đổi.
 - **Kiểm chứng**: chỉ static checks; QA tay do người dùng tự làm.
+- **Ngoại lệ Google đã duyệt**: Firebase không bảo đảm trả lỗi xung đột với email do Google quản lý, kể cả khi đăng ký trước bằng mật khẩu. Giữ hành vi chuẩn, không thêm backend để ngăn ngoại lệ này. Nguồn: https://firebase.google.com/docs/auth/web/google-signin#handling_account-exists-with-different-credential_errors

@@ -13,8 +13,8 @@ import { FALLBACK_DISPLAY_NAME } from '@/features/profile/services/profile-servi
 import { Movie } from '@/types';
 
 export const useAppInit = () => {
-  const { user } = useAuth();
-  const userId = user?.emailVerified ? user.uid : undefined;
+  const { user, registrationProfilePending } = useAuth();
+  const userId = user?.emailVerified && !registrationProfilePending ? user.uid : undefined;
 
   const initMovies = useMovieStore((state) => state.initialize);
   const cleanupMovies = useMovieStore((state) => state.cleanup);
@@ -83,7 +83,8 @@ export const useAppInit = () => {
   }, [allMovies, moviesLoading, setCalendarMovies, setCalendarLoading]);
 
   useEffect(() => {
-    if (!user?.emailVerified || moviesLoading || !moviesInitialized) return;
+    if (!user?.emailVerified || registrationProfilePending || moviesLoading || !moviesInitialized)
+      return;
 
     let cancelled = false;
     const timer = window.setTimeout(() => {
@@ -113,5 +114,5 @@ export const useAppInit = () => {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [allMovies, moviesInitialized, moviesLoading, showToast, user]);
+  }, [allMovies, moviesInitialized, moviesLoading, showToast, user, registrationProfilePending]);
 };

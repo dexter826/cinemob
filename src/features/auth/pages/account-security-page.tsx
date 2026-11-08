@@ -85,7 +85,7 @@ export default function AccountSecurityPage() {
               loading={security.busy}
               onClick={() => void security.connectGoogle()}
             >
-              Kết nối Google
+              {security.busy ? 'Đang kết nối…' : 'Kết nối Google'}
             </Button>
           )}
           {hasGoogle && (

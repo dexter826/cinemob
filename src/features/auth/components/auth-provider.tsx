@@ -24,10 +24,13 @@ import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
 import {
   registerWithEmail,
+  completeRegistrationProfile,
+  hasPendingRegistrationProfile,
   sendVerificationEmail,
   signInWithEmail,
 } from '@/features/auth/services/auth-service';
 import { getAuthErrorMessage } from '@/features/auth/utils/auth-errors';
+import { sameAccountEmail } from '@/features/auth/utils/auth-validation';
 
 export interface AuthContextType {
   user: User | null;
@@ -43,6 +46,7 @@ export interface AuthContextType {
   pendingGoogleEmail: string | null;
   cancelGoogleLink: () => void;
   finishGoogleLink: () => Promise<void>;
+  registrationProfilePending: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const retryAuth = useCallback(() => setAuthAttempt((n) => n + 1), []);
   const { showToast } = useToastStore();
   const registering = useRef(false);
+  const [registrationProfilePending, setRegistrationProfilePending] = useState(false);
   const [pendingGoogle, setPendingGoogle] = useState<{
     email: string;
     credential: OAuthCredential;
@@ -78,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!pendingGoogle || !currentUser?.emailVerified) {
       throw new FirebaseError('auth/unverified-email', 'Verify email before linking');
     }
-    if (currentUser.email?.toLowerCase() !== pendingGoogle.email.toLowerCase()) {
+    if (!sameAccountEmail(currentUser.email, pendingGoogle.email)) {
       throw new FirebaseError('auth/google-email-mismatch', 'Account email does not match');
     }
     await linkWithCredential(currentUser, pendingGoogle.credential);
@@ -100,6 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const modal = useAddMovieStore.getState();
         if (modal.ownerUid && modal.ownerUid !== currentUser?.uid) modal.closeAddModal();
         setUser(currentUser ? cloneFirebaseUser(currentUser) : null);
+        setRegistrationProfilePending(
+          currentUser ? hasPendingRegistrationProfile(currentUser) : false,
+        );
         setLoading(false);
         setError(null);
       },
@@ -142,7 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       const signedInUser = await signInWithEmail(email, password);
       if (!pendingGoogle) return;
-      if (signedInUser.email?.toLowerCase() !== pendingGoogle.email.toLowerCase()) {
+      if (!sameAccountEmail(signedInUser.email, pendingGoogle.email)) {
         setPendingGoogle(null);
         showToast(
           'Đã đăng nhập. Yêu cầu liên kết Google đã hủy vì email không trùng khớp.',
@@ -176,6 +184,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const newUser = await registerWithEmail(displayName, email, password);
         try {
+          await completeRegistrationProfile(newUser);
+        } catch (error) {
+          showToast(getAuthErrorMessage(error), 'error');
+        }
+        try {
           await sendVerificationEmail(newUser);
         } catch (error) {
           showToast(getAuthErrorMessage(error, MESSAGES.AUTH.VERIFICATION_RESEND_ERROR), 'error');
@@ -183,6 +196,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         registering.current = false;
         setUser(auth.currentUser ? cloneFirebaseUser(auth.currentUser) : null);
+        setRegistrationProfilePending(
+          auth.currentUser ? hasPendingRegistrationProfile(auth.currentUser) : false,
+        );
         setLoading(false);
       }
     },
@@ -207,10 +223,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = useCallback(async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) return false;
+    await completeRegistrationProfile(currentUser);
     await currentUser.reload();
     if (currentUser.emailVerified) await currentUser.getIdToken(true);
     if (auth.currentUser !== currentUser) return false;
     setUser(cloneFirebaseUser(currentUser));
+    setRegistrationProfilePending(false);
     return currentUser.emailVerified;
   }, []);
 
@@ -229,6 +247,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pendingGoogleEmail: pendingGoogle?.email ?? null,
       cancelGoogleLink,
       finishGoogleLink,
+      registrationProfilePending,
     }),
     [
       user,
@@ -244,6 +263,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pendingGoogle,
       cancelGoogleLink,
       finishGoogleLink,
+      registrationProfilePending,
     ],
   );
 
