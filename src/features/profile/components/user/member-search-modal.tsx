@@ -61,9 +61,6 @@ function MemberSearchModal({ isOpen, onClose, onExited }: MemberSearchModalProps
             placeholder="Tìm theo email…"
             label="Tìm thành viên theo email"
           />
-          <p className="text-body-sm text-text-secondary">
-            Tìm thành viên bằng email tài khoản Google của họ.
-          </p>
         </form>
 
         {loading && results.length === 0 ? (
