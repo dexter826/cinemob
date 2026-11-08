@@ -6,10 +6,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** completed
-**Commit:** `a999b82`
-**Verification:** `typecheck`, `lint`, `build` pass.
-
 - [x] Route `/settings/account` mở được từ menu tài khoản trên navbar.
 - [x] Trang hiển thị email tài khoản và danh sách phương thức đã liên kết (Google, email/mật khẩu).
 - [x] Tài khoản email/mật khẩu có nút "Kết nối Google"; sau khi kết nối, đăng nhập được bằng cả hai.

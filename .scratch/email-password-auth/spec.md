@@ -2,24 +2,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** implementing
-
-## Tiến độ triển khai
-
-`Status` là nhãn triage. `Progress` và checkbox ghi nhận công việc triển khai code của agent; code xong thì hoàn thành ticket. QA tay không phải điều kiện hoàn thành. Review toàn nhánh chạy một lần sau khi triển khai hết theo yêu cầu người dùng.
-
-| Ticket | Triển khai | Kiểm tra tĩnh | Commit |
-| --- | --- | --- | --- |
-| 01 | Hoàn thành | Pass | `fa11552` |
-| 02 | Hoàn thành | Pass | `6aa60bf` |
-| 03 | Hoàn thành | Pass | `9c7fa8c` |
-| 04 | Hoàn thành | Pass | `a999b82` |
-| 05 | Đang triển khai | Chưa chạy | — |
-| 06 | Chưa triển khai | Chưa chạy | — |
-| 07 | Chưa triển khai | Chưa chạy | — |
-
-README được giữ nguyên theo lựa chọn mới của người dùng, thay thế yêu cầu cập nhật README bên dưới và trong ticket 07.
-
 ## Problem Statement
 
 CineMOB hiện chỉ cho phép đăng nhập bằng Google. Người dùng không có tài khoản Google, hoặc không muốn phụ thuộc vào Google, không thể tạo tài khoản hay sử dụng ứng dụng. Rào cản này nằm ngay ở bước đầu tiên và thu hẹp tệp người dùng tiềm năng.
@@ -79,7 +61,7 @@ Bổ sung phương thức đăng nhập email/mật khẩu đầy đủ: đăng 
 - **Cấu trúc module**: giữ AuthProvider cho state; tách service xử lý Firebase Auth và các hàm thuần cho validate/map lỗi; hook riêng cho trang bảo mật. Không over-abstract.
 - **Avatar**: giữ fallback chữ cái đầu hiện có; ẩn "Khôi phục ảnh đại diện Google" với tài khoản không có Google.
 - **Copy & thiết kế**: theo COPY.md và DESIGN.md; dùng component hiện có; CTA "Tạo tài khoản", "Đăng nhập", "Gửi email đặt lại mật khẩu"...
-- **Tài liệu**: cập nhật README mô tả auth (Google + email/mật khẩu). Không tạo tài liệu QA/triển khai.
+- **Tài liệu**: giữ nguyên README theo lựa chọn mới của người dùng. Không tạo tài liệu QA/triển khai.
 - **Không dọn tài khoản chưa xác minh**: giữ hành vi chuẩn của Firebase; chủ email thật dùng "Quên mật khẩu" để tiếp quản.
 
 ## Testing Decisions

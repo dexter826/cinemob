@@ -6,10 +6,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** completed
-**Commit:** `6aa60bf`
-**Verification:** `typecheck`, `lint`, `build` pass.
-
 - [x] Form đăng ký có tên hiển thị (2–50 ký tự), email, mật khẩu, nhập lại mật khẩu.
 - [x] Mật khẩu tối thiểu 8 ký tự, có ít nhất 1 chữ và 1 số; nhập lại phải khớp; có hiện/ẩn.
 - [x] Tạo tài khoản thành công → cập nhật tên hiển thị, gửi email xác minh, chuyển đến gate.

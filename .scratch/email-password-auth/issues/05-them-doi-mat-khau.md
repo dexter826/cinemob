@@ -6,9 +6,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** completed
-**Verification:** `typecheck`, `lint`, `build` pass.
-
 - [x] Google-only user thêm mật khẩu thành công và đăng nhập được bằng email/mật khẩu.
 - [x] User có mật khẩu đổi được mật khẩu bằng cách nhập mật khẩu hiện tại.
 - [x] Mật khẩu mới validate như đăng ký; nhập lại phải khớp.

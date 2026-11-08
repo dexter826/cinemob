@@ -6,10 +6,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** completed
-**Commit:** `fa11552`
-**Verification:** `typecheck`, `lint`, `build` pass.
-
 - [x] Màn hình auth có chế độ đăng nhập email/mật khẩu; Google vẫn là nút phụ một chạm.
 - [x] Đăng nhập đúng thông tin → vào app; sai thông tin → thông điệp tiếng Việt chung, không tiết lộ email tồn tại.
 - [x] Tài khoản chưa xác minh → gate full-page; có gửi lại email, "Tôi đã xác minh", đăng xuất; tự kiểm tra khi quay lại tab.

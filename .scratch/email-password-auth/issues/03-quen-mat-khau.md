@@ -6,10 +6,6 @@
 
 **Status:** ready-for-agent
 
-**Progress:** completed
-**Commit:** `9c7fa8c`
-**Verification:** `typecheck`, `lint`, `build` pass.
-
 - [x] Có chế độ "Quên mật khẩu" trên màn hình auth.
 - [x] Gửi link đặt lại cho email hợp lệ; luôn hiển thị thông điệp chung "Nếu email tồn tại...".
 - [x] Email không tồn tại cũng hiển thị cùng thông điệp.
