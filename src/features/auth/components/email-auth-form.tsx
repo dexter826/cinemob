@@ -8,8 +8,14 @@ import { PASSWORD_HINT, validateEmail, validatePassword } from '../utils/auth-va
 import { getAuthErrorMessage } from '../utils/auth-errors';
 import { requestPasswordReset } from '../services/auth-service';
 
-export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
-  const { signInWithEmail, register } = useAuth();
+export default function EmailAuthForm({
+  disabled,
+  onBusyChange,
+}: {
+  disabled: boolean;
+  onBusyChange: (busy: boolean) => void;
+}) {
+  const { signInWithEmail, register, pendingGoogleEmail, cancelGoogleLink } = useAuth();
   const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -41,6 +47,7 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
     setNotice('');
     if (Object.values(nextErrors).some(Boolean)) return;
     setBusy(true);
+    onBusyChange(true);
     try {
       if (isReset) {
         await requestPasswordReset(email);
@@ -53,17 +60,29 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
       setFormError(getAuthErrorMessage(error));
     } finally {
       setBusy(false);
+      onBusyChange(false);
     }
   };
 
   return (
     <div className="mt-8">
+      {pendingGoogleEmail && (
+        <div className="mb-4 space-y-2">
+          <p role="status" className="text-body-sm text-text-secondary break-words">
+            Để kết nối Google cho {pendingGoogleEmail}, đăng nhập bằng phương thức đã dùng trước
+            đây. Không có tài khoản nào được tự động gộp.
+          </p>
+          <Button variant="link" disabled={busy || disabled} onClick={cancelGoogleLink}>
+            Hủy liên kết Google
+          </Button>
+        </div>
+      )}
       <div className="flex gap-4 mb-6" aria-label="Chọn cách đăng nhập">
         {(['login', 'register'] as const).map((value) => (
           <Button
             key={value}
             variant={mode === value ? 'primary' : 'secondary'}
-            disabled={busy || disabled}
+            disabled={busy || disabled || (!!pendingGoogleEmail && value === 'register')}
             aria-pressed={mode === value}
             onClick={() => {
               setMode(value);

@@ -17,7 +17,7 @@ interface AccountAction {
 }
 
 export function useAccountSecurity() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, finishGoogleLink } = useAuth();
   const uid = user?.uid ?? '';
   const showToast = useToastStore((state) => state.showToast);
   const [busy, setBusy] = useState(false);
@@ -81,6 +81,8 @@ export function useAccountSecurity() {
       }
     },
     connectGoogle: () => execute({ run: () => connectGoogle(uid), success: 'Đã kết nối Google' }),
+    finishGoogleLink: () =>
+      execute({ run: finishGoogleLink, success: 'Đã hoàn tất liên kết Google' }),
     savePassword: (password: string, currentPassword: string | undefined, onSuccess: () => void) =>
       execute({
         run: () => saveAccountPassword(uid, password, currentPassword),

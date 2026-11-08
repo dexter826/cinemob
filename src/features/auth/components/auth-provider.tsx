@@ -8,7 +8,17 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import {
+  User,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  linkWithCredential,
+  type OAuthCredential,
+} from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '@/shared/lib/firebase';
 import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
@@ -30,6 +40,9 @@ export interface AuthContextType {
   resendVerificationEmail: () => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<boolean>;
+  pendingGoogleEmail: string | null;
+  cancelGoogleLink: () => void;
+  finishGoogleLink: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,6 +66,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const retryAuth = useCallback(() => setAuthAttempt((n) => n + 1), []);
   const { showToast } = useToastStore();
   const registering = useRef(false);
+  const [pendingGoogle, setPendingGoogle] = useState<{
+    email: string;
+    credential: OAuthCredential;
+  } | null>(null);
+  const navigate = useNavigate();
+  const cancelGoogleLink = useCallback(() => setPendingGoogle(null), []);
+
+  const finishGoogleLink = useCallback(async () => {
+    const currentUser = auth.currentUser;
+    if (!pendingGoogle || !currentUser?.emailVerified) {
+      throw new FirebaseError('auth/unverified-email', 'Verify email before linking');
+    }
+    if (currentUser.email?.toLowerCase() !== pendingGoogle.email.toLowerCase()) {
+      throw new FirebaseError('auth/google-email-mismatch', 'Account email does not match');
+    }
+    await linkWithCredential(currentUser, pendingGoogle.credential);
+    await currentUser.getIdToken(true);
+    if (auth.currentUser !== currentUser) return;
+    setUser(cloneFirebaseUser(currentUser));
+    setPendingGoogle(null);
+    showToast('Đã kết nối Google', 'success');
+  }, [pendingGoogle, showToast]);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,24 +118,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [authAttempt]);
 
   const signInWithGoogle = useCallback(async () => {
+    setPendingGoogle(null);
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: unknown) {
       const code = (error as { code?: string })?.code ?? '';
-      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
-      console.error('Error signing in', error);
-      showToast(MESSAGES.AUTH.LOGIN_ERROR, 'error');
+      if (
+        code === 'auth/account-exists-with-different-credential' &&
+        error instanceof FirebaseError
+      ) {
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        const email = error.customData?.email;
+        if (credential && typeof email === 'string') {
+          setPendingGoogle({ email, credential });
+          return;
+        }
+      }
+      showToast(getAuthErrorMessage(error), 'error');
     }
   }, [showToast]);
 
-  const loginWithEmail = useCallback(async (email: string, password: string) => {
-    await signInWithEmail(email, password);
-  }, []);
+  const loginWithEmail = useCallback(
+    async (email: string, password: string) => {
+      const signedInUser = await signInWithEmail(email, password);
+      if (!pendingGoogle) return;
+      if (signedInUser.email?.toLowerCase() !== pendingGoogle.email.toLowerCase()) {
+        setPendingGoogle(null);
+        showToast(
+          'Đã đăng nhập. Yêu cầu liên kết Google đã hủy vì email không trùng khớp.',
+          'info',
+        );
+        return;
+      }
+      if (!signedInUser.emailVerified) {
+        navigate('/settings/account');
+        return;
+      }
+      try {
+        await finishGoogleLink();
+      } catch (error) {
+        showToast(
+          getAuthErrorMessage(
+            error,
+            'Đã đăng nhập nhưng chưa kết nối được Google. Thử lại trong Tài khoản & bảo mật.',
+          ),
+          'error',
+        );
+        navigate('/settings/account');
+      }
+    },
+    [pendingGoogle, finishGoogleLink, showToast, navigate],
+  );
 
   const register = useCallback(
     async (displayName: string, email: string, password: string) => {
       registering.current = true;
-      setLoading(true);
       try {
         const newUser = await registerWithEmail(displayName, email, password);
         try {
@@ -125,6 +197,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     try {
       await signOut(auth);
+      setPendingGoogle(null);
     } catch (error) {
       console.error('Error signing out', error);
       showToast(MESSAGES.AUTH.LOGOUT_ERROR, 'error');
@@ -153,6 +226,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       resendVerificationEmail,
       logout,
       refreshUser,
+      pendingGoogleEmail: pendingGoogle?.email ?? null,
+      cancelGoogleLink,
+      finishGoogleLink,
     }),
     [
       user,
@@ -165,6 +241,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       resendVerificationEmail,
       logout,
       refreshUser,
+      pendingGoogle,
+      cancelGoogleLink,
+      finishGoogleLink,
     ],
   );
 

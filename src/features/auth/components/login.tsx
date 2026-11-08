@@ -70,6 +70,7 @@ function PosterTile({ poster }: { poster: TMDBMovieResult }) {
 function Login() {
   const { signInWithGoogle } = useAuth();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const posters = useWallPosters();
 
   const handleGoogleLogin = useCallback(async () => {
@@ -102,7 +103,7 @@ function Login() {
               Ghi chép danh sách xem, đánh giá và xây dựng bộ sưu tập điện ảnh của riêng bạn.
             </p>
 
-            <EmailAuthForm disabled={isGoogleLoading} />
+            <EmailAuthForm disabled={isGoogleLoading} onBusyChange={setIsEmailLoading} />
 
             <div className="my-6 flex items-center gap-3" aria-hidden="true">
               <span className="h-px flex-1 bg-border-default" />
@@ -115,6 +116,7 @@ function Login() {
               size="lg"
               onClick={handleGoogleLogin}
               loading={isGoogleLoading}
+              disabled={isEmailLoading}
               leadingIcon={<GoogleIcon className="w-5 h-5 shrink-0" />}
               className="w-full"
               aria-label="Đăng nhập bằng tài khoản Google"

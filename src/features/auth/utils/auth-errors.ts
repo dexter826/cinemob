@@ -1,6 +1,10 @@
 import { MESSAGES } from '@/constants/messages';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/account-exists-with-different-credential':
+    'Chưa kết nối được Google. Đăng nhập bằng phương thức bạn đã dùng trước đây, rồi kết nối Google trong Tài khoản & bảo mật.',
+  'auth/unverified-email':
+    'Cần xác minh email trước khi kết nối Google. Mở liên kết trong email rồi thử lại.',
   'auth/last-sign-in-method':
     'Không thể gỡ phương thức đăng nhập cuối cùng. Thêm phương thức khác trước.',
   'auth/no-such-provider': 'Phương thức này không còn được liên kết. Tải lại trang để cập nhật.',

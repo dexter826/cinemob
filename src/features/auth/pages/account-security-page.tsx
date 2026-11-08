@@ -8,7 +8,7 @@ import { hasProvider } from '../services/account-service';
 import useAlertStore from '@/shared/stores/alert-store';
 
 export default function AccountSecurityPage() {
-  const { user } = useAuth();
+  const { user, pendingGoogleEmail, cancelGoogleLink } = useAuth();
   const security = useAccountSecurity();
   const showAlert = useAlertStore((state) => state.showAlert);
   if (!user) return null;
@@ -45,6 +45,28 @@ export default function AccountSecurityPage() {
         <p className="mt-1 text-body-sm text-success">Đã xác minh email</p>
       </section>
       <section className="py-6 space-y-6" aria-labelledby="account-methods-title">
+        {pendingGoogleEmail && (
+          <div className="space-y-3 border-b border-border-default pb-6">
+            <p className="text-body-sm text-text-secondary break-words">
+              Bạn có yêu cầu kết nối Google cho {pendingGoogleEmail}. Xác nhận để hoàn tất liên kết.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                disabled={security.busy || security.needsReauth}
+                onClick={() => void security.finishGoogleLink()}
+              >
+                Hoàn tất liên kết Google
+              </Button>
+              <Button
+                variant="secondary"
+                disabled={security.busy || security.needsReauth}
+                onClick={cancelGoogleLink}
+              >
+                Hủy liên kết
+              </Button>
+            </div>
+          </div>
+        )}
         <h2 id="account-methods-title" className="text-title-md">
           Phương thức đăng nhập
         </h2>
