@@ -20,6 +20,7 @@ const MovieDetailPage = lazy(() => import('@/features/movies/pages/movie-detail-
 const PersonDetailPage = lazy(() => import('@/features/search/pages/person-detail-page'));
 const ReleaseCalendarPage = lazy(() => import('@/features/calendar/pages/release-calendar-page'));
 const MemberProfilePage = lazy(() => import('@/features/profile/pages/member-profile-page'));
+const AccountSecurityPage = lazy(() => import('@/features/auth/pages/account-security-page'));
 const NotFoundPage = lazy(() => import('@/shared/pages/not-found-page'));
 const loadAddMovieModal = () => import('@/features/movies/components/add-movie-modal');
 const loadMarkWatchedDialog = () => import('@/features/movies/components/mark-watched-dialog');
@@ -59,6 +60,7 @@ function AnimatedRoutes() {
         <Route path="/person/:personId" element={<PersonDetailPage />} />
         <Route path="/calendar" element={<ReleaseCalendarPage />} />
         <Route path="/profile/:uid" element={<MemberProfilePage />} />
+        <Route path="/settings/account" element={<AccountSecurityPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>

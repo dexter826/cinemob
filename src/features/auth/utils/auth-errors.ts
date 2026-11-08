@@ -1,6 +1,20 @@
 import { MESSAGES } from '@/constants/messages';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/google-email-mismatch':
+    'Email Google không trùng email tài khoản. Chọn tài khoản Google có cùng email để kết nối.',
+  'auth/user-mismatch':
+    'Tài khoản không khớp với phiên hiện tại. Đăng nhập lại đúng tài khoản rồi thử lại.',
+  'auth/popup-closed-by-user': 'Bạn đã đóng cửa sổ đăng nhập. Mở lại để tiếp tục.',
+  'auth/cancelled-popup-request': 'Yêu cầu đăng nhập đã bị hủy. Thử lại với một cửa sổ đăng nhập.',
+  'auth/popup-blocked':
+    'Trình duyệt đã chặn cửa sổ đăng nhập. Cho phép cửa sổ bật lên rồi thử lại.',
+  'auth/requires-recent-login': 'Phiên đăng nhập cần được xác thực lại. Đăng nhập lại để tiếp tục.',
+  'auth/provider-already-linked': 'Phương thức này đã được liên kết. Tải lại trang để cập nhật.',
+  'auth/credential-already-in-use':
+    'Phương thức này đã thuộc tài khoản khác. Đăng nhập đúng tài khoản rồi thử lại.',
+  'auth/invalid-user-token': 'Phiên đăng nhập đã hết hạn. Đăng xuất rồi đăng nhập lại.',
+  'auth/user-token-expired': 'Phiên đăng nhập đã hết hạn. Đăng xuất rồi đăng nhập lại.',
   'auth/email-already-in-use':
     'Không tạo được tài khoản với email này. Thử đăng nhập hoặc đặt lại mật khẩu.',
   'auth/weak-password': 'Mật khẩu cần tối thiểu 8 ký tự, bao gồm chữ và số.',
