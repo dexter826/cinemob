@@ -69,7 +69,7 @@ export default function EmailAuthForm({
   };
 
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       {pendingGoogleEmail && (
         <div className="mb-4 space-y-2">
           <p role="status" className="text-body-sm text-text-secondary break-words">
@@ -81,7 +81,7 @@ export default function EmailAuthForm({
           </Button>
         </div>
       )}
-      <div className="flex gap-4 mb-6" aria-label="Chọn cách đăng nhập">
+      <div className="grid grid-cols-2 gap-2 mb-6" aria-label="Chọn cách đăng nhập">
         {(['login', 'register'] as const).map((value) => (
           <Button
             key={value}
@@ -101,8 +101,8 @@ export default function EmailAuthForm({
           </Button>
         ))}
       </div>
-      <form className="space-y-4" onSubmit={submit} noValidate>
-        <fieldset className="space-y-4" disabled={busy || disabled}>
+      <form className="space-y-6" onSubmit={submit} noValidate>
+        <fieldset className="grid gap-4 min-w-0" disabled={busy || disabled}>
           {isRegister && (
             <TextField
               id="auth-name"
@@ -127,33 +127,52 @@ export default function EmailAuthForm({
             error={errors.email}
           />
           {!isReset && (
-            <PasswordField
-              id="auth-password"
-              name="password"
-              label="Mật khẩu"
-              autoComplete={isRegister ? 'new-password' : 'current-password'}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              error={errors.password}
-              aria-describedby={
-                errors.password ? 'auth-password-error' : isRegister ? 'password-hint' : undefined
-              }
-            />
+            <div className="space-y-2">
+              <PasswordField
+                id="auth-password"
+                name="password"
+                label="Mật khẩu"
+                autoComplete={isRegister ? 'new-password' : 'current-password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                error={errors.password}
+                aria-describedby={
+                  errors.password ? 'auth-password-error' : isRegister ? 'password-hint' : undefined
+                }
+              />
+              {isRegister && (
+                <p id="password-hint" className="text-body-sm text-text-secondary">
+                  {PASSWORD_HINT}
+                </p>
+              )}
+              {!isRegister && (
+                <div className="flex justify-end">
+                  <Button
+                    variant="link"
+                    disabled={busy || disabled}
+                    onClick={() => {
+                      setMode('reset');
+                      setErrors({});
+                      setFormError('');
+                      setNotice('');
+                      setPassword('');
+                    }}
+                  >
+                    Quên mật khẩu?
+                  </Button>
+                </div>
+              )}
+            </div>
           )}
           {isRegister && (
-            <>
-              <p id="password-hint" className="text-body-sm text-text-secondary">
-                {PASSWORD_HINT}
-              </p>
-              <PasswordField
-                id="auth-confirmation"
-                label="Nhập lại mật khẩu"
-                autoComplete="new-password"
-                value={confirmation}
-                onChange={(event) => setConfirmation(event.target.value)}
-                error={errors.confirmation}
-              />
-            </>
+            <PasswordField
+              id="auth-confirmation"
+              label="Nhập lại mật khẩu"
+              autoComplete="new-password"
+              value={confirmation}
+              onChange={(event) => setConfirmation(event.target.value)}
+              error={errors.confirmation}
+            />
           )}
         </fieldset>
         {formError && (
@@ -180,21 +199,22 @@ export default function EmailAuthForm({
                 : 'Đăng nhập'}
         </Button>
       </form>
-      {!isRegister && (
-        <Button
-          variant="link"
-          className="mt-4"
-          disabled={busy || disabled}
-          onClick={() => {
-            setMode(isReset ? 'login' : 'reset');
-            setErrors({});
-            setFormError('');
-            setNotice('');
-            setPassword('');
-          }}
-        >
-          {isReset ? 'Quay lại đăng nhập' : 'Quên mật khẩu?'}
-        </Button>
+      {isReset && (
+        <div className="mt-4 flex justify-center">
+          <Button
+            variant="link"
+            disabled={busy || disabled}
+            onClick={() => {
+              setMode('login');
+              setErrors({});
+              setFormError('');
+              setNotice('');
+              setPassword('');
+            }}
+          >
+            Quay lại đăng nhập
+          </Button>
+        </div>
       )}
     </div>
   );
