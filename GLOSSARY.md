@@ -92,6 +92,28 @@ _Avoid_: Bánh xe may mắn, Random picker, Chọn ngẫu nhiên, Vòng quay phi
 Phương thức tự nhập liệu thông tin tác phẩm vào thư viện đối với các nội dung không có sẵn trên cơ sở dữ liệu TMDB.
 _Avoid_: Thêm ngoài, Tác phẩm tùy biến, Phim tự nhập, Thêm tùy chỉnh
 
+## Tài khoản & Xác thực
+
+**Tài khoản**:
+Phương tiện xác thực để một người đăng nhập vào CineMOB, tách biệt với hồ sơ thành viên công khai.
+_Avoid_: Hồ sơ, Profile, User
+
+**Phương thức đăng nhập**:
+Cách một tài khoản xác thực với hệ thống, hiện gồm Google và email/mật khẩu.
+_Avoid_: Provider, Sign-in method, Cổng đăng nhập
+
+**Liên kết tài khoản**:
+Việc gắn thêm một phương thức đăng nhập vào cùng một tài khoản sau khi người dùng đã xác thực.
+_Avoid_: Gộp tài khoản, Merge account, Auto-link
+
+**Xác minh email**:
+Bước người dùng chứng minh quyền sở hữu địa chỉ email bằng liên kết do hệ thống gửi, bắt buộc trước khi dùng ứng dụng.
+_Avoid_: Kích hoạt tài khoản, Active email, Verify account
+
+**Phương thức đăng nhập cuối cùng**:
+Phương thức duy nhất còn lại của một tài khoản; không được phép gỡ liên kết.
+_Avoid_: Last provider, Phương thức chính
+
 ## Hồ sơ & Kết nối
 
 **Hồ sơ thành viên**:
