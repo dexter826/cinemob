@@ -14,7 +14,6 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@vudovn/ag-kit": "^2026.7.18",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
     "howler": "^2.2.4",
