@@ -11,4 +11,8 @@
 - [ ] Email không tồn tại cũng hiển thị cùng thông điệp.
 - [ ] Người dùng quay lại đăng nhập được sau khi đặt mật khẩu mới.
 - [ ] Lỗi mạng/quá nhiều yêu cầu có thông điệp tiếng Việt.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+- [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+
+## Comments
+
+- Đã triển khai chế độ quên mật khẩu, thông điệp chung không tiết lộ email tồn tại, giữ email khi quay lại đăng nhập. Chờ QA tay và review toàn nhánh.

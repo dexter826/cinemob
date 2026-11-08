@@ -6,10 +6,11 @@ import { useAuth } from './auth-provider';
 import { validateDisplayName } from '@/features/profile/services/profile-service';
 import { PASSWORD_HINT, validateEmail, validatePassword } from '../utils/auth-validation';
 import { getAuthErrorMessage } from '../utils/auth-errors';
+import { requestPasswordReset } from '../services/auth-service';
 
 export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
   const { signInWithEmail, register } = useAuth();
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register' | 'reset'>('login');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -17,14 +18,16 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [formError, setFormError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState('');
   const isRegister = mode === 'register';
+  const isReset = mode === 'reset';
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (busy || disabled) return;
     const nextErrors: Record<string, string | undefined> = {
       email: validateEmail(email),
-      password: password ? undefined : 'Nhập mật khẩu để đăng nhập.',
+      password: isReset || password ? undefined : 'Nhập mật khẩu để đăng nhập.',
     };
     if (isRegister) {
       const checkedName = validateDisplayName(name);
@@ -35,10 +38,16 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
     }
     setErrors(nextErrors);
     setFormError('');
+    setNotice('');
     if (Object.values(nextErrors).some(Boolean)) return;
     setBusy(true);
     try {
-      if (isRegister) await register(name, email, password);
+      if (isReset) {
+        await requestPasswordReset(email);
+        setNotice(
+          'Nếu email tồn tại, bạn sẽ nhận được liên kết đặt lại mật khẩu. Kiểm tra hộp thư và thư mục spam.',
+        );
+      } else if (isRegister) await register(name, email, password);
       else await signInWithEmail(email, password);
     } catch (error) {
       setFormError(getAuthErrorMessage(error));
@@ -60,6 +69,7 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
               setMode(value);
               setErrors({});
               setFormError('');
+              setNotice('');
               setPassword('');
               setConfirmation('');
             }}
@@ -93,18 +103,20 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
             onChange={(event) => setEmail(event.target.value)}
             error={errors.email}
           />
-          <PasswordField
-            id="auth-password"
-            name="password"
-            label="Mật khẩu"
-            autoComplete={isRegister ? 'new-password' : 'current-password'}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            error={errors.password}
-            aria-describedby={
-              errors.password ? 'auth-password-error' : isRegister ? 'password-hint' : undefined
-            }
-          />
+          {!isReset && (
+            <PasswordField
+              id="auth-password"
+              name="password"
+              label="Mật khẩu"
+              autoComplete={isRegister ? 'new-password' : 'current-password'}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              error={errors.password}
+              aria-describedby={
+                errors.password ? 'auth-password-error' : isRegister ? 'password-hint' : undefined
+              }
+            />
+          )}
           {isRegister && (
             <>
               <p id="password-hint" className="text-body-sm text-text-secondary">
@@ -126,10 +138,31 @@ export default function EmailAuthForm({ disabled }: { disabled: boolean }) {
             {formError}
           </p>
         )}
+        {notice && (
+          <p role="status" className="text-body-sm text-text-secondary">
+            {notice}
+          </p>
+        )}
         <Button type="submit" size="lg" className="w-full" loading={busy} disabled={disabled}>
-          {isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}
+          {isReset ? 'Gửi email đặt lại mật khẩu' : isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}
         </Button>
       </form>
+      {!isRegister && (
+        <Button
+          variant="link"
+          className="mt-4"
+          disabled={busy || disabled}
+          onClick={() => {
+            setMode(isReset ? 'login' : 'reset');
+            setErrors({});
+            setFormError('');
+            setNotice('');
+            setPassword('');
+          }}
+        >
+          {isReset ? 'Quay lại đăng nhập' : 'Quên mật khẩu?'}
+        </Button>
+      )}
     </div>
   );
 }
