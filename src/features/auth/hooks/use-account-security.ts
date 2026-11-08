@@ -1,12 +1,18 @@
 import { useRef, useState } from 'react';
 import { useAuth } from '../components/auth-provider';
-import { connectGoogle, reauthenticateAccount, requireAccount } from '../services/account-service';
+import {
+  connectGoogle,
+  reauthenticateAccount,
+  requireAccount,
+  saveAccountPassword,
+} from '../services/account-service';
 import { getAuthErrorMessage } from '../utils/auth-errors';
 import useToastStore from '@/shared/stores/toast-store';
 
 interface AccountAction {
   run: () => Promise<void>;
   success: string;
+  onSuccess?: () => void;
 }
 
 export function useAccountSecurity() {
@@ -28,6 +34,7 @@ export function useAccountSecurity() {
       await action.run();
       await refreshUser();
       showToast(action.success, 'success');
+      action.onSuccess?.();
       return true;
     } catch (error) {
       if ((error as { code?: string }).code === 'auth/requires-recent-login') {
@@ -73,5 +80,11 @@ export function useAccountSecurity() {
       }
     },
     connectGoogle: () => execute({ run: () => connectGoogle(uid), success: 'Đã kết nối Google' }),
+    savePassword: (password: string, currentPassword: string | undefined, onSuccess: () => void) =>
+      execute({
+        run: () => saveAccountPassword(uid, password, currentPassword),
+        success: 'Đã lưu mật khẩu',
+        onSuccess,
+      }),
   };
 }

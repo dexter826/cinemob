@@ -10,6 +10,7 @@ import {
   EmailAuthProvider,
   signInWithPopup,
   signOut,
+  updatePassword,
   type User,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/shared/lib/firebase';
@@ -59,4 +60,32 @@ export const reauthenticateAccount = async (uid: string, password?: string): Pro
     await reauthenticateWithPopup(user, googleProvider);
   }
   requireAccount(uid);
+};
+
+export const saveAccountPassword = async (
+  uid: string,
+  newPassword: string,
+  currentPassword?: string,
+): Promise<void> => {
+  const user = requireAccount(uid);
+  if (!user.email) throw new FirebaseError('auth/invalid-email', 'Missing account email');
+  if (hasProvider(user, 'password')) {
+    if (!currentPassword)
+      throw new FirebaseError('auth/incorrect-current-password', 'Missing password');
+    try {
+      await reauthenticateAccount(uid, currentPassword);
+    } catch (error) {
+      if (
+        ['auth/invalid-credential', 'auth/wrong-password'].includes(
+          (error as { code?: string }).code ?? '',
+        )
+      ) {
+        throw new FirebaseError('auth/incorrect-current-password', 'Incorrect current password');
+      }
+      throw error;
+    }
+    await updatePassword(requireAccount(uid), newPassword);
+  } else {
+    await linkWithCredential(user, EmailAuthProvider.credential(user.email, newPassword));
+  }
 };

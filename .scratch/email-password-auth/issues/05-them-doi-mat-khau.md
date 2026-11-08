@@ -6,9 +6,12 @@
 
 **Status:** ready-for-agent
 
-- [ ] Google-only user thêm mật khẩu thành công và đăng nhập được bằng email/mật khẩu.
-- [ ] User có mật khẩu đổi được mật khẩu bằng cách nhập mật khẩu hiện tại.
-- [ ] Mật khẩu mới validate như đăng ký; nhập lại phải khớp.
-- [ ] Sai mật khẩu hiện tại → lỗi rõ ràng, không đổi mật khẩu.
-- [ ] `requires-recent-login` được xử lý bằng reauth.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+**Progress:** completed
+**Verification:** `typecheck`, `lint`, `build` pass.
+
+- [x] Google-only user thêm mật khẩu thành công và đăng nhập được bằng email/mật khẩu.
+- [x] User có mật khẩu đổi được mật khẩu bằng cách nhập mật khẩu hiện tại.
+- [x] Mật khẩu mới validate như đăng ký; nhập lại phải khớp.
+- [x] Sai mật khẩu hiện tại → lỗi rõ ràng, không đổi mật khẩu.
+- [x] `requires-recent-login` được xử lý bằng reauth.
+- [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.

@@ -2,6 +2,7 @@ import PageHeader from '@/shared/components/ui/page-header';
 import Button from '@/shared/components/ui/button';
 import { useAuth } from '../components/auth-provider';
 import ReauthDialog from '../components/reauth-dialog';
+import AccountPasswordForm from '../components/account-password-form';
 import { useAccountSecurity } from '../hooks/use-account-security';
 import { hasProvider } from '../services/account-service';
 
@@ -55,6 +56,11 @@ export default function AccountSecurityPage() {
           <p className="mt-1 text-body-sm text-text-secondary">
             {hasPassword ? `Đã có mật khẩu · ${user.email}` : 'Chưa có mật khẩu'}
           </p>
+          <AccountPasswordForm
+            hasPassword={hasPassword}
+            busy={security.busy || security.needsReauth}
+            onSave={security.savePassword}
+          />
         </div>
         {security.error && !security.needsReauth && (
           <p role="alert" className="text-body-sm text-danger">
