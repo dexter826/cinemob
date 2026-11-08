@@ -41,11 +41,11 @@
 ### Tính năng chính
 
 - **Tra cứu thông tin:** Tìm kiếm dữ liệu phim lẻ, TV series, diễn viên, đạo diễn và trailer từ TMDB.
-- **Quản lý danh sách xem:** Phân loại phim theo trạng thái (Đang xem, Đã xem, Muốn xem, Bỏ dở), cập nhật tiến độ xem theo từng mùa và tập, tổ chức phim theo các album.
+- **Quản lý danh sách xem:** Phân loại phim theo trạng thái theo dõi, ghi nhận tiến độ xem theo từng mùa/tập và tổ chức bộ sưu tập theo album.
 - **Lịch phát sóng & Thông báo:** Theo dõi lịch chiếu tập mới theo mốc thời gian và hỗ trợ nhận thông báo đẩy qua Web Push.
 - **Gợi ý phim:** Đề xuất phim dựa trên thể loại quan tâm và hỗ trợ công cụ chọn phim ngẫu nhiên.
-- **Thống kê:** Trực quan hóa dữ liệu lịch sử xem (thời lượng, quốc gia, thể loại) bằng biểu đồ Recharts.
-- **Hỗ trợ PWA:** Cài đặt trực tiếp trên thiết bị (iOS, Android, máy tính) và lưu bộ nhớ đệm để sử dụng ngoại tuyến.
+- **Thống kê dữ liệu:** Trực quan hóa thói quen xem phim qua thời lượng, thể loại và quốc gia bằng biểu đồ tương tác.
+- **Hỗ trợ PWA:** Cài đặt trực tiếp trên thiết bị di động và máy tính, tối ưu hóa bộ nhớ đệm khi sử dụng ngoại tuyến.
 
 ### Công nghệ sử dụng
 
