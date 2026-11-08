@@ -4,7 +4,7 @@ import LoadingStatus from '@/shared/components/ui/loading-status';
 import ErrorState from '@/shared/components/ui/error-state';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { BarChart2, EyeOff, Link2, Users } from 'lucide-react';
+import { EyeOff, Link2, Users } from 'lucide-react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -176,19 +176,7 @@ function MemberProfilePage() {
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-5 md:space-y-6">
         <PageHeader
           title="Hồ sơ thành viên"
-          actions={
-            <>
-              <IconButton
-                label="Xem thống kê phim đã xem"
-                variant="secondary"
-                size="md"
-                onClick={() => navigate('/stats')}
-              >
-                <BarChart2 size={18} strokeWidth={1.5} aria-hidden="true" />
-              </IconButton>
-              {copyLinkButton}
-            </>
-          }
+          actions={copyLinkButton}
         />
         <OwnProfileEditor
           profile={own.profile}
