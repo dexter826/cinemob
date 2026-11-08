@@ -81,7 +81,10 @@ export default function EmailAuthForm({
           </Button>
         </div>
       )}
-      <div className="grid grid-cols-2 gap-2 mb-6" aria-label="Chọn cách đăng nhập">
+      <h1 className="sr-only lg:hidden">
+        {isReset ? 'Quên mật khẩu' : isRegister ? 'Đăng ký' : 'Đăng nhập'} CineMOB
+      </h1>
+      <div className="grid grid-cols-2 gap-2 mb-5" aria-label="Chọn cách đăng nhập">
         {(['login', 'register'] as const).map((value) => (
           <Button
             key={value}
@@ -97,17 +100,18 @@ export default function EmailAuthForm({
               setConfirmation('');
             }}
           >
-            {value === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
+            {value === 'login' ? 'Đăng nhập' : 'Đăng ký'}
           </Button>
         ))}
       </div>
-      <form className="space-y-6" onSubmit={submit} noValidate>
-        <fieldset className="grid gap-4 min-w-0" disabled={busy || disabled}>
+      <form className="space-y-5" onSubmit={submit} noValidate>
+        <fieldset className="grid gap-3 min-w-0" disabled={busy || disabled}>
           {isRegister && (
             <TextField
               id="auth-name"
               label="Tên hiển thị"
               autoComplete="nickname"
+              placeholder="Minh Anh"
               value={name}
               maxLength={50}
               onChange={(event) => setName(event.target.value)}
@@ -133,6 +137,7 @@ export default function EmailAuthForm({
                 name="password"
                 label="Mật khẩu"
                 autoComplete={isRegister ? 'new-password' : 'current-password'}
+                placeholder="••••••••"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 error={errors.password}
@@ -169,6 +174,7 @@ export default function EmailAuthForm({
               id="auth-confirmation"
               label="Nhập lại mật khẩu"
               autoComplete="new-password"
+              placeholder="••••••••"
               value={confirmation}
               onChange={(event) => setConfirmation(event.target.value)}
               error={errors.confirmation}
