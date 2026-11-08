@@ -1,6 +1,11 @@
 import { MESSAGES } from '@/constants/messages';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/email-already-in-use':
+    'Không tạo được tài khoản với email này. Thử đăng nhập hoặc đặt lại mật khẩu.',
+  'auth/weak-password': 'Mật khẩu cần tối thiểu 8 ký tự, bao gồm chữ và số.',
+  'auth/password-does-not-meet-requirements':
+    'Mật khẩu chưa đáp ứng yêu cầu bảo mật. Chọn mật khẩu mạnh hơn rồi thử lại.',
   'auth/invalid-email': 'Email chưa đúng định dạng. Kiểm tra lại địa chỉ email.',
   'auth/invalid-credential':
     'Email hoặc mật khẩu chưa đúng. Kiểm tra lại, hoặc tiếp tục với Google nếu bạn đã đăng ký bằng Google.',

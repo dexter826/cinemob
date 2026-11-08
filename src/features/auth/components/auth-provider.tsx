@@ -1,10 +1,23 @@
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
-import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import { User, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, googleProvider } from '@/shared/lib/firebase';
 import useToastStore from '@/shared/stores/toast-store';
 import { MESSAGES } from '@/constants/messages';
-import { sendVerificationEmail, signInWithEmail } from '@/features/auth/services/auth-service';
+import {
+  registerWithEmail,
+  sendVerificationEmail,
+  signInWithEmail,
+} from '@/features/auth/services/auth-service';
+import { getAuthErrorMessage } from '@/features/auth/utils/auth-errors';
 
 export interface AuthContextType {
   user: User | null;
@@ -13,6 +26,7 @@ export interface AuthContextType {
   retryAuth: () => void;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
+  register: (displayName: string, email: string, password: string) => Promise<void>;
   resendVerificationEmail: () => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<boolean>;
@@ -38,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authAttempt, setAuthAttempt] = useState(0);
   const retryAuth = useCallback(() => setAuthAttempt((n) => n + 1), []);
   const { showToast } = useToastStore();
+  const registering = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
-        if (cancelled) return;
+        if (cancelled || registering.current) return;
         const modal = useAddMovieStore.getState();
         if (modal.ownerUid && modal.ownerUid !== currentUser?.uid) modal.closeAddModal();
         setUser(currentUser ? cloneFirebaseUser(currentUser) : null);
@@ -82,6 +97,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signInWithEmail(email, password);
   }, []);
 
+  const register = useCallback(
+    async (displayName: string, email: string, password: string) => {
+      registering.current = true;
+      setLoading(true);
+      try {
+        const newUser = await registerWithEmail(displayName, email, password);
+        try {
+          await sendVerificationEmail(newUser);
+        } catch (error) {
+          showToast(getAuthErrorMessage(error, MESSAGES.AUTH.VERIFICATION_RESEND_ERROR), 'error');
+        }
+      } finally {
+        registering.current = false;
+        setUser(auth.currentUser ? cloneFirebaseUser(auth.currentUser) : null);
+        setLoading(false);
+      }
+    },
+    [showToast],
+  );
+
   const resendVerificationEmail = useCallback(async () => {
     if (!auth.currentUser) throw new Error('No signed-in user');
     await sendVerificationEmail(auth.currentUser);
@@ -114,6 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       retryAuth,
       signInWithGoogle,
       signInWithEmail: loginWithEmail,
+      register,
       resendVerificationEmail,
       logout,
       refreshUser,
@@ -125,6 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       retryAuth,
       signInWithGoogle,
       loginWithEmail,
+      register,
       resendVerificationEmail,
       logout,
       refreshUser,

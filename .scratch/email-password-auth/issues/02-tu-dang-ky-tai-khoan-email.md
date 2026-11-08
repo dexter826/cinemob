@@ -12,4 +12,8 @@
 - [ ] Email đã tồn tại → thông điệp hướng dẫn đăng nhập/đặt lại mật khẩu.
 - [ ] Sau khi xác minh, hồ sơ thành viên dùng đúng tên hiển thị.
 - [ ] Chuyển qua lại giữa Đăng nhập và Tạo tài khoản không mất email đã nhập.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+- [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+
+## Comments
+
+- Đã triển khai đăng ký, validation tên/mật khẩu/nhập lại, hiện/ẩn mật khẩu, gửi xác minh và giữ email khi chuyển chế độ. Chờ QA tay; review toàn nhánh sau ticket 07 theo yêu cầu.
