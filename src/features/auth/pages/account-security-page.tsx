@@ -5,13 +5,29 @@ import ReauthDialog from '../components/reauth-dialog';
 import AccountPasswordForm from '../components/account-password-form';
 import { useAccountSecurity } from '../hooks/use-account-security';
 import { hasProvider } from '../services/account-service';
+import useAlertStore from '@/shared/stores/alert-store';
 
 export default function AccountSecurityPage() {
   const { user } = useAuth();
   const security = useAccountSecurity();
+  const showAlert = useAlertStore((state) => state.showAlert);
   if (!user) return null;
   const hasGoogle = hasProvider(user, 'google.com');
   const hasPassword = hasProvider(user, 'password');
+  const canUnlink = hasGoogle && hasPassword;
+  const confirmUnlink = (providerId: string) => {
+    const isGoogle = providerId === 'google.com';
+    showAlert({
+      title: isGoogle ? 'Gỡ liên kết Google?' : 'Gỡ mật khẩu?',
+      message: isGoogle
+        ? 'Bạn sẽ chỉ đăng nhập được bằng email/mật khẩu. Bạn cần xác thực lại trước khi gỡ.'
+        : 'Bạn sẽ chỉ đăng nhập được bằng Google. Bạn cần xác thực lại trước khi gỡ.',
+      type: 'danger',
+      confirmText: isGoogle ? 'Gỡ liên kết Google' : 'Gỡ mật khẩu',
+      cancelText: 'Giữ lại',
+      onConfirm: () => security.unlinkMethod(providerId),
+    });
+  };
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 md:px-6 md:py-8">
       <PageHeader
@@ -50,6 +66,15 @@ export default function AccountSecurityPage() {
               Kết nối Google
             </Button>
           )}
+          {hasGoogle && (
+            <Button
+              variant="secondary"
+              disabled={!canUnlink || security.busy || security.needsReauth}
+              onClick={() => confirmUnlink('google.com')}
+            >
+              Gỡ liên kết Google
+            </Button>
+          )}
         </div>
         <div className="border-t border-border-default pt-6">
           <h3 className="text-body font-semibold">Email/mật khẩu</h3>
@@ -61,7 +86,22 @@ export default function AccountSecurityPage() {
             busy={security.busy || security.needsReauth}
             onSave={security.savePassword}
           />
+          {hasPassword && (
+            <Button
+              variant="secondary"
+              className="mt-4 sm:ml-3"
+              disabled={!canUnlink || security.busy || security.needsReauth}
+              onClick={() => confirmUnlink('password')}
+            >
+              Gỡ mật khẩu
+            </Button>
+          )}
         </div>
+        {!canUnlink && (
+          <p className="text-body-sm text-text-secondary">
+            Không thể gỡ phương thức đăng nhập cuối cùng. Thêm phương thức khác để có thể gỡ.
+          </p>
+        )}
         {security.error && !security.needsReauth && (
           <p role="alert" className="text-body-sm text-danger">
             {security.error}

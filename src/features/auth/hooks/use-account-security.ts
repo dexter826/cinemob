@@ -5,6 +5,7 @@ import {
   reauthenticateAccount,
   requireAccount,
   saveAccountPassword,
+  unlinkAccountMethod,
 } from '../services/account-service';
 import { getAuthErrorMessage } from '../utils/auth-errors';
 import useToastStore from '@/shared/stores/toast-store';
@@ -86,5 +87,13 @@ export function useAccountSecurity() {
         success: 'Đã lưu mật khẩu',
         onSuccess,
       }),
+    unlinkMethod: (providerId: string) => {
+      if (actionLock.current || pendingAction) return;
+      setError('');
+      setPendingAction({
+        run: () => unlinkAccountMethod(uid, providerId),
+        success: providerId === 'google.com' ? 'Đã gỡ liên kết Google' : 'Đã gỡ mật khẩu',
+      });
+    },
   };
 }

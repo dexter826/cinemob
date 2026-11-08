@@ -6,8 +6,8 @@
 
 **Status:** ready-for-agent
 
-- [ ] User có cả hai phương thức gỡ được Google hoặc mật khẩu, vẫn đăng nhập được bằng phương thức còn lại.
-- [ ] Nút gỡ bị chặn/ẩn khi chỉ còn một phương thức, kèm giải thích.
-- [ ] Có hộp thoại xác nhận nêu rõ hậu quả trước khi gỡ.
-- [ ] Reauth khi Firebase yêu cầu; lỗi được hiển thị tiếng Việt.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run build` pass.
+- [x] User có cả hai phương thức gỡ được Google hoặc mật khẩu, vẫn đăng nhập được bằng phương thức còn lại.
+- [x] Nút gỡ bị chặn/ẩn khi chỉ còn một phương thức, kèm giải thích.
+- [x] Có hộp thoại xác nhận nêu rõ hậu quả trước khi gỡ.
+- [x] Reauth trước khi gỡ; lỗi được hiển thị tiếng Việt.
+- [x] `npm run typecheck`, `npm run lint`, `npm run build` pass.

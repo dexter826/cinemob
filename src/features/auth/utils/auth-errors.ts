@@ -1,6 +1,9 @@
 import { MESSAGES } from '@/constants/messages';
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/last-sign-in-method':
+    'Không thể gỡ phương thức đăng nhập cuối cùng. Thêm phương thức khác trước.',
+  'auth/no-such-provider': 'Phương thức này không còn được liên kết. Tải lại trang để cập nhật.',
   'auth/incorrect-current-password': 'Mật khẩu hiện tại chưa đúng. Nhập lại mật khẩu rồi thử lại.',
   'auth/google-email-mismatch':
     'Email Google không trùng email tài khoản. Chọn tài khoản Google có cùng email để kết nối.',

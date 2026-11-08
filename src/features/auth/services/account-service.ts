@@ -11,6 +11,7 @@ import {
   signInWithPopup,
   signOut,
   updatePassword,
+  unlink,
   type User,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/shared/lib/firebase';
@@ -88,4 +89,15 @@ export const saveAccountPassword = async (
   } else {
     await linkWithCredential(user, EmailAuthProvider.credential(user.email, newPassword));
   }
+};
+
+export const unlinkAccountMethod = async (uid: string, providerId: string): Promise<void> => {
+  const user = requireAccount(uid);
+  await user.reload();
+  requireAccount(uid);
+  if (!hasProvider(user, providerId))
+    throw new FirebaseError('auth/no-such-provider', 'Provider missing');
+  if (user.providerData.length <= 1)
+    throw new FirebaseError('auth/last-sign-in-method', 'Last sign-in method');
+  await unlink(user, providerId);
 };
