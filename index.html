@@ -17,31 +17,58 @@
     </script>
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ed" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
-    <title>CineMOB</title>
+    <title>CineMOB: Theo dõi phim đã xem và lịch phát sóng series</title>
     <meta
       name="description"
-      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá — gợi ý phim theo lịch sử của bạn."
+      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá và gợi ý phim theo lịch sử của bạn."
     />
+    <link rel="canonical" href="https://cinemob.dpdns.org/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="CineMOB - Người bạn đồng hành điện ảnh" />
+    <meta property="og:site_name" content="CineMOB" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:url" content="https://cinemob.dpdns.org/" />
+    <meta
+      property="og:title"
+      content="CineMOB: Theo dõi phim đã xem và lịch phát sóng series"
+    />
     <meta
       property="og:description"
-      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá — gợi ý phim theo lịch sử của bạn."
+      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá và gợi ý phim theo lịch sử của bạn."
     />
-    <meta property="og:image" content="/og-image.png" />
-    <meta property="og:url" content="https://cinematrics-e0231.web.app/" />
+    <meta property="og:image" content="https://cinemob.dpdns.org/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logo CineMOB, khẩu hiệu Người bạn đồng hành điện ảnh và dòng mô tả ứng dụng quản lý phim." />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="CineMOB - Người bạn đồng hành điện ảnh" />
+    <meta
+      name="twitter:title"
+      content="CineMOB: Theo dõi phim đã xem và lịch phát sóng series"
+    />
     <meta
       name="twitter:description"
-      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá — gợi ý phim theo lịch sử của bạn."
+      content="Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá và gợi ý phim theo lịch sử của bạn."
     />
-    <meta name="twitter:image" content="/twitter-image.png" />
-    <meta name="twitter:url" content="https://cinematrics-e0231.web.app/" />
+    <meta name="twitter:image" content="https://cinemob.dpdns.org/og-image.png" />
+    <meta name="twitter:image:alt" content="Logo CineMOB, khẩu hiệu Người bạn đồng hành điện ảnh và dòng mô tả ứng dụng quản lý phim." />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "CineMOB",
+        "url": "https://cinemob.dpdns.org/",
+        "description": "Quản lý phim đã xem và sẽ xem, theo dõi lịch phát sóng series, lưu đánh giá và gợi ý phim theo lịch sử của bạn.",
+        "image": "https://cinemob.dpdns.org/og-image.png",
+        "applicationCategory": "EntertainmentApplication",
+        "operatingSystem": "Web",
+        "inLanguage": "vi-VN"
+      }
+    </script>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -59,7 +86,14 @@
   </head>
 
   <body class="bg-background font-sans text-text-primary antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <!-- H1 tĩnh cho crawler không chạy JS; React sẽ thay thế khi mount -->
+      <h1
+        style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0"
+      >
+        Theo dõi mọi bộ phim bạn xem.
+      </h1>
+    </div>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
