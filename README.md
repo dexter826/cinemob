@@ -36,9 +36,7 @@
 
 **CineMOB** là ứng dụng web quản lý danh mục và theo dõi tiến độ xem phim cá nhân, xây dựng trên React 19, TypeScript và Tailwind CSS v4. Ứng dụng hỗ trợ ghi nhận tiến độ theo từng mùa và tập, tra cứu lịch phát sóng, thống kê thói quen xem và cài đặt sử dụng ngoại tuyến dưới dạng PWA.
 
-<div align="center">
-  <img src="docs/images/mockup.png" alt="CineMOB Interface Mockup" width="800" />
-</div>
+https://github.com/user-attachments/assets/c82bf4c3-54d7-40d8-836a-e4044bb3b9f0
 
 ### Tính năng chính
 
