@@ -1,6 +1,6 @@
 <div align="center">
   <img src="docs/images/cinemob-logo.png" alt="CineMOB Logo" width="320" />
-  <p>Ứng dụng web quản lý danh mục và theo dõi tiến độ thưởng thức phim ảnh cá nhân.</p>
+  <p>Ứng dụng web quản lý danh mục và theo dõi tiến độ xem phim cá nhân.</p>
 
   <p>
     <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React 19" />
