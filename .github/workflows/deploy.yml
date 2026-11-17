@@ -7,6 +7,7 @@ on:
       - completed
     branches:
       - master
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,9 +24,10 @@ jobs:
       name: production
       url: https://cinematrics-e0231.web.app
     if: >-
-      github.event.workflow_run.conclusion == 'success' &&
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_repository.full_name == github.repository
+      github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     env:
       VITE_TMDB_API_KEY: ${{ secrets.VITE_TMDB_API_KEY }}
@@ -42,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v5
         with:
           node-version: '24'
