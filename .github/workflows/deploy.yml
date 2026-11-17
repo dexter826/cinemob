@@ -19,6 +19,9 @@ concurrency:
 
 jobs:
   build_and_deploy:
+    environment:
+      name: production
+      url: https://cinematrics-e0231.web.app
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
