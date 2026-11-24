@@ -539,6 +539,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   setCurrentEpisode={setCurrentEpisode}
                   seasonEpisodeCount={episodesPerSeason[currentSeason] ?? 0}
                   maxSeasons={Math.max(parseInt(formData.seasons) || 1, resolvedSeasonCount)}
+                  lockSeason={isEditMode}
                 />
               )}
 

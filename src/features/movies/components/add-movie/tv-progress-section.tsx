@@ -14,6 +14,7 @@ interface TVProgressSectionProps {
   setCurrentEpisode: (episode: number) => void;
   seasonEpisodeCount: number;
   maxSeasons: number;
+  lockSeason?: boolean;
 }
 
 function TVProgressSection({
@@ -28,6 +29,7 @@ function TVProgressSection({
   setCurrentEpisode,
   seasonEpisodeCount,
   maxSeasons,
+  lockSeason = false,
 }: TVProgressSectionProps) {
   if (loading)
     return (
@@ -91,8 +93,9 @@ function TVProgressSection({
               <button
                 type="button"
                 aria-label="Giảm mùa"
+                disabled={lockSeason}
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
               >
                 -
               </button>
@@ -105,8 +108,9 @@ function TVProgressSection({
               <button
                 type="button"
                 aria-label="Tăng mùa"
+                disabled={lockSeason}
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
               >
                 +
               </button>
