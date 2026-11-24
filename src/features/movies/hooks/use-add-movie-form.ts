@@ -273,7 +273,7 @@ export const useAddMovieForm = () => {
             initialData?.movieToEdit?.media_type ||
             'movie') as 'movie' | 'tv');
 
-      const movieData: Partial<Movie> = {
+      const movieData: Partial<Movie> & { season?: number } = {
         title: formData.title,
         title_vi: formData.title_vi,
         poster_path: formData.poster,
@@ -296,12 +296,12 @@ export const useAddMovieForm = () => {
         const docSeason = tvProgress.currentSeason;
         const tmdbSeasonEpisodes = tvProgress.episodesPerSeason[docSeason];
         const seasonEpisodeCount = tmdbSeasonEpisodes || tvProgress.totalEpisodes;
-        Object.assign(movieData, { season: docSeason, total_episodes: seasonEpisodeCount });
+        movieData.season = docSeason;
+        movieData.total_episodes = seasonEpisodeCount;
         if (!initialData?.movieToEdit && tmdbSeasonEpisodes) {
           movieData.runtime = resolveSeasonRuntime(
             parseInt(formData.runtime) || 0,
             tmdbSeasonEpisodes,
-            true,
           );
         }
         movieData.progress = {

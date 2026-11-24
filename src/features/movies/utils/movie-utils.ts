@@ -72,7 +72,13 @@ export const buildMoviePath = (
   season?: number,
 ): string => `/movie/${id}${mediaType === 'tv' ? `?type=tv&season=${season ?? 1}` : ''}`;
 
-export const getSeasonLabel = (movie: Movie): string | null =>
+interface SeasonLabeled {
+  media_type?: 'movie' | 'tv';
+  seasons?: number;
+  season?: number;
+}
+
+export const getSeasonLabel = (movie: SeasonLabeled): string | null =>
   movie.media_type === 'tv' && (movie.seasons ?? 0) >= 2 && movie.season
     ? `Mùa ${movie.season}`
     : null;
@@ -83,6 +89,4 @@ export const getSeasonParam = (movie: Movie | undefined): number | undefined =>
 export const resolveSeasonRuntime = (
   perEpisodeRuntime: number,
   seasonEpisodeCount: number | undefined,
-  isTV: boolean,
-): number =>
-  isTV && seasonEpisodeCount ? seasonEpisodeCount * perEpisodeRuntime : perEpisodeRuntime;
+): number => (seasonEpisodeCount ? seasonEpisodeCount * perEpisodeRuntime : perEpisodeRuntime);

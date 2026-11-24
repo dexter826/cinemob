@@ -215,13 +215,14 @@ function MovieDetailPage() {
 
   const typeParam = searchParams.get('type');
   const seasonParam = Number(searchParams.get('season'));
+  const hasSeasonParam = searchParams.get('season') !== null && Number.isFinite(seasonParam);
   const movie = useMemo(() => {
     const matches = movies.filter((m) => String(m.id) === id);
     if (typeParam === 'movie') {
       return matches.find((m) => (m.media_type ?? 'movie') === 'movie');
     }
     if (typeParam === 'tv') {
-      const bySeason = Number.isFinite(seasonParam)
+      const bySeason = hasSeasonParam
         ? matches.find((m) => getSeasonParam(m) === seasonParam)
         : undefined;
       return bySeason ?? matches.find((m) => (m.media_type ?? 'movie') === 'tv') ?? matches[0];

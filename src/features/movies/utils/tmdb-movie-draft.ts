@@ -35,7 +35,7 @@ export const buildTMDBMovieDraft = ({
 }: TMDBMovieDraftInput): Omit<Movie, 'docId'> => {
   const isTV = mediaType === 'tv';
   const perEpisodeRuntime = details.runtime || details.episode_run_time?.[0] || 0;
-  const runtime = resolveSeasonRuntime(perEpisodeRuntime, seasonEpisodeCount, isTV);
+  const runtime = resolveSeasonRuntime(perEpisodeRuntime, seasonEpisodeCount);
   const draft: Omit<Movie, 'docId'> = {
     uid,
     id: Number(id),
