@@ -197,7 +197,10 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
                       status={doc ? doc.status || 'history' : null}
                       seasonLabel={`Mùa ${n}`}
                       meta={seasonMeta ? `${seasonMeta.episode_count} tập` : undefined}
-                      onClick={() => navigate(buildMoviePath(seriesId, 'tv', n))}
+                      onClick={() =>
+                        doc ? navigate(buildMoviePath(seriesId, 'tv', n)) : addSeason(n)
+                      }
+                      ariaLabel={doc ? undefined : `Thêm Mùa ${n} của “${title}” vào Thư viện`}
                     />
                   );
                 })}
