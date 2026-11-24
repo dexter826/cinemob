@@ -78,30 +78,9 @@ export const getSeasonLabel = (movie: Movie): string | null =>
     ? `Mùa ${movie.season}`
     : null;
 
-export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; date: Date }> => {
-  const seasonDates = movie.progress?.season_dates;
-  if (!seasonDates) return [];
-  return Object.entries(seasonDates)
-    .map(([season, iso]) => {
-      const [y, m, d] = iso.split('-').map(Number);
-      return y && m && d ? { season: Number(season), date: new Date(y, m - 1, d) } : null;
-    })
-    .filter((s): s is { season: number; date: Date } => s !== null && Number.isFinite(s.season))
-    .sort((a, b) => a.season - b.season);
-};
-
-export const getLatestWatchedDate = (movie: Movie): Date | null => {
-  let latest = normalizeDate(movie.watched_at);
-  for (const { date } of getSeasonWatchedDates(movie)) {
-    if (!latest || date.getTime() > latest.getTime()) latest = date;
-  }
-  return latest;
-};
+export const getLatestWatchedDate = (movie: Movie): Date | null => normalizeDate(movie.watched_at);
 
 export const getWatchedDates = (movie: Movie): Date[] => {
-  const dates: Date[] = [];
   const watched = normalizeDate(movie.watched_at);
-  if (watched) dates.push(watched);
-  getSeasonWatchedDates(movie).forEach(({ date }) => dates.push(date));
-  return dates;
+  return watched ? [watched] : [];
 };

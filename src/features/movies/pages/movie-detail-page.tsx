@@ -33,13 +33,8 @@ import {
   getMainTitle,
   getSubTitle,
   getTranslatedGenres,
-  getSeasonWatchedDates,
 } from '../utils/movie-utils';
-import {
-  getMovieDetails,
-  getTVShowEpisodeInfo,
-  getTVShowSeasonCount,
-} from '@/features/search/services/tmdb';
+import { getMovieDetails } from '@/features/search/services/tmdb';
 import type { TMDBMovieDetail } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { MOVIE_STATUS_LABEL } from '@/constants/movie-status';
@@ -270,45 +265,14 @@ function MovieDetailPage() {
     !!movie.progress &&
     !movie.progress.is_completed;
   const trailerKey = videos[0]?.key ?? '';
-  // Chỉ tin key YouTube đúng định dạng để không tạo link hỏng.
   const hasValidTrailer = /^[A-Za-z0-9_-]{6,20}$/.test(trailerKey);
 
-  // Số tập mỗi mùa (TMDB) để biết lúc nào hết mùa khi tăng tập.
-  const tvIdForEpisodes =
-    movie?.source === 'tmdb' && movie.media_type === 'tv' ? Number(movie.id) : null;
-  const canQuickLog =
-    !!tvIdForEpisodes &&
-    !!movie?.progress &&
-    !movie.progress.is_completed &&
-    movie.status !== 'watchlist';
-  const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   const [tmdbRetryNonce, setTmdbRetryNonce] = useState(0);
   const [tmdbPreview, setTmdbPreview] = useState<{
     loading: boolean;
     data: TMDBMovieDetail | null;
     error: boolean;
   } | null>(null);
-  useEffect(() => {
-    if (!tvIdForEpisodes || !canQuickLog) return;
-    let cancelled = false;
-    const controller = new AbortController();
-    void (async () => {
-      try {
-        const seasons = await getTVShowSeasonCount(tvIdForEpisodes, controller.signal);
-        if (!seasons) return;
-        const info = await getTVShowEpisodeInfo(tvIdForEpisodes, seasons, controller.signal);
-        if (!cancelled && Object.keys(info.episodes_per_season).length > 0) {
-          setEpisodesPerSeason(info.episodes_per_season);
-        }
-      } catch {
-        // Thiếu dữ liệu TMDB: vẫn tăng tập theo tổng số đã lưu.
-      }
-    })();
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [tvIdForEpisodes, canQuickLog]);
 
   useEffect(() => {
     if (movie || collectionLoading || collectionError) {
@@ -600,7 +564,7 @@ function MovieDetailPage() {
                       size="sm"
                       leadingIcon={<Plus size={14} strokeWidth={2} aria-hidden="true" />}
                       loading={quickPending}
-                      onClick={() => void logEpisode(movie, episodesPerSeason)}
+                      onClick={() => void logEpisode(movie)}
                     >
                       +1 tập
                     </Button>
@@ -609,9 +573,7 @@ function MovieDetailPage() {
                 </div>
               </div>
               <p className="text-display-md text-text-primary tabular-nums">
-                {movie.progress.is_completed
-                  ? 'Đã xem hết'
-                  : `S${movie.progress.current_season}E${movie.progress.current_episode}`}
+                {movie.progress.is_completed ? 'Đã xem hết' : `E${movie.progress.current_episode}`}
                 {!movie.progress.is_completed && movie.total_episodes && (
                   <span className="text-body-sm text-text-secondary ml-2">
                     ({movie.progress.watched_episodes}/{movie.total_episodes} tập)
@@ -631,16 +593,6 @@ function MovieDetailPage() {
                   }}
                 />
               </div>
-              {getSeasonWatchedDates(movie).length >= 2 && (
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-micro-caps normal-case text-text-secondary tabular-nums">
-                  {getSeasonWatchedDates(movie).map(({ season, date }) => (
-                    <span key={season}>
-                      Mùa {season}:{' '}
-                      {date.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' })}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           )}
 

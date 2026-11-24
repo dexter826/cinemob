@@ -4,7 +4,7 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMarkWatchedStore from '../stores/mark-watched-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';
-import { getMovieDetails } from '@/features/search/services/tmdb';
+import { getMovieDetails, getTVSeasonDetails } from '@/features/search/services/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import { getMainTitle, getSubTitle } from '../utils/movie-utils';
 import { formatDateInput, formatTimeInput } from '../utils/movie-form-utils';
@@ -29,6 +29,8 @@ function MarkWatchedDialog() {
   const [time, setTime] = useState(() => formatTimeInput(new Date()));
   const [dateError, setDateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentSeason, setCurrentSeason] = useState(1);
+  const [seasonCount, setSeasonCount] = useState(1);
   const submitLock = useRef(false);
   const ratingRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +63,15 @@ function MarkWatchedDialog() {
       setTime(formatTimeInput(new Date()));
       setDateError(null);
       setIsSubmitting(false);
+      setCurrentSeason(1);
+      setSeasonCount(1);
+      if (target?.kind === 'tmdb' && target.media_type === 'tv') {
+        getMovieDetails(Number(target.id), 'tv')
+          .then((details) => {
+            setSeasonCount(Math.max(details?.number_of_seasons || 1, 1));
+          })
+          .catch(() => undefined);
+      }
     }
   }, [isOpen, target]);
 
@@ -102,20 +113,36 @@ function MarkWatchedDialog() {
       } else if (target.kind === 'tmdb') {
         const details = await getMovieDetails(Number(target.id), mediaType);
         if (!details) throw new Error('TMDB details unavailable');
-        await addMovie(
-          buildTMDBMovieDraft({
-            uid: user!.uid,
-            id: target.id,
-            mediaType,
-            details,
-            fallbackTitle: target.title,
-            fallbackPoster: target.poster_path,
-            fallbackReleaseDate: target.release_date,
-            status: 'history',
-            rating,
-            watchedAt,
-          }),
-        );
+        let seasonEpisodeCount: number | undefined;
+        let seasonPosterPath: string | null = null;
+        if (mediaType === 'tv') {
+          const seasonInfo = await getTVSeasonDetails(Number(target.id), currentSeason);
+          seasonEpisodeCount = seasonInfo?.episode_count || undefined;
+          seasonPosterPath = seasonInfo?.poster_path ?? null;
+        }
+        const draft: Omit<Movie, 'docId'> = buildTMDBMovieDraft({
+          uid: user!.uid,
+          id: target.id,
+          mediaType,
+          details,
+          fallbackTitle: target.title,
+          fallbackPoster: target.poster_path,
+          fallbackReleaseDate: target.release_date,
+          status: 'history',
+          rating,
+          watchedAt,
+          season: currentSeason,
+          seasonEpisodeCount,
+          seasonPosterPath,
+        });
+        if (mediaType === 'tv' && seasonEpisodeCount) {
+          draft.progress = {
+            current_episode: seasonEpisodeCount,
+            watched_episodes: seasonEpisodeCount,
+            is_completed: true,
+          };
+        }
+        await addMovie(draft);
       } else {
         return;
       }
@@ -164,9 +191,48 @@ function MarkWatchedDialog() {
 
       <DialogBody className="space-y-5">
         {isTV && (
-          <p className="text-body-sm text-text-secondary border border-border rounded-control p-3">
-            Series sẽ được ghi nhận là đã xem hết toàn bộ tập.
-          </p>
+          <div className="border border-border rounded-control p-3 space-y-3">
+            <p className="text-body-sm text-text-secondary">
+              Toàn bộ tập của Mùa được chọn sẽ ghi nhận là đã xem.
+            </p>
+            {target.kind === 'tmdb' && (
+              <div className="flex items-center justify-between">
+                <span className="text-label-caps text-text-secondary">Mùa</span>
+                <div
+                  role="group"
+                  aria-label="Chọn mùa"
+                  className="flex items-center gap-2 p-1 rounded-card border border-border-default"
+                >
+                  <button
+                    type="button"
+                    aria-label="Giảm mùa"
+                    disabled={isSubmitting}
+                    onClick={() => setCurrentSeason((s) => Math.max(1, s - 1))}
+                    className="w-9 h-9 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                  >
+                    -
+                  </button>
+                  <span
+                    aria-live="polite"
+                    className="w-8 text-center font-bold text-body text-text-primary tabular-nums"
+                  >
+                    {currentSeason}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Tăng mùa"
+                    disabled={isSubmitting}
+                    onClick={() =>
+                      setCurrentSeason((s) => Math.min(Math.max(seasonCount, 1), s + 1))
+                    }
+                    className="w-9 h-9 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
         <div className="space-y-2">
           <RatingSection

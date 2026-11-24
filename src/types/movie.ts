@@ -25,11 +25,9 @@ export interface Movie {
   country?: string;
   content?: string;
   progress?: {
-    current_season: number;
     current_episode: number;
     watched_episodes: number;
     is_completed: boolean;
-    season_dates?: Record<string, string>;
   };
   is_review?: boolean;
   notifications_muted?: boolean;

@@ -302,13 +302,11 @@ export const useAddMovieForm = () => {
           movieData.runtime = seasonEpisodeCount * (parseInt(formData.runtime) || 0);
         }
         movieData.progress = {
-          current_season: docSeason,
           current_episode: tvProgress.currentEpisode,
           watched_episodes: tvProgress.isCompleted
             ? seasonEpisodeCount
             : tvProgress.currentEpisode,
           is_completed: tvProgress.isCompleted,
-          season_dates: { [String(docSeason)]: formData.date },
         };
       }
 
@@ -383,26 +381,15 @@ export const useAddMovieForm = () => {
     let isProgressDirty = false;
     if (isTVSeries && m.progress) {
       isProgressDirty =
-        tvProgress.currentSeason !== m.progress.current_season ||
+        tvProgress.currentSeason !== (m.season ?? 1) ||
         tvProgress.currentEpisode !== m.progress.current_episode ||
         tvProgress.isCompleted !== m.progress.is_completed;
-    }
-
-    let isSeasonDatesDirty = false;
-    if (isTVSeries && m.progress) {
-      const origDates = m.progress.season_dates || {};
-      for (let s = 1; s <= tvProgress.currentSeason; s++) {
-        if ((tvProgress.seasonDates[s] || formData.date) !== (origDates[String(s)] || orig.date)) {
-          isSeasonDatesDirty = true;
-          break;
-        }
-      }
     }
 
     const albumsDirty =
       [...albumSync.selectedAlbumIds].sort().join('\n') !== [...initialAlbumIds].sort().join('\n');
 
-    return isBasicDirty || isTimeDirty || isProgressDirty || isSeasonDatesDirty || albumsDirty;
+    return isBasicDirty || isTimeDirty || isProgressDirty || albumsDirty;
   }, [
     formData,
     status,
@@ -412,12 +399,10 @@ export const useAddMovieForm = () => {
     tvProgress.currentSeason,
     tvProgress.currentEpisode,
     tvProgress.isCompleted,
-    tvProgress.seasonDates,
     albumSync.selectedAlbumIds,
     initialAlbumIds,
   ]);
 
-  // Bọc setter để đánh dấu người dùng đã thao tác; prefill TMDB nội bộ không tính là dirty.
   const touched =
     <A extends unknown[]>(fn: (...args: A) => void) =>
     (...args: A) => {
@@ -458,8 +443,6 @@ export const useAddMovieForm = () => {
     setCurrentEpisode: touched(tvProgress.setCurrentEpisode),
     isCompleted: tvProgress.isCompleted,
     setIsCompleted: touched(tvProgress.setIsCompleted),
-    seasonDates: tvProgress.seasonDates,
-    setSeasonDate: touched(tvProgress.setSeasonDate),
     resolvedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,
