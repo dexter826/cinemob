@@ -219,7 +219,8 @@ function MovieDetailPage() {
 
   const typeParam = searchParams.get('type');
   const seasonParam = Number(searchParams.get('season'));
-  const hasSeasonParam = searchParams.get('season') !== null && Number.isFinite(seasonParam);
+  const hasSeasonParam =
+    searchParams.get('season') !== null && Number.isFinite(seasonParam) && seasonParam >= 1;
   const isTVRoute = typeParam === 'tv';
   const tvDocs = useMemo(
     () => movies.filter((m) => String(m.id) === id && m.media_type === 'tv'),
@@ -409,7 +410,7 @@ function MovieDetailPage() {
         {movie.media_type === 'tv' && (
           <SeasonSwitcher
             seriesId={movie.id}
-            currentSeason={getSeasonParam(movie) ?? 1}
+            currentSeason={seasonParam}
             seasonCount={seriesInfo?.totalSeasons || movie.seasons || 1}
             nextMissingSeason={seriesInfo?.nextMissingSeason}
           />

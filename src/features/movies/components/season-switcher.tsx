@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Dropdown } from '@/shared/components/ui';
 import Button from '@/shared/components/ui/button';
 import useAddMovieStore from '../stores/add-movie-store';
 import { buildMoviePath } from '../utils/movie-utils';
+import { getTVShowSeasons } from '@/features/search/services/tmdb';
 import { TMDBMovieResult } from '@/types';
 
 interface SeasonSwitcherProps {
@@ -21,8 +23,28 @@ function SeasonSwitcher({
 }: SeasonSwitcherProps) {
   const navigate = useNavigate();
   const openAddModal = useAddMovieStore((state) => state.openAddModal);
+  const [tmdbSeasonNumbers, setTmdbSeasonNumbers] = useState<number[] | null>(null);
 
-  if (seasonCount <= 1) return null;
+  useEffect(() => {
+    const tvId = Number(seriesId);
+    if (!Number.isFinite(tvId)) return;
+    let cancelled = false;
+    getTVShowSeasons(tvId)
+      .then((seasons) => {
+        if (!cancelled && seasons && seasons.length > 0) {
+          setTmdbSeasonNumbers(seasons.map((s) => s.season_number));
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [seriesId]);
+
+  const seasonNumbers =
+    tmdbSeasonNumbers ?? Array.from({ length: Math.max(seasonCount, 0) }, (_, i) => i + 1);
+
+  if (seasonNumbers.length <= 1) return null;
 
   return (
     <div className="flex items-center gap-2 min-w-0">
@@ -34,10 +56,7 @@ function SeasonSwitcher({
       </Link>
       <Dropdown
         aria-label="Chọn mùa"
-        options={Array.from({ length: seasonCount }, (_, i) => ({
-          value: i + 1,
-          label: `Mùa ${i + 1}`,
-        }))}
+        options={seasonNumbers.map((n) => ({ value: n, label: `Mùa ${n}` }))}
         value={currentSeason}
         onChange={(value) => navigate(buildMoviePath(seriesId, 'tv', Number(value)))}
       />
