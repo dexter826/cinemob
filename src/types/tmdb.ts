@@ -15,6 +15,14 @@ export interface TMDBMovieResult {
   popularity?: number;
 }
 
+export interface TMDBSeason {
+  season_number: number;
+  episode_count: number;
+  poster_path: string | null;
+  name?: string;
+  air_date?: string;
+}
+
 export interface TMDBMovieDetail {
   id: number;
   title?: string;
@@ -24,6 +32,7 @@ export interface TMDBMovieDetail {
   runtime?: number;
   episode_run_time?: number[];
   number_of_seasons?: number;
+  seasons?: TMDBSeason[];
   overview?: string;
   genres?: { id: number; name: string }[];
   vote_average?: number;
