@@ -23,7 +23,6 @@ interface PosterCardProps {
   /** TV progress: thanh 2px dưới cùng poster. */
   progress?: { current: number; total: number } | null;
   status?: MovieStatus | null;
-  /** Badge tự do cho card series (vd “Đã có 1/5 mùa”). */
   badge?: string | null;
   credit?: string;
   seasonLabel?: string | null;

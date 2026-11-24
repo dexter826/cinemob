@@ -21,7 +21,6 @@ export function useQuickAddTMDB() {
   const addWatchlist = useCallback(
     async (movie: TMDBMovieResult) => {
       const mediaType = resolveTMDBMediaType(movie);
-      // TV đi qua form chọn season, không quick-add mặc định.
       if (mediaType === 'tv') {
         openAddModal({ movie, mediaType: 'tv', initialStatus: 'watchlist' });
         return;

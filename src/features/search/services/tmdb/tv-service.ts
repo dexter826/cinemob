@@ -15,7 +15,6 @@ interface TVDetailsResponse {
   next_episode_to_air?: TMDBEpisode & { season_number: number; episode_number: number };
 }
 
-/** Chỉ tính các mùa có tập thực sự (bỏ qua Specials và mùa tương lai 0 tập). */
 export const getEffectiveSeasons = (seasons: TMDBSeason[] | undefined): TMDBSeason[] =>
   (seasons ?? []).filter((s) => s.season_number >= 1 && s.episode_count > 0);
 

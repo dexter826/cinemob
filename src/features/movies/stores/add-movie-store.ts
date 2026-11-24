@@ -7,9 +7,7 @@ interface AddMovieInitialData {
   movie?: TMDBMovieResult;
   movieToEdit?: Movie;
   mediaType?: 'movie' | 'tv';
-  /** TV: season khởi tạo trong form (mặc định season thiếu đầu tiên hoặc 1). */
   initialSeason?: number;
-  /** Trạng thái khởi tạo khi thêm mới (vd watchlist cho quick-add). */
   initialStatus?: MovieStatus;
   onMovieAdded?: (tmdbId: number | string) => void;
 }

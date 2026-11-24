@@ -80,7 +80,6 @@ export interface SeriesInfo {
   badge: string | null;
 }
 
-/** Gom các doc season của một series để suy ra badge và season thiếu đầu tiên. */
 export const getSeriesInfo = (
   movies: Movie[],
   id: string | number,

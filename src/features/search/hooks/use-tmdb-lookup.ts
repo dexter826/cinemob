@@ -94,7 +94,6 @@ export const useTMDBLookup = () => {
         if (type === 'tv' && seasons > 0) {
           const info = await getTVShowEpisodeInfo(Number(id), seasons, controller.signal);
           if (!isCurrent()) return null;
-          // Số mùa hiệu lực = số mùa có tập thực sự (bỏ qua mùa 0 tập).
           effectiveSeasonCount = Object.keys(info.episodes_per_season).length;
           tvInfo = {
             totalEpisodes: info.total_episodes,

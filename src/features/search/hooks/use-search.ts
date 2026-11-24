@@ -215,7 +215,6 @@ export const useSearch = () => {
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
-    // Series luôn mở hub, không nhảy thẳng vào một season.
     if (isTV) {
       navigate(buildMoviePath(movie.id, 'tv'));
       setShowSuggestions(false);
