@@ -1,14 +1,16 @@
-import { Bookmark, Check } from 'lucide-react';
-import { MovieStatus, TMDBMovieResult } from '@/types';
+import { Bookmark, Check, Plus } from 'lucide-react';
+import { TMDBMovieResult } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import useMarkWatchedStore from '@/features/movies/stores/mark-watched-store';
+import useMovieStore from '@/features/movies/stores/movie-store';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
 import Spinner from '@/shared/components/ui/spinner';
 import { useQuickAddTMDB } from '../hooks/use-quick-add';
 import { getMainTitleForTMDB, getSubTitleForTMDB } from '@/shared/utils/tmdb';
+import { findLibraryEntry, getSeriesInfo } from '@/features/movies/utils/movie-utils';
 
 interface MoviePosterGridProps {
   movies: TMDBMovieResult[];
-  getMovieStatus: (id: number, mediaType?: 'movie' | 'tv') => MovieStatus | null;
   onSelect: (movie: TMDBMovieResult) => void;
 }
 
@@ -23,28 +25,33 @@ const getCardMeta = (movie: TMDBMovieResult) => {
 const quickActionButtonClass =
   'min-w-8 min-h-8 flex items-center justify-center bg-black/60 hover:bg-primary text-white rounded-poster border border-white/10 transition-colors cursor-pointer focus-ring focus-visible:outline-none';
 
-function MoviePosterGrid({ movies, getMovieStatus, onSelect }: MoviePosterGridProps) {
+function MoviePosterGrid({ movies, onSelect }: MoviePosterGridProps) {
   const { addWatchlist, pendingKey } = useQuickAddTMDB();
   const openMarkWatched = useMarkWatchedStore((state) => state.openMarkWatched);
+  const openAddModal = useAddMovieStore((state) => state.openAddModal);
+  const { movies: savedMovies } = useMovieStore();
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
       {movies.map((movie) => {
         const mediaType = isTVResult(movie) ? 'tv' : 'movie';
-        const inLibrary = getMovieStatus(movie.id, mediaType);
+        const seriesInfo = mediaType === 'tv' ? getSeriesInfo(savedMovies, movie.id, 'tv') : null;
+        const savedMovie = findLibraryEntry(savedMovies, movie.id, 'movie');
+        const inLibrary = mediaType === 'movie' ? (savedMovie?.status ?? null) : null;
         const quickKey = `${mediaType}-${movie.id}`;
         return (
           <PosterCard
-            key={`${mediaType}-${movie.id}`}
+            key={quickKey}
             title={getMainTitleForTMDB(movie)}
             posterPath={movie.poster_path}
             mediaType={mediaType}
             rating={movie.vote_average}
             status={inLibrary}
+            badge={seriesInfo?.badge ?? null}
             meta={getCardMeta(movie)}
             onClick={() => onSelect(movie)}
             actions={
-              !inLibrary ? (
+              !inLibrary && !seriesInfo ? (
                 <>
                   <button
                     type="button"
@@ -81,6 +88,22 @@ function MoviePosterGrid({ movies, getMovieStatus, onSelect }: MoviePosterGridPr
                     <Check size={13} strokeWidth={2} aria-hidden="true" />
                   </button>
                 </>
+              ) : seriesInfo?.nextMissingSeason ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    openAddModal({
+                      movie,
+                      mediaType: 'tv',
+                      initialSeason: seriesInfo.nextMissingSeason ?? undefined,
+                    })
+                  }
+                  aria-label={`Thêm Mùa ${seriesInfo.nextMissingSeason} của “${getMainTitleForTMDB(movie)}”`}
+                  title={`Thêm Mùa ${seriesInfo.nextMissingSeason}`}
+                  className={quickActionButtonClass}
+                >
+                  <Plus size={13} strokeWidth={2} aria-hidden="true" />
+                </button>
               ) : undefined
             }
           />

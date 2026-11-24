@@ -27,7 +27,6 @@ function SearchPage() {
     refreshSuggestions,
     filteredResults,
     handleSelectMovie,
-    getMovieStatus,
     handleClear,
     isLoading,
     suggestions,
@@ -78,7 +77,6 @@ function SearchPage() {
           hasLoaded={suggestionsHasLoaded}
           error={suggestionsError}
           onRefresh={refreshSuggestions}
-          getMovieStatus={getMovieStatus}
           onSelectMovie={handleSelectMovie}
         />
       )}
@@ -109,7 +107,6 @@ function SearchPage() {
           isTrendingLoading={isTrendingLoading}
           trendingMovies={trendingMovies}
           filteredResults={filteredResults}
-          getMovieStatus={getMovieStatus}
           handleSelectMovie={handleSelectMovie}
           resultsError={resultsError}
           retrySearch={retrySearch}

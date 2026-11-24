@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useReleaseCalendarStore from '../stores/release-calendar-store';
-import { createCalendarFingerprint } from '../services/calendar-service';
+import { isCalendarSeries } from '../services/calendar-service';
 import { buildMoviePath, getSeasonParam } from '@/features/movies/utils/movie-utils';
 import useAlertStore from '@/shared/stores/alert-store';
 import useToastStore from '@/shared/stores/toast-store';
@@ -47,6 +47,7 @@ export const useReleaseCalendar = () => {
     loading,
     loadingEpisodes: fetchingEpisodes,
     episodesError: storedError,
+    failedSeriesCount: storedFailedSeriesCount,
     fetchMonthEpisodes,
     cancelMonthRequest,
     initializeForUser,
@@ -67,16 +68,27 @@ export const useReleaseCalendar = () => {
     return date && formatDateParam(date).startsWith(monthKey) ? date : null;
   }, [dateParam, monthKey]);
   const matchesScope = loadedMonthKey === monthKey && loadedUserId === userId;
-  const seriesFingerprint = useMemo(() => createCalendarFingerprint(movies), [movies]);
+  const tvSeries = useMemo(() => movies.filter(isCalendarSeries), [movies]);
+  // Chữ ký bộ series đang theo dõi: thêm/bớt/đổi mùa là refetch đúng phần mới thôi.
+  const activeSeriesSignature = useMemo(
+    () => tvSeries.map((series) => `${series.id}:${series.season}`).join('|'),
+    [tvSeries],
+  );
   const monthEpisodes = useMemo(
     () => (matchesScope ? storedEpisodes : []),
     [matchesScope, storedEpisodes],
   );
+  const failedSeriesCount = matchesScope ? storedFailedSeriesCount : 0;
   const loadingEpisodes = fetchingEpisodes || (!loading && !!userId && !matchesScope);
-  const episodesError = matchesScope ? storedError : null;
+  const episodesError = matchesScope
+    ? (storedError ??
+      (failedSeriesCount > 0 && storedEpisodes.length === 0
+        ? 'Không thể tải lịch phát sóng. Vui lòng thử lại.'
+        : null))
+    : null;
 
-  const loadMonthEpisodes = useEffectEvent((uid: string, month: string, fingerprint: string) => {
-    void fetchMonthEpisodes(uid, movies, month, fingerprint);
+  const loadMonthEpisodes = useEffectEvent((uid: string, month: string) => {
+    void fetchMonthEpisodes(uid, movies, month);
   });
 
   useEffect(() => {
@@ -84,20 +96,20 @@ export const useReleaseCalendar = () => {
     if (!userId || loading || collectionError) return;
     const movieState = useMovieStore.getState();
     if (movieState.activeUid !== userId || movieState.loading) return;
-    loadMonthEpisodes(userId, monthKey, seriesFingerprint);
+    loadMonthEpisodes(userId, monthKey);
     return cancelMonthRequest;
   }, [
     userId,
     collectionError,
     loading,
     monthKey,
-    seriesFingerprint,
+    activeSeriesSignature,
     cancelMonthRequest,
     initializeForUser,
   ]);
 
   const retryEpisodes = () => {
-    if (userId) void fetchMonthEpisodes(userId, movies, monthKey, seriesFingerprint);
+    if (userId) void fetchMonthEpisodes(userId, movies, monthKey);
   };
 
   const [pushSupported, setPushSupported] = useState(false);
@@ -157,16 +169,6 @@ export const useReleaseCalendar = () => {
       setPushLoading(false);
     }
   };
-
-  const tvSeries = useMemo(() => {
-    return movies.filter(
-      (m) =>
-        m.media_type === 'tv' &&
-        m.source === 'tmdb' &&
-        m.status !== 'dropped' &&
-        !m.notifications_muted,
-    );
-  }, [movies]);
 
   const mutateParams = useCallback(
     (mutate: (params: URLSearchParams) => void, options?: { replace?: boolean }) => {
@@ -238,9 +240,19 @@ export const useReleaseCalendar = () => {
   }, [displayedEpisodes]);
 
   const handleSeriesClick = (episode: UpcomingEpisode) => {
-    const movie = movies.find((m) => Number(m.id) === episode.seriesId);
-    if (movie) {
-      navigate(buildMoviePath(movie.id, movie.media_type, getSeasonParam(movie)));
+    const seasonDoc = movies.find(
+      (m) =>
+        Number(m.id) === episode.seriesId && getSeasonParam(m) === episode.episode.season_number,
+    );
+    if (seasonDoc) {
+      navigate(buildMoviePath(seasonDoc.id, 'tv', getSeasonParam(seasonDoc)));
+      return;
+    }
+    const anyDoc = movies.find(
+      (m) => Number(m.id) === episode.seriesId && (m.media_type ?? 'movie') === 'tv',
+    );
+    if (anyDoc) {
+      navigate(buildMoviePath(anyDoc.id, 'tv'));
     } else {
       showToast(MESSAGES.CALENDAR.SERIES_REMOVED, 'info');
     }
@@ -255,6 +267,7 @@ export const useReleaseCalendar = () => {
     loadingEpisodes,
     monthLoaded: matchesScope,
     episodesError,
+    failedSeriesCount,
     retryEpisodes,
     tvSeries,
     currentDate,

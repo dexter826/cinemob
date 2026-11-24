@@ -1,6 +1,7 @@
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import { Tv } from 'lucide-react';
+import SeasonPicker from './season-picker';
 
 interface TVProgressSectionProps {
   loading: boolean;
@@ -13,6 +14,7 @@ interface TVProgressSectionProps {
   currentEpisode: number;
   setCurrentEpisode: (episode: number) => void;
   seasonEpisodeCount: number;
+  episodesPerSeason: Record<number, number>;
   maxSeasons: number;
   lockSeason?: boolean;
 }
@@ -28,6 +30,7 @@ function TVProgressSection({
   currentEpisode,
   setCurrentEpisode,
   seasonEpisodeCount,
+  episodesPerSeason,
   maxSeasons,
   lockSeason = false,
 }: TVProgressSectionProps) {
@@ -85,36 +88,13 @@ function TVProgressSection({
             <span id="tv-season-label" className="text-label-caps text-text-secondary ml-1">
               Mùa
             </span>
-            <div
-              role="group"
-              aria-labelledby="tv-season-label"
-              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
-            >
-              <button
-                type="button"
-                aria-label="Giảm mùa"
-                disabled={lockSeason}
-                onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
-              >
-                -
-              </button>
-              <div
-                className="flex-1 text-center font-bold text-body text-text-primary"
-                aria-live="polite"
-              >
-                {currentSeason}
-              </div>
-              <button
-                type="button"
-                aria-label="Tăng mùa"
-                disabled={lockSeason}
-                onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
-              >
-                +
-              </button>
-            </div>
+            <SeasonPicker
+              value={currentSeason}
+              onChange={setCurrentSeason}
+              episodesPerSeason={episodesPerSeason}
+              maxSeasons={maxSeasons}
+              disabled={lockSeason}
+            />
           </div>
           <div className="space-y-2">
             <span id="tv-episode-label" className="text-label-caps text-text-secondary ml-1">

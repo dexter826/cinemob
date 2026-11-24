@@ -1,12 +1,14 @@
 import { auth } from '@/shared/lib/firebase';
 import { create } from 'zustand';
-import { Movie, TMDBMovieResult } from '@/types';
+import { Movie, MovieStatus, TMDBMovieResult } from '@/types';
 
 interface AddMovieInitialData {
   tmdbId?: number;
   movie?: TMDBMovieResult;
   movieToEdit?: Movie;
   mediaType?: 'movie' | 'tv';
+  initialSeason?: number;
+  initialStatus?: MovieStatus;
   onMovieAdded?: (tmdbId: number | string) => void;
 }
 

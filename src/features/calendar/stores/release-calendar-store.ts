@@ -10,16 +10,13 @@ interface ReleaseCalendarState {
   loading: boolean;
   loadingEpisodes: boolean;
   episodesError: string | null;
+  /** Series không tải được ở lần fetch gần nhất của tháng đang mở. */
+  failedSeriesCount: number;
   setMovies: (movies: Movie[]) => void;
   setLoading: (loading: boolean) => void;
   initializeForUser: (userId: string) => void;
   cancelMonthRequest: () => void;
-  fetchMonthEpisodes: (
-    userId: string,
-    movies: Movie[],
-    monthKey: string,
-    fingerprint: string,
-  ) => Promise<void>;
+  fetchMonthEpisodes: (userId: string, movies: Movie[], monthKey: string) => Promise<void>;
 }
 
 let calendarRequestId = 0;
@@ -31,6 +28,7 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
   loading: true,
   loadingEpisodes: false,
   episodesError: null,
+  failedSeriesCount: 0,
   setMovies: (movies) => set({ movies }),
   setLoading: (loading) => set({ loading }),
   initializeForUser: (userId) => {
@@ -42,12 +40,13 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       monthKey: null,
       loadingEpisodes: false,
       episodesError: null,
+      failedSeriesCount: 0,
     });
   },
   cancelMonthRequest: () => {
     calendarRequestId++;
   },
-  fetchMonthEpisodes: async (userId, movies, monthKey, fingerprint) => {
+  fetchMonthEpisodes: async (userId, movies, monthKey) => {
     const requestId = ++calendarRequestId;
     set({
       userId,
@@ -55,14 +54,13 @@ const useReleaseCalendarStore = create<ReleaseCalendarState>((set, get) => ({
       monthEpisodes:
         get().userId === userId && get().monthKey === monthKey ? get().monthEpisodes : [],
       episodesError: null,
+      failedSeriesCount: 0,
       loadingEpisodes: true,
     });
     try {
-      const episodes =
-        movies.length === 0
-          ? []
-          : await fetchEpisodesForMonth(userId, movies, monthKey, fingerprint);
-      if (requestId === calendarRequestId) set({ monthEpisodes: episodes });
+      const { episodes, failedCount } = await fetchEpisodesForMonth(userId, movies, monthKey);
+      if (requestId === calendarRequestId)
+        set({ monthEpisodes: episodes, failedSeriesCount: failedCount });
     } catch {
       if (requestId === calendarRequestId) {
         set({ episodesError: 'Không thể tải đầy đủ lịch phát sóng. Vui lòng thử lại sau.' });

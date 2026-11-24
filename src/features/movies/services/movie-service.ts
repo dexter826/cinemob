@@ -88,7 +88,7 @@ export const checkMovieExists = async (
   }
 };
 
-export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Movie => {
+export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Movie | null => {
   const d = data as Partial<Movie> & Record<string, unknown>;
   const base = {
     docId,
@@ -117,10 +117,11 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     notifications_muted: d.notifications_muted === true,
   };
   if (d.media_type === 'tv') {
+    if (typeof d.season !== 'number' || !Number.isFinite(d.season) || d.season < 1) return null;
     return {
       ...base,
       media_type: 'tv',
-      season: typeof d.season === 'number' ? d.season : 1,
+      season: d.season,
     };
   }
   return { ...base, media_type: 'movie' };
@@ -140,9 +141,9 @@ export const subscribeToMovies = (
   return onSnapshot(
     q,
     (snapshot) => {
-      const movies = snapshot.docs.map((doc) =>
-        mapDocToMovie(doc.id, doc.data() as Record<string, unknown>),
-      );
+      const movies = snapshot.docs
+        .map((doc) => mapDocToMovie(doc.id, doc.data() as Record<string, unknown>))
+        .filter((movie): movie is Movie => movie !== null);
       callback(movies);
     },
     (error) => {

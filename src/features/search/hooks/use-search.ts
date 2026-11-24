@@ -4,11 +4,7 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
 import useRandomSuggestionsStore from '@/features/movies/stores/random-suggestions-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
-import {
-  findLibraryEntry,
-  buildMoviePath,
-  getSeasonParam,
-} from '@/features/movies/utils/movie-utils';
+import { findLibraryEntry, buildMoviePath } from '@/features/movies/utils/movie-utils';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
@@ -219,26 +215,22 @@ export const useSearch = () => {
 
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
-    if (getMovieStatus(movie.id, isTV ? 'tv' : 'movie')) {
-      const saved = findLibraryEntry(savedMovies, movie.id, isTV ? 'tv' : 'movie');
-      navigate(buildMoviePath(movie.id, isTV ? 'tv' : 'movie', getSeasonParam(saved)));
+    if (isTV) {
+      navigate(buildMoviePath(movie.id, 'tv'));
+      setShowSuggestions(false);
+      return;
+    }
+    const saved = findLibraryEntry(savedMovies, movie.id, 'movie');
+    if (saved) {
+      navigate(buildMoviePath(movie.id, 'movie'));
+      setShowSuggestions(false);
       return;
     }
     openAddModal({
       movie: movie,
-      mediaType:
-        movie.media_type === 'tv' || movie.media_type === 'movie'
-          ? movie.media_type
-          : filters.type === 'tv'
-            ? 'tv'
-            : 'movie',
+      mediaType: movie.media_type === 'movie' ? 'movie' : filters.type === 'tv' ? 'tv' : 'movie',
     });
     setShowSuggestions(false);
-  };
-
-  const getMovieStatus = (movieId: number, mediaType?: 'movie' | 'tv') => {
-    const movie = findLibraryEntry(savedMovies, movieId, mediaType);
-    return movie ? movie.status || 'history' : null;
   };
 
   const goToPage = (page: number) => {
@@ -265,7 +257,6 @@ export const useSearch = () => {
     refreshSuggestions: () => void fetchRandomMovies(true),
     filteredResults,
     handleSelectMovie,
-    getMovieStatus,
     handleClear: () => {
       setFilters(INITIAL_FILTERS);
       setSubmittedQuery('');

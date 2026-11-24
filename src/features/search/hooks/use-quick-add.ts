@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useToastStore from '@/shared/stores/toast-store';
-import { getMovieDetails, getTVSeasonDetails } from '../services/tmdb';
+import useAddMovieStore from '@/features/movies/stores/add-movie-store';
+import { getMovieDetails } from '../services/tmdb';
 import { addMovie } from '@/features/movies/services/movie-service';
 import { buildTMDBMovieDraft } from '@/features/movies/utils/tmdb-movie-draft';
 import { MESSAGES } from '@/constants/messages';
@@ -14,24 +15,22 @@ export const resolveTMDBMediaType = (movie: TMDBMovieResult): 'movie' | 'tv' =>
 export function useQuickAddTMDB() {
   const { user } = useAuth();
   const { showToast } = useToastStore();
+  const { openAddModal } = useAddMovieStore();
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
   const addWatchlist = useCallback(
     async (movie: TMDBMovieResult) => {
-      if (!user || pendingKey) return;
       const mediaType = resolveTMDBMediaType(movie);
+      if (mediaType === 'tv') {
+        openAddModal({ movie, mediaType: 'tv', initialStatus: 'watchlist' });
+        return;
+      }
+      if (!user || pendingKey) return;
       const key = `${mediaType}-${movie.id}`;
       setPendingKey(key);
       try {
         const details = await getMovieDetails(Number(movie.id), mediaType);
         if (!details) throw new Error('TMDB details unavailable');
-        let seasonEpisodeCount: number | undefined;
-        let seasonPosterPath: string | null = null;
-        if (mediaType === 'tv') {
-          const season = await getTVSeasonDetails(Number(movie.id), 1);
-          seasonEpisodeCount = season?.episode_count || undefined;
-          seasonPosterPath = season?.poster_path ?? null;
-        }
         await addMovie(
           buildTMDBMovieDraft({
             uid: user.uid,
@@ -43,9 +42,6 @@ export function useQuickAddTMDB() {
             status: 'watchlist',
             rating: 0,
             watchedAt: new Date(),
-            season: 1,
-            seasonEpisodeCount,
-            seasonPosterPath,
           }),
         );
         showToast(MESSAGES.MOVIE.ADD_SUCCESS, 'success');
@@ -55,7 +51,7 @@ export function useQuickAddTMDB() {
         setPendingKey(null);
       }
     },
-    [user, pendingKey, showToast],
+    [user, pendingKey, showToast, openAddModal],
   );
 
   return { addWatchlist, pendingKey };

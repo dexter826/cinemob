@@ -4,6 +4,7 @@ import type {
   TMDBMovieDetail,
   TMDBMovieResult,
   TMDBPerson,
+  TMDBSeason,
   TMDBVideo,
 } from '@/types';
 
@@ -59,6 +60,15 @@ export const decodeMovieResultPage: Decoder<{
   return { results: results as TMDBMovieResult[], total_pages: value.total_pages };
 };
 
+const decodeSeason: Decoder<TMDBSeason> = (value) => {
+  if (!isRecord(value)) return null;
+  if (typeof value.season_number !== 'number' || typeof value.episode_count !== 'number')
+    return null;
+  if (!isNullableString(value.poster_path)) return null;
+  if (!isOptionalString(value.name) || !isOptionalNullableString(value.air_date)) return null;
+  return value as unknown as TMDBSeason;
+};
+
 export const decodeMovieDetail: Decoder<TMDBMovieDetail> = (value) => {
   if (!isRecord(value) || typeof value.id !== 'number' || !isNullableString(value.poster_path))
     return null;
@@ -66,6 +76,7 @@ export const decodeMovieDetail: Decoder<TMDBMovieDetail> = (value) => {
   if (!isOptionalString(value.overview) || !isOptionalString(value.tagline)) return null;
   if (!isOptionalString(value.release_date) || !isOptionalString(value.first_air_date)) return null;
   if (!isOptionalNumber(value.runtime) || !isOptionalNumber(value.number_of_seasons)) return null;
+  if (value.seasons !== undefined && decodeArray(value.seasons, decodeSeason) === null) return null;
   if (
     value.episode_run_time !== undefined &&
     (!Array.isArray(value.episode_run_time) ||
@@ -248,6 +259,7 @@ export const decodeTVDetails: Decoder<{
   status?: string;
   origin_country?: string[];
   number_of_seasons?: number;
+  seasons?: TMDBSeason[];
   next_episode_to_air?: TMDBEpisode;
 }> = (value) => {
   if (
@@ -257,6 +269,7 @@ export const decodeTVDetails: Decoder<{
   )
     return null;
   if (value.origin_country !== undefined && !isStringArray(value.origin_country)) return null;
+  if (value.seasons !== undefined && decodeArray(value.seasons, decodeSeason) === null) return null;
   const nextEpisode =
     value.next_episode_to_air == null ? undefined : decodeEpisode(value.next_episode_to_air);
   if (nextEpisode === null) return null;
@@ -264,6 +277,7 @@ export const decodeTVDetails: Decoder<{
     status: value.status,
     origin_country: value.origin_country as string[] | undefined,
     number_of_seasons: value.number_of_seasons,
+    seasons: value.seasons as TMDBSeason[] | undefined,
     next_episode_to_air: nextEpisode,
   };
 };

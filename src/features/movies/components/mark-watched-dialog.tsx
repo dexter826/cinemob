@@ -4,7 +4,11 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMarkWatchedStore from '../stores/mark-watched-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';
-import { getMovieDetails, getTVSeasonDetails } from '@/features/search/services/tmdb';
+import {
+  getMovieDetails,
+  getTVSeasonDetails,
+  getTVShowSeasons,
+} from '@/features/search/services/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import { getMainTitle, getSubTitle } from '../utils/movie-utils';
 import { formatDateInput, formatTimeInput } from '../utils/movie-form-utils';
@@ -13,6 +17,7 @@ import { getTMDBImageUrl } from '@/shared/utils/tmdb';
 import { Dialog, DialogBody, DialogFooter } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import RatingSection from './add-movie/rating-section';
+import SeasonPicker from './add-movie/season-picker';
 import DatePicker from '@/shared/components/ui/date-picker';
 import TimePicker from '@/shared/components/ui/time-picker';
 import { Movie } from '@/types';
@@ -30,7 +35,7 @@ function MarkWatchedDialog() {
   const [dateError, setDateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentSeason, setCurrentSeason] = useState(1);
-  const [seasonCount, setSeasonCount] = useState(1);
+  const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   const submitLock = useRef(false);
   const ratingRef = useRef<HTMLDivElement>(null);
 
@@ -64,11 +69,15 @@ function MarkWatchedDialog() {
       setDateError(null);
       setIsSubmitting(false);
       setCurrentSeason(1);
-      setSeasonCount(1);
+      setEpisodesPerSeason({});
       if (target?.kind === 'tmdb' && target.media_type === 'tv') {
-        getMovieDetails(Number(target.id), 'tv')
-          .then((details) => {
-            setSeasonCount(Math.max(details?.number_of_seasons || 1, 1));
+        getTVShowSeasons(Number(target.id))
+          .then((seasons) => {
+            if (seasons && seasons.length > 0) {
+              setEpisodesPerSeason(
+                Object.fromEntries(seasons.map((s) => [s.season_number, s.episode_count])),
+              );
+            }
           })
           .catch(() => {
             showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
@@ -140,12 +149,12 @@ function MarkWatchedDialog() {
           rating,
           watched_at: watchedAt,
         };
-        // Đánh dấu đã xem series coi như hoàn thành toàn bộ tập.
-        if (isTV && movie.progress) {
+        if (isTV) {
+          const total = movie.total_episodes || 0;
           updates.progress = {
-            ...movie.progress,
+            current_episode: total || movie.progress?.current_episode || 0,
+            watched_episodes: total || movie.progress?.watched_episodes || 0,
             is_completed: true,
-            watched_episodes: movie.total_episodes || movie.progress.watched_episodes,
           };
         }
         await updateMovie(movie.docId, updates);
@@ -211,38 +220,13 @@ function MarkWatchedDialog() {
             {target.kind === 'tmdb' && (
               <div className="flex items-center justify-between">
                 <span className="text-label-caps text-text-secondary">Mùa</span>
-                <div
-                  role="group"
-                  aria-label="Chọn mùa"
-                  className="flex items-center gap-2 p-1 rounded-card border border-border-default"
-                >
-                  <button
-                    type="button"
-                    aria-label="Giảm mùa"
-                    disabled={isSubmitting}
-                    onClick={() => setCurrentSeason((s) => Math.max(1, s - 1))}
-                    className="w-9 h-9 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
-                  >
-                    -
-                  </button>
-                  <span
-                    aria-live="polite"
-                    className="w-8 text-center font-bold text-body text-text-primary tabular-nums"
-                  >
-                    {currentSeason}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label="Tăng mùa"
-                    disabled={isSubmitting}
-                    onClick={() =>
-                      setCurrentSeason((s) => Math.min(Math.max(seasonCount, 1), s + 1))
-                    }
-                    className="w-9 h-9 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
-                  >
-                    +
-                  </button>
-                </div>
+                <SeasonPicker
+                  value={currentSeason}
+                  onChange={setCurrentSeason}
+                  episodesPerSeason={episodesPerSeason}
+                  maxSeasons={Math.max(...Object.keys(episodesPerSeason).map(Number), 0)}
+                  disabled={isSubmitting}
+                />
               </div>
             )}
           </div>

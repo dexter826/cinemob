@@ -1,5 +1,5 @@
 import type { SearchMode } from '../hooks/use-search-tmdb';
-import { MovieStatus, TMDBMovieResult } from '@/types';
+import { TMDBMovieResult } from '@/types';
 import Pagination from '@/shared/components/ui/pagination';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import EmptyState from '@/shared/components/ui/empty-state';
@@ -19,7 +19,6 @@ interface SearchResultsProps {
   isTrendingLoading: boolean;
   trendingMovies: TMDBMovieResult[];
   filteredResults: TMDBMovieResult[];
-  getMovieStatus: (id: number, mediaType?: 'movie' | 'tv') => MovieStatus | null;
   handleSelectMovie: (movie: TMDBMovieResult) => void;
   resultsError?: boolean;
   retrySearch?: () => void;
@@ -36,7 +35,6 @@ function SearchResults({
   isTrendingLoading,
   trendingMovies,
   filteredResults,
-  getMovieStatus,
   handleSelectMovie,
   resultsError = false,
   retrySearch,
@@ -82,11 +80,7 @@ function SearchResults({
 
       {showFiltered &&
         (filteredResults.length > 0 ? (
-          <MoviePosterGrid
-            movies={filteredResults}
-            getMovieStatus={getMovieStatus}
-            onSelect={handleSelectMovie}
-          />
+          <MoviePosterGrid movies={filteredResults} onSelect={handleSelectMovie} />
         ) : mode === 'search' ? (
           <EmptyState
             icon={Search}
@@ -116,11 +110,7 @@ function SearchResults({
             </div>
           ) : null
         ) : trendingMovies.length > 0 ? (
-          <MoviePosterGrid
-            movies={trendingMovies}
-            getMovieStatus={getMovieStatus}
-            onSelect={handleSelectMovie}
-          />
+          <MoviePosterGrid movies={trendingMovies} onSelect={handleSelectMovie} />
         ) : (
           <EmptyState
             icon={Search}

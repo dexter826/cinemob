@@ -215,7 +215,9 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
         movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie';
       const saved = findLibraryEntry(movies, movie.id, mediaType);
       if (saved?.docId) {
-        navigate(buildMoviePath(saved.id, mediaType, getSeasonParam(saved)));
+        navigate(
+          mediaType === 'tv' ? buildMoviePath(saved.id, 'tv') : buildMoviePath(saved.id, 'movie'),
+        );
       } else {
         openAddModal({ movie, mediaType });
       }

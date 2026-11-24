@@ -1,5 +1,5 @@
 import { tmdbFetch, withLimit } from './client';
-import { TMDBEpisode } from '@/types';
+import { TMDBEpisode, TMDBSeason } from '@/types';
 import { decodeTVDetails, decodeTVSeason, decodeTVSeasonEpisodes } from './decoders';
 
 interface TVSeasonResponse {
@@ -11,8 +11,21 @@ interface TVDetailsResponse {
   status?: string;
   origin_country?: string[];
   number_of_seasons?: number;
+  seasons?: TMDBSeason[];
   next_episode_to_air?: TMDBEpisode & { season_number: number; episode_number: number };
 }
+
+export const getEffectiveSeasons = (seasons: TMDBSeason[] | undefined): TMDBSeason[] =>
+  (seasons ?? []).filter((s) => s.season_number >= 1 && s.episode_count > 0);
+
+export const getTVShowSeasons = async (
+  tvId: number,
+  signal?: AbortSignal,
+): Promise<TMDBSeason[] | null> => {
+  const data = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
+  if (!data) return null;
+  return getEffectiveSeasons(data.seasons);
+};
 
 interface TVSeasonEpisodesResponse {
   episodes?: Array<{
@@ -72,11 +85,10 @@ export const getTVShowEpisodeInfo = async (
     const episodesPerSeason: { [season: number]: number } = {};
 
     seasons.forEach((season, index) => {
-      if (season) {
+      if (season && season.episode_count > 0) {
         const seasonNumber = index + 1;
-        const episodeCount = season.episode_count;
-        episodesPerSeason[seasonNumber] = episodeCount;
-        totalEpisodes += episodeCount;
+        episodesPerSeason[seasonNumber] = season.episode_count;
+        totalEpisodes += season.episode_count;
       }
     });
 
@@ -165,11 +177,9 @@ export const getTVShowUpcomingEpisodes = async (
   );
 };
 
-export const getTVShowEpisodesInRange = async (
+export const getTVSeasonEpisodes = async (
   tvId: number,
   seasonNumber: number,
-  startDate: string,
-  endDate: string,
   signal?: AbortSignal,
 ): Promise<TMDBEpisode[]> => {
   const season = await tmdbFetch<TVSeasonEpisodesResponse>(
@@ -180,7 +190,6 @@ export const getTVShowEpisodesInRange = async (
   );
   if (!season?.episodes) throw new Error('Không thể tải lịch mùa phim');
   return season.episodes
-    .filter((episode) => episode.air_date >= startDate && episode.air_date <= endDate)
     .map((episode) => ({
       ...episode,
       vote_average: episode.vote_average ?? 0,

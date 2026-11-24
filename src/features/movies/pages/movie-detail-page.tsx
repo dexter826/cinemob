@@ -34,7 +34,11 @@ import {
   getSubTitle,
   getTranslatedGenres,
   getSeasonParam,
+  getSeriesInfo,
 } from '../utils/movie-utils';
+import SeriesHub from '../components/series-hub';
+import SeasonPreview from '../components/season-preview';
+import SeasonSwitcher from '../components/season-switcher';
 import { getMovieDetails } from '@/features/search/services/tmdb';
 import type { TMDBMovieDetail } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
@@ -178,7 +182,7 @@ function TmdbNotInLibraryPreview({
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
     movies,
@@ -215,35 +219,25 @@ function MovieDetailPage() {
 
   const typeParam = searchParams.get('type');
   const seasonParam = Number(searchParams.get('season'));
-  const hasSeasonParam = searchParams.get('season') !== null && Number.isFinite(seasonParam);
+  const hasSeasonParam =
+    searchParams.get('season') !== null && Number.isFinite(seasonParam) && seasonParam >= 1;
+  const isTVRoute = typeParam === 'tv';
+  const tvDocs = useMemo(
+    () => movies.filter((m) => String(m.id) === id && m.media_type === 'tv'),
+    [movies, id],
+  );
   const movie = useMemo(() => {
     const matches = movies.filter((m) => String(m.id) === id);
+    if (isTVRoute) {
+      if (!hasSeasonParam) return undefined;
+      return tvDocs.find((m) => getSeasonParam(m) === seasonParam);
+    }
     if (typeParam === 'movie') {
       return matches.find((m) => (m.media_type ?? 'movie') === 'movie');
     }
-    if (typeParam === 'tv') {
-      const bySeason = hasSeasonParam
-        ? matches.find((m) => getSeasonParam(m) === seasonParam)
-        : undefined;
-      return bySeason ?? matches.find((m) => (m.media_type ?? 'movie') === 'tv') ?? matches[0];
-    }
     return matches.find((m) => (m.media_type ?? 'movie') === 'movie') ?? matches[0];
-  }, [movies, id, typeParam, seasonParam]);
+  }, [movies, id, isTVRoute, typeParam, hasSeasonParam, seasonParam, tvDocs]);
 
-  useEffect(() => {
-    if (!movie || (movie.media_type ?? 'movie') !== 'tv') return;
-    const next = new URLSearchParams(searchParams);
-    let changed = false;
-    if (!typeParam) {
-      next.set('type', 'tv');
-      changed = true;
-    }
-    if (!searchParams.get('season')) {
-      next.set('season', String(getSeasonParam(movie) ?? 1));
-      changed = true;
-    }
-    if (changed) setSearchParams(next, { replace: true });
-  }, [typeParam, movie, searchParams, setSearchParams]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
   const showDetailSkeleton = useDelayedSkeleton(!movie && collectionLoading);
   const showExtrasSkeleton = useDelayedSkeleton(extrasLoading && !credits);
@@ -275,7 +269,7 @@ function MovieDetailPage() {
   } | null>(null);
 
   useEffect(() => {
-    if (movie || collectionLoading || collectionError) {
+    if (isTVRoute || movie || collectionLoading || collectionError) {
       setTmdbPreview(null);
       return;
     }
@@ -299,7 +293,7 @@ function MovieDetailPage() {
       cancelled = true;
       controller.abort();
     };
-  }, [movie, collectionLoading, collectionError, id, typeParam, tmdbRetryNonce]);
+  }, [isTVRoute, movie, collectionLoading, collectionError, id, typeParam, tmdbRetryNonce]);
 
   const handleDeleteMovie = () => {
     const docId = movie?.docId;
@@ -307,6 +301,19 @@ function MovieDetailPage() {
     handleDelete(docId);
     goBackOrHome();
   };
+
+  const seriesInfo = useMemo(
+    () => (movie?.media_type === 'tv' ? getSeriesInfo(movies, movie.id, 'tv') : null),
+    [movies, movie],
+  );
+
+  if (isTVRoute && !hasSeasonParam) {
+    return <SeriesHub seriesId={id ?? ''} />;
+  }
+
+  if (isTVRoute && hasSeasonParam && !movie) {
+    return <SeasonPreview seriesId={id ?? ''} season={seasonParam} />;
+  }
 
   if (collectionError)
     return (
@@ -396,10 +403,18 @@ function MovieDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 pt-4 md:pt-5">
-      <div className="flex items-center justify-between pb-4 md:pb-5">
+      <div className="flex items-center justify-between gap-3 pb-4 md:pb-5">
         <IconButton label="Quay lại trang trước" onClick={goBackOrHome} variant="secondary">
           <ArrowLeft size={20} strokeWidth={1.5} aria-hidden="true" />
         </IconButton>
+        {movie.media_type === 'tv' && (
+          <SeasonSwitcher
+            seriesId={movie.id}
+            currentSeason={seasonParam}
+            seasonCount={seriesInfo?.totalSeasons || movie.seasons || 1}
+            nextMissingSeason={seriesInfo?.nextMissingSeason}
+          />
+        )}
       </div>
 
       <article
@@ -425,6 +440,7 @@ function MovieDetailPage() {
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-display-xl leading-[1.02] text-text-primary">{mainTitle}</h1>
+            {movie.media_type === 'tv' && <Chip tone="muted">Mùa {getSeasonParam(movie)}</Chip>}
             {isDropped && <Chip tone="muted">{MOVIE_STATUS_LABEL.dropped}</Chip>}
           </div>
           {subTitle && subTitle !== mainTitle && (
