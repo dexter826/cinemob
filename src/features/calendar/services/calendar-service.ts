@@ -60,7 +60,7 @@ export const fetchEpisodesForMonth = async (
     tvSeries.map((series) => async () => {
       const tvId = Number(series.id);
       if (!Number.isFinite(tvId)) throw new Error('Series không có TMDB ID hợp lệ');
-      const episodes = await getTVShowEpisodesInRange(tvId, startDate, endDate);
+      const episodes = await getTVShowEpisodesInRange(tvId, series.season ?? 1, startDate, endDate);
       let seriesNameVi = series.title_vi;
       if (!seriesNameVi) {
         try {

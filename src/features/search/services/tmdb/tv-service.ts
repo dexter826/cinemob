@@ -167,32 +167,19 @@ export const getTVShowUpcomingEpisodes = async (
 
 export const getTVShowEpisodesInRange = async (
   tvId: number,
+  seasonNumber: number,
   startDate: string,
   endDate: string,
   signal?: AbortSignal,
 ): Promise<TMDBEpisode[]> => {
-  const details = await tmdbFetch<TVDetailsResponse>(`tv/${tvId}`, {}, decodeTVDetails, signal);
-  if (!details || details.number_of_seasons === undefined) {
-    throw new Error('Không thể tải thông tin series');
-  }
-
-  const tasks = Array.from({ length: details.number_of_seasons }, (_, index) => async () => {
-    const season = await tmdbFetch<TVSeasonEpisodesResponse>(
-      `tv/${tvId}/season/${index + 1}`,
-      {},
-      decodeTVSeasonEpisodes,
-      signal,
-    );
-    if (!season?.episodes) throw new Error('Không thể tải lịch mùa phim');
-    return season.episodes;
-  });
-  const seasons = await withLimit(tasks, 3);
-  if (seasons.some((season) => season === null)) {
-    throw new Error('Không thể tải đầy đủ lịch phát sóng');
-  }
-
-  return seasons
-    .flatMap((season) => season ?? [])
+  const season = await tmdbFetch<TVSeasonEpisodesResponse>(
+    `tv/${tvId}/season/${seasonNumber}`,
+    {},
+    decodeTVSeasonEpisodes,
+    signal,
+  );
+  if (!season?.episodes) throw new Error('Không thể tải lịch mùa phim');
+  return season.episodes
     .filter((episode) => episode.air_date >= startDate && episode.air_date <= endDate)
     .map((episode) => ({
       ...episode,
