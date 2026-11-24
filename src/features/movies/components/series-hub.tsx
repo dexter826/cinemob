@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft, Plus, Tv } from 'lucide-react';
 import { getMovieDetails, getEffectiveSeasons } from '@/features/search/services/tmdb';
 import useMovieStore from '../stores/movie-store';
 import useAddMovieStore from '../stores/add-movie-store';
@@ -65,13 +65,20 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
   const seriesInfo = getSeriesInfo(movies, seriesId, 'tv');
   const effectiveSeasons = getEffectiveSeasons(state.details?.seasons);
   const seasonCount = effectiveSeasons.length || seriesInfo?.totalSeasons || 0;
+  const seasonNumbers =
+    effectiveSeasons.length > 0
+      ? effectiveSeasons.map((s) => s.season_number)
+      : Array.from({ length: seasonCount }, (_, i) => i + 1);
   const details = state.details;
+  const tmdbFailed = state.error || !details;
   const title =
     (docs[0] ? getMainTitle(docs[0]) : '') || details?.name || details?.title || 'Không rõ tiêu đề';
-  const posterUrl = details?.poster_path
-    ? getTMDBImageUrl(details.poster_path, 'w780')
+  const headerPosterPath = details?.poster_path ?? docs[0]?.poster_path ?? null;
+  const posterUrl = headerPosterPath
+    ? getTMDBImageUrl(headerPosterPath, 'w780')
     : PLACEHOLDER_IMAGE;
   const genres = details?.genres?.map((g) => g.name).join(', ') || docs[0]?.genres || '';
+  const overview = details?.overview || docs[0]?.content || '';
   const year = (
     details?.first_air_date ||
     details?.release_date ||
@@ -82,11 +89,11 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
   const addSeason = (season: number) => {
     const movieResult: TMDBMovieResult = {
       id: tvId,
-      title: details?.title,
+      title: details?.title ?? docs[0]?.title,
       name: details?.name,
-      poster_path: details?.poster_path ?? null,
+      poster_path: details?.poster_path ?? docs[0]?.poster_path ?? null,
       release_date: details?.release_date,
-      first_air_date: details?.first_air_date,
+      first_air_date: details?.first_air_date ?? docs[0]?.release_date,
       media_type: 'tv',
     };
     openAddModal({ movie: movieResult, mediaType: 'tv', initialSeason: season });
@@ -112,7 +119,7 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
             </div>
           </div>
         </>
-      ) : state.error || !details ? (
+      ) : tmdbFailed && docs.length === 0 ? (
         <ErrorState
           title="Không tải được thông tin series"
           description="Không tìm thấy series trong Thư viện và TMDB cũng không phản hồi."
@@ -120,6 +127,16 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
         />
       ) : (
         <>
+          {tmdbFailed && (
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-card border border-border p-3">
+              <p className="text-body-sm text-text-secondary">
+                TMDB không phản hồi — đang hiển thị theo dữ liệu trong Thư viện.
+              </p>
+              <Button variant="ghost" size="sm" onClick={() => setRetryNonce((n) => n + 1)}>
+                Thử lại
+              </Button>
+            </div>
+          )}
           <article className="flex flex-col md:flex-row gap-6 md:gap-10">
             <div className="w-full max-w-[240px] md:w-[280px] shrink-0 self-center md:self-start">
               <img
@@ -141,9 +158,9 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
                   </span>
                 )}
               </div>
-              {details.overview && (
+              {overview && (
                 <p className="mt-6 text-body leading-[1.7] text-text-primary/90 max-w-[65ch]">
-                  {details.overview}
+                  {overview}
                 </p>
               )}
               {seriesInfo?.nextMissingSeason != null && (
@@ -166,18 +183,16 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
               </h2>
               {seriesInfo && seriesInfo.badge && <Chip tone="muted">{seriesInfo.badge}</Chip>}
             </div>
-            {seasonCount > 0 ? (
+            {seasonNumbers.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-                {Array.from({ length: seasonCount }, (_, i) => i + 1).map((n) => {
+                {seasonNumbers.map((n) => {
                   const doc = docs.find((d) => getSeasonParam(d) === n);
                   const seasonMeta = effectiveSeasons.find((s) => s.season_number === n);
                   return (
                     <PosterCard
                       key={n}
                       title={title}
-                      posterPath={
-                        doc?.poster_path || seasonMeta?.poster_path || details.poster_path
-                      }
+                      posterPath={doc?.poster_path || seasonMeta?.poster_path || headerPosterPath}
                       mediaType="tv"
                       status={doc ? doc.status || 'history' : null}
                       badge={doc ? null : 'Chưa có'}
@@ -190,7 +205,7 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
               </div>
             ) : (
               <EmptyState
-                icon={ArrowLeft}
+                icon={Tv}
                 title="Chưa có thông tin các mùa"
                 description="TMDB chưa trả về danh sách mùa có tập cho series này."
               />
