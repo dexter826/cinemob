@@ -172,12 +172,17 @@ function MovieListSection({
         >
           {visibleMovies.map((movie) => (
             <PosterCard
-              key={String(movie.id)}
+              key={`${String(movie.id)}-${movie.season ?? 'm'}`}
               title={movie.title_vi || movie.title}
               posterPath={movie.poster_path ?? null}
               mediaType={movie.media_type}
               rating={movie.rating}
               review={movie.is_review}
+              seasonLabel={
+                movie.media_type === 'tv' && (movie.seasons ?? 0) >= 2 && movie.season
+                  ? `Mùa ${movie.season}`
+                  : null
+              }
               meta={
                 movie.watched_at
                   ? formatDateAny(movie.watched_at)

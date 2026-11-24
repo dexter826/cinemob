@@ -62,6 +62,8 @@ export interface ProfileMovie {
   rating?: number;
   watched_at?: Timestamp | Date;
   is_review?: boolean;
+  season?: number;
+  seasons?: number;
 }
 
 export type MemberGender = 'male' | 'female' | 'other';

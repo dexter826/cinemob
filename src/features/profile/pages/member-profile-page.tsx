@@ -199,7 +199,9 @@ function MemberProfilePage() {
             emptyTitle="Chưa có phim nào"
             emptyDescription="Thêm phim vào lịch sử xem."
             emptyAction={{ label: 'Tìm phim để thêm', to: '/search' }}
-            onMovieClick={(movie) => navigate(buildMoviePath(movie.id, movie.media_type))}
+            onMovieClick={(movie) =>
+              navigate(buildMoviePath(movie.id, movie.media_type, movie.season))
+            }
           />
         </section>
       </div>

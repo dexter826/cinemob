@@ -204,6 +204,8 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
       rating: m.rating ?? 0,
       watched_at: m.watched_at,
       is_review: m.is_review || false,
+      season: m.season,
+      seasons: m.seasons,
     }));
 };
 
@@ -226,5 +228,7 @@ const sameProfileMovies = (a: ProfileMovie[] | undefined, b: ProfileMovie[]): bo
       m.release_date === b[i].release_date &&
       m.rating === b[i].rating &&
       m.is_review === b[i].is_review &&
+      m.season === b[i].season &&
+      m.seasons === b[i].seasons &&
       sameWatchedAt(m.watched_at, b[i].watched_at),
   );
