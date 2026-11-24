@@ -1,4 +1,4 @@
-import { MovieStatus, TMDBMovieResult } from '@/types';
+import { TMDBMovieResult } from '@/types';
 import { Dice5, RotateCcw } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
@@ -13,7 +13,6 @@ interface RandomSuggestionsSectionProps {
   hasLoaded: boolean;
   error: string | null;
   onRefresh: () => void;
-  getMovieStatus: (id: number, mediaType?: 'movie' | 'tv') => MovieStatus | null;
   onSelectMovie: (movie: TMDBMovieResult) => void;
 }
 
@@ -23,7 +22,6 @@ function RandomSuggestionsSection({
   hasLoaded,
   error,
   onRefresh,
-  getMovieStatus,
   onSelectMovie,
 }: RandomSuggestionsSectionProps) {
   const isInitialLoading = !hasLoaded && movies.length === 0;
@@ -96,7 +94,7 @@ function RandomSuggestionsSection({
           description="Nhấn Làm mới để nhận gợi ý phim ngẫu nhiên."
         />
       ) : (
-        <MoviePosterGrid movies={movies} getMovieStatus={getMovieStatus} onSelect={onSelectMovie} />
+        <MoviePosterGrid movies={movies} onSelect={onSelectMovie} />
       )}
     </section>
   );

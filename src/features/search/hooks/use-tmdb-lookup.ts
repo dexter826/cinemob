@@ -90,11 +90,12 @@ export const useTMDBLookup = () => {
         const seasons = details.number_of_seasons || 0;
 
         let tvInfo;
+        let effectiveSeasonCount = seasons;
         if (type === 'tv' && seasons > 0) {
           const info = await getTVShowEpisodeInfo(Number(id), seasons, controller.signal);
           if (!isCurrent()) return null;
-          if (Object.keys(info.episodes_per_season).length < seasons)
-            throw new Error('Incomplete TV episode data');
+          // Số mùa hiệu lực = số mùa có tập thực sự (bỏ qua mùa 0 tập).
+          effectiveSeasonCount = Object.keys(info.episodes_per_season).length;
           tvInfo = {
             totalEpisodes: info.total_episodes,
             episodesPerSeason: info.episodes_per_season,
@@ -105,7 +106,7 @@ export const useTMDBLookup = () => {
           title: originalTitle,
           title_vi: viTitle,
           runtime: runtime.toString(),
-          seasons: seasons ? seasons.toString() : '',
+          seasons: effectiveSeasonCount ? effectiveSeasonCount.toString() : '',
           poster: details.poster_path || '',
           tagline: details.tagline || '',
           genres: details.genres?.map((g) => g.name).join(', ') || '',
