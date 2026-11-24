@@ -65,7 +65,7 @@ const decodeSeason: Decoder<TMDBSeason> = (value) => {
   if (typeof value.season_number !== 'number' || typeof value.episode_count !== 'number')
     return null;
   if (!isNullableString(value.poster_path)) return null;
-  if (!isOptionalString(value.name) || !isOptionalString(value.air_date)) return null;
+  if (!isOptionalString(value.name) || !isOptionalNullableString(value.air_date)) return null;
   return value as unknown as TMDBSeason;
 };
 

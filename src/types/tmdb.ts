@@ -20,7 +20,7 @@ export interface TMDBSeason {
   episode_count: number;
   poster_path: string | null;
   name?: string;
-  air_date?: string;
+  air_date?: string | null;
 }
 
 export interface TMDBMovieDetail {
