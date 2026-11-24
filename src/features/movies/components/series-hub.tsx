@@ -195,7 +195,6 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
                       posterPath={doc?.poster_path || seasonMeta?.poster_path || headerPosterPath}
                       mediaType="tv"
                       status={doc ? doc.status || 'history' : null}
-                      badge={doc ? null : 'Chưa có'}
                       seasonLabel={`Mùa ${n}`}
                       meta={seasonMeta ? `${seasonMeta.episode_count} tập` : undefined}
                       onClick={() => navigate(buildMoviePath(seriesId, 'tv', n))}
