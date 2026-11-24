@@ -90,7 +90,7 @@ export const checkMovieExists = async (
 
 export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Movie => {
   const d = data as Partial<Movie> & Record<string, unknown>;
-  return {
+  const base = {
     docId,
     uid: typeof d.uid === 'string' ? d.uid : '',
     id: typeof d.id === 'string' || typeof d.id === 'number' ? d.id : '',
@@ -101,10 +101,10 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     seasons: typeof d.seasons === 'number' ? d.seasons : 0,
     total_episodes: typeof d.total_episodes === 'number' ? d.total_episodes : 0,
     watched_at: (d.watched_at as Movie['watched_at']) ?? new Date(),
-    source: d.source === 'manual' ? 'manual' : 'tmdb',
-    media_type: d.media_type === 'tv' ? 'tv' : 'movie',
-    season: d.media_type === 'tv' ? (typeof d.season === 'number' ? d.season : 1) : undefined,
-    status: d.status === 'watchlist' || d.status === 'dropped' ? d.status : 'history',
+    source: (d.source === 'manual' ? 'manual' : 'tmdb') as Movie['source'],
+    status: (d.status === 'watchlist' || d.status === 'dropped'
+      ? d.status
+      : 'history') as Movie['status'],
     rating: typeof d.rating === 'number' ? d.rating : 0,
     review: typeof d.review === 'string' ? d.review : '',
     tagline: typeof d.tagline === 'string' ? d.tagline : '',
@@ -116,6 +116,14 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     is_review: d.is_review === true,
     notifications_muted: d.notifications_muted === true,
   };
+  if (d.media_type === 'tv') {
+    return {
+      ...base,
+      media_type: 'tv',
+      season: typeof d.season === 'number' ? d.season : 1,
+    };
+  }
+  return { ...base, media_type: 'movie' };
 };
 
 export const subscribeToMovies = (

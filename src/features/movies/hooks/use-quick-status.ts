@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { deleteField } from 'firebase/firestore';
 import { updateMovie } from '../services/movie-service';
 import useToastStore from '@/shared/stores/toast-store';
-import { getMainTitle } from '../utils/movie-utils';
+import { getMainTitle, getSeasonParam } from '../utils/movie-utils';
 import { MESSAGES } from '@/constants/messages';
 import { Movie } from '@/types';
 
@@ -89,7 +89,11 @@ export function useQuickStatus() {
       showToast(
         isCompleted
           ? MESSAGES.MOVIE.LOG_EPISODE_COMPLETED(getMainTitle(movie))
-          : MESSAGES.MOVIE.LOG_EPISODE_SUCCESS(getMainTitle(movie), movie.season ?? 1, nextEpisode),
+          : MESSAGES.MOVIE.LOG_EPISODE_SUCCESS(
+              getMainTitle(movie),
+              getSeasonParam(movie) ?? 1,
+              nextEpisode,
+            ),
         'success',
         UNDO_QUICK_MS,
         {

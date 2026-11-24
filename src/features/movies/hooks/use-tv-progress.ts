@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
+import { getSeasonParam } from '../utils/movie-utils';
 import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
 import { Movie } from '@/types';
 interface TVProgressProps {
   movieToEdit?: Movie;
-  tmdbId?: number | string;
-  mediaType?: 'movie' | 'tv';
   isTVSeries: boolean;
   isOpen: boolean;
 }
@@ -27,7 +26,7 @@ export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen }: TVProgressPro
     setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
     setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
     const progress = movieToEdit?.progress;
-    setCurrentSeason(movieToEdit?.season ?? 1);
+    setCurrentSeason(getSeasonParam(movieToEdit) ?? 1);
     setCurrentEpisode(progress?.current_episode ?? 0);
     setIsCompleted(progress?.is_completed ?? !movieToEdit);
   }, [isOpen, movieToEdit, isTVSeries]);

@@ -24,6 +24,7 @@ import {
   getSubTitle,
   buildMoviePath,
   getSeasonLabel,
+  getSeasonParam,
 } from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
@@ -314,7 +315,7 @@ function DashboardPage() {
                         )
                       }
                       onClick={() =>
-                        navigate(buildMoviePath(movie.id, movie.media_type, movie.season))
+                        navigate(buildMoviePath(movie.id, movie.media_type, getSeasonParam(movie)))
                       }
                     />
                   </motion.div>

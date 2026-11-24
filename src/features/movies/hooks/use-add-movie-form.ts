@@ -17,7 +17,7 @@ import {
 import { useTVProgress } from './use-tv-progress';
 import { useAlbumSync } from '@/features/albums/hooks/use-album-sync';
 import { GENRE_OPTIONS } from '@/constants/genres';
-import { resolveMovieStatus } from '../utils/movie-utils';
+import { getSeasonParam, resolveMovieStatus, resolveSeasonRuntime } from '../utils/movie-utils';
 import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
 import { useMovieValidation } from './use-movie-validation';
 
@@ -98,8 +98,6 @@ export const useAddMovieForm = () => {
 
   const tvProgress = useTVProgress({
     movieToEdit: initialData?.movieToEdit,
-    tmdbId: initialData?.tmdbId || initialData?.movie?.id,
-    mediaType: (initialData?.mediaType || initialData?.movie?.media_type) as 'movie' | 'tv',
     isTVSeries,
     isOpen,
   });
@@ -237,7 +235,9 @@ export const useAddMovieForm = () => {
       .then((exists) => {
         if (!cancelled) setMovieExists(exists);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
+      });
     return () => {
       cancelled = true;
     };
@@ -294,12 +294,15 @@ export const useAddMovieForm = () => {
 
       if (isTVSeries && !keepExistingProgress) {
         const docSeason = tvProgress.currentSeason;
-        const seasonEpisodeCount =
-          tvProgress.episodesPerSeason[docSeason] || tvProgress.totalEpisodes;
-        movieData.season = docSeason;
-        movieData.total_episodes = seasonEpisodeCount;
-        if (!initialData?.movieToEdit) {
-          movieData.runtime = seasonEpisodeCount * (parseInt(formData.runtime) || 0);
+        const tmdbSeasonEpisodes = tvProgress.episodesPerSeason[docSeason];
+        const seasonEpisodeCount = tmdbSeasonEpisodes || tvProgress.totalEpisodes;
+        Object.assign(movieData, { season: docSeason, total_episodes: seasonEpisodeCount });
+        if (!initialData?.movieToEdit && tmdbSeasonEpisodes) {
+          movieData.runtime = resolveSeasonRuntime(
+            parseInt(formData.runtime) || 0,
+            tmdbSeasonEpisodes,
+            true,
+          );
         }
         movieData.progress = {
           current_episode: tvProgress.currentEpisode,
@@ -379,7 +382,7 @@ export const useAddMovieForm = () => {
     let isProgressDirty = false;
     if (isTVSeries && m.progress) {
       isProgressDirty =
-        tvProgress.currentSeason !== (m.season ?? 1) ||
+        tvProgress.currentSeason !== getSeasonParam(m) ||
         tvProgress.currentEpisode !== m.progress.current_episode ||
         tvProgress.isCompleted !== m.progress.is_completed;
     }

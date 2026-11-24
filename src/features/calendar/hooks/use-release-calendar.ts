@@ -4,7 +4,7 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import useReleaseCalendarStore from '../stores/release-calendar-store';
 import { createCalendarFingerprint } from '../services/calendar-service';
-import { buildMoviePath } from '@/features/movies/utils/movie-utils';
+import { buildMoviePath, getSeasonParam } from '@/features/movies/utils/movie-utils';
 import useAlertStore from '@/shared/stores/alert-store';
 import useToastStore from '@/shared/stores/toast-store';
 import {
@@ -240,7 +240,7 @@ export const useReleaseCalendar = () => {
   const handleSeriesClick = (episode: UpcomingEpisode) => {
     const movie = movies.find((m) => Number(m.id) === episode.seriesId);
     if (movie) {
-      navigate(buildMoviePath(movie.id, movie.media_type, movie.season));
+      navigate(buildMoviePath(movie.id, movie.media_type, getSeasonParam(movie)));
     } else {
       showToast(MESSAGES.CALENDAR.SERIES_REMOVED, 'info');
     }

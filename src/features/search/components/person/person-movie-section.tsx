@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import type { PersonMovie } from '@/types';
 import PosterCard from '@/features/movies/components/poster-card';
 import useMovieStore from '@/features/movies/stores/movie-store';
-import { findLibraryEntry, buildMoviePath } from '@/features/movies/utils/movie-utils';
+import {
+  findLibraryEntry,
+  buildMoviePath,
+  getSeasonParam,
+} from '@/features/movies/utils/movie-utils';
 import SearchField from '@/shared/components/ui/search-field';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
@@ -61,7 +65,9 @@ export function PersonMovieSection({
   const handleMovieClick = (movie: PersonMovie) => {
     const saved = findSaved(movie);
     if (saved) {
-      navigate(buildMoviePath(movie.id, movie.media_type === 'tv' ? 'tv' : 'movie'));
+      navigate(
+        buildMoviePath(movie.id, movie.media_type === 'tv' ? 'tv' : 'movie', getSeasonParam(saved)),
+      );
       return;
     }
     openAddModal({

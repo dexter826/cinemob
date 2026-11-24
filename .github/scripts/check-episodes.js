@@ -54,7 +54,7 @@ const getWatchlistFromFirestore = async () => {
       title_vi: data.title_vi || '',
       poster_path: data.poster_path,
       media_type: data.media_type,
-      season: data.season ?? null,
+      season: typeof data.season === 'number' ? data.season : null,
       status: data.status,
       genres: data.genres,
       country: data.country,
@@ -63,6 +63,7 @@ const getWatchlistFromFirestore = async () => {
 
     if (
       data.media_type === 'tv' &&
+      typeof data.season === 'number' &&
       data.status !== 'dropped' &&
       data.notifications_muted !== true
     ) {
@@ -118,9 +119,7 @@ const getUpcomingEpisodes = async (tvId, season) => {
     const targetDate = isWestern ? yesterday : today;
 
     const matches = (episode) =>
-      !!episode &&
-      episode.air_date === targetDate &&
-      (season == null || episode.season_number === season);
+      !!episode && episode.air_date === targetDate && episode.season_number === season;
     const pick = (episode) => ({
       season_number: episode.season_number,
       episode_number: episode.episode_number,
@@ -230,20 +229,11 @@ const main = async () => {
   const todayEpisodes = [];
   const todayMovies = [];
 
-  // Kiểm tra từng series xem hôm nay có tập không
   for (const series of tvSeries) {
     const episodes = await getUpcomingEpisodes(series.id, series.season);
     for (const episode of episodes) {
       todayEpisodes.push({ series, episode });
     }
-  }
-  const seenSeries = new Set();
-  const uniqueTodayEpisodes = [];
-  for (const entry of todayEpisodes) {
-    const key = String(entry.series.id);
-    if (seenSeries.has(key)) continue;
-    seenSeries.add(key);
-    uniqueTodayEpisodes.push(entry);
   }
 
   for (const movie of movies) {
@@ -260,15 +250,15 @@ const main = async () => {
   }
 
   // Hôm nay không có tập/phim nào thì dừng
-  if (uniqueTodayEpisodes.length === 0 && todayMovies.length === 0) {
+  if (todayEpisodes.length === 0 && todayMovies.length === 0) {
     console.log('📭 No episodes or movies airing today');
     return;
   }
 
   console.log(
-    `\n🎬 Found ${uniqueTodayEpisodes.length} episode(s) and ${todayMovies.length} movie(s) today:`,
+    `\n🎬 Found ${todayEpisodes.length} episode(s) and ${todayMovies.length} movie(s) today:`,
   );
-  uniqueTodayEpisodes.forEach(({ series, episode }) => {
+  todayEpisodes.forEach(({ series, episode }) => {
     const code = `Mùa ${episode.season_number} - Tập ${episode.episode_number}`;
     console.log(`  • [TV] ${series.title_vi || series.title} - ${code}`);
   });
@@ -279,9 +269,9 @@ const main = async () => {
   // Soạn nội dung thông báo
   let title, body;
 
-  if (uniqueTodayEpisodes.length + todayMovies.length === 1) {
-    if (uniqueTodayEpisodes.length === 1) {
-      const { series, episode } = uniqueTodayEpisodes[0];
+  if (todayEpisodes.length + todayMovies.length === 1) {
+    if (todayEpisodes.length === 1) {
+      const { series, episode } = todayEpisodes[0];
       title = `🎬 ${series.title_vi || series.title}`;
       body = `Mùa ${episode.season_number} • Tập ${episode.episode_number} đã lên sóng!`;
     } else {
@@ -290,11 +280,11 @@ const main = async () => {
       body = `Phim chính thức khởi chiếu hôm nay!`;
     }
   } else {
-    const total = uniqueTodayEpisodes.length + todayMovies.length;
+    const total = todayEpisodes.length + todayMovies.length;
     title = `🎬 Cinemob: ${total} phim mới hôm nay`;
 
     const items = [];
-    uniqueTodayEpisodes.forEach(({ series, episode }) => {
+    todayEpisodes.forEach(({ series, episode }) => {
       items.push(`${series.title_vi || series.title} (T.${episode.episode_number})`);
     });
     todayMovies.forEach((movie) => {
@@ -312,7 +302,7 @@ const main = async () => {
   const successCount = await sendToAllSubscriptions(subscriptions, title, body);
 
   console.log(
-    `\n🏁 Done! Sent ${successCount}/${subscriptions.length} notification(s) for ${uniqueTodayEpisodes.length} episode(s)`,
+    `\n🏁 Done! Sent ${successCount}/${subscriptions.length} notification(s) for ${todayEpisodes.length} episode(s)`,
   );
 };
 

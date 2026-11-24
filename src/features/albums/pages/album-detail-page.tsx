@@ -14,7 +14,12 @@ import {
   Search as SearchIcon,
 } from 'lucide-react';
 import PosterCard from '@/features/movies/components/poster-card';
-import { getMainTitle, buildMoviePath, getSeasonLabel } from '@/features/movies/utils/movie-utils';
+import {
+  getMainTitle,
+  buildMoviePath,
+  getSeasonLabel,
+  getSeasonParam,
+} from '@/features/movies/utils/movie-utils';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useDeleteAlbum } from '../hooks/use-delete-album';
 import AlbumCoverPickerDialog from '../components/album-cover-picker-dialog';
@@ -257,7 +262,7 @@ function AlbumDetailPage() {
                     review={movie.is_review}
                     seasonLabel={getSeasonLabel(movie)}
                     onClick={() =>
-                      navigate(buildMoviePath(movie.id, movie.media_type, movie.season))
+                      navigate(buildMoviePath(movie.id, movie.media_type, getSeasonParam(movie)))
                     }
                     actions={
                       <button

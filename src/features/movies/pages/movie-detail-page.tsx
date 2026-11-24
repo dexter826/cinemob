@@ -29,7 +29,12 @@ import { useMovieDetail } from '../hooks/use-movie-detail';
 import { useDeleteMovie } from '../hooks/use-delete-movie';
 import { useDropMovie } from '../hooks/use-drop-movie';
 import { useQuickStatus } from '../hooks/use-quick-status';
-import { getMainTitle, getSubTitle, getTranslatedGenres } from '../utils/movie-utils';
+import {
+  getMainTitle,
+  getSubTitle,
+  getTranslatedGenres,
+  getSeasonParam,
+} from '../utils/movie-utils';
 import { getMovieDetails } from '@/features/search/services/tmdb';
 import type { TMDBMovieDetail } from '@/types';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
@@ -217,7 +222,7 @@ function MovieDetailPage() {
     }
     if (typeParam === 'tv') {
       const bySeason = Number.isFinite(seasonParam)
-        ? matches.find((m) => (m.season ?? 1) === seasonParam)
+        ? matches.find((m) => getSeasonParam(m) === seasonParam)
         : undefined;
       return bySeason ?? matches.find((m) => (m.media_type ?? 'movie') === 'tv') ?? matches[0];
     }
@@ -233,7 +238,7 @@ function MovieDetailPage() {
       changed = true;
     }
     if (!searchParams.get('season')) {
-      next.set('season', String(movie.season ?? 1));
+      next.set('season', String(getSeasonParam(movie) ?? 1));
       changed = true;
     }
     if (changed) setSearchParams(next, { replace: true });

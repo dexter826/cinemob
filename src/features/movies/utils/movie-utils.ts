@@ -1,7 +1,6 @@
 import { Movie, MovieStatus } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { normalizeDate } from '@/shared/utils/date-format';
 
 const isVietnameseOrigin = (country: string): boolean =>
   ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
@@ -68,7 +67,7 @@ export const getTranslatedGenres = (genreStr: string): string => {
 };
 
 export const buildMoviePath = (
-  id: number | string | undefined,
+  id: number | string,
   mediaType?: 'movie' | 'tv',
   season?: number,
 ): string => `/movie/${id}${mediaType === 'tv' ? `?type=tv&season=${season ?? 1}` : ''}`;
@@ -78,9 +77,12 @@ export const getSeasonLabel = (movie: Movie): string | null =>
     ? `Mùa ${movie.season}`
     : null;
 
-export const getLatestWatchedDate = (movie: Movie): Date | null => normalizeDate(movie.watched_at);
+export const getSeasonParam = (movie: Movie | undefined): number | undefined =>
+  movie?.media_type === 'tv' ? movie.season : undefined;
 
-export const getWatchedDates = (movie: Movie): Date[] => {
-  const watched = normalizeDate(movie.watched_at);
-  return watched ? [watched] : [];
-};
+export const resolveSeasonRuntime = (
+  perEpisodeRuntime: number,
+  seasonEpisodeCount: number | undefined,
+  isTV: boolean,
+): number =>
+  isTV && seasonEpisodeCount ? seasonEpisodeCount * perEpisodeRuntime : perEpisodeRuntime;
