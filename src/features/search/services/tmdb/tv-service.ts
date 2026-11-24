@@ -4,6 +4,7 @@ import { decodeTVDetails, decodeTVSeason, decodeTVSeasonEpisodes } from './decod
 
 interface TVSeasonResponse {
   episodes?: Array<{ id: number }>;
+  poster_path?: string | null;
 }
 
 interface TVDetailsResponse {
@@ -31,14 +32,16 @@ export const getTVSeasonDetails = async (
   tvId: number,
   seasonNumber: number,
   signal?: AbortSignal,
-): Promise<{ episode_count: number } | null> => {
+): Promise<{ episode_count: number; poster_path: string | null } | null> => {
   const data = await tmdbFetch<TVSeasonResponse>(
     `tv/${tvId}/season/${seasonNumber}`,
     {},
     decodeTVSeason,
     signal,
   );
-  return data ? { episode_count: data.episodes?.length || 0 } : null;
+  return data
+    ? { episode_count: data.episodes?.length || 0, poster_path: data.poster_path || null }
+    : null;
 };
 
 export const getTVShowSeasonCount = async (

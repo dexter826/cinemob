@@ -11,6 +11,7 @@ export interface Movie {
   poster_path: string;
   runtime: number;
   seasons?: number;
+  season?: number;
   total_episodes?: number;
   watched_at: Timestamp | Date;
   source: 'tmdb' | 'manual';

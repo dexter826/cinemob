@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
-import { addMovie, updateMovie } from '../services/movie-service';
+import { addMovie, updateMovie, checkMovieExists } from '../services/movie-service';
 import { Movie, MovieStatus } from '@/types';
 
 import { MESSAGES } from '@/constants/messages';
@@ -228,6 +228,21 @@ export const useAddMovieForm = () => {
     }
   }, [formData, status, isOpen, isTouched, draftStorageKey]);
 
+  useEffect(() => {
+    if (!isOpen || !isTVSeries || !uid || initialData?.movieToEdit) return;
+    const id = initialData?.tmdbId || initialData?.movie?.id;
+    if (!id) return;
+    let cancelled = false;
+    checkMovieExists(uid, id, 'tv', tvProgress.currentSeason)
+      .then((exists) => {
+        if (!cancelled) setMovieExists(exists);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, uid, isTVSeries, initialData, tvProgress.currentSeason, setMovieExists]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isCurrent = () => {
@@ -278,25 +293,22 @@ export const useAddMovieForm = () => {
       };
 
       if (isTVSeries && !keepExistingProgress) {
-        movieData.total_episodes = tvProgress.totalEpisodes;
-        const seasonDates: Record<string, string> = {};
-        for (let s = 1; s <= tvProgress.currentSeason; s++) {
-          seasonDates[String(s)] = tvProgress.seasonDates[s] || formData.date;
+        const docSeason = tvProgress.currentSeason;
+        const seasonEpisodeCount =
+          tvProgress.episodesPerSeason[docSeason] || tvProgress.totalEpisodes;
+        movieData.season = docSeason;
+        movieData.total_episodes = seasonEpisodeCount;
+        if (!initialData?.movieToEdit) {
+          movieData.runtime = seasonEpisodeCount * (parseInt(formData.runtime) || 0);
         }
-        const previousSeasonDates = initialData?.movieToEdit?.progress?.season_dates || {};
-        Object.entries(previousSeasonDates).forEach(([season, iso]) => {
-          if (Number(season) > tvProgress.currentSeason && iso) seasonDates[season] = iso;
-        });
         movieData.progress = {
-          current_season: tvProgress.currentSeason,
+          current_season: docSeason,
           current_episode: tvProgress.currentEpisode,
-          watched_episodes: tvProgress.calculateWatchedEpisodes(
-            tvProgress.currentSeason,
-            tvProgress.currentEpisode,
-            tvProgress.isCompleted,
-          ),
+          watched_episodes: tvProgress.isCompleted
+            ? seasonEpisodeCount
+            : tvProgress.currentEpisode,
           is_completed: tvProgress.isCompleted,
-          season_dates: seasonDates,
+          season_dates: { [String(docSeason)]: formData.date },
         };
       }
 
