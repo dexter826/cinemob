@@ -228,12 +228,7 @@ export const useSearch = () => {
     }
     openAddModal({
       movie: movie,
-      mediaType:
-        movie.media_type === 'movie' || movie.media_type === 'tv'
-          ? movie.media_type
-          : filters.type === 'tv'
-            ? 'tv'
-            : 'movie',
+      mediaType: movie.media_type === 'movie' ? 'movie' : filters.type === 'tv' ? 'tv' : 'movie',
     });
     setShowSuggestions(false);
   };

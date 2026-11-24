@@ -32,7 +32,8 @@ export const useTVProgress = ({
     setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
     setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
     const progress = movieToEdit?.progress;
-    setCurrentSeason(movieToEdit ? (getSeasonParam(movieToEdit) ?? 1) : (initialSeason ?? 1));
+    const season = movieToEdit ? getSeasonParam(movieToEdit) : initialSeason;
+    setCurrentSeason(season ?? 1);
     setCurrentEpisode(progress?.current_episode ?? 0);
     setIsCompleted(progress?.is_completed ?? !movieToEdit);
   }, [isOpen, movieToEdit, isTVSeries, initialSeason]);

@@ -547,12 +547,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
 
               {status === 'watchlist' && isTVSeries && (
                 <div className="border border-border rounded-dialog p-5 space-y-3">
-                  <span
-                    id="watchlist-season-label"
-                    className="text-label-caps text-text-secondary ml-1"
-                  >
-                    Mùa
-                  </span>
+                  <span className="text-label-caps text-text-secondary ml-1">Mùa</span>
                   <SeasonPicker
                     value={currentSeason}
                     onChange={setCurrentSeason}
