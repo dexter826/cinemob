@@ -11,7 +11,7 @@ _Avoid_: Dashboard, Bảng điều khiển, Trang chủ, Bộ sưu tập chính
 ## Tác phẩm & Định dạng
 
 **Tác phẩm**:
-Một thực thể nội dung điện ảnh hoặc truyền hình mà người dùng lưu trữ và theo dõi trong hệ thống.
+Đơn vị nội dung mà người dùng lưu trữ và theo dõi riêng lẻ trong Thư viện: một Movie trọn vẹn hoặc một Mùa của một Series.
 _Avoid_: Nội dung, Media, Item, Tiết mục, Show
 
 **Movie**:
@@ -19,7 +19,7 @@ Tác phẩm điện ảnh hoàn chỉnh được phát hành dưới dạng mộ
 _Avoid_: Phim lẻ, Phim đơn, Điện ảnh độc lập
 
 **Series**:
-Tác phẩm truyền hình nhiều tập được chia theo các mùa phát sóng và có tiến độ theo dõi từng tập.
+Tác phẩm truyền hình nhiều tập chia theo các Mùa phát sóng; các Mùa gom dưới định danh gốc của series, còn việc theo dõi diễn ra trên từng Mùa.
 _Avoid_: Phim bộ, TV Show, Phim truyền hình nhiều tập, Show
 
 ## Nhân vật & Đội ngũ
@@ -55,13 +55,13 @@ Trạng thái của tác phẩm người dùng chủ động ngừng theo dõi g
 _Avoid_: Tạm dừng, Ngừng xem, Đã hủy, Dropped
 
 **Đang xem**:
-Tab Thư viện tập hợp các series thuộc nhóm Đã xem chưa xem hết tất cả các tập. Dữ liệu chỉ lưu ba trạng thái Đã xem / Sẽ xem / Bỏ dở; Đang xem là view suy diễn từ tiến độ theo dõi.
+Tab Thư viện tập hợp các Mùa thuộc nhóm Đã xem chưa xem hết tập của Mùa đó. Dữ liệu chỉ lưu ba trạng thái Đã xem / Sẽ xem / Bỏ dở; Đang xem là view suy diễn từ tiến độ theo dõi.
 _Avoid_: Đang theo dõi, Watching
 
 ## Tiến độ theo dõi
 
 **Mùa**:
-Phần phát sóng định kỳ của một series, bao gồm một tập hợp các tập phim liên kết theo cốt truyện.
+Một đợt phát sóng gồm các tập phim liên kết theo cốt truyện; là đơn vị theo dõi của Series trong Thư viện với trạng thái, điểm và tiến độ riêng.
 _Avoid_: Season, Phần, Đợt chiếu
 
 **Tập**:
@@ -69,11 +69,11 @@ _Avoid_: Season, Phần, Đợt chiếu
 _Avoid_: Episode, Chập, Phần nhỏ
 
 **Tiến độ xem**:
-Chỉ số phản ánh vị trí mùa và tập người dùng đã xem đến, kèm tổng số tập đã thưởng thức và mốc thời gian xem của từng mùa.
+Chỉ số phản ánh vị trí tập người dùng đã xem đến trong một Mùa, kèm tổng số tập đã thưởng thức và mốc thời gian xem.
 _Avoid_: Điểm dừng, Vị trí phát, Dấu trang
 
 **Hoàn thành**:
-Trạng thái ghi nhận người dùng đã xem toàn bộ các tập của tất cả các mùa hiện có trong series.
+Trạng thái ghi nhận người dùng đã xem toàn bộ các tập của một Mùa.
 _Avoid_: Đã xong, Hết phim, Kết thúc
 
 ## Tổ chức & Bộ sưu tập
