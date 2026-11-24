@@ -54,7 +54,7 @@ const getWatchlistFromFirestore = async () => {
       title_vi: data.title_vi || '',
       poster_path: data.poster_path,
       media_type: data.media_type,
-      season: typeof data.season === 'number' ? data.season : null,
+      season: typeof data.season === 'number' ? data.season : 1,
       status: data.status,
       genres: data.genres,
       country: data.country,
@@ -63,7 +63,6 @@ const getWatchlistFromFirestore = async () => {
 
     if (
       data.media_type === 'tv' &&
-      typeof data.season === 'number' &&
       data.status !== 'dropped' &&
       data.notifications_muted !== true
     ) {
@@ -280,12 +279,19 @@ const main = async () => {
       body = `Phim chính thức khởi chiếu hôm nay!`;
     }
   } else {
-    const total = todayEpisodes.length + todayMovies.length;
+    const episodeGroups = new Map();
+    todayEpisodes.forEach(({ series, episode }) => {
+      const key = `${series.id}|${series.season}`;
+      if (!episodeGroups.has(key)) episodeGroups.set(key, { series, episodes: [] });
+      episodeGroups.get(key).episodes.push(episode);
+    });
+    const total = episodeGroups.size + todayMovies.length;
     title = `🎬 Cinemob: ${total} phim mới hôm nay`;
 
     const items = [];
-    todayEpisodes.forEach(({ series, episode }) => {
-      items.push(`${series.title_vi || series.title} (T.${episode.episode_number})`);
+    episodeGroups.forEach(({ series, episodes }) => {
+      const eps = episodes.map((e) => `T.${e.episode_number}`).join(', ');
+      items.push(`${series.title_vi || series.title} (Mùa ${episodes[0].season_number}: ${eps})`);
     });
     todayMovies.forEach((movie) => {
       items.push(`${movie.title_vi || movie.title} (Mới)`);
