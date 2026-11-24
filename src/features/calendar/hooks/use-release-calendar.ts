@@ -246,7 +246,9 @@ export const useReleaseCalendar = () => {
       navigate(buildMoviePath(seasonDoc.id, 'tv', getSeasonParam(seasonDoc)));
       return;
     }
-    const anyDoc = movies.find((m) => Number(m.id) === episode.seriesId);
+    const anyDoc = movies.find(
+      (m) => Number(m.id) === episode.seriesId && (m.media_type ?? 'movie') === 'tv',
+    );
     if (anyDoc) {
       navigate(buildMoviePath(anyDoc.id, 'tv'));
     } else {
