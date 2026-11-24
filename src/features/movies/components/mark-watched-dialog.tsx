@@ -79,6 +79,43 @@ function MarkWatchedDialog() {
 
   if (!target || !isOpen || ownerUid !== user?.uid) return null;
 
+  const createTMDBDraft = async (watchedAt: Date): Promise<Omit<Movie, 'docId'> | null> => {
+    if (target.kind !== 'tmdb') return null;
+    const details = await getMovieDetails(Number(target.id), mediaType);
+    if (!details) throw new Error('TMDB details unavailable');
+    let seasonEpisodeCount: number | undefined;
+    let seasonPosterPath: string | null = null;
+    if (mediaType === 'tv') {
+      const seasonInfo = await getTVSeasonDetails(Number(target.id), currentSeason);
+      if (!seasonInfo?.episode_count) return null;
+      seasonEpisodeCount = seasonInfo.episode_count;
+      seasonPosterPath = seasonInfo.poster_path ?? null;
+    }
+    const draft = buildTMDBMovieDraft({
+      uid: user!.uid,
+      id: target.id,
+      mediaType,
+      details,
+      fallbackTitle: target.title,
+      fallbackPoster: target.poster_path,
+      fallbackReleaseDate: target.release_date,
+      status: 'history',
+      rating,
+      watchedAt,
+      season: currentSeason,
+      seasonEpisodeCount,
+      seasonPosterPath,
+    });
+    if (mediaType === 'tv' && seasonEpisodeCount) {
+      draft.progress = {
+        current_episode: seasonEpisodeCount,
+        watched_episodes: seasonEpisodeCount,
+        is_completed: true,
+      };
+    }
+    return draft;
+  };
+
   const handleSubmit = async () => {
     if (submitLock.current) return;
     if (rating < 1) {
@@ -113,40 +150,10 @@ function MarkWatchedDialog() {
         }
         await updateMovie(movie.docId, updates);
       } else if (target.kind === 'tmdb') {
-        const details = await getMovieDetails(Number(target.id), mediaType);
-        if (!details) throw new Error('TMDB details unavailable');
-        let seasonEpisodeCount: number | undefined;
-        let seasonPosterPath: string | null = null;
-        if (mediaType === 'tv') {
-          const seasonInfo = await getTVSeasonDetails(Number(target.id), currentSeason);
-          if (!seasonInfo?.episode_count) {
-            showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
-            return;
-          }
-          seasonEpisodeCount = seasonInfo.episode_count;
-          seasonPosterPath = seasonInfo.poster_path ?? null;
-        }
-        const draft: Omit<Movie, 'docId'> = buildTMDBMovieDraft({
-          uid: user!.uid,
-          id: target.id,
-          mediaType,
-          details,
-          fallbackTitle: target.title,
-          fallbackPoster: target.poster_path,
-          fallbackReleaseDate: target.release_date,
-          status: 'history',
-          rating,
-          watchedAt,
-          season: currentSeason,
-          seasonEpisodeCount,
-          seasonPosterPath,
-        });
-        if (mediaType === 'tv' && seasonEpisodeCount) {
-          draft.progress = {
-            current_episode: seasonEpisodeCount,
-            watched_episodes: seasonEpisodeCount,
-            is_completed: true,
-          };
+        const draft = await createTMDBDraft(watchedAt);
+        if (!draft) {
+          showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
+          return;
         }
         await addMovie(draft);
       } else {
