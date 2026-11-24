@@ -70,7 +70,9 @@ function MarkWatchedDialog() {
           .then((details) => {
             setSeasonCount(Math.max(details?.number_of_seasons || 1, 1));
           })
-          .catch(() => undefined);
+          .catch(() => {
+            showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
+          });
       }
     }
   }, [isOpen, target]);
@@ -117,8 +119,12 @@ function MarkWatchedDialog() {
         let seasonPosterPath: string | null = null;
         if (mediaType === 'tv') {
           const seasonInfo = await getTVSeasonDetails(Number(target.id), currentSeason);
-          seasonEpisodeCount = seasonInfo?.episode_count || undefined;
-          seasonPosterPath = seasonInfo?.poster_path ?? null;
+          if (!seasonInfo?.episode_count) {
+            showToast(MESSAGES.MOVIE.SAVE_ERROR, 'error');
+            return;
+          }
+          seasonEpisodeCount = seasonInfo.episode_count;
+          seasonPosterPath = seasonInfo.poster_path ?? null;
         }
         const draft: Omit<Movie, 'docId'> = buildTMDBMovieDraft({
           uid: user!.uid,
