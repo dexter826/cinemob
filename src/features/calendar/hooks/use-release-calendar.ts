@@ -238,9 +238,18 @@ export const useReleaseCalendar = () => {
   }, [displayedEpisodes]);
 
   const handleSeriesClick = (episode: UpcomingEpisode) => {
-    const movie = movies.find((m) => Number(m.id) === episode.seriesId);
-    if (movie) {
-      navigate(buildMoviePath(movie.id, movie.media_type, getSeasonParam(movie)));
+    const seasonDoc = movies.find(
+      (m) =>
+        Number(m.id) === episode.seriesId &&
+        getSeasonParam(m) === episode.episode.season_number,
+    );
+    if (seasonDoc) {
+      navigate(buildMoviePath(seasonDoc.id, 'tv', getSeasonParam(seasonDoc)));
+      return;
+    }
+    const anyDoc = movies.find((m) => Number(m.id) === episode.seriesId);
+    if (anyDoc) {
+      navigate(buildMoviePath(anyDoc.id, 'tv'));
     } else {
       showToast(MESSAGES.CALENDAR.SERIES_REMOVED, 'info');
     }
