@@ -9,7 +9,7 @@ import { getTrendingMovies } from '@/features/search/services/tmdb';
 import type { Movie, TMDBMovieResult } from '@/types';
 import useAddMovieStore from '../stores/add-movie-store';
 import useMovieStore from '../stores/movie-store';
-import { findLibraryEntry } from '../utils/movie-utils';
+import { findLibraryEntry, buildMoviePath } from '../utils/movie-utils';
 
 export type PoolMovie = Movie | TMDBMovieResult;
 export type PoolType = 'watchlist' | 'trending' | null;
@@ -207,7 +207,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
     const currentItem = activePool[currentIndex];
     if (poolType === 'watchlist') {
       const item = currentItem as Movie;
-      navigate(`/movie/${item.id}${item.media_type === 'tv' ? '?type=tv' : ''}`);
+      navigate(buildMoviePath(item.id, item.media_type, item.season));
     }
     if (poolType === 'trending') {
       const movie = currentItem as TMDBMovieResult;
@@ -215,7 +215,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
         movie.media_type === 'tv' || movie.media_type === 'movie' ? movie.media_type : 'movie';
       const saved = findLibraryEntry(movies, movie.id, mediaType);
       if (saved?.docId) {
-        navigate(`/movie/${saved.id}${mediaType === 'tv' ? '?type=tv' : ''}`);
+        navigate(buildMoviePath(saved.id, mediaType, saved.season));
       } else {
         openAddModal({ movie, mediaType });
       }

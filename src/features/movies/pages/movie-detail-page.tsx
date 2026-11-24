@@ -218,20 +218,37 @@ function MovieDetailPage() {
   };
 
   const typeParam = searchParams.get('type');
+  const seasonParam = Number(searchParams.get('season'));
   const movie = useMemo(() => {
     const matches = movies.filter((m) => String(m.id) === id);
-    if (typeParam === 'tv' || typeParam === 'movie') {
-      return matches.find((m) => (m.media_type ?? 'movie') === typeParam);
+    if (typeParam === 'movie') {
+      return matches.find((m) => (m.media_type ?? 'movie') === 'movie');
     }
-    // Không có ?type: ưu tiên movie và bổ sung type lên URL để link chia sẻ đúng entry.
+    if (typeParam === 'tv') {
+      const bySeason = Number.isFinite(seasonParam)
+        ? matches.find((m) => (m.season ?? 1) === seasonParam)
+        : undefined;
+      return (
+        bySeason ?? matches.find((m) => (m.media_type ?? 'movie') === 'tv') ?? matches[0]
+      );
+    }
     return matches.find((m) => (m.media_type ?? 'movie') === 'movie') ?? matches[0];
-  }, [movies, id, typeParam]);
+  }, [movies, id, typeParam, seasonParam]);
 
   useEffect(() => {
-    if (!typeParam && movie && (movie.media_type ?? 'movie') === 'tv') {
-      setSearchParams({ type: 'tv' }, { replace: true });
+    if (!movie || (movie.media_type ?? 'movie') !== 'tv') return;
+    const next = new URLSearchParams(searchParams);
+    let changed = false;
+    if (!typeParam) {
+      next.set('type', 'tv');
+      changed = true;
     }
-  }, [typeParam, movie, setSearchParams]);
+    if (!searchParams.get('season')) {
+      next.set('season', String(movie.season ?? 1));
+      changed = true;
+    }
+    if (changed) setSearchParams(next, { replace: true });
+  }, [typeParam, movie, searchParams, setSearchParams]);
   const { loading: extrasLoading, credits, videos } = useMovieDetail(movie ?? null);
   const showDetailSkeleton = useDelayedSkeleton(!movie && collectionLoading);
   const showExtrasSkeleton = useDelayedSkeleton(extrasLoading && !credits);

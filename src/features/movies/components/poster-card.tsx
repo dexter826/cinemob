@@ -16,37 +16,25 @@ const STATUS_CHIP_TONE: Record<MovieStatus, ChipTone> = {
 interface PosterCardProps {
   title: string;
   posterPath: string | null;
-  /** 'manual' → posterPath là URL trực tiếp, không ghép base TMDB. */
   source?: 'tmdb' | 'manual';
   mediaType?: 'movie' | 'tv';
   rating?: number;
-  /** Dòng meta caps dưới tiêu đề, vd "Tâm lý · 2025". */
   meta?: string;
   /** TV progress: thanh 2px dưới cùng poster. */
   progress?: { current: number; total: number } | null;
-  /** Badge trạng thái bộ sưu tập (Đã xem / Sẽ xem / Đã bỏ dở). */
   status?: MovieStatus | null;
-  /** Nhân vật / vai trò (trang diễn viên) — dòng vàng dưới meta. */
   credit?: string;
-  /** Đánh dấu phim có review. */
+  seasonLabel?: string | null;
   review?: boolean;
-  /** Nút bỏ gợi ý (góc phải trên, trên cùng). */
   onRemove?: () => void;
-  /** Icon actions (xóa/sửa/đã xem) — desktop hiện khi hover, mobile luôn hiện. */
   actions?: React.ReactNode;
-  /** Chế độ chọn (album selector): overlay check theo `selected`. */
   selectable?: boolean;
   selected?: boolean;
-  /** Không truyền → card chỉ hiển thị, không bấm được (vd profile công khai). */
   onClick?: () => void;
   ariaLabel?: string;
   className?: string;
 }
 
-/**
- * Card DUY NHẤT của app: poster là cả thẻ, chữ phủ trên scrim.
- * Hover chỉ viền + zoom nhẹ — không lift, không bóng.
- */
 function PosterCard({
   title,
   posterPath,
@@ -57,6 +45,7 @@ function PosterCard({
   progress,
   status,
   credit,
+  seasonLabel,
   review,
   onRemove,
   actions,
@@ -167,6 +156,7 @@ function PosterCard({
             {kindLabel}
           </Chip>
         )}
+        {seasonLabel && <Chip>{seasonLabel}</Chip>}
         {showRating && (
           <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-micro-caps text-primary tabular-nums">
             <Star size={9} strokeWidth={1.5} className="fill-primary" aria-hidden="true" />

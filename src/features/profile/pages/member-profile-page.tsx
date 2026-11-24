@@ -23,6 +23,7 @@ import PosterCard from '@/features/movies/components/poster-card';
 import { formatDateAny } from '@/shared/utils/date-format';
 import { useOwnProfile } from '../hooks/use-own-profile';
 import { getCommonMovies } from '../utils/common-movies';
+import { buildMoviePath } from '@/features/movies/utils/movie-utils';
 import { MESSAGES } from '@/constants/messages';
 import type { MemberProfile } from '@/types';
 
@@ -199,7 +200,7 @@ function MemberProfilePage() {
             emptyDescription="Thêm phim vào lịch sử xem."
             emptyAction={{ label: 'Tìm phim để thêm', to: '/search' }}
             onMovieClick={(movie) =>
-              navigate(`/movie/${movie.id}${movie.media_type === 'tv' ? '?type=tv' : ''}`)
+              navigate(buildMoviePath(movie.id, movie.media_type))
             }
           />
         </section>

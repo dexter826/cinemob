@@ -8,11 +8,9 @@ const isVietnameseOrigin = (country: string): boolean =>
 
 export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
 
-/** Series thuộc Đã xem nhưng chưa xem hết (đang dở tập) — cơ sở cho tab Đang xem. */
 export const isSeriesInProgress = (movie: Movie): boolean =>
   movie.media_type === 'tv' && !!movie.progress && !movie.progress.is_completed;
 
-/** Tìm phim trong thư viện theo id TMDB; truyền mediaType để phân biệt movie/series trùng số id. */
 export const findLibraryEntry = (
   movies: Movie[],
   id: string | number,
@@ -22,10 +20,6 @@ export const findLibraryEntry = (
     (m) => String(m.id) === String(id) && (!mediaType || (m.media_type ?? 'movie') === mediaType),
   );
 
-/**
- * Trạng thái sau khi áp dụng quy tắc lưu: đánh dấu hoàn thành một phim đã bỏ dở
- * thì phim quay lại "Đã xem".
- */
 export const resolveMovieStatus = (
   status: MovieStatus,
   isTVSeries: boolean,
@@ -73,6 +67,17 @@ export const getTranslatedGenres = (genreStr: string): string => {
     .join(', ');
 };
 
+export const buildMoviePath = (
+  id: number | string | undefined,
+  mediaType?: 'movie' | 'tv',
+  season?: number,
+): string => `/movie/${id}${mediaType === 'tv' ? `?type=tv&season=${season ?? 1}` : ''}`;
+
+export const getSeasonLabel = (movie: Movie): string | null =>
+  movie.media_type === 'tv' && (movie.seasons ?? 0) >= 2 && movie.season
+    ? `Mùa ${movie.season}`
+    : null;
+
 export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; date: Date }> => {
   const seasonDates = movie.progress?.season_dates;
   if (!seasonDates) return [];
@@ -93,7 +98,6 @@ export const getLatestWatchedDate = (movie: Movie): Date | null => {
   return latest;
 };
 
-// Mọi mốc xem của một phim: lần xem gần nhất cộng từng mốc mùa của series.
 export const getWatchedDates = (movie: Movie): Date[] => {
   const dates: Date[] = [];
   const watched = normalizeDate(movie.watched_at);
