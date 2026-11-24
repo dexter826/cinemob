@@ -23,6 +23,8 @@ interface PosterCardProps {
   /** TV progress: thanh 2px dưới cùng poster. */
   progress?: { current: number; total: number } | null;
   status?: MovieStatus | null;
+  /** Badge tự do cho card series (vd “Đã có 1/5 mùa”). */
+  badge?: string | null;
   credit?: string;
   seasonLabel?: string | null;
   review?: boolean;
@@ -44,6 +46,7 @@ function PosterCard({
   meta,
   progress,
   status,
+  badge,
   credit,
   seasonLabel,
   review,
@@ -156,6 +159,7 @@ function PosterCard({
             {kindLabel}
           </Chip>
         )}
+        {badge && <Chip tone="muted">{badge}</Chip>}
         {seasonLabel && <Chip>{seasonLabel}</Chip>}
         {showRating && (
           <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-poster bg-black/60 border border-white/10 text-micro-caps text-primary tabular-nums">

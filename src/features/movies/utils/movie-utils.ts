@@ -70,7 +70,50 @@ export const buildMoviePath = (
   id: number | string,
   mediaType?: 'movie' | 'tv',
   season?: number,
-): string => `/movie/${id}${mediaType === 'tv' ? `?type=tv&season=${season ?? 1}` : ''}`;
+): string =>
+  `/movie/${id}${mediaType === 'tv' ? `?type=tv${typeof season === 'number' ? `&season=${season}` : ''}` : ''}`;
+
+export interface SeriesInfo {
+  trackedSeasons: number[];
+  totalSeasons: number;
+  nextMissingSeason: number | null;
+  badge: string | null;
+}
+
+/** Gom các doc season của một series để suy ra badge và season thiếu đầu tiên. */
+export const getSeriesInfo = (
+  movies: Movie[],
+  id: string | number,
+  mediaType: 'movie' | 'tv' = 'tv',
+): SeriesInfo | null => {
+  const docs = movies.filter(
+    (m) => String(m.id) === String(id) && (m.media_type ?? 'movie') === mediaType,
+  );
+  if (docs.length === 0) return null;
+  const trackedSeasons = [...new Set(docs.map((m) => getSeasonParam(m)).filter((s): s is number => typeof s === 'number'))].sort(
+    (a, b) => a - b,
+  );
+  const totalSeasons = docs.reduce((max, m) => Math.max(max, m.seasons ?? 0), 0);
+  const nextMissingSeason =
+    totalSeasons > 0
+      ? Array.from({ length: totalSeasons }, (_, i) => i + 1).find((n) => !trackedSeasons.includes(n)) ??
+        null
+      : null;
+  const allTracked = totalSeasons > 0 && trackedSeasons.length >= totalSeasons;
+  const allCompleted =
+    allTracked && docs.every((m) => (m.status || 'history') === 'history' && !!m.progress?.is_completed);
+  const anyInProgress = docs.some(
+    (m) => (m.status || 'history') === 'history' && !!m.progress && !m.progress.is_completed,
+  );
+  const badge = allCompleted
+    ? 'Đã xem'
+    : anyInProgress
+      ? 'Đang xem'
+      : totalSeasons > 0
+        ? `Đã có ${trackedSeasons.length}/${totalSeasons} mùa`
+        : null;
+  return { trackedSeasons, totalSeasons, nextMissingSeason, badge };
+};
 
 interface SeasonLabeled {
   media_type?: 'movie' | 'tv';
