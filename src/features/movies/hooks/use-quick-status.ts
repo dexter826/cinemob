@@ -67,8 +67,7 @@ export function useQuickStatus() {
       const totalEpisodes = movie.total_episodes || 0;
       if (totalEpisodes > 0 && progress.watched_episodes >= totalEpisodes) return;
       const rawNext = progress.current_episode + 1;
-      const nextEpisode =
-        totalEpisodes > 0 ? Math.min(rawNext, totalEpisodes) : rawNext;
+      const nextEpisode = totalEpisodes > 0 ? Math.min(rawNext, totalEpisodes) : rawNext;
       const watchedEpisodes = progress.watched_episodes + 1;
       const isCompleted = totalEpisodes > 0 && watchedEpisodes >= totalEpisodes;
 
@@ -90,11 +89,7 @@ export function useQuickStatus() {
       showToast(
         isCompleted
           ? MESSAGES.MOVIE.LOG_EPISODE_COMPLETED(getMainTitle(movie))
-          : MESSAGES.MOVIE.LOG_EPISODE_SUCCESS(
-              getMainTitle(movie),
-              movie.season ?? 1,
-              nextEpisode,
-            ),
+          : MESSAGES.MOVIE.LOG_EPISODE_SUCCESS(getMainTitle(movie), movie.season ?? 1, nextEpisode),
         'success',
         UNDO_QUICK_MS,
         {

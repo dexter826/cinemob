@@ -19,7 +19,12 @@ import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useScrollRestore } from '@/shared/hooks/use-scroll-restore';
 import { loadErrorCopy } from '@/shared/utils/load-error-copy';
 import { staggerContainer, staggerItem } from '@/shared/utils/motion-presets';
-import { getMainTitle, getSubTitle, buildMoviePath, getSeasonLabel } from '@/features/movies/utils/movie-utils';
+import {
+  getMainTitle,
+  getSubTitle,
+  buildMoviePath,
+  getSeasonLabel,
+} from '@/features/movies/utils/movie-utils';
 
 import { useDashboard } from '../hooks/use-dashboard';
 import { MOVIES_PER_PAGE } from '../hooks/use-dashboard-filters';

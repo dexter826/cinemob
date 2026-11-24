@@ -303,9 +303,7 @@ export const useAddMovieForm = () => {
         }
         movieData.progress = {
           current_episode: tvProgress.currentEpisode,
-          watched_episodes: tvProgress.isCompleted
-            ? seasonEpisodeCount
-            : tvProgress.currentEpisode,
+          watched_episodes: tvProgress.isCompleted ? seasonEpisodeCount : tvProgress.currentEpisode,
           is_completed: tvProgress.isCompleted,
         };
       }

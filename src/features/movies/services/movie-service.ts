@@ -77,9 +77,7 @@ export const checkMovieExists = async (
       where('uid', '==', uid),
       where('id', '==', movieId),
       ...(mediaType ? [where('media_type', '==', mediaType)] : []),
-      ...(mediaType === 'tv' && typeof season === 'number'
-        ? [where('season', '==', season)]
-        : []),
+      ...(mediaType === 'tv' && typeof season === 'number' ? [where('season', '==', season)] : []),
     ];
     const q = query(collection(db, COLLECTION_NAME), ...constraints);
     const snapshot = await getDocs(q);
@@ -105,8 +103,7 @@ export const mapDocToMovie = (docId: string, data: Record<string, unknown>): Mov
     watched_at: (d.watched_at as Movie['watched_at']) ?? new Date(),
     source: d.source === 'manual' ? 'manual' : 'tmdb',
     media_type: d.media_type === 'tv' ? 'tv' : 'movie',
-    season:
-      d.media_type === 'tv' ? (typeof d.season === 'number' ? d.season : 1) : undefined,
+    season: d.media_type === 'tv' ? (typeof d.season === 'number' ? d.season : 1) : undefined,
     status: d.status === 'watchlist' || d.status === 'dropped' ? d.status : 'history',
     rating: typeof d.rating === 'number' ? d.rating : 0,
     review: typeof d.review === 'string' ? d.review : '',
