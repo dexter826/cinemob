@@ -47,6 +47,7 @@ function ReleaseCalendarPage() {
     selectedDate,
     setSelectedDate,
     episodesError,
+    failedSeriesCount,
     retryEpisodes,
     pushLoading,
     pushSubscribed,
@@ -210,6 +211,7 @@ function ReleaseCalendarPage() {
                 currentDate={currentDate}
                 episodesError={episodesError}
                 retryEpisodes={retryEpisodes}
+                failedSeriesCount={failedSeriesCount}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 loadingEpisodes={showEpisodesSkeleton}

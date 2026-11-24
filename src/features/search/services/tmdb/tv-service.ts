@@ -177,11 +177,9 @@ export const getTVShowUpcomingEpisodes = async (
   );
 };
 
-export const getTVShowEpisodesInRange = async (
+export const getTVSeasonEpisodes = async (
   tvId: number,
   seasonNumber: number,
-  startDate: string,
-  endDate: string,
   signal?: AbortSignal,
 ): Promise<TMDBEpisode[]> => {
   const season = await tmdbFetch<TVSeasonEpisodesResponse>(
@@ -192,7 +190,6 @@ export const getTVShowEpisodesInRange = async (
   );
   if (!season?.episodes) throw new Error('Không thể tải lịch mùa phim');
   return season.episodes
-    .filter((episode) => episode.air_date >= startDate && episode.air_date <= endDate)
     .map((episode) => ({
       ...episode,
       vote_average: episode.vote_average ?? 0,

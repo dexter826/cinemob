@@ -11,7 +11,7 @@ interface CalendarStatsProps {
   airedEpisodesCount: number;
 }
 
-/** Chỉ số trang Lịch — dùng Stat kit. */
+/** Chỉ số trang Lịch — dùng Stat kit; cả bốn card chờ cùng một nguồn dữ liệu. */
 function CalendarStats({
   episodesLoading,
   episodesError,
@@ -20,7 +20,7 @@ function CalendarStats({
   monthEpisodesCount,
   airedEpisodesCount,
 }: CalendarStatsProps) {
-  const episodeValue = (count: number) =>
+  const statValue = (count: number) =>
     episodesLoading ? (
       <Skeleton as="span" className="inline-block h-10 w-20 align-middle" />
     ) : episodesError ? (
@@ -33,22 +33,22 @@ function CalendarStats({
       aria-busy={episodesLoading}
       className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 sm:mb-8"
     >
-      <Stat label="Series" value={tvSeriesCount} icon={Tv} colorClass="text-primary" />
+      <Stat label="Series" value={statValue(tvSeriesCount)} icon={Tv} colorClass="text-primary" />
       <Stat
         label="Tập trong tháng"
-        value={episodeValue(monthEpisodesCount)}
+        value={statValue(monthEpisodesCount)}
         icon={Bell}
         colorClass="text-primary"
       />
       <Stat
         label="Đã phát sóng"
-        value={episodeValue(airedEpisodesCount)}
+        value={statValue(airedEpisodesCount)}
         icon={Calendar}
         colorClass="text-primary"
       />
       <Stat
         label="Sắp phát sóng"
-        value={episodeValue(upcomingEpisodesCount)}
+        value={statValue(upcomingEpisodesCount)}
         icon={Clock}
         colorClass="text-primary"
       />

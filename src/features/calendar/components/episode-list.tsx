@@ -9,6 +9,7 @@ interface EpisodeListProps {
   currentDate: Date;
   episodesError: string | null;
   retryEpisodes: () => void;
+  failedSeriesCount: number;
   selectedDate: Date | null;
   setSelectedDate: (date: Date | null) => void;
   loadingEpisodes: boolean;
@@ -22,6 +23,7 @@ function EpisodeList({
   currentDate,
   episodesError,
   retryEpisodes,
+  failedSeriesCount,
   selectedDate,
   setSelectedDate,
   loadingEpisodes,
@@ -62,6 +64,20 @@ function EpisodeList({
             </button>
           )}
         </div>
+
+        {!loadingEpisodes && !episodesError && failedSeriesCount > 0 ? (
+          <p role="status" className="mb-4 text-text-secondary text-body-sm">
+            Không tải được lịch của {failedSeriesCount} series (
+            <span className="italic">dữ liệu cũ có thể đang hiển thị</span>).{' '}
+            <button
+              type="button"
+              onClick={retryEpisodes}
+              className="font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer rounded-control focus-ring focus-visible:outline-none"
+            >
+              Thử lại
+            </button>
+          </p>
+        ) : null}
 
         {loadingEpisodes ? (
           showSkeleton ? (
