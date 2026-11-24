@@ -62,7 +62,7 @@ https://github.com/user-attachments/assets/c82bf4c3-54d7-40d8-836a-e4044bb3b9f0
 
 ### Yêu cầu hệ thống
 
-- **Node.js**: Phiên bản `20.x` trở lên (khuyến nghị bản LTS `20.x` hoặc `22.x/24.x`, đồng bộ với môi trường CI).
+- **Node.js**: Phiên bản `20.x` trở lên.
 - **Trình quản lý gói**: `npm` (dự án dùng sẵn `package-lock.json`).
 
 ### Các bước thiết lập
@@ -125,7 +125,6 @@ Máy chủ phát triển chạy tại: `http://localhost:3000` (mặc định m�
 | `npm run preview`      | Khởi chạy máy chủ cục bộ để xem trước bản build production tại `dist/`.        |
 | `npm run typecheck`    | Kiểm tra kiểu dữ liệu TypeScript không xuất tệp (`tsc --noEmit`).              |
 | `npm run lint`         | Chạy ESLint kiểm tra chất lượng mã nguồn trong `src/`.                         |
-| `npm test`             | Chạy bộ kiểm thử tự động cho script gửi thông báo (`.github/scripts`).         |
 | `npm run format`       | Tự động định dạng toàn bộ mã nguồn bằng Prettier.                              |
 | `npm run format:check` | Kiểm tra định dạng mã nguồn bằng Prettier.                                     |
 
@@ -138,22 +137,18 @@ npm run typecheck
 npm run lint
 npm run format:check
 npm run build
-npm test
 ```
-
-> [!NOTE]
-> Lệnh `npm test` chạy các bài kiểm thử trong `.github/scripts`. Khi chạy lần đầu trên môi trường mới, cài đặt dependencies tương ứng qua lệnh: `npm --prefix .github/scripts ci`.
 
 ---
 
 ## Cấu trúc dự án
 
 ```text
-├── .github/              # Quy trình GitHub Actions (CI, deploy, cron thông báo tập mới) và test script
+├── .github/              # Quy trình GitHub Actions (CI, deploy, cron thông báo tập mới) và script thông báo
 ├── docs/                 # Tài liệu dự án, hình ảnh minh họa và biểu tượng logo SVG
 ├── public/               # Tài nguyên tĩnh phục vụ trực tiếp (manifest, icon, lottie, âm thanh)
 ├── src/                  # Toàn bộ mã nguồn ứng dụng
-│   ├── app/              # Điểm khởi tạo ứng dụng và các Provider dùng chung (Auth, Theme)
+│   ├── app/              # Điểm khởi tạo ứng dụng và Provider dùng chung (Theme)
 │   ├── assets/           # Tài nguyên nội bộ (âm thanh giao diện)
 │   ├── constants/        # Hằng số hệ thống, danh mục thể loại, quốc gia và thông báo
 │   ├── features/         # Các module tính năng theo nghiệp vụ (auth, movies, albums, calendar, profile...)
