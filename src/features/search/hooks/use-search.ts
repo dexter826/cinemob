@@ -4,7 +4,11 @@ import useMovieStore from '@/features/movies/stores/movie-store';
 import useTrendingStore from '@/features/movies/stores/trending-store';
 import useRandomSuggestionsStore from '@/features/movies/stores/random-suggestions-store';
 import useAddMovieStore from '@/features/movies/stores/add-movie-store';
-import { findLibraryEntry } from '@/features/movies/utils/movie-utils';
+import {
+  findLibraryEntry,
+  buildMoviePath,
+  getSeasonParam,
+} from '@/features/movies/utils/movie-utils';
 import { useSearchTMDB } from './use-search-tmdb';
 import { searchMovies } from '../services/tmdb';
 import { TMDBMovieResult } from '@/types';
@@ -216,7 +220,8 @@ export const useSearch = () => {
   const handleSelectMovie = (movie: TMDBMovieResult) => {
     const isTV = movie.media_type === 'tv' || (!movie.media_type && movie.first_air_date);
     if (getMovieStatus(movie.id, isTV ? 'tv' : 'movie')) {
-      navigate(`/movie/${movie.id}${isTV ? '?type=tv' : ''}`);
+      const saved = findLibraryEntry(savedMovies, movie.id, isTV ? 'tv' : 'movie');
+      navigate(buildMoviePath(movie.id, isTV ? 'tv' : 'movie', getSeasonParam(saved)));
       return;
     }
     openAddModal({

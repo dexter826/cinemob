@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useAuth } from '@/features/auth/components/auth-provider';
 import useAddMovieStore from '../stores/add-movie-store';
 import useToastStore from '@/shared/stores/toast-store';
-import { addMovie, updateMovie } from '../services/movie-service';
+import { addMovie, updateMovie, checkMovieExists } from '../services/movie-service';
 import { Movie, MovieStatus } from '@/types';
 
 import { MESSAGES } from '@/constants/messages';
@@ -17,7 +17,7 @@ import {
 import { useTVProgress } from './use-tv-progress';
 import { useAlbumSync } from '@/features/albums/hooks/use-album-sync';
 import { GENRE_OPTIONS } from '@/constants/genres';
-import { resolveMovieStatus } from '../utils/movie-utils';
+import { getSeasonParam, resolveMovieStatus, resolveSeasonRuntime } from '../utils/movie-utils';
 import { useTMDBLookup } from '@/features/search/hooks/use-tmdb-lookup';
 import { useMovieValidation } from './use-movie-validation';
 
@@ -98,8 +98,6 @@ export const useAddMovieForm = () => {
 
   const tvProgress = useTVProgress({
     movieToEdit: initialData?.movieToEdit,
-    tmdbId: initialData?.tmdbId || initialData?.movie?.id,
-    mediaType: (initialData?.mediaType || initialData?.movie?.media_type) as 'movie' | 'tv',
     isTVSeries,
     isOpen,
   });
@@ -228,6 +226,23 @@ export const useAddMovieForm = () => {
     }
   }, [formData, status, isOpen, isTouched, draftStorageKey]);
 
+  useEffect(() => {
+    if (!isOpen || !isTVSeries || !uid || initialData?.movieToEdit) return;
+    const id = initialData?.tmdbId || initialData?.movie?.id;
+    if (!id) return;
+    let cancelled = false;
+    checkMovieExists(uid, id, 'tv', tvProgress.currentSeason)
+      .then((exists) => {
+        if (!cancelled) setMovieExists(exists);
+      })
+      .catch(() => {
+        showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, uid, isTVSeries, initialData, tvProgress.currentSeason, setMovieExists]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isCurrent = () => {
@@ -258,7 +273,7 @@ export const useAddMovieForm = () => {
             initialData?.movieToEdit?.media_type ||
             'movie') as 'movie' | 'tv');
 
-      const movieData: Partial<Movie> = {
+      const movieData: Partial<Movie> & { season?: number } = {
         title: formData.title,
         title_vi: formData.title_vi,
         poster_path: formData.poster,
@@ -278,25 +293,21 @@ export const useAddMovieForm = () => {
       };
 
       if (isTVSeries && !keepExistingProgress) {
-        movieData.total_episodes = tvProgress.totalEpisodes;
-        const seasonDates: Record<string, string> = {};
-        for (let s = 1; s <= tvProgress.currentSeason; s++) {
-          seasonDates[String(s)] = tvProgress.seasonDates[s] || formData.date;
+        const docSeason = tvProgress.currentSeason;
+        const tmdbSeasonEpisodes = tvProgress.episodesPerSeason[docSeason];
+        const seasonEpisodeCount = tmdbSeasonEpisodes || tvProgress.totalEpisodes;
+        movieData.season = docSeason;
+        movieData.total_episodes = seasonEpisodeCount;
+        if (!initialData?.movieToEdit && tmdbSeasonEpisodes) {
+          movieData.runtime = resolveSeasonRuntime(
+            parseInt(formData.runtime) || 0,
+            tmdbSeasonEpisodes,
+          );
         }
-        const previousSeasonDates = initialData?.movieToEdit?.progress?.season_dates || {};
-        Object.entries(previousSeasonDates).forEach(([season, iso]) => {
-          if (Number(season) > tvProgress.currentSeason && iso) seasonDates[season] = iso;
-        });
         movieData.progress = {
-          current_season: tvProgress.currentSeason,
           current_episode: tvProgress.currentEpisode,
-          watched_episodes: tvProgress.calculateWatchedEpisodes(
-            tvProgress.currentSeason,
-            tvProgress.currentEpisode,
-            tvProgress.isCompleted,
-          ),
+          watched_episodes: tvProgress.isCompleted ? seasonEpisodeCount : tvProgress.currentEpisode,
           is_completed: tvProgress.isCompleted,
-          season_dates: seasonDates,
         };
       }
 
@@ -371,26 +382,15 @@ export const useAddMovieForm = () => {
     let isProgressDirty = false;
     if (isTVSeries && m.progress) {
       isProgressDirty =
-        tvProgress.currentSeason !== m.progress.current_season ||
+        tvProgress.currentSeason !== getSeasonParam(m) ||
         tvProgress.currentEpisode !== m.progress.current_episode ||
         tvProgress.isCompleted !== m.progress.is_completed;
-    }
-
-    let isSeasonDatesDirty = false;
-    if (isTVSeries && m.progress) {
-      const origDates = m.progress.season_dates || {};
-      for (let s = 1; s <= tvProgress.currentSeason; s++) {
-        if ((tvProgress.seasonDates[s] || formData.date) !== (origDates[String(s)] || orig.date)) {
-          isSeasonDatesDirty = true;
-          break;
-        }
-      }
     }
 
     const albumsDirty =
       [...albumSync.selectedAlbumIds].sort().join('\n') !== [...initialAlbumIds].sort().join('\n');
 
-    return isBasicDirty || isTimeDirty || isProgressDirty || isSeasonDatesDirty || albumsDirty;
+    return isBasicDirty || isTimeDirty || isProgressDirty || albumsDirty;
   }, [
     formData,
     status,
@@ -400,12 +400,10 @@ export const useAddMovieForm = () => {
     tvProgress.currentSeason,
     tvProgress.currentEpisode,
     tvProgress.isCompleted,
-    tvProgress.seasonDates,
     albumSync.selectedAlbumIds,
     initialAlbumIds,
   ]);
 
-  // Bọc setter để đánh dấu người dùng đã thao tác; prefill TMDB nội bộ không tính là dirty.
   const touched =
     <A extends unknown[]>(fn: (...args: A) => void) =>
     (...args: A) => {
@@ -446,8 +444,6 @@ export const useAddMovieForm = () => {
     setCurrentEpisode: touched(tvProgress.setCurrentEpisode),
     isCompleted: tvProgress.isCompleted,
     setIsCompleted: touched(tvProgress.setIsCompleted),
-    seasonDates: tvProgress.seasonDates,
-    setSeasonDate: touched(tvProgress.setSeasonDate),
     resolvedSeasonCount: tvProgress.resolvedSeasonCount,
     totalEpisodes: tvProgress.totalEpisodes,
     episodesPerSeason: tvProgress.episodesPerSeason,

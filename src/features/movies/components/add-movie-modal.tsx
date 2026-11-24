@@ -60,10 +60,7 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
     setCurrentEpisode,
     isCompleted,
     setIsCompleted,
-    seasonDates,
-    setSeasonDate,
     resolvedSeasonCount,
-    totalEpisodes,
     episodesPerSeason,
     selectedAlbumIds,
     setSelectedAlbumIds,
@@ -540,12 +537,9 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   setCurrentSeason={setCurrentSeason}
                   currentEpisode={currentEpisode}
                   setCurrentEpisode={setCurrentEpisode}
-                  totalEpisodes={totalEpisodes}
-                  episodesPerSeason={episodesPerSeason}
+                  seasonEpisodeCount={episodesPerSeason[currentSeason] ?? 0}
                   maxSeasons={Math.max(parseInt(formData.seasons) || 1, resolvedSeasonCount)}
-                  seasonDates={seasonDates}
-                  onSeasonDateChange={setSeasonDate}
-                  defaultDate={formData.date}
+                  lockSeason={isEditMode}
                 />
               )}
 

@@ -31,7 +31,10 @@ export const fetchEpisodesForMonth = async (
   monthKey: string,
   fingerprint: string,
 ): Promise<UpcomingEpisode[]> => {
-  const tvSeries = movies.filter((movie) => movie.media_type === 'tv' && movie.source === 'tmdb');
+  const tvSeries = movies.filter(
+    (movie): movie is Extract<Movie, { media_type: 'tv' }> =>
+      movie.media_type === 'tv' && movie.source === 'tmdb',
+  );
   if (tvSeries.length === 0) return [];
 
   const cacheKey = `calendar_month_v1_${userId}_${monthKey}`;
@@ -60,7 +63,7 @@ export const fetchEpisodesForMonth = async (
     tvSeries.map((series) => async () => {
       const tvId = Number(series.id);
       if (!Number.isFinite(tvId)) throw new Error('Series không có TMDB ID hợp lệ');
-      const episodes = await getTVShowEpisodesInRange(tvId, startDate, endDate);
+      const episodes = await getTVShowEpisodesInRange(tvId, series.season, startDate, endDate);
       let seriesNameVi = series.title_vi;
       if (!seriesNameVi) {
         try {

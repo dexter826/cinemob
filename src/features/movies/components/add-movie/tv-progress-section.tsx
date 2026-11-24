@@ -1,7 +1,6 @@
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import { Tv } from 'lucide-react';
-import DatePicker from '@/shared/components/ui/date-picker';
 
 interface TVProgressSectionProps {
   loading: boolean;
@@ -13,12 +12,9 @@ interface TVProgressSectionProps {
   setCurrentSeason: (season: number) => void;
   currentEpisode: number;
   setCurrentEpisode: (episode: number) => void;
-  totalEpisodes: number;
-  episodesPerSeason: Record<number, number>;
+  seasonEpisodeCount: number;
   maxSeasons: number;
-  seasonDates: Record<number, string>;
-  onSeasonDateChange: (season: number, isoDate: string) => void;
-  defaultDate: string;
+  lockSeason?: boolean;
 }
 
 function TVProgressSection({
@@ -31,12 +27,9 @@ function TVProgressSection({
   setCurrentSeason,
   currentEpisode,
   setCurrentEpisode,
-  totalEpisodes,
-  episodesPerSeason,
+  seasonEpisodeCount,
   maxSeasons,
-  seasonDates,
-  onSeasonDateChange,
-  defaultDate,
+  lockSeason = false,
 }: TVProgressSectionProps) {
   if (loading)
     return (
@@ -48,10 +41,6 @@ function TVProgressSection({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Skeleton className="h-16 w-full rounded-card" />
           <Skeleton className="h-16 w-full rounded-card" />
-        </div>
-        <div className="space-y-2 pt-4 border-t border-border">
-          <Skeleton className="h-3 w-36" />
-          <Skeleton className="h-11 w-full rounded-control" />
         </div>
       </div>
     );
@@ -104,8 +93,9 @@ function TVProgressSection({
               <button
                 type="button"
                 aria-label="Giảm mùa"
+                disabled={lockSeason}
                 onClick={() => setCurrentSeason(Math.max(1, currentSeason - 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
               >
                 -
               </button>
@@ -118,8 +108,9 @@ function TVProgressSection({
               <button
                 type="button"
                 aria-label="Tăng mùa"
+                disabled={lockSeason}
                 onClick={() => setCurrentSeason(Math.min(maxSeasons || 1, currentSeason + 1))}
-                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
+                className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold disabled:cursor-not-allowed disabled:opacity-40 focus-ring focus-visible:outline-none"
               >
                 +
               </button>
@@ -151,18 +142,11 @@ function TVProgressSection({
               <button
                 type="button"
                 aria-label="Tăng tập"
-                onClick={() => {
-                  const watchedBefore = Array.from(
-                    { length: currentSeason - 1 },
-                    (_, i) => episodesPerSeason[i + 1] || 0,
-                  ).reduce((sum, count) => sum + count, 0);
-                  const fallbackCap =
-                    totalEpisodes > 0
-                      ? Math.max(totalEpisodes - watchedBefore, currentEpisode)
-                      : 999;
-                  const maxEpisodes = episodesPerSeason[currentSeason] || fallbackCap;
-                  setCurrentEpisode(Math.min(maxEpisodes, currentEpisode + 1));
-                }}
+                onClick={() =>
+                  setCurrentEpisode(
+                    Math.min(seasonEpisodeCount > 0 ? seasonEpisodeCount : 999, currentEpisode + 1),
+                  )
+                }
                 className="w-10 h-10 flex items-center justify-center rounded-control bg-surface border border-border-default text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-bold cursor-pointer focus-ring focus-visible:outline-none"
               >
                 +
@@ -172,34 +156,11 @@ function TVProgressSection({
         </div>
       )}
 
-      {totalEpisodes > 0 && !isCompleted && (
-        <div className="text-body-sm font-semibold text-primary/80 text-center pt-4 border-t border-border">
-          Tổng {totalEpisodes}&nbsp;tập, mùa&nbsp;{currentSeason}:{' '}
-          {episodesPerSeason[currentSeason] || '?'} tập
+      {!isCompleted && (
+        <div className="text-body-sm font-semibold text-primary/80 text-center border-t border-border pt-4">
+          Mùa {currentSeason}: {seasonEpisodeCount || '?'} tập
         </div>
       )}
-
-      <div className="space-y-2 pt-4 border-t border-border">
-        <span className="text-label-caps normal-case text-text-secondary ml-1 block">
-          Ngày xem từng mùa
-        </span>
-        <div className="space-y-2">
-          {Array.from({ length: currentSeason }, (_, i) => i + 1).map((season) => (
-            <div key={season} className="flex items-center gap-3">
-              <span className="text-body-sm font-bold text-text-primary w-16 shrink-0">
-                Mùa&nbsp;{season}
-              </span>
-              <DatePicker
-                value={seasonDates[season] || defaultDate}
-                onChange={(value) => onSeasonDateChange(season, value)}
-                aria-label={`Ngày xem mùa ${season}`}
-                className="flex-1"
-                popupMode="dialog"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

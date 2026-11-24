@@ -8,6 +8,7 @@ import Button from '@/shared/components/ui/button';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import PosterCard from '@/features/movies/components/poster-card';
+import { getSeasonLabel } from '@/features/movies/utils/movie-utils';
 import SearchField from '@/shared/components/ui/search-field';
 import { formatDateAny } from '@/shared/utils/date-format';
 import type { ProfileMovie } from '@/types';
@@ -172,12 +173,13 @@ function MovieListSection({
         >
           {visibleMovies.map((movie) => (
             <PosterCard
-              key={String(movie.id)}
+              key={`${String(movie.id)}-${movie.season ?? 'm'}`}
               title={movie.title_vi || movie.title}
               posterPath={movie.poster_path ?? null}
               mediaType={movie.media_type}
               rating={movie.rating}
               review={movie.is_review}
+              seasonLabel={getSeasonLabel(movie)}
               meta={
                 movie.watched_at
                   ? formatDateAny(movie.watched_at)

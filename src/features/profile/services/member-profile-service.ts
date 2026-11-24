@@ -2,6 +2,7 @@ import { deleteField, doc, getDoc, serverTimestamp, setDoc } from 'firebase/fire
 import { db } from '@/shared/lib/firebase';
 import { normalizeDate } from '@/shared/utils/date-format';
 import type { MemberGender, MemberProfile, Movie, ProfileMovie } from '@/types';
+import { getSeasonParam } from '@/features/movies/utils/movie-utils';
 
 export const MEMBER_PROFILE_COLLECTION = 'member_profiles';
 export const MEMBER_LOOKUP_COLLECTION = 'member_lookup';
@@ -204,6 +205,8 @@ export const buildProfileMovies = (movies: Movie[]): ProfileMovie[] => {
       rating: m.rating ?? 0,
       watched_at: m.watched_at,
       is_review: m.is_review || false,
+      season: getSeasonParam(m),
+      seasons: m.seasons,
     }));
 };
 
@@ -226,5 +229,7 @@ const sameProfileMovies = (a: ProfileMovie[] | undefined, b: ProfileMovie[]): bo
       m.release_date === b[i].release_date &&
       m.rating === b[i].rating &&
       m.is_review === b[i].is_review &&
+      m.season === b[i].season &&
+      m.seasons === b[i].seasons &&
       sameWatchedAt(m.watched_at, b[i].watched_at),
   );

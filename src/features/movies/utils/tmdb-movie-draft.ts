@@ -1,21 +1,23 @@
 import { translateCountries } from '@/constants/countries';
 import { Movie, TMDBMovieDetail } from '@/types';
+import { resolveSeasonRuntime } from './movie-utils';
 
 interface TMDBMovieDraftInput {
   uid: string;
   id: number | string;
   mediaType: 'movie' | 'tv';
   details: TMDBMovieDetail;
-  /** Dữ liệu dự phòng khi TMDB thiếu trường tương ứng. */
   fallbackTitle?: string;
   fallbackPoster?: string;
   fallbackReleaseDate?: string;
   status: 'history' | 'watchlist';
   rating: number;
   watchedAt: Date;
+  season?: number;
+  seasonEpisodeCount?: number;
+  seasonPosterPath?: string | null;
 }
 
-/** Payload thêm phim TMDB vào thư viện — dùng chung cho hộp "Đánh dấu đã xem" và quick-add. */
 export const buildTMDBMovieDraft = ({
   uid,
   id,
@@ -27,23 +29,34 @@ export const buildTMDBMovieDraft = ({
   status,
   rating,
   watchedAt,
-}: TMDBMovieDraftInput): Omit<Movie, 'docId'> => ({
-  uid,
-  id: Number(id),
-  title: details.title || details.name || fallbackTitle || '',
-  title_vi: '',
-  poster_path: details.poster_path || fallbackPoster || '',
-  runtime: details.runtime || details.episode_run_time?.[0] || 0,
-  seasons: details.number_of_seasons || 0,
-  watched_at: watchedAt,
-  status,
-  rating,
-  review: '',
-  tagline: details.tagline || '',
-  genres: details.genres?.map((g) => g.name).join(', ') || '',
-  release_date: details.release_date || details.first_air_date || fallbackReleaseDate || '',
-  country: translateCountries(details.production_countries?.map((c) => c.name).join(', ') || ''),
-  content: details.overview || '',
-  source: 'tmdb',
-  media_type: mediaType,
-});
+  season = 1,
+  seasonEpisodeCount,
+  seasonPosterPath,
+}: TMDBMovieDraftInput): Omit<Movie, 'docId'> => {
+  const isTV = mediaType === 'tv';
+  const perEpisodeRuntime = details.runtime || details.episode_run_time?.[0] || 0;
+  const runtime = resolveSeasonRuntime(perEpisodeRuntime, seasonEpisodeCount);
+  const draft: Omit<Movie, 'docId'> = {
+    uid,
+    id: Number(id),
+    title: details.title || details.name || fallbackTitle || '',
+    title_vi: '',
+    poster_path: seasonPosterPath || details.poster_path || fallbackPoster || '',
+    runtime,
+    seasons: details.number_of_seasons || 0,
+    ...(isTV ? { season } : {}),
+    ...(isTV && seasonEpisodeCount ? { total_episodes: seasonEpisodeCount } : {}),
+    watched_at: watchedAt,
+    status,
+    rating,
+    review: '',
+    tagline: details.tagline || '',
+    genres: details.genres?.map((g) => g.name).join(', ') || '',
+    release_date: details.release_date || details.first_air_date || fallbackReleaseDate || '',
+    country: translateCountries(details.production_countries?.map((c) => c.name).join(', ') || ''),
+    content: details.overview || '',
+    source: 'tmdb',
+    media_type: mediaType,
+  };
+  return draft;
+};

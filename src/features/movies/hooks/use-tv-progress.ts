@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
+import { getSeasonParam } from '../utils/movie-utils';
 import { getTVShowEpisodeInfo, getTVShowSeasonCount } from '@/features/search/services/tmdb';
 import { Movie } from '@/types';
 interface TVProgressProps {
   movieToEdit?: Movie;
-  tmdbId?: number | string;
-  mediaType?: 'movie' | 'tv';
   isTVSeries: boolean;
   isOpen: boolean;
 }
-export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVProgressProps) => {
+
+export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen }: TVProgressProps) => {
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(0);
   const [totalEpisodes, setTotalEpisodes] = useState(0);
   const [episodesPerSeason, setEpisodesPerSeason] = useState<Record<number, number>>({});
   const [isCompleted, setIsCompleted] = useState(false);
-  const [seasonDates, setSeasonDates] = useState<Record<number, string>>({});
   const [resolvedSeasonCount, setResolvedSeasonCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,18 +26,10 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
     setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
     const progress = movieToEdit?.progress;
-    setCurrentSeason(progress?.current_season ?? 1);
+    setCurrentSeason(getSeasonParam(movieToEdit) ?? 1);
     setCurrentEpisode(progress?.current_episode ?? 0);
     setIsCompleted(progress?.is_completed ?? !movieToEdit);
-    setSeasonDates(
-      Object.fromEntries(
-        Object.entries(progress?.season_dates ?? {}).map(([season, date]) => [
-          Number(season),
-          date,
-        ]),
-      ),
-    );
-  }, [isOpen, movieToEdit, tmdbId, isTVSeries]);
+  }, [isOpen, movieToEdit, isTVSeries]);
   useEffect(() => {
     if (!isOpen || movieToEdit?.media_type !== 'tv' || movieToEdit.source !== 'tmdb') {
       setIsLoading(false);
@@ -81,23 +72,7 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     (isLoading || resolvedMovie !== movieToEdit);
   const hasUsableSnapshot = isCompleted
     ? totalEpisodes > 0
-    : totalEpisodes > 0 &&
-      Array.from({ length: currentSeason }, (_, i) => i + 1).every(
-        (season) => (episodesPerSeason[season] ?? 0) > 0,
-      );
-  const calculateWatchedEpisodes = (season: number, episode: number, completed: boolean) => {
-    if (completed) return totalEpisodes;
-    let watched = 0;
-    for (let s = 1; s < season; s++) {
-      watched += episodesPerSeason[s] || 0;
-    }
-    watched += episode;
-    return watched;
-  };
-
-  const setSeasonDate = (season: number, isoDate: string) => {
-    setSeasonDates((prev) => ({ ...prev, [season]: isoDate }));
-  };
+    : (episodesPerSeason[currentSeason] ?? 0) > 0;
 
   return {
     currentSeason,
@@ -110,13 +85,10 @@ export const useTVProgress = ({ movieToEdit, tmdbId, isTVSeries, isOpen }: TVPro
     setEpisodesPerSeason,
     isCompleted,
     setIsCompleted,
-    seasonDates,
-    setSeasonDate,
     resolvedSeasonCount,
     isLoading: refreshing,
     error,
     retry: () => setRetryNonce((n) => n + 1),
     hasUsableSnapshot,
-    calculateWatchedEpisodes,
   };
 };

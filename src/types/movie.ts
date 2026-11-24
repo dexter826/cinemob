@@ -2,7 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 
 export type MovieStatus = 'history' | 'watchlist' | 'dropped';
 
-export interface Movie {
+interface MovieBase {
   docId?: string;
   uid: string;
   id: string | number;
@@ -14,7 +14,6 @@ export interface Movie {
   total_episodes?: number;
   watched_at: Timestamp | Date;
   source: 'tmdb' | 'manual';
-  media_type?: 'movie' | 'tv';
   status?: MovieStatus;
   rating?: number;
   review?: string;
@@ -24,15 +23,16 @@ export interface Movie {
   country?: string;
   content?: string;
   progress?: {
-    current_season: number;
     current_episode: number;
     watched_episodes: number;
     is_completed: boolean;
-    season_dates?: Record<string, string>;
   };
   is_review?: boolean;
   notifications_muted?: boolean;
 }
+
+export type Movie =
+  (MovieBase & { media_type?: 'movie' }) | (MovieBase & { media_type: 'tv'; season: number });
 
 export interface Album {
   docId?: string;
@@ -63,6 +63,8 @@ export interface ProfileMovie {
   rating?: number;
   watched_at?: Timestamp | Date;
   is_review?: boolean;
+  season?: number;
+  seasons?: number;
 }
 
 export type MemberGender = 'male' | 'female' | 'other';

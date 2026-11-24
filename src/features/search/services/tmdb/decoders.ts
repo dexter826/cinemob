@@ -194,15 +194,19 @@ export const decodeCreditResponse: Decoder<{ cast?: TMDBCreditItem[]; crew?: TMD
   return { cast, crew };
 };
 
-export const decodeTVSeason: Decoder<{ episodes?: Array<{ id: number }> }> = (value) => {
+export const decodeTVSeason: Decoder<{
+  episodes?: Array<{ id: number }>;
+  poster_path?: string | null;
+}> = (value) => {
   if (!isRecord(value)) return null;
   if (
-    value.episodes !== undefined &&
-    (!Array.isArray(value.episodes) ||
-      !value.episodes.every((item) => isRecord(item) && typeof item.id === 'number'))
+    (value.episodes !== undefined &&
+      (!Array.isArray(value.episodes) ||
+        !value.episodes.every((item) => isRecord(item) && typeof item.id === 'number'))) ||
+    (!isNullableString(value.poster_path) && value.poster_path !== undefined)
   )
     return null;
-  return value as { episodes?: Array<{ id: number }> };
+  return value as { episodes?: Array<{ id: number }>; poster_path?: string | null };
 };
 
 const decodeEpisode: Decoder<TMDBEpisode> = (value) => {

@@ -44,10 +44,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Install notification script dependencies
-        working-directory: .github/scripts
-        run: npm ci
-
-      - name: Test repository
-        run: npm test

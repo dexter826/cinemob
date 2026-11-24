@@ -54,6 +54,7 @@ const getWatchlistFromFirestore = async () => {
       title_vi: data.title_vi || '',
       poster_path: data.poster_path,
       media_type: data.media_type,
+      season: typeof data.season === 'number' ? data.season : 1,
       status: data.status,
       genres: data.genres,
       country: data.country,
@@ -101,12 +102,11 @@ const fetchTMDB = async (endpoint) => {
 };
 
 /** Lấy danh sách tập phim phát sóng dựa trên múi giờ quốc gia. */
-const getUpcomingEpisodes = async (tvId) => {
+const getUpcomingEpisodes = async (tvId, season) => {
   try {
     const details = await fetchTMDB(`/tv/${tvId}`);
     if (details.status === 'Ended' || details.status === 'Canceled') return [];
 
-    const episodes = [];
     const now = new Date();
     const offset = 7 * 60 * 60 * 1000;
     const today = new Date(now.getTime() + offset).toISOString().split('T')[0];
@@ -117,32 +117,24 @@ const getUpcomingEpisodes = async (tvId) => {
     );
     const targetDate = isWestern ? yesterday : today;
 
-    if (details.next_episode_to_air?.air_date === targetDate) {
-      const nextEp = details.next_episode_to_air;
-      episodes.push({
-        season_number: nextEp.season_number,
-        episode_number: nextEp.episode_number,
-        name: nextEp.name,
-        air_date: nextEp.air_date,
-      });
-    }
-
-    if (details.last_episode_to_air?.air_date === targetDate) {
-      const lastEp = details.last_episode_to_air;
-      if (
-        !episodes.some(
-          (e) =>
-            e.season_number === lastEp.season_number && e.episode_number === lastEp.episode_number,
-        )
-      ) {
-        episodes.push({
-          season_number: lastEp.season_number,
-          episode_number: lastEp.episode_number,
-          name: lastEp.name,
-          air_date: lastEp.air_date,
-        });
-      }
-    }
+    const matches = (episode) =>
+      !!episode && episode.air_date === targetDate && episode.season_number === season;
+    const pick = (episode) => ({
+      season_number: episode.season_number,
+      episode_number: episode.episode_number,
+      name: episode.name,
+      air_date: episode.air_date,
+    });
+    const episodes = [];
+    if (matches(details.next_episode_to_air)) episodes.push(pick(details.next_episode_to_air));
+    const nextEp = details.next_episode_to_air;
+    const lastEp = details.last_episode_to_air;
+    const isSameEpisode =
+      !!nextEp &&
+      !!lastEp &&
+      nextEp.season_number === lastEp.season_number &&
+      nextEp.episode_number === lastEp.episode_number;
+    if (matches(lastEp) && !isSameEpisode) episodes.push(pick(lastEp));
     return episodes;
   } catch (error) {
     return [];
@@ -236,9 +228,8 @@ const main = async () => {
   const todayEpisodes = [];
   const todayMovies = [];
 
-  // Kiểm tra từng series xem hôm nay có tập không
   for (const series of tvSeries) {
-    const episodes = await getUpcomingEpisodes(series.id);
+    const episodes = await getUpcomingEpisodes(series.id, series.season);
     for (const episode of episodes) {
       todayEpisodes.push({ series, episode });
     }
@@ -288,12 +279,19 @@ const main = async () => {
       body = `Phim chính thức khởi chiếu hôm nay!`;
     }
   } else {
-    const total = todayEpisodes.length + todayMovies.length;
+    const episodeGroups = new Map();
+    todayEpisodes.forEach(({ series, episode }) => {
+      const key = `${series.id}|${series.season}`;
+      if (!episodeGroups.has(key)) episodeGroups.set(key, { series, episodes: [] });
+      episodeGroups.get(key).episodes.push(episode);
+    });
+    const total = episodeGroups.size + todayMovies.length;
     title = `🎬 Cinemob: ${total} phim mới hôm nay`;
 
     const items = [];
-    todayEpisodes.forEach(({ series, episode }) => {
-      items.push(`${series.title_vi || series.title} (T.${episode.episode_number})`);
+    episodeGroups.forEach(({ series, episodes }) => {
+      const eps = episodes.map((e) => `T.${e.episode_number}`).join(', ');
+      items.push(`${series.title_vi || series.title} (Mùa ${episodes[0].season_number}: ${eps})`);
     });
     todayMovies.forEach((movie) => {
       items.push(`${movie.title_vi || movie.title} (Mới)`);

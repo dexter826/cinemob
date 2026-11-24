@@ -1,18 +1,15 @@
 import { Movie, MovieStatus } from '@/types';
 import { translateCountries } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
-import { normalizeDate } from '@/shared/utils/date-format';
 
 const isVietnameseOrigin = (country: string): boolean =>
   ['Vietnam', 'Việt Nam', 'VN'].some((c) => country.includes(c));
 
 export const isWatchedMovie = (movie: Movie): boolean => (movie.status || 'history') === 'history';
 
-/** Series thuộc Đã xem nhưng chưa xem hết (đang dở tập) — cơ sở cho tab Đang xem. */
 export const isSeriesInProgress = (movie: Movie): boolean =>
   movie.media_type === 'tv' && !!movie.progress && !movie.progress.is_completed;
 
-/** Tìm phim trong thư viện theo id TMDB; truyền mediaType để phân biệt movie/series trùng số id. */
 export const findLibraryEntry = (
   movies: Movie[],
   id: string | number,
@@ -22,10 +19,6 @@ export const findLibraryEntry = (
     (m) => String(m.id) === String(id) && (!mediaType || (m.media_type ?? 'movie') === mediaType),
   );
 
-/**
- * Trạng thái sau khi áp dụng quy tắc lưu: đánh dấu hoàn thành một phim đã bỏ dở
- * thì phim quay lại "Đã xem".
- */
 export const resolveMovieStatus = (
   status: MovieStatus,
   isTVSeries: boolean,
@@ -73,31 +66,27 @@ export const getTranslatedGenres = (genreStr: string): string => {
     .join(', ');
 };
 
-export const getSeasonWatchedDates = (movie: Movie): Array<{ season: number; date: Date }> => {
-  const seasonDates = movie.progress?.season_dates;
-  if (!seasonDates) return [];
-  return Object.entries(seasonDates)
-    .map(([season, iso]) => {
-      const [y, m, d] = iso.split('-').map(Number);
-      return y && m && d ? { season: Number(season), date: new Date(y, m - 1, d) } : null;
-    })
-    .filter((s): s is { season: number; date: Date } => s !== null && Number.isFinite(s.season))
-    .sort((a, b) => a.season - b.season);
-};
+export const buildMoviePath = (
+  id: number | string,
+  mediaType?: 'movie' | 'tv',
+  season?: number,
+): string => `/movie/${id}${mediaType === 'tv' ? `?type=tv&season=${season ?? 1}` : ''}`;
 
-export const getLatestWatchedDate = (movie: Movie): Date | null => {
-  let latest = normalizeDate(movie.watched_at);
-  for (const { date } of getSeasonWatchedDates(movie)) {
-    if (!latest || date.getTime() > latest.getTime()) latest = date;
-  }
-  return latest;
-};
+interface SeasonLabeled {
+  media_type?: 'movie' | 'tv';
+  seasons?: number;
+  season?: number;
+}
 
-// Mọi mốc xem của một phim: lần xem gần nhất cộng từng mốc mùa của series.
-export const getWatchedDates = (movie: Movie): Date[] => {
-  const dates: Date[] = [];
-  const watched = normalizeDate(movie.watched_at);
-  if (watched) dates.push(watched);
-  getSeasonWatchedDates(movie).forEach(({ date }) => dates.push(date));
-  return dates;
-};
+export const getSeasonLabel = (movie: SeasonLabeled): string | null =>
+  movie.media_type === 'tv' && (movie.seasons ?? 0) >= 2 && movie.season
+    ? `Mùa ${movie.season}`
+    : null;
+
+export const getSeasonParam = (movie: Movie | undefined): number | undefined =>
+  movie?.media_type === 'tv' ? movie.season : undefined;
+
+export const resolveSeasonRuntime = (
+  perEpisodeRuntime: number,
+  seasonEpisodeCount: number | undefined,
+): number => (seasonEpisodeCount ? seasonEpisodeCount * perEpisodeRuntime : perEpisodeRuntime);

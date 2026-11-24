@@ -1,12 +1,8 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Movie, MovieStatus } from '@/types';
-import {
-  getTranslatedCountries,
-  getWatchedDates,
-  getLatestWatchedDate,
-  getMainTitle,
-} from '@/features/movies/utils/movie-utils';
+import { getTranslatedCountries, getMainTitle } from '@/features/movies/utils/movie-utils';
+import { normalizeDate } from '@/shared/utils/date-format';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { readPageParam, setOrDeleteParam, writePageParam } from '@/shared/utils/search-params';
@@ -186,9 +182,7 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
     }
 
     if (filters.year !== null) {
-      result = result.filter((m) =>
-        getWatchedDates(m).some((date) => date.getFullYear() === filters.year),
-      );
+      result = result.filter((m) => normalizeDate(m.watched_at)?.getFullYear() === filters.year);
     }
 
     if (filters.country) {
@@ -225,8 +219,8 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
       if (filters.sortBy === 'title') comp = getMainTitle(a).localeCompare(getMainTitle(b), 'vi');
       else if (filters.sortBy === 'rating') comp = (a.rating || 0) - (b.rating || 0);
       else {
-        const da = getLatestWatchedDate(a)?.getTime() || 0;
-        const db = getLatestWatchedDate(b)?.getTime() || 0;
+        const da = normalizeDate(a.watched_at)?.getTime() || 0;
+        const db = normalizeDate(b.watched_at)?.getTime() || 0;
         comp = da - db;
       }
       return filters.sortOrder === 'asc' ? comp : -comp;
@@ -251,7 +245,12 @@ export const useDashboardFilters = (movies: Movie[], activeTab: ActiveTab) => {
 
   const availableYears = useMemo(() => {
     return Array.from(
-      new Set(movies.flatMap((m) => getWatchedDates(m).map((date) => date.getFullYear()))),
+      new Set(
+        movies.flatMap((m) => {
+          const watched = normalizeDate(m.watched_at);
+          return watched ? [watched.getFullYear()] : [];
+        }),
+      ),
     )
       .sort((a, b) => b - a)
       .map((year) => ({
