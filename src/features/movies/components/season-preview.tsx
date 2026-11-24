@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Plus } from 'lucide-react';
-import {
-  getMovieDetails,
-  getTVSeasonDetails,
-} from '@/features/search/services/tmdb';
+import { getMovieDetails, getTVSeasonDetails } from '@/features/search/services/tmdb';
 import useAddMovieStore from '../stores/add-movie-store';
 import { buildMoviePath } from '../utils/movie-utils';
 import { getTMDBImageUrl } from '@/shared/utils/tmdb';
@@ -42,8 +39,7 @@ function SeasonPreview({ seriesId, season }: { seriesId: string; season: number 
       getTVSeasonDetails(tvId, season, controller.signal),
     ])
       .then(([details, seasonInfo]) => {
-        if (!cancelled)
-          setState({ loading: false, details, seasonInfo, error: !details });
+        if (!cancelled) setState({ loading: false, details, seasonInfo, error: !details });
       })
       .catch(() => {
         if (!cancelled) setState({ loading: false, details: null, seasonInfo: null, error: true });

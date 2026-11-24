@@ -439,9 +439,7 @@ function MovieDetailPage() {
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-display-xl leading-[1.02] text-text-primary">{mainTitle}</h1>
-            {movie.media_type === 'tv' && (
-              <Chip tone="muted">Mùa {getSeasonParam(movie)}</Chip>
-            )}
+            {movie.media_type === 'tv' && <Chip tone="muted">Mùa {getSeasonParam(movie)}</Chip>}
             {isDropped && <Chip tone="muted">{MOVIE_STATUS_LABEL.dropped}</Chip>}
           </div>
           {subTitle && subTitle !== mainTitle && (

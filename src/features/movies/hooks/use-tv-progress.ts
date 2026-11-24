@@ -9,7 +9,12 @@ interface TVProgressProps {
   initialSeason?: number;
 }
 
-export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen, initialSeason }: TVProgressProps) => {
+export const useTVProgress = ({
+  movieToEdit,
+  isTVSeries,
+  isOpen,
+  initialSeason,
+}: TVProgressProps) => {
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(0);
   const [totalEpisodes, setTotalEpisodes] = useState(0);
@@ -27,7 +32,7 @@ export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen, initialSeason }
     setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
     setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
     const progress = movieToEdit?.progress;
-    setCurrentSeason(movieToEdit ? getSeasonParam(movieToEdit) ?? 1 : initialSeason ?? 1);
+    setCurrentSeason(movieToEdit ? (getSeasonParam(movieToEdit) ?? 1) : (initialSeason ?? 1));
     setCurrentEpisode(progress?.current_episode ?? 0);
     setIsCompleted(progress?.is_completed ?? !movieToEdit);
   }, [isOpen, movieToEdit, isTVSeries, initialSeason]);

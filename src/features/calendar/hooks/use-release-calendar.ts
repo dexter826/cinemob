@@ -240,8 +240,7 @@ export const useReleaseCalendar = () => {
   const handleSeriesClick = (episode: UpcomingEpisode) => {
     const seasonDoc = movies.find(
       (m) =>
-        Number(m.id) === episode.seriesId &&
-        getSeasonParam(m) === episode.episode.season_number,
+        Number(m.id) === episode.seriesId && getSeasonParam(m) === episode.episode.season_number,
     );
     if (seasonDoc) {
       navigate(buildMoviePath(seasonDoc.id, 'tv', getSeasonParam(seasonDoc)));

@@ -72,9 +72,12 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
     ? getTMDBImageUrl(details.poster_path, 'w780')
     : PLACEHOLDER_IMAGE;
   const genres = details?.genres?.map((g) => g.name).join(', ') || docs[0]?.genres || '';
-  const year = (details?.first_air_date || details?.release_date || docs[0]?.release_date || '').split(
-    '-',
-  )[0];
+  const year = (
+    details?.first_air_date ||
+    details?.release_date ||
+    docs[0]?.release_date ||
+    ''
+  ).split('-')[0];
 
   const addSeason = (season: number) => {
     const movieResult: TMDBMovieResult = {
@@ -172,7 +175,9 @@ function SeriesHub({ seriesId }: { seriesId: string }) {
                     <PosterCard
                       key={n}
                       title={title}
-                      posterPath={doc?.poster_path || seasonMeta?.poster_path || details.poster_path}
+                      posterPath={
+                        doc?.poster_path || seasonMeta?.poster_path || details.poster_path
+                      }
                       mediaType="tv"
                       status={doc ? doc.status || 'history' : null}
                       badge={doc ? null : 'Chưa có'}

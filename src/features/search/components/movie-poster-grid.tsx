@@ -37,7 +37,7 @@ function MoviePosterGrid({ movies, onSelect }: MoviePosterGridProps) {
         const mediaType = isTVResult(movie) ? 'tv' : 'movie';
         const seriesInfo = mediaType === 'tv' ? getSeriesInfo(savedMovies, movie.id, 'tv') : null;
         const savedMovie = findLibraryEntry(savedMovies, movie.id, 'movie');
-        const inLibrary = mediaType === 'movie' ? savedMovie?.status ?? null : null;
+        const inLibrary = mediaType === 'movie' ? (savedMovie?.status ?? null) : null;
         const quickKey = `${mediaType}-${movie.id}`;
         return (
           <PosterCard

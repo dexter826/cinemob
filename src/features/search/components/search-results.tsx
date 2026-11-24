@@ -80,10 +80,7 @@ function SearchResults({
 
       {showFiltered &&
         (filteredResults.length > 0 ? (
-          <MoviePosterGrid
-            movies={filteredResults}
-            onSelect={handleSelectMovie}
-          />
+          <MoviePosterGrid movies={filteredResults} onSelect={handleSelectMovie} />
         ) : mode === 'search' ? (
           <EmptyState
             icon={Search}
@@ -113,10 +110,7 @@ function SearchResults({
             </div>
           ) : null
         ) : trendingMovies.length > 0 ? (
-          <MoviePosterGrid
-            movies={trendingMovies}
-            onSelect={handleSelectMovie}
-          />
+          <MoviePosterGrid movies={trendingMovies} onSelect={handleSelectMovie} />
         ) : (
           <EmptyState
             icon={Search}

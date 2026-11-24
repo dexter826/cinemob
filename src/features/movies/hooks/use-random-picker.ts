@@ -216,9 +216,7 @@ export function useRandomPicker({ isOpen, onClose }: UseRandomPickerOptions) {
       const saved = findLibraryEntry(movies, movie.id, mediaType);
       if (saved?.docId) {
         navigate(
-          mediaType === 'tv'
-            ? buildMoviePath(saved.id, 'tv')
-            : buildMoviePath(saved.id, 'movie'),
+          mediaType === 'tv' ? buildMoviePath(saved.id, 'tv') : buildMoviePath(saved.id, 'movie'),
         );
       } else {
         openAddModal({ movie, mediaType });

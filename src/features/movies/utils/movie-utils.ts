@@ -89,18 +89,22 @@ export const getSeriesInfo = (
     (m) => String(m.id) === String(id) && (m.media_type ?? 'movie') === mediaType,
   );
   if (docs.length === 0) return null;
-  const trackedSeasons = [...new Set(docs.map((m) => getSeasonParam(m)).filter((s): s is number => typeof s === 'number'))].sort(
-    (a, b) => a - b,
-  );
+  const trackedSeasons = [
+    ...new Set(
+      docs.map((m) => getSeasonParam(m)).filter((s): s is number => typeof s === 'number'),
+    ),
+  ].sort((a, b) => a - b);
   const totalSeasons = docs.reduce((max, m) => Math.max(max, m.seasons ?? 0), 0);
   const nextMissingSeason =
     totalSeasons > 0
-      ? Array.from({ length: totalSeasons }, (_, i) => i + 1).find((n) => !trackedSeasons.includes(n)) ??
-        null
+      ? (Array.from({ length: totalSeasons }, (_, i) => i + 1).find(
+          (n) => !trackedSeasons.includes(n),
+        ) ?? null)
       : null;
   const allTracked = totalSeasons > 0 && trackedSeasons.length >= totalSeasons;
   const allCompleted =
-    allTracked && docs.every((m) => (m.status || 'history') === 'history' && !!m.progress?.is_completed);
+    allTracked &&
+    docs.every((m) => (m.status || 'history') === 'history' && !!m.progress?.is_completed);
   const anyInProgress = docs.some(
     (m) => (m.status || 'history') === 'history' && !!m.progress && !m.progress.is_completed,
   );
