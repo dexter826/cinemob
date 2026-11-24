@@ -2,8 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { Movie } from '@/types';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import { COUNTRY_TRANSLATIONS } from '@/constants/countries';
-import { getWatchedDates } from '@/features/movies/utils/movie-utils';
-import { monthLabel } from '@/shared/utils/date-format';
+import { monthLabel, normalizeDate } from '@/shared/utils/date-format';
 
 export const useStats = (movies: Movie[]) => {
   const watchedMovies = useMemo(
@@ -14,7 +13,8 @@ export const useStats = (movies: Movie[]) => {
   const availableYears = useMemo(() => {
     const years = new Set<string>();
     watchedMovies.forEach((m) => {
-      getWatchedDates(m).forEach((date) => years.add(date.getFullYear().toString()));
+      const watched = normalizeDate(m.watched_at);
+      if (watched) years.add(watched.getFullYear().toString());
     });
     return Array.from(years).sort((a, b) => b.localeCompare(a));
   }, [watchedMovies]);
@@ -27,13 +27,10 @@ export const useStats = (movies: Movie[]) => {
       }));
 
       watchedMovies.forEach((m) => {
-        const monthsInYear = new Set<number>();
-        getWatchedDates(m).forEach((date) => {
-          if (date.getFullYear().toString() === year) monthsInYear.add(date.getMonth());
-        });
-        monthsInYear.forEach((monthIndex) => {
-          months[monthIndex].count++;
-        });
+        const watched = normalizeDate(m.watched_at);
+        if (watched && watched.getFullYear().toString() === year) {
+          months[watched.getMonth()].count++;
+        }
       });
 
       return months;

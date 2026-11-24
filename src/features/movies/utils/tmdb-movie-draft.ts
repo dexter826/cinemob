@@ -1,5 +1,6 @@
 import { translateCountries } from '@/constants/countries';
 import { Movie, TMDBMovieDetail } from '@/types';
+import { resolveSeasonRuntime } from './movie-utils';
 
 interface TMDBMovieDraftInput {
   uid: string;
@@ -34,15 +35,14 @@ export const buildTMDBMovieDraft = ({
 }: TMDBMovieDraftInput): Omit<Movie, 'docId'> => {
   const isTV = mediaType === 'tv';
   const perEpisodeRuntime = details.runtime || details.episode_run_time?.[0] || 0;
-  const seasonRuntime =
-    isTV && seasonEpisodeCount ? seasonEpisodeCount * perEpisodeRuntime : perEpisodeRuntime;
+  const runtime = resolveSeasonRuntime(perEpisodeRuntime, seasonEpisodeCount, isTV);
   const draft: Omit<Movie, 'docId'> = {
     uid,
     id: Number(id),
     title: details.title || details.name || fallbackTitle || '',
     title_vi: '',
     poster_path: seasonPosterPath || details.poster_path || fallbackPoster || '',
-    runtime: isTV ? seasonRuntime : perEpisodeRuntime,
+    runtime,
     seasons: details.number_of_seasons || 0,
     ...(isTV ? { season } : {}),
     ...(isTV && seasonEpisodeCount ? { total_episodes: seasonEpisodeCount } : {}),

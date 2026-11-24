@@ -2,7 +2,6 @@
   "name": "cinemob-notify-script",
   "version": "1.0.0",
   "type": "module",
-  "scripts": {},
   "dependencies": {
     "firebase-admin": "^12.0.0",
     "web-push": "^3.6.7"
