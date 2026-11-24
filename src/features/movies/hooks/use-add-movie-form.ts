@@ -100,6 +100,7 @@ export const useAddMovieForm = () => {
     movieToEdit: initialData?.movieToEdit,
     isTVSeries,
     isOpen,
+    initialSeason: initialData?.initialSeason,
   });
 
   const requiresDetails = !initialData?.movieToEdit && !isManualMode;
@@ -169,7 +170,7 @@ export const useAddMovieForm = () => {
       setFormData(buildEmptyMovieForm(new Date()));
       setManualMediaType('movie');
       setMovieExists(false);
-      setStatus('history');
+      setStatus(initialData?.initialStatus ?? 'history');
       setSelectedGenreIds([]);
       applySavedDraft();
 
@@ -295,7 +296,8 @@ export const useAddMovieForm = () => {
       if (isTVSeries && !keepExistingProgress) {
         const docSeason = tvProgress.currentSeason;
         const tmdbSeasonEpisodes = tvProgress.episodesPerSeason[docSeason];
-        const seasonEpisodeCount = tmdbSeasonEpisodes || tvProgress.totalEpisodes;
+        const seasonEpisodeCount =
+          tmdbSeasonEpisodes ?? initialData?.movieToEdit?.total_episodes ?? 0;
         movieData.season = docSeason;
         movieData.total_episodes = seasonEpisodeCount;
         if (!initialData?.movieToEdit && tmdbSeasonEpisodes) {
@@ -304,11 +306,15 @@ export const useAddMovieForm = () => {
             tmdbSeasonEpisodes,
           );
         }
-        movieData.progress = {
-          current_episode: tvProgress.currentEpisode,
-          watched_episodes: tvProgress.isCompleted ? seasonEpisodeCount : tvProgress.currentEpisode,
-          is_completed: tvProgress.isCompleted,
-        };
+        if (resolvedStatus !== 'watchlist') {
+          movieData.progress = {
+            current_episode: tvProgress.currentEpisode,
+            watched_episodes: tvProgress.isCompleted
+              ? seasonEpisodeCount
+              : tvProgress.currentEpisode,
+            is_completed: tvProgress.isCompleted,
+          };
+        }
       }
 
       let movieDocId = initialData?.movieToEdit?.docId;

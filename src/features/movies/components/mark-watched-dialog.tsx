@@ -4,7 +4,11 @@ import { useAuth } from '@/features/auth/components/auth-provider';
 import useMarkWatchedStore from '../stores/mark-watched-store';
 import useToastStore from '@/shared/stores/toast-store';
 import { addMovie, updateMovie } from '../services/movie-service';
-import { getMovieDetails, getTVSeasonDetails } from '@/features/search/services/tmdb';
+import {
+  getMovieDetails,
+  getTVSeasonDetails,
+  getTVShowSeasons,
+} from '@/features/search/services/tmdb';
 import { MESSAGES } from '@/constants/messages';
 import { getMainTitle, getSubTitle } from '../utils/movie-utils';
 import { formatDateInput, formatTimeInput } from '../utils/movie-form-utils';
@@ -66,9 +70,12 @@ function MarkWatchedDialog() {
       setCurrentSeason(1);
       setSeasonCount(1);
       if (target?.kind === 'tmdb' && target.media_type === 'tv') {
-        getMovieDetails(Number(target.id), 'tv')
-          .then((details) => {
-            setSeasonCount(Math.max(details?.number_of_seasons || 1, 1));
+        getTVShowSeasons(Number(target.id))
+          .then((seasons) => {
+            const maxSeason = seasons?.length
+              ? Math.max(...seasons.map((s) => s.season_number))
+              : 1;
+            setSeasonCount(Math.max(maxSeason, 1));
           })
           .catch(() => {
             showToast(MESSAGES.COMMON.LOAD_ERROR, 'error');
@@ -140,12 +147,12 @@ function MarkWatchedDialog() {
           rating,
           watched_at: watchedAt,
         };
-        // Đánh dấu đã xem series coi như hoàn thành toàn bộ tập.
-        if (isTV && movie.progress) {
+        if (isTV) {
+          const total = movie.total_episodes || 0;
           updates.progress = {
-            ...movie.progress,
+            current_episode: total || movie.progress?.current_episode || 0,
+            watched_episodes: total || movie.progress?.watched_episodes || 0,
             is_completed: true,
-            watched_episodes: movie.total_episodes || movie.progress.watched_episodes,
           };
         }
         await updateMovie(movie.docId, updates);

@@ -1,5 +1,6 @@
 import { translateCountries } from '@/constants/countries';
 import { Movie, TMDBMovieDetail } from '@/types';
+import { getEffectiveSeasons } from '@/features/search/services/tmdb';
 import { resolveSeasonRuntime } from './movie-utils';
 
 interface TMDBMovieDraftInput {
@@ -29,13 +30,17 @@ export const buildTMDBMovieDraft = ({
   status,
   rating,
   watchedAt,
-  season = 1,
+  season,
   seasonEpisodeCount,
   seasonPosterPath,
 }: TMDBMovieDraftInput): Omit<Movie, 'docId'> => {
   const isTV = mediaType === 'tv';
+  if (isTV && typeof season !== 'number') {
+    throw new Error('TV draft requires an explicit season');
+  }
   const perEpisodeRuntime = details.runtime || details.episode_run_time?.[0] || 0;
   const runtime = resolveSeasonRuntime(perEpisodeRuntime, seasonEpisodeCount);
+  const effectiveSeasonCount = getEffectiveSeasons(details.seasons).length;
   const draft: Omit<Movie, 'docId'> = {
     uid,
     id: Number(id),
@@ -43,7 +48,7 @@ export const buildTMDBMovieDraft = ({
     title_vi: '',
     poster_path: seasonPosterPath || details.poster_path || fallbackPoster || '',
     runtime,
-    seasons: details.number_of_seasons || 0,
+    seasons: effectiveSeasonCount || details.number_of_seasons || 0,
     ...(isTV ? { season } : {}),
     ...(isTV && seasonEpisodeCount ? { total_episodes: seasonEpisodeCount } : {}),
     watched_at: watchedAt,

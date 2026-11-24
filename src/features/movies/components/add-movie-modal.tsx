@@ -16,6 +16,7 @@ import useAlertStore from '@/shared/stores/alert-store';
 import StatusToggle from './add-movie/status-toggle';
 import RatingSection from './add-movie/rating-section';
 import TVProgressSection from './add-movie/tv-progress-section';
+import SeasonPicker from './add-movie/season-picker';
 import AlbumSection from './add-movie/album-section';
 import MovieFormFields from './add-movie/movie-form-fields';
 import PosterPreview from './add-movie/poster-preview';
@@ -538,9 +539,28 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
                   currentEpisode={currentEpisode}
                   setCurrentEpisode={setCurrentEpisode}
                   seasonEpisodeCount={episodesPerSeason[currentSeason] ?? 0}
+                  episodesPerSeason={episodesPerSeason}
                   maxSeasons={Math.max(parseInt(formData.seasons) || 1, resolvedSeasonCount)}
                   lockSeason={isEditMode}
                 />
+              )}
+
+              {status === 'watchlist' && isTVSeries && (
+                <div className="border border-border rounded-dialog p-5 space-y-3">
+                  <span
+                    id="watchlist-season-label"
+                    className="text-label-caps text-text-secondary ml-1"
+                  >
+                    Mùa
+                  </span>
+                  <SeasonPicker
+                    value={currentSeason}
+                    onChange={setCurrentSeason}
+                    episodesPerSeason={episodesPerSeason}
+                    maxSeasons={Math.max(parseInt(formData.seasons) || 1, resolvedSeasonCount)}
+                    disabled={isEditMode}
+                  />
+                </div>
               )}
 
               {status === 'history' && (

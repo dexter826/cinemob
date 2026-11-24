@@ -6,9 +6,10 @@ interface TVProgressProps {
   movieToEdit?: Movie;
   isTVSeries: boolean;
   isOpen: boolean;
+  initialSeason?: number;
 }
 
-export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen }: TVProgressProps) => {
+export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen, initialSeason }: TVProgressProps) => {
   const [currentSeason, setCurrentSeason] = useState(1);
   const [currentEpisode, setCurrentEpisode] = useState(0);
   const [totalEpisodes, setTotalEpisodes] = useState(0);
@@ -26,10 +27,10 @@ export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen }: TVProgressPro
     setTotalEpisodes(movieToEdit?.total_episodes ?? 0);
     setResolvedSeasonCount(movieToEdit?.seasons ?? 0);
     const progress = movieToEdit?.progress;
-    setCurrentSeason(getSeasonParam(movieToEdit) ?? 1);
+    setCurrentSeason(movieToEdit ? getSeasonParam(movieToEdit) ?? 1 : initialSeason ?? 1);
     setCurrentEpisode(progress?.current_episode ?? 0);
     setIsCompleted(progress?.is_completed ?? !movieToEdit);
-  }, [isOpen, movieToEdit, isTVSeries]);
+  }, [isOpen, movieToEdit, isTVSeries, initialSeason]);
   useEffect(() => {
     if (!isOpen || movieToEdit?.media_type !== 'tv' || movieToEdit.source !== 'tmdb') {
       setIsLoading(false);
@@ -44,12 +45,10 @@ export const useTVProgress = ({ movieToEdit, isTVSeries, isOpen }: TVProgressPro
         if (fresh === null) throw new Error('TV season count unavailable');
         const seasons = Math.max(fresh || 0, movieToEdit.seasons || 0);
         const info = await getTVShowEpisodeInfo(Number(movieToEdit.id), seasons);
-        if (Object.keys(info.episodes_per_season).length < seasons)
-          throw new Error('Incomplete TV episode data');
         if (!cancelled) {
           setTotalEpisodes(info.total_episodes || movieToEdit.total_episodes || 0);
           setEpisodesPerSeason(info.episodes_per_season);
-          setResolvedSeasonCount(seasons);
+          setResolvedSeasonCount(Object.keys(info.episodes_per_season).length);
         }
       } catch {
         if (!cancelled) setError('Không cập nhật được tiến độ TV. Bạn có thể thử lại.');
