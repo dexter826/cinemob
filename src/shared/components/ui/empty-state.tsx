@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from './button';
+import { ButtonLink } from './button-link';
 import { classNames } from '@/shared/utils/class-names';
 
 interface EmptyStateProps {
@@ -9,7 +9,6 @@ interface EmptyStateProps {
   description: string;
   action?: {
     label: string;
-    /** Đích điều hướng: có thì render Link thay vì Button. */
     to?: string;
     onClick?: () => void;
   };
@@ -47,12 +46,9 @@ function EmptyState({
       </p>
       {action &&
         (action.to ? (
-          <Link
-            to={action.to}
-            className="inline-flex items-center justify-center font-semibold cursor-pointer transition bg-primary text-on-primary hover:bg-primary-hover border border-transparent px-4 py-2.5 text-body-sm gap-2 rounded-control focus-ring focus-visible:outline-none"
-          >
+          <ButtonLink to={action.to} variant="primary" size={compact ? 'sm' : 'md'}>
             {action.label}
-          </Link>
+          </ButtonLink>
         ) : (
           <Button variant="primary" size={compact ? 'sm' : 'md'} onClick={action.onClick}>
             {action.label}
