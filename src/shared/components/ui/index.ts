@@ -1,4 +1,5 @@
 export { default as Button } from './button';
+export { default as ButtonLink } from './button-link';
 export { default as IconButton } from './icon-button';
 export { default as SearchField } from './search-field';
 export { default as TextField } from './text-field';

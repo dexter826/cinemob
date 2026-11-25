@@ -2,8 +2,8 @@ import Spinner from './spinner';
 import React from 'react';
 import { classNames } from '@/shared/utils/class-names';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link';
-type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link';
+export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -14,7 +14,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: React.Ref<HTMLButtonElement>;
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
+export const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-hover border border-transparent',
   secondary:
     'bg-transparent text-text-primary border border-border hover:border-primary hover:text-primary',
@@ -24,7 +24,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   link: 'bg-transparent text-primary hover:underline border border-transparent font-semibold',
 };
 
-const sizeClasses: Record<ButtonSize, string> = {
+export const sizeClasses: Record<ButtonSize, string> = {
   sm: 'h-8 px-3 text-body-sm gap-1.5 rounded-control',
   md: 'h-10 px-4 text-body-sm gap-2 rounded-control',
   lg: 'h-11 px-6 text-body gap-2 rounded-control',
