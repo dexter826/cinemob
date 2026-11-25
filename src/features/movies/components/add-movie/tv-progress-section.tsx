@@ -103,7 +103,7 @@ function TVProgressSection({
             <div
               role="group"
               aria-labelledby="tv-episode-label"
-              className="flex items-center gap-2 p-1 rounded-card border border-border-default"
+              className="flex items-center gap-2 h-11 px-1 rounded-card border border-border-default"
             >
               <button
                 type="button"
