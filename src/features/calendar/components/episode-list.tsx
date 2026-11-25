@@ -1,4 +1,5 @@
 import Skeleton from '@/shared/components/ui/skeleton';
+import Button from '@/shared/components/ui/button';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { Info, ChevronRight } from 'lucide-react';
 import { UpcomingEpisode } from '@/types';
@@ -69,13 +70,9 @@ function EpisodeList({
           <p role="status" className="mb-4 text-text-secondary text-body-sm">
             Không tải được lịch của {failedSeriesCount} series (
             <span className="italic">dữ liệu cũ có thể đang hiển thị</span>).{' '}
-            <button
-              type="button"
-              onClick={retryEpisodes}
-              className="font-bold text-primary hover:underline underline-offset-2 transition-colors cursor-pointer rounded-control focus-ring focus-visible:outline-none"
-            >
+            <Button variant="secondary" size="md" onClick={retryEpisodes}>
               Thử lại
-            </button>
+            </Button>
           </p>
         ) : null}
 
@@ -98,13 +95,9 @@ function EpisodeList({
             <p role="alert" className="text-text-secondary text-body">
               {episodesError}
             </p>
-            <button
-              type="button"
-              onClick={retryEpisodes}
-              className="px-4 py-2 rounded-control border border-border text-text-primary text-body-sm font-bold hover:border-primary hover:text-primary transition-colors cursor-pointer focus-ring focus-visible:outline-none"
-            >
+            <Button variant="secondary" size="md" onClick={retryEpisodes}>
               Thử lại
-            </button>
+            </Button>
           </div>
         ) : displayedEpisodes.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 text-center">
