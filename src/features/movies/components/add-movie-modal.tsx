@@ -2,7 +2,7 @@ import LoadingStatus from '@/shared/components/ui/loading-status';
 import Skeleton from '@/shared/components/ui/skeleton';
 import ErrorState from '@/shared/components/ui/error-state';
 import Chip from '@/shared/components/ui/chip';
-import { TextArea } from '@/shared/components/ui';
+import { TextArea, TextField } from '@/shared/components/ui';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { useEffect, useRef, useState } from 'react';
 
@@ -146,29 +146,22 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
           <Type size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Tiêu đề gốc
         </label>
-        <input
+        <TextField
           id="add-movie-title-input"
           name="movie-title"
           ref={refs.title}
           type="text"
+          variant="boxed"
           required
           autoComplete="off"
-          aria-invalid={errors.title ? true : undefined}
-          aria-describedby={errors.title ? 'add-movie-title-error' : undefined}
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className={`w-full h-11 border border-border rounded-card px-4 text-body font-bold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50 ${isAnimating && errors.title ? 'border-danger/50' : ''}`}
+          error={
+            isAnimating && errors.title ? 'Vui lòng nhập tên phim để lưu vào thư viện.' : undefined
+          }
+          inputClassName="font-bold"
           placeholder="Nhập tên gốc của phim…"
         />
-        {isAnimating && errors.title && (
-          <p
-            id="add-movie-title-error"
-            role="alert"
-            className="text-body-sm font-medium text-danger ml-1"
-          >
-            Vui lòng nhập tên phim để lưu vào thư viện.
-          </p>
-        )}
       </div>
       <div className="space-y-2">
         <label
@@ -178,14 +171,15 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
           <Type size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           Tiêu đề tiếng Việt
         </label>
-        <input
+        <TextField
           id="add-movie-title-vi"
           name="movie-title-vi"
           type="text"
+          variant="boxed"
           autoComplete="off"
           value={formData.title_vi}
           onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-          className="w-full h-11 border border-border rounded-card px-4 text-body font-bold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50"
+          inputClassName="font-bold"
           placeholder="Nhập tên tiếng Việt…"
         />
       </div>
@@ -197,15 +191,15 @@ function AddMovieModal({ onExited }: { onExited?: () => void }) {
           <Image size={14} strokeWidth={1.5} className="text-primary" aria-hidden="true" />
           URL ảnh poster
         </label>
-        <input
+        <TextField
           id="add-movie-poster"
           name="movie-poster"
           type="text"
           inputMode="url"
+          variant="boxed"
           autoComplete="off"
           value={formData.poster}
           onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-          className="w-full h-11 border border-border rounded-card px-4 text-body font-medium text-text-primary focus-visible:border-primary/50 focus-ring transition-colors"
           placeholder="https://…"
         />
       </div>
