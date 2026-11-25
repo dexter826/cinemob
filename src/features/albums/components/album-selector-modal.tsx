@@ -188,23 +188,15 @@ function AlbumSelectorModal({ isOpen, onClose, movie }: AlbumSelectorModalProps)
             </div>
           </div>
         ) : (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="md"
+            className="w-full mb-6 h-12"
             onClick={() => setShowCreateForm(true)}
-            className="w-full p-5 mb-6 rounded-dialog border-2 border-dashed border-border hover:border-primary/60 transition-colors text-left cursor-pointer focus-ring focus-visible:outline-none"
+            leadingIcon={<FolderPlus size={18} strokeWidth={1.5} aria-hidden="true" />}
           >
-            <span className="flex items-center gap-4">
-              <span
-                aria-hidden="true"
-                className="w-12 h-12 rounded-control flex items-center justify-center shrink-0 border border-border"
-              >
-                <FolderPlus size={24} strokeWidth={1.5} className="text-primary" />
-              </span>
-              <span className="flex-1">
-                <span className="block text-title-md text-primary">Tạo album mới</span>
-              </span>
-            </span>
-          </button>
+            Tạo album mới
+          </Button>
         )}
 
         {error ? (
