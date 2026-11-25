@@ -61,7 +61,7 @@ function CapsButton({
       onClick={onClick}
       aria-pressed={active}
       className={classNames(
-        'group relative h-10 px-2 sm:px-2.5 inline-flex items-center text-label-caps font-bold transition-colors cursor-pointer',
+        'group relative h-12 px-3 sm:px-4 inline-flex items-center text-label-caps font-bold transition-colors cursor-pointer',
         active ? 'text-primary' : 'text-text-secondary hover:text-text-primary',
       )}
     >
@@ -207,7 +207,7 @@ export function DashboardRefinements({
         aria-expanded={filtersOpen}
         aria-label={toggleLabel}
         className={classNames(
-          'group relative w-11 h-10 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer border-b border-border lg:border-b-0',
+          'group relative w-10 h-10 shrink-0 flex items-center justify-center transition-colors duration-150 cursor-pointer border-b border-border lg:border-b-0',
           filtersOpen ? 'text-primary' : 'text-text-secondary hover:text-primary',
         )}
       >
