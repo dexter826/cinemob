@@ -5,6 +5,7 @@ import type {
   RefObject,
 } from 'react';
 import { ZoomIn, ZoomOut } from 'lucide-react';
+import IconButton from '@/shared/components/ui/icon-button';
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '@/features/profile/constants/avatar-editor';
 
 interface AvatarCropViewProps {
@@ -109,15 +110,15 @@ export function AvatarCropView({
       </div>
 
       <div className="w-full mt-5 px-3 flex items-center gap-3">
-        <button
-          type="button"
+        <IconButton
+          label="Thu nhỏ"
+          size="sm"
+          variant="ghost"
           onClick={() => onZoomChange(zoom - ZOOM_STEP)}
           disabled={zoom <= MIN_ZOOM || isUploading}
-          aria-label="Thu nhỏ"
-          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30 focus-ring focus-visible:outline-none"
         >
           <ZoomOut size={16} strokeWidth={1.5} aria-hidden="true" />
-        </button>
+        </IconButton>
 
         <input
           type="range"
@@ -131,15 +132,15 @@ export function AvatarCropView({
           className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-control appearance-none cursor-pointer accent-primary focus-ring focus-visible:outline-none"
         />
 
-        <button
-          type="button"
+        <IconButton
+          label="Phóng to"
+          size="sm"
+          variant="ghost"
           onClick={() => onZoomChange(zoom + ZOOM_STEP)}
           disabled={zoom >= MAX_ZOOM || isUploading}
-          aria-label="Phóng to"
-          className="p-1.5 rounded-control hover:bg-black/5 dark:hover:bg-white/10 text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-30 focus-ring focus-visible:outline-none"
         >
           <ZoomIn size={16} strokeWidth={1.5} aria-hidden="true" />
-        </button>
+        </IconButton>
 
         <span className="text-body-sm font-mono text-text-secondary w-9 text-right tabular-nums">
           {zoom.toFixed(1)}x
