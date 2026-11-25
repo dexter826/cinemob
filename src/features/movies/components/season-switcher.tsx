@@ -56,6 +56,7 @@ function SeasonSwitcher({
       </Link>
       <Dropdown
         aria-label="Chọn mùa"
+        className="w-28 shrink-0"
         options={seasonNumbers.map((n) => ({ value: n, label: `Mùa ${n}` }))}
         value={currentSeason}
         onChange={(value) => navigate(buildMoviePath(seriesId, 'tv', Number(value)))}
@@ -63,7 +64,7 @@ function SeasonSwitcher({
       {nextMissingSeason != null && (
         <Button
           variant="secondary"
-          size="sm"
+          size="lg"
           leadingIcon={<Plus size={14} strokeWidth={2} aria-hidden="true" />}
           onClick={() => {
             const movieResult: TMDBMovieResult = {

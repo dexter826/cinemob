@@ -228,7 +228,7 @@ function Dropdown({
                     role="option"
                     aria-selected={option.value === value}
                   >
-                    <span>{option.label}</span>
+                    <span className="min-w-0 truncate">{option.label}</span>
                   </button>
                 ))
               )}

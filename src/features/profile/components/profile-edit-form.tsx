@@ -66,7 +66,7 @@ function ProfileEditForm({
         maxLength={50}
         error={nameError || undefined}
         variant="boxed"
-        inputClassName="h-10 bg-surface-elevated"
+        inputClassName="bg-surface-elevated"
       />
 
       <TextArea

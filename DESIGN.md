@@ -164,15 +164,18 @@ components:
     rounded: '{rounded.control}'
     border: transparent
   button-size-sm:
-    padding: 6px 12px
+    height: 32px
+    padding: 0 12px
     typography: '{typography.body-sm}'
     gap: '{spacing.micro-2}'
   button-size-md:
-    padding: 10px 16px
+    height: 40px
+    padding: 0 16px
     typography: '{typography.body-sm}'
     gap: '{spacing.xs}'
   button-size-lg:
-    padding: 12px 24px
+    height: 44px
+    padding: 0 24px
     typography: '{typography.body}'
     gap: '{spacing.xs}'
   icon-button-sm:
@@ -439,6 +442,8 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
   - `button-secondary`: Nền trong suốt, viền `border`, dành cho hành động phụ.
   - `button-ghost`: Không viền, chỉ có hiệu ứng hover bề mặt.
   - `button-danger`: Nền `danger`, chỉ dành cho hành động phá hủy hoặc xóa vĩnh viễn dữ liệu.
+- **Thang kích thước:** `sm` 32px, `md` 40px, `lg` 44px — chiều cao cố định cho mọi variant, không phụ thuộc padding hoặc border. IconButton dùng thang riêng 32/40/48.
+- **Quy tắc hàng control:** Control cùng hàng phải cùng tier chiều cao: `lg` (44px) khi đứng cạnh field, dropdown, date/time picker; `md` (40px) cho toolbar và bộ lọc; `sm` (32px) cho control phụ nhỏ. Không override chiều cao (`h-*`) trực tiếp trên instance.
 - **Quy chuẩn tương tác:**
   - Nút ở trạng thái đang xử lý hiển thị con quay (spinner 16px) tại chỗ, giữ nguyên kích thước nút, kèm thuộc tính `aria-busy="true"`.
   - Mọi IconButton không chứa chữ hiển thị bắt buộc phải có thuộc tính `aria-label` mô tả hành động.
