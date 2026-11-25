@@ -443,7 +443,7 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
   - `button-ghost`: Không viền, chỉ có hiệu ứng hover bề mặt.
   - `button-danger`: Nền `danger`, chỉ dành cho hành động phá hủy hoặc xóa vĩnh viễn dữ liệu.
 - **Thang kích thước:** `sm` 32px, `md` 40px, `lg` 44px — chiều cao cố định cho mọi variant, không phụ thuộc padding hoặc border. IconButton dùng thang riêng 32/40/48.
-- **Quy tắc hàng control:** Control cùng hàng phải cùng tier chiều cao: `lg` (44px) khi đứng cạnh field, dropdown, date/time picker; `md` (40px) cho toolbar và bộ lọc; `sm` (32px) cho control phụ nhỏ. Không override chiều cao (`h-*`) trực tiếp trên instance.
+- **Quy tắc hàng control:** Control dạng khung đứng cùng hàng phải cùng tier chiều cao: `lg` (44px) khi đứng cạnh field, dropdown, date/time picker; `md` (40px) cho toolbar và bộ lọc; `sm` (32px) cho control phụ nhỏ. Field gạch chân, chip và menu item là ngoại lệ vì không có khung (xem mục "Control ngoài thang"). Không override chiều cao (`h-*`) trực tiếp trên instance.
 - **Quy chuẩn tương tác:**
   - Nút ở trạng thái đang xử lý hiển thị con quay (spinner 16px) tại chỗ, giữ nguyên kích thước nút, kèm thuộc tính `aria-busy="true"`.
   - Mọi IconButton không chứa chữ hiển thị bắt buộc phải có thuộc tính `aria-label` mô tả hành động.
@@ -482,6 +482,22 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
 
 - Trạng thái chờ chỉ hiển thị sau ngưỡng 150ms để tránh hiện tượng nhấp nháy giao diện khi mạng nhanh, và giữ tối thiểu 300ms khi đã hiển thị.
 - Cấu trúc khung xương (skeleton) phải mô phỏng chính xác lưới, tỷ lệ và số lượng phần tử của nội dung thực tế. Không sử dụng con quay (spinner) thay thế cho toàn bộ danh sách nội dung.
+
+### Control ngoài thang (one-off)
+
+Ngoài thang 32/40/44/48, các control sau được phép tồn tại khi có chủ đích thiết kế rõ ràng:
+
+| Control                    | Quy tắc                                                                                 |
+| :------------------------- | :-------------------------------------------------------------------------------------- |
+| Segmented / radio group    | Đoạn bên trong cao 40px, bo góc `control`; khung ngoài bo góc `card`.                   |
+| Chip / pill toggle         | Dùng token `chip`; pill dùng `rounded.full` và chỉ dành cho bộ chọn nhỏ.                |
+| Overlay button trên poster | 32px mặc định, 40px trên mobile, bo góc `poster`, nền đen 60%, không theo viền control. |
+| Floating button            | 40px trên desktop, 48px trên mobile, bo góc `control`.                                  |
+| Tab lớn (dashboard)        | Cao 48px, typography `body-sm`, chữ in hoa.                                             |
+| Search field gạch chân     | Cao 48px; ngoại lệ tier vì không có khung, không bắt buộc khớp field 44px.              |
+| Menu item trong popover    | Cao 38–41px theo padding, bo góc `control`, không tính vào tier control.                |
+
+Các control chuyên biệt có bố cục riêng (ô lịch, sao đánh giá, thanh trượt zoom, ô chọn phim trên poster) giữ kích thước theo nội dung nhưng phải dùng bán kính bo góc và bảng màu đã khai báo trong tài liệu này.
 
 ---
 
