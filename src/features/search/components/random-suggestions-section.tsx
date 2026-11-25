@@ -2,9 +2,9 @@ import { TMDBMovieResult } from '@/types';
 import { Dice5, RotateCcw } from 'lucide-react';
 import EmptyState from '@/shared/components/ui/empty-state';
 import ErrorState from '@/shared/components/ui/error-state';
+import Button from '@/shared/components/ui/button';
 import SkeletonCard from '@/shared/components/ui/skeleton-card';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
-import Spinner from '@/shared/components/ui/spinner';
 import MoviePosterGrid from './movie-poster-grid';
 
 interface RandomSuggestionsSectionProps {
@@ -40,22 +40,18 @@ function RandomSuggestionsSection({
             Đề xuất cho bạn
           </h2>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          size="md"
+          loading={isLoading}
           onClick={onRefresh}
-          disabled={isLoading}
           aria-label={isLoading ? 'Đang cập nhật gợi ý…' : 'Làm mới gợi ý'}
-          aria-busy={isLoading}
           title={isLoading ? 'Đang cập nhật gợi ý…' : 'Làm mới gợi ý'}
-          className="inline-flex items-center gap-1.5 p-3 sm:px-3 sm:py-2 rounded-control text-body-sm sm:text-body bg-surface border border-border hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer text-text-primary whitespace-nowrap shrink-0 focus-ring focus-visible:outline-none"
+          leadingIcon={<RotateCcw size={16} strokeWidth={1.5} aria-hidden="true" />}
+          className="shrink-0 whitespace-nowrap"
         >
-          {isLoading ? (
-            <Spinner size={16} className="text-current" />
-          ) : (
-            <RotateCcw size={16} strokeWidth={1.5} aria-hidden="true" />
-          )}
           <span className="hidden sm:inline">{isLoading ? 'Đang cập nhật…' : 'Làm mới'}</span>
-        </button>
+        </Button>
       </div>
 
       {error && movies.length > 0 && (
