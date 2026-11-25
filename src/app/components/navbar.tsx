@@ -162,7 +162,7 @@ function Navbar() {
                 aria-haspopup="menu"
                 aria-expanded={isDropdownOpen}
                 aria-controls="account-menu"
-                className="flex items-center justify-center gap-2 p-1 md:px-3 md:py-1.5 rounded-control border border-transparent hover:border-border transition-colors cursor-pointer min-w-9 min-h-9"
+                className="flex items-center justify-center gap-2 p-1.5 md:px-3 rounded-control border border-transparent hover:border-border transition-colors cursor-pointer min-w-10 min-h-10"
               >
                 {user?.photoURL && !isAvatarLoadFailed ? (
                   <img
