@@ -3,7 +3,7 @@ import { Film, Globe, Calendar, Tv, Clock, AlignLeft } from 'lucide-react';
 import Dropdown from '@/shared/components/ui/dropdown';
 import DatePicker from '@/shared/components/ui/date-picker';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
-import { TextArea } from '@/shared/components/ui';
+import { TextArea, TextField } from '@/shared/components/ui';
 import { GENRE_TRANSLATIONS } from '@/constants/genres';
 import type { MovieFormData } from '../../utils/movie-form-utils';
 
@@ -88,9 +88,13 @@ function MovieFormFields({
               placeholder="Chọn loại…"
             />
           ) : (
-            <div className="w-full h-11 flex items-center border border-border rounded-card px-4 text-body font-semibold text-text-secondary">
-              {isTVSeries ? 'Series' : 'Movie'}
-            </div>
+            <TextField
+              id="movie-media-type"
+              value={isTVSeries ? 'Series' : 'Movie'}
+              readOnly
+              variant="boxed"
+              inputClassName="font-semibold"
+            />
           )}
         </div>
 
@@ -161,43 +165,30 @@ function MovieFormFields({
           <div
             className={`transition-transform duration-150 ${isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) ? 'scale-[1.02]' : ''}`}
           >
-            <input
+            <TextField
               id="movie-runtime"
               name="movie-runtime"
               ref={isTVSeries ? refs.seasons : refs.runtime}
               type="number"
               inputMode="numeric"
+              variant="boxed"
               required
               disabled={!isManualMode}
               autoComplete="off"
-              aria-invalid={
-                isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime))
-                  ? true
-                  : undefined
-              }
-              aria-describedby={
-                isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime))
-                  ? 'movie-runtime-error'
-                  : undefined
-              }
               value={isTVSeries ? formData.seasons : formData.runtime}
               onChange={(e) => {
                 setFormData({ ...formData, [isTVSeries ? 'seasons' : 'runtime']: e.target.value });
               }}
-              className="w-full h-11 border border-border rounded-card px-4 text-body font-semibold text-text-primary focus-visible:border-primary/50 focus-ring transition-colors disabled:opacity-50 tabular-nums"
+              error={
+                isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime))
+                  ? isTVSeries
+                    ? 'Vui lòng nhập số mùa của series (lớn hơn 0).'
+                    : 'Vui lòng nhập thời lượng phim theo phút (lớn hơn 0).'
+                  : undefined
+              }
+              inputClassName="font-semibold tabular-nums"
               placeholder={isTVSeries ? 'Nhập số mùa…' : 'Nhập thời lượng (phút)…'}
             />
-            {isAnimating && ((isTVSeries && errors.seasons) || (!isTVSeries && errors.runtime)) && (
-              <p
-                id="movie-runtime-error"
-                role="alert"
-                className="text-body-sm font-medium text-danger ml-1 mt-1"
-              >
-                {isTVSeries
-                  ? 'Vui lòng nhập số mùa của series (lớn hơn 0).'
-                  : 'Vui lòng nhập thời lượng phim theo phút (lớn hơn 0).'}
-              </p>
-            )}
           </div>
         </div>
       </div>
