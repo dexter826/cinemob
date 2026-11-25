@@ -6,6 +6,7 @@ import PosterCard from '@/features/movies/components/poster-card';
 import useMovieStore from '@/features/movies/stores/movie-store';
 import { findLibraryEntry, buildMoviePath } from '@/features/movies/utils/movie-utils';
 import SearchField from '@/shared/components/ui/search-field';
+import Button from '@/shared/components/ui/button';
 import { getMainTitleForTMDB } from '@/shared/utils/tmdb';
 import Pagination from '@/shared/components/ui/pagination';
 import MultiSelectDropdown from '@/shared/components/ui/multi-select-dropdown';
@@ -115,29 +116,40 @@ export function PersonMovieSection({
                   Sắp xếp theo
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button
+                  <Button
+                    variant={sortBy === 'year' ? 'primary' : 'ghost'}
+                    size="md"
+                    aria-pressed={sortBy === 'year'}
                     onClick={() => onSortByChange('year')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none ${sortBy === 'year' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    leadingIcon={<Calendar size={14} strokeWidth={1.5} aria-hidden="true" />}
                   >
-                    <Calendar size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Năm</span>
-                  </button>
-                  <button
+                    Năm
+                  </Button>
+                  <Button
+                    variant={sortBy === 'title' ? 'primary' : 'ghost'}
+                    size="md"
+                    aria-pressed={sortBy === 'title'}
                     onClick={() => onSortByChange('title')}
-                    className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold transition-colors border cursor-pointer focus-ring focus-visible:outline-none ${sortBy === 'title' ? 'bg-primary text-on-primary border-primary' : 'border-transparent text-text-secondary hover:bg-black/10 dark:hover:bg-white/10'}`}
+                    leadingIcon={<Type size={14} strokeWidth={1.5} aria-hidden="true" />}
                   >
-                    <Type size={14} strokeWidth={1.5} aria-hidden="true" /> <span>Tên</span>
-                  </button>
-                  <button
+                    Tên
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    aria-pressed={sortOrder === 'desc'}
                     onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-control text-body-sm font-bold text-text-secondary hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-transparent cursor-pointer ml-auto focus-ring focus-visible:outline-none"
+                    leadingIcon={
+                      sortOrder === 'asc' ? (
+                        <ArrowUp size={14} strokeWidth={1.5} aria-hidden="true" />
+                      ) : (
+                        <ArrowDown size={14} strokeWidth={1.5} aria-hidden="true" />
+                      )
+                    }
+                    className="ml-auto"
                   >
-                    {sortOrder === 'asc' ? (
-                      <ArrowUp size={14} strokeWidth={1.5} aria-hidden="true" />
-                    ) : (
-                      <ArrowDown size={14} strokeWidth={1.5} aria-hidden="true" />
-                    )}
-                    <span>{sortOrder === 'asc' ? 'Tăng' : 'Giảm'}</span>
-                  </button>
+                    {sortOrder === 'asc' ? 'Tăng' : 'Giảm'}
+                  </Button>
                 </div>
               </div>
 
