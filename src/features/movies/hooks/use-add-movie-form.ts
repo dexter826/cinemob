@@ -242,7 +242,7 @@ export const useAddMovieForm = () => {
     return () => {
       cancelled = true;
     };
-  }, [isOpen, uid, isTVSeries, initialData, tvProgress.currentSeason, setMovieExists]);
+  }, [isOpen, uid, isTVSeries, initialData, tvProgress.currentSeason, setMovieExists, showToast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

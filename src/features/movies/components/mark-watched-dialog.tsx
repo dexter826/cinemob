@@ -84,7 +84,7 @@ function MarkWatchedDialog() {
           });
       }
     }
-  }, [isOpen, target]);
+  }, [isOpen, target, showToast]);
 
   if (!target || !isOpen || ownerUid !== user?.uid) return null;
 
