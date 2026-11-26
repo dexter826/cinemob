@@ -1,28 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
 import { Dropdown } from '@/shared/components/ui';
-import Button from '@/shared/components/ui/button';
-import useAddMovieStore from '../stores/add-movie-store';
 import { buildMoviePath } from '../utils/movie-utils';
 import { getTVShowSeasons } from '@/features/search/services/tmdb';
-import { TMDBMovieResult } from '@/types';
 
 interface SeasonSwitcherProps {
   seriesId: string | number;
   currentSeason: number;
   seasonCount: number;
-  nextMissingSeason?: number | null;
 }
 
-function SeasonSwitcher({
-  seriesId,
-  currentSeason,
-  seasonCount,
-  nextMissingSeason,
-}: SeasonSwitcherProps) {
+function SeasonSwitcher({ seriesId, currentSeason, seasonCount }: SeasonSwitcherProps) {
   const navigate = useNavigate();
-  const openAddModal = useAddMovieStore((state) => state.openAddModal);
   const [tmdbSeasonNumbers, setTmdbSeasonNumbers] = useState<number[] | null>(null);
 
   useEffect(() => {
@@ -61,27 +50,6 @@ function SeasonSwitcher({
         value={currentSeason}
         onChange={(value) => navigate(buildMoviePath(seriesId, 'tv', Number(value)))}
       />
-      {nextMissingSeason != null && (
-        <Button
-          variant="secondary"
-          size="lg"
-          leadingIcon={<Plus size={14} strokeWidth={2} aria-hidden="true" />}
-          onClick={() => {
-            const movieResult: TMDBMovieResult = {
-              id: Number(seriesId),
-              poster_path: null,
-              media_type: 'tv',
-            };
-            openAddModal({
-              movie: movieResult,
-              mediaType: 'tv',
-              initialSeason: nextMissingSeason,
-            });
-          }}
-        >
-          Thêm Mùa {nextMissingSeason}
-        </Button>
-      )}
     </div>
   );
 }

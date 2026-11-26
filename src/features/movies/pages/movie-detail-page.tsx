@@ -412,7 +412,6 @@ function MovieDetailPage() {
             seriesId={movie.id}
             currentSeason={seasonParam}
             seasonCount={seriesInfo?.totalSeasons || movie.seasons || 1}
-            nextMissingSeason={seriesInfo?.nextMissingSeason}
           />
         )}
       </div>
