@@ -444,6 +444,10 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
   - `button-danger`: Nền `danger`, chỉ dành cho hành động phá hủy hoặc xóa vĩnh viễn dữ liệu.
 - **Thang kích thước:** `sm` 32px, `md` 40px, `lg` 44px — chiều cao cố định cho mọi variant, không phụ thuộc padding hoặc border. IconButton dùng thang riêng 32/40/48.
 - **Quy tắc hàng control:** Control dạng khung đứng cùng hàng phải cùng tier chiều cao: `lg` (44px) khi đứng cạnh field, dropdown, date/time picker; `md` (40px) cho toolbar và bộ lọc; `sm` (32px) cho control phụ nhỏ. Field gạch chân, chip và menu item là ngoại lệ vì không có khung (xem mục "Control ngoài thang"). Không override chiều cao (`h-*`) trực tiếp trên instance.
+- **Nhãn responsive:** Mặc định giữ cả icon và nhãn ở mọi breakpoint. Chỉ ẩn nhãn dưới `sm` khi hội đủ bốn điều kiện: icon phổ quát và chỉ một nghĩa trong ngữ cảnh; là hành động phụ hoặc lặp lại, không phải CTA chính; có `aria-label` mô tả hành động; vùng chạm tối thiểu 40px (tier `md`).
+- **Không ẩn nhãn:** CTA chính hoặc submit (`Lưu`, `Đăng nhập`, `Đã xem`, `Tiếp tục xem`, `Thêm vào album`); hành động phá huỷ đứng riêng (`Xoá album`, `Xoá phim`); icon đa nghĩa (`Plus`, `Play`, `Star`); nhãn mang thông tin icon không tải được (`Thêm Mùa 2`, `Xem trailer`).
+- **Hàng điều hướng:** Hàng điều hướng (back, breadcrumb, chuyển mùa/tab) không chứa CTA ghi dữ liệu. CTA đặt trong vùng nội dung hoặc `PageHeader`, và không được làm thay đổi chiều rộng/chiều cao hàng điều hướng giữa các đối tượng.
+- **Thứ tự xử lý khi hàng control hết chỗ:** cho xuống dòng → rút gọn nhãn → gom vào menu “…” → cuối cùng mới ẩn nhãn.
 - **Quy chuẩn tương tác:**
   - Nút ở trạng thái đang xử lý hiển thị con quay (spinner 16px) tại chỗ, giữ nguyên kích thước nút, kèm thuộc tính `aria-busy="true"`.
   - Mọi IconButton không chứa chữ hiển thị bắt buộc phải có thuộc tính `aria-label` mô tả hành động.
