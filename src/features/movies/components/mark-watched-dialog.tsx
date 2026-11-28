@@ -272,7 +272,6 @@ function MarkWatchedDialog() {
                 setDateError(null);
               }}
               placeholder="Chọn ngày…"
-              popupMode="dialog"
               aria-invalid={dateError ? true : undefined}
               aria-describedby={dateError ? 'mark-watched-date-error' : undefined}
             />
@@ -299,7 +298,6 @@ function MarkWatchedDialog() {
               value={time}
               onChange={setTime}
               placeholder="Chọn giờ…"
-              popupMode="dialog"
             />
           </div>
         </div>
