@@ -15,6 +15,7 @@ export { default as Dialog } from './dialog';
 export { DialogHeader, DialogBody, DialogFooter } from './dialog';
 export { default as Dropdown } from './dropdown';
 export { default as MultiSelectDropdown } from './multi-select-dropdown';
+export { default as FloatingPanel } from './floating-panel';
 export { default as DatePicker } from './date-picker';
 export { default as TimePicker } from './time-picker';
 export { default as Switch } from './switch';

@@ -13,6 +13,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@floating-ui/react-dom": "^2.1.9",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
     "howler": "^2.2.4",

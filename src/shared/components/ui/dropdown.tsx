@@ -1,8 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import ListboxSearchInput from './listbox-search-input';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { getPanelMotion } from '@/constants/animations';
+import FloatingPanel from './floating-panel';
 
 interface Option {
   value: string | number;
@@ -47,12 +46,9 @@ function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const reducedMotion = useReducedMotion() ?? false;
-  const panelMotion = getPanelMotion(reducedMotion);
 
   const selectedOption = useMemo(
     () => options.find((option) => option.value === value),
@@ -64,18 +60,6 @@ function Dropdown({
     const lowerQuery = searchQuery.toLowerCase();
     return options.filter((option) => option.label.toLowerCase().includes(lowerQuery));
   }, [options, searchable, searchQuery]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setSearchQuery('');
-        setActiveIndex(-1);
-      }
-    };
-    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -149,7 +133,7 @@ function Dropdown({
   };
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className={`relative ${className}`}>
       <button
         id={controlId}
         ref={triggerRef}
@@ -186,56 +170,60 @@ function Dropdown({
         />
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            {...panelMotion}
-            className="absolute top-full left-0 right-0 mt-2 bg-surface-elevated border border-border rounded-card z-50 overflow-hidden"
-          >
-            {searchable && (
-              <ListboxSearchInput
-                inputRef={inputRef}
-                value={searchQuery}
-                onChange={(next) => {
-                  setSearchQuery(next);
-                  setActiveIndex(-1);
-                }}
-                onKeyDown={handleNavigationKey}
-              />
-            )}
-
-            <div
-              id={listboxId}
-              role="listbox"
-              className="overflow-y-auto custom-scrollbar p-2"
-              style={{ maxHeight }}
-            >
-              {filteredOptions.length === 0 ? (
-                <div className="px-4 py-4 text-body text-text-secondary text-center">
-                  {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
-                </div>
-              ) : (
-                filteredOptions.map((option, index) => (
-                  <button
-                    key={option.value}
-                    ref={(element) => {
-                      optionRefs.current[index] = element;
-                    }}
-                    type="button"
-                    onClick={() => handleSelect(option)}
-                    onKeyDown={handleNavigationKey}
-                    className={`w-full px-4 py-2.5 text-left text-body rounded-control transition-colors flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
-                    role="option"
-                    aria-selected={option.value === value}
-                  >
-                    <span className="min-w-0 truncate">{option.label}</span>
-                  </button>
-                ))
-              )}
-            </div>
-          </motion.div>
+      <FloatingPanel
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setSearchQuery('');
+          setActiveIndex(-1);
+        }}
+        anchorRef={triggerRef}
+        matchTriggerWidth
+        offset={8}
+        className="rounded-card overflow-hidden"
+      >
+        {searchable && (
+          <ListboxSearchInput
+            inputRef={inputRef}
+            value={searchQuery}
+            onChange={(next) => {
+              setSearchQuery(next);
+              setActiveIndex(-1);
+            }}
+            onKeyDown={handleNavigationKey}
+          />
         )}
-      </AnimatePresence>
+
+        <div
+          id={listboxId}
+          role="listbox"
+          className="overflow-y-auto custom-scrollbar p-2"
+          style={{ maxHeight }}
+        >
+          {filteredOptions.length === 0 ? (
+            <div className="px-4 py-4 text-body text-text-secondary text-center">
+              {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
+            </div>
+          ) : (
+            filteredOptions.map((option, index) => (
+              <button
+                key={option.value}
+                ref={(element) => {
+                  optionRefs.current[index] = element;
+                }}
+                type="button"
+                onClick={() => handleSelect(option)}
+                onKeyDown={handleNavigationKey}
+                className={`w-full px-4 py-2.5 text-left text-body rounded-control transition-colors flex items-center justify-between mb-1 last:mb-0 ${option.value === value ? 'bg-primary text-on-primary font-bold' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}`}
+                role="option"
+                aria-selected={option.value === value}
+              >
+                <span className="min-w-0 truncate">{option.label}</span>
+              </button>
+            ))
+          )}
+        </div>
+      </FloatingPanel>
     </div>
   );
 }

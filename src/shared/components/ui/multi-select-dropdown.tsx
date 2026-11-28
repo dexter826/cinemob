@@ -1,8 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Check, ChevronDown, X } from 'lucide-react';
 import ListboxSearchInput from './listbox-search-input';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { getPanelMotion } from '@/constants/animations';
+import FloatingPanel from './floating-panel';
 
 interface Option {
   value: string | number;
@@ -49,12 +48,9 @@ function MultiSelectDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const reducedMotion = useReducedMotion() ?? false;
-  const panelMotion = getPanelMotion(reducedMotion);
 
   const selectedOptions = useMemo(
     () => options.filter((option) => values.includes(option.value)),
@@ -66,18 +62,6 @@ function MultiSelectDropdown({
     const lowerQuery = searchQuery.toLowerCase();
     return options.filter((option) => option.label.toLowerCase().includes(lowerQuery));
   }, [options, searchable, searchQuery]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setSearchQuery('');
-        setActiveIndex(-1);
-      }
-    };
-    if (isOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -153,7 +137,7 @@ function MultiSelectDropdown({
   const remainingCount = selectedOptions.length - displayOptions.length;
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className={`relative ${className}`}>
       <div
         className={`flex min-h-11 bg-surface border border-border-default rounded-card transition-colors ${isOpen ? 'border-primary/50 ring-1 ring-primary/20' : ''} ${disabled ? 'opacity-50' : ''}`}
       >
@@ -213,91 +197,90 @@ function MultiSelectDropdown({
         )}
       </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            {...panelMotion}
-            className="absolute top-full left-0 right-0 mt-1 bg-surface-elevated border border-border rounded-control z-50 overflow-hidden"
-          >
-            {searchable && (
-              <ListboxSearchInput
-                inputRef={inputRef}
-                value={searchQuery}
-                onChange={(next) => {
-                  setSearchQuery(next);
-                  setActiveIndex(-1);
-                }}
-                onKeyDown={handleNavigationKey}
-              />
-            )}
-
-            {values.length > 0 && (
-              <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
-                <span className="text-body-sm text-text-secondary">
-                  Đã chọn {values.length} mục
-                </span>
-                <button
-                  type="button"
-                  onClick={() => onChange([])}
-                  className="text-body-sm text-primary hover:text-primary/80 transition-colors"
-                >
-                  Xóa tất cả
-                </button>
-              </div>
-            )}
-
-            <div
-              id={listboxId}
-              role="listbox"
-              aria-multiselectable="true"
-              className="overflow-y-auto custom-scrollbar p-2"
-              style={{ maxHeight }}
-            >
-              {filteredOptions.length === 0 ? (
-                <div className="px-4 py-3 text-body text-text-secondary text-center">
-                  {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
-                </div>
-              ) : (
-                filteredOptions.map((option, index) => {
-                  const isSelected = values.includes(option.value);
-                  return (
-                    <button
-                      key={option.value}
-                      ref={(element) => {
-                        optionRefs.current[index] = element;
-                      }}
-                      type="button"
-                      onClick={() => toggleOption(option)}
-                      onKeyDown={handleNavigationKey}
-                      className={`w-full px-4 py-2.5 text-left text-body hover:bg-primary/10 rounded-control transition-colors flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
-                      role="option"
-                      aria-selected={isSelected}
-                    >
-                      <span
-                        className={`w-4 h-4 rounded-poster border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
-                      >
-                        {isSelected && (
-                          <Check
-                            size={12}
-                            strokeWidth={1.5}
-                            className="text-on-primary"
-                            aria-hidden="true"
-                          />
-                        )}
-                      </span>
-                      <span
-                        className={isSelected ? 'text-primary font-medium' : 'text-text-primary'}
-                      >
-                        {option.label}
-                      </span>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </motion.div>
+      <FloatingPanel
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setSearchQuery('');
+          setActiveIndex(-1);
+        }}
+        anchorRef={triggerRef}
+        matchTriggerWidth
+        className="rounded-control overflow-hidden"
+      >
+        {searchable && (
+          <ListboxSearchInput
+            inputRef={inputRef}
+            value={searchQuery}
+            onChange={(next) => {
+              setSearchQuery(next);
+              setActiveIndex(-1);
+            }}
+            onKeyDown={handleNavigationKey}
+          />
         )}
-      </AnimatePresence>
+
+        {values.length > 0 && (
+          <div className="px-3 py-2 border-b border-border-default flex items-center justify-between">
+            <span className="text-body-sm text-text-secondary">Đã chọn {values.length} mục</span>
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              className="text-body-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              Xóa tất cả
+            </button>
+          </div>
+        )}
+
+        <div
+          id={listboxId}
+          role="listbox"
+          aria-multiselectable="true"
+          className="overflow-y-auto custom-scrollbar p-2"
+          style={{ maxHeight }}
+        >
+          {filteredOptions.length === 0 ? (
+            <div className="px-4 py-3 text-body text-text-secondary text-center">
+              {searchable && searchQuery ? 'Không tìm thấy kết quả' : 'Không có tùy chọn'}
+            </div>
+          ) : (
+            filteredOptions.map((option, index) => {
+              const isSelected = values.includes(option.value);
+              return (
+                <button
+                  key={option.value}
+                  ref={(element) => {
+                    optionRefs.current[index] = element;
+                  }}
+                  type="button"
+                  onClick={() => toggleOption(option)}
+                  onKeyDown={handleNavigationKey}
+                  className={`w-full px-4 py-2.5 text-left text-body hover:bg-primary/10 rounded-control transition-colors flex items-center gap-3 mb-1 last:mb-0 ${isSelected ? 'bg-primary/5 text-primary' : 'text-text-primary'}`}
+                  role="option"
+                  aria-selected={isSelected}
+                >
+                  <span
+                    className={`w-4 h-4 rounded-poster border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'bg-primary border-primary' : 'border-black/20 dark:border-white/20'}`}
+                  >
+                    {isSelected && (
+                      <Check
+                        size={12}
+                        strokeWidth={1.5}
+                        className="text-on-primary"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </span>
+                  <span className={isSelected ? 'text-primary font-medium' : 'text-text-primary'}>
+                    {option.label}
+                  </span>
+                </button>
+              );
+            })
+          )}
+        </div>
+      </FloatingPanel>
     </div>
   );
 }

@@ -46,3 +46,30 @@ export const isDateOutOfRange = (date: Date, minDate?: string, maxDate?: string)
   }
   return false;
 };
+
+export const getYearPageStart = (year: number): number => year - (year % 12);
+
+export const isMonthOutOfRange = (
+  year: number,
+  month: number,
+  minDate?: string,
+  maxDate?: string,
+): boolean => {
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0);
+  if (minDate) {
+    const [minYear, minMonth, minDay] = minDate.split('-').map(Number);
+    if (monthEnd < new Date(minYear, minMonth - 1, minDay)) return true;
+  }
+  if (maxDate) {
+    const [maxYear, maxMonth, maxDay] = maxDate.split('-').map(Number);
+    if (monthStart > new Date(maxYear, maxMonth - 1, maxDay)) return true;
+  }
+  return false;
+};
+
+export const isYearOutOfRange = (year: number, minDate?: string, maxDate?: string): boolean => {
+  if (minDate && year < Number(minDate.split('-')[0])) return true;
+  if (maxDate && year > Number(maxDate.split('-')[0])) return true;
+  return false;
+};

@@ -1,20 +1,15 @@
 import React, { useState, useRef, useEffect, useId, useMemo } from 'react';
-import { Clock, X } from 'lucide-react';
-import { Dialog } from './dialog';
-import { useMediaQuery } from '@/shared/hooks/use-media-query';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { getPanelMotion } from '@/constants/animations';
+import { Clock } from 'lucide-react';
+import FloatingPanel from './floating-panel';
 
 interface TimePickerProps {
-  value: string; // định dạng HH:mm
+  value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
   minuteStep?: number;
   id?: string;
-  /** 'dialog' luôn mở bảng chọn dạng hộp thoại (kể cả desktop) — dùng khi nằm trong dialog khác. */
-  popupMode?: 'popover' | 'dialog';
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean | 'true' | 'false';
@@ -30,62 +25,22 @@ function TimePicker({
   disabled = false,
   minuteStep = 1,
   id,
-  popupMode = 'popover',
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   'aria-invalid': ariaInvalid,
 }: TimePickerProps) {
   const generatedId = useId();
   const controlId = id ?? `time-picker-${generatedId}`;
-  const dialogTitleId = `${controlId}-title`;
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 639px)');
-  const useDialogPresentation = isMobile || popupMode === 'dialog';
-  const reducedMotion = useReducedMotion() ?? false;
-  const popoverMotion = getPanelMotion(reducedMotion);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const hourListRef = useRef<HTMLDivElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
   const minuteListRef = useRef<HTMLDivElement>(null);
 
   const [hours, minutes] = value ? value.split(':').map(Number) : [0, 0];
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen && !useDialogPresentation) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, useDialogPresentation]);
-
-  useEffect(() => {
-    if (!isOpen || useDialogPresentation) return undefined;
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        closePicker();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, useDialogPresentation]);
-
-  // Popover desktop là dialog: nhận focus khi mở để bàn phím thao tác ngay.
-  useEffect(() => {
-    if (isOpen && !useDialogPresentation) popoverRef.current?.focus();
-  }, [isOpen, useDialogPresentation]);
-
-  // Cuộn đến giờ phút đã chọn khi mở picker
-  useEffect(() => {
     if (!isOpen) return;
-
     const timer = setTimeout(() => {
       if (hourListRef.current) {
         const selectedHour = hourListRef.current.querySelector('[data-selected="true"]');
@@ -100,8 +55,11 @@ function TimePicker({
         }
       }
     }, 0);
-
     return () => clearTimeout(timer);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) panelRef.current?.focus();
   }, [isOpen]);
 
   const closePicker = () => {
@@ -153,112 +111,8 @@ function TimePicker({
     [minuteStep],
   );
 
-  const renderPicker = () => (
-    <motion.div
-      ref={popoverRef}
-      id={useDialogPresentation ? undefined : `${controlId}-dialog`}
-      tabIndex={useDialogPresentation ? undefined : -1}
-      className={`
-                bg-surface-elevated border border-border rounded-card p-4
-                ${
-                  useDialogPresentation
-                    ? 'relative w-full max-w-[280px] mx-auto'
-                    : 'absolute top-full right-0 mt-1 z-50 w-56'
-                }
-            `}
-      role={useDialogPresentation ? undefined : 'dialog'}
-      aria-label={useDialogPresentation ? undefined : 'Chọn giờ'}
-      onClick={(e) => useDialogPresentation && e.stopPropagation()}
-      initial={useDialogPresentation ? undefined : popoverMotion.initial}
-      animate={useDialogPresentation ? undefined : popoverMotion.animate}
-      exit={useDialogPresentation ? undefined : popoverMotion.exit}
-      transition={popoverMotion.transition}
-    >
-      {useDialogPresentation && (
-        <div className="flex items-center justify-between mb-4 pb-2 border-b border-border-default">
-          <span id={dialogTitleId} className="text-title-md text-text-primary">
-            Chọn giờ
-          </span>
-          <button
-            type="button"
-            aria-label="Đóng bảng chọn giờ"
-            onClick={closePicker}
-            className="p-1.5 hover:bg-black/5 dark:hover:bg-white/5 rounded-control cursor-pointer"
-          >
-            <X size={20} strokeWidth={1.5} className="text-text-secondary" aria-hidden="true" />
-          </button>
-        </div>
-      )}
-
-      {/* Danh sách chọn nhanh */}
-      <div className="flex gap-2 max-h-40">
-        {/* Danh sách giờ */}
-        <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
-            Giờ
-          </div>
-          {HOUR_OPTIONS.map((h) => (
-            <button
-              key={h}
-              type="button"
-              data-selected={h === hours}
-              onClick={() => handleHourChange(h)}
-              className={`
-                                w-full py-2.5 text-body-sm rounded-control transition-colors
-                                ${
-                                  h === hours
-                                    ? 'bg-primary text-on-primary font-bold'
-                                    : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
-                                }
-                            `}
-            >
-              {String(h).padStart(2, '0')}
-            </button>
-          ))}
-        </div>
-
-        {/* Danh sách phút */}
-        <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
-            Phút
-          </div>
-          {minuteOptions.map((m) => (
-            <button
-              key={m}
-              type="button"
-              data-selected={m === minutes}
-              onClick={() => handleMinuteChange(m)}
-              className={`
-                                w-full py-2.5 text-body-sm rounded-control transition-colors
-                                ${
-                                  m === minutes
-                                    ? 'bg-primary text-on-primary font-bold'
-                                    : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
-                                }
-                            `}
-            >
-              {String(m).padStart(2, '0')}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Nút bây giờ */}
-      <div className="mt-4 pt-3 border-t border-border-default">
-        <button
-          type="button"
-          onClick={setCurrentTime}
-          className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
-        >
-          Bây giờ
-        </button>
-      </div>
-    </motion.div>
-  );
-
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      {/* Nút trigger */}
+    <div className={`relative ${className}`}>
       <button
         id={controlId}
         ref={triggerRef}
@@ -291,21 +145,76 @@ function TimePicker({
         </div>
       </button>
 
-      {/* Khung chọn giờ */}
-      {useDialogPresentation ? (
-        <Dialog
-          open={isOpen}
-          onClose={closePicker}
-          titleId={dialogTitleId}
-          presentation="dialog"
-          size="sm"
-          className="bg-transparent shadow-none overflow-visible"
-        >
-          <div id={`${controlId}-dialog`}>{renderPicker()}</div>
-        </Dialog>
-      ) : (
-        <AnimatePresence>{isOpen && renderPicker()}</AnimatePresence>
-      )}
+      <FloatingPanel
+        open={isOpen}
+        onClose={closePicker}
+        anchorRef={triggerRef}
+        panelRef={panelRef}
+        id={`${controlId}-dialog`}
+        ariaLabel="Chọn giờ"
+        align="end"
+        className="w-56 rounded-card p-4"
+      >
+        <div className="flex gap-2 max-h-40">
+          <div ref={hourListRef} className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
+              Giờ
+            </div>
+            {HOUR_OPTIONS.map((h) => (
+              <button
+                key={h}
+                type="button"
+                data-selected={h === hours}
+                onClick={() => handleHourChange(h)}
+                className={`
+                  w-full py-2.5 text-body-sm rounded-control transition-colors
+                  ${
+                    h === hours
+                      ? 'bg-primary text-on-primary font-bold'
+                      : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
+                  }
+                `}
+              >
+                {String(h).padStart(2, '0')}
+              </button>
+            ))}
+          </div>
+
+          <div ref={minuteListRef} className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="text-label-caps text-text-secondary text-center mb-1 sticky top-0 bg-surface">
+              Phút
+            </div>
+            {minuteOptions.map((m) => (
+              <button
+                key={m}
+                type="button"
+                data-selected={m === minutes}
+                onClick={() => handleMinuteChange(m)}
+                className={`
+                  w-full py-2.5 text-body-sm rounded-control transition-colors
+                  ${
+                    m === minutes
+                      ? 'bg-primary text-on-primary font-bold'
+                      : 'text-text-primary hover:bg-primary/10 hover:text-primary font-medium'
+                  }
+                `}
+              >
+                {String(m).padStart(2, '0')}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-border-default">
+          <button
+            type="button"
+            onClick={setCurrentTime}
+            className="w-full py-2.5 text-body-sm font-bold text-primary hover:bg-primary/5 rounded-control transition-colors border border-transparent"
+          >
+            Bây giờ
+          </button>
+        </div>
+      </FloatingPanel>
     </div>
   );
 }

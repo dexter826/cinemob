@@ -16,6 +16,7 @@ interface FocusTrapOptions {
   containerRef: React.RefObject<HTMLElement | null>;
   initialFocusRef?: React.RefObject<HTMLElement | null>;
   onEscape: () => void;
+  autoFocus?: boolean;
 }
 
 function isVisible(el: HTMLElement): boolean {
@@ -36,6 +37,7 @@ export function useFocusTrap({
   containerRef,
   initialFocusRef,
   onEscape,
+  autoFocus = true,
 }: FocusTrapOptions) {
   const tokenRef = React.useRef<symbol | null>(null);
   const savedFocusRef = React.useRef<HTMLElement | null>(null);
@@ -66,7 +68,7 @@ export function useFocusTrap({
         container.focus();
       }
     };
-    focusTarget();
+    if (autoFocus) focusTarget();
 
     const isTopmost = () => trapStack[trapStack.length - 1] === tokenRef.current;
 
@@ -105,5 +107,5 @@ export function useFocusTrap({
       if (saved && saved.isConnected) saved.focus();
       tokenRef.current = null;
     };
-  }, [active, containerRef, initialFocusRef]);
+  }, [active, containerRef, initialFocusRef, autoFocus]);
 }
