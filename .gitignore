@@ -50,3 +50,5 @@ Thumbs.db
 .superpowers/
 
 service-account.json
+
+.zcode/
