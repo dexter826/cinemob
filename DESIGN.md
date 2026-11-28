@@ -467,7 +467,8 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
 
 ### Dropdown & MultiSelect
 
-- Bảng chọn (`dropdown-panel`) có thời gian xuất hiện/biến mất 120ms, tự động đóng khi nhấn phím Escape hoặc click ra ngoài vùng chọn, hoàn trả tiêu điểm về nút kích hoạt.
+- Bảng chọn (`dropdown-panel`) render qua floating layer (`FloatingPanel`): portal vào body, neo theo nút kích hoạt, tự lật lên khi chạm đáy và trượt ngang khi tràn mép viewport, độ ưu tiên tầng nằm trên lớp dialog.
+- Bảng chọn có thời gian xuất hiện/biến mất 120ms, tự động đóng khi nhấn phím Escape hoặc click ra ngoài vùng chọn, hoàn trả tiêu điểm về nút kích hoạt.
 - Hỗ trợ đầy đủ điều hướng bàn phím (mũi tên lên/xuống, Enter, Space, Escape).
 
 ### Dialog, Sheet & Alert
@@ -475,6 +476,15 @@ Mỗi thành phần là một hợp đồng giao diện chuẩn mực. Nội dun
 - Lớp phủ mờ `dialog-overlay` sử dụng màu nền tối 72%.
 - Hỗ trợ cơ chế khóa tiêu điểm bên trong hộp thoại (focus trap), đóng bằng phím Escape và hoàn trả tiêu điểm về phần tử kích hoạt ban đầu.
 - Hộp thoại cảnh báo phá hủy (Alert) luôn đặt tiêu điểm mặc định vào hành động an toàn; nút xác nhận hành động nguy hiểm dùng màu `danger`.
+- Thành phần mở bên trong hộp thoại (dropdown, date/time picker) dùng floating layer thay vì lồng Dialog mới; hộp thoại cha không bị lớp phủ thứ hai đè lên.
+
+### Date picker
+
+- Header lịch là một hàng duy nhất `‹ Tháng M YYYY ⌄ ›`: hai nút mũi tên bước theo view hiện tại, title là nút bấm kèm icon chevron để đổi view.
+- Bấm title chuyển view: ngày → tháng (lưới 12 tháng, 3 cột, nhãn "Tháng 1"–"Tháng 12") → năm (lưới 3 cột, 12 năm một trang, mũi tên nhảy ±12 năm). Chọn tháng/năm quay về view trước.
+- Tháng/năm ngoài khoảng `minDate`/`maxDate` hiển thị vô hiệu; tháng hiện tại và năm hiện tại đánh dấu viền `primary` như ô hôm nay của lưới ngày.
+- Bấm một ngày là chốt: gán giá trị và đóng bảng chọn ngay, không có bước Xác nhận/Hủy; nút "Hôm nay" đặt ở đáy bảng chọn.
+- Bảng chọn dùng floating layer (`FloatingPanel`) trên mọi kích thước màn hình, hoàn trả tiêu điểm về trigger khi đóng.
 
 ### PosterCard
 
